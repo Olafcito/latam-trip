@@ -508,7 +508,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     // build mode shows the trip's own stops and what the cursor reaches, and nothing else
     const quiet = focus && !!sel
     const stops = quiet && trip ? tripStops(trip) : []
-    setLabelFocus(map, sel ? [...new Set([sel, ...near, ...stops])] : [], sel, quiet)
+    setLabelFocus(map, sel ? [...new Set([sel, ...near, ...stops])] : [], sel, quiet, stops)
     setQuiet(map, quiet)
     // the open trip steps back while a city's own routes are shown
     const dimTrip = !!view.sel
