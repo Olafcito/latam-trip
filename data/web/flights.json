@@ -1,0 +1,4666 @@
+[
+ {
+  "from": "CLO",
+  "to": "MDE",
+  "dkk": 168,
+  "hours": 0.93,
+  "dep": "2027-01-05T23:45",
+  "arr": "2027-01-06T00:41",
+  "vias": [],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "MDE",
+  "dkk": 209,
+  "hours": 1.2,
+  "dep": "2027-01-05T17:15",
+  "arr": "2027-01-05T18:27",
+  "vias": [],
+  "carriers": [
+   "JetSmart"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "CLO",
+  "dkk": 219,
+  "hours": 1.15,
+  "dep": "2027-01-05T05:00",
+  "arr": "2027-01-05T06:09",
+  "vias": [],
+  "carriers": [
+   "JetSmart"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "CBB",
+  "dkk": 255,
+  "hours": 0.75,
+  "dep": "2027-01-29T12:10",
+  "arr": "2027-01-29T12:55",
+  "vias": [],
+  "carriers": [
+   "BoA"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/LPB-CBB/2027-01-29",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "CTG",
+  "dkk": 380,
+  "hours": 1.53,
+  "dep": "2027-01-05T17:25",
+  "arr": "2027-01-05T18:57",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "CTG",
+  "dkk": 385,
+  "hours": 1.2,
+  "dep": "2027-01-05T20:10",
+  "arr": "2027-01-05T21:22",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "BOG",
+  "dkk": 401,
+  "hours": 1.08,
+  "dep": "2027-01-05T21:55",
+  "arr": "2027-01-05T23:00",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CBB",
+  "to": "VVI",
+  "dkk": 404,
+  "hours": 0.83,
+  "dep": "2027-02-01T22:25",
+  "arr": "2027-02-01T23:15",
+  "vias": [],
+  "carriers": [],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/CBB-VVI/2027-02-01",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "CTG",
+  "dkk": 415,
+  "hours": 1.5,
+  "dep": "2027-01-05T19:40",
+  "arr": "2027-01-05T21:10",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "MDE",
+  "dkk": 439,
+  "hours": 0.83,
+  "dep": "2027-01-05T07:40",
+  "arr": "2027-01-05T08:30",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "CLO",
+  "dkk": 444,
+  "hours": 1.08,
+  "dep": "2027-01-05T06:00",
+  "arr": "2027-01-05T07:05",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "CLO",
+  "dkk": 449,
+  "hours": 1.17,
+  "dep": "2027-01-05T05:05",
+  "arr": "2027-01-05T06:15",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "BOG",
+  "dkk": 472,
+  "hours": 1.05,
+  "dep": "2027-01-05T05:02",
+  "arr": "2027-01-05T06:05",
+  "vias": [],
+  "carriers": [
+   "Jetsmart"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "CTG",
+  "dkk": 475,
+  "hours": 1.5,
+  "dep": "2027-01-05T19:31",
+  "arr": "2027-01-05T21:01",
+  "vias": [],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "CTG",
+  "dkk": 485,
+  "hours": 1.17,
+  "dep": "2027-01-05T20:15",
+  "arr": "2027-01-05T21:25",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "MDE",
+  "dkk": 511,
+  "hours": 1.08,
+  "dep": "2027-01-05T09:40",
+  "arr": "2027-01-05T10:45",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "SMR",
+  "dkk": 533,
+  "hours": 8.58,
+  "dep": "2027-01-05T21:55",
+  "arr": "2027-01-06T06:30",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "ADZ",
+  "dkk": 537,
+  "hours": 24.63,
+  "dep": "2027-01-05T06:00",
+  "arr": "2027-01-06T06:38",
+  "vias": [
+   "CLO"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SMR",
+  "dkk": 538,
+  "hours": 1.62,
+  "dep": "2027-01-05T14:25",
+  "arr": "2027-01-05T16:02",
+  "vias": [],
+  "carriers": [
+   "Jetsmart"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "ADZ",
+  "dkk": 549,
+  "hours": 2.4,
+  "dep": "2027-01-05T17:40",
+  "arr": "2027-01-05T20:04",
+  "vias": [],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "BOG",
+  "dkk": 552,
+  "hours": 1.0,
+  "dep": "2027-01-05T07:10",
+  "arr": "2027-01-05T08:10",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "SMR",
+  "dkk": 569,
+  "hours": 1.32,
+  "dep": "2027-01-05T06:35",
+  "arr": "2027-01-05T07:54",
+  "vias": [],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "SMR",
+  "dkk": 582,
+  "hours": 1.6,
+  "dep": "2027-01-05T19:22",
+  "arr": "2027-01-05T20:58",
+  "vias": [],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "ADZ",
+  "dkk": 644,
+  "hours": 18.67,
+  "dep": "2027-01-05T23:20",
+  "arr": "2027-01-06T18:00",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "SMR",
+  "dkk": 712,
+  "hours": 1.25,
+  "dep": "2027-01-05T19:30",
+  "arr": "2027-01-05T20:45",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "GDL",
+  "dkk": 737,
+  "hours": 5.1,
+  "dep": "2026-12-05T10:20",
+  "arr": "2026-12-05T14:26",
+  "vias": [
+   "NLU"
+  ],
+  "carriers": [
+   "Viva Aerobus"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "ADZ",
+  "dkk": 768,
+  "hours": 1.42,
+  "dep": "2027-01-05T19:27",
+  "arr": "2027-01-05T20:52",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "CTG",
+  "dkk": 770,
+  "hours": 1.42,
+  "dep": "2027-01-05T21:20",
+  "arr": "2027-01-05T22:45",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "ADZ",
+  "dkk": 775,
+  "hours": 1.83,
+  "dep": "2027-01-05T20:20",
+  "arr": "2027-01-05T22:10",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "MDE",
+  "dkk": 778,
+  "hours": 1.32,
+  "dep": "2027-01-05T07:20",
+  "arr": "2027-01-05T08:39",
+  "vias": [],
+  "carriers": [
+   "Jetsmart"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SDQ",
+  "to": "MDE",
+  "dkk": 880,
+  "hours": 2.5,
+  "dep": "2026-12-05T07:50",
+  "arr": "2026-12-05T09:20",
+  "vias": [],
+  "carriers": [
+   "Arajet"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "ADZ",
+  "dkk": 925,
+  "hours": 2.17,
+  "dep": "2027-01-05T14:20",
+  "arr": "2027-01-05T16:30",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "MDE",
+  "dkk": 945,
+  "hours": 2.0,
+  "dep": "2027-01-10T07:10",
+  "arr": "2027-01-10T10:10",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-MDE/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "ADZ",
+  "dkk": 977,
+  "hours": 4.0,
+  "dep": "2027-01-05T15:55",
+  "arr": "2027-01-05T19:55",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "MDE",
+  "dkk": 1041,
+  "hours": 1.3,
+  "dep": "2027-01-11T08:45",
+  "arr": "2027-01-11T10:03",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/PTY-MDE/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SMR",
+  "dkk": 1054,
+  "hours": 1.5,
+  "dep": "2027-01-05T18:50",
+  "arr": "2027-01-05T20:20",
+  "vias": [],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "GUA",
+  "dkk": 1111,
+  "hours": 6.02,
+  "dep": "2026-12-10T07:36",
+  "arr": "2026-12-10T13:37",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GDL-GUA/2026-12-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "CLO",
+  "dkk": 1170,
+  "hours": 1.67,
+  "dep": "2027-01-05T09:25",
+  "arr": "2027-01-05T11:05",
+  "vias": [],
+  "carriers": [
+   "Jetsmart"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "CLO",
+  "dkk": 1171,
+  "hours": 1.58,
+  "dep": "2027-01-05T08:15",
+  "arr": "2027-01-05T09:50",
+  "vias": [],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SMR",
+  "to": "MDE",
+  "dkk": 1185,
+  "hours": 1.32,
+  "dep": "2027-01-05T17:11",
+  "arr": "2027-01-05T18:30",
+  "vias": [],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "MDE",
+  "dkk": 1220,
+  "hours": 1.92,
+  "dep": "2027-01-13T16:05",
+  "arr": "2027-01-13T19:00",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SJO-MDE/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "BOG",
+  "dkk": 1273,
+  "hours": 1.58,
+  "dep": "2027-01-05T13:35",
+  "arr": "2027-01-05T15:10",
+  "vias": [],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "CTG",
+  "dkk": 1280,
+  "hours": 13.03,
+  "dep": "2027-01-11T08:45",
+  "arr": "2027-01-11T21:47",
+  "vias": [
+   "MDE"
+  ],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/PTY-CTG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SJO",
+  "dkk": 1287,
+  "hours": 8.05,
+  "dep": "2026-12-08T10:05",
+  "arr": "2026-12-08T17:08",
+  "vias": [
+   "SDQ"
+  ],
+  "carriers": [
+   "Arajet"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-SJO/2026-12-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "CTG",
+  "dkk": 1292,
+  "hours": 15.68,
+  "dep": "2027-01-09T05:10",
+  "arr": "2027-01-09T21:51",
+  "vias": [
+   "SAL",
+   "MDE"
+  ],
+  "carriers": [
+   "Avianca",
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-CTG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "BOG",
+  "dkk": 1293,
+  "hours": 15.33,
+  "dep": "2027-01-10T05:10",
+  "arr": "2027-01-10T21:30",
+  "vias": [
+   "SAL",
+   "MDE"
+  ],
+  "carriers": [
+   "Avianca",
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-BOG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "PTY",
+  "dkk": 1341,
+  "hours": 1.33,
+  "dep": "2026-12-08T18:29",
+  "arr": "2026-12-08T19:49",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-PTY/2026-12-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "CTG",
+  "dkk": 1376,
+  "hours": 3.27,
+  "dep": "2027-01-10T03:59",
+  "arr": "2027-01-10T08:15",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-CTG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "GUA",
+  "dkk": 1393,
+  "hours": 5.87,
+  "dep": "2026-12-05T06:09",
+  "arr": "2026-12-05T11:01",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SMR",
+  "to": "BOG",
+  "dkk": 1415,
+  "hours": 1.55,
+  "dep": "2027-01-05T08:27",
+  "arr": "2027-01-05T10:00",
+  "vias": [],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SMR",
+  "to": "MDE",
+  "dkk": 1424,
+  "hours": 1.25,
+  "dep": "2027-01-05T11:50",
+  "arr": "2027-01-05T13:05",
+  "vias": [],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "CTG",
+  "dkk": 1449,
+  "hours": 1.17,
+  "dep": "2027-01-10T10:45",
+  "arr": "2027-01-10T11:55",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/PTY-CTG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "MDE",
+  "dkk": 1453,
+  "hours": 2.92,
+  "dep": "2027-01-12T08:37",
+  "arr": "2027-01-12T12:32",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GUA-MDE/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "BOG",
+  "dkk": 1464,
+  "hours": 11.5,
+  "dep": "2026-12-05T13:40",
+  "arr": "2026-12-06T01:10",
+  "vias": [
+   "NLU"
+  ],
+  "carriers": [
+   "Viva Aerobus"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "BOG",
+  "dkk": 1470,
+  "hours": 4.93,
+  "dep": "2026-12-10T05:55",
+  "arr": "2026-12-10T11:51",
+  "vias": [],
+  "carriers": [
+   "Volaris"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/GDL-BOG/2026-12-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SMR",
+  "to": "BOG",
+  "dkk": 1485,
+  "hours": 1.5,
+  "dep": "2027-01-05T06:00",
+  "arr": "2027-01-05T07:30",
+  "vias": [],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "CLO",
+  "dkk": 1485,
+  "hours": 5.38,
+  "dep": "2027-01-13T10:43",
+  "arr": "2027-01-13T17:06",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GUA-CLO/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "SJO",
+  "dkk": 1529,
+  "hours": 10.5,
+  "dep": "2027-01-30T14:10",
+  "arr": "2027-01-30T23:40",
+  "vias": [
+   "SAL"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "MDE",
+  "dkk": 1540,
+  "hours": 1.25,
+  "dep": "2027-01-05T20:30",
+  "arr": "2027-01-05T21:45",
+  "vias": [],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "GDL",
+  "dkk": 1639,
+  "hours": 5.33,
+  "dep": "2027-01-20T14:00",
+  "arr": "2027-01-20T18:20",
+  "vias": [],
+  "carriers": [
+   "Volaris"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "SJO",
+  "dkk": 1688,
+  "hours": 3.65,
+  "dep": "2027-01-30T06:25",
+  "arr": "2027-01-30T09:04",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "MDE",
+  "dkk": 1696,
+  "hours": 3.98,
+  "dep": "2027-01-12T03:16",
+  "arr": "2027-01-12T08:15",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-MDE/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "CTG",
+  "dkk": 1707,
+  "hours": 22.53,
+  "dep": "2027-01-11T09:30",
+  "arr": "2027-01-12T09:02",
+  "vias": [
+   "SDQ"
+  ],
+  "carriers": [
+   "Arajet"
+  ],
+  "notes": [
+   "self transfer",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GUA-CTG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "MDE",
+  "dkk": 1715,
+  "hours": 21.63,
+  "dep": "2026-12-10T00:12",
+  "arr": "2026-12-10T22:50",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GDL-MDE/2026-12-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "BOG",
+  "dkk": 1755,
+  "hours": 7.75,
+  "dep": "2027-02-01T05:30",
+  "arr": "2027-02-01T12:15",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-BOG/2027-02-01",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "CTG",
+  "dkk": 1777,
+  "hours": 15.97,
+  "dep": "2026-12-10T21:32",
+  "arr": "2026-12-11T14:30",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "GDL",
+  "dkk": 1791,
+  "hours": 7.1,
+  "dep": "2027-01-20T16:40",
+  "arr": "2027-01-20T22:46",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MEX",
+  "to": "SAL",
+  "dkk": 1827,
+  "hours": 10.83,
+  "dep": "2026-12-05T05:00",
+  "arr": "2026-12-05T15:50",
+  "vias": [
+   "MDE"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "SAP",
+  "dkk": 1831,
+  "hours": 4.12,
+  "dep": "2026-12-10T09:35",
+  "arr": "2026-12-10T12:42",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "GUA",
+  "dkk": 1855,
+  "hours": 3.08,
+  "dep": "2026-12-10T06:47",
+  "arr": "2026-12-10T08:52",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-GUA/2026-12-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "CLO",
+  "dkk": 1855,
+  "hours": 5.72,
+  "dep": "2027-01-08T04:17",
+  "arr": "2027-01-08T11:00",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAP-CLO/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "CLO",
+  "dkk": 1876,
+  "hours": 12.83,
+  "dep": "2027-01-13T03:16",
+  "arr": "2027-01-13T17:06",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-CLO/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "MDE",
+  "dkk": 1897,
+  "hours": 11.92,
+  "dep": "2027-02-01T05:30",
+  "arr": "2027-02-01T16:25",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-MDE/2027-02-01",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "SAP",
+  "dkk": 1901,
+  "hours": 4.45,
+  "dep": "2026-12-09T09:15",
+  "arr": "2026-12-09T12:42",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-SAP/2026-12-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "VVI",
+  "dkk": 1910,
+  "hours": 9.0,
+  "dep": "2027-01-28T18:35",
+  "arr": "2027-01-29T04:35",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-VVI/2027-01-28",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "SAL",
+  "dkk": 1911,
+  "hours": 5.02,
+  "dep": "2026-12-10T08:40",
+  "arr": "2026-12-10T12:41",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "GUA",
+  "dkk": 1923,
+  "hours": 14.77,
+  "dep": "2026-12-09T21:05",
+  "arr": "2026-12-10T10:51",
+  "vias": [
+   "SDQ"
+  ],
+  "carriers": [
+   "Arajet"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-GUA/2026-12-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "GDL",
+  "dkk": 1925,
+  "hours": 11.78,
+  "dep": "2026-12-20T12:02",
+  "arr": "2026-12-20T22:49",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "GDL",
+  "dkk": 1939,
+  "hours": 5.28,
+  "dep": "2027-01-20T15:18",
+  "arr": "2027-01-20T20:35",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "VVI",
+  "dkk": 1942,
+  "hours": 9.42,
+  "dep": "2027-01-28T18:10",
+  "arr": "2027-01-29T04:35",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-VVI/2027-01-28",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "BOG",
+  "dkk": 1949,
+  "hours": 10.52,
+  "dep": "2027-01-10T19:49",
+  "arr": "2027-01-11T06:20",
+  "vias": [
+   "MDE"
+  ],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/PTY-BOG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "SAL",
+  "dkk": 1960,
+  "hours": 2.67,
+  "dep": "2026-12-10T14:10",
+  "arr": "2026-12-10T15:50",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/MDE-SAL/2026-12-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "SAL",
+  "dkk": 1960,
+  "hours": 24.83,
+  "dep": "2026-12-10T18:15",
+  "arr": "2026-12-11T19:05",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GDL-SAL/2026-12-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MEX",
+  "to": "SAL",
+  "dkk": 1969,
+  "hours": 6.77,
+  "dep": "2026-12-05T05:55",
+  "arr": "2026-12-05T12:41",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "BOG",
+  "dkk": 1999,
+  "hours": 3.42,
+  "dep": "2026-12-05T21:45",
+  "arr": "2026-12-06T01:10",
+  "vias": [],
+  "carriers": [
+   "Viva Aerobus"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "LPB",
+  "dkk": 2000,
+  "hours": 9.75,
+  "dep": "2027-01-28T17:15",
+  "arr": "2027-01-29T04:00",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-LPB/2027-01-28",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "GDL",
+  "dkk": 2001,
+  "hours": 7.33,
+  "dep": "2026-12-20T04:38",
+  "arr": "2026-12-20T10:58",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "CLO",
+  "dkk": 2019,
+  "hours": 8.6,
+  "dep": "2027-01-13T07:30",
+  "arr": "2027-01-13T17:06",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAL-CLO/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "CLO",
+  "dkk": 2029,
+  "hours": 5.57,
+  "dep": "2027-01-13T17:00",
+  "arr": "2027-01-13T23:34",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-CLO/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "GDL",
+  "dkk": 2047,
+  "hours": 14.23,
+  "dep": "2026-12-20T09:35",
+  "arr": "2026-12-20T22:49",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "MGA",
+  "dkk": 2064,
+  "hours": 5.42,
+  "dep": "2026-12-10T08:40",
+  "arr": "2026-12-10T13:05",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "BOG",
+  "dkk": 2074,
+  "hours": 25.82,
+  "dep": "2027-01-12T03:16",
+  "arr": "2027-01-13T06:05",
+  "vias": [
+   "PTY",
+   "MDE"
+  ],
+  "carriers": [
+   "Copa Airlines",
+   "JetSMART"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-BOG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "MGA",
+  "dkk": 2077,
+  "hours": 4.23,
+  "dep": "2026-12-08T12:40",
+  "arr": "2026-12-08T15:54",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-MGA/2026-12-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "BOG",
+  "dkk": 2082,
+  "hours": 1.58,
+  "dep": "2027-01-10T02:30",
+  "arr": "2027-01-10T04:05",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/PTY-BOG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "CLO",
+  "dkk": 2088,
+  "hours": 10.75,
+  "dep": "2027-02-01T05:30",
+  "arr": "2027-02-01T15:15",
+  "vias": [
+   "LIM",
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "VVI",
+  "dkk": 2089,
+  "hours": 9.67,
+  "dep": "2027-01-28T16:55",
+  "arr": "2027-01-29T04:35",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-VVI/2027-01-28",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "CLO",
+  "dkk": 2095,
+  "hours": 5.07,
+  "dep": "2027-01-08T04:56",
+  "arr": "2027-01-08T11:00",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAL-CLO/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "MDE",
+  "dkk": 2144,
+  "hours": 5.63,
+  "dep": "2027-01-12T04:17",
+  "arr": "2027-01-12T10:55",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAP-MDE/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "SJO",
+  "dkk": 2155,
+  "hours": 17.65,
+  "dep": "2027-01-30T13:43",
+  "arr": "2027-01-31T07:22",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "CTG",
+  "dkk": 2160,
+  "hours": 17.1,
+  "dep": "2027-01-12T03:16",
+  "arr": "2027-01-12T21:22",
+  "vias": [
+   "PTY",
+   "MDE"
+  ],
+  "carriers": [
+   "Copa Airlines",
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-CTG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "SAP",
+  "dkk": 2162,
+  "hours": 5.03,
+  "dep": "2026-12-10T08:40",
+  "arr": "2026-12-10T12:42",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "LPB",
+  "dkk": 2187,
+  "hours": 9.08,
+  "dep": "2026-12-06T16:55",
+  "arr": "2026-12-07T04:00",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "MDE",
+  "dkk": 2212,
+  "hours": 4.47,
+  "dep": "2027-01-09T04:17",
+  "arr": "2027-01-09T09:45",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAP-MDE/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "SAL",
+  "dkk": 2217,
+  "hours": 6.43,
+  "dep": "2026-12-10T07:36",
+  "arr": "2026-12-10T14:02",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GDL-SAL/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "CTG",
+  "dkk": 2224,
+  "hours": 7.02,
+  "dep": "2027-02-01T11:54",
+  "arr": "2027-02-01T17:55",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "SJO",
+  "dkk": 2234,
+  "hours": 1.25,
+  "dep": "2027-01-30T07:35",
+  "arr": "2027-01-30T08:50",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "VVI",
+  "dkk": 2240,
+  "hours": 9.63,
+  "dep": "2027-01-28T12:08",
+  "arr": "2027-01-28T22:46",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-VVI/2027-01-28",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "CTG",
+  "dkk": 2255,
+  "hours": 6.5,
+  "dep": "2027-01-09T14:50",
+  "arr": "2027-01-09T22:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SAL-CTG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SAL",
+  "dkk": 2258,
+  "hours": 11.5,
+  "dep": "2026-12-10T05:20",
+  "arr": "2026-12-10T15:50",
+  "vias": [
+   "MDE"
+  ],
+  "carriers": [
+   "Avianca",
+   "JetSMART"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-SAL/2026-12-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "MDE",
+  "dkk": 2269,
+  "hours": 7.25,
+  "dep": "2026-12-25T03:45",
+  "arr": "2026-12-25T10:00",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/VVI-MDE/2026-12-28",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "SAL",
+  "dkk": 2283,
+  "hours": 6.0,
+  "dep": "2026-12-10T10:50",
+  "arr": "2026-12-10T15:50",
+  "vias": [
+   "MDE"
+  ],
+  "carriers": [
+   "Avianca",
+   "JetSMART"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/CTG-SAL/2026-12-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "VVI",
+  "dkk": 2342,
+  "hours": 4.17,
+  "dep": "2027-01-28T21:30",
+  "arr": "2027-01-29T02:40",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/BOG-VVI/2027-01-28",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "CTG",
+  "dkk": 2345,
+  "hours": 6.2,
+  "dep": "2027-01-10T10:43",
+  "arr": "2027-01-10T17:55",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GUA-CTG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "LPB",
+  "dkk": 2384,
+  "hours": 9.0,
+  "dep": "2027-01-27T04:45",
+  "arr": "2027-01-27T14:45",
+  "vias": [
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "VVI",
+  "dkk": 2400,
+  "hours": 10.82,
+  "dep": "2026-12-06T09:59",
+  "arr": "2026-12-06T22:48",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SAP",
+  "dkk": 2419,
+  "hours": 19.2,
+  "dep": "2026-12-06T18:30",
+  "arr": "2026-12-07T12:42",
+  "vias": [
+   "MDE",
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines",
+   "JetSMART"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-SAP/2026-12-06",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "SJO",
+  "dkk": 2421,
+  "hours": 7.8,
+  "dep": "2027-01-30T01:14",
+  "arr": "2027-01-30T07:02",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "SJO",
+  "dkk": 2431,
+  "hours": 11.33,
+  "dep": "2027-01-30T22:30",
+  "arr": "2027-01-31T08:50",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "BOG",
+  "dkk": 2464,
+  "hours": 6.05,
+  "dep": "2027-01-10T13:09",
+  "arr": "2027-01-10T20:12",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GUA-BOG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "CLO",
+  "dkk": 2468,
+  "hours": 7.83,
+  "dep": "2027-02-01T03:25",
+  "arr": "2027-02-01T10:15",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "BOG",
+  "dkk": 2532,
+  "hours": 2.83,
+  "dep": "2027-01-08T07:45",
+  "arr": "2027-01-08T11:35",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SAL-BOG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "BOG",
+  "dkk": 2536,
+  "hours": 3.33,
+  "dep": "2027-01-10T02:00",
+  "arr": "2027-01-10T06:20",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/GUA-BOG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "BOG",
+  "dkk": 2545,
+  "hours": 6.23,
+  "dep": "2026-12-05T07:15",
+  "arr": "2026-12-05T13:29",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "BOG",
+  "dkk": 2546,
+  "hours": 2.25,
+  "dep": "2027-01-10T01:55",
+  "arr": "2027-01-10T05:10",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SJO-BOG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "BOG",
+  "dkk": 2601,
+  "hours": 3.92,
+  "dep": "2027-02-01T03:45",
+  "arr": "2027-02-01T06:40",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/VVI-BOG/2027-02-01",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "CTG",
+  "dkk": 2602,
+  "hours": 7.58,
+  "dep": "2027-02-01T03:25",
+  "arr": "2027-02-01T10:00",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "MDE",
+  "dkk": 2605,
+  "hours": 7.0,
+  "dep": "2026-12-05T07:15",
+  "arr": "2026-12-05T14:15",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "MGA",
+  "dkk": 2610,
+  "hours": 10.25,
+  "dep": "2026-12-07T03:50",
+  "arr": "2026-12-07T13:05",
+  "vias": [
+   "MDE",
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines",
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/CTG-MGA/2026-12-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "SAP",
+  "dkk": 2611,
+  "hours": 5.38,
+  "dep": "2026-12-10T06:02",
+  "arr": "2026-12-10T11:25",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "GDL",
+  "dkk": 2615,
+  "hours": 8.67,
+  "dep": "2026-12-20T16:00",
+  "arr": "2026-12-20T23:40",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "SAL",
+  "dkk": 2622,
+  "hours": 14.25,
+  "dep": "2027-02-01T03:25",
+  "arr": "2027-02-01T15:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "MDE",
+  "dkk": 2630,
+  "hours": 17.92,
+  "dep": "2027-01-07T22:20",
+  "arr": "2027-01-08T17:15",
+  "vias": [
+   "LIM",
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAL-MDE/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SDQ",
+  "to": "SAL",
+  "dkk": 2652,
+  "hours": 11.0,
+  "dep": "2026-12-05T12:45",
+  "arr": "2026-12-05T21:45",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "MDE",
+  "dkk": 2657,
+  "hours": 6.92,
+  "dep": "2026-12-10T12:05",
+  "arr": "2026-12-10T20:00",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/GDL-MDE/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "LPB",
+  "dkk": 2673,
+  "hours": 9.25,
+  "dep": "2027-01-27T04:30",
+  "arr": "2027-01-27T14:45",
+  "vias": [
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "LPB",
+  "dkk": 2678,
+  "hours": 7.17,
+  "dep": "2026-12-21T18:10",
+  "arr": "2026-12-22T02:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/PTY-LPB/2026-12-19",
+  "shows": [
+   "cheapest",
+   "fastest"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "MDE",
+  "dkk": 2681,
+  "hours": 15.58,
+  "dep": "2027-02-01T05:20",
+  "arr": "2027-02-01T19:55",
+  "vias": [
+   "LIM",
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "SJO",
+  "dkk": 2687,
+  "hours": 9.25,
+  "dep": "2027-01-30T05:20",
+  "arr": "2027-01-30T12:35",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "SMR",
+  "dkk": 2694,
+  "hours": 6.17,
+  "dep": "2027-01-05T13:35",
+  "arr": "2027-01-05T19:45",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "SAL",
+  "dkk": 2697,
+  "hours": 8.22,
+  "dep": "2026-12-05T06:49",
+  "arr": "2026-12-05T14:02",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "BOG",
+  "dkk": 2779,
+  "hours": 7.92,
+  "dep": "2027-02-01T05:20",
+  "arr": "2027-02-01T12:15",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "MGA",
+  "dkk": 2784,
+  "hours": 17.17,
+  "dep": "2026-12-06T20:55",
+  "arr": "2026-12-07T13:05",
+  "vias": [
+   "MDE",
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines",
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-MGA/2026-12-06",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "VVI",
+  "dkk": 2812,
+  "hours": 7.67,
+  "dep": "2027-01-28T18:00",
+  "arr": "2027-01-29T02:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/MDE-VVI/2027-01-28",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "MDE",
+  "dkk": 2831,
+  "hours": 12.08,
+  "dep": "2027-02-01T05:20",
+  "arr": "2027-02-01T16:25",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "VVI",
+  "dkk": 2888,
+  "hours": 8.58,
+  "dep": "2027-01-27T18:09",
+  "arr": "2027-01-28T03:44",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "COPA"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "LPB",
+  "dkk": 2931,
+  "hours": 11.25,
+  "dep": "2027-01-27T02:30",
+  "arr": "2027-01-27T14:45",
+  "vias": [
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/PTY-LPB/2027-01-27",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SAL",
+  "dkk": 2968,
+  "hours": 3.0,
+  "dep": "2026-12-12T13:40",
+  "arr": "2026-12-12T15:40",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/BOG-SAL/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CUN",
+  "to": "SAL",
+  "dkk": 2968,
+  "hours": 6.43,
+  "dep": "2026-12-05T07:15",
+  "arr": "2026-12-05T12:41",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "SAL",
+  "dkk": 3015,
+  "hours": 4.1,
+  "dep": "2026-12-09T09:35",
+  "arr": "2026-12-09T12:41",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/CTG-SAL/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "CTG",
+  "dkk": 3038,
+  "hours": 3.98,
+  "dep": "2027-01-07T03:16",
+  "arr": "2027-01-07T08:15",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-CTG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "BOG",
+  "dkk": 3050,
+  "hours": 3.75,
+  "dep": "2027-02-01T03:25",
+  "arr": "2027-02-01T06:10",
+  "vias": [],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CBB",
+  "to": "BOG",
+  "dkk": 3051,
+  "hours": 23.42,
+  "dep": "2027-01-20T22:20",
+  "arr": "2027-01-21T20:45",
+  "vias": [
+   "LPB"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "CTG",
+  "dkk": 3086,
+  "hours": 11.87,
+  "dep": "2027-01-10T04:30",
+  "arr": "2027-01-10T17:22",
+  "vias": [
+   "SAL",
+   "MDE"
+  ],
+  "carriers": [
+   "Avianca",
+   "Wingo"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAP-CTG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "VVI",
+  "dkk": 3097,
+  "hours": 9.72,
+  "dep": "2027-01-27T12:03",
+  "arr": "2027-01-27T22:46",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "COPA"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "BOG",
+  "dkk": 3100,
+  "hours": 13.25,
+  "dep": "2027-01-10T04:30",
+  "arr": "2027-01-10T18:45",
+  "vias": [
+   "SAL"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAP-BOG/2027-01-10",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "VVI",
+  "dkk": 3102,
+  "hours": 7.42,
+  "dep": "2027-01-28T17:15",
+  "arr": "2027-01-29T02:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SJO-VVI/2027-01-28",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "MGA",
+  "dkk": 3127,
+  "hours": 13.97,
+  "dep": "2026-12-10T21:32",
+  "arr": "2026-12-11T11:30",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "SMR",
+  "dkk": 3132,
+  "hours": 3.92,
+  "dep": "2027-01-05T05:00",
+  "arr": "2027-01-05T08:55",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SMR",
+  "to": "CTG",
+  "dkk": 3132,
+  "hours": 7.08,
+  "dep": "2027-01-05T09:30",
+  "arr": "2027-01-05T16:35",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "LATAM"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "LPB",
+  "dkk": 3201,
+  "hours": 9.5,
+  "dep": "2026-12-22T14:50",
+  "arr": "2026-12-23T02:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SAL-LPB/2026-12-19",
+  "shows": [
+   "cheapest",
+   "fastest"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "VVI",
+  "dkk": 3206,
+  "hours": 9.1,
+  "dep": "2027-01-28T12:40",
+  "arr": "2027-01-28T22:46",
+  "vias": [],
+  "carriers": [],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-VVI/2027-01-28",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "VVI",
+  "dkk": 3228,
+  "hours": 16.33,
+  "dep": "2027-01-27T09:20",
+  "arr": "2027-01-28T02:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "GDL",
+  "dkk": 3230,
+  "hours": 23.33,
+  "dep": "2027-01-30T20:00",
+  "arr": "2027-01-31T17:20",
+  "vias": [
+   "LIM",
+   "MEX"
+  ],
+  "carriers": [
+   "BoA",
+   "Viva",
+   "Volaris"
+  ],
+  "notes": [
+   "self transfer",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-GDL/2027-01-27",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "MDE",
+  "dkk": 3278,
+  "hours": 2.58,
+  "dep": "2027-01-11T09:35",
+  "arr": "2027-01-11T13:10",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SAL-MDE/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SJO",
+  "dkk": 3302,
+  "hours": 2.33,
+  "dep": "2026-12-11T15:00",
+  "arr": "2026-12-11T16:20",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/BOG-SJO/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "LPB",
+  "dkk": 3321,
+  "hours": 15.58,
+  "dep": "2027-01-27T22:10",
+  "arr": "2027-01-28T14:45",
+  "vias": [
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "GDL",
+  "dkk": 3335,
+  "hours": 19.5,
+  "dep": "2027-01-20T03:16",
+  "arr": "2027-01-20T22:46",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "MGA",
+  "dkk": 3337,
+  "hours": 18.83,
+  "dep": "2027-02-01T15:50",
+  "arr": "2027-02-02T08:40",
+  "vias": [
+   "BOG",
+   "SAL"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "CLO",
+  "dkk": 3340,
+  "hours": 29.4,
+  "dep": "2026-12-10T12:06",
+  "arr": "2026-12-11T18:30",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CBB",
+  "to": "BOG",
+  "dkk": 3377,
+  "hours": 8.83,
+  "dep": "2027-01-20T22:20",
+  "arr": "2027-01-21T06:10",
+  "vias": [
+   "LPB"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "GDL",
+  "dkk": 3406,
+  "hours": 6.0,
+  "dep": "2027-01-20T12:30",
+  "arr": "2027-01-20T18:30",
+  "vias": [
+   "MEX"
+  ],
+  "carriers": [
+   "Aeromexico"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "GUA",
+  "dkk": 3407,
+  "hours": 3.33,
+  "dep": "2026-12-10T15:05",
+  "arr": "2026-12-10T17:25",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/BOG-GUA/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "SJO",
+  "dkk": 3412,
+  "hours": 3.65,
+  "dep": "2027-01-30T06:25",
+  "arr": "2027-01-30T09:04",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "LPB",
+  "dkk": 3424,
+  "hours": 19.57,
+  "dep": "2027-01-27T10:01",
+  "arr": "2027-01-28T07:35",
+  "vias": [
+   "PTY",
+   "VVI"
+  ],
+  "carriers": [
+   "BoA",
+   "Copa Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-LPB/2027-01-27",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "SJO",
+  "dkk": 3445,
+  "hours": 3.77,
+  "dep": "2027-01-30T03:16",
+  "arr": "2027-01-30T07:02",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "VVI",
+  "dkk": 3491,
+  "hours": 13.27,
+  "dep": "2027-01-28T07:30",
+  "arr": "2027-01-28T22:46",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAL-VVI/2027-01-28",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "LPB",
+  "dkk": 3497,
+  "hours": 14.67,
+  "dep": "2027-01-26T22:05",
+  "arr": "2027-01-27T14:45",
+  "vias": [
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "self transfer",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAL-LPB/2027-01-26",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "SJO",
+  "dkk": 3535,
+  "hours": 3.33,
+  "dep": "2027-01-30T08:05",
+  "arr": "2027-01-30T11:25",
+  "vias": [
+   "SAL"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "SAL",
+  "dkk": 3560,
+  "hours": 27.33,
+  "dep": "2027-02-01T05:15",
+  "arr": "2027-02-02T06:35",
+  "vias": [
+   "LPB",
+   "CUZ",
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca",
+   "BoA"
+  ],
+  "notes": [
+   "self transfer",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-SAL/2027-02-01",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "VVI",
+  "dkk": 3576,
+  "hours": 9.68,
+  "dep": "2027-01-27T12:05",
+  "arr": "2027-01-27T22:46",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "COPA"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "VVI",
+  "dkk": 3577,
+  "hours": 7.0,
+  "dep": "2027-01-27T18:40",
+  "arr": "2027-01-28T02:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "LPB",
+  "dkk": 3751,
+  "hours": 5.75,
+  "dep": "2027-01-28T08:00",
+  "arr": "2027-01-28T14:45",
+  "vias": [
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/BOG-LPB/2027-01-28",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "BOG",
+  "dkk": 3823,
+  "hours": 5.07,
+  "dep": "2027-01-09T14:08",
+  "arr": "2027-01-09T20:12",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-BOG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "BOG",
+  "dkk": 3861,
+  "hours": 5.52,
+  "dep": "2027-01-10T13:41",
+  "arr": "2027-01-10T20:12",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAP-BOG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "CLO",
+  "dkk": 3885,
+  "hours": 9.82,
+  "dep": "2026-12-10T00:12",
+  "arr": "2026-12-10T11:01",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "CBB",
+  "dkk": 3977,
+  "hours": 8.42,
+  "dep": "2027-01-15T21:30",
+  "arr": "2027-01-16T06:55",
+  "vias": [
+   "LPB"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "MGA",
+  "dkk": 4076,
+  "hours": 5.42,
+  "dep": "2026-12-06T08:40",
+  "arr": "2026-12-06T13:05",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-MGA/2026-12-06",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "SAP",
+  "dkk": 4178,
+  "hours": 5.0,
+  "dep": "2026-12-06T19:40",
+  "arr": "2026-12-06T23:40",
+  "vias": [
+   "SAL"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/BOG-SAP/2026-12-06",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "LPB",
+  "to": "SAP",
+  "dkk": 4253,
+  "hours": 17.42,
+  "dep": "2027-02-01T03:25",
+  "arr": "2027-02-01T18:50",
+  "vias": [
+   "BOG",
+   "SAL"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "GDL",
+  "dkk": 4347,
+  "hours": 11.7,
+  "dep": "2027-01-30T01:14",
+  "arr": "2027-01-30T10:56",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-GDL/2027-01-27",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "LPB",
+  "dkk": 4354,
+  "hours": 10.75,
+  "dep": "2027-01-27T02:00",
+  "arr": "2027-01-27T14:45",
+  "vias": [
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "BOG",
+  "to": "LPB",
+  "dkk": 4539,
+  "hours": 3.83,
+  "dep": "2027-01-28T21:30",
+  "arr": "2027-01-29T02:20",
+  "vias": [],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/BOG-LPB/2027-01-28",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SAL",
+  "to": "VVI",
+  "dkk": 4611,
+  "hours": 9.83,
+  "dep": "2027-01-28T14:50",
+  "arr": "2027-01-29T02:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAL-VVI/2027-01-28",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "GDL",
+  "dkk": 4629,
+  "hours": 9.08,
+  "dep": "2027-01-20T13:41",
+  "arr": "2027-01-20T22:46",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "MGA",
+  "dkk": 4773,
+  "hours": 4.83,
+  "dep": "2026-12-10T09:15",
+  "arr": "2026-12-10T13:05",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/CTG-MGA/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "VVI",
+  "dkk": 4877,
+  "hours": 17.58,
+  "dep": "2027-01-28T09:00",
+  "arr": "2027-01-29T04:35",
+  "vias": [
+   "SJO",
+   "PTY",
+   "LIM"
+  ],
+  "carriers": [
+   "Copa Airlines",
+   "LATAM Airlines",
+   "SANSA"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-28",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "CBB",
+  "dkk": 4920,
+  "hours": 28.08,
+  "dep": "2027-01-15T09:15",
+  "arr": "2027-01-16T14:20",
+  "vias": [
+   "PTY",
+   "VVI"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "MGA",
+  "dkk": 5101,
+  "hours": 16.75,
+  "dep": "2027-02-01T03:45",
+  "arr": "2027-02-01T18:30",
+  "vias": [
+   "BOG",
+   "SAL"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CBB",
+  "to": "SJO",
+  "dkk": 5136,
+  "hours": 13.7,
+  "dep": "2027-01-30T19:40",
+  "arr": "2027-01-31T07:22",
+  "vias": [
+   "VVI",
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "SAL",
+  "dkk": 5227,
+  "hours": 10.75,
+  "dep": "2027-02-01T11:54",
+  "arr": "2027-02-01T20:39",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-SAL/2027-02-01",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "LPB",
+  "dkk": 5393,
+  "hours": 7.08,
+  "dep": "2027-01-27T17:15",
+  "arr": "2027-01-28T02:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SJO-LPB/2027-01-27",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "SAP",
+  "dkk": 5432,
+  "hours": 17.08,
+  "dep": "2027-02-01T03:45",
+  "arr": "2027-02-01T18:50",
+  "vias": [
+   "BOG",
+   "SAL"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "CTG",
+  "dkk": 5611,
+  "hours": 5.72,
+  "dep": "2027-01-12T04:17",
+  "arr": "2027-01-12T11:00",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SAP-CTG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "CBB",
+  "dkk": 5841,
+  "hours": 17.5,
+  "dep": "2027-01-15T18:20",
+  "arr": "2027-01-16T12:50",
+  "vias": [
+   "PTY",
+   "VVI"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "VVI",
+  "dkk": 5904,
+  "hours": 14.0,
+  "dep": "2027-01-28T11:50",
+  "arr": "2027-01-29T03:50",
+  "vias": [
+   "MIA"
+  ],
+  "carriers": [
+   "Avianca",
+   "BoA"
+  ],
+  "notes": [
+   "self transfer",
+   "US transit",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-28",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "CBB",
+  "dkk": 6008,
+  "hours": 10.45,
+  "dep": "2026-12-06T17:53",
+  "arr": "2026-12-07T06:20",
+  "vias": [
+   "PTY",
+   "VVI"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "VVI",
+  "dkk": 6063,
+  "hours": 20.17,
+  "dep": "2027-01-27T04:30",
+  "arr": "2027-01-28T02:40",
+  "vias": [
+   "SAL",
+   "BOG"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "CBB",
+  "dkk": 6072,
+  "hours": 7.58,
+  "dep": "2026-12-20T21:45",
+  "arr": "2026-12-21T06:20",
+  "vias": [
+   "VVI"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "VVI",
+  "dkk": 6375,
+  "hours": 15.17,
+  "dep": "2027-01-27T09:30",
+  "arr": "2027-01-28T02:40",
+  "vias": [
+   "SAL",
+   "BOG"
+  ],
+  "carriers": [
+   "avianca"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "LPB",
+  "dkk": 6456,
+  "hours": 28.17,
+  "dep": "2027-01-27T20:10",
+  "arr": "2027-01-29T02:20",
+  "vias": [
+   "SAL",
+   "LIM",
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
+  "from": "GDL",
+  "to": "LPB",
+  "dkk": 6692,
+  "hours": 14.92,
+  "dep": "2026-12-12T11:05",
+  "arr": "2026-12-13T04:00",
+  "vias": [
+   "MEX",
+   "LIM"
+  ],
+  "carriers": [
+   "LATAM",
+   "Aeromexico"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest"
+  ]
+ },
+ {
+  "from": "CLO",
+  "to": "LPB",
+  "dkk": 7091,
+  "hours": 7.67,
+  "dep": "2027-01-27T18:40",
+  "arr": "2027-01-28T02:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "LPB",
+  "dkk": 7164,
+  "hours": 7.33,
+  "dep": "2027-01-27T18:00",
+  "arr": "2027-01-28T02:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "LPB",
+  "dkk": 7208,
+  "hours": 27.08,
+  "dep": "2027-01-27T09:40",
+  "arr": "2027-01-28T14:45",
+  "vias": [
+   "MIA",
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "CTG",
+  "to": "VVI",
+  "dkk": 7380,
+  "hours": 7.67,
+  "dep": "2027-01-27T18:00",
+  "arr": "2027-01-28T02:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "LPB",
+  "dkk": 8555,
+  "hours": 17.25,
+  "dep": "2027-01-27T19:30",
+  "arr": "2027-01-28T14:45",
+  "vias": [
+   "MIA",
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "SAP",
+  "to": "LPB",
+  "dkk": 9355,
+  "hours": 16.58,
+  "dep": "2027-01-27T20:10",
+  "arr": "2027-01-28T14:45",
+  "vias": [
+   "SAL",
+   "SJO",
+   "BOG",
+   "CUZ"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "LPB",
+  "dkk": 9974,
+  "hours": 7.33,
+  "dep": "2027-01-27T18:00",
+  "arr": "2027-01-28T02:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "GUA",
+  "to": "LPB",
+  "dkk": 11963,
+  "hours": 10.33,
+  "dep": "2027-01-27T14:00",
+  "arr": "2027-01-28T02:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "fastest"
+  ]
+ }
+]

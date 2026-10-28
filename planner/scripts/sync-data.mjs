@@ -19,6 +19,7 @@ export const FILES = [
   'data/web/places.json',
   'data/web/connections.json',
   'data/web/countries.json',
+  'data/web/flights.json',
 ]
 
 let failed = 0

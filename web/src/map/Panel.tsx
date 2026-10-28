@@ -1,7 +1,7 @@
 import { useState, type Ref } from 'react'
-import { byCountry, countries, countryName, neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
+import { airportFlights, byCountry, countries, countryName, landing, neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
 import { tripEnd, type Trip } from '../data/trips'
-import { familyOf, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
+import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 
@@ -181,9 +181,80 @@ function CityView(p: PanelProps & { city: Place }) {
           <button className="more" onClick={p.onMore}>More about {city.short_name} <span className="arr"><Arrow /></span></button>
         )}
       </div>
+      <Flights model={model} city={city} />
       <div className="sechead"><p className="sub mono">Connections</p><p className="sub mono">{list.length}</p></div>
       {list.length ? <ConnList p={p} list={list} from={city.id} /> : <p className="empty">No connections with the selected modes.</p>}
     </div>
+  )
+}
+
+type FlightDir = 'in' | 'out'
+let lastFlightDir: FlightDir = 'out' // the switch stays where it was put when the next city opens
+
+/** The crawled regional flights at the city's airport, cheapest first, with a switch between in and out. */
+function Flights({ model, city }: { model: Model; city: Place }) {
+  const [dir, setDirState] = useState<FlightDir>(lastFlightDir)
+  const setDir = (d: FlightDir) => {
+    lastFlightDir = d
+    setDirState(d)
+  }
+  const iata = city.iata
+  if (!iata) return null
+  const rows: Record<FlightDir, AirportFlight[]> = { in: airportFlights(model, iata, 'in'), out: airportFlights(model, iata, 'out') }
+  if (!rows.in.length && !rows.out.length) return null
+  const gate = model.byIata.get(iata)
+  const list = rows[dir]
+  return (
+    <>
+      <div className="sechead">
+        <p className="sub mono">Flights · {iata}</p>
+        <div className="seg" role="group" aria-label="Flights in or out">
+          <button type="button" aria-pressed={dir === 'in'} onClick={() => setDir('in')}>In <b>{rows.in.length}</b></button>
+          <button type="button" aria-pressed={dir === 'out'} onClick={() => setDir('out')}>Out <b>{rows.out.length}</b></button>
+        </div>
+      </div>
+      {gate && gate.id !== city.id && <p className="fine fl-gate">{city.short_name} flies through {gate.short_name} airport.</p>}
+      {list.length ? (
+        <ul className="flist">
+          {list.map((r, i) => <FlightRow key={`${r.from}-${r.to}-${r.dep}-${r.dkk}`} model={model} r={r} dir={dir} i={i} />)}
+        </ul>
+      ) : (
+        <p className="empty">No crawled flights {dir === 'in' ? 'into' : 'out of'} {iata} yet.</p>
+      )}
+    </>
+  )
+}
+
+const LAND_TEXT = { night: 'night', day: 'by day', evening: 'evening' } as const
+const WARN_NOTES = new Set(['self transfer', 'US transit'])
+
+function FlightRow({ model, r, dir, i }: { model: Model; r: AirportFlight; dir: FlightDir; i: number }) {
+  const name = (code: string) => model.byIata.get(code)?.short_name ?? code
+  const other = dir === 'in' ? r.from : r.to
+  const land = landing(r.arr)
+  const url = r.link ?? `https://www.momondo.dk/flight-search/${r.from}-${r.to}${r.dep ? '/' + r.dep.slice(0, 10) : ''}`
+  const plus = r.dep && r.arr && r.arr.slice(0, 10) !== r.dep.slice(0, 10) ? ` +${Math.round((Date.parse(r.arr.slice(0, 10)) - Date.parse(r.dep.slice(0, 10))) / 864e5)}` : ''
+  return (
+    <li className="frow" style={{ animationDelay: `${0.1 + Math.min(i, 10) * 0.04}s` }}>
+      <a href={url} target="_blank" rel="noreferrer" title={`${r.from} to ${r.to}, times local at each airport`}>
+        <span className="fr-name">{dir === 'in' ? 'From' : 'To'} <b>{name(other)}</b></span>
+        <span className="fr-price mono">{kr(r.dkk)}</span>
+        <span className="fr-time mono">
+          {r.dep ? `${weekday(r.dep.slice(0, 10))} ${shortDate(r.dep.slice(0, 10))} ${r.dep.slice(11, 16)}` : '?'}
+          {' → '}
+          {r.arr ? r.arr.slice(11, 16) + plus : '?'}
+          {land && <span className={`land ${land}`}>{land === 'night' && <Moon />}{LAND_TEXT[land]}</span>}
+        </span>
+        <span className="fr-meta">
+          {duration(Math.round(r.hours * 60))} · {r.vias.length ? 'via ' + r.vias.map(name).join(', ') : 'nonstop'}
+          {r.carriers.length ? ` · ${r.carriers.join(', ')}` : ''}
+        </span>
+        <span className="fr-tags">
+          {r.shows.map((s) => <span key={s}>{s}</span>)}
+          {r.notes.map((n) => <span key={n} className={WARN_NOTES.has(n) ? 'warn' : 'note'}>{n}</span>)}
+        </span>
+      </a>
+    </li>
   )
 }
 
