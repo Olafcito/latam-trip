@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T16:33:31Z",
+ "generated_at": "2026-10-28T16:34:18Z",
  "currency": "DKK",
  "home": [
   "CPH"
@@ -170,11 +170,11 @@
    "home": false
   },
   "GUA": {
-   "name": "Quetzaltenango (Xela)",
+   "name": "Guatemala City",
    "country": "GT",
-   "lat": 14.84,
-   "lon": -91.52,
-   "map_node": "XELA",
+   "lat": 14.63,
+   "lon": -90.51,
+   "map_node": "GUA",
    "region": "CA",
    "utc_offset": -6,
    "home": false
@@ -291,11 +291,11 @@
    "home": false
   },
   "MGA": {
-   "name": "Granada",
+   "name": "Managua",
    "country": "NI",
-   "lat": 11.93,
-   "lon": -85.96,
-   "map_node": "GRAN",
+   "lat": 12.13,
+   "lon": -86.25,
+   "map_node": "MGA",
    "region": "CA",
    "utc_offset": -6,
    "home": false
@@ -356,11 +356,11 @@
    "home": false
   },
   "SAL": {
-   "name": "El Tunco / El Zonte coast",
+   "name": "San Salvador",
    "country": "SV",
-   "lat": 13.49,
-   "lon": -89.38,
-   "map_node": "TUNCO",
+   "lat": 13.69,
+   "lon": -89.19,
+   "map_node": "SAL",
    "region": "CA",
    "utc_offset": -6,
    "home": false

@@ -285,7 +285,7 @@ nodes = {}
 mp = os.path.join(ROOT, "data", "network", "map.json")
 if os.path.exists(mp):
     for n in json.load(open(mp))["nodes"]:
-        if n.get("iata"):
+        if n.get("iata") and (n["id"] == n["iata"] or n["iata"] not in nodes):   # the airport's own node wins over nearby places
             nodes[n["iata"]] = {"name": n["name"], "country": n.get("country"), "lat": n.get("lat"), "lon": n.get("lon"), "map_node": n["id"]}
 AIRPORTS = {}
 for a in sorted({a for w in WAYS.values() for a in w["airports"]}):
