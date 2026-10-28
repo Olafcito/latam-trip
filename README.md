@@ -18,6 +18,8 @@ The app reads three files in `data/web/`. Rebuild them after any change to the n
 
     python3 -I src/build_web_data.py
 
+For crawled flights the exporter also reads `data/crawl.db` and keeps the cheapest fare per departure date and direction, with the real departure time. A search for one date returns flights on the days around it, so these dates can differ from the date that was searched. Flights that were only researched have no dates.
+
 Add `--fetch-elevation` to look up altitudes for new places. The result is cached in `data/network/elevation.json`.
 
 Run the app locally:
