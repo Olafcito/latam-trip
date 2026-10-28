@@ -83,7 +83,7 @@ export function TotalsScreen({ data }: { data: AppData }) {
                     <div className="n">{j.name}</div>
                     <div className="small muted">{s ? `${s.route} · ${kr(s.t.tickets_dkk + s.t.regional_flights_dkk)}` : 'Ways no longer in the data'}</div>
                   </div>
-                  <button className="btn small" onClick={() => { setJourney(j); go('build') }}>Open</button>
+                  <button className="btn small" onClick={() => { setJourney(j); go('trips', 'build') }}>Open</button>
                   <button className="btn link small" onClick={() => deleteSaved(j.id)}>Delete</button>
                 </div>
               )

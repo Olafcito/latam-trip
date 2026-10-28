@@ -5,7 +5,6 @@ import { dayTime, day, hours, kr, STOP_LABEL } from '../lib/format'
 import { arcsSorted, crawledFlights, edgeHours, edgePrice, shortestPath, type Arc, type PathMetric, type PathResult } from '../lib/graph'
 import { hopFromArc, hubStops, nodeForAirport, nodeName, schedule, totals, type Journey, type Place } from '../lib/journey'
 import { MODE_LABEL, MODE_SHORT, countryName } from '../lib/colors'
-import { JourneyMap } from '../components/JourneyMap'
 import { Calendar } from '../components/Calendar'
 import { TotalsPanel } from '../components/TotalsPanel'
 import { WayTimeline } from '../components/WayTimeline'
@@ -58,13 +57,6 @@ export function BuildScreen({ data, journey }: { data: AppData; journey: Journey
   const setNights = (i: number, n: number) => update(journey.places.map((p, k) => (k === i ? { ...p, nights: Math.max(0, n) } : p)))
   const removeLast = () => journey.places.length > 1 && update(journey.places.slice(0, -1))
   const addArc = (arc: Arc, flight: CrawledFlight | null) => update([...journey.places, { node: arc.to, nights: 2, hop: hopFromArc(last.node, arc, flight) }])
-  const addNode = (id: string) => {
-    if (id === last.node) return
-    const arc = arcsFrom(id)
-    if (arc) addArc(arc, null)
-    else update([...journey.places, { node: id, nights: 2, hop: { from: last.node, to: id, mode: 'bus', operator: 'Own way, no route in the data', hours: null, price_dkk: null, overnight: false, border: false, flight: null } }])
-  }
-  const arcsFrom = (to: string) => arcs.find((a) => a.to === to) ?? null
   const runRoute = (metric: PathMetric) => setRoute({ metric, res: shortestPath(map, last.node, exitNode, metric) })
   const applyRoute = () => {
     if (!route?.res) return
@@ -89,9 +81,9 @@ export function BuildScreen({ data, journey }: { data: AppData; journey: Journey
         <div className="card pad row" style={{ gap: 8 }}>
           <input className="name" value={name} onChange={(e) => setName(e.target.value)} aria-label="Journey name" />
           <button className="btn primary small" onClick={() => saveJourney(name)}>Save</button>
-          <button className="btn small" onClick={showOnMap}>Show on map</button>
+          <button className="btn small" onClick={showOnMap}>Build on the map</button>
           <button className="btn small" onClick={exportJson}>Export JSON</button>
-          <button className="btn small" onClick={() => go('pick')}>Change in and out</button>
+          <button className="btn small" onClick={() => go('trips', 'pick')}>Change in and out</button>
         </div>
 
         <div className="fixed in">
@@ -110,7 +102,7 @@ export function BuildScreen({ data, journey }: { data: AppData; journey: Journey
               {p.hop && (
                 <div className={'hop ' + p.hop.mode}>
                   <span className={'mi ' + p.hop.mode}>{MODE_SHORT[p.hop.mode] ?? ''}</span>
-                  <span className="md">{MODE_LABEL[p.hop.mode] ?? p.hop.mode}</span>
+                  <span className="md">{p.hop.overland ? 'Overland' : MODE_LABEL[p.hop.mode] ?? p.hop.mode}</span>
                   <span>{hours(p.hop.hours)} · {kr(p.hop.price_dkk)}</span>
                   {p.hop.overnight && <Moon />}
                   {p.hop.border && <Border />}
@@ -180,7 +172,7 @@ export function BuildScreen({ data, journey }: { data: AppData; journey: Journey
                 </div>
               )
             })}
-            {arcs.length === 0 && <div className="small muted" style={{ padding: 8 }}>No connections from here in map.json. Click a place on the map to add it anyway.</div>}
+            {arcs.length === 0 && <div className="small muted" style={{ padding: 8 }}>No connections from here in map.json. Pick a route on the map to go on from here.</div>}
           </div>
         </div>
 
@@ -216,7 +208,6 @@ export function BuildScreen({ data, journey }: { data: AppData; journey: Journey
             <TotalsPanel t={tot} compact />
           </div>
         </div>
-        <JourneyMap data={data} journey={journey} wi={wi} wh={wh} onPickNode={addNode} />
         <Calendar data={data} journey={journey} sched={sched} wi={wi} wh={wh} />
       </div>
     </div>
