@@ -26,6 +26,10 @@ ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else 
 MD = args[args.index("--md") + 1] if "--md" in args else None
 TOP = int(args[args.index("--top") + 1]) if "--top" in args else 40
 K = int(args[args.index("--per-endpoint") + 1]) if "--per-endpoint" in args else 4
+# --focus "SJO,SAL,SAP:VVI,SJO" always lists every in/out pair with entry in the first set and exit in the second
+FOCUS = args[args.index("--focus") + 1] if "--focus" in args else None
+# --scen FILE writes one row per journey for the --focus pairs only (every way type), sorted by rating on total
+SCEN = args[args.index("--scen") + 1] if "--scen" in args else None
 
 sys.argv = [sys.argv[0], "--root", ROOT]
 spec = importlib.util.spec_from_file_location("chains", os.path.join(os.path.dirname(__file__), "chains.py"))
@@ -221,13 +225,21 @@ for qid, eff, rw in con.execute("SELECT quote_id, eff_cost, raw FROM quotes WHER
         continue
     has_via = bool(q["out"].get("via") or q["out"].get("stops") == 0)
     k = (kind, e, x, o)
-    if k not in mains or eff < mains[k][0] - 1 or (abs(eff - mains[k][0]) <= 1 and has_via and not mains[k][3]):
-        mains[k] = (eff, qid, q, has_via)
+    mains.setdefault(k, []).append((eff, qid, q, has_via))   # every ticket is rated; the option keeps the best-rated one
+
+for k in mains:   # cheapest first, near-duplicates (within 1 kr) collapsed, at most 8 per pair
+    out, seen = [], set()
+    for t in sorted(mains[k], key=lambda t: (t[0], not t[3])):
+        sig = (round(t[0]), t[2]["out"].get("dep"), t[2]["home"].get("dep"))
+        if sig not in seen:
+            seen.add(sig); out.append(t)
+    mains[k] = out[:8]
 
 pos_out = [p for p in ch.products if p["frm"] in HOME and p["to"] in ALT and p["tickets"] == 1]
 pos_home = [p for p in ch.products if p["to"] in HOME and p["frm"] in ALT and p["tickets"] == 1]
 OPTIONS = []
-for (kind, e, x, o), (eff, qid, q, _) in mains.items():
+for (kind, e, x, o), cands in mains.items():
+  for (eff, qid, q, _) in cands:
     tid = ticket(qid)
     tl_in = timeline_from_quote(q, tid, [0]); tl_home = timeline_from_quote(q, tid, [len(legs_of(q)) - 1])
     tin, thome = [tid], [tid]
@@ -265,13 +277,17 @@ def option(kind, wi, wh, shared):
     cabin = a["extras"]["cabin_bag_fees_dkk"] + b["extras"]["cabin_bag_fees_dkk"] + (s["cabin_bag_fee_dkk"] if s else 0)
     ck = [a["extras"]["checked_bag_fees_dkk"], b["extras"]["checked_bag_fees_dkk"], s["checked_bag_fee_dkk"] if s else 0]
     P = max(1.0, min(5.0, 5 - (price + cabin - ANCHOR) / 1000))
+    stay = a["extras"]["hub_stay_estimate_dkk"] + b["extras"]["hub_stay_estimate_dkk"]
+    total = round(price + cabin + stay)                       # flights + cabin bags + hub stays (checked bags excluded)
+    PT = max(1.0, min(5.0, 5 - (total - ANCHOR) / 1000))
     return {"id": f"{a['to']}-{b['from']}-{kind}", "type": kind, "entry": a["to"], "exit": b["from"], "way_in": wi, "way_home": wh,
-            "shared_ticket": shared, "price_dkk": round(price),
+            "shared_ticket": shared, "price_dkk": round(price), "total_dkk": total,
             "extras": {"cabin_bag_fees_dkk": cabin, "checked_bag_fees_dkk": None if any(c is None for c in ck) else sum(ck),
                        "hub_nights": a["hub_nights"] + b["hub_nights"],
                        "hub_stay_estimate_dkk": a["extras"]["hub_stay_estimate_dkk"] + b["extras"]["hub_stay_estimate_dkk"]},
             "rating": {"total": round(2 * (0.5 * P + 0.3 * b["score"] + 0.2 * a["score"]), 1), "price": round(P, 1),
-                       "way_in": a["score"], "way_home": b["score"]}}
+                       "way_in": a["score"], "way_home": b["score"],
+                       "on_total": round(2 * (0.5 * PT + 0.3 * b["score"] + 0.2 * a["score"]), 1)}}
 
 
 best_opt = {}
@@ -337,6 +353,35 @@ def via(w):
     return " ".join(a for a in w["airports"][1:-1])
 
 
+NICE = {"San Jose (Costa Rica)": "San José", "Bogota": "Bogotá", "Medellin": "Medellín", "Roatan": "Roatán",
+        "Santa Cruz de la Sierra": "Santa Cruz", "Liberia (Costa Rica)": "Liberia"}
+
+
+def md_table(rows, scenario=None):
+    head = (["Scenario"] if scenario else []) + ["In", "Out", "Type", "Flights (kr)", "Cabin bags (kr)", "Hub stays (kr)", "Total (kr)",
+            "Rating on total", "Rating on flights", "Out via", "Leaves CPH", "Lands", "Out h", "Home via", "Departs", "Home in CPH",
+            "Home h", "Hub nights", "Stops at hubs"]
+    lines = ["| # | " + " | ".join(head) + " |", "|" + "---|" * (len(head) + 1)]
+    for i, o in enumerate(rows, 1):
+        a, b = WAYS[o["way_in"]], WAYS[o["way_home"]]
+        s = "; ".join(x for x in [("out: " + stops_txt(a)) if stops_txt(a) else "", ("home: " + stops_txt(b)) if stops_txt(b) else ""] if x)
+        nm = lambda c: NICE.get(NAME(c), NAME(c))
+        cells = ([scenario(o)] if scenario else []) + [
+            nm(o["entry"]), nm(o["exit"]), TYPE[o["type"]], f"{o['price_dkk']:,}", f"{o['extras']['cabin_bag_fees_dkk']:,}" if o['extras']['cabin_bag_fees_dkk'] else "",
+            f"{o['extras']['hub_stay_estimate_dkk']:,}" if o['extras']['hub_stay_estimate_dkk'] else "", f"{o['total_dkk']:,}",
+            str(o["rating"]["on_total"]), str(o["rating"]["total"]), via(a) or "nonstop", f"{day(a['depart'])} {hm(a['depart'])}",
+            f"{day(a['arrive'])} {hm(a['arrive'])}", str(a["flying_hours"]), via(b) or "nonstop", f"{day(b['depart'])} {hm(b['depart'])}",
+            f"{day(b['arrive'])} {hm(b['arrive'])}", str(b["flying_hours"]), str(o["extras"]["hub_nights"] or ""), s]
+        lines.append(f"| {i} | " + " | ".join(cells) + " |")
+    return "\n".join(lines)
+
+
+if SCEN and FOCUS:
+    fin, fout = (set(x.split(",")) for x in FOCUS.split(":"))
+    rows = sorted([o for o in opts if o["entry"] in fin and o["exit"] in fout], key=lambda o: (-o["rating"]["on_total"], o["total_dkk"]))
+    open(SCEN, "w").write(md_table(rows, scenario=lambda o: "A" if o["exit"] in ("VVI", "LPB", "CBB") else "B") + "\n")
+
+
 if MD:
     pick = opts[:TOP]
     for t in TYPE:
@@ -346,17 +391,15 @@ if MD:
         for key in (("in", o["entry"], o["type"]), ("out", o["exit"], o["type"])):
             if key not in seen:
                 seen.add(key); pick.append(o)
-    pick = sorted({o["id"]: o for o in pick}.values(), key=lambda o: (-o["rating"]["total"], o["price_dkk"]))
-    lines = ["| # | In | Out | Type | Flights (kr) | Cabin bag fees (kr) | Rating | Out via | Leaves CPH | Lands | Out h | Home via | Departs | Home in CPH | Home h | Hub nights | Stops at hubs |",
-             "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
-    for i, o in enumerate(pick, 1):
-        a, b = WAYS[o["way_in"]], WAYS[o["way_home"]]
-        s = "; ".join(x for x in [("out: " + stops_txt(a)) if stops_txt(a) else "", ("home: " + stops_txt(b)) if stops_txt(b) else ""] if x)
-        lines.append(f"| {i} | {NAME(o['entry'])} | {NAME(o['exit'])} | {TYPE[o['type']]} | {o['price_dkk']:,} | {o['extras']['cabin_bag_fees_dkk'] or ''} | "
-                     f"{o['rating']['total']} | {via(a) or 'nonstop'} | {day(a['depart'])} {hm(a['depart'])} | {day(a['arrive'])} {hm(a['arrive'])} | "
-                     f"{a['flying_hours']} | {via(b) or 'nonstop'} | {day(b['depart'])} {hm(b['depart'])} | {day(b['arrive'])} {hm(b['arrive'])} | "
-                     f"{b['flying_hours']} | {o['extras']['hub_nights'] or ''} | {s} |")
-    open(MD, "w").write("\n".join(lines) + "\n")
+    if FOCUS:
+        fin, fout = (set(x.split(",")) for x in FOCUS.split(":"))
+        best = {}
+        for o in opts:
+            if o["entry"] in fin and o["exit"] in fout:
+                best.setdefault((o["entry"], o["exit"]), o)
+        pick += list(best.values())
+    pick = sorted({o["id"]: o for o in pick}.values(), key=lambda o: (-o["rating"]["on_total"], o["total_dkk"]))
+    open(MD, "w").write(md_table(pick) + "\n")
 print(f"ways: {sum(w['direction'] == 'in' for w in WAYS.values())} in, {sum(w['direction'] == 'home' for w in WAYS.values())} home | "
       f"tickets: {len(TICKETS)} | options: {len(opts)} | airports: {len(AIRPORTS)}")
 for o in opts[:10]:
