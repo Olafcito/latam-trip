@@ -3,13 +3,16 @@ import { Map as MLMap, setWorkerUrl, type GeoJSONSource, type MapMouseEvent, typ
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, type Model } from '../data/model'
+import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripStops, type Trip, type TripState } from '../data/trips'
 import { familyOf, type Connection, type Family, type MapData, type RouteOption } from '../data/types'
 import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
-import { HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
+import { HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
 import { Panel, type PanelView, type View } from './Panel'
+import { TripBar } from './TripBar'
+import { TripsPanel } from './TripsPanel'
 import { C, baseStyle } from './style'
 import { Tooltip } from './Tooltip'
 import './routeMap.css'
@@ -19,15 +22,16 @@ setWorkerUrl(workerUrl)
 
 export interface RouteMapProps {
   data: MapData
-  /** Journey keys already added, as `${connectionId}|${mode}`. */
-  journey?: string[]
-  onAddToJourney?(conn: Connection, option: RouteOption, from: string): void
-  /** How far a city fit may zoom in, as a multiple of the whole-map scale. */
+  trips: TripState
+  onTrips(update: (s: TripState) => TripState): void
+  /** How far a trip fit may zoom in, as a multiple of the whole-map scale. */
   maxFitZoom?: number
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
-const PANEL_W: Record<PanelView, number> = { city: 300, more: 360, route: 360 }
+const PANEL_W: Record<PanelView, number> = { city: 300, more: 360, route: 360, trips: 340 }
+/** The most a city tap zooms out, in zoom levels. Chaining legs should not drift the map away. */
+const CITY_EASE_OUT = 0.3
 const NARROW = 720
 const MOVER: Record<Family, [string, string]> = { ground: [C.bus, '#E6FFF7'], boat: [C.boat, '#EEF5FF'], flight: [C.flight, '#FFF4D6'] }
 const EMPTY_FC: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
@@ -43,7 +47,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2 }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -55,6 +59,7 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
   const panelRef = useRef<HTMLElement>(null)
   const controlsRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const tripBarRef = useRef<HTMLDivElement>(null)
 
   // the map belongs to one model: after a model change its effects must not touch the removed map
   const [built, setBuilt] = useState<{ map: MLMap; model: Model } | null>(null)
@@ -64,6 +69,7 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
   const [collapsed, setCollapsed] = useState(false)
   const [hint, setHint] = useState<'show' | 'fading' | 'gone'>('show')
   const [space, setSpace] = useState(false)
+  const [narrow, setNarrow] = useState(false)
   const store = useMemo(() => createStore<Hover>(null), [])
 
   // latest values for the map's event handlers, which are bound once
@@ -74,24 +80,45 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
 
   // ---- camera ----------------------------------------------------------------------------
 
-  const fit = useCallback(
-    (bounds: Bounds | null, panel: PanelView | null, zoomMul = maxFitZoom) => {
-      const m = map
-      const el = root.current
-      if (!m || !el) return
-      const W = el.clientWidth
-      const H = el.clientHeight
-      const narrow = W < NARROW
-      const open = panel && !live.current.collapsed
-      let padding = narrow
+  /** The part of the map the panel and controls leave free, as padding. */
+  const pads = useCallback((panel: PanelView | null) => {
+    const el = root.current!
+    const W = el.clientWidth
+    const H = el.clientHeight
+    const open = panel && !live.current.collapsed
+    const padding =
+      W < NARROW
         ? { top: 70, left: 28, right: 64, bottom: open ? Math.round(H * 0.52) + 16 : 70 }
         : { top: 70, left: open ? PANEL_W[panel!] + 54 : 40, right: 90, bottom: 70 }
-      if (padding.left + padding.right > W - 40 || padding.top + padding.bottom > H - 40) padding = { top: 20, left: 20, right: 20, bottom: 20 }
+    if (padding.left + padding.right > W - 40 || padding.top + padding.bottom > H - 40) return { top: 20, left: 20, right: 20, bottom: 20 }
+    return padding
+  }, [])
+
+  /** Is a point inside the free part of the map, with a margin? */
+  const inView = useCallback(
+    (ll: LonLat, panel: PanelView | null, margin = 40) => {
+      const el = root.current
+      if (!map || !el) return false
+      const pad = pads(panel)
+      const pt = map.project(ll)
+      return pt.x > pad.left + margin && pt.x < el.clientWidth - pad.right - margin && pt.y > pad.top + margin && pt.y < el.clientHeight - pad.bottom - margin
+    },
+    [map, pads],
+  )
+
+  /** Fit bounds, or the whole map when null. Only the home button and opening a trip do this. */
+  const fit = useCallback(
+    (bounds: Bounds | null, panel: PanelView | null, zoomMul = maxFitZoom, margin = 0) => {
+      const m = map
+      if (!m || !root.current) return
+      const pad = pads(panel)
+      const room = Math.min(margin, (root.current.clientWidth - pad.left - pad.right) / 4, (root.current.clientHeight - pad.top - pad.bottom) / 4)
+      const padding = { top: pad.top + room, left: pad.left + room, right: pad.right + room, bottom: pad.bottom + room }
       const opts = { padding, duration: reducedMotion() ? 0 : 1000, easing: EASE }
-      if (!bounds) m.fitBounds(model.home, { ...opts, padding: narrow ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: 90, bottom: 80 } })
+      if (!bounds) m.fitBounds(model.home, { ...opts, padding: root.current.clientWidth < NARROW ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: 90, bottom: 80 } })
       else m.fitBounds(bounds, { ...opts, maxZoom: live.current.homeZoom + Math.log2(zoomMul) })
     },
-    [map, model, maxFitZoom],
+    [map, model, maxFitZoom, pads],
   )
 
   const cityBounds = useCallback(
@@ -101,6 +128,41 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
       return boundsOf(pts)
     },
     [model],
+  )
+
+  /**
+   * Bring a city into view at about the current zoom. It never zooms in, and zooms out by at
+   * most CITY_EASE_OUT when the city's neighbours would not fit. A city already in view stays put.
+   */
+  const showCity = useCallback(
+    (id: string, panel: PanelView) => {
+      const m = map
+      const p = model.byId.get(id)
+      if (!m || !p) return
+      const pad = pads(panel)
+      const z = m.getZoom()
+      const want = m.cameraForBounds(cityBounds(id), { padding: pad })?.zoom ?? z
+      const zoom = want < z ? Math.max(want, z - CITY_EASE_OUT) : z
+      const ll: LonLat = [p.lon, p.lat]
+      const opts = { zoom, duration: reducedMotion() ? 0 : 700, easing: EASE }
+      if (inView(ll, panel)) {
+        if (zoom !== z) m.easeTo({ ...opts, around: ll })
+      } else m.easeTo({ ...opts, center: ll, offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2] })
+    },
+    [map, model, pads, cityBounds, inView],
+  )
+
+  /** Bring a route into view only when an end is off screen, and never zoom in for it. */
+  const showRoute = useCallback(
+    (conn: Connection) => {
+      const m = map
+      if (!m) return
+      const ends = [conn.a, conn.b].map((id) => model.byId.get(id)!).map((p): LonLat => [p.lon, p.lat])
+      if (ends.every((ll) => inView(ll, 'route', 24))) return
+      const pts = routePoints(model, conn, enabledOptions(conn, live.current.families))
+      m.fitBounds(boundsOf(pts), { padding: pads('route'), maxZoom: m.getZoom(), duration: reducedMotion() ? 0 : 900, easing: EASE })
+    },
+    [map, model, pads, inView],
   )
 
   // ---- actions -----------------------------------------------------------------------------
@@ -119,16 +181,16 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
       setCollapsed(false)
       live.current.collapsed = false
       setView({ ...EMPTY, sel: id, panel: 'city' })
-      fit(cityBounds(id), 'city')
+      showCity(id, 'city')
     },
-    [fit, cityBounds, store],
+    [showCity, store],
   )
 
+  // closing leaves the camera where it is
   const deselect = useCallback(() => {
     store.set(null)
     setView(EMPTY)
-    fit(null, null)
-  }, [fit, store])
+  }, [store])
 
   const openRoute = useCallback(
     (cid: string, from: string, back: View['back'] = 'city') => {
@@ -136,29 +198,58 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
       if (!conn) return
       store.set(null)
       setView((v) => ({ sel: v.sel ?? from, panel: 'route', route: cid, from, opt: 0, back: v.panel === 'more' ? 'more' : back }))
-      fit(boundsOf(routePoints(model, conn, enabledOptions(conn, live.current.families))), 'route', 4)
+      showRoute(conn)
     },
-    [fit, model, store],
+    [showRoute, model, store],
   )
 
   const toCity = useCallback(() => {
     const sel = live.current.view.sel
     if (!sel) return
     setView({ ...EMPTY, sel, panel: 'city' })
-    fit(cityBounds(sel), 'city')
-  }, [fit, cityBounds])
+    showCity(sel, 'city')
+  }, [showCity])
 
   const back = useCallback(() => {
     const v = live.current.view
     if (v.panel === 'route') {
       if (v.back === 'more' && v.sel) {
         setView({ ...EMPTY, sel: v.sel, panel: 'more' })
-        fit(cityBounds(v.sel), 'more')
+        showCity(v.sel, 'more')
       } else if (v.back === 'city') toCity()
       else deselect()
     } else if (v.panel === 'more') toCity()
-    else if (v.sel) deselect()
-  }, [toCity, deselect, fit, cityBounds])
+    else if (v.sel || v.panel) deselect()
+  }, [toCity, deselect, showCity])
+
+  // ---- trips ---------------------------------------------------------------------------------
+
+  const trip = activeTrip(trips)
+
+  const showTrips = useCallback(() => {
+    store.set(null)
+    setCollapsed(false)
+    live.current.collapsed = false
+    setView({ ...EMPTY, panel: 'trips' })
+  }, [store])
+
+  /** Opening a trip fits all of it once, the one time the camera may zoom out far. */
+  const fitTrip = useCallback(
+    (t: Trip) => {
+      const pts = tripStops(t).map((id) => model.byId.get(id)).filter((p) => !!p).map((p): LonLat => [p.lon, p.lat])
+      // the margin keeps both ends and their labels clear of the edges
+      if (pts.length) fit(boundsOf(pts), 'trips', 6, 90)
+    },
+    [fit, model],
+  )
+
+  const addTripLeg = useCallback(
+    (conn: Connection, opt: RouteOption, from: string, cont: boolean) => {
+      onTrips((s) => addLeg(s, { cid: conn.id, from, to: otherEnd(conn, from), mode: opt.mode }))
+      if (cont) select(otherEnd(conn, from))
+    },
+    [onTrips, select],
+  )
 
   const act = useRef({ select, deselect, openRoute, back, dismissHint })
   act.current = { select, deselect, openRoute, back, dismissHint }
@@ -191,7 +282,10 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
       if (import.meta.env.DEV) (window as { __rmap?: MLMap }).__rmap = m
       setBuilt({ map: m, model })
     })
-    const ro = new ResizeObserver(() => m.resize())
+    const ro = new ResizeObserver(() => {
+      m.resize()
+      setNarrow(el.clientWidth < NARROW)
+    })
     ro.observe(el)
     return () => {
       alive = false
@@ -327,7 +421,31 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
     }
     setRouteHit(map, sel ? [...cids] : null, [...families])
     setLabelFocus(map, sel ? [sel, ...near] : [], sel)
+    // the open trip steps back while a city's own routes are shown
+    for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', (sel ? 0.55 : 1) * (id === 'trip-casing' ? 0.85 : 1))
   }, [map, model, view.sel, families])
+
+  // the open trip: one line per leg, a numbered dot per stop
+  useEffect(() => {
+    if (!map) return
+    const lines: GeoJSON.Feature[] = []
+    for (const l of trip?.legs ?? []) {
+      const family = familyOf(l.mode)
+      const line = model.routeLines.get(`${l.cid}|${family}`)
+      if (line) lines.push({ type: 'Feature', properties: { family }, geometry: { type: 'LineString', coordinates: line } })
+    }
+    // a place visited twice gets one dot with both numbers
+    const order = trip ? tripStops(trip) : []
+    const nums = new Map<string, number[]>()
+    order.forEach((id, i) => nums.set(id, [...(nums.get(id) ?? []), i + 1]))
+    const points: GeoJSON.Feature[] = [...nums].flatMap(([id, n]) => {
+      const p = model.byId.get(id)
+      if (!p) return []
+      return [{ type: 'Feature' as const, properties: { n: n.join(','), end: id === order.at(-1) }, geometry: { type: 'Point' as const, coordinates: [p.lon, p.lat] } }]
+    })
+    map.getSource<GeoJSONSource>('trip')?.setData({ type: 'FeatureCollection', features: lines })
+    map.getSource<GeoJSONSource>('trip-stops')?.setData({ type: 'FeatureCollection', features: points })
+  }, [map, model, trip])
 
   // re-light after any view change (route view pins its route) and on hover
   useEffect(() => {
@@ -484,7 +602,7 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
   const getBlocked = useCallback((): Rect[] => {
     const box = root.current?.getBoundingClientRect()
     if (!box) return []
-    return [panelRef.current, controlsRef.current, bottomRef.current]
+    return [panelRef.current, controlsRef.current, bottomRef.current, tripBarRef.current]
       .filter((e): e is HTMLElement => !!e)
       .map((e) => {
         const r = e.getBoundingClientRect()
@@ -492,7 +610,6 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
       })
   }, [])
 
-  const journeySet = useMemo(() => new Set(journey ?? []), [journey])
 
   return (
     <div
@@ -523,20 +640,53 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
             }}
             onHome={() => {
               act.current.dismissHint()
-              if (live.current.view.sel) deselect()
-              else fit(null, null)
+              deselect()
+              fit(null, null)
             }}
             hint={hint}
             controlsRef={controlsRef}
             bottomRef={bottomRef}
           />
           <Tooltip map={map} model={model} store={store} families={families} getBlocked={getBlocked} />
+          <TripBar
+            model={model}
+            trip={trip}
+            count={trips.trips.length}
+            left={view.panel && !narrow ? PANEL_W[view.panel] + 28 : null}
+            barRef={tripBarRef}
+            onList={showTrips}
+            onUndo={() => trip && onTrips((s) => removeLeg(s, trip.id, trip.legs.length - 1))}
+            onClose={() => onTrips((s) => openTrip(s, null))}
+          />
+          {view.panel === 'trips' && (
+            <TripsPanel
+              model={model}
+              trips={trips}
+              collapsed={collapsed}
+              panelRef={panelRef}
+              onCollapse={setCollapsed}
+              onClose={deselect}
+              onCreate={(name) => {
+                onTrips((s) => createTrip(s, name))
+                deselect()
+              }}
+              onOpen={(t) => {
+                onTrips((s) => openTrip(s, t.id))
+                fitTrip(t)
+              }}
+              onShut={() => onTrips((s) => openTrip(s, null))}
+              onRename={(id, name) => onTrips((s) => renameTrip(s, id, name))}
+              onDelete={(id) => onTrips((s) => deleteTrip(s, id))}
+              onRemoveLeg={(id, i) => onTrips((s) => removeLeg(s, id, i))}
+              onGoTo={select}
+            />
+          )}
           <Panel
             model={model}
             view={view}
             families={families}
             collapsed={collapsed}
-            journey={journeySet}
+            trip={trip}
             panelRef={panelRef}
             onCollapse={setCollapsed}
             onClose={deselect}
@@ -551,7 +701,9 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
               const conn = model.conns.get(cid)
               if (conn) store.set({ kind: 'route', cid, from, to: otherEnd(conn, from) })
             }}
-            onAddToJourney={onAddToJourney}
+            onAddLeg={trip ? addTripLeg : undefined}
+            onRemoveLeg={(i) => trip && onTrips((s) => removeLeg(s, trip.id, i))}
+            legIndex={(cid, from, mode) => (trip ? legIndex(trip, cid, from, mode) : -1)}
           />
         </>
       )}

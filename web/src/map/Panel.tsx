@@ -1,10 +1,11 @@
 import { useState, type Ref } from 'react'
 import { byCountry, countries, countryName, neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
-import { familyOf, type Connection, type DatedFare, type Family, type FlownLeg, type Place, type RoundTrip, type RouteOption } from '../data/types'
+import { tripEnd, type Trip } from '../data/trips'
+import { familyOf, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 
-export type PanelView = 'city' | 'more' | 'route'
+export type PanelView = 'city' | 'more' | 'route' | 'trips'
 
 export interface View {
   sel: string | null
@@ -20,7 +21,7 @@ export interface PanelProps {
   view: View
   families: Set<Family>
   collapsed: boolean
-  journey: Set<string>
+  trip: Trip | null // the open trip, which the route view adds legs to
   panelRef: Ref<HTMLElement>
   onCollapse(collapsed: boolean): void
   onClose(): void
@@ -31,7 +32,10 @@ export interface PanelProps {
   onOption(i: number): void
   onGoTo(id: string): void
   onHoverRoute(cid: string | null, from?: string): void
-  onAddToJourney?(conn: Connection, opt: RouteOption, from: string): void
+  /** Add a leg to the open trip. With `cont` the panel moves on to the far city. */
+  onAddLeg?(conn: Connection, opt: RouteOption, from: string, cont: boolean): void
+  onRemoveLeg(index: number): void
+  legIndex(cid: string, from: string, mode: Mode): number
 }
 
 /** Wikimedia thumbnails come in fixed steps; swap the width in the URL. */
@@ -160,6 +164,15 @@ function CityView(p: PanelProps & { city: Place }) {
         </div>
         <HeadButtons {...p} />
       </div>
+      {p.trip && (
+        <p className="tripnote">
+          {tripEnd(p.trip) === city.id
+            ? <>Your trip <b>{p.trip.name}</b> ends here. Pick a connection to add the next leg.</>
+            : p.trip.legs.length
+              ? <>Adding to <b>{p.trip.name}</b>. Pick a connection to add a leg from here.</>
+              : <>Pick a connection to start <b>{p.trip.name}</b> here.</>}
+        </p>
+      )}
       <div className="pmid stg">
         {!!city.categories?.length && (
           <div className="tags">{city.categories.map((c) => <span key={c} className="tag">{c}</span>)}</div>
@@ -407,7 +420,7 @@ function RouteView(p: PanelProps & { conn: Connection }) {
     .filter((o) => p.families.has(familyOf(o.mode)))
     .sort((x, y) => (x.duration_min ?? 1e9) - (y.duration_min ?? 1e9))
   const cur = opts[Math.min(view.opt, opts.length - 1)]
-  const inJourney = p.journey.has(`${conn.id}|${cur?.mode}`)
+  const added = cur ? p.legIndex(conn.id, from, cur.mode) : -1
   const backLabel = view.back && view.sel ? model.byId.get(view.sel)?.short_name : null
 
   return (
@@ -417,7 +430,12 @@ function RouteView(p: PanelProps & { conn: Connection }) {
           {backLabel ? <button className="back" onClick={p.onBack}><Back />{backLabel}</button> : <span />}
           <HeadButtons {...p} />
         </div>
-        <h2 className="rtitle"><span>{a.short_name}</span><Arrow s={22} /><span>{b.short_name}</span></h2>
+        {/* either name opens that city, the same as tapping its dot */}
+        <h2 className="rtitle">
+          <button className="rname" title={`Open ${a.short_name}`} onClick={() => p.onGoTo(a.id)}>{a.short_name}</button>
+          <Arrow s={22} />
+          <button className="rname" title={`Open ${b.short_name}`} onClick={() => p.onGoTo(b.id)}>{b.short_name}</button>
+        </h2>
         <p className="rcountries mono">{countries(model, a, b)}</p>
         {opts.length > 0 ? (
           <div className="compare">
@@ -460,15 +478,28 @@ function RouteView(p: PanelProps & { conn: Connection }) {
             )}
           </div>
         )}
-        <div className="pactions">
-          {cur && <a className="pbtn primary" href={liveUrl(model, conn, cur, from)} target="_blank" rel="noreferrer">Search live prices</a>}
-          <button className="pbtn ghost" onClick={() => p.onGoTo(to)}>Go to {b.short_name}</button>
-          {cur && p.onAddToJourney && (
-            <button className={`pbtn ghost${inJourney ? ' done' : ''}`} onClick={() => p.onAddToJourney!(conn, cur, from)} aria-pressed={inJourney}>
-              {inJourney ? 'In journey' : 'Add to journey'}
-            </button>
-          )}
-        </div>
+        {cur && p.onAddLeg && p.trip ? (
+          // pinned to the bottom so the trip buttons never need a scroll
+          <div className="pactions tripacts">
+            {added >= 0 ? (
+              <button className="pbtn ghost done" onClick={() => p.onRemoveLeg(added)}>In {p.trip.name} · remove</button>
+            ) : (
+              <>
+                <button className="pbtn add" onClick={() => p.onAddLeg!(conn, cur, from, true)}>
+                  Add leg and continue
+                  <span>then show what leaves {b.short_name}</span>
+                </button>
+                <button className="pbtn ghost" onClick={() => p.onAddLeg!(conn, cur, from, false)}>Add leg, stay here</button>
+              </>
+            )}
+            <a className="pbtn ghost" href={liveUrl(model, conn, cur, from)} target="_blank" rel="noreferrer">Search live prices</a>
+          </div>
+        ) : (
+          <div className="pactions">
+            {cur && <a className="pbtn primary" href={liveUrl(model, conn, cur, from)} target="_blank" rel="noreferrer">Search live prices</a>}
+            <button className="pbtn ghost" onClick={() => p.onGoTo(to)}>Go to {b.short_name}</button>
+          </div>
+        )}
       </div>
     </div>
   )
