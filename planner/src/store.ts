@@ -28,17 +28,22 @@ function write(key: string, value: unknown) {
   }
 }
 
-/** Two tabs: the route map, and the trips (saved trips, the journey builder, picking in and out). */
+/** Two tabs: the route map (where a trip is built), and Trips (start a new trip or open a saved one). */
 export type Screen = 'map' | 'trips'
-export type Section = 'saved' | 'build' | 'pick'
+/** The Trips tab: the landing page, or picking the way in and way home of a new trip. */
+export type TripsView = 'home' | 'pick'
+/** An airport pair picked in the matrix: narrows the option list to flights in to one city and home from another. */
+export interface Pair {
+  in: string
+  home: string
+}
 
 interface State {
   data: AppData | null
   setData: (d: AppData) => void
   screen: Screen
-  /** the part of the Trips tab to scroll to next */
-  section: Section | null
-  go: (s: Screen, section?: Section) => void
+  view: TripsView
+  go: (s: Screen, view?: TripsView) => void
 
   filters: Filters
   setFilters: (f: Partial<Filters>) => void
@@ -48,15 +53,21 @@ interface State {
   setPickMode: (m: 'options' | 'mix') => void
   expanded: string | null
   toggleExpanded: (id: string) => void
+  pair: Pair | null
+  setPair: (p: Pair | null) => void
   mixIn: string | null
   mixHome: string | null
   setMix: (dir: 'in' | 'home', id: string | null) => void
 
   journey: Journey | null
-  startJourney: (wayIn: Way, wayHome: Way, optionId: string | null) => void
   /** start a journey on these ways and build it on the route map */
+  startJourney: (wayIn: Way, wayHome: Way, optionId: string | null) => void
   startOnMap: (wayIn: Way, wayHome: Way, optionId: string | null) => void
   setJourney: (j: Journey) => void
+  /** open a saved journey on the map */
+  openSaved: (j: Journey) => void
+  /** leave the open trip: the map shows nothing and Trips shows the landing page */
+  closeTrip: () => void
 
   saved: Journey[]
   saveJourney: (name: string) => void
@@ -77,9 +88,9 @@ interface State {
 export const useStore = create<State>((set, get) => ({
   data: null,
   setData: (data) => set({ data }),
-  screen: 'map',
-  section: null,
-  go: (screen, section) => set({ screen, section: section ?? null }),
+  screen: 'trips',
+  view: 'home',
+  go: (screen, view) => set(view ? { screen, view } : { screen }),
 
   filters: { ...DEFAULT_FILTERS, ...read<Partial<Filters>>(FILTERS_KEY, {}) },
   setFilters: (f) => {
@@ -96,6 +107,8 @@ export const useStore = create<State>((set, get) => ({
   setPickMode: (pickMode) => set({ pickMode }),
   expanded: null,
   toggleExpanded: (id) => set({ expanded: get().expanded === id ? null : id }),
+  pair: null,
+  setPair: (pair) => set({ pair, expanded: null }),
   mixIn: null,
   mixHome: null,
   setMix: (dir, id) => set(dir === 'in' ? { mixIn: id } : { mixHome: id }),
@@ -109,16 +122,18 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const journey = newJourney(data.inout, wayIn, wayHome, optionId)
     write(CURRENT_KEY, journey)
-    set({ journey, screen: 'trips', section: 'build' })
+    set({ journey, mapOpen: true, screen: 'map', view: 'home' })
   },
-  startOnMap: (wayIn, wayHome, optionId) => {
-    get().startJourney(wayIn, wayHome, optionId)
-    set({ mapOpen: true, screen: 'map' })
-  },
+  startOnMap: (wayIn, wayHome, optionId) => get().startJourney(wayIn, wayHome, optionId),
   setJourney: (journey) => {
     write(CURRENT_KEY, journey)
     set({ journey })
   },
+  openSaved: (journey) => {
+    write(CURRENT_KEY, journey)
+    set({ journey, mapOpen: true, screen: 'map', view: 'home' })
+  },
+  closeTrip: () => set({ mapOpen: false, screen: 'trips', view: 'home' }),
 
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),
   saveJourney: (name) => {
@@ -174,7 +189,7 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const r = applyTrips(data.inout, data.map, journey, saved, mapOpen, after, facts)
     // a new trip needs a way in and a way home to start from
-    if (!r) return set({ screen: 'trips', section: 'pick' })
+    if (!r) return set({ screen: 'trips', view: 'pick' })
     write(SAVED_KEY, r.saved)
     if (r.current) write(CURRENT_KEY, r.current)
     else write(CURRENT_KEY, null)

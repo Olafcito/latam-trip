@@ -1,0 +1,252 @@
+import { useEffect, useState } from 'react'
+import type { Family } from '@map/data/types'
+import { TRIP_COLORS } from '@map/data/trips'
+import type { AppData } from '../data/types'
+import { useStore } from '../store'
+import { day, hours, kr, weekdayDay } from '../lib/format'
+import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
+import { countryColor, countryName } from '../lib/colors'
+import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
+import { hopFromArc } from '../lib/journey'
+import { hoverProps } from './PlaceCard'
+import { Calendar, Close, Download, Land, Minus, ModeChip, Moon, Plus, Warn } from './icons'
+
+// The open trip, on the right of the map: its two fixed flights, the places between them with
+// their nights, the dates, and what it all costs. Legs are added on the map itself.
+
+const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
+
+function Money({ v }: { v: number | null }) {
+  return v == null ? <span className="q" title="Unknown for at least one part">?</span> : <>{kr(v)}</>
+}
+
+export function TripPanel({ data, journey }: { data: AppData; journey: Journey }) {
+  const { inout, map } = data
+  const saved = useStore((s) => s.saved)
+  const setJourney = useStore((s) => s.setJourney)
+  const saveJourney = useStore((s) => s.saveJourney)
+  const closeTrip = useStore((s) => s.closeTrip)
+  const go = useStore((s) => s.go)
+  const [editing, setEditing] = useState(false)
+  const [name, setName] = useState(journey.name)
+  useEffect(() => setName(journey.name), [journey.name])
+
+  const wi = inout.ways[journey.wayIn]
+  const wh = inout.ways[journey.wayHome]
+  const nm = (id: string) => nodeName(map, inout, id)
+  const node = (id: string) => map.nodes.find((n) => n.id === id)
+  const stored = saved.find((s) => s.id === journey.id)
+  const dirty = !stored || JSON.stringify({ ...stored, savedAt: 0 }) !== JSON.stringify({ ...journey, savedAt: 0 })
+
+  if (!wi || !wh) {
+    return (
+      <aside className="panel plan">
+        <div className="plan-h">
+          <h2>{journey.name}</h2>
+          <button className="x" onClick={closeTrip} aria-label="Close trip"><Close /></button>
+        </div>
+        <p className="plan-empty">Its flights are no longer in the data. Pick a new way in and home.</p>
+        <div className="plan-acts"><button className="pbtn primary" onClick={() => go('trips', 'pick')}>Pick in and out</button></div>
+      </aside>
+    )
+  }
+
+  const exitNode = nodeForAirport(inout, wh.from)
+  const sched = schedule(journey, wi, wh, exitNode, nm)
+  const t = totals(data, journey, sched)
+  const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
+  const last = journey.places[journey.places.length - 1]
+  const atExit = last.node === exitNode
+  const countries = Object.entries(t.days_per_country).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1])
+  const totalDays = countries.reduce((a, [, n]) => a + n, 0)
+
+  const update = (places: Journey['places']) => setJourney({ ...journey, places })
+  const setNights = (i: number, n: number) => update(journey.places.map((p, k) => (k === i ? { ...p, nights: Math.max(0, n) } : p)))
+  const removeLast = () => journey.places.length > 1 && update(journey.places.slice(0, -1))
+  const finish = (metric: PathMetric) => {
+    const r = shortestPath(map, last.node, exitNode, metric)
+    if (!r || !r.arcs.length) return
+    let from = last.node
+    const added = r.arcs.map((arc) => {
+      const place = { node: arc.to, nights: 1, hop: hopFromArc(from, arc, null) }
+      from = arc.to
+      return place
+    })
+    update([...journey.places, ...added])
+  }
+  const canFinish = !atExit && arcsSorted(map, last.node).length > 0
+  const exportJson = () => {
+    const blob = new Blob([JSON.stringify(journey, null, 2)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `${journey.name.replace(/[^\w-]+/g, '_')}.json`
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+  const commitName = () => {
+    setEditing(false)
+    const n = name.trim()
+    if (n && n !== journey.name) setJourney({ ...journey, name: n })
+    else setName(journey.name)
+  }
+
+  return (
+    <aside className="panel plan" aria-label="Open trip">
+      <div className="plan-h">
+        {editing ? (
+          <input
+            className="plan-name"
+            value={name}
+            autoFocus
+            onChange={(e) => setName(e.target.value)}
+            onBlur={commitName}
+            onKeyDown={(e) => { if (e.key === 'Enter') commitName(); if (e.key === 'Escape') { setName(journey.name); setEditing(false) } }}
+            aria-label="Trip name"
+          />
+        ) : (
+          <button className="plan-title" onClick={() => setEditing(true)} title="Rename">
+            <h2>{journey.name}</h2>
+          </button>
+        )}
+        <button className="x" onClick={closeTrip} aria-label="Close trip"><Close /></button>
+      </div>
+      <div className="plan-sum">
+        <span className="plan-total"><b>{kr(allIn)}</b><small>all in</small></span>
+        <span className="plan-days"><b>{totalDays}</b><small>days</small></span>
+        <span className={`plan-slack ${sched.slack < 0 ? 'neg' : 'pos'}`}>
+          <Calendar />
+          {sched.slack === 0 ? 'fits exactly' : sched.slack > 0 ? `${sched.slack} ${sched.slack === 1 ? 'day' : 'days'} free` : `${-sched.slack} ${-sched.slack === 1 ? 'day' : 'days'} over`}
+        </span>
+      </div>
+
+      <div className="plan-body">
+        <ol className="plan-list">
+          <li className="plan-way in">
+            <span className="io-dot in" />
+            <div>
+              <b>Lands {nm(nodeForAirport(inout, wi.to))}</b>
+              <small>{weekdayDay(wi.arrive)} {wi.arrive.slice(11, 16)} · {hours(wi.total_hours)} from Copenhagen</small>
+            </div>
+            <button className="plan-link" onClick={() => go('trips', 'pick')}>Change</button>
+          </li>
+          {journey.places.map((p, i) => {
+            const sp = sched.places[i]
+            const n = node(p.node)
+            const h = p.hop
+            return (
+              <li key={i} className="plan-place">
+                {h && (
+                  <div className={`plan-hop ${family(h.mode)}`}>
+                    <ModeChip family={family(h.mode)} />
+                    <span className="plan-hopt">
+                      {h.overland ? h.overland : `${hours(h.hours)} · ${kr(h.price_dkk)}`}
+                      {h.flight?.via.length ? ` · via ${h.flight.via.join(', ')}` : ''}
+                    </span>
+                    {h.overnight && <Moon />}
+                    {h.border && <span className="plan-border" title="Crosses a border">border</span>}
+                  </div>
+                )}
+                <div className="plan-stop">
+                  <span className="plan-n" style={{ background: TRIP_COLORS[0] }}>{i + 1}</span>
+                  <div className="plan-who">
+                    <b {...hoverProps(n)}>{nm(p.node)}</b>
+                    <small>
+                      <i style={{ background: countryColor(n?.country ?? inout.airports[p.node]?.country ?? '') }} />
+                      {countryName(n?.country ?? inout.airports[p.node]?.country ?? '')} · {sp ? day(sp.arrive) : '?'}
+                    </small>
+                  </div>
+                  <div className="plan-nights" role="group" aria-label={`Nights in ${nm(p.node)}`}>
+                    <button onClick={() => setNights(i, p.nights - 1)} aria-label="One night less" disabled={p.nights <= 0}><Minus /></button>
+                    <b>{p.nights}<small>{p.nights === 1 ? 'night' : 'nights'}</small></b>
+                    <button onClick={() => setNights(i, p.nights + 1)} aria-label="One night more"><Plus /></button>
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+          <li className="plan-next">
+            <span className="plan-pulse" />
+            <div>
+              <b>Next from {nm(last.node)}</b>
+              <small>{atExit ? 'Click a lit city on the map to go on from here. The route must come back for the flight home.' : 'Click a lit city on the map to add the next leg.'}</small>
+              {canFinish && (
+                  <span className="plan-finish">
+                    <span>Or route to {nm(exitNode)}:</span>
+                    <button onClick={() => finish('hours')}>fastest</button>
+                    <button onClick={() => finish('price')}>cheapest</button>
+                  </span>
+                )}
+            </div>
+          </li>
+          <li className="plan-way home">
+            <span className="io-dot home" />
+            <div>
+              <b>Flies home from {nm(exitNode)}</b>
+              <small>{weekdayDay(wh.depart)} {wh.depart.slice(11, 16)} · home {day(wh.arrive)} · {hours(wh.total_hours)}</small>
+            </div>
+            <Land />
+          </li>
+        </ol>
+
+        {sched.warnings.length > 0 && (
+          <ul className="plan-warns">
+            {sched.warnings.map((w, i) => <li key={i} className={w.level}><Warn />{w.text}</li>)}
+          </ul>
+        )}
+
+        <div className="plan-bar" aria-label="Days per country">
+          {countries.map(([c, n]) => (
+            <i key={c} style={{ flexGrow: n, background: countryColor(c) }} title={`${countryName(c)}: ${n} ${n === 1 ? 'day' : 'days'}`}>{n >= 4 ? c : ''}</i>
+          ))}
+        </div>
+
+        <dl className="plan-tot">
+          <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
+          <dt>Regional flights</dt><dd>{kr(t.regional_flights_dkk)}</dd>
+          <dt>Ground transport</dt><dd>{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}> +?</span> : null}</dd>
+          <dt>Cabin bags</dt><dd><Money v={t.cabin_bag_dkk} /></dd>
+          <dt>Hub nights, stay est.</dt><dd>{t.hub_nights} · <Money v={t.hub_stay_dkk} /></dd>
+          <dt>Flights, hours in the air</dt><dd>{t.flights} · {hours(t.air_hours)}</dd>
+        </dl>
+      </div>
+
+      <div className="plan-acts">
+        <button className={`pbtn ${dirty ? 'primary' : 'ghost done'}`} onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
+        <button className="pbtn ghost" onClick={removeLast} disabled={journey.places.length <= 1} title="Remove the last place">Undo leg</button>
+        <button className="x sm" onClick={exportJson} aria-label="Export this trip as JSON" title="Export JSON"><Download /></button>
+      </div>
+    </aside>
+  )
+}
+
+/** What sits beside the map: the open trip, or the way to one when none is open. */
+export function MapSide() {
+  const data = useStore((s) => s.data)
+  const journey = useStore((s) => s.journey)
+  const mapOpen = useStore((s) => s.mapOpen)
+  const saved = useStore((s) => s.saved)
+  const openSaved = useStore((s) => s.openSaved)
+  const go = useStore((s) => s.go)
+  if (!data) return null
+  if (journey && mapOpen) return <TripPanel data={data} journey={journey} />
+  const list = [...saved].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
+  return (
+    <aside className="panel plan idle" aria-label="Trips">
+      <div className="plan-h"><h2>No trip open</h2></div>
+      <p className="plan-empty">A trip starts with the flights in and home. Then its route is built here, one city at a time.</p>
+      <div className="plan-acts"><button className="pbtn primary" onClick={() => go('trips', 'pick')}>New trip</button></div>
+      {list.length > 0 && (
+        <ul className="plan-saved">
+          {list.map((j) => (
+            <li key={j.id}>
+              <button onClick={() => openSaved(j)}>
+                <b>{j.name}</b>
+                <small>{j.places.length} {j.places.length === 1 ? 'place' : 'places'}{j.rank != null ? ` · #${j.rank}` : ''}</small>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </aside>
+  )
+}
