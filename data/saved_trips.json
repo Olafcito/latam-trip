@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-28T17:15:12Z",
+ "generated_at": "2026-10-28T17:19:03Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {
@@ -18,12 +18,12 @@
     "type": "ticket",
     "entry": "GUA",
     "exit": "BOG",
-    "ticket_quote_id": "Q:4c0db850934c",
-    "price_dkk": 7637,
+    "ticket_quote_id": "Q:d9090c079f8f",
+    "price_dkk": 7850,
     "rating": {
-     "total": 8.6,
-     "price": 4.4,
-     "way_in": 3,
+     "total": 9.2,
+     "price": 4.2,
+     "way_in": 5,
      "way_home": 5
     },
     "way_in": {
@@ -32,10 +32,10 @@
      "type": "ticket",
      "from": "CPH",
      "to": "GUA",
-     "depart": "2026-12-03T06:00",
-     "arrive": "2026-12-03T22:44",
-     "total_hours": 23.7,
-     "flying_hours": 23.7,
+     "depart": "2026-12-02T09:55",
+     "arrive": "2026-12-02T21:36",
+     "total_hours": 18.7,
+     "flying_hours": 18.7,
      "flights": 3,
      "hub_nights": 0,
      "changes": 0,
@@ -43,28 +43,28 @@
      "airports": [
       "CPH",
       "AMS",
-      "PTY",
+      "SJO",
       "GUA"
      ],
      "tickets": [
-      "TQ:4c0db850934c"
+      "TQ:d9090c079f8f"
      ],
      "timeline": [
       {
        "kind": "flight",
        "from": "CPH",
        "to": "GUA",
-       "depart": "2026-12-03T06:00",
-       "arrive": "2026-12-03T22:44",
-       "hours": 23.73,
+       "depart": "2026-12-02T09:55",
+       "arrive": "2026-12-02T21:36",
+       "hours": 18.68,
        "connections": [
         {
          "airport": "AMS",
-         "layover_h": 3.83
+         "layover_h": 1.33
         },
         {
-         "airport": "PTY",
-         "layover_h": 4.85
+         "airport": "SJO",
+         "layover_h": 2.42
         }
        ],
        "carriers": [
@@ -72,12 +72,12 @@
         "COPA"
        ],
        "flight_numbers": [
-        "KL1266",
-        "KL757",
-        "CM496"
+        "KLM 1268",
+        "KLM 759",
+        "Copa 391"
        ],
        "overnight_layover": false,
-       "ticket": "TQ:4c0db850934c",
+       "ticket": "TQ:d9090c079f8f",
        "self_transfer_inside": false
       }
      ]
@@ -102,7 +102,7 @@
       "CPH"
      ],
      "tickets": [
-      "TQ:4c0db850934c"
+      "TQ:d9090c079f8f"
      ],
      "timeline": [
       {
@@ -121,9 +121,12 @@
        "carriers": [
         "Air France"
        ],
-       "flight_numbers": [],
+       "flight_numbers": [
+        "Air France 423",
+        "Air France 1050"
+       ],
        "overnight_layover": false,
-       "ticket": "TQ:4c0db850934c",
+       "ticket": "TQ:d9090c079f8f",
        "self_transfer_inside": false
       }
      ]
@@ -298,11 +301,11 @@
     }
    ],
    "totals": {
-    "long_haul_dkk": 7637,
+    "long_haul_dkk": 7850,
     "in_between_dkk": 4601,
-    "flights_total_dkk": 12238,
+    "flights_total_dkk": 12451,
     "cabin_bag_fees_dkk": 500,
-    "total_with_cabin_bags_dkk": 12738,
+    "total_with_cabin_bags_dkk": 12951,
     "hub_nights": 0,
     "us_transit": false
    }
@@ -644,7 +647,7 @@
      "way_home": 3
     },
     "way_in": {
-     "id": "I0193",
+     "id": "I0203",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -696,7 +699,7 @@
      ]
     },
     "way_home": {
-     "id": "H0194",
+     "id": "H0204",
      "direction": "home",
      "type": "ticket",
      "from": "MDE",
@@ -1254,7 +1257,7 @@
      "way_home": 3
     },
     "way_in": {
-     "id": "I0179",
+     "id": "I0191",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -1306,7 +1309,7 @@
      ]
     },
     "way_home": {
-     "id": "H0180",
+     "id": "H0192",
      "direction": "home",
      "type": "ticket",
      "from": "VVI",
