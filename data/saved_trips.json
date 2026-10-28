@@ -1,0 +1,1534 @@
+{
+ "version": 1,
+ "generated_at": "2026-10-28T17:15:12Z",
+ "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
+ "trips": [
+  {
+   "id": "seed-1-gua-bog",
+   "name": "Guatemala City in, Bogotá home",
+   "rank": 1,
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "seed": true,
+   "inout": {
+    "option_id": "GUA-BOG-ticket",
+    "type": "ticket",
+    "entry": "GUA",
+    "exit": "BOG",
+    "ticket_quote_id": "Q:4c0db850934c",
+    "price_dkk": 7637,
+    "rating": {
+     "total": 8.6,
+     "price": 4.4,
+     "way_in": 3,
+     "way_home": 5
+    },
+    "way_in": {
+     "id": "I0125",
+     "direction": "in",
+     "type": "ticket",
+     "from": "CPH",
+     "to": "GUA",
+     "depart": "2026-12-03T06:00",
+     "arrive": "2026-12-03T22:44",
+     "total_hours": 23.7,
+     "flying_hours": 23.7,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": false,
+     "airports": [
+      "CPH",
+      "AMS",
+      "PTY",
+      "GUA"
+     ],
+     "tickets": [
+      "TQ:4c0db850934c"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "CPH",
+       "to": "GUA",
+       "depart": "2026-12-03T06:00",
+       "arrive": "2026-12-03T22:44",
+       "hours": 23.73,
+       "connections": [
+        {
+         "airport": "AMS",
+         "layover_h": 3.83
+        },
+        {
+         "airport": "PTY",
+         "layover_h": 4.85
+        }
+       ],
+       "carriers": [
+        "KLM",
+        "COPA"
+       ],
+       "flight_numbers": [
+        "KL1266",
+        "KL757",
+        "CM496"
+       ],
+       "overnight_layover": false,
+       "ticket": "TQ:4c0db850934c",
+       "self_transfer_inside": false
+      }
+     ]
+    },
+    "way_home": {
+     "id": "H0126",
+     "direction": "home",
+     "type": "ticket",
+     "from": "BOG",
+     "to": "CPH",
+     "depart": "2027-02-03T21:35",
+     "arrive": "2027-02-04T17:00",
+     "total_hours": 13.4,
+     "flying_hours": 13.4,
+     "flights": 2,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": false,
+     "airports": [
+      "BOG",
+      "CDG",
+      "CPH"
+     ],
+     "tickets": [
+      "TQ:4c0db850934c"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "BOG",
+       "to": "CPH",
+       "depart": "2027-02-03T21:35",
+       "arrive": "2027-02-04T17:00",
+       "hours": 13.42,
+       "connections": [
+        {
+         "airport": "CDG",
+         "layover_h": 1.17
+        }
+       ],
+       "carriers": [
+        "Air France"
+       ],
+       "flight_numbers": [],
+       "overnight_layover": false,
+       "ticket": "TQ:4c0db850934c",
+       "self_transfer_inside": false
+      }
+     ]
+    }
+   },
+   "segments": [
+    {
+     "kind": "overland",
+     "from": "GUA",
+     "to": "SJO",
+     "countries": [
+      "GT",
+      "SV",
+      "HN",
+      "NI",
+      "CR"
+     ],
+     "note": "By bus south through El Salvador, Honduras and Nicaragua to San José. Your own route."
+    },
+    {
+     "kind": "flight",
+     "from": "SJO",
+     "to": "LPB",
+     "cid": "LPB-SJO",
+     "quote_id": "Q:8f55e7717892",
+     "pinned": true,
+     "source": "expedia",
+     "observed_at": "2026-10-28T16:55:00Z",
+     "price_seen_for": "2026-12-06",
+     "depart": "2026-12-06T16:55",
+     "arrive": "2026-12-07T04:00",
+     "hours": 9.08,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      3.42
+     ],
+     "carriers": [
+      "LATAM"
+     ],
+     "flights": [
+      "LATAM 2409",
+      "LATAM 2400"
+     ],
+     "fare_brand": "BASIC",
+     "cabin_bag": "none (personal item only; carry-on not allowed)",
+     "price_dkk": 2187.2,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "flight",
+     "from": "LPB",
+     "to": "CBB",
+     "cid": "CBB-LPB",
+     "quote_id": "Q:87e38d9f7133",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:31:37Z",
+     "price_seen_for": "2027-01-29",
+     "depart": "2027-01-29T12:10",
+     "arrive": "2027-01-29T12:55",
+     "hours": 0.75,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 613"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 255.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "CBB",
+     "to": "VVI",
+     "cid": "CBB-VVI",
+     "quote_id": "Q:0bdd2cd96aec",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:35:40Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T10:35",
+     "arrive": "2027-02-01T11:25",
+     "hours": 0.83,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 640"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 404.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "VVI",
+     "to": "BOG",
+     "cid": "BOG-VVI",
+     "quote_id": "Q:33f610ef55de",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T11:21:33Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T05:30",
+     "arrive": "2027-02-01T12:15",
+     "hours": 7.75,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      1.83
+     ],
+     "carriers": [
+      "LATAM Airlines"
+     ],
+     "flights": [
+      "LATAM Airlines 2407",
+      "LATAM Airlines 4901"
+     ],
+     "fare_brand": "Basic",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 1755.0,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "overland",
+     "from": "BOG",
+     "to": "BOG",
+     "countries": [
+      "CO"
+     ],
+     "note": "Colombia, back in Bogotá for the flight home."
+    }
+   ],
+   "legs": [
+    {
+     "cid": "LPB-SJO",
+     "from": "SJO",
+     "to": "LPB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-LPB",
+     "from": "LPB",
+     "to": "CBB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-VVI",
+     "from": "CBB",
+     "to": "VVI",
+     "mode": "flight"
+    },
+    {
+     "cid": "BOG-VVI",
+     "from": "VVI",
+     "to": "BOG",
+     "mode": "flight"
+    }
+   ],
+   "totals": {
+    "long_haul_dkk": 7637,
+    "in_between_dkk": 4601,
+    "flights_total_dkk": 12238,
+    "cabin_bag_fees_dkk": 500,
+    "total_with_cabin_bags_dkk": 12738,
+    "hub_nights": 0,
+    "us_transit": false
+   }
+  },
+  {
+   "id": "seed-2-mga-ctg",
+   "name": "Managua in, Cartagena home",
+   "rank": 2,
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "seed": true,
+   "inout": {
+    "option_id": "MGA-CTG-ticket",
+    "type": "ticket",
+    "entry": "MGA",
+    "exit": "CTG",
+    "ticket_quote_id": "Q:540ee9c70ec1",
+    "price_dkk": 6868,
+    "rating": {
+     "total": 8.6,
+     "price": 5.0,
+     "way_in": 3,
+     "way_home": 4
+    },
+    "way_in": {
+     "id": "I0117",
+     "direction": "in",
+     "type": "ticket",
+     "from": "CPH",
+     "to": "MGA",
+     "depart": "2026-12-03T06:30",
+     "arrive": "2026-12-03T20:12",
+     "total_hours": 20.7,
+     "flying_hours": 20.7,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": true,
+     "airports": [
+      "CPH",
+      "LHR",
+      "MIA",
+      "MGA"
+     ],
+     "tickets": [
+      "TQ:540ee9c70ec1"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "CPH",
+       "to": "MGA",
+       "depart": "2026-12-03T06:30",
+       "arrive": "2026-12-03T20:12",
+       "hours": 20.7,
+       "connections": [
+        {
+         "airport": "LHR",
+         "layover_h": 3.5
+        },
+        {
+         "airport": "MIA",
+         "layover_h": 2.25
+        }
+       ],
+       "carriers": [
+        "British Airways",
+        "American"
+       ],
+       "flight_numbers": [
+        "BA819",
+        "AA57",
+        "AA1369"
+       ],
+       "overnight_layover": false,
+       "ticket": "TQ:540ee9c70ec1",
+       "self_transfer_inside": false
+      }
+     ]
+    },
+    "way_home": {
+     "id": "H0118",
+     "direction": "home",
+     "type": "ticket",
+     "from": "CTG",
+     "to": "CPH",
+     "depart": "2027-02-03T16:38",
+     "arrive": "2027-02-04T17:25",
+     "total_hours": 18.8,
+     "flying_hours": 18.8,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": true,
+     "airports": [
+      "CTG",
+      "MIA",
+      "LHR",
+      "CPH"
+     ],
+     "tickets": [
+      "TQ:540ee9c70ec1"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "CTG",
+       "to": "CPH",
+       "depart": "2027-02-03T16:38",
+       "arrive": "2027-02-04T17:25",
+       "hours": 18.78,
+       "connections": [
+        {
+         "airport": "MIA",
+         "layover_h": 2.62
+        },
+        {
+         "airport": "LHR",
+         "layover_h": 2.33
+        }
+       ],
+       "carriers": [
+        "American",
+        "British Airways"
+       ],
+       "flight_numbers": [
+        "AA2168",
+        "AA56",
+        "BA814"
+       ],
+       "overnight_layover": false,
+       "ticket": "TQ:540ee9c70ec1",
+       "self_transfer_inside": false
+      }
+     ]
+    }
+   },
+   "segments": [
+    {
+     "kind": "overland",
+     "from": "MGA",
+     "to": "SJO",
+     "countries": [
+      "NI",
+      "HN",
+      "SV",
+      "CR"
+     ],
+     "note": "Nicaragua, Honduras and El Salvador, then south to San José by bus (about 2 days from San Salvador) or fly San Salvador to San José (Avianca nonstop, about 2,234 kr)."
+    },
+    {
+     "kind": "flight",
+     "from": "SJO",
+     "to": "LPB",
+     "cid": "LPB-SJO",
+     "quote_id": "Q:8f55e7717892",
+     "pinned": true,
+     "source": "expedia",
+     "observed_at": "2026-10-28T16:55:00Z",
+     "price_seen_for": "2026-12-06",
+     "depart": "2026-12-06T16:55",
+     "arrive": "2026-12-07T04:00",
+     "hours": 9.08,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      3.42
+     ],
+     "carriers": [
+      "LATAM"
+     ],
+     "flights": [
+      "LATAM 2409",
+      "LATAM 2400"
+     ],
+     "fare_brand": "BASIC",
+     "cabin_bag": "none (personal item only; carry-on not allowed)",
+     "price_dkk": 2187.2,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "flight",
+     "from": "LPB",
+     "to": "CBB",
+     "cid": "CBB-LPB",
+     "quote_id": "Q:87e38d9f7133",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:31:37Z",
+     "price_seen_for": "2027-01-29",
+     "depart": "2027-01-29T12:10",
+     "arrive": "2027-01-29T12:55",
+     "hours": 0.75,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 613"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 255.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "CBB",
+     "to": "VVI",
+     "cid": "CBB-VVI",
+     "quote_id": "Q:0bdd2cd96aec",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:35:40Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T10:35",
+     "arrive": "2027-02-01T11:25",
+     "hours": 0.83,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 640"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 404.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "VVI",
+     "to": "BOG",
+     "cid": "BOG-VVI",
+     "quote_id": "Q:33f610ef55de",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T11:21:33Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T05:30",
+     "arrive": "2027-02-01T12:15",
+     "hours": 7.75,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      1.83
+     ],
+     "carriers": [
+      "LATAM Airlines"
+     ],
+     "flights": [
+      "LATAM Airlines 2407",
+      "LATAM Airlines 4901"
+     ],
+     "fare_brand": "Basic",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 1755.0,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "overland",
+     "from": "BOG",
+     "to": "CTG",
+     "countries": [
+      "CO"
+     ],
+     "note": "Colombia, ending in Cartagena."
+    }
+   ],
+   "legs": [
+    {
+     "cid": "LPB-SJO",
+     "from": "SJO",
+     "to": "LPB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-LPB",
+     "from": "LPB",
+     "to": "CBB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-VVI",
+     "from": "CBB",
+     "to": "VVI",
+     "mode": "flight"
+    },
+    {
+     "cid": "BOG-VVI",
+     "from": "VVI",
+     "to": "BOG",
+     "mode": "flight"
+    }
+   ],
+   "totals": {
+    "long_haul_dkk": 6868,
+    "in_between_dkk": 4601,
+    "flights_total_dkk": 11469,
+    "cabin_bag_fees_dkk": 500,
+    "total_with_cabin_bags_dkk": 11969,
+    "hub_nights": 0,
+    "us_transit": true
+   }
+  },
+  {
+   "id": "seed-4-sal-mde",
+   "name": "San Salvador in, Medellín home",
+   "rank": 4,
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "seed": true,
+   "inout": {
+    "option_id": "SAL-MDE-ticket",
+    "type": "ticket",
+    "entry": "SAL",
+    "exit": "MDE",
+    "ticket_quote_id": "Q:205e885fe18a",
+    "price_dkk": 6885,
+    "rating": {
+     "total": 8.0,
+     "price": 5.0,
+     "way_in": 3,
+     "way_home": 3
+    },
+    "way_in": {
+     "id": "I0193",
+     "direction": "in",
+     "type": "ticket",
+     "from": "CPH",
+     "to": "SAL",
+     "depart": "2026-12-03T07:15",
+     "arrive": "2026-12-03T22:47",
+     "total_hours": 22.5,
+     "flying_hours": 22.5,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": true,
+     "airports": [
+      "CPH",
+      "FRA",
+      "EWR",
+      "SAL"
+     ],
+     "tickets": [
+      "TQ:205e885fe18a"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "CPH",
+       "to": "SAL",
+       "depart": "2026-12-03T07:15",
+       "arrive": "2026-12-03T22:47",
+       "hours": 22.53,
+       "connections": [
+        {
+         "airport": "FRA",
+         "layover_h": 2.33
+        },
+        {
+         "airport": "EWR",
+         "layover_h": 4.57
+        }
+       ],
+       "carriers": [
+        "Lufthansa",
+        "United"
+       ],
+       "flight_numbers": [],
+       "overnight_layover": false,
+       "ticket": "TQ:205e885fe18a",
+       "self_transfer_inside": false
+      }
+     ]
+    },
+    "way_home": {
+     "id": "H0194",
+     "direction": "home",
+     "type": "ticket",
+     "from": "MDE",
+     "to": "CPH",
+     "depart": "2027-02-03T10:40",
+     "arrive": "2027-02-04T13:30",
+     "total_hours": 20.8,
+     "flying_hours": 20.8,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": true,
+     "airports": [
+      "MDE",
+      "IAH",
+      "FRA",
+      "CPH"
+     ],
+     "tickets": [
+      "TQ:205e885fe18a"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "MDE",
+       "to": "CPH",
+       "depart": "2027-02-03T10:40",
+       "arrive": "2027-02-04T13:30",
+       "hours": 20.83,
+       "connections": [
+        {
+         "airport": "IAH",
+         "layover_h": 1.52
+        },
+        {
+         "airport": "FRA",
+         "layover_h": 3.33
+        }
+       ],
+       "carriers": [
+        "United",
+        "Lufthansa"
+       ],
+       "flight_numbers": [],
+       "overnight_layover": false,
+       "ticket": "TQ:205e885fe18a",
+       "self_transfer_inside": false
+      }
+     ]
+    }
+   },
+   "segments": [
+    {
+     "kind": "overland",
+     "from": "SAL",
+     "to": "SJO",
+     "countries": [
+      "SV",
+      "HN",
+      "NI",
+      "CR"
+     ],
+     "note": "By bus south through Honduras and Nicaragua to San José."
+    },
+    {
+     "kind": "flight",
+     "from": "SJO",
+     "to": "LPB",
+     "cid": "LPB-SJO",
+     "quote_id": "Q:8f55e7717892",
+     "pinned": true,
+     "source": "expedia",
+     "observed_at": "2026-10-28T16:55:00Z",
+     "price_seen_for": "2026-12-06",
+     "depart": "2026-12-06T16:55",
+     "arrive": "2026-12-07T04:00",
+     "hours": 9.08,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      3.42
+     ],
+     "carriers": [
+      "LATAM"
+     ],
+     "flights": [
+      "LATAM 2409",
+      "LATAM 2400"
+     ],
+     "fare_brand": "BASIC",
+     "cabin_bag": "none (personal item only; carry-on not allowed)",
+     "price_dkk": 2187.2,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "flight",
+     "from": "LPB",
+     "to": "CBB",
+     "cid": "CBB-LPB",
+     "quote_id": "Q:87e38d9f7133",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:31:37Z",
+     "price_seen_for": "2027-01-29",
+     "depart": "2027-01-29T12:10",
+     "arrive": "2027-01-29T12:55",
+     "hours": 0.75,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 613"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 255.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "CBB",
+     "to": "VVI",
+     "cid": "CBB-VVI",
+     "quote_id": "Q:0bdd2cd96aec",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:35:40Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T10:35",
+     "arrive": "2027-02-01T11:25",
+     "hours": 0.83,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 640"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 404.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "VVI",
+     "to": "BOG",
+     "cid": "BOG-VVI",
+     "quote_id": "Q:33f610ef55de",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T11:21:33Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T05:30",
+     "arrive": "2027-02-01T12:15",
+     "hours": 7.75,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      1.83
+     ],
+     "carriers": [
+      "LATAM Airlines"
+     ],
+     "flights": [
+      "LATAM Airlines 2407",
+      "LATAM Airlines 4901"
+     ],
+     "fare_brand": "Basic",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 1755.0,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "overland",
+     "from": "BOG",
+     "to": "MDE",
+     "countries": [
+      "CO"
+     ],
+     "note": "Colombia, ending in Medellín."
+    }
+   ],
+   "legs": [
+    {
+     "cid": "LPB-SJO",
+     "from": "SJO",
+     "to": "LPB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-LPB",
+     "from": "LPB",
+     "to": "CBB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-VVI",
+     "from": "CBB",
+     "to": "VVI",
+     "mode": "flight"
+    },
+    {
+     "cid": "BOG-VVI",
+     "from": "VVI",
+     "to": "BOG",
+     "mode": "flight"
+    }
+   ],
+   "totals": {
+    "long_haul_dkk": 6885,
+    "in_between_dkk": 4601,
+    "flights_total_dkk": 11486,
+    "cabin_bag_fees_dkk": 500,
+    "total_with_cabin_bags_dkk": 11986,
+    "hub_nights": 0,
+    "us_transit": true
+   }
+  },
+  {
+   "id": "seed-5-bog-sal",
+   "name": "Bogotá in, San Salvador home",
+   "rank": 5,
+   "order": [
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "seed": true,
+   "inout": {
+    "option_id": "BOG-SAL-ticket",
+    "type": "ticket",
+    "entry": "BOG",
+    "exit": "SAL",
+    "ticket_quote_id": "Q:99c4f409c805",
+    "price_dkk": 6669,
+    "rating": {
+     "total": 8.6,
+     "price": 5.0,
+     "way_in": 3,
+     "way_home": 4
+    },
+    "way_in": {
+     "id": "I0145",
+     "direction": "in",
+     "type": "ticket",
+     "from": "CPH",
+     "to": "BOG",
+     "depart": "2026-12-03T06:30",
+     "arrive": "2026-12-03T22:21",
+     "total_hours": 21.9,
+     "flying_hours": 21.9,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": true,
+     "airports": [
+      "CPH",
+      "LHR",
+      "MIA",
+      "BOG"
+     ],
+     "tickets": [
+      "TQ:99c4f409c805"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "CPH",
+       "to": "BOG",
+       "depart": "2026-12-03T06:30",
+       "arrive": "2026-12-03T22:21",
+       "hours": 21.85,
+       "connections": [
+        {
+         "airport": "LHR",
+         "layover_h": 2.0
+        },
+        {
+         "airport": "MIA",
+         "layover_h": 3.9
+        }
+       ],
+       "carriers": [
+        "British Airways",
+        "American"
+       ],
+       "flight_numbers": [],
+       "overnight_layover": false,
+       "ticket": "TQ:99c4f409c805",
+       "self_transfer_inside": false
+      }
+     ]
+    },
+    "way_home": {
+     "id": "H0146",
+     "direction": "home",
+     "type": "ticket",
+     "from": "SAL",
+     "to": "CPH",
+     "depart": "2027-02-03T15:07",
+     "arrive": "2027-02-04T17:25",
+     "total_hours": 19.3,
+     "flying_hours": 19.3,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": true,
+     "airports": [
+      "SAL",
+      "DFW",
+      "LHR",
+      "CPH"
+     ],
+     "tickets": [
+      "TQ:99c4f409c805"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "SAL",
+       "to": "CPH",
+       "depart": "2027-02-03T15:07",
+       "arrive": "2027-02-04T17:25",
+       "hours": 19.3,
+       "connections": [
+        {
+         "airport": "DFW",
+         "layover_h": 2.15
+        },
+        {
+         "airport": "LHR",
+         "layover_h": 2.2
+        }
+       ],
+       "carriers": [
+        "American",
+        "British Airways"
+       ],
+       "flight_numbers": [],
+       "overnight_layover": false,
+       "ticket": "TQ:99c4f409c805",
+       "self_transfer_inside": false
+      }
+     ]
+    }
+   },
+   "segments": [
+    {
+     "kind": "overland",
+     "from": "BOG",
+     "to": "BOG",
+     "countries": [
+      "CO"
+     ],
+     "note": "Colombia, back in Bogotá for Bolivia."
+    },
+    {
+     "kind": "flight",
+     "from": "BOG",
+     "to": "LPB",
+     "cid": "BOG-LPB",
+     "quote_id": "Q:10bbe28be683",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T11:02:25Z",
+     "price_seen_for": "2027-01-28",
+     "depart": "2027-01-28T17:15",
+     "arrive": "2027-01-29T04:00",
+     "hours": 9.75,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      4.58
+     ],
+     "carriers": [
+      "LATAM Airlines"
+     ],
+     "flights": [
+      "LATAM Airlines 2387",
+      "LATAM Airlines 2400"
+     ],
+     "fare_brand": "Basic",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 2000.0,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "flight",
+     "from": "LPB",
+     "to": "CBB",
+     "cid": "CBB-LPB",
+     "quote_id": "Q:87e38d9f7133",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:31:37Z",
+     "price_seen_for": "2027-01-29",
+     "depart": "2027-01-29T12:10",
+     "arrive": "2027-01-29T12:55",
+     "hours": 0.75,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 613"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 255.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "CBB",
+     "to": "VVI",
+     "cid": "CBB-VVI",
+     "quote_id": "Q:0bdd2cd96aec",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:35:40Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T10:35",
+     "arrive": "2027-02-01T11:25",
+     "hours": 0.83,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 640"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 404.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "VVI",
+     "to": "SJO",
+     "cid": "SJO-VVI",
+     "quote_id": "Q:bc519ee046d2",
+     "pinned": true,
+     "source": "expedia",
+     "observed_at": "2026-10-28T16:52:21Z",
+     "price_seen_for": "2027-01-30",
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      1.6
+     ],
+     "carriers": [
+      "Copa"
+     ],
+     "flights": [
+      "CM 126",
+      "CM 787"
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "10 kg carry-on + personal item",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 245
+    },
+    {
+     "kind": "overland",
+     "from": "SJO",
+     "to": "SAL",
+     "countries": [
+      "CR",
+      "NI",
+      "HN",
+      "SV"
+     ],
+     "note": "By bus north through Nicaragua and Honduras to San Salvador."
+    }
+   ],
+   "legs": [
+    {
+     "cid": "BOG-LPB",
+     "from": "BOG",
+     "to": "LPB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-LPB",
+     "from": "LPB",
+     "to": "CBB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-VVI",
+     "from": "CBB",
+     "to": "VVI",
+     "mode": "flight"
+    },
+    {
+     "cid": "SJO-VVI",
+     "from": "VVI",
+     "to": "SJO",
+     "mode": "flight"
+    }
+   ],
+   "totals": {
+    "long_haul_dkk": 6669,
+    "in_between_dkk": 5080,
+    "flights_total_dkk": 11749,
+    "cabin_bag_fees_dkk": 250,
+    "total_with_cabin_bags_dkk": 11999,
+    "hub_nights": 0,
+    "us_transit": true
+   }
+  },
+  {
+   "id": "seed-6-sal-vvi",
+   "name": "San Salvador in, Santa Cruz home (B)",
+   "rank": 6,
+   "order": [
+    "CA",
+    "CO",
+    "BO"
+   ],
+   "seed": true,
+   "inout": {
+    "option_id": "SAL-VVI-ticket",
+    "type": "ticket",
+    "entry": "SAL",
+    "exit": "VVI",
+    "ticket_quote_id": "Q:08549f9c4a86",
+    "price_dkk": 9071,
+    "rating": {
+     "total": 6.7,
+     "price": 2.9,
+     "way_in": 5,
+     "way_home": 3
+    },
+    "way_in": {
+     "id": "I0179",
+     "direction": "in",
+     "type": "ticket",
+     "from": "CPH",
+     "to": "SAL",
+     "depart": "2026-12-04T12:05",
+     "arrive": "2026-12-04T23:38",
+     "total_hours": 18.6,
+     "flying_hours": 18.6,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": false,
+     "airports": [
+      "CPH",
+      "AMS",
+      "PTY",
+      "SAL"
+     ],
+     "tickets": [
+      "TQ:08549f9c4a86"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "CPH",
+       "to": "SAL",
+       "depart": "2026-12-04T12:05",
+       "arrive": "2026-12-04T23:38",
+       "hours": 18.55,
+       "connections": [
+        {
+         "airport": "AMS",
+         "layover_h": 1.25
+        },
+        {
+         "airport": "PTY",
+         "layover_h": 2.55
+        }
+       ],
+       "carriers": [
+        "KL",
+        "CM"
+       ],
+       "flight_numbers": [],
+       "overnight_layover": false,
+       "ticket": "TQ:08549f9c4a86",
+       "self_transfer_inside": false
+      }
+     ]
+    },
+    "way_home": {
+     "id": "H0180",
+     "direction": "home",
+     "type": "ticket",
+     "from": "VVI",
+     "to": "CPH",
+     "depart": "2027-02-03T11:55",
+     "arrive": "2027-02-04T16:40",
+     "total_hours": 23.8,
+     "flying_hours": 23.8,
+     "flights": 3,
+     "hub_nights": 0,
+     "changes": 0,
+     "us_transit": false,
+     "airports": [
+      "VVI",
+      "GRU",
+      "AMS",
+      "CPH"
+     ],
+     "tickets": [
+      "TQ:08549f9c4a86"
+     ],
+     "timeline": [
+      {
+       "kind": "flight",
+       "from": "VVI",
+       "to": "CPH",
+       "depart": "2027-02-03T11:55",
+       "arrive": "2027-02-04T16:40",
+       "hours": 23.75,
+       "connections": [
+        {
+         "airport": "GRU",
+         "layover_h": 5.15
+        },
+        {
+         "airport": "AMS",
+         "layover_h": 3.0
+        }
+       ],
+       "carriers": [
+        "G3",
+        "KL"
+       ],
+       "flight_numbers": [],
+       "overnight_layover": false,
+       "ticket": "TQ:08549f9c4a86",
+       "self_transfer_inside": false
+      }
+     ]
+    }
+   },
+   "segments": [
+    {
+     "kind": "overland",
+     "from": "SAL",
+     "to": "SJO",
+     "countries": [
+      "SV",
+      "HN",
+      "NI",
+      "CR"
+     ],
+     "note": "By bus south through Honduras and Nicaragua to San José."
+    },
+    {
+     "kind": "flight",
+     "from": "SJO",
+     "to": "MDE",
+     "cid": "MDE-SJO",
+     "quote_id": "Q:f83cd694885f",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T14:16:25Z",
+     "price_seen_for": "2027-01-10",
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "Wingo"
+     ],
+     "flights": [
+      "Wingo 7433"
+     ],
+     "fare_brand": "Go Basic",
+     "cabin_bag": "fee",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "checked_bag_fee_dkk": 275
+    },
+    {
+     "kind": "overland",
+     "from": "MDE",
+     "to": "BOG",
+     "countries": [
+      "CO"
+     ],
+     "note": "Colombia, ending in Bogotá."
+    },
+    {
+     "kind": "flight",
+     "from": "BOG",
+     "to": "LPB",
+     "cid": "BOG-LPB",
+     "quote_id": "Q:10bbe28be683",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T11:02:25Z",
+     "price_seen_for": "2027-01-28",
+     "depart": "2027-01-28T17:15",
+     "arrive": "2027-01-29T04:00",
+     "hours": 9.75,
+     "via": [
+      "LIM"
+     ],
+     "layover_h": [
+      4.58
+     ],
+     "carriers": [
+      "LATAM Airlines"
+     ],
+     "flights": [
+      "LATAM Airlines 2387",
+      "LATAM Airlines 2400"
+     ],
+     "fare_brand": "Basic",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 2000.0,
+     "cabin_bag_fee_dkk": 250,
+     "checked_bag_fee_dkk": 500
+    },
+    {
+     "kind": "flight",
+     "from": "LPB",
+     "to": "CBB",
+     "cid": "CBB-LPB",
+     "quote_id": "Q:87e38d9f7133",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:31:37Z",
+     "price_seen_for": "2027-01-29",
+     "depart": "2027-01-29T12:10",
+     "arrive": "2027-01-29T12:55",
+     "hours": 0.75,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 613"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 255.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    },
+    {
+     "kind": "flight",
+     "from": "CBB",
+     "to": "VVI",
+     "cid": "CBB-VVI",
+     "quote_id": "Q:0bdd2cd96aec",
+     "pinned": true,
+     "source": "momondo",
+     "observed_at": "2026-10-28T12:35:40Z",
+     "price_seen_for": "2027-02-01",
+     "depart": "2027-02-01T10:35",
+     "arrive": "2027-02-01T11:25",
+     "hours": 0.83,
+     "via": [],
+     "layover_h": [],
+     "carriers": [
+      "BoA"
+     ],
+     "flights": [
+      "BoA 640"
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "price_dkk": 404.0,
+     "cabin_bag_fee_dkk": 0,
+     "checked_bag_fee_dkk": 0
+    }
+   ],
+   "legs": [
+    {
+     "cid": "MDE-SJO",
+     "from": "SJO",
+     "to": "MDE",
+     "mode": "flight"
+    },
+    {
+     "cid": "BOG-LPB",
+     "from": "BOG",
+     "to": "LPB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-LPB",
+     "from": "LPB",
+     "to": "CBB",
+     "mode": "flight"
+    },
+    {
+     "cid": "CBB-VVI",
+     "from": "CBB",
+     "to": "VVI",
+     "mode": "flight"
+    }
+   ],
+   "totals": {
+    "long_haul_dkk": 9071,
+    "in_between_dkk": 3604,
+    "flights_total_dkk": 12675,
+    "cabin_bag_fees_dkk": 410,
+    "total_with_cabin_bags_dkk": 13085,
+    "hub_nights": 0,
+    "us_transit": false
+   }
+  }
+ ]
+}
