@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Map as MLMap, Marker, setWorkerUrl, type GeoJSONSource, type MapMouseEvent, type PointLike } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, type Model } from '../data/model'
+import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, viaLine, type Model } from '../data/model'
 import { IO_LABEL, ioMarkers, type Dir } from '../data/inout'
 import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripPieces, tripStops, type Trip, type TripState } from '../data/trips'
 import { familyOf, type Connection, type Family, type MapData, type RouteOption } from '../data/types'
@@ -325,7 +325,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
 
   // ---- highlight: feature-state only, no React render ------------------------------------
 
-  const prev = useRef({ hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[] })
+  const prev = useRef({ hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[], via: [] as string[] })
   const raf = useRef(0)
 
   const runMover = useCallback(
@@ -366,7 +366,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     P.hl.forEach((id) => st('routes', id, { hl: false }))
     P.pv.forEach((id) => st('routes', id, { pv: false }))
     P.calm.forEach((id) => st('routes', id, { calm: false }))
-    const next = { hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[] }
+    P.via.forEach((id) => st('routes', id, { via: false }))
+    const next = { hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[], via: [] as string[] }
 
     let route: { conn: Connection; from: string; opts: RouteOption[] } | null = null
     if (h?.kind === 'city') {
@@ -389,16 +390,22 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     }
 
     const stops: GeoJSON.Feature[] = []
+    const vias: GeoJSON.Feature[] = []
     const movers: { line: LonLat[]; reverse: boolean; family: Family }[] = []
     if (route) {
       const seen = new Set<string>()
+      const reverse = route.from !== route.conn.a
+      // a flight with layovers is drawn through them, in place of its direct arc
+      const direct = new Map<string, Family>()
       for (const o of route.opts) {
         const fam = familyOf(o.mode)
         const fid = `${route.conn.id}|${fam}`
-        if (model.routeLines.has(fid) && !next.hl.includes(fid)) {
-          next.hl.push(fid)
-          movers.push({ line: model.routeLines.get(fid)!, reverse: route.from !== route.conn.a, family: fam })
-        }
+        const via = viaLine(model, route.conn, o)
+        if (via) {
+          vias.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: via } })
+          movers.push({ line: via, reverse, family: fam })
+        } else direct.set(fid, fam)
+        if (model.routeLines.has(fid) && !next.hl.includes(fid)) next.hl.push(fid)
         for (const s of stopsFrom(route.conn, o, route.from)) {
           const p = model.byId.get(s.place_id)
           if (!p || seen.has(p.id)) continue
@@ -410,6 +417,12 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
           })
         }
       }
+      // the direct arc stays only when an option in focus flies it
+      for (const fid of next.hl) {
+        const fam = direct.get(fid)
+        if (fam) movers.push({ line: model.routeLines.get(fid)!, reverse, family: fam })
+        else next.via.push(fid)
+      }
       next.calm = shown.filter((id) => !next.hl.includes(id))
     }
 
@@ -417,8 +430,10 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     next.hl.forEach((id) => st('routes', id, { hl: true }))
     next.pv.forEach((id) => st('routes', id, { pv: true }))
     next.calm.forEach((id) => st('routes', id, { calm: true }))
+    next.via.forEach((id) => st('routes', id, { via: true }))
     prev.current = next
     m.getSource<GeoJSONSource>('stops')?.setData({ type: 'FeatureCollection', features: stops })
+    m.getSource<GeoJSONSource>('via')?.setData({ type: 'FeatureCollection', features: vias })
     runMover(m, movers)
   }, [map, model, store, runMover])
 

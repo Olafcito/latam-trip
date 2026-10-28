@@ -23,9 +23,11 @@ export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
 export const TRIP_OVERLAND = 'trip-overland'
 export const HIT_OVERLAND = 'trip-overland-hit'
 
-/** Overview routes are faint. Hovering a city previews its routes, and a selection shows only its own. */
+export const VIA_LAYER = 'route-via'
+
+/** Overview routes are faint. A flight in focus that only flies via layovers hides its direct arc for its via path. Hovering a city previews its routes, and a selection shows only its own. */
 export function routeOpacity(base: number): ExpressionSpecification {
-  return ['case', HL, 1, fs('calm'), 0.4, fs('show'), 0.95, fs('pv'), 0.85, base]
+  return ['case', fs('via'), 0, HL, 1, fs('calm'), 0.4, fs('show'), 0.95, fs('pv'), 0.85, base]
 }
 
 const routeWidth: ExpressionSpecification = [
@@ -110,6 +112,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
   map.addSource('routes', { type: 'geojson', data: model.routes, promoteId: 'fid', tolerance: 0.2 })
   map.addSource('places', { type: 'geojson', data: places, promoteId: 'id' })
   map.addSource('stops', { type: 'geojson', data: empty })
+  map.addSource('via', { type: 'geojson', data: empty })
   map.addSource('mover', { type: 'geojson', data: empty })
   map.addSource('trip', { type: 'geojson', data: empty })
   map.addSource('trip-stops', { type: 'geojson', data: empty })
@@ -135,6 +138,18 @@ export function addRouteLayers(map: MLMap, model: Model) {
   map.addLayer(routeLayer('ground', C.bus))
   map.addLayer(routeLayer('boat', C.boat, [2.5, 2]))
   map.addLayer(routeLayer('flight', C.flight, [0, 2.2]))
+  // the flight in focus, drawn through its layovers
+  map.addLayer({
+    id: VIA_LAYER,
+    type: 'line',
+    source: 'via',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: {
+      'line-color': C.flight,
+      'line-width': ['interpolate', ['linear'], ['zoom'], 3, 2.2, 8, 2.5],
+      'line-dasharray': [0, 2.2],
+    },
+  })
   map.addLayer({
     id: HIT_ROUTES,
     type: 'line',
