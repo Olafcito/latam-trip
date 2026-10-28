@@ -8,7 +8,7 @@ import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
-import { HIT_PLACES, HIT_ROUTES, ROUTE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
+import { HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
 import { Panel, type PanelView, type View } from './Panel'
 import { C, baseStyle } from './style'
 import { Tooltip } from './Tooltip'
@@ -352,6 +352,9 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
         const s = map.project([p.lon, p.lat])
         return Math.hypot(s.x - pt.x, s.y - pt.y)
       }
+      // a drawn label is a visible place, so its text clicks like its dot
+      const label = map.queryRenderedFeatures([pt.x, pt.y], { layers: Object.values(LABEL_LAYERS) })[0]
+      if (label) return { kind: 'place', id: label.properties.id as string }
       const place = map
         .queryRenderedFeatures([pt.x, pt.y], { layers: [HIT_PLACES] })
         .map((f) => ({ id: f.properties.id as string, tier: f.properties.tier as string }))
