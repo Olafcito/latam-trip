@@ -19,10 +19,20 @@ SC = json.load(open(os.path.join(ROOT, "data", "scenarios.json")))
 BAGS = json.load(open(os.path.join(ROOT, "data", "bag_rules.json"))) if os.path.exists(os.path.join(ROOT, "data", "bag_rules.json")) else []
 
 
-def bag_for(carriers, structure_leg):
+CODES = {"KL": "KLM", "AF": "Air France", "CM": "Copa", "G3": "GOL", "AV": "Avianca", "AA": "American", "UA": "United",
+         "DL": "Delta", "LA": "LATAM", "OB": "BoA", "IB": "Iberia", "UX": "Air Europa", "AM": "Aeromexico", "Y4": "Volaris",
+         "P5": "Wingo", "JA": "JetSMART", "BA": "British Airways", "AY": "Finnair", "LH": "Lufthansa", "FR": "Ryanair",
+         "DY": "Norwegian", "SK": "Scandinavian", "AC": "Air Canada", "LX": "SWISS", "TA": "Avianca"}
+
+
+def bag_for(carriers, leg):
+    """Checked-bag add-on for one flown direction: the rule of the first matching carrier;
+    long-haul rate when the leg is longer than 9 h."""
+    carriers = [CODES.get(c, c) for c in carriers]
     for r in BAGS:
         if any(r["match"].lower() in c.lower() for c in carriers):
-            return r
+            v = r["longhaul_dkk"] if (leg.get("hours") or 0) > 9 else r["regional_dkk"]
+            return {"match": r["match"], "checked_dkk": v, "cabin_dkk": r.get("cabin_dkk", 0)}
     return None
 
 
@@ -48,8 +58,8 @@ def pick(comp):
             continue
         if comp.get("max_hours") and mh and mh > comp["max_hours"]:
             continue
-        if not all(d.get("flights") for d in legs):
-            continue   # need known flights to count segments and bags
+        if not all(d.get("hours") and d.get("carriers") for d in legs) or len(legs) < (2 if q.get("structure") in ("return", "open_jaw") else 1):
+            continue   # need both directions with hours and carriers
         out.append(dict(qid=qid, pid=pid, eff=eff, price=price, mh=mh or 0, legs=legs, cars=cars, flags=fl, q=q))
     if not out:
         return None
@@ -73,21 +83,22 @@ for s in SC:
             ok = False; lines.append(f"{c['label']}: NOT PRICED ({c['pattern']})"); continue
         h = sum(d.get("hours") or 0 for d in r["legs"])
         nseg = sum((d.get("stops") or 0) + 1 for d in r["legs"])
-        bag = 0; bag_notes = []
+        bag = 0; cabin = 0; bag_notes = []
         for d in r["legs"]:
             br = bag_for(d.get("carriers") or [], d)
             if br and br.get("checked_dkk") is not None:
-                bag += br["checked_dkk"]; bag_notes.append(f"{br['match']} {br['checked_dkk']}")
+                bag += br["checked_dkk"]; cabin += br.get("cabin_dkk") or 0
+                bag_notes.append(f"{br['match']} {br['checked_dkk']}" + (f", cabin {br['cabin_dkk']}" if br.get("cabin_dkk") else ""))
             else:
                 bag_notes.append("bag ?")
         tick = r["q"].get("tickets") or (2 if "self_transfer" in r["flags"] else 1)
-        tot["price"] += r["price"]; tot["bag"] += bag; tot["hours"] += h; tot["flights"] += nseg
+        tot["price"] += r["price"] + cabin; tot["bag"] += bag; tot["hours"] += h; tot["flights"] += nseg
         tot["tickets"] += tick; tot["eff"] += r["eff"]
         flags |= {f for f in r["flags"] if f in ("self_transfer", "us_transit", "overnight", "tight_connection", "basic_fare", "airport_change")}
         if any(d.get("overnight_layover") for d in r["legs"]): flags.add("overnight")
         airlines |= set(r["cars"])
         hrs = "/".join(f"{d.get('hours')}" for d in r["legs"])
-        lines.append(f"{c['label']}: {r['price']:.0f} | {r['pid']} {r['legs'][0].get('dep','')[:10]} | {hrs} h | "
+        lines.append(f"{c['label']}: {r['price']:.0f}{f' + cabin bag {cabin}' if cabin else ''} | {r['pid']} {r['legs'][0].get('dep','')[:10]} | {hrs} h | "
                      f"{', '.join(r['cars'])} | {nseg} flights, {tick} ticket(s) | bag +{bag} ({'; '.join(bag_notes)})")
     results.append(dict(id=s["id"], name=s["name"], story=s.get("story", ""), ok=ok, lines=lines, flags=sorted(flags),
                         airlines=sorted(airlines), **tot))
@@ -95,7 +106,7 @@ for s in SC:
 out = []
 for r in sorted(results, key=lambda r: (not r["ok"], r["eff"])):
     out.append(f"## {r['id']} {r['name']}{'' if r['ok'] else '  (INCOMPLETE)'}")
-    out.append(f"total {r['price']:.0f} DKK cabin bag only | +{r['bag']:.0f} with checked bag = {r['price'] + r['bag']:.0f} | "
+    out.append(f"total {r['price']:.0f} DKK with cabin bag | +{r['bag']:.0f} with checked bag = {r['price'] + r['bag']:.0f} | "
                f"{r['hours']:.1f} h in the air incl. connections | {r['flights']} flights | {r['tickets']} tickets | eff {r['eff']:.0f}")
     out.append(f"flags: {', '.join(r['flags']) or 'none'} | airlines: {', '.join(r['airlines'])}")
     out += ["  - " + l for l in r["lines"]]

@@ -1,0 +1,163 @@
+[
+ {
+  "match": "Avianca",
+  "longhaul_dkk": 486,
+  "regional_dkk": 516,
+  "note": "Light: 10 kg carry-on included; long-haul from the measured Light->Classic gap on the MAD ticket (+972 return); regional USD 80 online",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Copa",
+  "longhaul_dkk": 245,
+  "regional_dkk": 245,
+  "note": "Economy Basic: 10 kg carry-on free, first bag about USD 38",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "LATAM",
+  "longhaul_dkk": 500,
+  "regional_dkk": 500,
+  "note": "Basic has NO carry-on (paid); bag USD 35-120 online, midpoint used; cabin_dkk is an ESTIMATE (12 kg carry-on not published)",
+  "cabin_dkk": 250
+ },
+ {
+  "match": "Wingo",
+  "longhaul_dkk": 275,
+  "regional_dkk": 275,
+  "note": "Go Basic: personal item only; carry-on 97-226, bag 194-355 online",
+  "cabin_dkk": 160
+ },
+ {
+  "match": "JetSMART",
+  "longhaul_dkk": 225,
+  "regional_dkk": 225,
+  "note": "Fly Light: personal item only",
+  "cabin_dkk": 200
+ },
+ {
+  "match": "BoA",
+  "longhaul_dkk": 0,
+  "regional_dkk": 0,
+  "note": "Boliviana: 1 checked bag (20 kg) included",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Boliviana",
+  "longhaul_dkk": 0,
+  "regional_dkk": 0,
+  "note": "1 checked bag (20 kg) included",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Volaris",
+  "longhaul_dkk": 670,
+  "regional_dkk": 670,
+  "note": "Zero/Basic: bag 503-838",
+  "cabin_dkk": 770
+ },
+ {
+  "match": "Aeromexico",
+  "longhaul_dkk": 290,
+  "regional_dkk": 290,
+  "note": "Basic: bag 258-322",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "American",
+  "longhaul_dkk": 548,
+  "regional_dkk": 340,
+  "note": "Basic Economy: carry-on free, transatlantic bag USD 85",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "British Airways",
+  "longhaul_dkk": 548,
+  "regional_dkk": 340,
+  "note": "sold as AA Basic on these itineraries",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Finnair",
+  "longhaul_dkk": 548,
+  "regional_dkk": 340,
+  "note": "sold as AA Basic on these itineraries",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "United",
+  "longhaul_dkk": 0,
+  "regional_dkk": 0,
+  "note": "the United fares found include 1 bag (Google booking page)",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Delta",
+  "longhaul_dkk": 0,
+  "regional_dkk": 0,
+  "note": "Main Classic includes 1 bag (Google booking page)",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "KLM",
+  "longhaul_dkk": 560,
+  "regional_dkk": 186,
+  "note": "Light: long-haul bag price not published, EUR 75 used as ESTIMATE",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Air France",
+  "longhaul_dkk": 560,
+  "regional_dkk": 186,
+  "note": "Light: ESTIMATE as KLM",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "GOL",
+  "longhaul_dkk": 350,
+  "regional_dkk": 350,
+  "note": "bag 263-439",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Iberia",
+  "longhaul_dkk": 500,
+  "regional_dkk": 300,
+  "note": "ESTIMATE",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Air Europa",
+  "longhaul_dkk": 500,
+  "regional_dkk": 300,
+  "note": "ESTIMATE",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Ryanair",
+  "longhaul_dkk": 300,
+  "regional_dkk": 300,
+  "note": "20 kg bag 142-448; priority cabin 90-269",
+  "cabin_dkk": 180
+ },
+ {
+  "match": "Norwegian",
+  "longhaul_dkk": 300,
+  "regional_dkk": 300,
+  "note": "LowFare: bag paid, ESTIMATE as Ryanair",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Scandinavian",
+  "longhaul_dkk": 300,
+  "regional_dkk": 300,
+  "note": "SAS Light: bag paid, ESTIMATE",
+  "cabin_dkk": 0
+ },
+ {
+  "match": "Lufthansa",
+  "longhaul_dkk": 0,
+  "regional_dkk": 0,
+  "note": "United-ticketed itineraries found include a bag",
+  "cabin_dkk": 0
+ }
+]
