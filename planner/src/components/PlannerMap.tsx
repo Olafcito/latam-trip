@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, type PointerEvent } from 'react'
 import { RouteMap } from '@map/map/RouteMap'
 import type { TripState } from '@map/data/trips'
 import type { MapData as RouteData } from '@map/data/types'
@@ -21,6 +21,8 @@ export function PlannerMap() {
   const cursorTo = useStore((s) => s.cursorTo)
   const insertLeg = useStore((s) => s.insertLeg)
   const setLegFacts = useStore((s) => s.setLegFacts)
+  const paneMini = useStore((s) => s.paneMini)
+  const setPaneMini = useStore((s) => s.setPaneMini)
   const [data, setData] = useState<RouteData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -50,18 +52,27 @@ export function PlannerMap() {
       </div>
     )
   }
+  const hasPane = mapOpen && !!journey
+  // a tap on the map itself, beside the pane, folds the pane to its small card
+  const fold = (e: PointerEvent) => {
+    if (hasPane && !paneMini && (e.target as Element).closest('.rmap-canvas')) setPaneMini(true)
+  }
   return data ? (
-    <RouteMap
-      data={data}
-      trips={trips}
-      onTrips={onTrips}
-      fitTripOnLoad
-      focus={mapOpen && !!journey}
-      focusAt={focusAt}
-      onStop={cursorTo}
-      onLeg={insertLeg}
-      side={<MapSide />}
-    />
+    <div className="mapwrap" onPointerDownCapture={fold}>
+      <RouteMap
+        data={data}
+        trips={trips}
+        onTrips={onTrips}
+        fitTripOnLoad
+        focus={hasPane}
+        focusAt={focusAt}
+        onStop={cursorTo}
+        onLeg={insertLeg}
+        side={<MapSide />}
+        sideWidth={hasPane && paneMini ? 236 : 360}
+        sideMini={hasPane && paneMini}
+      />
+    </div>
   ) : (
     <div className="loading">Loading routes…</div>
   )

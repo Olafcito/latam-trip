@@ -45,6 +45,8 @@ export interface RouteMapProps {
   /** A pane the host renders on the right of the map; the camera keeps clear of it. */
   side?: ReactNode
   sideWidth?: number
+  /** the side pane is folded to a small card in the top right corner: the map gets the full width */
+  sideMini?: boolean
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
@@ -66,7 +68,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, side = null, sideWidth = 360 }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, side = null, sideWidth = 360, sideMini = false }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -92,13 +94,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
   const store = useMemo(() => createStore<Hover>(null), [])
 
   // latest values for the map's event handlers, which are bound once
-  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!side, focus, stops: [] as string[], dir: 'out' as FlightDir })
+  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!side, sideMini, focus, stops: [] as string[], dir: 'out' as FlightDir })
   // which way the selected city's routes read: out of it (the default for every city) or into it
   const [dir, setDir] = useState<FlightDir>('out')
   useEffect(() => setDir('out'), [view.sel, view.panel])
   live.current.view = view
   live.current.families = families
   live.current.side = !!side
+  live.current.sideMini = sideMini
   live.current.dir = dir
   live.current.focus = focus
   live.current.collapsed = collapsed
@@ -111,7 +114,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     const W = el.clientWidth
     const H = el.clientHeight
     const open = panel && !live.current.collapsed
-    const sideW = live.current.side ? sideWidth : 0
+    const sideW = live.current.side && !live.current.sideMini ? sideWidth : 0
     const padding =
       W < NARROW
         ? { top: 70, left: 28, right: 64, bottom: open ? Math.round(H * 0.52) + 16 : sideW ? Math.round(H * 0.42) + 16 : 70 }
@@ -748,8 +751,12 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
         const r = e.getBoundingClientRect()
         return { left: r.left - box.left - 6, top: r.top - box.top - 6, right: r.right - box.left + 6, bottom: r.bottom - box.top + 6 }
       })
-    // the side pane is the host's, so its strip is blocked by where the layout puts it: right on wide, bottom when narrow
-    if (live.current.side) {
+    // the side pane is the host's: its own box when it is in the tree, else the strip the layout gives it
+    const pane = root.current?.querySelector<HTMLElement>('.panel.plan')
+    if (pane) {
+      const r = pane.getBoundingClientRect()
+      rects.push({ left: r.left - box.left - 6, top: r.top - box.top - 6, right: r.right - box.left + 6, bottom: r.bottom - box.top + 6 })
+    } else if (live.current.side) {
       const W = box.width, H = box.height
       rects.push(W < 720 ? { left: 0, top: H * 0.58 - 6, right: W, bottom: H } : { left: W - sideWidth - 20, top: 0, right: W, bottom: H })
     }
@@ -760,7 +767,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
   return (
     <div
       ref={root}
-      className={`rmap${space ? ' grab' : ''}${side ? ' has-side' : ''}${view.panel && !collapsed ? ' has-panel' : ''}`}
+      className={`rmap${space ? ' grab' : ''}${side ? ' has-side' : ''}${side && sideMini ? ' side-mini' : ''}${view.panel && !collapsed ? ' has-panel' : ''}`}
       style={side ? ({ '--side': `${sideWidth}px` } as CSSProperties) : undefined}
       tabIndex={0}
       role="region"

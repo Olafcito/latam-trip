@@ -31,8 +31,8 @@ function write(key: string, value: unknown) {
 
 /** Two tabs: the route map (where a trip is built), and Trips (start a new trip or open a saved one). */
 export type Screen = 'map' | 'trips'
-/** The Trips tab: the landing page, or picking the way in and way home of a new trip. */
-export type TripsView = 'home' | 'pick'
+/** The Trips tab: the landing page, picking the way in and way home of a new trip, or the dashboard of the open trip. */
+export type TripsView = 'home' | 'pick' | 'trip'
 /** An airport pair picked in the matrix: narrows the option list to flights in to one city and home from another. */
 export interface Pair {
   in: string
@@ -67,6 +67,8 @@ interface State {
   setJourney: (j: Journey) => void
   /** open a saved journey on the map */
   openSaved: (j: Journey) => void
+  /** open a journey's dashboard on the Trips tab */
+  openTrip: (j: Journey) => void
   /** leave the open trip: the map shows nothing and Trips shows the landing page */
   closeTrip: () => void
 
@@ -95,6 +97,9 @@ interface State {
 
   /** whether the Map tab draws the current journey as its open trip */
   mapOpen: boolean
+  /** the trip pane on the map is folded to a small card */
+  paneMini: boolean
+  setPaneMini: (mini: boolean) => void
   showOnMap: () => void
   /** a trip edit from the route map, read back into journeys */
   applyMapTrips: (after: TripState, facts?: LegFacts) => void
@@ -137,7 +142,7 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const journey = newJourney(data.inout, wayIn, wayHome, optionId)
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'map', view: 'home', cursor: null })
+    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, paneMini: false })
   },
   startOnMap: (wayIn, wayHome, optionId) => get().startJourney(wayIn, wayHome, optionId),
   setJourney: (journey) => {
@@ -146,7 +151,11 @@ export const useStore = create<State>((set, get) => ({
   },
   openSaved: (journey) => {
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'map', view: 'home', cursor: null })
+    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, paneMini: false })
+  },
+  openTrip: (journey) => {
+    write(CURRENT_KEY, journey)
+    set({ journey, mapOpen: true, screen: 'trips', view: 'trip', cursor: null })
   },
   closeTrip: () => set({ mapOpen: false, screen: 'trips', view: 'home', cursor: null }),
 
@@ -169,8 +178,8 @@ export const useStore = create<State>((set, get) => ({
     const at = cursor ?? j.places.length - 1
     const here = j.places[at].node
     // a leg from somewhere else first goes there, then on
-    const added: Place[] = leg.from === here ? [] : [{ node: leg.from, nights: 1, hop: null }]
-    added.push({ node: leg.to, nights: 2, hop: null })
+    const added: Place[] = leg.from === here ? [] : [{ node: leg.from, hop: null }]
+    added.push({ node: leg.to, hop: null })
     const places = rehop([...j.places.slice(0, at + 1), ...added, ...j.places.slice(at + 1)], get(), leg.mode)
     get().setJourney({ ...j, places })
     get().setCursor(at + added.length)
@@ -240,6 +249,8 @@ export const useStore = create<State>((set, get) => ({
   },
 
   mapOpen: true,
+  paneMini: false,
+  setPaneMini: (paneMini) => set({ paneMini }),
   showOnMap: () => set({ mapOpen: true, screen: 'map' }),
   applyMapTrips: (after, facts) => {
     const { data, journey, saved, mapOpen, compare } = get()

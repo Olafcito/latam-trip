@@ -63,40 +63,53 @@ describe('format', () => {
   })
 })
 
-describe('date chaining and slack', () => {
+describe('schedule from dated flights', () => {
   const wi = way({ id: 'I1', arrive: '2026-12-03T14:30' })
   const wh = way({ id: 'H1', direction: 'home', from: 'VVI', to: 'CPH', depart: '2027-02-03T09:05', arrive: '2027-02-04T09:10' })
   const names = (n: string) => n
 
-  it('counts nights from the way-in arrival and reports days left', () => {
+  it('shares the days evenly between the landing and the flight home', () => {
     const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
-      { node: 'BOG', nights: 10, hop: null },
-      { node: 'VVI', nights: 5, hop: { from: 'BOG', to: 'VVI', mode: 'bus', operator: null, hours: 30, price_dkk: 100, overnight: true, border: true, flight: null } },
+      { node: 'BOG', hop: null },
+      { node: 'VVI', hop: { from: 'BOG', to: 'VVI', mode: 'bus', operator: null, hours: 30, price_dkk: 100, overnight: true, border: true, flight: null } },
     ] }
     const s = schedule(j, wi, wh, 'VVI', names)
     expect(s.places[0].arrive).toBe('2026-12-03T14:30')
-    expect(s.places[0].leaveDate).toBe('2026-12-13')
-    // departs 13 Dec 08:00, 30 h -> 14 Dec 14:00
-    expect(s.places[1].arrive).toBe('2026-12-14T14:00')
-    expect(s.endDate).toBe('2026-12-19')
-    expect(s.slack).toBe(46) // 19 Dec -> 3 Feb
+    expect(s.places[1].depart).toBe('2027-02-03T09:05')
+    expect(s.totalDays).toBe(62) // 3 Dec -> 3 Feb
+    expect(s.places.map((p) => p.days)).toEqual([31, 31])
+    expect(s.places[0].depart).toBeNull()
+    expect(s.places[1].arrive).toBeNull()
     expect(s.warnings.filter((w) => w.level === 'error')).toHaveLength(0)
   })
 
-  it('uses a picked flight time and warns when over or past the flight home', () => {
+  it('anchors on a picked flight and splits the days around it', () => {
     const flight = { quote_id: 'Q', depart: '2026-12-20T23:00', arrive: '2026-12-21T04:00', hours: 4, price_dkk: 900, carriers: [], via: [], layover_h: [] }
     const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
-      { node: 'BOG', nights: 60, hop: null },
-      { node: 'VVI', nights: 3, hop: { from: 'BOG', to: 'VVI', mode: 'flight', operator: null, hours: 4, price_dkk: 900, overnight: false, border: false, flight } },
+      { node: 'BOG', hop: null },
+      { node: 'VVI', hop: { from: 'BOG', to: 'VVI', mode: 'flight', operator: null, hours: 4, price_dkk: 900, overnight: false, border: false, flight } },
     ] }
     const s = schedule(j, wi, wh, 'VVI', names)
-    expect(s.places[1].arrive).toBe('2027-02-02T04:00') // leave 1 Feb at 23:00, lands next day
-    expect(s.slack).toBe(-2)
-    expect(s.warnings.some((w) => w.level === 'error')).toBe(true)
+    expect(s.places[0].depart).toBe('2026-12-20T23:00')
+    expect(s.places[1].arrive).toBe('2026-12-21T04:00')
+    expect(s.places[0].days).toBe(17) // 3 Dec -> 20 Dec
+    expect(s.places[1].days).toBe(44) // 21 Dec -> 3 Feb
+    expect(s.warnings.filter((w) => w.level === 'error')).toHaveLength(0)
+  })
+
+  it('warns when a picked flight lands after the flight home leaves', () => {
+    const flight = { quote_id: 'Q', depart: '2027-02-05T23:00', arrive: '2027-02-06T04:00', hours: 4, price_dkk: 900, carriers: [], via: [], layover_h: [] }
+    const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
+      { node: 'BOG', hop: null },
+      { node: 'VVI', hop: { from: 'BOG', to: 'VVI', mode: 'flight', operator: null, hours: 4, price_dkk: 900, overnight: false, border: false, flight } },
+    ] }
+    const s = schedule(j, wi, wh, 'VVI', names)
+    expect(s.places[1].days).toBe(0)
+    expect(s.warnings.some((w) => w.level === 'error' && w.text.includes('lands after the flight home'))).toBe(true)
   })
 
   it('warns when the journey does not end at the exit', () => {
-    const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [{ node: 'BOG', nights: 3, hop: null }] }
+    const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [{ node: 'BOG', hop: null }] }
     expect(schedule(j, wi, wh, 'VVI', names).warnings.some((w) => w.text.includes('end in VVI'))).toBe(true)
   })
 })
@@ -119,9 +132,9 @@ describe('price totals with a shared ticket', () => {
     expect(p.checked).toBeNull() // one ticket has an unknown checked-bag fee
     const data: AppData = { inout: io, map, bags: [], trip: {}, source: 'local' }
     const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
-      { node: 'BOG', nights: 4, hop: null },
-      { node: 'MDE', nights: 2, hop: { from: 'BOG', to: 'MDE', mode: 'bus', operator: null, hours: 9, price_dkk: 150, overnight: false, border: false, flight: null } },
-      { node: 'VVI', nights: 2, hop: { from: 'MDE', to: 'VVI', mode: 'flight', operator: null, hours: 6, price_dkk: 900, overnight: false, border: false, flight: null } },
+      { node: 'BOG', hop: null },
+      { node: 'MDE', hop: { from: 'BOG', to: 'MDE', mode: 'bus', operator: null, hours: 9, price_dkk: 150, overnight: false, border: false, flight: null } },
+      { node: 'VVI', hop: { from: 'MDE', to: 'VVI', mode: 'flight', operator: null, hours: 6, price_dkk: 900, overnight: false, border: false, flight: null } },
     ] }
     const t = totals(data, j, null)
     expect(t.tickets_dkk).toBe(6700)

@@ -9,11 +9,12 @@ import { countryColor, countryName } from '../lib/colors'
 import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
 import { hopFromArc } from '../lib/journey'
 import { hoverProps } from './PlaceCard'
-import { Close, Download, Grip, Land, Minus, ModeChip, Moon, Plus } from './icons'
+import { Calendar, Close, Download, Grip, Land, ModeChip, Moon } from './icons'
 
 // The open trip, on the right of the map: its two fixed flights and the stops between them.
 // A stop is the cursor: the map lights what it reaches, and a tap on a lit city adds the next
-// stop right after it. Stops can be dragged into another order or removed.
+// stop right after it. Stops can be dragged into another order or removed. A tap on the map
+// beside the pane folds it to a small card in the corner, a tap on the card unfolds it.
 
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
 
@@ -21,12 +22,13 @@ function Money({ v }: { v: number | null }) {
   return v == null ? <span className="q" title="Unknown for at least one part">?</span> : <>{kr(v)}</>
 }
 
-export function TripPanel({ data, journey }: { data: AppData; journey: Journey }) {
+export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; journey: Journey; mini: boolean; onExpand: () => void }) {
   const { inout, map } = data
   const saved = useStore((s) => s.saved)
   const setJourney = useStore((s) => s.setJourney)
   const saveJourney = useStore((s) => s.saveJourney)
   const closeTrip = useStore((s) => s.closeTrip)
+  const openTrip = useStore((s) => s.openTrip)
   const go = useStore((s) => s.go)
   const cursor = useStore((s) => s.cursor)
   const setCursor = useStore((s) => s.setCursor)
@@ -67,16 +69,14 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
   const here = journey.places[at]
   const atEnd = at === lastIdx
   const endsAtExit = journey.places[lastIdx].node === exitNode
-  const nights = journey.places.reduce((a, p) => a + p.nights, 0)
 
   const update = (places: Journey['places']) => setJourney({ ...journey, places })
-  const setNights = (i: number, n: number) => update(journey.places.map((p, k) => (k === i ? { ...p, nights: Math.max(0, n) } : p)))
   const finish = (metric: PathMetric) => {
     const r = shortestPath(map, here.node, exitNode, metric)
     if (!r || !r.arcs.length) return
     let from = here.node
     const added = r.arcs.map((arc) => {
-      const place = { node: arc.to, nights: 1, hop: hopFromArc(from, arc, null) }
+      const place = { node: arc.to, hop: hopFromArc(from, arc, null) }
       from = arc.to
       return place
     })
@@ -102,6 +102,24 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
     if (drag != null && i > 0 && i !== drag) moveStop(drag, i)
     setDrag(null)
     setOver(null)
+  }
+
+  if (mini) {
+    return (
+      <button type="button" className="panel plan mini" onClick={onExpand} aria-expanded={false} aria-label={`Open trip ${journey.name}, folded. Unfold`} title="Unfold the trip">
+        <span className="mini-h">
+          <b>{journey.name}</b>
+          {dirty && <span className="mini-dot" title="Not saved" />}
+          <Grip />
+        </span>
+        <span className="mini-facts">
+          <span><b>{kr(allIn)}</b><small>all in</small></span>
+          <span><b>{journey.places.length}</b><small>{journey.places.length === 1 ? 'stop' : 'stops'}</small></span>
+          <span><b>{sched.totalDays}</b><small>days</small></span>
+        </span>
+        <span className="mini-next"><span className="plan-pulse" />Next from {nm(here.node)}</span>
+      </button>
+    )
   }
 
   const next = (
@@ -139,12 +157,13 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
             <h2>{journey.name}</h2>
           </button>
         )}
+        <button className="x sm" onClick={() => openTrip(journey)} aria-label="Open the trip dashboard" title="Dashboard"><Calendar /></button>
         <button className="x" onClick={closeTrip} aria-label="Close trip"><Close /></button>
       </div>
       <div className="plan-sum">
         <span className="plan-total"><b>{kr(allIn)}</b><small>all in</small></span>
         <span><b>{journey.places.length}</b><small>{journey.places.length === 1 ? 'stop' : 'stops'}</small></span>
-        <span><b>{nights}</b><small>{nights === 1 ? 'night' : 'nights'}</small></span>
+        <span><b>{sched.totalDays}</b><small>days</small></span>
       </div>
 
       <div className="plan-body">
@@ -209,11 +228,7 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
                     <b {...hoverProps(n)}>{nm(p.node)}</b>
                     <small><i style={{ background: countryColor(c) }} />{countryName(c)}</small>
                   </div>
-                  <div className="plan-nights" role="group" aria-label={`Nights in ${nm(p.node)}`} onClick={(e) => e.stopPropagation()}>
-                    <button onClick={() => setNights(i, p.nights - 1)} aria-label="One night less" disabled={p.nights <= 0}><Minus /></button>
-                    <b>{p.nights}<small>{p.nights === 1 ? 'night' : 'nights'}</small></b>
-                    <button onClick={() => setNights(i, p.nights + 1)} aria-label="One night more"><Plus /></button>
-                  </div>
+                  {sched.places[i]?.arrive && <span className="plan-when" title="A dated flight brings you here">{weekdayDay(sched.places[i].arrive!)}</span>}
                   {i > 0 && (
                     <button className="plan-rm" onClick={(e) => { e.stopPropagation(); removeStop(i) }} aria-label={`Remove ${nm(p.node)}`} title="Remove this stop"><Close /></button>
                   )}
@@ -258,8 +273,10 @@ export function MapSide() {
   const saved = useStore((s) => s.saved)
   const openSaved = useStore((s) => s.openSaved)
   const go = useStore((s) => s.go)
+  const paneMini = useStore((s) => s.paneMini)
+  const setPaneMini = useStore((s) => s.setPaneMini)
   if (!data) return null
-  if (journey && mapOpen) return <TripPanel data={data} journey={journey} />
+  if (journey && mapOpen) return <TripPanel data={data} journey={journey} mini={paneMini} onExpand={() => setPaneMini(false)} />
   const list = [...saved].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
   return (
     <aside className="panel plan idle" aria-label="Trips">

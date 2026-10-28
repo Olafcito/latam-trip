@@ -13,9 +13,8 @@ const map: MapData = {
   ],
 }
 
-const place = (node: string, from: string | null, nights = 3): Place => ({
+const place = (node: string, from: string | null): Place => ({
   node,
-  nights,
   hop: from ? { from, to: node, mode: 'bus', operator: null, hours: 1, price_dkk: 1, overnight: false, border: false, flight: null } : null,
 })
 
@@ -39,10 +38,10 @@ describe('journeys as map trips', () => {
     expect(toTripState(j, [{ ...j, name: 'Old' }], false)).toMatchObject({ active: null, trips: [{ name: 'Loop' }] })
   })
 
-  it('keeps nights when a leg is added and gives the new place 2 nights', () => {
+  it('keeps the other places when a leg is added', () => {
     const legs = [...journeyToTrip(j).legs, { cid: 'SAL-SJO', from: 'SJO', to: 'SAL', mode: 'bus' as const }]
     const places = placesFromLegs(j, legs, map)
-    expect(places.map((p) => p.nights)).toEqual([3, 3, 3, 3, 2])
+    expect(places).toHaveLength(5)
     expect(places[4].hop).toMatchObject({ from: 'SJO', to: 'SAL', hours: 12, price_dkk: 300 })
   })
 

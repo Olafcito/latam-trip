@@ -39,14 +39,17 @@ describe.skipIf(!has)('seeded trips as journeys', () => {
     expect(j.places[6].hop?.overland).toBeTruthy()
   })
 
-  it('fits the nights between the landing, the dated flights and the flight home', () => {
+  it('shares the days between the landing, the dated flights and the flight home', () => {
     for (const s of seeds) {
       const j = seedToJourney(inout, s)!
       const departs = j.places.flatMap((p) => (p.hop?.flight ? [p.hop.flight.depart] : []))
       // a seed whose flight prices were seen for dates out of order cannot fit; the builder warns about it
       if (departs.some((d, i) => i > 0 && d < departs[i - 1])) continue
       const sched = schedule(j, inout.ways[j.wayIn], inout.ways[j.wayHome], s.inout!.exit, (n) => n)
-      expect(sched.slack, s.id).toBe(0)
+      // an overnight flight between two stops takes a day away from both, so the sum is a little under the total
+      const sum = sched.places.reduce((a, p) => a + p.days, 0)
+      expect(sum, s.id).toBeLessThanOrEqual(sched.totalDays)
+      expect(sum, s.id).toBeGreaterThanOrEqual(sched.totalDays - departs.length)
       expect(sched.warnings.filter((w) => w.level === 'error'), s.id).toEqual([])
     }
   })
