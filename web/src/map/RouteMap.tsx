@@ -325,7 +325,7 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
       map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(sel ? 0 : 0.25))
       map.setLayoutProperty(ROUTE_LAYERS[f], 'visibility', families.has(f) ? 'visible' : 'none')
     }
-    setRouteHit(map, [...cids], [...families])
+    setRouteHit(map, sel ? [...cids] : null, [...families])
     setLabelFocus(map, sel ? [sel, ...near] : [], sel)
   }, [map, model, view.sel, families])
 
@@ -369,7 +369,10 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
       const sel = live.current.view.sel
       if (hit.kind === 'route') {
         const conn = model.conns.get(hit.cid)
-        return conn && sel ? { kind: 'route', cid: conn.id, from: sel, to: otherEnd(conn, sel) } : null
+        if (!conn) return null
+        // in the overview a route reads from its first end
+        const from = sel ?? conn.a
+        return { kind: 'route', cid: conn.id, from, to: otherEnd(conn, from) }
       }
       if (sel && hit.id !== sel) {
         const conn = connBetween(model, sel, hit.id)
@@ -399,7 +402,8 @@ export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: Ro
         return
       }
       if (hit.kind === 'route') {
-        if (sel) act.current.openRoute(hit.cid, sel)
+        const h = hoverFor(hit)
+        if (h?.kind === 'route') act.current.openRoute(h.cid, h.from)
         return
       }
       if (hit.id === sel) return act.current.deselect()
