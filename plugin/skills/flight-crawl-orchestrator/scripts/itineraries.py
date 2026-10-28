@@ -33,7 +33,7 @@ REG = {**{a: "CA" for a in "GUA SAL SAP TGU RTB MGA SJO LIR".split()},
        **{a: "BO" for a in "LPB VVI CBB".split()}, "GDL": "MXW", "MEX": "MXW", "CUN": "MXE"}
 NIGHT_BED = 300   # kr: a regional flight landing 00:00-05:59 needs the bed from the night before (hostel private room)
 ENTRY_REGIONS, EXIT_REGIONS, OPTIONAL = {"CA", "MXW"}, {"CA", "BO"}, ("CO", "BO")   # MXW = a week in Guadalajara / Mexico City, then a flight into Central America
-NO_ENTRY = {"GUA"}   # Simon: not starting in Guatemala
+NO_ENTRY = set()   # Guatemala City allowed as a start since 28 Oct evening
 BO_INTERNAL = sum(con.execute("SELECT MIN(price_dkk) FROM quotes WHERE pattern_id=? AND ok=1", (p,)).fetchone()[0] or 0
                   for p in ("R:LPB>CBB", "R:CBB>VVI"))
 NAME = {a: v.get("name", a) for a, v in IO["airports"].items()}
