@@ -1,6 +1,182 @@
 {
  "out": [
   {
+   "route": "CPH>MAD>CUN",
+   "frm": "CPH",
+   "to": "CUN",
+   "price": 3064,
+   "cabin": 180,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 3694,
+   "eff": 6169,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-02T06:10:00",
+   "end": "2026-12-03T20:25:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Ryanair"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:41ac6bebb121",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T06:10:00",
+     "arr": "2026-12-02T09:35:00",
+     "price": 186.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:a4dd5b1a26e8",
+     "pattern": "P:MAD>CUN/*",
+     "frm": "MAD",
+     "to": "CUN",
+     "dep": "2026-12-03T15:20:00",
+     "arr": "2026-12-03T20:25:00",
+     "price": 2878.0,
+     "hours": 11.08,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>CUN",
+   "frm": "CPH",
+   "to": "CUN",
+   "price": 3113,
+   "cabin": 180,
+   "checked": 800,
+   "stay_cost": 0,
+   "total": 3293,
+   "eff": 6218,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-03T20:25:00",
+   "stops": [
+    "5.8 h self-transfer in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Ryanair"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:df6700956cfa",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 235.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:a4dd5b1a26e8",
+     "pattern": "P:MAD>CUN/*",
+     "frm": "MAD",
+     "to": "CUN",
+     "dep": "2026-12-03T15:20:00",
+     "arr": "2026-12-03T20:25:00",
+     "price": 2878.0,
+     "hours": 11.08,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>CUN",
+   "frm": "CPH",
+   "to": "CUN",
+   "price": 3559,
+   "cabin": 0,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 4009,
+   "eff": 6484,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-02T15:30:00",
+   "end": "2026-12-03T20:25:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Iberia"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:cb22fc41af90",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T15:30:00",
+     "arr": "2026-12-02T18:55:00",
+     "price": 681.0,
+     "hours": 3.42,
+     "carriers": [
+      "Iberia"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:a4dd5b1a26e8",
+     "pattern": "P:MAD>CUN/*",
+     "frm": "MAD",
+     "to": "CUN",
+     "dep": "2026-12-03T15:20:00",
+     "arr": "2026-12-03T20:25:00",
+     "price": 2878.0,
+     "hours": 11.08,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
    "route": "CPH>MAD>SAL",
    "frm": "CPH",
    "to": "SAL",
@@ -635,82 +811,6 @@
    ]
   },
   {
-   "route": "CPH>MAD>CUN>GDL",
-   "frm": "CPH",
-   "to": "GDL",
-   "price": 3801,
-   "cabin": 440,
-   "checked": 1100,
-   "stay_cost": 1050,
-   "total": 5291,
-   "eff": 8831,
-   "hours": 19.6,
-   "flights": 4,
-   "tickets": 3,
-   "start": "2026-12-02T06:10:00",
-   "end": "2026-12-05T14:26:00",
-   "stops": [
-    "1 night in MAD",
-    "2 nights in CUN"
-   ],
-   "carriers": [
-    "Air Europa",
-    "Ryanair",
-    "Viva Aerobus"
-   ],
-   "flags": [],
-   "products": [
-    {
-     "qid": "Q:41ac6bebb121",
-     "pattern": "P:CPH>MAD/*",
-     "frm": "CPH",
-     "to": "MAD",
-     "dep": "2026-12-02T06:10:00",
-     "arr": "2026-12-02T09:35:00",
-     "price": 186.0,
-     "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 180
-    },
-    {
-     "qid": "Q:a4dd5b1a26e8",
-     "pattern": "P:MAD>CUN/*",
-     "frm": "MAD",
-     "to": "CUN",
-     "dep": "2026-12-03T15:20:00",
-     "arr": "2026-12-03T20:25:00",
-     "price": 2878.0,
-     "hours": 11.08,
-     "carriers": [
-      "Air Europa"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 0
-    },
-    {
-     "qid": "Q:455ed253dcc1",
-     "pattern": "R:CUN>GDL",
-     "frm": "CUN",
-     "to": "GDL",
-     "dep": "2026-12-05T10:20:00",
-     "arr": "2026-12-05T14:26:00",
-     "price": 737.0,
-     "hours": 5.1,
-     "carriers": [
-      "Viva Aerobus"
-     ],
-     "source": "expedia",
-     "flights": 2,
-     "cabin": 260
-    }
-   ]
-  },
-  {
    "route": "CPH>GUA",
    "frm": "CPH",
    "to": "GUA",
@@ -746,84 +846,6 @@
      "source": "momondo",
      "flights": 3,
      "cabin": 0
-    }
-   ]
-  },
-  {
-   "route": "CPH>MAD>CUN>GDL",
-   "frm": "CPH",
-   "to": "GDL",
-   "price": 3850,
-   "cabin": 440,
-   "checked": 1100,
-   "stay_cost": 600,
-   "total": 4890,
-   "eff": 8880,
-   "hours": 19.6,
-   "flights": 4,
-   "tickets": 3,
-   "start": "2026-12-03T06:10:00",
-   "end": "2026-12-05T14:26:00",
-   "stops": [
-    "5.8 h self-transfer in MAD",
-    "2 nights in CUN"
-   ],
-   "carriers": [
-    "Air Europa",
-    "Ryanair",
-    "Viva Aerobus"
-   ],
-   "flags": [
-    "self_transfer"
-   ],
-   "products": [
-    {
-     "qid": "Q:df6700956cfa",
-     "pattern": "P:CPH>MAD/*",
-     "frm": "CPH",
-     "to": "MAD",
-     "dep": "2026-12-03T06:10:00",
-     "arr": "2026-12-03T09:35:00",
-     "price": 235.0,
-     "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 180
-    },
-    {
-     "qid": "Q:a4dd5b1a26e8",
-     "pattern": "P:MAD>CUN/*",
-     "frm": "MAD",
-     "to": "CUN",
-     "dep": "2026-12-03T15:20:00",
-     "arr": "2026-12-03T20:25:00",
-     "price": 2878.0,
-     "hours": 11.08,
-     "carriers": [
-      "Air Europa"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 0
-    },
-    {
-     "qid": "Q:455ed253dcc1",
-     "pattern": "R:CUN>GDL",
-     "frm": "CUN",
-     "to": "GDL",
-     "dep": "2026-12-05T10:20:00",
-     "arr": "2026-12-05T14:26:00",
-     "price": 737.0,
-     "hours": 5.1,
-     "carriers": [
-      "Viva Aerobus"
-     ],
-     "source": "expedia",
-     "flights": 2,
-     "cabin": 260
     }
    ]
   },
@@ -912,82 +934,6 @@
    ]
   },
   {
-   "route": "CPH>MAD>CUN>GDL",
-   "frm": "CPH",
-   "to": "GDL",
-   "price": 3930,
-   "cabin": 440,
-   "checked": 1100,
-   "stay_cost": 1050,
-   "total": 5420,
-   "eff": 8978,
-   "hours": 19.7,
-   "flights": 4,
-   "tickets": 3,
-   "start": "2026-12-02T06:10:00",
-   "end": "2026-12-05T14:33:00",
-   "stops": [
-    "1 night in MAD",
-    "2 nights in CUN"
-   ],
-   "carriers": [
-    "Air Europa",
-    "Ryanair",
-    "Viva Aerobus"
-   ],
-   "flags": [],
-   "products": [
-    {
-     "qid": "Q:41ac6bebb121",
-     "pattern": "P:CPH>MAD/*",
-     "frm": "CPH",
-     "to": "MAD",
-     "dep": "2026-12-02T06:10:00",
-     "arr": "2026-12-02T09:35:00",
-     "price": 186.0,
-     "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 180
-    },
-    {
-     "qid": "Q:a4dd5b1a26e8",
-     "pattern": "P:MAD>CUN/*",
-     "frm": "MAD",
-     "to": "CUN",
-     "dep": "2026-12-03T15:20:00",
-     "arr": "2026-12-03T20:25:00",
-     "price": 2878.0,
-     "hours": 11.08,
-     "carriers": [
-      "Air Europa"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 0
-    },
-    {
-     "qid": "Q:4951dd18fd8a",
-     "pattern": "R:CUN>GDL",
-     "frm": "CUN",
-     "to": "GDL",
-     "dep": "2026-12-05T10:20:00",
-     "arr": "2026-12-05T14:33:00",
-     "price": 866.0,
-     "hours": 5.22,
-     "carriers": [
-      "Viva Aerobus"
-     ],
-     "source": "expedia",
-     "flights": 2,
-     "cabin": 260
-    }
-   ]
-  },
-  {
    "route": "CPH>GUA",
    "frm": "CPH",
    "to": "GUA",
@@ -1021,6 +967,96 @@
       "KL"
      ],
      "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>GDL",
+   "frm": "CPH",
+   "to": "GDL",
+   "price": 4245,
+   "cabin": 0,
+   "checked": 500,
+   "stay_cost": 0,
+   "total": 4245,
+   "eff": 9042,
+   "hours": 22.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T09:00:00",
+   "end": "2026-12-03T23:59:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Norwegian",
+    "Viva"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:438dc5c0001a",
+     "pattern": "P:CPH>GDL/*",
+     "frm": "CPH",
+     "to": "GDL",
+     "dep": "2026-12-03T09:00:00",
+     "arr": "2026-12-03T23:59:00",
+     "price": 4245.0,
+     "hours": 21.98,
+     "carriers": [
+      "Air Europa",
+      "Norwegian",
+      "Viva"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>GDL",
+   "frm": "CPH",
+   "to": "GDL",
+   "price": 4312,
+   "cabin": 0,
+   "checked": 500,
+   "stay_cost": 0,
+   "total": 4312,
+   "eff": 9109,
+   "hours": 22.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T09:00:00",
+   "end": "2026-12-03T23:59:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Norwegian",
+    "Viva"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:cb0d511ec28d",
+     "pattern": "P:CPH>GDL/*",
+     "frm": "CPH",
+     "to": "GDL",
+     "dep": "2026-12-03T09:00:00",
+     "arr": "2026-12-03T23:59:00",
+     "price": 4312.0,
+     "hours": 21.98,
+     "carriers": [
+      "Air Europa",
+      "Norwegian",
+      "Viva"
+     ],
+     "source": "momondo",
      "flights": 3,
      "cabin": 0
     }
@@ -1070,27 +1106,73 @@
    ]
   },
   {
-   "route": "CPH>MAD>CUN>GUA",
+   "route": "CPH>GDL",
+   "frm": "CPH",
+   "to": "GDL",
+   "price": 4771,
+   "cabin": 410,
+   "checked": 600,
+   "stay_cost": 0,
+   "total": 5181,
+   "eff": 9741,
+   "hours": 20.4,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T09:00:00",
+   "end": "2026-12-04T13:34:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Norwegian",
+    "Viva Aerobus"
+   ],
+   "flags": [
+    "date_assumed",
+    "mix_match",
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:6fa2fef7efec",
+     "pattern": "M:CPH>CUN+CUN>GDL",
+     "frm": "CPH",
+     "to": "GDL",
+     "dep": "2026-12-03T09:00:00",
+     "arr": "2026-12-04T13:34:00",
+     "price": 4771.0,
+     "hours": 20.4,
+     "carriers": [
+      "Air Europa",
+      "Norwegian",
+      "Viva Aerobus"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 410
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>GUA",
    "frm": "CPH",
    "to": "GUA",
-   "price": 4457,
+   "price": 6314,
    "cabin": 180,
-   "checked": 1090,
-   "stay_cost": 1050,
-   "total": 5687,
-   "eff": 9343,
-   "hours": 20.4,
-   "flights": 4,
-   "tickets": 3,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 6944,
+   "eff": 9942,
+   "hours": 18.0,
+   "flights": 3,
+   "tickets": 2,
    "start": "2026-12-02T06:10:00",
-   "end": "2026-12-05T11:01:00",
+   "end": "2026-12-03T22:44:00",
    "stops": [
-    "1 night in MAD",
-    "2 nights in CUN"
+    "1 night in MAD"
    ],
    "carriers": [
-    "Aeromexico",
     "Air Europa",
+    "Copa",
     "Ryanair"
    ],
    "flags": [],
@@ -1112,32 +1194,17 @@
      "cabin": 180
     },
     {
-     "qid": "Q:a4dd5b1a26e8",
-     "pattern": "P:MAD>CUN/*",
+     "qid": "Q:a37b7a62a305",
+     "pattern": "P:MAD>GUA/*",
      "frm": "MAD",
-     "to": "CUN",
-     "dep": "2026-12-03T15:20:00",
-     "arr": "2026-12-03T20:25:00",
-     "price": 2878.0,
-     "hours": 11.08,
-     "carriers": [
-      "Air Europa"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 0
-    },
-    {
-     "qid": "Q:333d81e47ec2",
-     "pattern": "R:CUN>GUA",
-     "frm": "CUN",
      "to": "GUA",
-     "dep": "2026-12-05T06:09:00",
-     "arr": "2026-12-05T11:01:00",
-     "price": 1393.0,
-     "hours": 5.87,
+     "dep": "2026-12-03T15:10:00",
+     "arr": "2026-12-03T22:44:00",
+     "price": 6128.0,
+     "hours": 14.57,
      "carriers": [
-      "Aeromexico"
+      "Air Europa",
+      "Copa"
      ],
      "source": "expedia",
      "flights": 2,
@@ -1479,6 +1546,66 @@
  ],
  "home": [
   {
+   "route": "CUN>MAD>CPH",
+   "frm": "CUN",
+   "to": "CPH",
+   "price": 2979,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 3429,
+   "eff": 5578,
+   "hours": 12.3,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T22:25:00",
+   "end": "2027-02-04T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "SAS"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:29e455219c86",
+     "pattern": "P:*/CUN>MAD",
+     "frm": "CUN",
+     "to": "MAD",
+     "dep": "2027-02-02T22:25:00",
+     "arr": "2027-02-03T13:25:00",
+     "price": 2598.0,
+     "hours": 9.0,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:472fbdb1a276",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T17:00:00",
+     "arr": "2027-02-04T20:20:00",
+     "price": 381.0,
+     "hours": 3.33,
+     "carriers": [
+      "SAS"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
    "route": "MEX>MAD>CPH",
    "frm": "MEX",
    "to": "CPH",
@@ -1535,6 +1662,126 @@
      "source": "expedia",
      "flights": 1,
      "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CUN>MAD>CPH",
+   "frm": "CUN",
+   "to": "CPH",
+   "price": 2946,
+   "cabin": 150,
+   "checked": 600,
+   "stay_cost": 450,
+   "total": 3546,
+   "eff": 5684,
+   "hours": 12.2,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T22:25:00",
+   "end": "2027-02-04T16:10:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Norwegian Air Sweden"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:29e455219c86",
+     "pattern": "P:*/CUN>MAD",
+     "frm": "CUN",
+     "to": "MAD",
+     "dep": "2027-02-02T22:25:00",
+     "arr": "2027-02-03T13:25:00",
+     "price": 2598.0,
+     "hours": 9.0,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:ba4f7606f0cc",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T12:55:00",
+     "arr": "2027-02-04T16:10:00",
+     "price": 348.0,
+     "hours": 3.25,
+     "carriers": [
+      "Norwegian Air Sweden"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 150
+    }
+   ]
+  },
+  {
+   "route": "CUN>MAD>CPH",
+   "frm": "CUN",
+   "to": "CPH",
+   "price": 2962,
+   "cabin": 150,
+   "checked": 600,
+   "stay_cost": 450,
+   "total": 3562,
+   "eff": 5700,
+   "hours": 12.2,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T22:25:00",
+   "end": "2027-02-04T16:10:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Norwegian"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:29e455219c86",
+     "pattern": "P:*/CUN>MAD",
+     "frm": "CUN",
+     "to": "MAD",
+     "dep": "2027-02-02T22:25:00",
+     "arr": "2027-02-03T13:25:00",
+     "price": 2598.0,
+     "hours": 9.0,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:1fbe19389f7e",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T12:55:00",
+     "arr": "2027-02-04T16:10:00",
+     "price": 364.0,
+     "hours": 3.25,
+     "carriers": [
+      "Norwegian"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 150
     }
    ]
   },
@@ -2734,7 +2981,8 @@
    "PEI",
    "LPB",
    "VVI",
-   "CBB"
+   "CBB",
+   "CUN"
   ],
   "note": "stopovers on the way in or home are welcome when they make the trip cheaper or less tedious (Simon, 28 Oct)"
  }
