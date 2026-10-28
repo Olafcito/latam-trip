@@ -2,7 +2,15 @@
 
 You are designing and building a web app: a trip planner for Simon's backpacking trip through Latin America (Central America, Colombia, Bolivia, optionally Guadalajara) from early December 2026 to early February 2027. The data comes from a crawler that keeps adding to the files in `data/`, so read everything at runtime and hardcode nothing.
 
-Read these first: `MAP_BRIEF.md`, `plugin/skills/flight-crawl-orchestrator/references/map-schema.md`, `data/network/map.json`, `data/scenario_results.json`, the header of `data/quotes.csv`, and `trip.json`.
+All data lives in the public repo https://github.com/Olafcito/latam-trip (branch main) and updates there. Load it from the raw URLs, both while designing and at runtime:
+- Map data: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/network/map.json
+- Recommended trips: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/scenario_results.json
+- All quotes: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/quotes.csv
+- Bag fees: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/bag_rules.json
+- Trip parameters: https://raw.githubusercontent.com/Olafcito/latam-trip/main/trip.json
+- Schema: https://raw.githubusercontent.com/Olafcito/latam-trip/main/plugin/skills/flight-crawl-orchestrator/references/map-schema.md
+- Map spec: https://raw.githubusercontent.com/Olafcito/latam-trip/main/MAP_BRIEF.md
+If you cannot fetch URLs, ask Simon to attach these files.
 
 ## Build two tabs
 
