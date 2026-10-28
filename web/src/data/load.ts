@@ -18,3 +18,13 @@ export async function loadMapData(base = BASE): Promise<MapData> {
   ])
   return { places, connections, countries }
 }
+
+/** The ranked trips to start from (data/saved_trips.json). Missing file: no seeds. */
+export async function loadSeedTrips(base = BASE): Promise<unknown> {
+  try {
+    const res = await fetch(`${base}/saved_trips.json`)
+    return res.ok ? await res.json() : null
+  } catch {
+    return null
+  }
+}

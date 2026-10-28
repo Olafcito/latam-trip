@@ -11,11 +11,68 @@ export interface TripLeg {
   mode: Mode
 }
 
+/** A long-haul way (Copenhagen to Latin America or back) as written in data/inout.json. */
+export interface SeedWay {
+  from: string
+  to: string
+  depart: string | null
+  arrive: string | null
+  flying_hours: number | null
+  total_hours: number | null
+  hub_nights: number
+  us_transit: boolean
+  airports: string[]
+  timeline: unknown[]
+}
+
+/** In and out of a trip that started from a ranked scenario (data/saved_trips.json). */
+export interface SeedInout {
+  option_id: string
+  type: string
+  entry: string
+  exit: string
+  price_dkk: number
+  way_in: SeedWay
+  way_home: SeedWay
+}
+
+/** A stretch of a seeded trip in travel order: an overland block (your own route) or a priced flight. */
+export interface SeedSegment {
+  kind: 'overland' | 'flight'
+  from: string
+  to: string
+  note?: string
+  countries?: string[]
+  cid?: string | null
+  depart?: string | null
+  arrive?: string | null
+  price_dkk?: number | null
+  cabin_bag_fee_dkk?: number | null
+  carriers?: string[]
+  via?: string[]
+  price_seen_for?: string
+}
+
+export interface SeedTotals {
+  long_haul_dkk: number
+  in_between_dkk: number
+  flights_total_dkk: number
+  cabin_bag_fees_dkk: number
+  hub_nights: number
+  us_transit: boolean
+}
+
 export interface Trip {
   id: string
   name: string
   legs: TripLeg[]
   updated: number
+  // set on trips that came from data/saved_trips.json
+  seed?: boolean
+  rank?: number
+  inout?: SeedInout
+  segments?: SeedSegment[]
+  totals?: SeedTotals
 }
 
 export interface TripState {
@@ -24,6 +81,7 @@ export interface TripState {
 }
 
 const TRIPS_KEY = 'latam-trip.trips'
+const SEEDED_KEY = 'latam-trip.seeded'
 const OLD_JOURNEY_KEY = 'latam-trip.journey'
 
 export const EMPTY_TRIPS: TripState = { trips: [], active: null }
@@ -34,13 +92,30 @@ export const TRIP_COLORS = ['#F2B544', '#6FD3B8', '#8DB8F2', '#E99AC0', '#C6A4F2
 const isLeg = (x: unknown): x is TripLeg =>
   !!x && typeof x === 'object' && ['cid', 'from', 'to', 'mode'].every((k) => typeof (x as Record<string, unknown>)[k] === 'string')
 
+/** The optional seed fields of a stored or seeded trip, kept only when they have the right shape. */
+function seedFields(t: Trip): Partial<Trip> {
+  const out: Partial<Trip> = {}
+  if (t.seed === true) out.seed = true
+  if (typeof t.rank === 'number') out.rank = t.rank
+  if (t.inout && typeof t.inout === 'object' && typeof t.inout.entry === 'string' && typeof t.inout.exit === 'string') out.inout = t.inout
+  if (Array.isArray(t.segments)) out.segments = t.segments.filter((g) => g && typeof g.from === 'string' && typeof g.to === 'string')
+  if (t.totals && typeof t.totals === 'object') out.totals = t.totals
+  return out
+}
+
 /** Parse stored trips, dropping anything malformed. */
 export function parseTrips(raw: unknown): TripState {
   if (!raw || typeof raw !== 'object') return EMPTY_TRIPS
   const r = raw as { trips?: unknown; active?: unknown }
   const trips = (Array.isArray(r.trips) ? r.trips : [])
     .filter((t): t is Trip => !!t && typeof t === 'object' && typeof t.id === 'string' && typeof t.name === 'string')
-    .map((t) => ({ id: t.id, name: t.name, legs: Array.isArray(t.legs) ? t.legs.filter(isLeg) : [], updated: Number(t.updated) || 0 }))
+    .map((t) => ({
+      ...seedFields(t),
+      id: t.id,
+      name: t.name,
+      legs: Array.isArray(t.legs) ? t.legs.filter(isLeg) : [],
+      updated: Number(t.updated) || 0,
+    }))
   const active = typeof r.active === 'string' && trips.some((t) => t.id === r.active) ? r.active : null
   return { trips, active }
 }
@@ -85,6 +160,42 @@ export function writeTrips(state: TripState) {
 }
 
 const newId = () => Math.random().toString(36).slice(2, 10)
+
+// ---- seeded trips (data/saved_trips.json) ----------------------------------------------------
+
+/** Turn the trips of data/saved_trips.json into Trip objects. */
+export function parseSeedFile(raw: unknown): Trip[] {
+  const list = raw && typeof raw === 'object' && Array.isArray((raw as { trips?: unknown }).trips) ? (raw as { trips: unknown[] }).trips : []
+  return parseTrips({ trips: list.map((t) => ({ ...(t as object), seed: true, updated: 0 })) }).trips
+}
+
+/**
+ * Add seeded trips that this browser has not imported before. A seed the user deleted stays
+ * deleted, because its id is remembered in `imported`.
+ */
+export function mergeSeeds(s: TripState, seeds: Trip[], imported: string[]): { state: TripState; imported: string[] } {
+  const have = new Set(s.trips.map((t) => t.id))
+  const fresh = seeds.filter((t) => !have.has(t.id) && !imported.includes(t.id))
+  if (!fresh.length) return { state: s, imported }
+  return { state: { ...s, trips: [...s.trips, ...fresh] }, imported: [...imported, ...fresh.map((t) => t.id)] }
+}
+
+export function readSeeded(): string[] {
+  try {
+    const v: unknown = JSON.parse(localStorage.getItem(SEEDED_KEY) ?? '[]')
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+export function writeSeeded(ids: string[]) {
+  try {
+    localStorage.setItem(SEEDED_KEY, JSON.stringify(ids))
+  } catch {
+    // storage blocked: seeds are offered again next time
+  }
+}
 
 // ---- edits: pure, so the app can hand them to setState ------------------------------------
 
