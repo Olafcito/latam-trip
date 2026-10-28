@@ -75,7 +75,8 @@ function label(id: string, fontStack: string[], size: number, extra: Partial<Sym
       'text-radial-offset': 0.75,
       'text-justify': 'auto',
       'text-padding': 3,
-      'symbol-sort-key': ['get', 'popularity'],
+      // flight hubs are labelled before the places around them, lower keys place first
+      'symbol-sort-key': ['-', ['get', 'popularity'], ['case', ['get', 'hub'], 3, 0]],
     },
     paint: labelPaint,
     ...extra,
@@ -95,7 +96,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     type: 'FeatureCollection',
     features: model.places.map((p) => ({
       type: 'Feature',
-      properties: { id: p.id, short_name: p.short_name, tier: p.tier, popularity: p.popularity },
+      properties: { id: p.id, short_name: p.short_name, tier: p.tier, popularity: p.popularity, hub: !!p.hub },
       geometry: { type: 'Point', coordinates: [p.lon, p.lat] },
     })),
   }

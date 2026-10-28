@@ -44,6 +44,9 @@ CATEGORIES = {  # fixed list from the handoff; regexes over tagline, summary, th
 GROUND = {"bus", "shuttle", "chicken_bus", "colectivo", "train"}
 
 
+SHORT = {"VVI": "Santa Cruz", "TAYR": "Tayrona"}  # map labels for names too long to place
+
+
 def short_name(name):
     return re.sub(r"\s*\(.*?\)\s*", " ", name).split(" / ")[0].strip()
 
@@ -86,6 +89,9 @@ def categories(n, alt):
     return [c for c, _ in sorted(scores.items(), key=lambda kv: (-kv[1], order.index(kv[0])))][:3]
 
 
+HUB_FLIGHTS = 3  # flight routes that make a town a destination
+
+
 def tier(n):
     if n["type"] == "border":
         return "stop_only"
@@ -107,7 +113,7 @@ def build():
         img = p.get("image") or None
         alt = elev.get(n["id"])
         places.append({
-            "id": n["id"], "name": n["name"], "short_name": short_name(n["name"]), "country": n["country"],
+            "id": n["id"], "name": n["name"], "short_name": SHORT.get(n["id"]) or short_name(n["name"]), "country": n["country"],
             "lat": n["lat"], "lon": n["lon"], "tier": tier(n), "type": n["type"], "popularity": n["popularity"],
             "iata": n.get("iata"), "airport_transfer_min": None,
             "why": p.get("tagline") or n.get("why"), "reason": n.get("why"),
@@ -301,6 +307,17 @@ def build():
             o.pop("dir", None)
             o["stops"] = [s for s in o["stops"] if s["place_id"] in known]
         c["options"].sort(key=lambda o: (o["mode"] == "flight", o["duration_min"] or 1e9))
+
+    # a place with several flight routes is a hub the overview draws lines to: always shown, and labelled first
+    flights = {}
+    for c in conns.values():
+        if any(o["mode"] == "flight" for o in c["options"]):
+            for end in (c["a"], c["b"]):
+                flights[end] = flights.get(end, 0) + 1
+    for p in places:
+        p["hub"] = not p.get("context") and flights.get(p["id"], 0) >= HUB_FLIGHTS
+        if p["hub"] and p["tier"] == "town":
+            p["tier"] = "destination"
 
     countries = [{"code": c, "name": n, "label_lat": la, "label_lon": lo} for c, n, la, lo in COUNTRIES]
     os.makedirs(OUT, exist_ok=True)

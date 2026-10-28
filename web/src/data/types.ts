@@ -25,6 +25,7 @@ export interface Place {
   iata: string | null
   airport_transfer_min: number | null
   context?: boolean // an airport that only appears as a flight via
+  hub?: boolean // three or more flight routes: always shown and labelled first
   why?: string | null
   reason?: string | null
   summary?: string | null

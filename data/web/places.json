@@ -62,7 +62,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/la-paz/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026)."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026).",
+  "hub": true
  },
  {
   "id": "COPA",
@@ -126,7 +127,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/copacabana/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": false
  },
  {
   "id": "ISOL",
@@ -175,7 +177,8 @@
     "url": "https://www.hostelz.com/en/hostels/Bolivia/Isla-del-Sol"
    }
   ],
-  "hostel_note": "Guesthouses USD 15-50 per night (bushop 2026). Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Guesthouses USD 15-50 per night (bushop 2026). Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": false
  },
  {
   "id": "COR",
@@ -240,7 +243,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/coroico/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": false
  },
  {
   "id": "ORU",
@@ -287,7 +291,8 @@
     "url": "https://www.hostelz.com/hostels-in/Bolivia"
    }
   ],
-  "hostel_note": "Very few hostels; accommodation fills and prices jump around Carnaval. Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Very few hostels; accommodation fills and prices jump around Carnaval. Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": false
  },
  {
   "id": "UYU",
@@ -352,7 +357,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/uyuni/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Tourist sources quote dorm USD 10-18 in Uyuni (touristsecrets 2026)."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Tourist sources quote dorm USD 10-18 in Uyuni (touristsecrets 2026).",
+  "hub": false
  },
  {
   "id": "POTO",
@@ -416,7 +422,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/potosi/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": false
  },
  {
   "id": "SRE",
@@ -481,7 +488,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/sucre/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026)."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026).",
+  "hub": true
  },
  {
   "id": "TUP",
@@ -537,7 +545,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/tupiza/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": false
  },
  {
   "id": "CBB",
@@ -602,16 +611,17 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/cochabamba/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": true
  },
  {
   "id": "VVI",
   "name": "Santa Cruz de la Sierra",
-  "short_name": "Santa Cruz de la Sierra",
+  "short_name": "Santa Cruz",
   "country": "BO",
   "lat": -17.78,
   "lon": -63.18,
-  "tier": "town",
+  "tier": "destination",
   "type": "city",
   "popularity": 3,
   "iata": "VVI",
@@ -666,7 +676,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/santa-cruz-de-la-sierra/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": true
  },
  {
   "id": "SAMA",
@@ -729,7 +740,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/samaipata/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. One source quoted Hostel Serena dorms from GBP 9.5 and privates from GBP 29 (alongdustyroads, 2025); not converted to DKK."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. One source quoted Hostel Serena dorms from GBP 9.5 and privates from GBP 29 (alongdustyroads, 2025); not converted to DKK.",
+  "hub": false
  },
  {
   "id": "RBQ",
@@ -783,7 +795,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/bolivia/rurrenabaque/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": true
  },
  {
   "id": "PUNO",
@@ -815,7 +828,8 @@
    "h": 4096
   },
   "hostels": [],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "CUZ",
@@ -847,7 +861,8 @@
    "h": 5281
   },
   "hostels": [],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "LIM",
@@ -879,7 +894,8 @@
    "h": 418
   },
   "hostels": [],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "BOG",
@@ -944,7 +960,8 @@
     "url": "https://www.hostelz.com/best-hostels-bogota"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "PTY",
@@ -1008,7 +1025,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/panama/panama-city/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "SJO",
@@ -1017,7 +1035,7 @@
   "country": "CR",
   "lat": 9.93,
   "lon": -84.08,
-  "tier": "town",
+  "tier": "destination",
   "type": "city",
   "popularity": 3,
   "iata": "SJO",
@@ -1072,7 +1090,8 @@
     "url": "https://hostelz.com/best-hostels-san-jose"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "GUA",
@@ -1134,7 +1153,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/guatemala/guatemala-city/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "GDL",
@@ -1199,7 +1219,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/mexico/guadalajara/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "hub": true
  },
  {
   "id": "TEQ",
@@ -1237,7 +1258,8 @@
    "h": 4631
   },
   "hostels": [],
-  "hostel_note": "No hostels found; most visitors day-trip from Guadalajara. Prices null."
+  "hostel_note": "No hostels found; most visitors day-trip from Guadalajara. Prices null.",
+  "hub": false
  },
  {
   "id": "GTO",
@@ -1300,7 +1322,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/mexico/guanajuato/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Hostelz Mexico average: no figure for Guanajuato."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Hostelz Mexico average: no figure for Guanajuato.",
+  "hub": false
  },
  {
   "id": "CHAP",
@@ -1348,7 +1371,8 @@
     "url": "https://www.hostelz.com/hostels/Mexico/Ajijic"
    }
   ],
-  "hostel_note": "Only one hostel listed (dorm 'from MX$83' on Hostelz, not converted). Hotels and Airbnbs dominate."
+  "hostel_note": "Only one hostel listed (dorm 'from MX$83' on Hostelz, not converted). Hotels and Airbnbs dominate.",
+  "hub": false
  },
  {
   "id": "PVR",
@@ -1413,7 +1437,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/mexico/puerto-vallarta/"
    }
   ],
-  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Peak season dorm prices run above the average."
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Peak season dorm prices run above the average.",
+  "hub": false
  },
  {
   "id": "ANT",
@@ -1478,7 +1503,8 @@
     "url": "https://thebrokebackpacker.com/?p=42780"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "ATIT",
@@ -1543,7 +1569,8 @@
     "url": "https://www.backpackerswanderlust.com/best-hostels-in-lake-atitlan/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "XELA",
@@ -1606,7 +1633,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/guatemala/quetzaltenango/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "FLR",
@@ -1670,7 +1698,8 @@
     "url": "https://www.hostelz.com/en/best-hostels-flores"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "LANQ",
@@ -1734,7 +1763,8 @@
     "url": "https://talesofabackpacker.com/the-best-hostels-in-semuc-champey-guatemala/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "SAL",
@@ -1743,7 +1773,7 @@
   "country": "SV",
   "lat": 13.69,
   "lon": -89.19,
-  "tier": "town",
+  "tier": "destination",
   "type": "city",
   "popularity": 3,
   "iata": "SAL",
@@ -1791,7 +1821,8 @@
     "url": "https://en.wikivoyage.org/wiki/San_Salvador"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "TUNCO",
@@ -1856,7 +1887,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/el-salvador/el-tunco/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "COPAN",
@@ -1913,7 +1945,8 @@
     "url": "https://en.wikivoyage.org/wiki/Cop%C3%A1n_Ruinas"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "SAP",
@@ -1975,7 +2008,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/honduras/san-pedro-sula/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "TGU",
@@ -2021,7 +2055,8 @@
     "url": "https://en.wikivoyage.org/wiki/Tegucigalpa"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "LCE",
@@ -2084,7 +2119,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/honduras/la-ceiba/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "RTB",
@@ -2147,7 +2183,8 @@
     "url": "https://hostelz.com/hostels/Honduras/Roatan"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "UTIL",
@@ -2211,7 +2248,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/honduras/utila/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "MGA",
@@ -2220,7 +2258,7 @@
   "country": "NI",
   "lat": 12.13,
   "lon": -86.25,
-  "tier": "town",
+  "tier": "destination",
   "type": "hub",
   "popularity": 3,
   "iata": "MGA",
@@ -2266,7 +2304,8 @@
     "url": "https://hostelz.com/best-hostels-managua"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "LEON",
@@ -2331,7 +2370,8 @@
     "url": "https://hostelz.com/best-hostels-leon-nicaragua"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "GRAN",
@@ -2396,7 +2436,8 @@
     "url": "https://www.hostelz.com/best-hostels-granada-nicaragua"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "SJDS",
@@ -2460,7 +2501,8 @@
     "url": "https://hostelz.com/best-hostels-san-juan-del-sur"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "OMET",
@@ -2524,7 +2566,8 @@
     "url": "https://hostelz.com/best-hostels-ometepe"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "CORN",
@@ -2586,7 +2629,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/nicaragua/corn-island/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "LCORN",
@@ -2633,7 +2677,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/nicaragua/little-corn-island/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "LIR",
@@ -2697,7 +2742,8 @@
     "url": "https://www.hostelworld.com/hostels/north-america/costa-rica/liberia/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "SBLAS",
@@ -2734,7 +2780,8 @@
    "h": 1800
   },
   "hostels": [],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "CAPU",
@@ -2797,7 +2844,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/capurgana/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "MDE",
@@ -2860,7 +2908,8 @@
     "url": "https://www.hostelz.com/best-hostels-medellin"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "CLO",
@@ -2869,7 +2918,7 @@
   "country": "CO",
   "lat": 3.45,
   "lon": -76.53,
-  "tier": "town",
+  "tier": "destination",
   "type": "city",
   "popularity": 3,
   "iata": "CLO",
@@ -2925,7 +2974,8 @@
     "url": "https://www.hostelz.com/best-hostels-cali"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "CTG",
@@ -2989,7 +3039,8 @@
     "url": "https://gobackpacking.com/travel-guides/colombia/best-hostels-cartagena/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "SMR",
@@ -3054,7 +3105,8 @@
     "url": "https://www.hostelz.com/best-hostels-santa-marta"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "PEI",
@@ -3063,7 +3115,7 @@
   "country": "CO",
   "lat": 4.81,
   "lon": -75.69,
-  "tier": "town",
+  "tier": "destination",
   "type": "hub",
   "popularity": 3,
   "iata": "PEI",
@@ -3108,7 +3160,8 @@
     "url": "https://www.hostelz.com/best-hostels-pereira"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "ADZ",
@@ -3171,7 +3224,8 @@
     "url": "https://www.hostelz.com/best-hostels-san-andres"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "PVA",
@@ -3228,7 +3282,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/providencia-island/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "SALE",
@@ -3293,7 +3348,8 @@
     "url": "https://www.hostelz.com/best-hostels-salento"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "MZL",
@@ -3358,7 +3414,8 @@
     "url": "https://www.hostelz.com/best-hostels-manizales"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "GUAT",
@@ -3415,12 +3472,13 @@
     "url": "https://www.hostelz.com/best-hostels-guatape"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "TAYR",
   "name": "Tayrona National Park",
-  "short_name": "Tayrona National Park",
+  "short_name": "Tayrona",
   "country": "CO",
   "lat": 11.31,
   "lon": -74.04,
@@ -3479,7 +3537,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/el-zaino/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "PALO",
@@ -3543,7 +3602,8 @@
     "url": "https://www.hostelz.com/best-hostels-palomino"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "MINC",
@@ -3608,7 +3668,8 @@
     "url": "https://www.hostelz.com/best-hostels-minca"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "BAQ",
@@ -3617,7 +3678,7 @@
   "country": "CO",
   "lat": 10.96,
   "lon": -74.8,
-  "tier": "town",
+  "tier": "destination",
   "type": "hub",
   "popularity": 3,
   "iata": "BAQ",
@@ -3671,7 +3732,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/barranquilla/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": true
  },
  {
   "id": "SGIL",
@@ -3736,7 +3798,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/san-gil/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "VLEY",
@@ -3792,7 +3855,8 @@
     "url": "https://www.hostelz.com/best-hostels-villa-de-leyva"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "NECO",
@@ -3845,7 +3909,8 @@
     "url": "https://www.hostelz.com/da/hostels/Colombia/Necocli"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "SAPZ",
@@ -3893,7 +3958,8 @@
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/sapzurro/"
    }
   ],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "OBAL",
@@ -3926,7 +3992,8 @@
    "h": 2112
   },
   "hostels": [],
-  "hostel_note": null
+  "hostel_note": null,
+  "hub": false
  },
  {
   "id": "SDQ",
@@ -3939,7 +4006,8 @@
   "type": "airport",
   "popularity": 5,
   "iata": "SDQ",
-  "context": true
+  "context": true,
+  "hub": false
  },
  {
   "id": "MEX",
@@ -3952,7 +4020,8 @@
   "type": "airport",
   "popularity": 5,
   "iata": "MEX",
-  "context": true
+  "context": true,
+  "hub": false
  },
  {
   "id": "MIA",
@@ -3965,7 +4034,8 @@
   "type": "airport",
   "popularity": 5,
   "iata": "MIA",
-  "context": true
+  "context": true,
+  "hub": false
  },
  {
   "id": "LAP",
@@ -3978,7 +4048,8 @@
   "type": "airport",
   "popularity": 5,
   "iata": "LAP",
-  "context": true
+  "context": true,
+  "hub": false
  },
  {
   "id": "NLU",
@@ -3991,6 +4062,7 @@
   "type": "airport",
   "popularity": 5,
   "iata": "NLU",
-  "context": true
+  "context": true,
+  "hub": false
  }
 ]
