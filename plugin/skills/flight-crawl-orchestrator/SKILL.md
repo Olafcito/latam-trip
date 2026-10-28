@@ -40,6 +40,6 @@ Priority = gain x novelty x gap / cost. A branch is saturated after 8 tasks with
 
 ## After each round
 1. `python3 -I PLUGIN/skills/flight-crawl-orchestrator/scripts/ingest.py --root ROOT`
-2. `inout.py --root ROOT --md FILE` (city in x city out table, three types, rated: data/inout.csv), `chains.py --root ROOT` (self-built ways in/home, data/chains.json), then `routes.py --root ROOT` (every region order for every main ticket and chain pair, data/routes.json), `evaluate.py` for named scenarios with bags, `build_map.py` for the map.
+2. `itineraries.py --root ROOT` (whole trips: every option x region order incl. revisits, data/itineraries.json), `inout.py --root ROOT --md FILE` (city in x city out table, three types, rated: data/inout.csv), `chains.py --root ROOT` (self-built ways in/home, data/chains.json), then `routes.py --root ROOT` (every region order for every main ticket and chain pair, data/routes.json), `evaluate.py` for named scenarios with bags, `build_map.py` for the map.
 3. Update `briefs/scenarios.md` and the plan doc with what changed; fold worker `next:` and `problems:` lines into the agent files and references/lessons.md.
 4. Pick the next round by the priority rule. Tell the user only what changed their options.
