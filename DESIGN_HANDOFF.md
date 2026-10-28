@@ -3,6 +3,8 @@
 You are designing and building a web app: a trip planner for Simon's backpacking trip through Latin America (Central America, Colombia, Bolivia, optionally Guadalajara) from early December 2026 to early February 2027. The data comes from a crawler that keeps adding to the files in `data/`, so read everything at runtime and hardcode nothing.
 
 All data lives in the public repo https://github.com/Olafcito/latam-trip (branch main) and updates there. Load it from the raw URLs, both while designing and at runtime:
+- Ways in and home with full timelines, tickets and rated options (the backbone of both tabs): https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/inout.json
+- Its schema: https://raw.githubusercontent.com/Olafcito/latam-trip/main/plugin/skills/flight-crawl-orchestrator/references/inout-schema.md
 - Map data: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/network/map.json
 - Recommended trips: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/scenario_results.json
 - All quotes: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/quotes.csv
@@ -64,3 +66,10 @@ Calm and data-first. Give each transport mode one accent colour and keep the cou
 
 ## Out of scope for v1
 Booking, live prices from airline APIs, and user accounts.
+
+## The in / out model (data/inout.json)
+Every journey starts and ends in Copenhagen. A **way in** (Copenhagen → a Latin American airport) and a **way home** (an airport → Copenhagen) are the top-level choices; the flights in between are added under them.
+- List view: `options` (one per arrival city, departure city and type), sorted by rating. Columns: in, out, type, flight price, cabin-bag fees, rating, times, hub nights.
+- Picking an option (or any way in plus any way home of type `oneways`) puts both ways at the start and end of the journey builder.
+- Draw each way from its `timeline`: flights as arcs (with their sold connections as small dots), and stops as markers sized by `hours`, with a moon for `night` and a split-ticket icon for `self_transfer`. Use `airports` for coordinates and time zones.
+- Prices: show `price_dkk` (flights only) and the `extras` separately: cabin-bag fees, checked-bag fees, hub nights and the estimated stay. Never fold hub nights into the flight price.
