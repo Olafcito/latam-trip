@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T17:19:03Z",
+ "generated_at": "2026-10-28T17:58:14Z",
  "currency": "DKK",
  "home": [
   "CPH"
@@ -2107,6 +2107,30 @@
    ],
    "notes": "site=; other= | offerprice null; protection=0"
   },
+  "TQ:b643291c3e6a": {
+   "id": "TQ:b643291c3e6a",
+   "quote_id": "Q:b643291c3e6a",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "SJO>CPH"
+   ],
+   "price_dkk": 5786,
+   "fare_brand": "LIGHT",
+   "cabin_bag": "carry-on up to 12 kg",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "paid",
+   "checked_bag_fee_dkk": 560,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Air France"
+   ],
+   "flags": [],
+   "notes": "Fastest, one stop in Paris and no US airport, lands CPH 17:00. Only 1h05 at CDG (tight). 1st bag $139.09. Change fee applies, non-refundable. Base $579 + taxes $317.98. 9 seats left. USD to DKK at 6.45."
+  },
   "TQ:7479859ae08e": {
    "id": "TQ:7479859ae08e",
    "quote_id": "Q:7479859ae08e",
@@ -2183,6 +2207,185 @@
    ],
    "flags": [],
    "notes": "site=; other= | offerprice null; protection=0"
+  },
+  "TQ:c72de17e7041": {
+   "id": "TQ:c72de17e7041",
+   "quote_id": "Q:c72de17e7041",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "LIR>CPH"
+   ],
+   "price_dkk": 5886,
+   "fare_brand": "LIGHT",
+   "cabin_bag": "carry-on",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "paid",
+   "checked_bag_fee_dkk": 0,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "KLM",
+    "KLM (op. Delta)"
+   ],
+   "flags": [
+    "us_transit"
+   ],
+   "notes": "Fastest, via US (ATL). Lands CPH 16:40. No non-US option was returned for LIR (every result transits ATL or JFK). 1st bag $139.09. 9 seats left. USD to DKK at 6.45."
+  },
+  "TQ:ec1d49bbf596": {
+   "id": "TQ:ec1d49bbf596",
+   "quote_id": "Q:ec1d49bbf596",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "SAL>CPH"
+   ],
+   "price_dkk": 6092,
+   "fare_brand": "CLASICA",
+   "cabin_bag": "personal item + carry-on up to 15 kg",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "incl",
+   "checked_bag_fee_dkk": 290,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Aeromexico",
+    "SAS"
+   ],
+   "flags": [],
+   "notes": "Fastest, no US airport, only $22 above cheapest and lands CPH 18:55. 1st bag included, change free, non-refundable. 7 seats left. USD to DKK at 6.45."
+  },
+  "TQ:cc2a451404fb": {
+   "id": "TQ:cc2a451404fb",
+   "quote_id": "Q:cc2a451404fb",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "SAL>CPH"
+   ],
+   "price_dkk": 6394,
+   "fare_brand": "CLASICA",
+   "cabin_bag": "personal item + carry-on up to 15 kg",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "incl",
+   "checked_bag_fee_dkk": 290,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Aeromexico",
+    "SAS"
+   ],
+   "flags": [],
+   "notes": "No-US option via Mexico City and London Heathrow, lands CPH 19:50. 1st bag included, change free. Third-best no-US choice. USD to DKK at 6.45."
+  },
+  "TQ:cf24a014120a": {
+   "id": "TQ:cf24a014120a",
+   "quote_id": "Q:cf24a014120a",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "GUA>CPH"
+   ],
+   "price_dkk": 6519,
+   "fare_brand": "CLASICA",
+   "cabin_bag": "personal item + carry-on up to 15 kg",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "incl",
+   "checked_bag_fee_dkk": 290,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Aeromexico",
+    "SAS"
+   ],
+   "flags": [],
+   "notes": "Cheapest and cheapest without US (same row). Via Mexico City and Amsterdam, lands CPH 18:55. 1st bag 25 kg included, 2nd $211.42. Pre-trip change no fee, non-refundable. Base $664 + taxes $346.73. 7 seats left. USD to DKK at 6.45."
+  },
+  "TQ:173d4f7712b6": {
+   "id": "TQ:173d4f7712b6",
+   "quote_id": "Q:173d4f7712b6",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "MGA>CPH"
+   ],
+   "price_dkk": 6794,
+   "fare_brand": "CLASICA",
+   "cabin_bag": "personal item + carry-on up to 15 kg",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "incl",
+   "checked_bag_fee_dkk": 290,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Aeromexico",
+    "SAS"
+   ],
+   "flags": [],
+   "notes": "Cheapest, cheapest without US and fastest are the same row. Via Mexico City (7h15) and Heathrow, lands CPH 19:50. 1st bag included, 2nd $211.42, change free, non-refundable. Base $672 + taxes $381.36. 7 seats left. USD to DKK at 6.45."
+  },
+  "TQ:01d269bdb5a2": {
+   "id": "TQ:01d269bdb5a2",
+   "quote_id": "Q:01d269bdb5a2",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "MGA>CPH"
+   ],
+   "price_dkk": 7142,
+   "fare_brand": "CLASICA",
+   "cabin_bag": "personal item + carry-on up to 15 kg",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "incl",
+   "checked_bag_fee_dkk": 290,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Aeromexico",
+    "SAS"
+   ],
+   "flags": [],
+   "notes": "No-US alternative via Mexico City and Madrid, $54 above rank 1, lands CPH 20:20. Bag included, change free. USD to DKK at 6.45."
+  },
+  "TQ:181d126c7a69": {
+   "id": "TQ:181d126c7a69",
+   "quote_id": "Q:181d126c7a69",
+   "source": "expedia",
+   "observed_at": "2026-10-28T17:57:34Z",
+   "structure": "one_way",
+   "legs": [
+    "SAP>CPH"
+   ],
+   "price_dkk": 7201,
+   "fare_brand": "Basic Economy",
+   "cabin_bag": "personal item + carry-on",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "paid",
+   "checked_bag_fee_dkk": 0,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Lufthansa",
+    "United"
+   ],
+   "flags": [
+    "us_transit"
+   ],
+   "notes": "Fastest, via US (IAH), lands CPH 18:25 next day. 1st bag $290, 2nd $300. Non-refundable, no changes. 9 seats left. USD to DKK at 6.45."
   },
   "TQ:031a37859ff5": {
    "id": "TQ:031a37859ff5",
@@ -3279,34 +3482,31 @@
    ],
    "notes": "Book with KLM DKK 10,837, 1 ticket. Cheapest AND shortest home (SAL-PTY-AMS-CPH 16h55). Cheaper than CPH-LPB + GDL-CPH main ticket by ~1,100."
   },
-  "TQ:99c4f409c805": {
-   "id": "TQ:99c4f409c805",
-   "quote_id": "Q:99c4f409c805",
+  "TQ:016fa4f9e11d": {
+   "id": "TQ:016fa4f9e11d",
+   "quote_id": "Q:016fa4f9e11d",
    "source": "google_flights",
-   "observed_at": "2026-10-28T15:28:53Z",
+   "observed_at": "2026-10-28T17:57:52Z",
    "structure": "open_jaw",
    "legs": [
     "CPH>BOG",
     "SAL>CPH"
    ],
-   "price_dkk": 6669,
-   "fare_brand": "Basic Economy",
+   "price_dkk": 7657,
+   "fare_brand": "KLM fare",
    "cabin_bag": "1 free carry-on",
    "cabin_bag_fee_dkk": 0,
    "checked_bag": "paid",
-   "checked_bag_fee_dkk": 1096,
+   "checked_bag_fee_dkk": 805,
    "tickets_inside": 1,
    "self_transfer": false,
    "link": null,
    "carriers": [
-    "American",
-    "British Airways"
+    "COPA",
+    "KLM"
    ],
-   "flags": [
-    "us_transit",
-    "basic_fare"
-   ],
-   "notes": "1st checked bag DKK 1,128 each way-ticket (per booking page); Main Cabin 7,539 (seat free, changes free)"
+   "flags": [],
+   "notes": "NO US. 988 above BA/AA. Out 1 stop 14.5h; home via PTY+AMS. Book with KLM."
   },
   "TQ:e0c12f1b8857": {
    "id": "TQ:e0c12f1b8857",
@@ -3395,34 +3595,31 @@
    ],
    "notes": "1st checked bag DKK 1,128; Main Cabin 7,966"
   },
-  "TQ:42fcad456075": {
-   "id": "TQ:42fcad456075",
-   "quote_id": "Q:42fcad456075",
+  "TQ:34ed7aca10fc": {
+   "id": "TQ:34ed7aca10fc",
+   "quote_id": "Q:34ed7aca10fc",
    "source": "google_flights",
-   "observed_at": "2026-10-28T15:32:05Z",
+   "observed_at": "2026-10-28T17:56:57Z",
    "structure": "open_jaw",
    "legs": [
     "CPH>MDE",
     "SAL>CPH"
    ],
-   "price_dkk": 6830,
-   "fare_brand": "Basic Economy",
+   "price_dkk": 7974,
+   "fare_brand": "KLM fare",
    "cabin_bag": "1 free carry-on",
    "cabin_bag_fee_dkk": 0,
    "checked_bag": "paid",
-   "checked_bag_fee_dkk": 1096,
+   "checked_bag_fee_dkk": 805,
    "tickets_inside": 1,
    "self_transfer": false,
    "link": null,
    "carriers": [
-    "American",
-    "British Airways"
+    "COPA",
+    "KLM"
    ],
-   "flags": [
-    "us_transit",
-    "basic_fare"
-   ],
-   "notes": "1st checked bag DKK 1,128; Main Cabin 7,700"
+   "flags": [],
+   "notes": "NO US. Cheapest overall no-US and only 1144 above BA/AA. Book with KLM."
   },
   "TQ:42ca0a9da87a": {
    "id": "TQ:42ca0a9da87a",
@@ -9602,6 +9799,65 @@
    "timeline": [
     {
      "kind": "flight",
+     "from": "SJO",
+     "to": "CPH",
+     "depart": "2027-02-03T20:30",
+     "arrive": "2027-02-04T17:00",
+     "hours": 13.5,
+     "connections": [
+      {
+       "airport": "CDG",
+       "layover_h": 1.08
+      }
+     ],
+     "carriers": [
+      "Air France"
+     ],
+     "flight_numbers": [
+      "Air France 589",
+      "Air France 1050"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:b643291c3e6a",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:b643291c3e6a"
+   ],
+   "flags": [],
+   "from": "SJO",
+   "to": "CPH",
+   "depart": "2027-02-03T20:30",
+   "arrive": "2027-02-04T17:00",
+   "total_hours": 13.5,
+   "flying_hours": 13.5,
+   "flights": 2,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "SJO",
+    "CDG",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 5786,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 560,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "H0065": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
      "from": "CTG",
      "to": "MAD",
      "depart": "2027-02-02T11:15",
@@ -9677,7 +9933,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0064",
+   "id": "H0065",
    "shared_ticket": null,
    "price_dkk": 5514,
    "extras": {
@@ -9687,7 +9943,7 @@
     "hub_stay_estimate_dkk": 0
    }
   },
-  "H0065": {
+  "H0066": {
    "direction": "home",
    "type": "oneways",
    "timeline": [
@@ -9745,7 +10001,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0065",
+   "id": "H0066",
    "shared_ticket": null,
    "price_dkk": 4282,
    "extras": {
@@ -9755,7 +10011,7 @@
     "hub_stay_estimate_dkk": 0
    }
   },
-  "H0066": {
+  "H0067": {
    "direction": "home",
    "type": "oneways",
    "timeline": [
@@ -9804,7 +10060,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0066",
+   "id": "H0067",
    "shared_ticket": null,
    "price_dkk": 7229,
    "extras": {
@@ -9814,7 +10070,473 @@
     "hub_stay_estimate_dkk": 0
    }
   },
-  "I0067": {
+  "H0068": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "LIR",
+     "to": "CPH",
+     "depart": "2027-02-03T15:25",
+     "arrive": "2027-02-04T16:40",
+     "hours": 18.25,
+     "connections": [
+      {
+       "airport": "ATL",
+       "layover_h": 2.43
+      },
+      {
+       "airport": "AMS",
+       "layover_h": 2.42
+      }
+     ],
+     "carriers": [
+      "KLM (op. Delta)",
+      "KLM"
+     ],
+     "flight_numbers": [
+      "KLM 7064 (op. Delta)",
+      "KLM 622",
+      "KLM 1273"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:c72de17e7041",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:c72de17e7041"
+   ],
+   "flags": [
+    "us_transit"
+   ],
+   "from": "LIR",
+   "to": "CPH",
+   "depart": "2027-02-03T15:25",
+   "arrive": "2027-02-04T16:40",
+   "total_hours": 18.2,
+   "flying_hours": 18.2,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": true,
+   "airports": [
+    "LIR",
+    "ATL",
+    "AMS",
+    "CPH"
+   ],
+   "score": 4,
+   "id": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 5886,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "H0069": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "SAL",
+     "to": "CPH",
+     "depart": "2027-02-03T15:18",
+     "arrive": "2027-02-04T18:55",
+     "hours": 20.62,
+     "connections": [
+      {
+       "airport": "MEX",
+       "layover_h": 3.83
+      },
+      {
+       "airport": "AMS",
+       "layover_h": 2.33
+      }
+     ],
+     "carriers": [
+      "Aeromexico",
+      "SAS"
+     ],
+     "flight_numbers": [
+      "Aeromexico 629",
+      "Aeromexico 25",
+      "Aeromexico 7803 (op. SAS)"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:ec1d49bbf596",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:ec1d49bbf596"
+   ],
+   "flags": [],
+   "from": "SAL",
+   "to": "CPH",
+   "depart": "2027-02-03T15:18",
+   "arrive": "2027-02-04T18:55",
+   "total_hours": 20.6,
+   "flying_hours": 20.6,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "SAL",
+    "MEX",
+    "AMS",
+    "CPH"
+   ],
+   "score": 4,
+   "id": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 6092,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 290,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "H0070": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "SAL",
+     "to": "CPH",
+     "depart": "2027-02-03T15:18",
+     "arrive": "2027-02-04T19:50",
+     "hours": 21.53,
+     "connections": [
+      {
+       "airport": "MEX",
+       "layover_h": 4.83
+      },
+      {
+       "airport": "LHR",
+       "layover_h": 1.92
+      }
+     ],
+     "carriers": [
+      "Aeromexico",
+      "SAS"
+     ],
+     "flight_numbers": [
+      "Aeromexico 629",
+      "Aeromexico 7",
+      "SAS 7818"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:cc2a451404fb",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:cc2a451404fb"
+   ],
+   "flags": [],
+   "from": "SAL",
+   "to": "CPH",
+   "depart": "2027-02-03T15:18",
+   "arrive": "2027-02-04T19:50",
+   "total_hours": 21.5,
+   "flying_hours": 21.5,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "SAL",
+    "MEX",
+    "LHR",
+    "CPH"
+   ],
+   "score": 4,
+   "id": "H0070",
+   "shared_ticket": null,
+   "price_dkk": 6394,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 290,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "H0071": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "GUA",
+     "to": "CPH",
+     "depart": "2027-02-03T17:05",
+     "arrive": "2027-02-04T18:55",
+     "hours": 18.83,
+     "connections": [
+      {
+       "airport": "MEX",
+       "layover_h": 2.08
+      },
+      {
+       "airport": "AMS",
+       "layover_h": 2.33
+      }
+     ],
+     "carriers": [
+      "Aeromexico",
+      "SAS"
+     ],
+     "flight_numbers": [
+      "Aeromexico 679",
+      "Aeromexico 25",
+      "Aeromexico 7803 (op. SAS)"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:cf24a014120a",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:cf24a014120a"
+   ],
+   "flags": [],
+   "from": "GUA",
+   "to": "CPH",
+   "depart": "2027-02-03T17:05",
+   "arrive": "2027-02-04T18:55",
+   "total_hours": 18.8,
+   "flying_hours": 18.8,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "GUA",
+    "MEX",
+    "AMS",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 6519,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 290,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "H0072": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "MGA",
+     "to": "CPH",
+     "depart": "2027-02-03T12:30",
+     "arrive": "2027-02-04T19:50",
+     "hours": 24.33,
+     "connections": [
+      {
+       "airport": "MEX",
+       "layover_h": 7.25
+      },
+      {
+       "airport": "LHR",
+       "layover_h": 1.92
+      }
+     ],
+     "carriers": [
+      "Aeromexico",
+      "SAS"
+     ],
+     "flight_numbers": [
+      "Aeromexico 651",
+      "Aeromexico 7",
+      "SAS 7818"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:173d4f7712b6",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:173d4f7712b6"
+   ],
+   "flags": [],
+   "from": "MGA",
+   "to": "CPH",
+   "depart": "2027-02-03T12:30",
+   "arrive": "2027-02-04T19:50",
+   "total_hours": 24.3,
+   "flying_hours": 24.3,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "MGA",
+    "MEX",
+    "LHR",
+    "CPH"
+   ],
+   "score": 3,
+   "id": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 6794,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 290,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "H0073": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "MGA",
+     "to": "CPH",
+     "depart": "2027-02-03T12:30",
+     "arrive": "2027-02-04T20:20",
+     "hours": 24.83,
+     "connections": [
+      {
+       "airport": "MEX",
+       "layover_h": 6.92
+      },
+      {
+       "airport": "MAD",
+       "layover_h": 1.33
+      }
+     ],
+     "carriers": [
+      "Aeromexico",
+      "SAS"
+     ],
+     "flight_numbers": [
+      "Aeromexico 651",
+      "Aeromexico 21",
+      "SAS 7845"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:01d269bdb5a2",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:01d269bdb5a2"
+   ],
+   "flags": [],
+   "from": "MGA",
+   "to": "CPH",
+   "depart": "2027-02-03T12:30",
+   "arrive": "2027-02-04T20:20",
+   "total_hours": 24.8,
+   "flying_hours": 24.8,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "MGA",
+    "MEX",
+    "MAD",
+    "CPH"
+   ],
+   "score": 3,
+   "id": "H0073",
+   "shared_ticket": null,
+   "price_dkk": 7142,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 290,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "H0074": {
+   "direction": "home",
+   "type": "oneways",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "SAP",
+     "to": "CPH",
+     "depart": "2027-02-03T13:41",
+     "arrive": "2027-02-04T18:25",
+     "hours": 21.73,
+     "connections": [
+      {
+       "airport": "IAH",
+       "layover_h": 2.18
+      },
+      {
+       "airport": "FRA",
+       "layover_h": 5.33
+      }
+     ],
+     "carriers": [
+      "United",
+      "Lufthansa"
+     ],
+     "flight_numbers": [
+      "United 1242",
+      "United 46",
+      "United 9330 (op. Lufthansa)"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:181d126c7a69",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:181d126c7a69"
+   ],
+   "flags": [
+    "us_transit"
+   ],
+   "from": "SAP",
+   "to": "CPH",
+   "depart": "2027-02-03T13:41",
+   "arrive": "2027-02-04T18:25",
+   "total_hours": 21.7,
+   "flying_hours": 21.7,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": true,
+   "airports": [
+    "SAP",
+    "IAH",
+    "FRA",
+    "CPH"
+   ],
+   "score": 3,
+   "id": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 7201,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   }
+  },
+  "I0075": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -9863,7 +10585,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0067",
+   "id": "I0075",
    "shared_ticket": "TQ:031a37859ff5",
    "price_dkk": 0,
    "extras": {
@@ -9872,9 +10594,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0068"
+   "paired_with": "H0076"
   },
-  "H0068": {
+  "H0076": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -9923,7 +10645,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0068",
+   "id": "H0076",
    "shared_ticket": "TQ:031a37859ff5",
    "price_dkk": 0,
    "extras": {
@@ -9932,9 +10654,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0067"
+   "paired_with": "I0075"
   },
-  "I0069": {
+  "I0077": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -9993,7 +10715,7 @@
     "GUA"
    ],
    "score": 3,
-   "id": "I0069",
+   "id": "I0077",
    "shared_ticket": "TQ:6d7c904e2d08",
    "price_dkk": 0,
    "extras": {
@@ -10002,9 +10724,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0070"
+   "paired_with": "H0078"
   },
-  "H0070": {
+  "H0078": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -10062,7 +10784,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0070",
+   "id": "H0078",
    "shared_ticket": "TQ:6d7c904e2d08",
    "price_dkk": 0,
    "extras": {
@@ -10071,9 +10793,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0069"
+   "paired_with": "I0077"
   },
-  "I0071": {
+  "I0079": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -10132,7 +10854,7 @@
     "SAL"
    ],
    "score": 3,
-   "id": "I0071",
+   "id": "I0079",
    "shared_ticket": "TQ:dc5598fd7a9b",
    "price_dkk": 0,
    "extras": {
@@ -10141,9 +10863,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0072"
+   "paired_with": "H0080"
   },
-  "H0072": {
+  "H0080": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -10202,7 +10924,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0072",
+   "id": "H0080",
    "shared_ticket": "TQ:dc5598fd7a9b",
    "price_dkk": 0,
    "extras": {
@@ -10211,9 +10933,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0071"
+   "paired_with": "I0079"
   },
-  "I0073": {
+  "I0081": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -10272,7 +10994,7 @@
     "SAP"
    ],
    "score": 2,
-   "id": "I0073",
+   "id": "I0081",
    "shared_ticket": "TQ:1bde120d6f32",
    "price_dkk": 0,
    "extras": {
@@ -10281,9 +11003,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0074"
+   "paired_with": "H0082"
   },
-  "H0074": {
+  "H0082": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -10342,7 +11064,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0074",
+   "id": "H0082",
    "shared_ticket": "TQ:1bde120d6f32",
    "price_dkk": 0,
    "extras": {
@@ -10351,9 +11073,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0073"
+   "paired_with": "I0081"
   },
-  "I0075": {
+  "I0083": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -10404,7 +11126,7 @@
     "SJO"
    ],
    "score": 5,
-   "id": "I0075",
+   "id": "I0083",
    "shared_ticket": "TQ:6328a78b1f91",
    "price_dkk": 0,
    "extras": {
@@ -10413,9 +11135,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0076"
+   "paired_with": "H0084"
   },
-  "H0076": {
+  "H0084": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -10466,7 +11188,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0076",
+   "id": "H0084",
    "shared_ticket": "TQ:6328a78b1f91",
    "price_dkk": 0,
    "extras": {
@@ -10475,9 +11197,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0075"
+   "paired_with": "I0083"
   },
-  "I0077": {
+  "I0085": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -10537,7 +11259,7 @@
     "PTY"
    ],
    "score": 4,
-   "id": "I0077",
+   "id": "I0085",
    "shared_ticket": "TQ:929e4becf15a",
    "price_dkk": 0,
    "extras": {
@@ -10546,9 +11268,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0078"
+   "paired_with": "H0086"
   },
-  "H0078": {
+  "H0086": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -10607,7 +11329,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0078",
+   "id": "H0086",
    "shared_ticket": "TQ:929e4becf15a",
    "price_dkk": 0,
    "extras": {
@@ -10616,9 +11338,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0077"
+   "paired_with": "I0085"
   },
-  "I0079": {
+  "I0087": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -10677,7 +11399,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0079",
+   "id": "I0087",
    "shared_ticket": "TQ:86c272b019dd",
    "price_dkk": 0,
    "extras": {
@@ -10686,9 +11408,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0080"
+   "paired_with": "H0088"
   },
-  "H0080": {
+  "H0088": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -10747,7 +11469,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0080",
+   "id": "H0088",
    "shared_ticket": "TQ:86c272b019dd",
    "price_dkk": 0,
    "extras": {
@@ -10756,9 +11478,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0079"
+   "paired_with": "I0087"
   },
-  "I0081": {
+  "I0089": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -10817,7 +11539,7 @@
     "MDE"
    ],
    "score": 3,
-   "id": "I0081",
+   "id": "I0089",
    "shared_ticket": "TQ:f28465f55e5e",
    "price_dkk": 0,
    "extras": {
@@ -10826,9 +11548,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0082"
+   "paired_with": "H0090"
   },
-  "H0082": {
+  "H0090": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -10887,7 +11609,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0082",
+   "id": "H0090",
    "shared_ticket": "TQ:f28465f55e5e",
    "price_dkk": 0,
    "extras": {
@@ -10896,9 +11618,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0081"
+   "paired_with": "I0089"
   },
-  "I0083": {
+  "I0091": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -10957,7 +11679,7 @@
     "CLO"
    ],
    "score": 3,
-   "id": "I0083",
+   "id": "I0091",
    "shared_ticket": "TQ:d1bbd91aad5b",
    "price_dkk": 0,
    "extras": {
@@ -10966,9 +11688,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0084"
+   "paired_with": "H0092"
   },
-  "H0084": {
+  "H0092": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -11027,7 +11749,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0084",
+   "id": "H0092",
    "shared_ticket": "TQ:d1bbd91aad5b",
    "price_dkk": 0,
    "extras": {
@@ -11036,9 +11758,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0083"
+   "paired_with": "I0091"
   },
-  "I0085": {
+  "I0093": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -11089,7 +11811,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0085",
+   "id": "I0093",
    "shared_ticket": "TQ:a8b73134da7d",
    "price_dkk": 0,
    "extras": {
@@ -11098,9 +11820,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0086"
+   "paired_with": "H0094"
   },
-  "H0086": {
+  "H0094": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -11151,7 +11873,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0086",
+   "id": "H0094",
    "shared_ticket": "TQ:a8b73134da7d",
    "price_dkk": 0,
    "extras": {
@@ -11160,9 +11882,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0085"
+   "paired_with": "I0093"
   },
-  "I0087": {
+  "I0095": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -11220,7 +11942,7 @@
     "VVI"
    ],
    "score": 3,
-   "id": "I0087",
+   "id": "I0095",
    "shared_ticket": "TQ:bc6d37039fc8",
    "price_dkk": 0,
    "extras": {
@@ -11229,9 +11951,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0088"
+   "paired_with": "H0096"
   },
-  "H0088": {
+  "H0096": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -11289,7 +12011,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0088",
+   "id": "H0096",
    "shared_ticket": "TQ:bc6d37039fc8",
    "price_dkk": 0,
    "extras": {
@@ -11298,9 +12020,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0087"
+   "paired_with": "I0095"
   },
-  "I0089": {
+  "I0097": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -11352,7 +12074,7 @@
     "MDE"
    ],
    "score": 5,
-   "id": "I0089",
+   "id": "I0097",
    "shared_ticket": "TQ:9e7e264ae6f2",
    "price_dkk": 0,
    "extras": {
@@ -11361,9 +12083,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0090"
+   "paired_with": "H0098"
   },
-  "H0090": {
+  "H0098": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -11415,7 +12137,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0090",
+   "id": "H0098",
    "shared_ticket": "TQ:9e7e264ae6f2",
    "price_dkk": 0,
    "extras": {
@@ -11424,9 +12146,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0089"
+   "paired_with": "I0097"
   },
-  "I0091": {
+  "I0099": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -11478,7 +12200,7 @@
     "GDL"
    ],
    "score": 3,
-   "id": "I0091",
+   "id": "I0099",
    "shared_ticket": "TQ:2e22b147b8d0",
    "price_dkk": 0,
    "extras": {
@@ -11487,9 +12209,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0092"
+   "paired_with": "H0100"
   },
-  "H0092": {
+  "H0100": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -11542,7 +12264,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0092",
+   "id": "H0100",
    "shared_ticket": "TQ:2e22b147b8d0",
    "price_dkk": 0,
    "extras": {
@@ -11551,9 +12273,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0091"
+   "paired_with": "I0099"
   },
-  "I0093": {
+  "I0101": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -11605,7 +12327,7 @@
     "GDL"
    ],
    "score": 3,
-   "id": "I0093",
+   "id": "I0101",
    "shared_ticket": "TQ:5ebe28b5a788",
    "price_dkk": 0,
    "extras": {
@@ -11614,9 +12336,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0094"
+   "paired_with": "H0102"
   },
-  "H0094": {
+  "H0102": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -11668,7 +12390,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0094",
+   "id": "H0102",
    "shared_ticket": "TQ:5ebe28b5a788",
    "price_dkk": 0,
    "extras": {
@@ -11677,9 +12399,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0093"
+   "paired_with": "I0101"
   },
-  "I0095": {
+  "I0103": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -11761,7 +12483,7 @@
     "SAP"
    ],
    "score": 1,
-   "id": "I0095",
+   "id": "I0103",
    "shared_ticket": "TQ:50bfc1070da1",
    "price_dkk": 686,
    "extras": {
@@ -11770,9 +12492,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0096"
+   "paired_with": "H0104"
   },
-  "H0096": {
+  "H0104": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -11846,7 +12568,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0096",
+   "id": "H0104",
    "shared_ticket": "TQ:50bfc1070da1",
    "price_dkk": 381,
    "extras": {
@@ -11855,9 +12577,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0095"
+   "paired_with": "I0103"
   },
-  "I0097": {
+  "I0105": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -11939,7 +12661,7 @@
     "SAP"
    ],
    "score": 1,
-   "id": "I0097",
+   "id": "I0105",
    "shared_ticket": "TQ:2b0bf528488f",
    "price_dkk": 686,
    "extras": {
@@ -11948,9 +12670,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0098"
+   "paired_with": "H0106"
   },
-  "H0098": {
+  "H0106": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -12030,7 +12752,7 @@
     "CPH"
    ],
    "score": 1,
-   "id": "H0098",
+   "id": "H0106",
    "shared_ticket": "TQ:2b0bf528488f",
    "price_dkk": 381,
    "extras": {
@@ -12039,9 +12761,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0097"
+   "paired_with": "I0105"
   },
-  "I0099": {
+  "I0107": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -12123,7 +12845,7 @@
     "SAP"
    ],
    "score": 1,
-   "id": "I0099",
+   "id": "I0107",
    "shared_ticket": "TQ:7a6ed2d14fe1",
    "price_dkk": 686,
    "extras": {
@@ -12132,9 +12854,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0100"
+   "paired_with": "H0108"
   },
-  "H0100": {
+  "H0108": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -12202,7 +12924,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0100",
+   "id": "H0108",
    "shared_ticket": "TQ:7a6ed2d14fe1",
    "price_dkk": 381,
    "extras": {
@@ -12211,9 +12933,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0099"
+   "paired_with": "I0107"
   },
-  "I0101": {
+  "I0109": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -12298,7 +13020,7 @@
     "MGA"
    ],
    "score": 1,
-   "id": "I0101",
+   "id": "I0109",
    "shared_ticket": "TQ:b2256fc57ba4",
    "price_dkk": 186,
    "extras": {
@@ -12307,9 +13029,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0102"
+   "paired_with": "H0110"
   },
-  "H0102": {
+  "H0110": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -12387,7 +13109,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0102",
+   "id": "H0110",
    "shared_ticket": "TQ:b2256fc57ba4",
    "price_dkk": 381,
    "extras": {
@@ -12396,9 +13118,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0101"
+   "paired_with": "I0109"
   },
-  "I0103": {
+  "I0111": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -12483,7 +13205,7 @@
     "MGA"
    ],
    "score": 1,
-   "id": "I0103",
+   "id": "I0111",
    "shared_ticket": "TQ:c785b8686e70",
    "price_dkk": 186,
    "extras": {
@@ -12492,9 +13214,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0104"
+   "paired_with": "H0112"
   },
-  "H0104": {
+  "H0112": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -12572,7 +13294,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0104",
+   "id": "H0112",
    "shared_ticket": "TQ:c785b8686e70",
    "price_dkk": 381,
    "extras": {
@@ -12581,9 +13303,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0103"
+   "paired_with": "I0111"
   },
-  "I0105": {
+  "I0113": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -12660,7 +13382,7 @@
     "MGA"
    ],
    "score": 1,
-   "id": "I0105",
+   "id": "I0113",
    "shared_ticket": "TQ:ea5ac68f3756",
    "price_dkk": 686,
    "extras": {
@@ -12669,9 +13391,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0106"
+   "paired_with": "H0114"
   },
-  "H0106": {
+  "H0114": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -12746,7 +13468,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0106",
+   "id": "H0114",
    "shared_ticket": "TQ:ea5ac68f3756",
    "price_dkk": 381,
    "extras": {
@@ -12755,9 +13477,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0105"
+   "paired_with": "I0113"
   },
-  "I0107": {
+  "I0115": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -12838,7 +13560,7 @@
     "BOG"
    ],
    "score": 1,
-   "id": "I0107",
+   "id": "I0115",
    "shared_ticket": "TQ:9e2b43483297",
    "price_dkk": 686,
    "extras": {
@@ -12847,9 +13569,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0108"
+   "paired_with": "H0116"
   },
-  "H0108": {
+  "H0116": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -12929,7 +13651,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0108",
+   "id": "H0116",
    "shared_ticket": "TQ:9e2b43483297",
    "price_dkk": 381,
    "extras": {
@@ -12938,9 +13660,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0107"
+   "paired_with": "I0115"
   },
-  "I0109": {
+  "I0117": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -13022,7 +13744,7 @@
     "BOG"
    ],
    "score": 1,
-   "id": "I0109",
+   "id": "I0117",
    "shared_ticket": "TQ:09f74fa3dd71",
    "price_dkk": 686,
    "extras": {
@@ -13031,9 +13753,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0110"
+   "paired_with": "H0118"
   },
-  "H0110": {
+  "H0118": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -13112,7 +13834,7 @@
     "CPH"
    ],
    "score": 1,
-   "id": "H0110",
+   "id": "H0118",
    "shared_ticket": "TQ:09f74fa3dd71",
    "price_dkk": 381,
    "extras": {
@@ -13121,9 +13843,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0109"
+   "paired_with": "I0117"
   },
-  "I0111": {
+  "I0119": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -13182,7 +13904,7 @@
     "SAP"
    ],
    "score": 2,
-   "id": "I0111",
+   "id": "I0119",
    "shared_ticket": "TQ:81704d01d34b",
    "price_dkk": 0,
    "extras": {
@@ -13191,9 +13913,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0112"
+   "paired_with": "H0120"
   },
-  "H0112": {
+  "H0120": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -13252,7 +13974,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0112",
+   "id": "H0120",
    "shared_ticket": "TQ:81704d01d34b",
    "price_dkk": 0,
    "extras": {
@@ -13261,9 +13983,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0111"
+   "paired_with": "I0119"
   },
-  "I0113": {
+  "I0121": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -13322,7 +14044,7 @@
     "SAP"
    ],
    "score": 2,
-   "id": "I0113",
+   "id": "I0121",
    "shared_ticket": "TQ:05d849b634b8",
    "price_dkk": 0,
    "extras": {
@@ -13331,9 +14053,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0114"
+   "paired_with": "H0122"
   },
-  "H0114": {
+  "H0122": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -13392,7 +14114,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0114",
+   "id": "H0122",
    "shared_ticket": "TQ:05d849b634b8",
    "price_dkk": 0,
    "extras": {
@@ -13401,9 +14123,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0113"
+   "paired_with": "I0121"
   },
-  "I0115": {
+  "I0123": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -13462,7 +14184,7 @@
     "SAP"
    ],
    "score": 2,
-   "id": "I0115",
+   "id": "I0123",
    "shared_ticket": "TQ:b94726e9eb68",
    "price_dkk": 0,
    "extras": {
@@ -13471,9 +14193,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0116"
+   "paired_with": "H0124"
   },
-  "H0116": {
+  "H0124": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -13528,7 +14250,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0116",
+   "id": "H0124",
    "shared_ticket": "TQ:b94726e9eb68",
    "price_dkk": 0,
    "extras": {
@@ -13537,9 +14259,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0115"
+   "paired_with": "I0123"
   },
-  "I0117": {
+  "I0125": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -13598,7 +14320,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0117",
+   "id": "I0125",
    "shared_ticket": "TQ:540ee9c70ec1",
    "price_dkk": 0,
    "extras": {
@@ -13607,9 +14329,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0118"
+   "paired_with": "H0126"
   },
-  "H0118": {
+  "H0126": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -13668,7 +14390,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0118",
+   "id": "H0126",
    "shared_ticket": "TQ:540ee9c70ec1",
    "price_dkk": 0,
    "extras": {
@@ -13677,9 +14399,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0117"
+   "paired_with": "I0125"
   },
-  "I0119": {
+  "I0127": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -13738,7 +14460,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0119",
+   "id": "I0127",
    "shared_ticket": "TQ:feca01b45d9e",
    "price_dkk": 0,
    "extras": {
@@ -13747,9 +14469,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0120"
+   "paired_with": "H0128"
   },
-  "H0120": {
+  "H0128": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -13808,7 +14530,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0120",
+   "id": "H0128",
    "shared_ticket": "TQ:feca01b45d9e",
    "price_dkk": 0,
    "extras": {
@@ -13817,9 +14539,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0119"
+   "paired_with": "I0127"
   },
-  "I0121": {
+  "I0129": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -13878,7 +14600,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0121",
+   "id": "I0129",
    "shared_ticket": "TQ:9793bcb7ed31",
    "price_dkk": 0,
    "extras": {
@@ -13887,9 +14609,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0122"
+   "paired_with": "H0130"
   },
-  "H0122": {
+  "H0130": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -13948,7 +14670,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0122",
+   "id": "H0130",
    "shared_ticket": "TQ:9793bcb7ed31",
    "price_dkk": 0,
    "extras": {
@@ -13957,9 +14679,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0121"
+   "paired_with": "I0129"
   },
-  "I0123": {
+  "I0131": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -14018,7 +14740,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0123",
+   "id": "I0131",
    "shared_ticket": "TQ:46acc62c0b00",
    "price_dkk": 0,
    "extras": {
@@ -14027,9 +14749,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0124"
+   "paired_with": "H0132"
   },
-  "H0124": {
+  "H0132": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -14088,7 +14810,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0124",
+   "id": "H0132",
    "shared_ticket": "TQ:46acc62c0b00",
    "price_dkk": 0,
    "extras": {
@@ -14097,9 +14819,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0123"
+   "paired_with": "I0131"
   },
-  "I0125": {
+  "I0133": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -14155,7 +14877,7 @@
     "GUA"
    ],
    "score": 5,
-   "id": "I0125",
+   "id": "I0133",
    "shared_ticket": "TQ:d9090c079f8f",
    "price_dkk": 0,
    "extras": {
@@ -14164,9 +14886,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0126"
+   "paired_with": "H0134"
   },
-  "H0126": {
+  "H0134": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -14215,7 +14937,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0126",
+   "id": "H0134",
    "shared_ticket": "TQ:d9090c079f8f",
    "price_dkk": 0,
    "extras": {
@@ -14224,9 +14946,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0125"
+   "paired_with": "I0133"
   },
-  "I0127": {
+  "I0135": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -14282,7 +15004,7 @@
     "GUA"
    ],
    "score": 3,
-   "id": "I0127",
+   "id": "I0135",
    "shared_ticket": "TQ:7b8e46f658f0",
    "price_dkk": 0,
    "extras": {
@@ -14291,9 +15013,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0128"
+   "paired_with": "H0136"
   },
-  "H0128": {
+  "H0136": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -14349,7 +15071,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0128",
+   "id": "H0136",
    "shared_ticket": "TQ:7b8e46f658f0",
    "price_dkk": 0,
    "extras": {
@@ -14358,9 +15080,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0127"
+   "paired_with": "I0135"
   },
-  "I0129": {
+  "I0137": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -14416,7 +15138,7 @@
     "GUA"
    ],
    "score": 3,
-   "id": "I0129",
+   "id": "I0137",
    "shared_ticket": "TQ:e0f91ae91021",
    "price_dkk": 0,
    "extras": {
@@ -14425,9 +15147,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0130"
+   "paired_with": "H0138"
   },
-  "H0130": {
+  "H0138": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -14483,7 +15205,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0130",
+   "id": "H0138",
    "shared_ticket": "TQ:e0f91ae91021",
    "price_dkk": 0,
    "extras": {
@@ -14492,9 +15214,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0129"
+   "paired_with": "I0137"
   },
-  "I0131": {
+  "I0139": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -14543,7 +15265,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0131",
+   "id": "I0139",
    "shared_ticket": "TQ:40e712801d92",
    "price_dkk": 0,
    "extras": {
@@ -14552,9 +15274,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0132"
+   "paired_with": "H0140"
   },
-  "H0132": {
+  "H0140": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -14603,7 +15325,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0132",
+   "id": "H0140",
    "shared_ticket": "TQ:40e712801d92",
    "price_dkk": 0,
    "extras": {
@@ -14612,9 +15334,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0131"
+   "paired_with": "I0139"
   },
-  "I0133": {
+  "I0141": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -14670,7 +15392,7 @@
     "VVI"
    ],
    "score": 3,
-   "id": "I0133",
+   "id": "I0141",
    "shared_ticket": "TQ:ac5df39f630e",
    "price_dkk": 0,
    "extras": {
@@ -14679,9 +15401,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0134"
+   "paired_with": "H0142"
   },
-  "H0134": {
+  "H0142": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -14737,7 +15459,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0134",
+   "id": "H0142",
    "shared_ticket": "TQ:ac5df39f630e",
    "price_dkk": 0,
    "extras": {
@@ -14746,9 +15468,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0133"
+   "paired_with": "I0141"
   },
-  "I0135": {
+  "I0143": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -14806,7 +15528,7 @@
     "LPB"
    ],
    "score": 3,
-   "id": "I0135",
+   "id": "I0143",
    "shared_ticket": "TQ:6dbe6451dddb",
    "price_dkk": 0,
    "extras": {
@@ -14815,9 +15537,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0136"
+   "paired_with": "H0144"
   },
-  "H0136": {
+  "H0144": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -14875,7 +15597,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0136",
+   "id": "H0144",
    "shared_ticket": "TQ:6dbe6451dddb",
    "price_dkk": 0,
    "extras": {
@@ -14884,9 +15606,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0135"
+   "paired_with": "I0143"
   },
-  "I0137": {
+  "I0145": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -14972,7 +15694,7 @@
     "VVI"
    ],
    "score": 2,
-   "id": "I0137",
+   "id": "I0145",
    "shared_ticket": "TQ:2c6c064461c7",
    "price_dkk": 186,
    "extras": {
@@ -14981,9 +15703,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0138"
+   "paired_with": "H0146"
   },
-  "H0138": {
+  "H0146": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -15067,7 +15789,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0138",
+   "id": "H0146",
    "shared_ticket": "TQ:2c6c064461c7",
    "price_dkk": 381,
    "extras": {
@@ -15076,9 +15798,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0137"
+   "paired_with": "I0145"
   },
-  "I0139": {
+  "I0147": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -15159,7 +15881,7 @@
     "LPB"
    ],
    "score": 1,
-   "id": "I0139",
+   "id": "I0147",
    "shared_ticket": "TQ:3f6b27cf4cf5",
    "price_dkk": 686,
    "extras": {
@@ -15168,9 +15890,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0140"
+   "paired_with": "H0148"
   },
-  "H0140": {
+  "H0148": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -15240,7 +15962,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0140",
+   "id": "H0148",
    "shared_ticket": "TQ:3f6b27cf4cf5",
    "price_dkk": 381,
    "extras": {
@@ -15249,9 +15971,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0139"
+   "paired_with": "I0147"
   },
-  "I0141": {
+  "I0149": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -15309,7 +16031,7 @@
     "GDL"
    ],
    "score": 5,
-   "id": "I0141",
+   "id": "I0149",
    "shared_ticket": "TQ:6636404ebd4f",
    "price_dkk": 0,
    "extras": {
@@ -15318,9 +16040,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0142"
+   "paired_with": "H0150"
   },
-  "H0142": {
+  "H0150": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -15378,7 +16100,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0142",
+   "id": "H0150",
    "shared_ticket": "TQ:6636404ebd4f",
    "price_dkk": 0,
    "extras": {
@@ -15387,9 +16109,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0141"
+   "paired_with": "I0149"
   },
-  "I0143": {
+  "I0151": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -15447,7 +16169,7 @@
     "LPB"
    ],
    "score": 3,
-   "id": "I0143",
+   "id": "I0151",
    "shared_ticket": "TQ:0423df259a48",
    "price_dkk": 0,
    "extras": {
@@ -15456,9 +16178,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0144"
+   "paired_with": "H0152"
   },
-  "H0144": {
+  "H0152": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -15516,7 +16238,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0144",
+   "id": "H0152",
    "shared_ticket": "TQ:0423df259a48",
    "price_dkk": 0,
    "extras": {
@@ -15525,9 +16247,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0143"
+   "paired_with": "I0151"
   },
-  "I0145": {
+  "I0153": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -15535,55 +16257,49 @@
      "kind": "flight",
      "from": "CPH",
      "to": "BOG",
-     "depart": "2026-12-03T06:30",
-     "arrive": "2026-12-03T22:21",
-     "hours": 21.85,
+     "depart": "2026-12-03T06:00",
+     "arrive": "2026-12-03T14:30",
+     "hours": 14.5,
      "connections": [
       {
-       "airport": "LHR",
-       "layover_h": 2.0
-      },
-      {
-       "airport": "MIA",
-       "layover_h": 3.9
+       "airport": "AMS",
+       "layover_h": 1.83
       }
      ],
      "carriers": [
-      "British Airways",
-      "American"
+      "KLM"
      ],
-     "flight_numbers": [],
+     "flight_numbers": [
+      "KL1266",
+      "KL749"
+     ],
      "overnight_layover": false,
-     "ticket": "TQ:99c4f409c805",
+     "ticket": "TQ:016fa4f9e11d",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:99c4f409c805"
+    "TQ:016fa4f9e11d"
    ],
-   "flags": [
-    "us_transit",
-    "basic_fare"
-   ],
+   "flags": [],
    "from": "CPH",
    "to": "BOG",
-   "depart": "2026-12-03T06:30",
-   "arrive": "2026-12-03T22:21",
-   "total_hours": 21.9,
-   "flying_hours": 21.9,
-   "flights": 3,
+   "depart": "2026-12-03T06:00",
+   "arrive": "2026-12-03T14:30",
+   "total_hours": 14.5,
+   "flying_hours": 14.5,
+   "flights": 2,
    "hub_nights": 0,
    "changes": 0,
-   "us_transit": true,
+   "us_transit": false,
    "airports": [
     "CPH",
-    "LHR",
-    "MIA",
+    "AMS",
     "BOG"
    ],
-   "score": 3,
-   "id": "I0145",
-   "shared_ticket": "TQ:99c4f409c805",
+   "score": 5,
+   "id": "I0153",
+   "shared_ticket": "TQ:016fa4f9e11d",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -15591,9 +16307,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0146"
+   "paired_with": "H0154"
   },
-  "H0146": {
+  "H0154": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -15601,55 +16317,56 @@
      "kind": "flight",
      "from": "SAL",
      "to": "CPH",
-     "depart": "2027-02-03T15:07",
-     "arrive": "2027-02-04T17:25",
-     "hours": 19.3,
+     "depart": "2027-02-03T13:45",
+     "arrive": "2027-02-04T13:40",
+     "hours": 16.92,
      "connections": [
       {
-       "airport": "DFW",
-       "layover_h": 2.15
+       "airport": "PTY",
+       "layover_h": 1.85
       },
       {
-       "airport": "LHR",
-       "layover_h": 2.2
+       "airport": "AMS",
+       "layover_h": 1.17
       }
      ],
      "carriers": [
-      "American",
-      "British Airways"
+      "COPA",
+      "KLM"
      ],
-     "flight_numbers": [],
+     "flight_numbers": [
+      "CM871",
+      "KL758",
+      "KL1271"
+     ],
      "overnight_layover": false,
-     "ticket": "TQ:99c4f409c805",
+     "ticket": "TQ:016fa4f9e11d",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:99c4f409c805"
+    "TQ:016fa4f9e11d"
    ],
-   "flags": [
-    "us_transit",
-    "basic_fare"
-   ],
+   "flags": [],
    "from": "SAL",
    "to": "CPH",
-   "depart": "2027-02-03T15:07",
-   "arrive": "2027-02-04T17:25",
-   "total_hours": 19.3,
-   "flying_hours": 19.3,
+   "depart": "2027-02-03T13:45",
+   "arrive": "2027-02-04T13:40",
+   "total_hours": 16.9,
+   "flying_hours": 16.9,
    "flights": 3,
    "hub_nights": 0,
    "changes": 0,
-   "us_transit": true,
+   "us_transit": false,
    "airports": [
     "SAL",
-    "DFW",
-    "LHR",
+    "PTY",
+    "AMS",
     "CPH"
    ],
-   "score": 4,
-   "id": "H0146",
-   "shared_ticket": "TQ:99c4f409c805",
+   "score": 5,
+   "id": "H0154",
+   "shared_ticket": "TQ:016fa4f9e11d",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -15657,9 +16374,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0145"
+   "paired_with": "I0153"
   },
-  "I0147": {
+  "I0155": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -15714,7 +16431,7 @@
     "BOG"
    ],
    "score": 3,
-   "id": "I0147",
+   "id": "I0155",
    "shared_ticket": "TQ:e0c12f1b8857",
    "price_dkk": 0,
    "extras": {
@@ -15723,9 +16440,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0148"
+   "paired_with": "H0156"
   },
-  "H0148": {
+  "H0156": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -15780,7 +16497,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0148",
+   "id": "H0156",
    "shared_ticket": "TQ:e0c12f1b8857",
    "price_dkk": 0,
    "extras": {
@@ -15789,9 +16506,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0147"
+   "paired_with": "I0155"
   },
-  "I0149": {
+  "I0157": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -15846,7 +16563,7 @@
     "BOG"
    ],
    "score": 3,
-   "id": "I0149",
+   "id": "I0157",
    "shared_ticket": "TQ:1686c12f4d13",
    "price_dkk": 0,
    "extras": {
@@ -15855,9 +16572,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0150"
+   "paired_with": "H0158"
   },
-  "H0150": {
+  "H0158": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -15912,7 +16629,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0150",
+   "id": "H0158",
    "shared_ticket": "TQ:1686c12f4d13",
    "price_dkk": 0,
    "extras": {
@@ -15921,9 +16638,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0149"
+   "paired_with": "I0157"
   },
-  "I0151": {
+  "I0159": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -15978,7 +16695,7 @@
     "MDE"
    ],
    "score": 3,
-   "id": "I0151",
+   "id": "I0159",
    "shared_ticket": "TQ:dd97ff98cc43",
    "price_dkk": 0,
    "extras": {
@@ -15987,9 +16704,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0152"
+   "paired_with": "H0160"
   },
-  "H0152": {
+  "H0160": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16044,7 +16761,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0152",
+   "id": "H0160",
    "shared_ticket": "TQ:dd97ff98cc43",
    "price_dkk": 0,
    "extras": {
@@ -16053,9 +16770,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0151"
+   "paired_with": "I0159"
   },
-  "I0153": {
+  "I0161": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -16063,55 +16780,56 @@
      "kind": "flight",
      "from": "CPH",
      "to": "MDE",
-     "depart": "2026-12-03T06:30",
-     "arrive": "2026-12-03T21:22",
-     "hours": 20.87,
+     "depart": "2026-12-03T06:00",
+     "arrive": "2026-12-03T20:00",
+     "hours": 20.0,
      "connections": [
       {
-       "airport": "LHR",
-       "layover_h": 2.0
+       "airport": "AMS",
+       "layover_h": 3.83
       },
       {
-       "airport": "MIA",
-       "layover_h": 3.25
+       "airport": "PTY",
+       "layover_h": 2.12
       }
      ],
      "carriers": [
-      "British Airways",
-      "American"
+      "KLM",
+      "COPA"
      ],
-     "flight_numbers": [],
+     "flight_numbers": [
+      "KL1266",
+      "KL757",
+      "CM208"
+     ],
      "overnight_layover": false,
-     "ticket": "TQ:42fcad456075",
+     "ticket": "TQ:34ed7aca10fc",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:42fcad456075"
+    "TQ:34ed7aca10fc"
    ],
-   "flags": [
-    "us_transit",
-    "basic_fare"
-   ],
+   "flags": [],
    "from": "CPH",
    "to": "MDE",
-   "depart": "2026-12-03T06:30",
-   "arrive": "2026-12-03T21:22",
-   "total_hours": 20.9,
-   "flying_hours": 20.9,
+   "depart": "2026-12-03T06:00",
+   "arrive": "2026-12-03T20:00",
+   "total_hours": 20.0,
+   "flying_hours": 20.0,
    "flights": 3,
    "hub_nights": 0,
    "changes": 0,
-   "us_transit": true,
+   "us_transit": false,
    "airports": [
     "CPH",
-    "LHR",
-    "MIA",
+    "AMS",
+    "PTY",
     "MDE"
    ],
-   "score": 3,
-   "id": "I0153",
-   "shared_ticket": "TQ:42fcad456075",
+   "score": 5,
+   "id": "I0161",
+   "shared_ticket": "TQ:34ed7aca10fc",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -16119,9 +16837,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0154"
+   "paired_with": "H0162"
   },
-  "H0154": {
+  "H0162": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16129,55 +16847,56 @@
      "kind": "flight",
      "from": "SAL",
      "to": "CPH",
-     "depart": "2027-02-03T15:07",
-     "arrive": "2027-02-04T17:25",
-     "hours": 19.3,
+     "depart": "2027-02-03T13:45",
+     "arrive": "2027-02-04T13:40",
+     "hours": 16.92,
      "connections": [
       {
-       "airport": "DFW",
-       "layover_h": 2.15
+       "airport": "PTY",
+       "layover_h": 1.85
       },
       {
-       "airport": "LHR",
-       "layover_h": 2.2
+       "airport": "AMS",
+       "layover_h": 1.17
       }
      ],
      "carriers": [
-      "American",
-      "British Airways"
+      "COPA",
+      "KLM"
      ],
-     "flight_numbers": [],
+     "flight_numbers": [
+      "CM871",
+      "KL758",
+      "KL1271"
+     ],
      "overnight_layover": false,
-     "ticket": "TQ:42fcad456075",
+     "ticket": "TQ:34ed7aca10fc",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:42fcad456075"
+    "TQ:34ed7aca10fc"
    ],
-   "flags": [
-    "us_transit",
-    "basic_fare"
-   ],
+   "flags": [],
    "from": "SAL",
    "to": "CPH",
-   "depart": "2027-02-03T15:07",
-   "arrive": "2027-02-04T17:25",
-   "total_hours": 19.3,
-   "flying_hours": 19.3,
+   "depart": "2027-02-03T13:45",
+   "arrive": "2027-02-04T13:40",
+   "total_hours": 16.9,
+   "flying_hours": 16.9,
    "flights": 3,
    "hub_nights": 0,
    "changes": 0,
-   "us_transit": true,
+   "us_transit": false,
    "airports": [
     "SAL",
-    "DFW",
-    "LHR",
+    "PTY",
+    "AMS",
     "CPH"
    ],
-   "score": 4,
-   "id": "H0154",
-   "shared_ticket": "TQ:42fcad456075",
+   "score": 5,
+   "id": "H0162",
+   "shared_ticket": "TQ:34ed7aca10fc",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -16185,9 +16904,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0153"
+   "paired_with": "I0161"
   },
-  "I0155": {
+  "I0163": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -16242,7 +16961,7 @@
     "MDE"
    ],
    "score": 3,
-   "id": "I0155",
+   "id": "I0163",
    "shared_ticket": "TQ:42ca0a9da87a",
    "price_dkk": 0,
    "extras": {
@@ -16251,9 +16970,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0156"
+   "paired_with": "H0164"
   },
-  "H0156": {
+  "H0164": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16308,7 +17027,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0156",
+   "id": "H0164",
    "shared_ticket": "TQ:42ca0a9da87a",
    "price_dkk": 0,
    "extras": {
@@ -16317,9 +17036,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0155"
+   "paired_with": "I0163"
   },
-  "I0157": {
+  "I0165": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -16374,7 +17093,7 @@
     "MDE"
    ],
    "score": 3,
-   "id": "I0157",
+   "id": "I0165",
    "shared_ticket": "TQ:91a255cd8fe8",
    "price_dkk": 0,
    "extras": {
@@ -16383,9 +17102,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0158"
+   "paired_with": "H0166"
   },
-  "H0158": {
+  "H0166": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16440,7 +17159,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0158",
+   "id": "H0166",
    "shared_ticket": "TQ:91a255cd8fe8",
    "price_dkk": 0,
    "extras": {
@@ -16449,9 +17168,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0157"
+   "paired_with": "I0165"
   },
-  "I0159": {
+  "I0167": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -16502,7 +17221,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0159",
+   "id": "I0167",
    "shared_ticket": "TQ:a11d0c9caa29",
    "price_dkk": 0,
    "extras": {
@@ -16511,9 +17230,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0160"
+   "paired_with": "H0168"
   },
-  "H0160": {
+  "H0168": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16566,7 +17285,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0160",
+   "id": "H0168",
    "shared_ticket": "TQ:a11d0c9caa29",
    "price_dkk": 0,
    "extras": {
@@ -16575,9 +17294,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0159"
+   "paired_with": "I0167"
   },
-  "I0161": {
+  "I0169": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -16628,7 +17347,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0161",
+   "id": "I0169",
    "shared_ticket": "TQ:4ddb2f61e584",
    "price_dkk": 0,
    "extras": {
@@ -16637,9 +17356,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0162"
+   "paired_with": "H0170"
   },
-  "H0162": {
+  "H0170": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16693,7 +17412,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0162",
+   "id": "H0170",
    "shared_ticket": "TQ:4ddb2f61e584",
    "price_dkk": 0,
    "extras": {
@@ -16702,9 +17421,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0161"
+   "paired_with": "I0169"
   },
-  "I0163": {
+  "I0171": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -16764,7 +17483,7 @@
     "CTG"
    ],
    "score": 3,
-   "id": "I0163",
+   "id": "I0171",
    "shared_ticket": "TQ:a6b490287c5d",
    "price_dkk": 0,
    "extras": {
@@ -16773,9 +17492,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0164"
+   "paired_with": "H0172"
   },
-  "H0164": {
+  "H0172": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16829,7 +17548,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0164",
+   "id": "H0172",
    "shared_ticket": "TQ:a6b490287c5d",
    "price_dkk": 0,
    "extras": {
@@ -16838,9 +17557,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0163"
+   "paired_with": "I0171"
   },
-  "I0165": {
+  "I0173": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -16894,7 +17613,7 @@
     "GDL"
    ],
    "score": 3,
-   "id": "I0165",
+   "id": "I0173",
    "shared_ticket": "TQ:2b5e1b4c6d41",
    "price_dkk": 0,
    "extras": {
@@ -16903,9 +17622,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0166"
+   "paired_with": "H0174"
   },
-  "H0166": {
+  "H0174": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -16965,7 +17684,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0166",
+   "id": "H0174",
    "shared_ticket": "TQ:2b5e1b4c6d41",
    "price_dkk": 0,
    "extras": {
@@ -16974,9 +17693,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0165"
+   "paired_with": "I0173"
   },
-  "I0167": {
+  "I0175": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17031,7 +17750,7 @@
     "GDL"
    ],
    "score": 4,
-   "id": "I0167",
+   "id": "I0175",
    "shared_ticket": "TQ:c63ea4dc022e",
    "price_dkk": 0,
    "extras": {
@@ -17040,9 +17759,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0168"
+   "paired_with": "H0176"
   },
-  "H0168": {
+  "H0176": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17097,7 +17816,7 @@
     "CPH"
    ],
    "score": 2,
-   "id": "H0168",
+   "id": "H0176",
    "shared_ticket": "TQ:c63ea4dc022e",
    "price_dkk": 0,
    "extras": {
@@ -17106,9 +17825,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0167"
+   "paired_with": "I0175"
   },
-  "I0169": {
+  "I0177": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17161,7 +17880,7 @@
     "SAL"
    ],
    "score": 5,
-   "id": "I0169",
+   "id": "I0177",
    "shared_ticket": "TQ:3d10764de8b4",
    "price_dkk": 0,
    "extras": {
@@ -17170,9 +17889,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0170"
+   "paired_with": "H0178"
   },
-  "H0170": {
+  "H0178": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17221,7 +17940,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0170",
+   "id": "H0178",
    "shared_ticket": "TQ:3d10764de8b4",
    "price_dkk": 0,
    "extras": {
@@ -17230,9 +17949,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0169"
+   "paired_with": "I0177"
   },
-  "I0171": {
+  "I0179": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17278,7 +17997,7 @@
     "SJO"
    ],
    "score": 5,
-   "id": "I0171",
+   "id": "I0179",
    "shared_ticket": "TQ:98d2cc9062fb",
    "price_dkk": 0,
    "extras": {
@@ -17287,9 +18006,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0172"
+   "paired_with": "H0180"
   },
-  "H0172": {
+  "H0180": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17338,7 +18057,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0172",
+   "id": "H0180",
    "shared_ticket": "TQ:98d2cc9062fb",
    "price_dkk": 0,
    "extras": {
@@ -17347,9 +18066,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0171"
+   "paired_with": "I0179"
   },
-  "I0173": {
+  "I0181": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17404,7 +18123,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0173",
+   "id": "I0181",
    "shared_ticket": "TQ:00ce41dfdeb6",
    "price_dkk": 0,
    "extras": {
@@ -17413,9 +18132,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0174"
+   "paired_with": "H0182"
   },
-  "H0174": {
+  "H0182": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17474,7 +18193,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0174",
+   "id": "H0182",
    "shared_ticket": "TQ:00ce41dfdeb6",
    "price_dkk": 0,
    "extras": {
@@ -17483,9 +18202,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0173"
+   "paired_with": "I0181"
   },
-  "I0175": {
+  "I0183": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17537,7 +18256,7 @@
     "SAP"
    ],
    "score": 4,
-   "id": "I0175",
+   "id": "I0183",
    "shared_ticket": "TQ:f15a4085341b",
    "price_dkk": 0,
    "extras": {
@@ -17546,9 +18265,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0176"
+   "paired_with": "H0184"
   },
-  "H0176": {
+  "H0184": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17597,7 +18316,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0176",
+   "id": "H0184",
    "shared_ticket": "TQ:f15a4085341b",
    "price_dkk": 0,
    "extras": {
@@ -17606,9 +18325,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0175"
+   "paired_with": "I0183"
   },
-  "I0177": {
+  "I0185": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17654,7 +18373,7 @@
     "SJO"
    ],
    "score": 5,
-   "id": "I0177",
+   "id": "I0185",
    "shared_ticket": "TQ:833b79de40c1",
    "price_dkk": 0,
    "extras": {
@@ -17663,9 +18382,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0178"
+   "paired_with": "H0186"
   },
-  "H0178": {
+  "H0186": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17717,7 +18436,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0178",
+   "id": "H0186",
    "shared_ticket": "TQ:833b79de40c1",
    "price_dkk": 0,
    "extras": {
@@ -17726,9 +18445,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0177"
+   "paired_with": "I0185"
   },
-  "I0179": {
+  "I0187": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17781,7 +18500,7 @@
     "SAL"
    ],
    "score": 5,
-   "id": "I0179",
+   "id": "I0187",
    "shared_ticket": "TQ:47646fdc88cf",
    "price_dkk": 0,
    "extras": {
@@ -17790,9 +18509,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0180"
+   "paired_with": "H0188"
   },
-  "H0180": {
+  "H0188": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17838,7 +18557,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0180",
+   "id": "H0188",
    "shared_ticket": "TQ:47646fdc88cf",
    "price_dkk": 0,
    "extras": {
@@ -17847,9 +18566,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0179"
+   "paired_with": "I0187"
   },
-  "I0181": {
+  "I0189": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17908,7 +18627,7 @@
     "GUA"
    ],
    "score": 3,
-   "id": "I0181",
+   "id": "I0189",
    "shared_ticket": "TQ:6b2d2c476a38",
    "price_dkk": 0,
    "extras": {
@@ -17917,9 +18636,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0182"
+   "paired_with": "H0190"
   },
-  "H0182": {
+  "H0190": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17984,7 +18703,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0182",
+   "id": "H0190",
    "shared_ticket": "TQ:6b2d2c476a38",
    "price_dkk": 0,
    "extras": {
@@ -17993,9 +18712,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0181"
+   "paired_with": "I0189"
   },
-  "I0183": {
+  "I0191": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -18048,7 +18767,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0183",
+   "id": "I0191",
    "shared_ticket": "TQ:519be2823cb5",
    "price_dkk": 0,
    "extras": {
@@ -18057,9 +18776,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0184"
+   "paired_with": "H0192"
   },
-  "H0184": {
+  "H0192": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -18125,7 +18844,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0184",
+   "id": "H0192",
    "shared_ticket": "TQ:519be2823cb5",
    "price_dkk": 0,
    "extras": {
@@ -18134,9 +18853,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0183"
+   "paired_with": "I0191"
   },
-  "I0185": {
+  "I0193": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -18195,7 +18914,7 @@
     "SJO"
    ],
    "score": 5,
-   "id": "I0185",
+   "id": "I0193",
    "shared_ticket": "TQ:2c5aa2f4bb31",
    "price_dkk": 0,
    "extras": {
@@ -18204,9 +18923,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0186"
+   "paired_with": "H0194"
   },
-  "H0186": {
+  "H0194": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -18271,7 +18990,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0186",
+   "id": "H0194",
    "shared_ticket": "TQ:2c5aa2f4bb31",
    "price_dkk": 0,
    "extras": {
@@ -18280,9 +18999,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0185"
+   "paired_with": "I0193"
   },
-  "I0187": {
+  "I0195": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -18341,7 +19060,7 @@
     "SAL"
    ],
    "score": 4,
-   "id": "I0187",
+   "id": "I0195",
    "shared_ticket": "TQ:38267531a2a0",
    "price_dkk": 0,
    "extras": {
@@ -18350,9 +19069,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0188"
+   "paired_with": "H0196"
   },
-  "H0188": {
+  "H0196": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -18417,7 +19136,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0188",
+   "id": "H0196",
    "shared_ticket": "TQ:38267531a2a0",
    "price_dkk": 0,
    "extras": {
@@ -18426,9 +19145,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0187"
+   "paired_with": "I0195"
   },
-  "I0189": {
+  "I0197": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -18477,7 +19196,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0189",
+   "id": "I0197",
    "shared_ticket": "TQ:c346e72f9141",
    "price_dkk": 0,
    "extras": {
@@ -18486,9 +19205,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0190"
+   "paired_with": "H0198"
   },
-  "H0190": {
+  "H0198": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -18544,7 +19263,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0190",
+   "id": "H0198",
    "shared_ticket": "TQ:c346e72f9141",
    "price_dkk": 0,
    "extras": {
@@ -18553,9 +19272,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0189"
+   "paired_with": "I0197"
   },
-  "I0191": {
+  "I0199": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -18607,7 +19326,7 @@
     "SAL"
    ],
    "score": 5,
-   "id": "I0191",
+   "id": "I0199",
    "shared_ticket": "TQ:08549f9c4a86",
    "price_dkk": 0,
    "extras": {
@@ -18616,9 +19335,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0192"
+   "paired_with": "H0200"
   },
-  "H0192": {
+  "H0200": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -18670,7 +19389,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0192",
+   "id": "H0200",
    "shared_ticket": "TQ:08549f9c4a86",
    "price_dkk": 0,
    "extras": {
@@ -18679,9 +19398,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0191"
+   "paired_with": "I0199"
   },
-  "I0193": {
+  "I0201": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -18733,7 +19452,7 @@
     "GUA"
    ],
    "score": 5,
-   "id": "I0193",
+   "id": "I0201",
    "shared_ticket": "TQ:0eec9795ce58",
    "price_dkk": 0,
    "extras": {
@@ -18742,9 +19461,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0194"
+   "paired_with": "H0202"
   },
-  "H0194": {
+  "H0202": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -18796,7 +19515,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0194",
+   "id": "H0202",
    "shared_ticket": "TQ:0eec9795ce58",
    "price_dkk": 0,
    "extras": {
@@ -18805,9 +19524,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0193"
+   "paired_with": "I0201"
   },
-  "I0195": {
+  "I0203": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -18886,7 +19605,7 @@
     "SAL"
    ],
    "score": 3,
-   "id": "I0195",
+   "id": "I0203",
    "shared_ticket": "TQ:6f19fd85785d",
    "price_dkk": 686,
    "extras": {
@@ -18895,9 +19614,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0196"
+   "paired_with": "H0204"
   },
-  "H0196": {
+  "H0204": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -18974,7 +19693,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0196",
+   "id": "H0204",
    "shared_ticket": "TQ:6f19fd85785d",
    "price_dkk": 381,
    "extras": {
@@ -18983,9 +19702,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0195"
+   "paired_with": "I0203"
   },
-  "I0197": {
+  "I0205": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -19070,7 +19789,7 @@
     "SAP"
    ],
    "score": 1,
-   "id": "I0197",
+   "id": "I0205",
    "shared_ticket": "TQ:284725039eac",
    "price_dkk": 186,
    "extras": {
@@ -19079,9 +19798,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0198"
+   "paired_with": "H0206"
   },
-  "H0198": {
+  "H0206": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -19158,7 +19877,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0198",
+   "id": "H0206",
    "shared_ticket": "TQ:284725039eac",
    "price_dkk": 381,
    "extras": {
@@ -19167,9 +19886,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0197"
+   "paired_with": "I0205"
   },
-  "I0199": {
+  "I0207": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -19251,7 +19970,7 @@
     "MGA"
    ],
    "score": 1,
-   "id": "I0199",
+   "id": "I0207",
    "shared_ticket": "TQ:eea1b884fbec",
    "price_dkk": 186,
    "extras": {
@@ -19260,9 +19979,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0200"
+   "paired_with": "H0208"
   },
-  "H0200": {
+  "H0208": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -19343,7 +20062,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0200",
+   "id": "H0208",
    "shared_ticket": "TQ:eea1b884fbec",
    "price_dkk": 381,
    "extras": {
@@ -19352,9 +20071,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0199"
+   "paired_with": "I0207"
   },
-  "I0201": {
+  "I0209": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -19426,7 +20145,7 @@
     "BOG"
    ],
    "score": 3,
-   "id": "I0201",
+   "id": "I0209",
    "shared_ticket": "TQ:bcb2aa304151",
    "price_dkk": 686,
    "extras": {
@@ -19435,9 +20154,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0202"
+   "paired_with": "H0210"
   },
-  "H0202": {
+  "H0210": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -19516,7 +20235,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0202",
+   "id": "H0210",
    "shared_ticket": "TQ:bcb2aa304151",
    "price_dkk": 412,
    "extras": {
@@ -19525,9 +20244,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0201"
+   "paired_with": "I0209"
   },
-  "I0203": {
+  "I0211": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19579,7 +20298,7 @@
     "SAL"
    ],
    "score": 3,
-   "id": "I0203",
+   "id": "I0211",
    "shared_ticket": "TQ:205e885fe18a",
    "price_dkk": 0,
    "extras": {
@@ -19588,9 +20307,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0204"
+   "paired_with": "H0212"
   },
-  "H0204": {
+  "H0212": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19642,7 +20361,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0204",
+   "id": "H0212",
    "shared_ticket": "TQ:205e885fe18a",
    "price_dkk": 0,
    "extras": {
@@ -19651,9 +20370,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0203"
+   "paired_with": "I0211"
   },
-  "I0205": {
+  "I0213": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19705,7 +20424,7 @@
     "SAL"
    ],
    "score": 4,
-   "id": "I0205",
+   "id": "I0213",
    "shared_ticket": "TQ:627a3432b4f8",
    "price_dkk": 0,
    "extras": {
@@ -19714,9 +20433,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0206"
+   "paired_with": "H0214"
   },
-  "H0206": {
+  "H0214": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19768,7 +20487,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0206",
+   "id": "H0214",
    "shared_ticket": "TQ:627a3432b4f8",
    "price_dkk": 0,
    "extras": {
@@ -19777,9 +20496,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0205"
+   "paired_with": "I0213"
   },
-  "I0207": {
+  "I0215": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19831,7 +20550,7 @@
     "SAP"
    ],
    "score": 4,
-   "id": "I0207",
+   "id": "I0215",
    "shared_ticket": "TQ:4c95c9ba4658",
    "price_dkk": 0,
    "extras": {
@@ -19840,9 +20559,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0208"
+   "paired_with": "H0216"
   },
-  "H0208": {
+  "H0216": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19894,7 +20613,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0208",
+   "id": "H0216",
    "shared_ticket": "TQ:4c95c9ba4658",
    "price_dkk": 0,
    "extras": {
@@ -19903,9 +20622,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0207"
+   "paired_with": "I0215"
   },
-  "I0209": {
+  "I0217": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19959,7 +20678,7 @@
     "SAP"
    ],
    "score": 2,
-   "id": "I0209",
+   "id": "I0217",
    "shared_ticket": "TQ:50a6ab77b846",
    "price_dkk": 0,
    "extras": {
@@ -19968,9 +20687,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0210"
+   "paired_with": "H0218"
   },
-  "H0210": {
+  "H0218": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20024,7 +20743,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0210",
+   "id": "H0218",
    "shared_ticket": "TQ:50a6ab77b846",
    "price_dkk": 0,
    "extras": {
@@ -20033,9 +20752,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0209"
+   "paired_with": "I0217"
   },
-  "I0211": {
+  "I0219": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20087,7 +20806,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0211",
+   "id": "I0219",
    "shared_ticket": "TQ:e13c89d81376",
    "price_dkk": 0,
    "extras": {
@@ -20096,9 +20815,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0212"
+   "paired_with": "H0220"
   },
-  "H0212": {
+  "H0220": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20150,7 +20869,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0212",
+   "id": "H0220",
    "shared_ticket": "TQ:e13c89d81376",
    "price_dkk": 0,
    "extras": {
@@ -20159,9 +20878,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0211"
+   "paired_with": "I0219"
   },
-  "I0213": {
+  "I0221": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20213,7 +20932,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0213",
+   "id": "I0221",
    "shared_ticket": "TQ:2144931a3a2f",
    "price_dkk": 0,
    "extras": {
@@ -20222,9 +20941,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0214"
+   "paired_with": "H0222"
   },
-  "H0214": {
+  "H0222": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20276,7 +20995,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0214",
+   "id": "H0222",
    "shared_ticket": "TQ:2144931a3a2f",
    "price_dkk": 0,
    "extras": {
@@ -20285,9 +21004,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0213"
+   "paired_with": "I0221"
   },
-  "I0215": {
+  "I0223": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20333,7 +21052,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0215",
+   "id": "I0223",
    "shared_ticket": "TQ:e19973c868b0",
    "price_dkk": 0,
    "extras": {
@@ -20342,9 +21061,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0216"
+   "paired_with": "H0224"
   },
-  "H0216": {
+  "H0224": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20396,7 +21115,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0216",
+   "id": "H0224",
    "shared_ticket": "TQ:e19973c868b0",
    "price_dkk": 0,
    "extras": {
@@ -20405,9 +21124,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0215"
+   "paired_with": "I0223"
   },
-  "I0217": {
+  "I0225": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20453,7 +21172,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0217",
+   "id": "I0225",
    "shared_ticket": "TQ:31472862ca78",
    "price_dkk": 0,
    "extras": {
@@ -20462,9 +21181,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0218"
+   "paired_with": "H0226"
   },
-  "H0218": {
+  "H0226": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20516,7 +21235,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0218",
+   "id": "H0226",
    "shared_ticket": "TQ:31472862ca78",
    "price_dkk": 0,
    "extras": {
@@ -20525,9 +21244,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0217"
+   "paired_with": "I0225"
   },
-  "I0219": {
+  "I0227": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20579,7 +21298,7 @@
     "MDE"
    ],
    "score": 5,
-   "id": "I0219",
+   "id": "I0227",
    "shared_ticket": "TQ:341de0400ec7",
    "price_dkk": 0,
    "extras": {
@@ -20588,9 +21307,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0220"
+   "paired_with": "H0228"
   },
-  "H0220": {
+  "H0228": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20636,7 +21355,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0220",
+   "id": "H0228",
    "shared_ticket": "TQ:341de0400ec7",
    "price_dkk": 0,
    "extras": {
@@ -20645,9 +21364,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0219"
+   "paired_with": "I0227"
   },
-  "I0221": {
+  "I0229": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20702,7 +21421,7 @@
     "MDE"
    ],
    "score": 5,
-   "id": "I0221",
+   "id": "I0229",
    "shared_ticket": "TQ:04f145390ba8",
    "price_dkk": 0,
    "extras": {
@@ -20711,9 +21430,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0222"
+   "paired_with": "H0230"
   },
-  "H0222": {
+  "H0230": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20769,7 +21488,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0222",
+   "id": "H0230",
    "shared_ticket": "TQ:04f145390ba8",
    "price_dkk": 0,
    "extras": {
@@ -20778,9 +21497,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0221"
+   "paired_with": "I0229"
   },
-  "I0223": {
+  "I0231": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20836,7 +21555,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0223",
+   "id": "I0231",
    "shared_ticket": "TQ:9bd958277ae9",
    "price_dkk": 0,
    "extras": {
@@ -20845,9 +21564,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0224"
+   "paired_with": "H0232"
   },
-  "H0224": {
+  "H0232": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20903,7 +21622,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0224",
+   "id": "H0232",
    "shared_ticket": "TQ:9bd958277ae9",
    "price_dkk": 0,
    "extras": {
@@ -20912,9 +21631,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0223"
+   "paired_with": "I0231"
   },
-  "I0225": {
+  "I0233": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20972,7 +21691,7 @@
     "SJO"
    ],
    "score": 5,
-   "id": "I0225",
+   "id": "I0233",
    "shared_ticket": "TQ:1fc3a851ec47",
    "price_dkk": 0,
    "extras": {
@@ -20981,9 +21700,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0226"
+   "paired_with": "H0234"
   },
-  "H0226": {
+  "H0234": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -21041,7 +21760,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0226",
+   "id": "H0234",
    "shared_ticket": "TQ:1fc3a851ec47",
    "price_dkk": 0,
    "extras": {
@@ -21050,9 +21769,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0225"
+   "paired_with": "I0233"
   },
-  "I0227": {
+  "I0235": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -21103,7 +21822,7 @@
     "PTY"
    ],
    "score": 5,
-   "id": "I0227",
+   "id": "I0235",
    "shared_ticket": "TQ:e9c283ace88d",
    "price_dkk": 0,
    "extras": {
@@ -21112,9 +21831,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0228"
+   "paired_with": "H0236"
   },
-  "H0228": {
+  "H0236": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -21172,7 +21891,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0228",
+   "id": "H0236",
    "shared_ticket": "TQ:e9c283ace88d",
    "price_dkk": 0,
    "extras": {
@@ -21181,9 +21900,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0227"
+   "paired_with": "I0235"
   },
-  "I0229": {
+  "I0237": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -21241,7 +21960,7 @@
     "CLO"
    ],
    "score": 3,
-   "id": "I0229",
+   "id": "I0237",
    "shared_ticket": "TQ:1adaf09e70a0",
    "price_dkk": 0,
    "extras": {
@@ -21250,9 +21969,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0230"
+   "paired_with": "H0238"
   },
-  "H0230": {
+  "H0238": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -21310,7 +22029,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0230",
+   "id": "H0238",
    "shared_ticket": "TQ:1adaf09e70a0",
    "price_dkk": 0,
    "extras": {
@@ -21319,9 +22038,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0229"
+   "paired_with": "I0237"
   },
-  "I0231": {
+  "I0239": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -21400,7 +22119,7 @@
     "SAL"
    ],
    "score": 1,
-   "id": "I0231",
+   "id": "I0239",
    "shared_ticket": "TQ:a8b81fb82f96",
    "price_dkk": 686,
    "extras": {
@@ -21409,9 +22128,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0232"
+   "paired_with": "H0240"
   },
-  "H0232": {
+  "H0240": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21481,7 +22200,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0232",
+   "id": "H0240",
    "shared_ticket": "TQ:a8b81fb82f96",
    "price_dkk": 381,
    "extras": {
@@ -21490,9 +22209,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0231"
+   "paired_with": "I0239"
   },
-  "I0233": {
+  "I0241": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -21571,7 +22290,7 @@
     "SAL"
    ],
    "score": 1,
-   "id": "I0233",
+   "id": "I0241",
    "shared_ticket": "TQ:5f5d62aa3def",
    "price_dkk": 686,
    "extras": {
@@ -21580,9 +22299,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0234"
+   "paired_with": "H0242"
   },
-  "H0234": {
+  "H0242": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21654,7 +22373,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0234",
+   "id": "H0242",
    "shared_ticket": "TQ:5f5d62aa3def",
    "price_dkk": 288,
    "extras": {
@@ -21663,9 +22382,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0233"
+   "paired_with": "I0241"
   },
-  "I0235": {
+  "I0243": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -21737,7 +22456,7 @@
     "BOG"
    ],
    "score": 3,
-   "id": "I0235",
+   "id": "I0243",
    "shared_ticket": "TQ:cc78ca641d60",
    "price_dkk": 186,
    "extras": {
@@ -21746,9 +22465,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0236"
+   "paired_with": "H0244"
   },
-  "H0236": {
+  "H0244": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21820,7 +22539,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0236",
+   "id": "H0244",
    "shared_ticket": "TQ:cc78ca641d60",
    "price_dkk": 288,
    "extras": {
@@ -21829,9 +22548,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0235"
+   "paired_with": "I0243"
   },
-  "I0237": {
+  "I0245": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -21910,7 +22629,7 @@
     "GUA"
    ],
    "score": 3,
-   "id": "I0237",
+   "id": "I0245",
    "shared_ticket": "TQ:697b4c443a84",
    "price_dkk": 186,
    "extras": {
@@ -21919,9 +22638,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0238"
+   "paired_with": "H0246"
   },
-  "H0238": {
+  "H0246": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21998,7 +22717,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0238",
+   "id": "H0246",
    "shared_ticket": "TQ:697b4c443a84",
    "price_dkk": 381,
    "extras": {
@@ -22007,9 +22726,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0237"
+   "paired_with": "I0245"
   },
-  "I0239": {
+  "I0247": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -22067,7 +22786,7 @@
     "SAP"
    ],
    "score": 4,
-   "id": "I0239",
+   "id": "I0247",
    "shared_ticket": "TQ:21ac78a3ef89",
    "price_dkk": 0,
    "extras": {
@@ -22076,9 +22795,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0240"
+   "paired_with": "H0248"
   },
-  "H0240": {
+  "H0248": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -22136,7 +22855,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0240",
+   "id": "H0248",
    "shared_ticket": "TQ:21ac78a3ef89",
    "price_dkk": 0,
    "extras": {
@@ -22145,9 +22864,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0239"
+   "paired_with": "I0247"
   },
-  "I0241": {
+  "I0249": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -22202,7 +22921,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0241",
+   "id": "I0249",
    "shared_ticket": "TQ:3c0e9087eaf5",
    "price_dkk": 0,
    "extras": {
@@ -22211,9 +22930,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0242"
+   "paired_with": "H0250"
   },
-  "H0242": {
+  "H0250": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -22269,7 +22988,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0242",
+   "id": "H0250",
    "shared_ticket": "TQ:3c0e9087eaf5",
    "price_dkk": 0,
    "extras": {
@@ -22278,7 +22997,7 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0241"
+   "paired_with": "I0249"
   }
  },
  "options": [
@@ -22287,8 +23006,8 @@
    "type": "ticket",
    "entry": "SJO",
    "exit": "SJO",
-   "way_in": "I0075",
-   "way_home": "H0076",
+   "way_in": "I0083",
+   "way_home": "H0084",
    "shared_ticket": "TQ:6328a78b1f91",
    "price_dkk": 7149,
    "extras": {
@@ -22305,12 +23024,34 @@
    }
   },
   {
+   "id": "BOG-SAL-ticket",
+   "type": "ticket",
+   "entry": "BOG",
+   "exit": "SAL",
+   "way_in": "I0153",
+   "way_home": "H0154",
+   "shared_ticket": "TQ:016fa4f9e11d",
+   "price_dkk": 7657,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 805,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 9.3,
+    "price": 4.3,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
    "id": "BOG-BOG-ticket",
    "type": "ticket",
    "entry": "BOG",
    "exit": "BOG",
-   "way_in": "I0067",
-   "way_home": "H0068",
+   "way_in": "I0075",
+   "way_home": "H0076",
    "shared_ticket": "TQ:031a37859ff5",
    "price_dkk": 7824,
    "extras": {
@@ -22331,8 +23072,8 @@
    "type": "ticket",
    "entry": "GUA",
    "exit": "BOG",
-   "way_in": "I0125",
-   "way_home": "H0126",
+   "way_in": "I0133",
+   "way_home": "H0134",
    "shared_ticket": "TQ:d9090c079f8f",
    "price_dkk": 7850,
    "extras": {
@@ -22353,8 +23094,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "CTG",
-   "way_in": "I0131",
-   "way_home": "H0132",
+   "way_in": "I0139",
+   "way_home": "H0140",
    "shared_ticket": "TQ:40e712801d92",
    "price_dkk": 7905,
    "extras": {
@@ -22371,12 +23112,34 @@
    }
   },
   {
+   "id": "MDE-SAL-ticket",
+   "type": "ticket",
+   "entry": "MDE",
+   "exit": "SAL",
+   "way_in": "I0161",
+   "way_home": "H0162",
+   "shared_ticket": "TQ:34ed7aca10fc",
+   "price_dkk": 7974,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 805,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 9.0,
+    "price": 4.0,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
    "id": "CTG-BOG-ticket",
    "type": "ticket",
    "entry": "CTG",
    "exit": "BOG",
-   "way_in": "I0159",
-   "way_home": "H0160",
+   "way_in": "I0167",
+   "way_home": "H0168",
    "shared_ticket": "TQ:a11d0c9caa29",
    "price_dkk": 8171,
    "extras": {
@@ -22397,8 +23160,8 @@
    "type": "ticket",
    "entry": "SJO",
    "exit": "BOG",
-   "way_in": "I0171",
-   "way_home": "H0172",
+   "way_in": "I0179",
+   "way_home": "H0180",
    "shared_ticket": "TQ:98d2cc9062fb",
    "price_dkk": 8341,
    "extras": {
@@ -22463,8 +23226,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "MGA",
-   "way_in": "I0079",
-   "way_home": "H0080",
+   "way_in": "I0087",
+   "way_home": "H0088",
    "shared_ticket": "TQ:86c272b019dd",
    "price_dkk": 6480,
    "extras": {
@@ -22485,8 +23248,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "GUA",
-   "way_in": "I0123",
-   "way_home": "H0124",
+   "way_in": "I0131",
+   "way_home": "H0132",
    "shared_ticket": "TQ:46acc62c0b00",
    "price_dkk": 6557,
    "extras": {
@@ -22507,8 +23270,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "SAL",
-   "way_in": "I0119",
-   "way_home": "H0120",
+   "way_in": "I0127",
+   "way_home": "H0128",
    "shared_ticket": "TQ:feca01b45d9e",
    "price_dkk": 6602,
    "extras": {
@@ -22529,32 +23292,10 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "SAP",
-   "way_in": "I0121",
-   "way_home": "H0122",
+   "way_in": "I0129",
+   "way_home": "H0130",
    "shared_ticket": "TQ:9793bcb7ed31",
    "price_dkk": 6663,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 1096,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "rating": {
-    "total": 8.6,
-    "price": 5.0,
-    "way_in": 3,
-    "way_home": 4
-   }
-  },
-  {
-   "id": "BOG-SAL-ticket",
-   "type": "ticket",
-   "entry": "BOG",
-   "exit": "SAL",
-   "way_in": "I0145",
-   "way_home": "H0146",
-   "shared_ticket": "TQ:99c4f409c805",
-   "price_dkk": 6669,
    "extras": {
     "cabin_bag_fees_dkk": 0,
     "checked_bag_fees_dkk": 1096,
@@ -22573,32 +23314,10 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "SAP",
-   "way_in": "I0147",
-   "way_home": "H0148",
+   "way_in": "I0155",
+   "way_home": "H0156",
    "shared_ticket": "TQ:e0c12f1b8857",
    "price_dkk": 6730,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 1096,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "rating": {
-    "total": 8.6,
-    "price": 5.0,
-    "way_in": 3,
-    "way_home": 4
-   }
-  },
-  {
-   "id": "MDE-SAL-ticket",
-   "type": "ticket",
-   "entry": "MDE",
-   "exit": "SAL",
-   "way_in": "I0153",
-   "way_home": "H0154",
-   "shared_ticket": "TQ:42fcad456075",
-   "price_dkk": 6830,
    "extras": {
     "cabin_bag_fees_dkk": 0,
     "checked_bag_fees_dkk": 1096,
@@ -22617,8 +23336,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "CTG",
-   "way_in": "I0117",
-   "way_home": "H0118",
+   "way_in": "I0125",
+   "way_home": "H0126",
    "shared_ticket": "TQ:540ee9c70ec1",
    "price_dkk": 6868,
    "extras": {
@@ -22639,8 +23358,8 @@
    "type": "ticket",
    "entry": "CLO",
    "exit": "CLO",
-   "way_in": "I0083",
-   "way_home": "H0084",
+   "way_in": "I0091",
+   "way_home": "H0092",
    "shared_ticket": "TQ:d1bbd91aad5b",
    "price_dkk": 6878,
    "extras": {
@@ -22661,8 +23380,8 @@
    "type": "ticket",
    "entry": "MDE",
    "exit": "SAP",
-   "way_in": "I0155",
-   "way_home": "H0156",
+   "way_in": "I0163",
+   "way_home": "H0164",
    "shared_ticket": "TQ:42ca0a9da87a",
    "price_dkk": 6891,
    "extras": {
@@ -22683,8 +23402,8 @@
    "type": "ticket",
    "entry": "CTG",
    "exit": "CTG",
-   "way_in": "I0085",
-   "way_home": "H0086",
+   "way_in": "I0093",
+   "way_home": "H0094",
    "shared_ticket": "TQ:a8b73134da7d",
    "price_dkk": 8375,
    "extras": {
@@ -22705,8 +23424,8 @@
    "type": "ticket",
    "entry": "MDE",
    "exit": "BOG",
-   "way_in": "I0219",
-   "way_home": "H0220",
+   "way_in": "I0227",
+   "way_home": "H0228",
    "shared_ticket": "TQ:341de0400ec7",
    "price_dkk": 8383,
    "extras": {
@@ -22727,8 +23446,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "MDE",
-   "way_in": "I0215",
-   "way_home": "H0216",
+   "way_in": "I0223",
+   "way_home": "H0224",
    "shared_ticket": "TQ:e19973c868b0",
    "price_dkk": 8396,
    "extras": {
@@ -22749,8 +23468,8 @@
    "type": "ticket",
    "entry": "MDE",
    "exit": "CTG",
-   "way_in": "I0151",
-   "way_home": "H0152",
+   "way_in": "I0159",
+   "way_home": "H0160",
    "shared_ticket": "TQ:dd97ff98cc43",
    "price_dkk": 7096,
    "extras": {
@@ -22771,8 +23490,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "GDL",
-   "way_in": "I0205",
-   "way_home": "H0206",
+   "way_in": "I0213",
+   "way_home": "H0214",
    "shared_ticket": "TQ:627a3432b4f8",
    "price_dkk": 8112,
    "extras": {
@@ -22793,8 +23512,8 @@
    "type": "ticket",
    "entry": "CTG",
    "exit": "MDE",
-   "way_in": "I0161",
-   "way_home": "H0162",
+   "way_in": "I0169",
+   "way_home": "H0170",
    "shared_ticket": "TQ:4ddb2f61e584",
    "price_dkk": 8501,
    "extras": {
@@ -22837,8 +23556,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "GDL",
-   "way_in": "I0217",
-   "way_home": "H0218",
+   "way_in": "I0225",
+   "way_home": "H0226",
    "shared_ticket": "TQ:31472862ca78",
    "price_dkk": 8605,
    "extras": {
@@ -22859,8 +23578,8 @@
    "type": "ticket",
    "entry": "SJO",
    "exit": "MDE",
-   "way_in": "I0177",
-   "way_home": "H0178",
+   "way_in": "I0185",
+   "way_home": "H0186",
    "shared_ticket": "TQ:833b79de40c1",
    "price_dkk": 8670,
    "extras": {
@@ -22903,8 +23622,8 @@
    "type": "ticket",
    "entry": "GUA",
    "exit": "MDE",
-   "way_in": "I0127",
-   "way_home": "H0128",
+   "way_in": "I0135",
+   "way_home": "H0136",
    "shared_ticket": "TQ:7b8e46f658f0",
    "price_dkk": 7966,
    "extras": {
@@ -22925,8 +23644,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "CTG",
-   "way_in": "I0179",
-   "way_home": "H0180",
+   "way_in": "I0187",
+   "way_home": "H0188",
    "shared_ticket": "TQ:47646fdc88cf",
    "price_dkk": 8786,
    "extras": {
@@ -22947,8 +23666,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "SAP",
-   "way_in": "I0073",
-   "way_home": "H0074",
+   "way_in": "I0081",
+   "way_home": "H0082",
    "shared_ticket": "TQ:1bde120d6f32",
    "price_dkk": 7149,
    "extras": {
@@ -22991,8 +23710,8 @@
    "type": "ticket",
    "entry": "MDE",
    "exit": "GDL",
-   "way_in": "I0089",
-   "way_home": "H0090",
+   "way_in": "I0097",
+   "way_home": "H0098",
    "shared_ticket": "TQ:9e7e264ae6f2",
    "price_dkk": 8922,
    "extras": {
@@ -23013,8 +23732,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "BOG",
-   "way_in": "I0169",
-   "way_home": "H0170",
+   "way_in": "I0177",
+   "way_home": "H0178",
    "shared_ticket": "TQ:3d10764de8b4",
    "price_dkk": 8948,
    "extras": {
@@ -23057,8 +23776,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "BOG",
-   "way_in": "I0173",
-   "way_home": "H0174",
+   "way_in": "I0181",
+   "way_home": "H0182",
    "shared_ticket": "TQ:00ce41dfdeb6",
    "price_dkk": 6681,
    "extras": {
@@ -23079,8 +23798,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "MGA",
-   "way_in": "I0149",
-   "way_home": "H0150",
+   "way_in": "I0157",
+   "way_home": "H0158",
    "shared_ticket": "TQ:1686c12f4d13",
    "price_dkk": 6742,
    "extras": {
@@ -23123,8 +23842,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "MDE",
-   "way_in": "I0211",
-   "way_home": "H0212",
+   "way_in": "I0219",
+   "way_home": "H0220",
    "shared_ticket": "TQ:e13c89d81376",
    "price_dkk": 6855,
    "extras": {
@@ -23145,8 +23864,8 @@
    "type": "ticket",
    "entry": "MDE",
    "exit": "MDE",
-   "way_in": "I0081",
-   "way_home": "H0082",
+   "way_in": "I0089",
+   "way_home": "H0090",
    "shared_ticket": "TQ:f28465f55e5e",
    "price_dkk": 6872,
    "extras": {
@@ -23167,8 +23886,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "MDE",
-   "way_in": "I0203",
-   "way_home": "H0204",
+   "way_in": "I0211",
+   "way_home": "H0212",
    "shared_ticket": "TQ:205e885fe18a",
    "price_dkk": 6885,
    "extras": {
@@ -23189,8 +23908,8 @@
    "type": "ticket",
    "entry": "MDE",
    "exit": "MGA",
-   "way_in": "I0157",
-   "way_home": "H0158",
+   "way_in": "I0165",
+   "way_home": "H0166",
    "shared_ticket": "TQ:91a255cd8fe8",
    "price_dkk": 6903,
    "extras": {
@@ -23233,8 +23952,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "SAL",
-   "way_in": "I0113",
-   "way_home": "H0114",
+   "way_in": "I0121",
+   "way_home": "H0122",
    "shared_ticket": "TQ:05d849b634b8",
    "price_dkk": 7231,
    "extras": {
@@ -23277,8 +23996,8 @@
    "type": "ticket",
    "entry": "GUA",
    "exit": "GDL",
-   "way_in": "I0129",
-   "way_home": "H0130",
+   "way_in": "I0137",
+   "way_home": "H0138",
    "shared_ticket": "TQ:e0f91ae91021",
    "price_dkk": 8175,
    "extras": {
@@ -23299,8 +24018,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "GUA",
-   "way_in": "I0115",
-   "way_home": "H0116",
+   "way_in": "I0123",
+   "way_home": "H0124",
    "shared_ticket": "TQ:b94726e9eb68",
    "price_dkk": 7263,
    "extras": {
@@ -23321,8 +24040,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "CTG",
-   "way_in": "I0111",
-   "way_home": "H0112",
+   "way_in": "I0119",
+   "way_home": "H0120",
    "shared_ticket": "TQ:81704d01d34b",
    "price_dkk": 7336,
    "extras": {
@@ -23409,8 +24128,8 @@
    "type": "ticket",
    "entry": "PTY",
    "exit": "PTY",
-   "way_in": "I0077",
-   "way_home": "H0078",
+   "way_in": "I0085",
+   "way_home": "H0086",
    "shared_ticket": "TQ:929e4becf15a",
    "price_dkk": 8306,
    "extras": {
@@ -23453,8 +24172,8 @@
    "type": "madrid",
    "entry": "SAL",
    "exit": "VVI",
-   "way_in": "I0195",
-   "way_home": "H0196",
+   "way_in": "I0203",
+   "way_home": "H0204",
    "shared_ticket": "TQ:6f19fd85785d",
    "price_dkk": 7561,
    "extras": {
@@ -23541,8 +24260,8 @@
    "type": "ticket",
    "entry": "CTG",
    "exit": "GDL",
-   "way_in": "I0163",
-   "way_home": "H0164",
+   "way_in": "I0171",
+   "way_home": "H0172",
    "shared_ticket": "TQ:a6b490287c5d",
    "price_dkk": 7842,
    "extras": {
@@ -23578,6 +24297,28 @@
     "price": 3.6,
     "way_in": 3,
     "way_home": 4
+   }
+  },
+  {
+   "id": "CUN-SJO-oneways",
+   "type": "oneways",
+   "entry": "CUN",
+   "exit": "SJO",
+   "way_in": "I0001",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 8850,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1360,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 7.2,
+    "price": 3.0,
+    "way_in": 3,
+    "way_home": 5
    }
   },
   {
@@ -23651,8 +24392,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "SAL",
-   "way_in": "I0071",
-   "way_home": "H0072",
+   "way_in": "I0079",
+   "way_home": "H0080",
    "shared_ticket": "TQ:dc5598fd7a9b",
    "price_dkk": 7347,
    "extras": {
@@ -23673,8 +24414,8 @@
    "type": "ticket",
    "entry": "GDL",
    "exit": "MDE",
-   "way_in": "I0093",
-   "way_home": "H0094",
+   "way_in": "I0101",
+   "way_home": "H0102",
    "shared_ticket": "TQ:5ebe28b5a788",
    "price_dkk": 7874,
    "extras": {
@@ -23695,8 +24436,8 @@
    "type": "ticket",
    "entry": "GDL",
    "exit": "CTG",
-   "way_in": "I0165",
-   "way_home": "H0166",
+   "way_in": "I0173",
+   "way_home": "H0174",
    "shared_ticket": "TQ:2b5e1b4c6d41",
    "price_dkk": 7908,
    "extras": {
@@ -23783,8 +24524,8 @@
    "type": "madrid",
    "entry": "SAL",
    "exit": "BOG",
-   "way_in": "I0231",
-   "way_home": "H0232",
+   "way_in": "I0239",
+   "way_home": "H0240",
    "shared_ticket": "TQ:a8b81fb82f96",
    "price_dkk": 7250,
    "extras": {
@@ -23805,8 +24546,8 @@
    "type": "ticket",
    "entry": "GUA",
    "exit": "GUA",
-   "way_in": "I0069",
-   "way_home": "H0070",
+   "way_in": "I0077",
+   "way_home": "H0078",
    "shared_ticket": "TQ:6d7c904e2d08",
    "price_dkk": 7364,
    "extras": {
@@ -23827,8 +24568,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "GDL",
-   "way_in": "I0209",
-   "way_home": "H0210",
+   "way_in": "I0217",
+   "way_home": "H0218",
    "shared_ticket": "TQ:50a6ab77b846",
    "price_dkk": 8245,
    "extras": {
@@ -23960,7 +24701,7 @@
    "entry": "CUN",
    "exit": "CTG",
    "way_in": "I0001",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 8578,
    "extras": {
@@ -24047,8 +24788,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "VVI",
-   "way_in": "I0191",
-   "way_home": "H0192",
+   "way_in": "I0199",
+   "way_home": "H0200",
    "shared_ticket": "TQ:08549f9c4a86",
    "price_dkk": 9071,
    "extras": {
@@ -24091,8 +24832,8 @@
    "type": "ticket",
    "entry": "GDL",
    "exit": "BOG",
-   "way_in": "I0091",
-   "way_home": "H0092",
+   "way_in": "I0099",
+   "way_home": "H0100",
    "shared_ticket": "TQ:2e22b147b8d0",
    "price_dkk": 8446,
    "extras": {
@@ -24135,8 +24876,8 @@
    "type": "ticket",
    "entry": "SJO",
    "exit": "VVI",
-   "way_in": "I0225",
-   "way_home": "H0226",
+   "way_in": "I0233",
+   "way_home": "H0234",
    "shared_ticket": "TQ:1fc3a851ec47",
    "price_dkk": 9189,
    "extras": {
@@ -24157,8 +24898,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "VVI",
-   "way_in": "I0189",
-   "way_home": "H0190",
+   "way_in": "I0197",
+   "way_home": "H0198",
    "shared_ticket": "TQ:c346e72f9141",
    "price_dkk": 10362,
    "extras": {
@@ -24201,8 +24942,8 @@
    "type": "madrid",
    "entry": "SAP",
    "exit": "VVI",
-   "way_in": "I0197",
-   "way_home": "H0198",
+   "way_in": "I0205",
+   "way_home": "H0206",
    "shared_ticket": "TQ:284725039eac",
    "price_dkk": 7567,
    "extras": {
@@ -24223,8 +24964,8 @@
    "type": "madrid",
    "entry": "SAP",
    "exit": "GDL",
-   "way_in": "I0099",
-   "way_home": "H0100",
+   "way_in": "I0107",
+   "way_home": "H0108",
    "shared_ticket": "TQ:7a6ed2d14fe1",
    "price_dkk": 8291,
    "extras": {
@@ -24241,12 +24982,34 @@
    }
   },
   {
+   "id": "CUN-LIR-oneways",
+   "type": "oneways",
+   "entry": "CUN",
+   "exit": "LIR",
+   "way_in": "I0001",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 8950,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 800,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 6.5,
+    "price": 2.9,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
    "id": "GUA-VVI-ticket",
    "type": "ticket",
    "entry": "GUA",
    "exit": "VVI",
-   "way_in": "I0193",
-   "way_home": "H0194",
+   "way_in": "I0201",
+   "way_home": "H0202",
    "shared_ticket": "TQ:0eec9795ce58",
    "price_dkk": 9274,
    "extras": {
@@ -24267,8 +25030,8 @@
    "type": "ticket",
    "entry": "CTG",
    "exit": "VVI",
-   "way_in": "I0241",
-   "way_home": "H0242",
+   "way_in": "I0249",
+   "way_home": "H0250",
    "shared_ticket": "TQ:3c0e9087eaf5",
    "price_dkk": 10470,
    "extras": {
@@ -24289,8 +25052,8 @@
    "type": "ticket",
    "entry": "GDL",
    "exit": "SAL",
-   "way_in": "I0167",
-   "way_home": "H0168",
+   "way_in": "I0175",
+   "way_home": "H0176",
    "shared_ticket": "TQ:c63ea4dc022e",
    "price_dkk": 8389,
    "extras": {
@@ -24351,12 +25114,56 @@
    }
   },
   {
+   "id": "CUN-GUA-oneways",
+   "type": "oneways",
+   "entry": "CUN",
+   "exit": "GUA",
+   "way_in": "I0001",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 9583,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1090,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 6.4,
+    "price": 2.2,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "MEX-SJO-oneways",
+   "type": "oneways",
+   "entry": "MEX",
+   "exit": "SJO",
+   "way_in": "I0018",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 9816,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 1060,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 6.4,
+    "price": 2.2,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
    "id": "SAP-BOG-ticket",
    "type": "ticket",
    "entry": "SAP",
    "exit": "BOG",
-   "way_in": "I0175",
-   "way_home": "H0176",
+   "way_in": "I0183",
+   "way_home": "H0184",
    "shared_ticket": "TQ:f15a4085341b",
    "price_dkk": 10199,
    "extras": {
@@ -24373,12 +25180,34 @@
    }
   },
   {
+   "id": "CUN-SAL-oneways",
+   "type": "oneways",
+   "entry": "CUN",
+   "exit": "SAL",
+   "way_in": "I0001",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 9156,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1090,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 6.3,
+    "price": 2.7,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
    "id": "MDE-VVI-ticket",
    "type": "ticket",
    "entry": "MDE",
    "exit": "VVI",
-   "way_in": "I0221",
-   "way_home": "H0222",
+   "way_in": "I0229",
+   "way_home": "H0230",
    "shared_ticket": "TQ:04f145390ba8",
    "price_dkk": 10654,
    "extras": {
@@ -24461,6 +25290,28 @@
    }
   },
   {
+   "id": "SAL-SJO-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SJO",
+   "way_in": "I0005",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 9053,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1346,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 6.2,
+    "price": 2.8,
+    "way_in": 1,
+    "way_home": 5
+   }
+  },
+  {
    "id": "GDL-BOG-oneways",
    "type": "oneways",
    "entry": "GDL",
@@ -24483,12 +25334,34 @@
    }
   },
   {
+   "id": "GDL-SJO-oneways",
+   "type": "oneways",
+   "entry": "GDL",
+   "exit": "SJO",
+   "way_in": "I0026",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 10031,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 1060,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 6.2,
+    "price": 2.0,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
    "id": "SAP-MDE-ticket",
    "type": "ticket",
    "entry": "SAP",
    "exit": "MDE",
-   "way_in": "I0207",
-   "way_home": "H0208",
+   "way_in": "I0215",
+   "way_home": "H0216",
    "shared_ticket": "TQ:4c95c9ba4658",
    "price_dkk": 10360,
    "extras": {
@@ -24509,8 +25382,8 @@
    "type": "madrid",
    "entry": "SAL",
    "exit": "MDE",
-   "way_in": "I0233",
-   "way_home": "H0234",
+   "way_in": "I0241",
+   "way_home": "H0242",
    "shared_ticket": "TQ:5f5d62aa3def",
    "price_dkk": 7924,
    "extras": {
@@ -24532,7 +25405,7 @@
    "entry": "MEX",
    "exit": "CTG",
    "way_in": "I0018",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 9544,
    "extras": {
@@ -24641,8 +25514,8 @@
    "type": "ticket",
    "entry": "VVI",
    "exit": "GDL",
-   "way_in": "I0133",
-   "way_home": "H0134",
+   "way_in": "I0141",
+   "way_home": "H0142",
    "shared_ticket": "TQ:ac5df39f630e",
    "price_dkk": 10244,
    "extras": {
@@ -24659,12 +25532,100 @@
    }
   },
   {
+   "id": "SJO-SJO-oneways",
+   "type": "oneways",
+   "entry": "SJO",
+   "exit": "SJO",
+   "way_in": "I0013",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 11796,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 6.0,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "BOG-SJO-oneways",
+   "type": "oneways",
+   "entry": "BOG",
+   "exit": "SJO",
+   "way_in": "I0009",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 11910,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 1120,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 6.0,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "SJO-GUA-oneways",
+   "type": "oneways",
+   "entry": "SJO",
+   "exit": "GUA",
+   "way_in": "I0013",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 12529,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 6.0,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "BOG-GUA-oneways",
+   "type": "oneways",
+   "entry": "BOG",
+   "exit": "GUA",
+   "way_in": "I0009",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 12643,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 850,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 6.0,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
    "id": "SAP-BOG-madrid",
    "type": "madrid",
    "entry": "SAP",
    "exit": "BOG",
-   "way_in": "I0095",
-   "way_home": "H0096",
+   "way_in": "I0103",
+   "way_home": "H0104",
    "shared_ticket": "TQ:50bfc1070da1",
    "price_dkk": 7813,
    "extras": {
@@ -24686,7 +25647,7 @@
    "entry": "SAL",
    "exit": "CTG",
    "way_in": "I0005",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 8781,
    "extras": {
@@ -24708,7 +25669,7 @@
    "entry": "GDL",
    "exit": "CTG",
    "way_in": "I0026",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 9759,
    "extras": {
@@ -24751,8 +25712,8 @@
    "type": "madrid",
    "entry": "BOG",
    "exit": "VVI",
-   "way_in": "I0201",
-   "way_home": "H0202",
+   "way_in": "I0209",
+   "way_home": "H0210",
    "shared_ticket": "TQ:bcb2aa304151",
    "price_dkk": 9275,
    "extras": {
@@ -24769,12 +25730,56 @@
    }
   },
   {
+   "id": "MEX-LIR-oneways",
+   "type": "oneways",
+   "entry": "MEX",
+   "exit": "LIR",
+   "way_in": "I0018",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 9916,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 500,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.7,
+    "price": 2.1,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "MEX-GUA-oneways",
+   "type": "oneways",
+   "entry": "MEX",
+   "exit": "GUA",
+   "way_in": "I0018",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 10549,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 790,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.7,
+    "price": 1.5,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
    "id": "MGA-VVI-madrid",
    "type": "madrid",
    "entry": "MGA",
    "exit": "VVI",
-   "way_in": "I0199",
-   "way_home": "H0200",
+   "way_in": "I0207",
+   "way_home": "H0208",
    "shared_ticket": "TQ:eea1b884fbec",
    "price_dkk": 9049,
    "extras": {
@@ -24795,8 +25800,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "GDL",
-   "way_in": "I0213",
-   "way_home": "H0214",
+   "way_in": "I0221",
+   "way_home": "H0222",
    "shared_ticket": "TQ:2144931a3a2f",
    "price_dkk": 9395,
    "extras": {
@@ -24879,12 +25884,56 @@
    }
   },
   {
+   "id": "GUA-SJO-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SJO",
+   "way_in": "I0022",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 11504,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 1120,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.6,
+    "price": 1.0,
+    "way_in": 4,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "GUA-GUA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "GUA",
+   "way_in": "I0022",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 12237,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 850,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.6,
+    "price": 1.0,
+    "way_in": 4,
+    "way_home": 5
+   }
+  },
+  {
    "id": "SAP-VVI-ticket",
    "type": "ticket",
    "entry": "SAP",
    "exit": "VVI",
-   "way_in": "I0239",
-   "way_home": "H0240",
+   "way_in": "I0247",
+   "way_home": "H0248",
    "shared_ticket": "TQ:21ac78a3ef89",
    "price_dkk": 12334,
    "extras": {
@@ -24923,6 +25972,28 @@
    }
   },
   {
+   "id": "SAL-LIR-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "LIR",
+   "way_in": "I0005",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 9153,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 786,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 5.5,
+    "price": 2.7,
+    "way_in": 1,
+    "way_home": 4
+   }
+  },
+  {
    "id": "GUA-LPB-oneways",
    "type": "oneways",
    "entry": "GUA",
@@ -24942,6 +26013,50 @@
     "price": 2.1,
     "way_in": 4,
     "way_home": 3
+   }
+  },
+  {
+   "id": "MEX-SAL-oneways",
+   "type": "oneways",
+   "entry": "MEX",
+   "exit": "SAL",
+   "way_in": "I0018",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 10122,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 790,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.5,
+    "price": 1.9,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "GDL-LIR-oneways",
+   "type": "oneways",
+   "entry": "GDL",
+   "exit": "LIR",
+   "way_in": "I0026",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 10131,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 500,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.5,
+    "price": 1.9,
+    "way_in": 3,
+    "way_home": 4
    }
   },
   {
@@ -24989,6 +26104,28 @@
    }
   },
   {
+   "id": "SAL-GUA-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "GUA",
+   "way_in": "I0005",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 9786,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1076,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 5.4,
+    "price": 2.0,
+    "way_in": 1,
+    "way_home": 5
+   }
+  },
+  {
    "id": "CLO-GDL-oneways",
    "type": "oneways",
    "entry": "CLO",
@@ -25011,12 +26148,34 @@
    }
   },
   {
+   "id": "GDL-GUA-oneways",
+   "type": "oneways",
+   "entry": "GDL",
+   "exit": "GUA",
+   "way_in": "I0026",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 10764,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 790,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.4,
+    "price": 1.2,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
    "id": "LPB-SAL-ticket",
    "type": "ticket",
    "entry": "LPB",
    "exit": "SAL",
-   "way_in": "I0143",
-   "way_home": "H0144",
+   "way_in": "I0151",
+   "way_home": "H0152",
    "shared_ticket": "TQ:0423df259a48",
    "price_dkk": 10837,
    "extras": {
@@ -25059,8 +26218,8 @@
    "type": "ticket",
    "entry": "GDL",
    "exit": "VVI",
-   "way_in": "I0141",
-   "way_home": "H0142",
+   "way_in": "I0149",
+   "way_home": "H0150",
    "shared_ticket": "TQ:6636404ebd4f",
    "price_dkk": 11259,
    "extras": {
@@ -25104,7 +26263,7 @@
    "entry": "SJO",
    "exit": "CTG",
    "way_in": "I0013",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 11524,
    "extras": {
@@ -25126,7 +26285,7 @@
    "entry": "BOG",
    "exit": "CTG",
    "way_in": "I0009",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 11638,
    "extras": {
@@ -25143,12 +26302,100 @@
    }
   },
   {
+   "id": "SJO-LIR-oneways",
+   "type": "oneways",
+   "entry": "SJO",
+   "exit": "LIR",
+   "way_in": "I0013",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 11896,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.4,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "BOG-LIR-oneways",
+   "type": "oneways",
+   "entry": "BOG",
+   "exit": "LIR",
+   "way_in": "I0009",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 12010,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 560,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.4,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "SJO-SAL-oneways",
+   "type": "oneways",
+   "entry": "SJO",
+   "exit": "SAL",
+   "way_in": "I0013",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 12102,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.4,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "BOG-SAL-oneways",
+   "type": "oneways",
+   "entry": "BOG",
+   "exit": "SAL",
+   "way_in": "I0009",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 12216,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 850,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.4,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 4
+   }
+  },
+  {
    "id": "SAP-MDE-madrid",
    "type": "madrid",
    "entry": "SAP",
    "exit": "MDE",
-   "way_in": "I0097",
-   "way_home": "H0098",
+   "way_in": "I0105",
+   "way_home": "H0106",
    "shared_ticket": "TQ:2b0bf528488f",
    "price_dkk": 7671,
    "extras": {
@@ -25162,6 +26409,28 @@
     "price": 4.3,
     "way_in": 1,
     "way_home": 1
+   }
+  },
+  {
+   "id": "SAL-SAL-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SAL",
+   "way_in": "I0005",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 9359,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1076,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 5.3,
+    "price": 2.5,
+    "way_in": 1,
+    "way_home": 4
    }
   },
   {
@@ -25187,12 +26456,34 @@
    }
   },
   {
+   "id": "GDL-SAL-oneways",
+   "type": "oneways",
+   "entry": "GDL",
+   "exit": "SAL",
+   "way_in": "I0026",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 10337,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 790,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.3,
+    "price": 1.7,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
    "id": "PTY-VVI-ticket",
    "type": "ticket",
    "entry": "PTY",
    "exit": "VVI",
-   "way_in": "I0227",
-   "way_home": "H0228",
+   "way_in": "I0235",
+   "way_home": "H0236",
    "shared_ticket": "TQ:e9c283ace88d",
    "price_dkk": 10497,
    "extras": {
@@ -25213,8 +26504,8 @@
    "type": "ticket",
    "entry": "VVI",
    "exit": "VVI",
-   "way_in": "I0087",
-   "way_home": "H0088",
+   "way_in": "I0095",
+   "way_home": "H0096",
    "shared_ticket": "TQ:bc6d37039fc8",
    "price_dkk": 10870,
    "extras": {
@@ -25235,8 +26526,8 @@
    "type": "madrid",
    "entry": "GUA",
    "exit": "VVI",
-   "way_in": "I0237",
-   "way_home": "H0238",
+   "way_in": "I0245",
+   "way_home": "H0246",
    "shared_ticket": "TQ:697b4c443a84",
    "price_dkk": 9578,
    "extras": {
@@ -25301,8 +26592,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "VVI",
-   "way_in": "I0223",
-   "way_home": "H0224",
+   "way_in": "I0231",
+   "way_home": "H0232",
    "shared_ticket": "TQ:9bd958277ae9",
    "price_dkk": 11698,
    "extras": {
@@ -25323,13 +26614,101 @@
    "type": "ticket",
    "entry": "LPB",
    "exit": "GDL",
-   "way_in": "I0135",
-   "way_home": "H0136",
+   "way_in": "I0143",
+   "way_home": "H0144",
    "shared_ticket": "TQ:6dbe6451dddb",
    "price_dkk": 11930,
    "extras": {
     "cabin_bag_fees_dkk": 0,
     "checked_bag_fees_dkk": 850,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.2,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "MGA-SJO-oneways",
+   "type": "oneways",
+   "entry": "MGA",
+   "exit": "SJO",
+   "way_in": "I0028",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 12416,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.2,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "CLO-SJO-oneways",
+   "type": "oneways",
+   "entry": "CLO",
+   "exit": "SJO",
+   "way_in": "I0032",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 12551,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.2,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "MGA-GUA-oneways",
+   "type": "oneways",
+   "entry": "MGA",
+   "exit": "GUA",
+   "way_in": "I0028",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 13149,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.2,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "CLO-GUA-oneways",
+   "type": "oneways",
+   "entry": "CLO",
+   "exit": "GUA",
+   "way_in": "I0032",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 13284,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
@@ -25385,12 +26764,34 @@
    }
   },
   {
+   "id": "MDE-SJO-oneways",
+   "type": "oneways",
+   "entry": "MDE",
+   "exit": "SJO",
+   "way_in": "I0014",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 9884,
+   "extras": {
+    "cabin_bag_fees_dkk": 440,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 3,
+    "hub_stay_estimate_dkk": 1150
+   },
+   "rating": {
+    "total": 5.1,
+    "price": 1.7,
+    "way_in": 1,
+    "way_home": 5
+   }
+  },
+  {
    "id": "CLO-VVI-ticket",
    "type": "ticket",
    "entry": "CLO",
    "exit": "VVI",
-   "way_in": "I0229",
-   "way_home": "H0230",
+   "way_in": "I0237",
+   "way_home": "H0238",
    "shared_ticket": "TQ:1adaf09e70a0",
    "price_dkk": 9885,
    "extras": {
@@ -25495,12 +26896,34 @@
    }
   },
   {
+   "id": "CUN-MGA-oneways",
+   "type": "oneways",
+   "entry": "CUN",
+   "exit": "MGA",
+   "way_in": "I0001",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 9858,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1090,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 5.0,
+    "price": 2.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
    "id": "GUA-CTG-oneways",
    "type": "oneways",
    "entry": "GUA",
    "exit": "CTG",
    "way_in": "I0022",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 11232,
    "extras": {
@@ -25517,12 +26940,56 @@
    }
   },
   {
+   "id": "GUA-LIR-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LIR",
+   "way_in": "I0022",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 11604,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 560,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.0,
+    "price": 1.0,
+    "way_in": 4,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "GUA-SAL-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAL",
+   "way_in": "I0022",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 11810,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 850,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 5.0,
+    "price": 1.0,
+    "way_in": 4,
+    "way_home": 4
+   }
+  },
+  {
    "id": "VVI-GDL-madrid",
    "type": "madrid",
    "entry": "VVI",
    "exit": "GDL",
-   "way_in": "I0137",
-   "way_home": "H0138",
+   "way_in": "I0145",
+   "way_home": "H0146",
    "shared_ticket": "TQ:2c6c064461c7",
    "price_dkk": 8951,
    "extras": {
@@ -25565,8 +27032,8 @@
    "type": "madrid",
    "entry": "MGA",
    "exit": "BOG",
-   "way_in": "I0101",
-   "way_home": "H0102",
+   "way_in": "I0109",
+   "way_home": "H0110",
    "shared_ticket": "TQ:b2256fc57ba4",
    "price_dkk": 8659,
    "extras": {
@@ -25587,8 +27054,8 @@
    "type": "madrid",
    "entry": "BOG",
    "exit": "MDE",
-   "way_in": "I0107",
-   "way_home": "H0108",
+   "way_in": "I0115",
+   "way_home": "H0116",
    "shared_ticket": "TQ:9e2b43483297",
    "price_dkk": 8799,
    "extras": {
@@ -25609,8 +27076,8 @@
    "type": "ticket",
    "entry": "SJO",
    "exit": "LPB",
-   "way_in": "I0185",
-   "way_home": "H0186",
+   "way_in": "I0193",
+   "way_home": "H0194",
    "shared_ticket": "TQ:2c5aa2f4bb31",
    "price_dkk": 10970,
    "extras": {
@@ -25631,8 +27098,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "LPB",
-   "way_in": "I0183",
-   "way_home": "H0184",
+   "way_in": "I0191",
+   "way_home": "H0192",
    "shared_ticket": "TQ:519be2823cb5",
    "price_dkk": 11271,
    "extras": {
@@ -25649,12 +27116,144 @@
    }
   },
   {
+   "id": "LIR-SJO-oneways",
+   "type": "oneways",
+   "entry": "LIR",
+   "exit": "SJO",
+   "way_in": "I0035",
+   "way_home": "H0064",
+   "shared_ticket": null,
+   "price_dkk": 12532,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.8,
+    "price": 1.0,
+    "way_in": 2,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "SJO-MGA-oneways",
+   "type": "oneways",
+   "entry": "SJO",
+   "exit": "MGA",
+   "way_in": "I0013",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 12804,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.8,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "BOG-MGA-oneways",
+   "type": "oneways",
+   "entry": "BOG",
+   "exit": "MGA",
+   "way_in": "I0009",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 12918,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 850,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.8,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "SJO-SAP-oneways",
+   "type": "oneways",
+   "entry": "SJO",
+   "exit": "SAP",
+   "way_in": "I0013",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 13211,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.8,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "LIR-GUA-oneways",
+   "type": "oneways",
+   "entry": "LIR",
+   "exit": "GUA",
+   "way_in": "I0035",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 13265,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.8,
+    "price": 1.0,
+    "way_in": 2,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "BOG-SAP-oneways",
+   "type": "oneways",
+   "entry": "BOG",
+   "exit": "SAP",
+   "way_in": "I0009",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 13325,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 560,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.8,
+    "price": 1.0,
+    "way_in": 5,
+    "way_home": 3
+   }
+  },
+  {
    "id": "MGA-GDL-madrid",
    "type": "madrid",
    "entry": "MGA",
    "exit": "GDL",
-   "way_in": "I0105",
-   "way_home": "H0106",
+   "way_in": "I0113",
+   "way_home": "H0114",
    "shared_ticket": "TQ:ea5ac68f3756",
    "price_dkk": 9259,
    "extras": {
@@ -25676,7 +27275,7 @@
    "entry": "MDE",
    "exit": "CTG",
    "way_in": "I0014",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 9612,
    "extras": {
@@ -25697,8 +27296,8 @@
    "type": "madrid",
    "entry": "BOG",
    "exit": "BOG",
-   "way_in": "I0235",
-   "way_home": "H0236",
+   "way_in": "I0243",
+   "way_home": "H0244",
    "shared_ticket": "TQ:cc78ca641d60",
    "price_dkk": 9976,
    "extras": {
@@ -25741,8 +27340,8 @@
    "type": "madrid",
    "entry": "MGA",
    "exit": "MDE",
-   "way_in": "I0103",
-   "way_home": "H0104",
+   "way_in": "I0111",
+   "way_home": "H0112",
    "shared_ticket": "TQ:c785b8686e70",
    "price_dkk": 8837,
    "extras": {
@@ -25756,6 +27355,28 @@
     "price": 3.0,
     "way_in": 1,
     "way_home": 2
+   }
+  },
+  {
+   "id": "CUN-SAP-oneways",
+   "type": "oneways",
+   "entry": "CUN",
+   "exit": "SAP",
+   "way_in": "I0001",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 10265,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 800,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 4.6,
+    "price": 1.6,
+    "way_in": 3,
+    "way_home": 3
    }
   },
   {
@@ -25808,7 +27429,7 @@
    "entry": "MGA",
    "exit": "CTG",
    "way_in": "I0028",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 12144,
    "extras": {
@@ -25830,9 +27451,97 @@
    "entry": "CLO",
    "exit": "CTG",
    "way_in": "I0032",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 12279,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.6,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "MGA-LIR-oneways",
+   "type": "oneways",
+   "entry": "MGA",
+   "exit": "LIR",
+   "way_in": "I0028",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 12516,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.6,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "CLO-LIR-oneways",
+   "type": "oneways",
+   "entry": "CLO",
+   "exit": "LIR",
+   "way_in": "I0032",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 12651,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.6,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "MGA-SAL-oneways",
+   "type": "oneways",
+   "entry": "MGA",
+   "exit": "SAL",
+   "way_in": "I0028",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 12722,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.6,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "CLO-SAL-oneways",
+   "type": "oneways",
+   "entry": "CLO",
+   "exit": "SAL",
+   "way_in": "I0032",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 12857,
    "extras": {
     "cabin_bag_fees_dkk": 0,
     "checked_bag_fees_dkk": null,
@@ -25873,8 +27582,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "LPB",
-   "way_in": "I0187",
-   "way_home": "H0188",
+   "way_in": "I0195",
+   "way_home": "H0196",
    "shared_ticket": "TQ:38267531a2a0",
    "price_dkk": 10853,
    "extras": {
@@ -25888,6 +27597,116 @@
     "price": 1.1,
     "way_in": 4,
     "way_home": 3
+   }
+  },
+  {
+   "id": "MDE-LIR-oneways",
+   "type": "oneways",
+   "entry": "MDE",
+   "exit": "LIR",
+   "way_in": "I0014",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 9984,
+   "extras": {
+    "cabin_bag_fees_dkk": 440,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 3,
+    "hub_stay_estimate_dkk": 1150
+   },
+   "rating": {
+    "total": 4.4,
+    "price": 1.6,
+    "way_in": 1,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "MDE-GUA-oneways",
+   "type": "oneways",
+   "entry": "MDE",
+   "exit": "GUA",
+   "way_in": "I0014",
+   "way_home": "H0071",
+   "shared_ticket": null,
+   "price_dkk": 10617,
+   "extras": {
+    "cabin_bag_fees_dkk": 440,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 3,
+    "hub_stay_estimate_dkk": 1150
+   },
+   "rating": {
+    "total": 4.4,
+    "price": 1.0,
+    "way_in": 1,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "GUA-MGA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "MGA",
+   "way_in": "I0022",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 12512,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 850,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.4,
+    "price": 1.0,
+    "way_in": 4,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "GUA-SAP-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAP",
+   "way_in": "I0022",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 12919,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 560,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.4,
+    "price": 1.0,
+    "way_in": 4,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "MDE-SAL-oneways",
+   "type": "oneways",
+   "entry": "MDE",
+   "exit": "SAL",
+   "way_in": "I0014",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 10190,
+   "extras": {
+    "cabin_bag_fees_dkk": 440,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 3,
+    "hub_stay_estimate_dkk": 1150
+   },
+   "rating": {
+    "total": 4.2,
+    "price": 1.4,
+    "way_in": 1,
+    "way_home": 4
    }
   },
   {
@@ -25909,6 +27728,28 @@
     "total": 4.2,
     "price": 1.6,
     "way_in": 2,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "MEX-MGA-oneways",
+   "type": "oneways",
+   "entry": "MEX",
+   "exit": "MGA",
+   "way_in": "I0018",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 10824,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 790,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.2,
+    "price": 1.2,
+    "way_in": 3,
     "way_home": 3
    }
   },
@@ -25939,8 +27780,8 @@
    "type": "ticket",
    "entry": "GUA",
    "exit": "LPB",
-   "way_in": "I0181",
-   "way_home": "H0182",
+   "way_in": "I0189",
+   "way_home": "H0190",
    "shared_ticket": "TQ:6b2d2c476a38",
    "price_dkk": 10842,
    "extras": {
@@ -25984,7 +27825,7 @@
    "entry": "LIR",
    "exit": "CTG",
    "way_in": "I0035",
-   "way_home": "H0064",
+   "way_home": "H0065",
    "shared_ticket": null,
    "price_dkk": 12260,
    "extras": {
@@ -26001,6 +27842,72 @@
    }
   },
   {
+   "id": "LIR-LIR-oneways",
+   "type": "oneways",
+   "entry": "LIR",
+   "exit": "LIR",
+   "way_in": "I0035",
+   "way_home": "H0068",
+   "shared_ticket": null,
+   "price_dkk": 12632,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.2,
+    "price": 1.0,
+    "way_in": 2,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "LIR-SAL-oneways",
+   "type": "oneways",
+   "entry": "LIR",
+   "exit": "SAL",
+   "way_in": "I0035",
+   "way_home": "H0069",
+   "shared_ticket": null,
+   "price_dkk": 12838,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.2,
+    "price": 1.0,
+    "way_in": 2,
+    "way_home": 4
+   }
+  },
+  {
+   "id": "SAL-MGA-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "MGA",
+   "way_in": "I0005",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 10061,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 1076,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.8,
+    "way_in": 1,
+    "way_home": 3
+   }
+  },
+  {
    "id": "CLO-LPB-oneways",
    "type": "oneways",
    "entry": "CLO",
@@ -26014,6 +27921,28 @@
     "checked_bag_fees_dkk": null,
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "GDL-MGA-oneways",
+   "type": "oneways",
+   "entry": "GDL",
+   "exit": "MGA",
+   "way_in": "I0026",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 11039,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 790,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
    },
    "rating": {
     "total": 4.0,
@@ -26045,6 +27974,28 @@
    }
   },
   {
+   "id": "MEX-SAP-oneways",
+   "type": "oneways",
+   "entry": "MEX",
+   "exit": "SAP",
+   "way_in": "I0018",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 11231,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 500,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
    "id": "CLO-MDE-oneways",
    "type": "oneways",
    "entry": "CLO",
@@ -26067,12 +28018,122 @@
    }
   },
   {
+   "id": "GDL-SAP-oneways",
+   "type": "oneways",
+   "entry": "GDL",
+   "exit": "SAP",
+   "way_in": "I0026",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 11446,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 500,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "MGA-MGA-oneways",
+   "type": "oneways",
+   "entry": "MGA",
+   "exit": "MGA",
+   "way_in": "I0028",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 13424,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "CLO-MGA-oneways",
+   "type": "oneways",
+   "entry": "CLO",
+   "exit": "MGA",
+   "way_in": "I0032",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 13559,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "MGA-SAP-oneways",
+   "type": "oneways",
+   "entry": "MGA",
+   "exit": "SAP",
+   "way_in": "I0028",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 13831,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "CLO-SAP-oneways",
+   "type": "oneways",
+   "entry": "CLO",
+   "exit": "SAP",
+   "way_in": "I0032",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 13966,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 4.0,
+    "price": 1.0,
+    "way_in": 3,
+    "way_home": 3
+   }
+  },
+  {
    "id": "BOG-GDL-madrid",
    "type": "madrid",
    "entry": "BOG",
    "exit": "GDL",
-   "way_in": "I0109",
-   "way_home": "H0110",
+   "way_in": "I0117",
+   "way_home": "H0118",
    "shared_ticket": "TQ:09f74fa3dd71",
    "price_dkk": 9055,
    "extras": {
@@ -26093,8 +28154,8 @@
    "type": "madrid",
    "entry": "LPB",
    "exit": "GDL",
-   "way_in": "I0139",
-   "way_home": "H0140",
+   "way_in": "I0147",
+   "way_home": "H0148",
    "shared_ticket": "TQ:3f6b27cf4cf5",
    "price_dkk": 11336,
    "extras": {
@@ -26133,6 +28194,28 @@
    }
   },
   {
+   "id": "SAL-SAP-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SAP",
+   "way_in": "I0005",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 10468,
+   "extras": {
+    "cabin_bag_fees_dkk": 180,
+    "checked_bag_fees_dkk": 786,
+    "hub_nights": 1,
+    "hub_stay_estimate_dkk": 450
+   },
+   "rating": {
+    "total": 3.6,
+    "price": 1.4,
+    "way_in": 1,
+    "way_home": 3
+   }
+  },
+  {
    "id": "LIR-MDE-oneways",
    "type": "oneways",
    "entry": "LIR",
@@ -26151,6 +28234,94 @@
     "total": 3.6,
     "price": 1.0,
     "way_in": 2,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "LIR-MGA-oneways",
+   "type": "oneways",
+   "entry": "LIR",
+   "exit": "MGA",
+   "way_in": "I0035",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 13540,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 3.6,
+    "price": 1.0,
+    "way_in": 2,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "LIR-SAP-oneways",
+   "type": "oneways",
+   "entry": "LIR",
+   "exit": "SAP",
+   "way_in": "I0035",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 13947,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 3.6,
+    "price": 1.0,
+    "way_in": 2,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "MDE-MGA-oneways",
+   "type": "oneways",
+   "entry": "MDE",
+   "exit": "MGA",
+   "way_in": "I0014",
+   "way_home": "H0072",
+   "shared_ticket": null,
+   "price_dkk": 10892,
+   "extras": {
+    "cabin_bag_fees_dkk": 440,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 3,
+    "hub_stay_estimate_dkk": 1150
+   },
+   "rating": {
+    "total": 3.2,
+    "price": 1.0,
+    "way_in": 1,
+    "way_home": 3
+   }
+  },
+  {
+   "id": "MDE-SAP-oneways",
+   "type": "oneways",
+   "entry": "MDE",
+   "exit": "SAP",
+   "way_in": "I0014",
+   "way_home": "H0074",
+   "shared_ticket": null,
+   "price_dkk": 11299,
+   "extras": {
+    "cabin_bag_fees_dkk": 440,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 3,
+    "hub_stay_estimate_dkk": 1150
+   },
+   "rating": {
+    "total": 3.2,
+    "price": 1.0,
+    "way_in": 1,
     "way_home": 3
    }
   }
