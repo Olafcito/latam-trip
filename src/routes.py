@@ -21,12 +21,15 @@ con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
 reg_of = {a: r for r, aps in REG.items() for a in aps}
 
 hops = {}   # (a, b) -> best acceptable one-way
-for pid, eff, price, h, oc, flags, od in con.execute(
-        "SELECT pattern_id, eff_cost, price_dkk, out_hours, out_carriers, flags, out_date FROM quotes WHERE pattern_id LIKE 'R:%' AND ok=1"):
+for pid, eff, price, h, oc, flags, od, raw in con.execute(
+        "SELECT pattern_id, eff_cost, price_dkk, out_hours, out_carriers, flags, out_date, raw FROM quotes WHERE pattern_id LIKE 'R:%' AND ok=1"):
     a, b = pid[2:].split(">")
     if a in reg_of and b in reg_of and reg_of[a] != reg_of[b]:
         if (a, b) not in hops or eff < hops[(a, b)]["eff"]:
-            hops[(a, b)] = dict(frm=a, to=b, eff=eff, price=price, hours=h, carriers=oc, flags=flags, date=od)
+            o = json.loads(raw).get("out") or {}
+            hops[(a, b)] = dict(frm=a, to=b, eff=eff, price=price, hours=h, carriers=oc, flags=flags, date=od,
+                                dep=(o.get("dep") or "")[11:16], arr=(o.get("arr") or "")[11:16],
+                                next_day=(o.get("arr") or "")[:10] > (o.get("dep") or "")[:10])
 internal = {}
 for leg in INTERNAL.get("BO", []):
     a, b = leg.split(">")
@@ -65,6 +68,26 @@ for pid, eff, price, oh, hh, oc, hc, od, hd, raw in con.execute(
                           out_carriers=oc, home_carriers=hc, out_date=od, home_date=hd, tickets=q.get("tickets") or 1,
                           fare=q.get("fare_brand"), checked_bag=q.get("checked_bag"))
 
+CHAINS = os.path.join(ROOT, "data", "chains.json")   # self-built ways in and home (chains.py)
+if os.path.exists(CHAINS):
+    ch = json.load(open(CHAINS))
+    for o in ch["out"]:
+        for h in ch["home"]:
+            if o["to"] not in reg_of or h["frm"] not in reg_of:
+                continue
+            pid = f"C:{o['route']}/{h['route']}"
+            eff = o["eff"] + h["eff"]
+            if pid in mains and mains[pid]["eff"] <= eff:
+                continue
+            mains[pid] = dict(pattern=pid, origin=o["frm"], entry=o["to"], exit=h["frm"], eff=eff,
+                              price=o["total"] + h["total"], out_h=o["hours"], home_h=h["hours"],
+                              out_carriers=", ".join(o["carriers"]), home_carriers=", ".join(h["carriers"]),
+                              out_date=o["start"][:10], home_date=h["start"][:10], tickets=o["tickets"] + h["tickets"],
+                              fare=None, checked_bag=None, chain=True,
+                              chain_note=f"in: {'; '.join(o['stops']) or 'one ticket'} | home: {'; '.join(h['stops']) or 'one ticket'}",
+                              checked_add=(o["checked"] or 0) + (h["checked"] or 0),
+                              flags=sorted(set(o["flags"]) | set(h["flags"])))
+
 routes = []
 for m in mains.values():
     A, Z = reg_of[m["entry"]], reg_of[m["exit"]]
@@ -82,7 +105,7 @@ for m in mains.values():
                 if not h:
                     ok = False; legs.append(f"{X}>{Y}: not priced"); break
                 total += h["price"]; eff += h["eff"]
-                legs.append(f"{h['frm']}>{h['to']} {h['price']:.0f} ({h['hours']} h, {h['carriers']})")
+                legs.append(f"{h['frm']}>{h['to']} {h['price']:.0f} ({h.get('dep')}>{h.get('arr')}{'+1' if h.get('next_day') else ''}, {h['hours']} h, {h['carriers']})")
             if not ok:
                 continue
             if "BO" in order:
