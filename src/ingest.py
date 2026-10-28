@@ -64,6 +64,17 @@ def clean(q):
     return q
 
 
+def normalise(q):
+    """Fix a common worker slip: the home leg of an open jaw/return written as ORIGIN->X instead of X->ORIGIN."""
+    L = q.get("legs_requested") or []
+    if len(L) == 2 and L[1]["from"] == L[0]["from"] and L[1]["to"] != L[0]["from"]:
+        L[1]["from"], L[1]["to"] = L[1]["to"], L[1]["from"]
+        q["flags"] = (q.get("flags") or []) + ["legs_fixed"]
+        if L[1]["from"] == L[0]["to"]:
+            q["structure"] = "return"
+    return q
+
+
 def eff_cost(q):
     p = q.get("price_dkk")
     if p is None:
@@ -101,8 +112,8 @@ def main():
             if not line:
                 continue
             try:
-                q = clean(json.loads(line))
-                if any(x < W["tight_connection_h"] for d in legs_of(q) if d for x in (d.get("layover_h") or [])):
+                q = normalise(clean(json.loads(line)))
+                if any(x < W["tight_connection_h"] for d in legs_of(q) if d for x in (d.get("layover_h") or []) if isinstance(x, (int, float))):
                     q["flags"] = sorted(set((q.get("flags") or []) + ["tight_connection"]))
             except json.JSONDecodeError:
                 continue

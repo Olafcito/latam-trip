@@ -19,6 +19,15 @@ flags: basic_fare | airlines: Avianca, BoA, Copa Airlines, Iberia, Norwegian
   - La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)
   - Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)
 
+## D3 Bolivia over Christmas, Copenhagen start in Guatemala, home from Bogota on KLM (no US transit)
+total 13007 DKK with cabin bag | +2136 with checked bag = 15143 | 55.8 h in the air incl. connections | 12 flights | 5 tickets | eff 21238
+flags: basic_fare | airlines: Avianca, BoA, COPA, KLM, LATAM Airlines
+  - Long-haul CPH-GUA / BOG-CPH (KLM): 7636 | P:CPH>GUA/BOG>CPH 2026-12-03 | 23.73/15.58 h | COPA, KLM | 6 flights, 1 ticket(s) | bag +1120 (KLM 560; KLM 560)
+  - Central America > La Paz (Christmas): 2678 | R:PTY>LPB 2026-12-21 | 7.17 h | Avianca | 2 flights, 1 ticket(s) | bag +516 (Avianca 516)
+  - La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)
+  - Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)
+  - Santa Cruz > Colombia (after Christmas): 1784 + cabin bag 250 | R:VVI>BOG 2026-12-25 | 7.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)
+
 ## A1 Madrid start, Ryanair-type hop CPH-MAD (laptop stays home), Central America > Colombia > Bolivia
 total 12884 DKK with cabin bag | +2317 with checked bag = 15201 | 53.8 h in the air incl. connections | 12 flights | 6 tickets | eff 21508
 flags: basic_fare, overnight | airlines: Avianca, BoA, Copa Airlines, Iberia, LATAM Airlines, Norwegian

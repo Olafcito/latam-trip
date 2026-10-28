@@ -416,5 +416,34 @@
   "flights": 13,
   "tickets": 8,
   "eff": 28054.0
+ },
+ {
+  "id": "D3",
+  "name": "Bolivia over Christmas, Copenhagen start in Guatemala, home from Bogota on KLM (no US transit)",
+  "story": "CPH-Guatemala City 3 Dec (KLM+Copa), Central America, Christmas in Bolivia, January in Colombia, Bogota-CPH 3 Feb (KLM/Air France, 13.4 to 15.6 h).",
+  "ok": true,
+  "lines": [
+   "Long-haul CPH-GUA / BOG-CPH (KLM): 7636 | P:CPH>GUA/BOG>CPH 2026-12-03 | 23.73/15.58 h | COPA, KLM | 6 flights, 1 ticket(s) | bag +1120 (KLM 560; KLM 560)",
+   "Central America > La Paz (Christmas): 2678 | R:PTY>LPB 2026-12-21 | 7.17 h | Avianca | 2 flights, 1 ticket(s) | bag +516 (Avianca 516)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Santa Cruz > Colombia (after Christmas): 1784 + cabin bag 250 | R:VVI>BOG 2026-12-25 | 7.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)"
+  ],
+  "flags": [
+   "basic_fare"
+  ],
+  "airlines": [
+   "Avianca",
+   "BoA",
+   "COPA",
+   "KLM",
+   "LATAM Airlines"
+  ],
+  "price": 13007.0,
+  "bag": 2136,
+  "hours": 55.81,
+  "flights": 12,
+  "tickets": 5,
+  "eff": 21238.0
  }
 ]

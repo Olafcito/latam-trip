@@ -578,5 +578,60 @@
     ]
    }
   ]
+ },
+ {
+  "id": "D3",
+  "name": "Bolivia over Christmas, Copenhagen start in Guatemala, home from Bogota on KLM (no US transit)",
+  "story": "CPH-Guatemala City 3 Dec (KLM+Copa), Central America, Christmas in Bolivia, January in Colombia, Bogota-CPH 3 Feb (KLM/Air France, 13.4 to 15.6 h).",
+  "components": [
+   {
+    "label": "Long-haul CPH-GUA / BOG-CPH (KLM)",
+    "pattern": "P:CPH>GUA/BOG>CPH",
+    "carriers": "KLM",
+    "no_flags": [
+     "self_transfer"
+    ]
+   },
+   {
+    "label": "Central America > La Paz (Christmas)",
+    "pattern": [
+     "R:SAL>LPB",
+     "R:PTY>LPB"
+    ],
+    "dates": [
+     "2026-12-16",
+     "2026-12-17",
+     "2026-12-18",
+     "2026-12-19",
+     "2026-12-20",
+     "2026-12-21",
+     "2026-12-22"
+    ]
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Colombia (after Christmas)",
+    "pattern": [
+     "R:VVI>MDE",
+     "R:VVI>BOG"
+    ],
+    "dates": [
+     "2026-12-25",
+     "2026-12-26",
+     "2026-12-27",
+     "2026-12-28",
+     "2026-12-29",
+     "2026-12-30",
+     "2026-12-31"
+    ]
+   }
+  ]
  }
 ]

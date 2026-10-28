@@ -21,7 +21,7 @@ You get from the orchestrator: ROOT (crawl folder), PLUGIN (this plugin's folder
 2. First search: store `PLUGIN/skills/gflights-search/scripts/gf_extract.js` as `localStorage.r` on google.com.
 3. browser_batch [navigate, javascript_tool `eval(localStorage.r)`]. On the 45 s timeout start it with `.then(v=>window.__o=v)` and poll `window.__o`.
 4. Output: first-leg rows `price|stops|airlines|dep>arr|duration|layovers` (price = whole trip), then leg-2 rows and booking text for the 2 cheapest distinct picks. Trust the booking-page price. Flight numbers: `python3 -I PLUGIN/skills/gflights-search/scripts/gf_dec.py <BOOK tfs>`.
-5. Write 3 to 6 DISTINCT rows (different airlines, via, or hours more than 2 h apart) to `ROOT/data/raw/<agent>.jsonl` in the schema of `PLUGIN/skills/flight-crawl-orchestrator/references/schema.md`. Missing home leg: flag `incomplete`. Over 30 h in one direction: flag `over_30h` and move on.
+5. legs_requested exactly as the task gives them (home leg FROM the exit TO the origin, e.g. VVI->CPH, never CPH->VVI). Write 3 to 6 DISTINCT rows (different airlines, via, or hours more than 2 h apart) to `ROOT/data/raw/<agent>.jsonl` in the schema of `PLUGIN/skills/flight-crawl-orchestrator/references/schema.md`. Missing home leg: flag `incomplete`. Over 30 h in one direction: flag `over_30h` and move on.
 Google never lists Boliviana (BoA); check BoA routings on Momondo.
 
 Before your final reply close every tab you created (tabs_context, then tabs_close); the pane caps tabs at about 9.
