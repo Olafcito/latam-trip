@@ -19,7 +19,7 @@ window.parseDlg=function(txt, legDates){
       const l=L[i];
       const af=/^Afgang \S+ (\d+)\. (\w+)/.exec(l); if(af){const y=(['jan','feb'].includes(af[2]))?'2027':'2026';cur=y+'-'+MON[af[2]]+'-'+String(af[1]).padStart(2,'0');continue}
       const sg=/^(\d\d:\d\d) - (\d\d:\d\d)(?:\+\d)?\((.*)\)$/.exec(l);
-      if(sg){const codes=(L[i+1]||'').match(/\(([A-Z]{3})\)/g)||[];const al=(L[i+2]||'').split(' • ')[0];
+      if(sg){const codes=(L[i+1]||'').match(/\(([A-Z]{3})\)/g)||[];let al=(L[i+2]||'').split(' • ')[0];if(/Service mellem|godkendelse|Betjenes af/i.test(al))al=(L[i+3]||'').split(' • ')[0];
         segs.push({dep:sg[1],arr:sg[2],dur:sg[3],date:cur,from:(codes[0]||'').replace(/[()]/g,''),to:(codes[1]||'').replace(/[()]/g,''),fl:al});continue}
       const lv=/^(.*?)•Skift (\S+)(?: \S+)? i (.*)\((\w{3})\)/.exec(l);
       if(lv){lay.push(+dur(lv[1]).toFixed(2));layCodes.push(lv[4]);if(/lufthavn/i.test(l))aptChange=true;continue}
@@ -51,19 +51,18 @@ window.crawl=async (start,end,legDates)=>{
   for(const i of pick){
     const card=[...document.querySelectorAll('[role="group"]')].find(e=>e.getAttribute('aria-label')==='Resultat nr. '+i);
     if(!card){out.push({rank:i+1,err:'nocard'});continue}
-    card.scrollIntoView();card.click();await sleep(900);
-    let d=document.querySelector('[role="dialog"]');
+    card.scrollIntoView();const vb=[...card.querySelectorAll('button,a,[role="button"]')].find(b=>/^Vælg$/.test((b.innerText||'').trim()));(vb||card).click();let d=null;for(let w=0;w<10&&!d;w++){await sleep(400);d=[...document.querySelectorAll('[role="dialog"]')].find(x=>!/drawer/i.test(x.className)&&/(Fly \d+|Afrejse|Hjemrejse) •|\d\d:\d\d - \d\d:\d\d\(/.test(x.innerText));}
     if(!d){out.push({rank:i+1,err:'nodialog'});continue}
     d.querySelectorAll('.E69K-leg-dropdown-header[role="button"]').forEach(b=>b.click());const NL=legDates.length;for(let w=0;w<10;w++){await sleep(400);const tx=d.innerText;const hdr=(tx.match(/(Fly \d+|Afrejse|Udrejse|Hjemrejse) •/g)||[]).length;const sg=(tx.match(/\d\d:\d\d - \d\d:\d\d(?:\+\d)?\(/g)||[]).length;if(sg>=Math.max(hdr,1)&&(hdr>=Math.min(NL,2)||NL==1||w>=4))break;}
     if(i===start)window.__dlg0=d.innerText;const p=parseDlg(d.innerText,legDates);p.rank=i+1;p.cardPrice=+(((card.innerText.match(/([\d.]+)\s*kr\./g)||[]).pop()||'').replace(/\D/g,''))||null;
     const sig=p.legs.map(l=>l.flights.join('+')+l.dep).join('/');
     p.dup=seen.has(sig+p.price);seen.add(sig+p.price);
     out.push(p);
-    if(location.hash==='#dialog'||document.querySelector('[role="dialog"]')){history.back();await sleep(800);}
+    if(location.hash==='#dialog'||d&&document.body.contains(d)){history.back();await sleep(800);}
   }
   return out;
 };
-window.lines=function(res,max,nl){nl=nl||2;const o=[];for(const p of res){if(p.err||p.dup)continue;if(o.length>=max)break;
+window.lines=function(res,max,nl){nl=nl||2;const o=[];for(const p of res){if(p.err||p.dup||p.site==='Sponsoreret'||p.site==='Annonce')continue;if(o.length>=max)break;
 const leg=l=>[l.dep.slice(5),l.arr.slice(5),l.hours,l.stops,l.via.join(' '),l.layover_h.join(' '),l.flights.join('+'),l.overnight_layover?1:0,l._apt?1:0].join(',');
 const cab=(/(\d) x håndbagage/.exec(p.bagSeg)||[])[0]||(/Gebyr for håndbagage/.test(p.bagSeg)?'fee':'');const chk=/Gebyr for indtjekket/.test(p.bagSeg)?'paid':(/(\d) x indtjekket/.test(p.bagSeg)?'incl':'');
 o.push([p.rank,p.cardPrice||p.price,p.site,p.selfNote?1:0,p.brand,cab,chk,/Ændring af billet mod gebyr/.test(p.bagSeg)?'fee':'',(p.alt+(p.cardPrice&&p.price!==p.cardPrice?' | offerprice '+p.price:'')),p.prot?1:0].join(';')+'~'+Array.from({length:nl},(_,i)=>p.legs[i]?leg(p.legs[i]):'').join('~'));}

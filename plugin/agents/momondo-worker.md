@@ -26,6 +26,9 @@ Find the remarkably different options. Momondo shows two useful views: Billigst 
 - Multi-city, 3 to 6 legs: `https://www.momondo.dk/flight-search/CPH-PTY/2026-12-03/PTY-SAL/2026-12-07/VVI-CPH/2027-02-03?sort=price_a`
 - Fastest: `sort=duration_a`.
 
+## Layout
+The crawler was built on Momondo's narrow mobile layout. Before the first search load `mcp__remote-devices__Claude_Browser__resize_window` (same ToolSearch) and set the pane to about 420 x 900 so momondo.dk serves the narrow mobile layout. Desktop layouts have a nav drawer that is also a [role=dialog]; the crawler skips it and opens cards via their "Vælg" button, but report it if rows come back with empty legs.
+
 ## Per search (be patient)
 1. tabs_create with the URL (or navigate a fresh tab), wait 8 s.
 2. First search of the job: install the crawler. Read `PLUGIN/skills/momondo-search/scripts/momondo_crawler.js`, run it in one javascript_tool call, then

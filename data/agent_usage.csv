@@ -36,3 +36,14 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 11,mom-11a,sonnet,momondo,8,192219,210,1415,50
 13,gf-13a,sonnet,google_flights,12,173965,43,829,47
 14,gf-14a,sonnet,google_flights,12,176359,60,875,56
+14,mom-14a,sonnet,momondo,8,191220,220,1290,80
+15,gf-15a,sonnet,google_flights,12,141890,31,671,37
+15,mom-15a,sonnet,momondo,8,166331,167,1056,53
+16,gf-16a,sonnet,google_flights,6,132407,40,523,22
+18,mom-18a,sonnet,momondo,0,115643,41,270,0
+20,mom-20a,sonnet,momondo,0,92521,9,35,0
+21,exp-21b,sonnet,expedia,8,204446,13,85,24
+22,exp-22a,sonnet,expedia,8,204496,13,109,24
+19,gf-19a,sonnet,google_flights,8,124974,31,463,32
+23,exp-23a,sonnet,expedia,8,202115,13,89,20
+23,exp-23b,sonnet,expedia,8,206274,13,126,23

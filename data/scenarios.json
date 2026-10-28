@@ -27,12 +27,29 @@
     "carriers": "Avianca"
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -78,12 +95,29 @@
     "carriers": "Avianca"
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -108,12 +142,29 @@
     ]
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -138,12 +189,29 @@
     ]
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -168,12 +236,29 @@
     ]
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -255,7 +340,8 @@
      "2026-12-31"
     ]
    }
-  ]
+  ],
+  "dropped": "Simon 28 Oct: no Christmas in Bolivia (Central America would be too short)"
  },
  {
   "id": "D2",
@@ -309,7 +395,8 @@
      "2026-12-31"
     ]
    }
-  ]
+  ],
+  "dropped": "Simon 28 Oct: no Christmas in Bolivia (Central America would be too short)"
  },
  {
   "id": "E1",
@@ -324,12 +411,29 @@
     ]
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -376,8 +480,20 @@
     "carriers": "Avianca"
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Medellin <> Guadalajara (Volaris)",
@@ -389,7 +505,12 @@
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -422,12 +543,29 @@
     ]
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -467,8 +605,20 @@
     "pattern": "M:MAD>SAL+BOG>LPB+VVI>MAD"
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -505,12 +655,29 @@
     "carriers": "Avianca"
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -555,12 +722,29 @@
     "pattern": "P:MAD>SAL/GDL>MAD"
    },
    {
-    "label": "Nicaragua > Colombia",
-    "pattern": "R:MGA>MDE"
+    "label": "Central America > Colombia (from Nicaragua, El Salvador or Honduras)",
+    "pattern": [
+     "R:MGA>MDE",
+     "R:MGA>BOG",
+     "R:MGA>CLO",
+     "R:MGA>CTG",
+     "R:SAL>BOG",
+     "R:SAL>MDE",
+     "R:SAL>CLO",
+     "R:SAL>CTG",
+     "R:SAP>MDE",
+     "R:SAP>CLO",
+     "R:SAP>BOG"
+    ]
    },
    {
     "label": "Colombia > La Paz",
-    "pattern": "R:BOG>LPB"
+    "pattern": [
+     "R:BOG>LPB",
+     "R:MDE>LPB",
+     "R:CLO>LPB",
+     "R:CTG>LPB"
+    ]
    },
    {
     "label": "La Paz > Cochabamba",
@@ -632,6 +816,7 @@
      "2026-12-31"
     ]
    }
-  ]
+  ],
+  "dropped": "Simon 28 Oct: no Christmas in Bolivia (Central America would be too short)"
  }
 ]
