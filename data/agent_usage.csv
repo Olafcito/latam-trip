@@ -60,3 +60,5 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 26,exp-26c,sonnet,expedia,9,208550,16,180,25
 25,mom-25a,sonnet,momondo,8,174449,185,1339,62
 25,mom-25b,sonnet,momondo,8,174395,188,1314,90
+27,exp-27b,sonnet,expedia,8,203594,14,134,28
+27,exp-27a,sonnet,expedia,8,210057,14,138,25
