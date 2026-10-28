@@ -66,3 +66,18 @@
 - Known crawler issue: Viva legs inside Momondo chains sometimes read an arrival of 23:59; treat those arrival times as suspect until the dialog parser is fixed.
 - Momondo one-way home crawl (mom-25b): MEX-CPH 2,372 (BA via ORD+LHR, one ticket, US transit), Iberia MEX-MAD-CPH 2,934 one ticket (arr 14:45), CUN-CPH 3,054 (Air Europa + SAS, 2 tickets), GDL-CPH 3,107 (Volaris + Icelandair via ORD-KEF). None beat the self-built Madrid chains once hours are priced in, so the in/out table did not change.
 - Crawler issues seen: rank 1 was skipped on these one-way pages (crawl started at rank 2), and Mix & Match dialogs have no "Bookingmuligheder" section, so site, fare and bag fields come back empty. Fix in the crawler before the next Momondo round.
+- 28 Oct evening: KLM + Copa sells Colombia in / Central America out on one ticket without US transit for only about 1,000 kr more than BA/AA via Miami (CPH-BOG / GUA-CPH 7,612; BOG / SAL 7,657; CTG / SAL 7,763). Home SAL/GUA 13:45 via Panama and Amsterdam, lands CPH 13:40 next day. Honduras (SAP, TGU, RTB) has no home flight without US transit at a sane time.
+- Generated files (data/saved_trips.json, data/web/*) conflict when merging main into the planner branch: regenerate them after the merge instead of resolving by hand.
+
+## Round 32/33 (28 Oct evening): scope change
+- Simon's rule: long-haul is ALWAYS searched as one combined ticket from and back to Copenhagen (open jaw or multi-city). Never scout Europe one-ways into the region on their own. Regional hops inside the trip stay one-way.
+- Scope now: Scenario A = Central America in (not Guatemala, not Colombia), Bolivia last, home from Santa Cruz (VVI). Scenario B = no Bolivia, Central America in, south out. Guadalajara dropped. No Colombia <-> Bolivia back and forth.
+- One-way Europe to Bolivia (exp-32c): CPH-VVI about 8,100, MAD-VVI 6,900, MAD-LPB 6,100; CPH-LPB and CPH-CBB all over 30 h. Open jaws into Bolivia are cheaper per trip.
+- Colombia to Honduras one-ways were 1,400 to 1,900 cheaper on 8 Jan than on 5 Jan (gf-32a): sweep regional dates, the spread is large.
+- Lima: JetSMART and LATAM fly MDE/BOG-LIM nonstop (about 3 h); BoA LIM-VVI nonstop 01:00-04:30; no LIM-CBB flights.
+- The derived tables (chains, inout, itineraries, map, seeds) and docs are refreshed only when the pipeline is run: run it after EVERY round, then sync the repo.
+- preview_start navigated the 'seed' tab again (mom-32b): workers must never call preview_start while the pane is open; check tabs_context first.
+- Hand-pasting generated tables into the Docs doc made them fall behind and cost ~30k characters per refresh. Since 28 Oct the tables live in a Dashboard artifact fed by two uploaded JSON files (SKILL.md step 3); refreshing is 2 uploads + 2 dataset updates.
+- Whole-trip rating now weighs travel hours as much as cost (Simon, 28 Oct): 2 x (0.35 cost + 0.35 hours + 0.15 way home + 0.15 hassle); cost 5 at 7,000, -1 per 2,000; hours 5 at 34 h, -1 per 8 h (1 h ~ 250 kr). Regional hops are chosen by eff cost + 100 kr per hour, hops over 15 h skipped.
+- Airline sites (round 34): avianca.com and copaair.com searched cleanly, no bot check. Copa sells no SJO-LPB; Cochabamba only via VVI with BoA. Avianca SJO-VVI was 2,847 on 10 Dec but 5,539 on 20 Jan; Copa SJO-VVI 2,400 on both dates. Return SJO-VVI-SJO on the airline sites is about 1,000 kr cheaper than two one-ways (Avianca), equal on Copa.
+- inout.py kept only the cheapest ticket per city pair, which hid better-rated ones (SAL in / VVI home: 9,071 with a 23.8 h home landing 4 Feb hid 9,363 with BoA home 19.1 h landing 3 Feb). Since 28 Oct it rates up to 8 tickets per pair and keeps the best-rated.

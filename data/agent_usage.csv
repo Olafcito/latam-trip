@@ -69,4 +69,15 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 31,exp-31a,sonnet,expedia,8,207178,15,114,22
 31,exp-31c,sonnet,expedia,8,201298,13,125,30
 31,exp-31b,sonnet,expedia,8,207835,13,134,23
-29,gf-29a,sonnet,google_flights,9,,,,22
+29,gf-29a,sonnet,google_flights,9,155604,47,670,22
+32,exp-32a,sonnet,expedia,8,193980,13,84,42
+32,exp-32b,sonnet,expedia,8,176981,15,113,39
+32,exp-32c,sonnet,expedia,8,221946,14,119,46
+32,gf-32a,sonnet,google_flights,20,131948,36,425,53
+32,mom-32b,sonnet,momondo,3,129261,89,620,13
+33,exp-33a,sonnet,expedia,8,198037,13,120,41
+33,gf-33a,sonnet,google_flights,10,187206,57,899,56
+32,mom-32a,sonnet,momondo,8,204193,269,1580,52
+34,avi-34a,sonnet,airline:AV,10,218460,138,760,29
+34,copa-34a,sonnet,airline:CM,10,189051,149,979,30
+33,mom-33a,sonnet,momondo,8,193959,179,2076,41

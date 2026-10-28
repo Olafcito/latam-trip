@@ -895,7 +895,7 @@
   },
   "hostels": [],
   "hostel_note": null,
-  "hub": false
+  "hub": true
  },
  {
   "id": "BOG",

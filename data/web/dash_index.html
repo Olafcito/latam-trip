@@ -1,0 +1,345 @@
+<meta name="dash-one-writer">
+<style>
+  .tf { display: grid; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); }
+  .tf-head { display: grid; gap: var(--cds-gap-xs); }
+  .tf-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+  .tf-lead { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-body); max-width: 70ch; }
+  .tf-lead b { color: var(--color-fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tf-tabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); border-bottom: 1px solid var(--color-border-line); }
+  .tf-tab { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; padding: var(--cds-pad-sm) var(--cds-pad-md); font: inherit; font-size: var(--cds-font-size-body); color: var(--color-fg-muted); cursor: pointer; }
+  .tf-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); }
+  .tf-tab:focus-visible, .tf-chip:focus-visible, .tf-sort:focus-visible, .tf-search:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+  .tf-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-md); min-width: 0; }
+  .tf-card h2 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+  .tf-note { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); max-width: 90ch; }
+  .tf-controls { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+  .tf-chip { appearance: none; font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-md); border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+  .tf-chip[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+  .tf-select { flex: 0 1 12rem; }
+  .tf-search { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); min-width: 0; flex: 1 1 12rem; max-width: 22rem; }
+  .tf-scroll { overflow: auto; max-height: 70vh; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); }
+  .tf-table { border-collapse: separate; border-spacing: 0; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; width: max-content; min-width: 100%; }
+  .tf-table th { position: sticky; top: 0; z-index: 1; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); border-bottom: 1px solid var(--color-border-line); padding: 0; white-space: nowrap; }
+  .tf-table th.tf-grp { border-left: 1px solid var(--color-border-line); }
+  .tf-sort { appearance: none; background: none; border: 0; font: inherit; color: inherit; padding: var(--cds-pad-xs) var(--cds-pad-sm); cursor: pointer; width: 100%; text-align: inherit; }
+  .tf-table th[aria-sort="descending"] .tf-sort::after { content: " ↓"; }
+  .tf-table th[aria-sort="ascending"] .tf-sort::after { content: " ↑"; }
+  .tf-table th.num { text-align: right; }
+  .tf-table td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; vertical-align: top; }
+  .tf-table td.num { text-align: right; }
+  .tf-table td.wrap { white-space: normal; min-width: 18rem; max-width: 32rem; }
+  .tf-table td.grp { border-left: 1px solid var(--color-border-line); }
+  .tf-table tbody tr:hover td { background: var(--color-panel); }
+  .tf-table td.tf-rate { font-weight: 600; }
+  .tf-hi { color: var(--color-ok); }
+  .tf-mid { color: var(--color-warn); }
+  .tf-lo { color: var(--color-bad); }
+  .tf-method { display: grid; gap: var(--cds-gap-sm); max-width: 75ch; }
+  .tf-method p, .tf-method li { margin: 0; font-size: var(--cds-font-size-body); line-height: 1.5; }
+  .tf-method ul { margin: 0; padding-left: 1.2rem; display: grid; gap: var(--cds-gap-xs); }
+  .tf-method h3 { margin: var(--cds-gap-sm) 0 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); }
+  [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  [data-dash-source-state=empty] { color: transparent; }
+</style>
+
+<div class="tf">
+  <header class="tf-head">
+    <h1 class="tf-title">Trip flight options</h1>
+    <p class="tf-lead">Best rated whole trip right now: <b data-draw="best-in" data-source="trips" data-field="in" data-row="0">—</b> in, <b data-draw="best-out" data-source="trips" data-field="out" data-row="0">—</b> home, <b data-draw="best-route" data-source="trips" data-field="route" data-row="0">—</b>, <b data-draw="best-total" data-source="trips" data-field="total_kr" data-row="0">—</b> kr and <b data-draw="best-hours" data-source="trips" data-field="travel_hours" data-row="0">—</b> travel hours. Every row is one journey, sorted by rating; click a column to sort.</p>
+  </header>
+
+  <nav class="tf-tabs" role="tablist" aria-label="Views">
+    <button class="tf-tab" role="tab" id="tab-trips" data-tab="trips" aria-selected="true">Whole trips</button>
+    <button class="tf-tab" role="tab" id="tab-journeys" data-tab="journeys" aria-selected="false">Long-haul tickets</button>
+    <button class="tf-tab" role="tab" id="tab-flights" data-tab="flights" aria-selected="false">Regional flights</button>
+    <button class="tf-tab" role="tab" id="tab-method" data-tab="method" aria-selected="false">How ratings work</button>
+  </nav>
+
+  <section id="trips" class="tf-card" data-panel="trips">
+    <h2>Whole trips: long-haul ticket plus the regional flights between regions</h2>
+    <p class="tf-note">Scenario A visits Bolivia and ends there or flies back to Central America; B skips Bolivia. Total = flights, cabin bag fees and hub stays (450 kr per night); checked bags are not included. Regional flights are the best acceptable one-way found for each hop, on the date it was searched.</p>
+    <div class="tf-controls">
+      <button class="tf-chip" data-scen="" aria-pressed="true">All</button>
+      <button class="tf-chip" data-scen="A" aria-pressed="false">A: with Bolivia</button>
+      <button class="tf-chip" data-scen="B" aria-pressed="false">B: without Bolivia</button>
+      <select class="tf-search tf-select" id="trips-in" data-draw="trips-in" data-source="trips" data-pick="in" aria-label="Arrival city"></select>
+      <select class="tf-search tf-select" id="trips-out" data-draw="trips-out" data-source="trips" data-pick="out" aria-label="Home from"></select>
+      <input class="tf-search" id="trips-search" data-search="trips" type="search" placeholder="Search city, airline, hub" aria-label="Search whole trips">
+    </div>
+    <div class="tf-scroll">
+      <table class="tf-table" id="trips-table" data-table="trips" data-source="trips" data-row-key="id">
+        <thead><tr>
+          <th class="num" data-field="rating" aria-sort="descending"><button class="tf-sort">Rating</button></th>
+          <th data-field="scenario"><button class="tf-sort">Scenario</button></th>
+          <th data-field="route"><button class="tf-sort">Regions in order</button></th>
+          <th data-field="in"><button class="tf-sort">In</button></th>
+          <th data-field="out"><button class="tf-sort">Home from</button></th>
+          <th data-field="type"><button class="tf-sort">Long-haul type</button></th>
+          <th class="num" data-field="total_kr"><button class="tf-sort">Total (kr)</button></th>
+          <th class="num" data-field="travel_hours"><button class="tf-sort">Travel h</button></th>
+          <th class="num" data-field="rating_cost"><button class="tf-sort">Cost score</button></th>
+          <th class="num" data-field="rating_hours"><button class="tf-sort">Hours score</button></th>
+          <th class="num" data-field="long_haul_kr"><button class="tf-sort">Long-haul (kr)</button></th>
+          <th class="num" data-field="regional_kr"><button class="tf-sort">Regional (kr)</button></th>
+          <th class="num" data-field="hub_nights"><button class="tf-sort">Hub nights</button></th>
+          <th class="tf-grp" data-field="out_leaves"><button class="tf-sort">Out leaves CPH</button></th>
+          <th data-field="out_lands"><button class="tf-sort">Out lands</button></th>
+          <th class="num" data-field="out_hours"><button class="tf-sort">Out h</button></th>
+          <th data-field="out_via"><button class="tf-sort">Out via</button></th>
+          <th data-field="out_airlines"><button class="tf-sort">Out airlines</button></th>
+          <th class="tf-grp" data-field="home_leaves"><button class="tf-sort">Home leaves</button></th>
+          <th data-field="home_lands"><button class="tf-sort">Home lands CPH</button></th>
+          <th class="num" data-field="home_hours"><button class="tf-sort">Home h</button></th>
+          <th data-field="home_via"><button class="tf-sort">Home via</button></th>
+          <th data-field="home_airlines"><button class="tf-sort">Home airlines</button></th>
+          <th class="tf-grp" data-field="regional_flights"><button class="tf-sort">Regional flights</button></th>
+          <th data-field="stops"><button class="tf-sort">Stops at hubs</button></th>
+        </tr></thead>
+        <tbody data-draw="trips-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="journeys" class="tf-card" data-panel="journeys" hidden>
+    <h2>Long-haul tickets: one way in and one way home from Copenhagen</h2>
+    <p class="tf-note">Every searched combination of arrival and departure city, best option per ticket type. Rating uses the total; the rating on flights alone is shown beside it.</p>
+    <div class="tf-controls">
+      <input class="tf-search" id="journeys-search" data-search="journeys" type="search" placeholder="Search city, airline, hub" aria-label="Search long-haul tickets">
+    </div>
+    <div class="tf-scroll">
+      <table class="tf-table" id="journeys-table" data-table="journeys" data-source="journeys" data-row-key="id">
+        <thead><tr>
+          <th class="num" data-field="rating" aria-sort="descending"><button class="tf-sort">Rating</button></th>
+          <th data-field="in"><button class="tf-sort">In</button></th>
+          <th data-field="out"><button class="tf-sort">Home from</button></th>
+          <th data-field="type"><button class="tf-sort">Type</button></th>
+          <th class="num" data-field="total_kr"><button class="tf-sort">Total (kr)</button></th>
+          <th class="num" data-field="flights_kr"><button class="tf-sort">Flights (kr)</button></th>
+          <th class="num" data-field="cabin_bags_kr"><button class="tf-sort">Cabin bags (kr)</button></th>
+          <th class="num" data-field="hub_stays_kr"><button class="tf-sort">Hub stays (kr)</button></th>
+          <th class="num" data-field="rating_flights"><button class="tf-sort">Rating on flights</button></th>
+          <th class="num" data-field="hub_nights"><button class="tf-sort">Hub nights</button></th>
+          <th class="tf-grp" data-field="out_leaves"><button class="tf-sort">Out leaves CPH</button></th>
+          <th data-field="out_lands"><button class="tf-sort">Out lands</button></th>
+          <th class="num" data-field="out_hours"><button class="tf-sort">Out h</button></th>
+          <th data-field="out_via"><button class="tf-sort">Out via</button></th>
+          <th data-field="out_airlines"><button class="tf-sort">Out airlines</button></th>
+          <th class="tf-grp" data-field="home_leaves"><button class="tf-sort">Home leaves</button></th>
+          <th data-field="home_lands"><button class="tf-sort">Home lands CPH</button></th>
+          <th class="num" data-field="home_hours"><button class="tf-sort">Home h</button></th>
+          <th data-field="home_via"><button class="tf-sort">Home via</button></th>
+          <th data-field="home_airlines"><button class="tf-sort">Home airlines</button></th>
+          <th class="tf-grp" data-field="stops"><button class="tf-sort">Stops at hubs</button></th>
+        </tr></thead>
+        <tbody data-draw="journeys-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="flights" class="tf-card" data-panel="flights" hidden>
+    <h2>Regional flights into or out of one airport</h2>
+    <p class="tf-note">Every one-way found between Latin American airports, up to 30 hours. Per route up to three rows: the cheapest, the fastest, and the cheapest that lands between 06:00 and 23:59. Times are local. Dates searched shows how many dates the route was checked on; prices move with the date.</p>
+    <div class="tf-controls">
+      <select class="tf-search tf-select" id="flights-airport" data-draw="flights-airport" data-source="flights" aria-label="Airport"></select>
+      <button class="tf-chip" data-dir="to" aria-pressed="true">Flying into</button>
+      <button class="tf-chip" data-dir="from" aria-pressed="false">Flying out of</button>
+      <input class="tf-search" id="flights-search" data-search="flights" type="search" placeholder="Search city, airline, hub" aria-label="Search regional flights">
+    </div>
+    <div class="tf-scroll">
+      <table class="tf-table" id="flights-table" data-table="flights" data-source="flights" data-row-key="id">
+        <thead><tr>
+          <th data-field="from"><button class="tf-sort">From</button></th>
+          <th data-field="to"><button class="tf-sort">To</button></th>
+          <th class="num" data-field="price_kr" aria-sort="ascending"><button class="tf-sort">Price (kr)</button></th>
+          <th class="num" data-field="hours"><button class="tf-sort">Hours</button></th>
+          <th data-field="departs"><button class="tf-sort">Departs</button></th>
+          <th data-field="lands"><button class="tf-sort">Lands</button></th>
+          <th data-field="via"><button class="tf-sort">Via</button></th>
+          <th data-field="airlines"><button class="tf-sort">Airlines</button></th>
+          <th data-field="pick"><button class="tf-sort">Row shows</button></th>
+          <th data-field="notes"><button class="tf-sort">Notes</button></th>
+          <th class="num" data-field="dates_searched"><button class="tf-sort">Dates searched</button></th>
+        </tr></thead>
+        <tbody data-draw="flights-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="method" class="tf-card" data-panel="method" hidden>
+    <h2>How ratings work</h2>
+    <div class="tf-method">
+      <p>All ratings are out of 10. Green is 8 or more, amber 5 to 7.9, red below 5.</p>
+      <h3>Whole trips</h3>
+      <ul>
+        <li>Rating = 2 × (0.35 cost + 0.35 hours + 0.15 way home + 0.15 hassle). Cost and travel hours weigh the same.</li>
+        <li>Cost score: 5 at 7,000 kr or less, minus 1 per 2,000 kr more (minimum 1). Cost is the total: flights, cabin bag fees, hub stays, and 300 kr for a bed whenever a regional flight lands between 00:00 and 05:59 (the room has to be booked from the night before).</li>
+        <li>Hours score: 5 at 34 travel hours or less, minus 1 per 8 hours more (minimum 1). Travel hours add the way in, the way home and every regional flight with its layovers, plus 2 hours for the Boliviana hops inside Bolivia. One travel hour weighs about as much as 250 kr.</li>
+        <li>Way home score: 5, minus 1 per hub night, minus 1 for a change between separate tickets, minus 1 for US transit, minus 1 over 20 flying hours and 1 more over 23.</li>
+        <li>Hassle: the average of the way in (scored like the way home) and the regional flights (5, minus 1 per regional flight beyond two, minus 1 per flight leaving or landing between 00:00 and 05:00).</li>
+        <li>Scope: the trip starts in Central America (not Guatemala), visits Colombia and Bolivia at most once each, and ends in Central America or Bolivia.</li>
+      </ul>
+      <h3>Long-haul tickets</h3>
+      <ul>
+        <li>Rating = 2 × (0.5 price + 0.3 way home + 0.2 way in). Price score is 5 at 7,000 kr, minus 1 per 1,000 kr more (minimum 1), on the total including hub stays.</li>
+        <li>Ways are scored as above.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<script>
+  (() => {
+    const fmtKr = d3.format(',');
+    const one = (v) => (v === null || v === undefined || v === '' ? '' : (+v).toFixed(1));
+    const KINDS = {
+      rating: 'rate', rating_cost: 'n1', rating_hours: 'n1', rating_flights: 'n1', travel_hours: 'n1',
+      out_hours: 'n1', home_hours: 'n1', total_kr: 'kr', long_haul_kr: 'kr', regional_kr: 'kr', flights_kr: 'kr',
+      cabin_bags_kr: 'kr', hub_stays_kr: 'kr', hub_nights: 'int', regional_flights: 'wrap', stops: 'wrap',
+      price_kr: 'kr', hours: 'n1', dates_searched: 'int'
+    };
+    const state = {
+      trips: { key: 'rating', dir: -1, scen: '', q: '' },
+      journeys: { key: 'rating', dir: -1, q: '' },
+      flights: { key: 'price_kr', dir: 1, q: '', airport: 'VVI', dir_field: 'to' }
+    };
+    const cols = (name) => Array.from(document.querySelectorAll('table[data-table="' + name + '"] thead th[data-field]')).map((th) => th.dataset.field);
+
+    const rowsFor = (name) => {
+      const g = dash.data(name);
+      if (g.status !== 'ok' || !Array.isArray(g.data)) return null;
+      const s = state[name];
+      let rows = g.data.slice();
+      if (s.scen) rows = rows.filter((r) => String(r.scenario).startsWith(s.scen));
+      if (name === 'flights' && s.airport) rows = rows.filter((r) => r[s.dir_field + '_code'] === s.airport);
+      if (s.in) rows = rows.filter((r) => r.in === s.in);
+      if (s.out) rows = rows.filter((r) => r.out === s.out);
+      if (s.q) {
+        const q = s.q.toLowerCase();
+        rows = rows.filter((r) => Object.values(r).join(' ').toLowerCase().includes(q));
+      }
+      const k = s.key;
+      const num = (v) => (v === null || v === undefined || v === '' ? NaN : Number(v));
+      rows.sort((a, b) => {
+        const na = num(a[k]), nb = num(b[k]);
+        let c;
+        if (!Number.isNaN(na) && !Number.isNaN(nb)) c = na - nb;
+        else c = String(a[k] ?? '').localeCompare(String(b[k] ?? ''));
+        return c * s.dir || (b.rating - a.rating) || (a.total_kr - b.total_kr);
+      });
+      return rows;
+    };
+
+    const cell = (field, v) => {
+      const td = document.createElement('td');
+      const kind = KINDS[field];
+      if (kind === 'kr') { td.className = 'num'; td.textContent = v === null || v === undefined || v === '' ? '' : (+v === 0 ? '' : fmtKr(+v)); }
+      else if (kind === 'n1') { td.className = 'num'; td.textContent = one(v); }
+      else if (kind === 'int') { td.className = 'num'; td.textContent = +v ? String(v) : ''; }
+      else if (kind === 'rate') { td.className = 'num tf-rate ' + (+v >= 8 ? 'tf-hi' : +v >= 5 ? 'tf-mid' : 'tf-lo'); td.textContent = one(v); }
+      else if (kind === 'wrap') { td.className = 'wrap'; td.textContent = v ?? ''; }
+      else { td.textContent = v ?? ''; }
+      return td;
+    };
+
+    const body = (name) => (tb) => {
+      const rows = rowsFor(name);
+      if (!rows) { tb.replaceChildren(); return; }
+      const fields = cols(name);
+      const grp = new Set(Array.from(document.querySelectorAll('table[data-table="' + name + '"] thead th.tf-grp[data-field]')).map((th) => th.dataset.field));
+      const frag = document.createDocumentFragment();
+      for (const r of rows) {
+        const tr = document.createElement('tr');
+        tr.dataset.key = r.id;
+        for (const f of fields) {
+          const td = cell(f, r[f]);
+          if (grp.has(f)) td.classList.add('grp');
+          tr.appendChild(td);
+        }
+        frag.appendChild(tr);
+      }
+      tb.replaceChildren(frag);
+    };
+    dash.draw('trips-body', body('trips'));
+    const picker = (field, label) => (sel) => {
+      const g = dash.data('trips');
+      const vals = g.status === 'ok' && Array.isArray(g.data) ? Array.from(new Set(g.data.map((r) => r[field]))).sort() : [];
+      sel.replaceChildren(new Option(label, ''), ...vals.map((v) => new Option(v, v)));
+      sel.value = state.trips[field] || '';
+      sel.onchange = () => { state.trips[field] = sel.value; dash.draw('trips-body'); };
+    };
+    dash.draw('trips-in', picker('in', 'All arrival cities'));
+    dash.draw('trips-out', picker('out', 'All home cities'));
+    dash.draw('journeys-body', body('journeys'));
+    dash.draw('flights-body', body('flights'));
+    dash.draw('flights-airport', (sel) => {
+      const g = dash.data('flights');
+      const rows = g.status === 'ok' && Array.isArray(g.data) ? g.data : [];
+      const names = new Map();
+      for (const r of rows) { names.set(r.from_code, r.from); names.set(r.to_code, r.to); }
+      const opts = Array.from(names.entries()).sort((x, y) => x[1].localeCompare(y[1]));
+      sel.replaceChildren(...opts.map(([code, n]) => new Option(n + ' (' + code + ')', code)));
+      sel.value = state.flights.airport;
+      sel.onchange = () => { state.flights.airport = sel.value; dash.draw('flights-body'); };
+    });
+    for (const chip of document.querySelectorAll('.tf-chip[data-dir]')) {
+      chip.addEventListener('click', () => {
+        state.flights.dir_field = chip.dataset.dir;
+        for (const c of document.querySelectorAll('.tf-chip[data-dir]')) c.setAttribute('aria-pressed', String(c === chip));
+        dash.draw('flights-body');
+      });
+    }
+
+    const best = (field, kind) => (el) => {
+      const g = dash.data('trips');
+      const r = g.status === 'ok' && Array.isArray(g.data) ? g.data[0] : null;
+      if (!r) { el.textContent = '—'; return; }
+      const v = r[field];
+      el.textContent = kind === 'kr' ? fmtKr(+v) : kind === 'n1' ? one(v) : String(v ?? '');
+    };
+    dash.draw('best-in', best('in'));
+    dash.draw('best-out', best('out'));
+    dash.draw('best-route', best('route'));
+    dash.draw('best-total', best('total_kr', 'kr'));
+    dash.draw('best-hours', best('travel_hours', 'n1'));
+
+    for (const table of document.querySelectorAll('table[data-table]')) {
+      const name = table.dataset.table;
+      for (const th of table.querySelectorAll('thead th[data-field]')) {
+        const btn = th.querySelector('.tf-sort');
+        if (!btn) continue;
+        btn.addEventListener('click', () => {
+          const s = state[name];
+          const f = th.dataset.field;
+          const textual = !KINDS[f] || KINDS[f] === 'wrap';
+          if (s.key === f) s.dir = -s.dir; else { s.key = f; s.dir = f === 'rating' || f.startsWith('rating') ? -1 : textual ? 1 : (f.endsWith('_kr') || f.endsWith('hours') ? 1 : -1); }
+          for (const other of table.querySelectorAll('thead th[data-field]')) other.removeAttribute('aria-sort');
+          th.setAttribute('aria-sort', s.dir === -1 ? 'descending' : 'ascending');
+          dash.draw(name + '-body');
+        });
+      }
+    }
+
+    for (const chip of document.querySelectorAll('.tf-chip[data-scen]')) {
+      chip.addEventListener('click', () => {
+        state.trips.scen = chip.dataset.scen;
+        for (const c of document.querySelectorAll('.tf-chip[data-scen]')) c.setAttribute('aria-pressed', String(c === chip));
+        dash.draw('trips-body');
+      });
+    }
+    for (const input of document.querySelectorAll('.tf-search[data-search]')) {
+      input.addEventListener('input', () => {
+        state[input.dataset.search].q = input.value.trim();
+        dash.draw(input.dataset.search + '-body');
+      });
+    }
+
+    const show = (id) => {
+      for (const t of document.querySelectorAll('.tf-tab[data-tab]')) t.setAttribute('aria-selected', String(t.dataset.tab === id));
+      for (const p of document.querySelectorAll('[data-panel]')) p.hidden = p.dataset.panel !== id;
+      dash.setLink(id);
+    };
+    for (const t of document.querySelectorAll('.tf-tab[data-tab]')) t.addEventListener('click', () => show(t.dataset.tab));
+    const named = location.hash.slice(1);
+    if (['trips', 'journeys', 'flights', 'method'].includes(named)) show(named);
+  })();
+</script>
