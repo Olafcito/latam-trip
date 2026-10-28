@@ -9,8 +9,8 @@ const LAND = feature(landTopo as unknown as Topology, (landTopo as unknown as To
 const W = 300
 const H = 230
 
-/** A small static map: the way in and the way home as great-circle arcs from Copenhagen. */
-export function MiniMap({ data, ways }: { data: InOut; ways: Way[] }) {
+/** A small static map of the way in and the way home. Clicking it starts the trip on the route map. */
+export function MiniMap({ data, ways, onOpen }: { data: InOut; ways: Way[]; onOpen: () => void }) {
   const view = useMemo(() => {
     const coords: [number, number][] = []
     for (const w of ways) for (const c of w.airports) {
@@ -34,6 +34,7 @@ export function MiniMap({ data, ways }: { data: InOut; ways: Way[] }) {
   }, [data, ways])
 
   return (
+    <button type="button" className="minimap" onClick={onOpen} title="Build this trip on the route map">
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="Map of the way in and the way home" style={{ background: '#eef2f5', borderRadius: 10 }}>
       <path d={view.land} fill="#dfe3dc" stroke="#c9cec6" strokeWidth={0.5} />
       {view.arcs.map((a, i) => (
@@ -46,5 +47,7 @@ export function MiniMap({ data, ways }: { data: InOut; ways: Way[] }) {
         </g>
       ))}
     </svg>
+    <span className="minimap-cta">Build on the route map</span>
+    </button>
   )
 }

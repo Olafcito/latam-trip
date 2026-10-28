@@ -222,5 +222,15 @@ table.tl { width: 100%; border-collapse: collapse; font-size: 12.5px; background
 .app.wide { max-width: none; height: 100dvh; padding-bottom: 18px; }
 .mapscreen { flex: 1; min-height: 480px; border-radius: 14px; overflow: hidden; background: #0B1720; }
 .mapscreen > .loading { color: #93A7B2; }
+/* Trips tab: saved trips, the journey builder and picking in and out, one after the other */
+.trips { display: flex; flex-direction: column; gap: 28px; }
+.secnav { position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; padding: 8px 0; background: var(--bg); }
+.sec { scroll-margin-top: 56px; display: flex; flex-direction: column; gap: 12px; }
+.sec > .h2 { margin: 0; }
+.minimap { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 10px; }
+.minimap svg { display: block; }
+.minimap-cta { position: absolute; right: 8px; bottom: 8px; padding: 4px 9px; border-radius: 999px; background: #1e2328; color: #fff; font-size: 12px; font-weight: 600; opacity: 0.85; }
+.minimap:hover .minimap-cta, .minimap:focus-visible .minimap-cta { opacity: 1; }
+.minimap:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 input.name { min-height: 34px; padding: 0 10px; border: 1px solid var(--line2); border-radius: 8px; min-width: 240px; }
 }

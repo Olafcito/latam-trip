@@ -202,13 +202,14 @@ function OptionsView({ data }: { data: AppData }) {
 
 function Expanded({ data, option, wi, wh }: { data: AppData; option: Option; wi: Way; wh: Way }) {
   const start = useStore((s) => s.startJourney)
+  const startOnMap = useStore((s) => s.startOnMap)
   const tickets = [...new Set([...wi.tickets, ...wh.tickets])].map((t) => data.inout.tickets[t]).filter(Boolean)
   return (
     <div className="expand-in">
       <WayTimeline data={data.inout} way={wi} />
       <WayTimeline data={data.inout} way={wh} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <MiniMap data={data.inout} ways={[wi, wh]} />
+        <MiniMap data={data.inout} ways={[wi, wh]} onOpen={() => startOnMap(wi, wh, option.id)} />
         <div className="tot">
           <span className="k">Flights ({tickets.length} {tickets.length === 1 ? 'ticket' : 'tickets'})</span><span className="v">{kr(option.price_dkk)}</span>
           <span className="k">Cabin-bag fees</span><span className="v"><Num v={option.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /></span>
@@ -220,7 +221,10 @@ function Expanded({ data, option, wi, wh }: { data: AppData; option: Option; wi:
         <p className="small muted" style={{ margin: 0 }}>
           {tickets.map((t) => `${t.legs.join(' + ')} ${kr(t.price_dkk)} (${t.source}, ${observed(t.observed_at)})`).join(' · ')}
         </p>
-        <button className="btn primary" onClick={() => start(wi, wh, option.id)}>Build trip from this</button>
+        <div className="row" style={{ gap: 8 }}>
+          <button className="btn primary" onClick={() => start(wi, wh, option.id)}>Build trip from this</button>
+          <button className="btn" onClick={() => startOnMap(wi, wh, option.id)}>Build on the map</button>
+        </div>
       </div>
     </div>
   )
@@ -232,6 +236,7 @@ function MixView({ data }: { data: AppData }) {
   const mixHome = useStore((s) => s.mixHome)
   const setMix = useStore((s) => s.setMix)
   const start = useStore((s) => s.startJourney)
+  const startOnMap = useStore((s) => s.startOnMap)
   const ins = useMemo(() => oneWayWays(inout, 'in'), [inout])
   const homes = useMemo(() => oneWayWays(inout, 'home'), [inout])
   const wi = mixIn ? inout.ways[mixIn] : null
@@ -277,11 +282,12 @@ function MixView({ data }: { data: AppData }) {
             <Rate v={mixed.rating.total} />
             <span className="spacer" />
             <button className="btn primary" onClick={() => start(wi, wh, null)}>Build trip from this</button>
+            <button className="btn" onClick={() => startOnMap(wi, wh, null)}>Build on the map</button>
           </div>
           <div className="expand-in" style={{ paddingTop: 0 }}>
             <WayTimeline data={inout} way={wi} />
             <WayTimeline data={inout} way={wh} />
-            <MiniMap data={inout} ways={[wi, wh]} />
+            <MiniMap data={inout} ways={[wi, wh]} onOpen={() => startOnMap(wi, wh, null)} />
           </div>
         </div>
       ) : (

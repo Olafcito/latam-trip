@@ -1,7 +1,8 @@
-import type { Trip, TripLeg, TripState } from '@map/data/trips'
+import type { SeedInout, SeedSegment, SeedWay, Trip, TripLeg, TripState } from '@map/data/trips'
 import type { Connection } from '@map/data/types'
 import type { InOut, MapData, Mode } from '../data/types'
 import { arcsFrom, edgeHours } from './graph'
+import { priceOfWays } from './options'
 import { hopFromArc, newJourney, type Hop, type Journey, type Place } from './journey'
 
 // The Map tab shows the planner's journeys as the route map's trips. The planner stays the
@@ -30,20 +31,54 @@ export function legFactsFrom(connections: Connection[]): LegFacts {
   }
 }
 
-export function journeyToTrip(j: Journey, updated = Date.parse(j.savedAt ?? '') || 0): Trip {
-  const legs: TripLeg[] = j.places.slice(1).map((p, i) => {
-    const from = j.places[i].node
-    return { cid: [from, p.node].sort().join('-'), from, to: p.node, mode: p.hop?.mode ?? 'bus' }
+/** The journey's way in and way home as the route map's in/out: the markers and the way pane. */
+export function tripInout(inout: InOut, j: Journey): SeedInout | undefined {
+  const wi = inout.ways[j.wayIn]
+  const wh = inout.ways[j.wayHome]
+  if (!wi || !wh) return undefined
+  const opt = inout.options.find((o) => o.id === j.optionId)
+  const p = priceOfWays(inout, [wi, wh])
+  return {
+    option_id: opt?.id ?? `${wi.id}+${wh.id}`,
+    type: opt?.type ?? wi.type,
+    entry: wi.to,
+    exit: wh.from,
+    price_dkk: opt?.price_dkk ?? p.price_dkk,
+    extras: { cabin_bag_fees_dkk: opt?.extras.cabin_bag_fees_dkk ?? p.cabin },
+    way_in: wi as SeedWay,
+    way_home: wh as SeedWay,
+  }
+}
+
+/** Places after the first, in order, whose hop is a leg on the map (overland blocks are not). */
+const legPlaces = (j: Journey) => j.places.flatMap((p, k) => (k > 0 && !p.hop?.overland ? [k] : []))
+
+export function journeyToTrip(j: Journey, updated = Date.parse(j.savedAt ?? '') || 0, inout?: InOut): Trip {
+  const legs: TripLeg[] = legPlaces(j).map((k) => {
+    const from = j.places[k - 1].node
+    const to = j.places[k].node
+    return { cid: [from, to].sort().join('-'), from, to, mode: j.places[k].hop?.mode ?? 'bus' }
   })
-  return { id: j.id, name: j.name, legs, updated, start: j.places[0]?.node }
+  const trip: Trip = { id: j.id, name: j.name, legs, updated, start: j.places[0]?.node }
+  // overland blocks only exist as segments, so a journey that has one lists every hop as a segment
+  if (j.places.some((p) => p.hop?.overland)) {
+    trip.segments = j.places.slice(1).map((p, i): SeedSegment => {
+      const from = j.places[i].node
+      return p.hop?.overland ? { kind: 'overland', from, to: p.node, note: p.hop.overland } : { kind: 'flight', from, to: p.node }
+    })
+  }
+  if (j.rank != null) trip.rank = j.rank
+  const io = inout && tripInout(inout, j)
+  if (io) trip.inout = io
+  return trip
 }
 
 /** Saved journeys plus the current one (its live copy wins). The current one is open while the map shows it. */
-export function toTripState(current: Journey | null, saved: Journey[], open: boolean): TripState {
+export function toTripState(current: Journey | null, saved: Journey[], open: boolean, inout?: InOut): TripState {
   const list = saved.map((s) => (s.id === current?.id ? current : s))
   if (current && !saved.some((s) => s.id === current.id)) list.push(current)
   return {
-    trips: list.map((j) => journeyToTrip(j, j === current ? Date.now() : undefined)),
+    trips: list.map((j) => journeyToTrip(j, j === current ? Date.now() : undefined, inout)),
     active: open && current ? current.id : null,
   }
 }
@@ -73,9 +108,13 @@ export function placesFromLegs(j: Journey, legs: TripLeg[], map: MapData, facts?
   if (legs.length === old.length - 1) {
     const i = old.findIndex((l, k) => !legs[k] || !sameLeg(l, legs[k]))
     if (legs.slice(i).every((l, k) => sameLeg(l, old[i + 1 + k]))) {
-      const places = j.places.filter((_, k) => k !== i + 1)
-      const next = places[i + 1]
-      if (next) places[i + 1] = { ...next, hop: hopBetween(map, places[i].node, next.node, next.hop?.mode ?? null, facts) }
+      const drop = legPlaces(j)[i]
+      const places = j.places.filter((_, k) => k !== drop)
+      const next = places[drop]
+      const from = places[drop - 1].node
+      // an overland block that followed the dropped place now starts where the trip stands
+      if (next?.hop?.overland) places[drop] = { ...next, hop: { ...next.hop, from } }
+      else if (next) places[drop] = { ...next, hop: hopBetween(map, from, next.node, next.hop?.mode ?? null, facts) }
       return places
     }
   }
@@ -93,6 +132,13 @@ export function placesFromLegs(j: Journey, legs: TripLeg[], map: MapData, facts?
     const prev = places[places.length - 1].node
     if (l.from !== prev) places.push(take(prev, l.from, null))
     places.push(take(l.from, l.to, l.mode))
+  }
+  // overland blocks after the last leg stay on the end of the trip
+  for (const x of pool) {
+    if (!x.used && x.p.hop?.overland && x.from === places[places.length - 1].node) {
+      x.used = true
+      places.push(x.p)
+    }
   }
   return places
 }
