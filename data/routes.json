@@ -168,7 +168,7 @@
    "home_date": "2027-02-03",
    "tickets": 1,
    "fare": "Basic Economy",
-   "checked_bag": "paid"
+   "checked_bag": null
   },
   {
    "pattern": "P:CPH>BOG/SAP>CPH",
@@ -795,23 +795,6 @@
    "checked_bag": "incl"
   },
   {
-   "pattern": "P:CPH>SAP/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAP",
-   "exit": "BOG",
-   "eff": 17071.0,
-   "price": 7387.0,
-   "out_h": 28.78,
-   "home_h": 18.0,
-   "out_carriers": "KLM,Delta",
-   "home_carriers": "Delta,KLM",
-   "out_date": "2026-12-03",
-   "home_date": "2027-02-03",
-   "tickets": 1,
-   "fare": "Delta Main Classic",
-   "checked_bag": "incl"
-  },
-  {
    "pattern": "C:CPH>MAD>SAL/MEX>CPH",
    "origin": "CPH",
    "entry": "SAL",
@@ -907,23 +890,6 @@
    ]
   },
   {
-   "pattern": "P:CPH>SAL/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAL",
-   "exit": "BOG",
-   "eff": 14874.0,
-   "price": 7457.0,
-   "out_h": 22.53,
-   "home_h": 20.25,
-   "out_carriers": "Lufthansa,United",
-   "home_carriers": "United,Lufthansa City Airlines",
-   "out_date": "2026-12-03",
-   "home_date": "2027-02-03",
-   "tickets": 1,
-   "fare": null,
-   "checked_bag": "incl"
-  },
-  {
    "pattern": "C:CPH>MEX/CUN>MAD>CPH",
    "origin": "CPH",
    "entry": "MEX",
@@ -986,23 +952,6 @@
    "flags": [
     "self_transfer"
    ]
-  },
-  {
-   "pattern": "P:CPH>GUA/BOG>CPH",
-   "origin": "CPH",
-   "entry": "GUA",
-   "exit": "BOG",
-   "eff": 13319.0,
-   "price": 7637.0,
-   "out_h": 23.73,
-   "home_h": 13.42,
-   "out_carriers": "KLM,COPA",
-   "home_carriers": "Air France",
-   "out_date": "2026-12-03",
-   "home_date": "2027-02-03",
-   "tickets": 1,
-   "fare": null,
-   "checked_bag": null
   },
   {
    "pattern": "C:CPH>GDL/GDL>MAD>CPH",
@@ -1170,6 +1119,23 @@
    "chain_note": "in: 1 night in MAD | home: 1 night in MAD",
    "checked_add": 800,
    "flags": []
+  },
+  {
+   "pattern": "P:CPH>GUA/BOG>CPH",
+   "origin": "CPH",
+   "entry": "GUA",
+   "exit": "BOG",
+   "eff": 12665.0,
+   "price": 7850.0,
+   "out_h": 18.68,
+   "home_h": 13.42,
+   "out_carriers": "KLM,COPA",
+   "home_carriers": "Air France",
+   "out_date": "2026-12-02",
+   "home_date": "2027-02-03",
+   "tickets": 1,
+   "fare": null,
+   "checked_bag": null
   },
   {
    "pattern": "P:CPH>GDL/MDE>CPH",
@@ -1492,6 +1458,23 @@
    ]
   },
   {
+   "pattern": "P:CPH>SJO/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SJO",
+   "exit": "BOG",
+   "eff": 12817.0,
+   "price": 8341.0,
+   "out_h": 16.42,
+   "home_h": 13.42,
+   "out_carriers": "Air France",
+   "home_carriers": "Air France",
+   "out_date": "2026-12-03",
+   "home_date": "2027-02-03",
+   "tickets": 1,
+   "fare": null,
+   "checked_bag": null
+  },
+  {
    "pattern": "C:CPH>MAD>CUN/LPB>MAD>CPH",
    "origin": "CPH",
    "entry": "CUN",
@@ -1738,6 +1721,23 @@
    "checked_bag": "paid"
   },
   {
+   "pattern": "P:CPH>SJO/MDE>CPH",
+   "origin": "CPH",
+   "entry": "SJO",
+   "exit": "MDE",
+   "eff": 13596.0,
+   "price": 8670.0,
+   "out_h": 16.42,
+   "home_h": 16.42,
+   "out_carriers": "Air France",
+   "home_carriers": "COPA,KLM",
+   "out_date": "2026-12-03",
+   "home_date": "2027-02-03",
+   "tickets": 1,
+   "fare": null,
+   "checked_bag": null
+  },
+  {
    "pattern": "C:CPH>MEX/LPB>MAD>CPH",
    "origin": "CPH",
    "entry": "MEX",
@@ -1783,6 +1783,23 @@
    "flags": [
     "basic_fare"
    ]
+  },
+  {
+   "pattern": "P:CPH>SAL/CTG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "CTG",
+   "eff": 13624.0,
+   "price": 8786.0,
+   "out_h": 19.5,
+   "home_h": 12.75,
+   "out_carriers": "SAS,KLM,COPA",
+   "home_carriers": "KLM",
+   "out_date": "2026-12-03",
+   "home_date": "2027-02-03",
+   "tickets": 1,
+   "fare": null,
+   "checked_bag": null
   },
   {
    "pattern": "C:CPH>MAD>CUN/BOG>MAD>CPH",
@@ -1917,6 +1934,23 @@
    "flags": [
     "basic_fare"
    ]
+  },
+  {
+   "pattern": "P:CPH>SAL/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "BOG",
+   "eff": 13886.0,
+   "price": 8948.0,
+   "out_h": 19.5,
+   "home_h": 13.42,
+   "out_carriers": "SAS,KLM,COPA",
+   "home_carriers": "Air France",
+   "out_date": "2026-12-03",
+   "home_date": "2027-02-03",
+   "tickets": 1,
+   "fare": null,
+   "checked_bag": null
   },
   {
    "pattern": "P:MAD>GUA/VVI>MAD",
@@ -3277,6 +3311,23 @@
    "flags": [
     "basic_fare"
    ]
+  },
+  {
+   "pattern": "P:CPH>SAP/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAP",
+   "exit": "BOG",
+   "eff": 15280.0,
+   "price": 10199.0,
+   "out_h": 20.45,
+   "home_h": 13.42,
+   "out_carriers": "Air France,COPA",
+   "home_carriers": "Air France",
+   "out_date": "2026-12-03",
+   "home_date": "2027-02-03",
+   "tickets": 1,
+   "fare": null,
+   "checked_bag": null
   },
   {
    "pattern": "C:CPH>LIR/MEX>CPH",
@@ -5027,6 +5078,46 @@
    ]
   },
   {
+   "main": "P:CPH>GUA/BOG>CPH",
+   "origin": "CPH",
+   "entry": "GUA",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [],
+   "total": 13465,
+   "eff": 21108,
+   "main_price": 7850.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
+   "main": "P:CPH>SJO/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SJO",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [],
+   "total": 13956,
+   "eff": 21260,
+   "main_price": 8341.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
    "main": "P:MAD>SAP/VVI>MAD",
    "origin": "MAD",
    "entry": "SAP",
@@ -5110,19 +5201,39 @@
    ]
   },
   {
-   "main": "P:CPH>GUA/BOG>CPH",
+   "main": "P:CPH>SJO/MDE>CPH",
    "origin": "CPH",
-   "entry": "GUA",
-   "exit": "BOG",
+   "entry": "SJO",
+   "exit": "MDE",
    "order": [
     "CA",
     "BO",
     "CO"
    ],
    "with_optional": [],
-   "total": 13252,
-   "eff": 21762,
-   "main_price": 7637.0,
+   "total": 14285,
+   "eff": 22039,
+   "main_price": 8670.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
+   "main": "P:CPH>SAL/CTG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "CTG",
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [],
+   "total": 14401,
+   "eff": 22067,
+   "main_price": 8786.0,
    "positioning": 0,
    "hops": [
     "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
@@ -5188,6 +5299,26 @@
    "total": 12296,
    "eff": 22255,
    "main_price": 6681.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
+   "main": "P:CPH>SAL/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [],
+   "total": 14563,
+   "eff": 22329,
+   "main_price": 8948.0,
    "positioning": 0,
    "hops": [
     "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
@@ -5644,26 +5775,6 @@
    ]
   },
   {
-   "main": "P:CPH>SAL/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAL",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "BO",
-    "CO"
-   ],
-   "with_optional": [],
-   "total": 13072,
-   "eff": 23317,
-   "main_price": 7457.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
-    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
-   ]
-  },
-  {
    "main": "C:CPH>BOG/VVI>MAD>CPH",
    "origin": "CPH",
    "entry": "BOG",
@@ -5894,6 +6005,26 @@
    "hops": [
     "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)",
     "MDE>SAL 1960 (14:10>15:50, 2.67 h, Avianca)"
+   ]
+  },
+  {
+   "main": "P:CPH>SAP/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAP",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [],
+   "total": 15814,
+   "eff": 23723,
+   "main_price": 10199.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
    ]
   },
   {
@@ -7863,26 +7994,6 @@
     "CLO>LPB 2384 (04:45>14:45, 9.0 h, Avianca)",
     "LPB>SAL 2622 (03:25>15:40, 14.25 h, avianca)",
     "MGA>MDE 1696 (03:16>10:55, 6.65 h, Copa Airlines)"
-   ]
-  },
-  {
-   "main": "P:CPH>SAP/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAP",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "BO",
-    "CO"
-   ],
-   "with_optional": [],
-   "total": 13002,
-   "eff": 25514,
-   "main_price": 7387.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
-    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
    ]
   },
   {
@@ -10001,6 +10112,30 @@
    ]
   },
   {
+   "main": "P:CPH>GUA/BOG>CPH",
+   "origin": "CPH",
+   "entry": "GUA",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "MX",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 17527,
+   "eff": 26502,
+   "main_price": 7850.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
+    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
+   ]
+  },
+  {
    "main": "P:MAD>SAL/GDL>MAD",
    "origin": "MAD",
    "entry": "SAL",
@@ -10271,6 +10406,30 @@
     "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
     "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)",
     "MDE>GDL 1639 (14:00>18:20, 5.33 h, Volaris)"
+   ]
+  },
+  {
+   "main": "P:CPH>SJO/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SJO",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "MX",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 18018,
+   "eff": 26654,
+   "main_price": 8341.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
+    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
    ]
   },
   {
@@ -11763,30 +11922,6 @@
    ]
   },
   {
-   "main": "P:CPH>GUA/BOG>CPH",
-   "origin": "CPH",
-   "entry": "GUA",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "BO",
-    "MX",
-    "CO"
-   ],
-   "with_optional": [
-    "MX"
-   ],
-   "total": 17314,
-   "eff": 27156,
-   "main_price": 7637.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
-    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
-    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
-   ]
-  },
-  {
    "main": "C:CPH>MAD>SDQ>MDE/VVI>MAD>CPH",
    "origin": "CPH",
    "entry": "MDE",
@@ -12467,6 +12602,30 @@
    ]
   },
   {
+   "main": "P:CPH>SJO/MDE>CPH",
+   "origin": "CPH",
+   "entry": "SJO",
+   "exit": "MDE",
+   "order": [
+    "CA",
+    "BO",
+    "MX",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 18347,
+   "eff": 27433,
+   "main_price": 8670.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
+    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
+   ]
+  },
+  {
    "main": "C:CPH>BOG/LPB>MAD>CPH",
    "origin": "CPH",
    "entry": "BOG",
@@ -12510,6 +12669,30 @@
     "MDE>SAL 1960 (14:10>15:50, 2.67 h, Avianca)",
     "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
     "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
+   "main": "P:CPH>SAL/CTG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "CTG",
+   "order": [
+    "CA",
+    "BO",
+    "MX",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 18463,
+   "eff": 27461,
+   "main_price": 8786.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
+    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
    ]
   },
   {
@@ -13304,6 +13487,30 @@
     "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)",
     "CLO>LPB 2384 (04:45>14:45, 9.0 h, Avianca)",
     "LPB>SAL 2622 (03:25>15:40, 14.25 h, avianca)"
+   ]
+  },
+  {
+   "main": "P:CPH>SAL/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "MX",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 18625,
+   "eff": 27723,
+   "main_price": 8948.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
+    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
    ]
   },
   {
@@ -15211,6 +15418,30 @@
    ]
   },
   {
+   "main": "P:CPH>GUA/BOG>CPH",
+   "origin": "CPH",
+   "entry": "GUA",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "MX",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 18895,
+   "eff": 28143,
+   "main_price": 7850.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
+    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
    "main": "C:CPH>MAD>SDQ>MDE/BOG>MAD>CPH",
    "origin": "CPH",
    "entry": "MDE",
@@ -15588,6 +15819,30 @@
     "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)",
     "MDE>GDL 1639 (14:00>18:20, 5.33 h, Volaris)",
     "GDL>SAL 2217 (07:36>14:02, 6.43 h, Aeromexico)"
+   ]
+  },
+  {
+   "main": "P:CPH>SJO/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SJO",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "MX",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 19386,
+   "eff": 28295,
+   "main_price": 8341.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
+    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
    ]
   },
   {
@@ -16543,30 +16798,6 @@
    ]
   },
   {
-   "main": "P:CPH>SAL/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAL",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "BO",
-    "MX",
-    "CO"
-   ],
-   "with_optional": [
-    "MX"
-   ],
-   "total": 17134,
-   "eff": 28711,
-   "main_price": 7457.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
-    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
-    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
-   ]
-  },
-  {
    "main": "C:CPH>MEX/MEX>CPH",
    "origin": "CPH",
    "entry": "MEX",
@@ -16853,30 +17084,6 @@
     "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
     "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)",
     "MDE>GDL 1639 (14:00>18:20, 5.33 h, Volaris)"
-   ]
-  },
-  {
-   "main": "P:CPH>GUA/BOG>CPH",
-   "origin": "CPH",
-   "entry": "GUA",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "MX",
-    "BO",
-    "CO"
-   ],
-   "with_optional": [
-    "MX"
-   ],
-   "total": 18682,
-   "eff": 28797,
-   "main_price": 7637.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
-    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
-    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
    ]
   },
   {
@@ -17974,6 +18181,30 @@
    ]
   },
   {
+   "main": "P:CPH>SJO/MDE>CPH",
+   "origin": "CPH",
+   "entry": "SJO",
+   "exit": "MDE",
+   "order": [
+    "CA",
+    "MX",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 19715,
+   "eff": 29074,
+   "main_price": 8670.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
+    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
    "main": "P:CPH>LPB/SAL>CPH",
    "origin": "CPH",
    "entry": "LPB",
@@ -17998,6 +18229,30 @@
    ]
   },
   {
+   "main": "P:CPH>SAL/CTG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "CTG",
+   "order": [
+    "CA",
+    "MX",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 19831,
+   "eff": 29102,
+   "main_price": 8786.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
+    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
    "main": "C:CPH>LIR/MDE>MAD>CPH",
    "origin": "CPH",
    "entry": "LIR",
@@ -18015,6 +18270,30 @@
    "hops": [
     "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
     "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
+   "main": "P:CPH>SAP/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAP",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "BO",
+    "MX",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 19876,
+   "eff": 29117,
+   "main_price": 10199.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
+    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
+    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
    ]
   },
   {
@@ -18681,6 +18960,30 @@
     "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
     "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
     "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
+   ]
+  },
+  {
+   "main": "P:CPH>SAL/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAL",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "MX",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 19993,
+   "eff": 29364,
+   "main_price": 8948.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
+    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
    ]
   },
   {
@@ -21568,30 +21871,6 @@
    ]
   },
   {
-   "main": "P:CPH>SAL/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAL",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "MX",
-    "BO",
-    "CO"
-   ],
-   "with_optional": [
-    "MX"
-   ],
-   "total": 18502,
-   "eff": 30352,
-   "main_price": 7457.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
-    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
-    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
-   ]
-  },
-  {
    "main": "C:CPH>BOG/VVI>MAD>CPH",
    "origin": "CPH",
    "entry": "BOG",
@@ -22362,6 +22641,30 @@
    ]
   },
   {
+   "main": "P:CPH>SAP/BOG>CPH",
+   "origin": "CPH",
+   "entry": "SAP",
+   "exit": "BOG",
+   "order": [
+    "CA",
+    "MX",
+    "BO",
+    "CO"
+   ],
+   "with_optional": [
+    "MX"
+   ],
+   "total": 21244,
+   "eff": 30758,
+   "main_price": 10199.0,
+   "positioning": 0,
+   "hops": [
+    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
+    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
+    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
+   ]
+  },
+  {
    "main": "P:CPH>CTG/CTG>CPH",
    "origin": "CPH",
    "entry": "CTG",
@@ -22823,30 +23126,6 @@
     "MDE>SAL 1960 (14:10>15:50, 2.67 h, Avianca)",
     "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
     "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)"
-   ]
-  },
-  {
-   "main": "P:CPH>SAP/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAP",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "BO",
-    "MX",
-    "CO"
-   ],
-   "with_optional": [
-    "MX"
-   ],
-   "total": 17064,
-   "eff": 30908,
-   "main_price": 7387.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>LPB 3201 (14:50>02:20+1, 9.5 h, Avianca)",
-    "VVI>GDL 4347 (01:14>10:56, 11.7 h, Copa Airlines)",
-    "GDL>BOG 1470 (05:55>11:51, 4.93 h, Volaris)"
    ]
   },
   {
@@ -27091,30 +27370,6 @@
     "MGA>MDE 1696 (03:16>10:55, 6.65 h, Copa Airlines)",
     "MDE>GDL 1639 (14:00>18:20, 5.33 h, Volaris)",
     "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)"
-   ]
-  },
-  {
-   "main": "P:CPH>SAP/BOG>CPH",
-   "origin": "CPH",
-   "entry": "SAP",
-   "exit": "BOG",
-   "order": [
-    "CA",
-    "MX",
-    "BO",
-    "CO"
-   ],
-   "with_optional": [
-    "MX"
-   ],
-   "total": 18432,
-   "eff": 32549,
-   "main_price": 7387.0,
-   "positioning": 0,
-   "hops": [
-    "SAL>GDL 1939 (15:18>20:35, 5.28 h, Aeromexico)",
-    "GDL>LPB 6692 (11:05>04:00+1, 14.92 h, LATAM,Aeromexico)",
-    "VVI>BOG 1755 (05:30>12:15, 7.75 h, LATAM Airlines)"
    ]
   },
   {

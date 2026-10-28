@@ -62,3 +62,4 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 25,mom-25b,sonnet,momondo,8,174395,188,1314,90
 27,exp-27b,sonnet,expedia,8,203594,14,134,28
 27,exp-27a,sonnet,expedia,8,210057,14,138,25
+28,gf-28a,sonnet,google_flights,10,158023,42,749,38

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T16:53:24Z",
+ "generated_at": "2026-10-28T17:19:03Z",
  "currency": "DKK",
  "home": [
   "CPH"
@@ -3001,17 +3001,17 @@
    ],
    "notes": "Booked with American. Basic 6,557; 1st checked bag 1,128; Main Cabin 7,427 (changes for fare diff, no refunds). Same-day arrival MGA 20:12. Alt home GUA 1:09PM>1:40PM+1 17h31 via PTY/AMS (COPA+KLM) total 14,492."
   },
-  "TQ:4c0db850934c": {
-   "id": "TQ:4c0db850934c",
-   "quote_id": "Q:4c0db850934c",
+  "TQ:d9090c079f8f": {
+   "id": "TQ:d9090c079f8f",
+   "quote_id": "Q:d9090c079f8f",
    "source": "google_flights",
-   "observed_at": "2026-10-28T14:15:08Z",
+   "observed_at": "2026-10-28T17:18:27Z",
    "structure": "open_jaw",
    "legs": [
     "CPH>GUA",
     "BOG>CPH"
    ],
-   "price_dkk": 7637,
+   "price_dkk": 7850,
    "fare_brand": null,
    "cabin_bag": null,
    "cabin_bag_fee_dkk": 0,
@@ -3026,7 +3026,7 @@
     "KLM"
    ],
    "flags": [],
-   "notes": "Fastest home: Air France BOG 9:35PM > CPH 5:00PM+1 via CDG, 13h25, only +1 DKK over rank2. Booking page not opened; flight numbers and bag terms not captured."
+   "notes": "Shortest non-US out (18h41) with Air France home. Cheapest non-US combo found (7,850). Booking page 7,850 via KLM; arrives 21:36 via San Jose Costa Rica."
   },
   "TQ:7b8e46f658f0": {
    "id": "TQ:7b8e46f658f0",
@@ -3623,6 +3623,168 @@
    ],
    "notes": "Canada out (YYZ), US home. 1 free carry-on; 1st checked bag DKK 1,199 (entire trip, per booking page)"
   },
+  "TQ:3d10764de8b4": {
+   "id": "TQ:3d10764de8b4",
+   "quote_id": "Q:3d10764de8b4",
+   "source": "google_flights",
+   "observed_at": "2026-10-28T17:18:27Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>SAL",
+    "BOG>CPH"
+   ],
+   "price_dkk": 8948,
+   "fare_brand": null,
+   "cabin_bag": null,
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": null,
+   "checked_bag_fee_dkk": null,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Air France",
+    "COPA",
+    "KLM",
+    "SAS"
+   ],
+   "flags": [],
+   "notes": "Shortest non-US out found in list opened (19h30) with Air France home. Booking via KLM 8,948."
+  },
+  "TQ:98d2cc9062fb": {
+   "id": "TQ:98d2cc9062fb",
+   "quote_id": "Q:98d2cc9062fb",
+   "source": "google_flights",
+   "observed_at": "2026-10-28T17:18:27Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>SJO",
+    "BOG>CPH"
+   ],
+   "price_dkk": 8341,
+   "fare_brand": null,
+   "cabin_bag": null,
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": null,
+   "checked_bag_fee_dkk": 1120,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Air France"
+   ],
+   "flags": [],
+   "notes": "BEST: single Air France ticket, one stop each way, no US. Out 16h25 (7.3h shorter than baseline), arrives 16:10 in daylight. Booking page 8,341 with Air France."
+  },
+  "TQ:00ce41dfdeb6": {
+   "id": "TQ:00ce41dfdeb6",
+   "quote_id": "Q:00ce41dfdeb6",
+   "source": "google_flights",
+   "observed_at": "2026-10-28T17:18:27Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>MGA",
+    "BOG>CPH"
+   ],
+   "price_dkk": 6681,
+   "fare_brand": "Basic Economy",
+   "cabin_bag": null,
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": null,
+   "checked_bag_fee_dkk": 1096,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "American",
+    "British Airways"
+   ],
+   "flags": [
+    "basic_fare",
+    "us_transit"
+   ],
+   "notes": "Cheapest. Booking 6,681."
+  },
+  "TQ:f15a4085341b": {
+   "id": "TQ:f15a4085341b",
+   "quote_id": "Q:f15a4085341b",
+   "source": "google_flights",
+   "observed_at": "2026-10-28T17:18:27Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>SAP",
+    "BOG>CPH"
+   ],
+   "price_dkk": 10199,
+   "fare_brand": null,
+   "cabin_bag": null,
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": null,
+   "checked_bag_fee_dkk": 1120,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Air France",
+    "COPA"
+   ],
+   "flags": [],
+   "notes": "Shortest non-US out (20h27) with AF home; DKK 10,199 incl. 168 phone fee, phone booking only (listed 10,031)."
+  },
+  "TQ:833b79de40c1": {
+   "id": "TQ:833b79de40c1",
+   "quote_id": "Q:833b79de40c1",
+   "source": "google_flights",
+   "observed_at": "2026-10-28T17:18:27Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>SJO",
+    "MDE>CPH"
+   ],
+   "price_dkk": 8670,
+   "fare_brand": null,
+   "cabin_bag": null,
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": null,
+   "checked_bag_fee_dkk": 805,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "Air France",
+    "COPA",
+    "KLM"
+   ],
+   "flags": [],
+   "notes": "Shortest realistic non-US: AF 1-stop out 16h25, home Copa+KLM via PTY/AMS 16h25. Booking 8,670 (KLM; AF by phone also offered)."
+  },
+  "TQ:47646fdc88cf": {
+   "id": "TQ:47646fdc88cf",
+   "quote_id": "Q:47646fdc88cf",
+   "source": "google_flights",
+   "observed_at": "2026-10-28T17:18:27Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>SAL",
+    "CTG>CPH"
+   ],
+   "price_dkk": 8786,
+   "fare_brand": null,
+   "cabin_bag": null,
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": null,
+   "checked_bag_fee_dkk": null,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": null,
+   "carriers": [
+    "COPA",
+    "KLM",
+    "SAS"
+   ],
+   "flags": [],
+   "notes": "Shortest non-US out (19h30); home CTG-AMS-CPH only 12h45 one stop. Booking 8,786 via KLM."
+  },
   "TQ:6b2d2c476a38": {
    "id": "TQ:6b2d2c476a38",
    "quote_id": "Q:6b2d2c476a38",
@@ -3930,33 +4092,6 @@
    "flags": [],
    "notes": "site=Flysmarter; other=Annonce 8361 / Flybillet 8227 / Mytrip 8227; protection=0"
   },
-  "TQ:0cd06504c89b": {
-   "id": "TQ:0cd06504c89b",
-   "quote_id": "Q:0cd06504c89b",
-   "source": "google_flights",
-   "observed_at": "2026-10-28T12:55:55Z",
-   "structure": "open_jaw",
-   "legs": [
-    "CPH>SAL",
-    "BOG>CPH"
-   ],
-   "price_dkk": 7457,
-   "fare_brand": null,
-   "cabin_bag": null,
-   "cabin_bag_fee_dkk": 0,
-   "checked_bag": "incl",
-   "checked_bag_fee_dkk": 0,
-   "tickets_inside": 1,
-   "self_transfer": false,
-   "link": "https://www.google.com/travel/flights/booking?tfs=CBwQAhqBARIKMjAyNi0xMi0wMyIfCgNDUEgSCjIwMjYtMTItMDMaA0ZSQSoCTEgyAzgzMSIeCgNGUkESCjIwMjYtMTItMDMaA0VXUioCVUEyAjQzIiAKA0VXUhIKMjAyNi0xMi0wMxoDU0FMKgJVQTIEMTQyNWoHCAESA0NQSHIHCAESA1NBTBqAARIKMjAyNy0wMi0wMyIfCgNCT0cSCjIwMjctMDItMDMaA0VXUioCVUEyAzI2OSIeCgNFV1ISCjIwMjctMDItMDMaA0ZSQSoCVUEyAjQyIh8KA0ZSQRIKMjAyNy0wMi0wNBoDQ1BIKgJWTDIDODI0agcIARIDQk9HcgcIARIDQ1BIQAFIAXABggELCP___________wGYAQM",
-   "carriers": [
-    "Lufthansa",
-    "Lufthansa City Airlines",
-    "United"
-   ],
-   "flags": [],
-   "notes": "Single ticket booked via United; 1 carry-on + 1st checked bag free. Cheapest. Home leg BOG-EWR-FRA-CPH."
-  },
   "TQ:205e885fe18a": {
    "id": "TQ:205e885fe18a",
    "quote_id": "Q:205e885fe18a",
@@ -4009,34 +4144,6 @@
    ],
    "flags": [],
    "notes": "Cheapest GDL total. No US transit. Booking page says Call Air France (phone fee DKK 168 included); 1 carry-on, checked bag for a fee. Home GDL-MEX-CDG-CPH 18h."
-  },
-  "TQ:e3fa1c5dbe36": {
-   "id": "TQ:e3fa1c5dbe36",
-   "quote_id": "Q:e3fa1c5dbe36",
-   "source": "google_flights",
-   "observed_at": "2026-10-28T12:58:41Z",
-   "structure": "open_jaw",
-   "legs": [
-    "CPH>SAP",
-    "BOG>CPH"
-   ],
-   "price_dkk": 7387,
-   "fare_brand": "Delta Main Classic",
-   "cabin_bag": null,
-   "cabin_bag_fee_dkk": 0,
-   "checked_bag": "incl",
-   "checked_bag_fee_dkk": 560,
-   "tickets_inside": 1,
-   "self_transfer": false,
-   "link": "https://www.google.com/travel/flights/booking?tfs=CBwQAhqDARIKMjAyNi0xMi0wMyIgCgNDUEgSCjIwMjYtMTItMDMaA0FNUyoCS0wyBDEyNzIiHwoDQU1TEgoyMDI2LTEyLTAzGgNBVEwqAktMMgM2MjEiIAoDQVRMEgoyMDI2LTEyLTA0GgNTQVAqAkRMMgQxNzgyagcIARIDQ1BIcgcIARIDU0FQGoIBEgoyMDI3LTAyLTAzIh8KA0JPRxIKMjAyNy0wMi0wMxoDQVRMKgJETDIDOTgwIh8KA0FUTBIKMjAyNy0wMi0wMxoDQU1TKgJLTDIDNjI0IiAKA0FNUxIKMjAyNy0wMi0wNBoDQ1BIKgJLTDIEMTI2N2oHCAESA0JPR3IHCAESA0NQSEABSAFwAYIBCwj___________8BmAED",
-   "carriers": [
-    "Delta",
-    "KLM"
-   ],
-   "flags": [
-    "long_layover"
-   ],
-   "notes": "Cheapest; single Delta booking. 13h ATL layover outbound (arr Dec 4 12:02), US transit both ways. Main Refundable DKK 25,729. Home BOG-ATL-AMS-CPH 18h."
   },
   "TQ:4c95c9ba4658": {
    "id": "TQ:4c95c9ba4658",
@@ -4093,32 +4200,6 @@
     "long_layover"
    ],
    "notes": "Same outbound; faster home leg GDL-ATL-AMS-CPH 16.4h for +DKK 33."
-  },
-  "TQ:151ba7502e2c": {
-   "id": "TQ:151ba7502e2c",
-   "quote_id": "Q:151ba7502e2c",
-   "source": "google_flights",
-   "observed_at": "2026-10-28T13:01:30Z",
-   "structure": "open_jaw",
-   "legs": [
-    "CPH>MGA",
-    "BOG>CPH"
-   ],
-   "price_dkk": 6681,
-   "fare_brand": "Basic Economy",
-   "cabin_bag": null,
-   "cabin_bag_fee_dkk": 0,
-   "checked_bag": "paid",
-   "checked_bag_fee_dkk": 1096,
-   "tickets_inside": 1,
-   "self_transfer": false,
-   "link": "https://www.google.com/travel/flights/booking?tfs=CBwQAhqBARIKMjAyNi0xMi0wMyIfCgNDUEgSCjIwMjYtMTItMDMaA0xIUioCQkEyAzgxOSIeCgNMSFISCjIwMjYtMTItMDMaA01JQSoCQUEyAjU3IiAKA01JQRIKMjAyNi0xMi0wMxoDTUdBKgJBQTIEMTM2OWoHCAESA0NQSHIHCAESA01HQRqBARIKMjAyNy0wMi0wMyIfCgNCT0cSCjIwMjctMDItMDMaA01JQSoCQUEyAzkxNiIfCgNNSUESCjIwMjctMDItMDMaA0xIUioCQkEyAzIwOCIfCgNMSFISCjIwMjctMDItMDQaA0NQSCoCQkEyAzgxNGoHCAESA0JPR3IHCAESA0NQSEABSAFwAYIBCwj___________8BmAED",
-   "carriers": [
-    "American",
-    "British Airways"
-   ],
-   "flags": [],
-   "notes": "Cheapest overall in this batch. American Basic Economy: carry-on only, 1st checked bag DKK 1,128, no refunds. Main Cabin DKK 7,551. US transit both ways (MIA)."
   },
   "TQ:e13c89d81376": {
    "id": "TQ:e13c89d81376",
@@ -14026,17 +14107,17 @@
      "kind": "flight",
      "from": "CPH",
      "to": "GUA",
-     "depart": "2026-12-03T06:00",
-     "arrive": "2026-12-03T22:44",
-     "hours": 23.73,
+     "depart": "2026-12-02T09:55",
+     "arrive": "2026-12-02T21:36",
+     "hours": 18.68,
      "connections": [
       {
        "airport": "AMS",
-       "layover_h": 3.83
+       "layover_h": 1.33
       },
       {
-       "airport": "PTY",
-       "layover_h": 4.85
+       "airport": "SJO",
+       "layover_h": 2.42
       }
      ],
      "carriers": [
@@ -14044,25 +14125,25 @@
       "COPA"
      ],
      "flight_numbers": [
-      "KL1266",
-      "KL757",
-      "CM496"
+      "KLM 1268",
+      "KLM 759",
+      "Copa 391"
      ],
      "overnight_layover": false,
-     "ticket": "TQ:4c0db850934c",
+     "ticket": "TQ:d9090c079f8f",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:4c0db850934c"
+    "TQ:d9090c079f8f"
    ],
    "flags": [],
    "from": "CPH",
    "to": "GUA",
-   "depart": "2026-12-03T06:00",
-   "arrive": "2026-12-03T22:44",
-   "total_hours": 23.7,
-   "flying_hours": 23.7,
+   "depart": "2026-12-02T09:55",
+   "arrive": "2026-12-02T21:36",
+   "total_hours": 18.7,
+   "flying_hours": 18.7,
    "flights": 3,
    "hub_nights": 0,
    "changes": 0,
@@ -14070,12 +14151,12 @@
    "airports": [
     "CPH",
     "AMS",
-    "PTY",
+    "SJO",
     "GUA"
    ],
-   "score": 3,
+   "score": 5,
    "id": "I0125",
-   "shared_ticket": "TQ:4c0db850934c",
+   "shared_ticket": "TQ:d9090c079f8f",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -14105,14 +14186,17 @@
      "carriers": [
       "Air France"
      ],
-     "flight_numbers": [],
+     "flight_numbers": [
+      "Air France 423",
+      "Air France 1050"
+     ],
      "overnight_layover": false,
-     "ticket": "TQ:4c0db850934c",
+     "ticket": "TQ:d9090c079f8f",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:4c0db850934c"
+    "TQ:d9090c079f8f"
    ],
    "flags": [],
    "from": "BOG",
@@ -14132,7 +14216,7 @@
    ],
    "score": 5,
    "id": "H0126",
-   "shared_ticket": "TQ:4c0db850934c",
+   "shared_ticket": "TQ:d9090c079f8f",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -17031,6 +17115,747 @@
     {
      "kind": "flight",
      "from": "CPH",
+     "to": "SAL",
+     "depart": "2026-12-03T08:10",
+     "arrive": "2026-12-03T20:40",
+     "hours": 19.5,
+     "connections": [
+      {
+       "airport": "AMS",
+       "layover_h": 1.58
+      },
+      {
+       "airport": "PTY",
+       "layover_h": 2.92
+      }
+     ],
+     "carriers": [
+      "SAS",
+      "KLM",
+      "COPA"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:3d10764de8b4",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:3d10764de8b4"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "SAL",
+   "depart": "2026-12-03T08:10",
+   "arrive": "2026-12-03T20:40",
+   "total_hours": 19.5,
+   "flying_hours": 19.5,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "AMS",
+    "PTY",
+    "SAL"
+   ],
+   "score": 5,
+   "id": "I0169",
+   "shared_ticket": "TQ:3d10764de8b4",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0170"
+  },
+  "H0170": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "BOG",
+     "to": "CPH",
+     "depart": "2027-02-03T21:35",
+     "arrive": "2027-02-04T17:00",
+     "hours": 13.42,
+     "connections": [
+      {
+       "airport": "CDG",
+       "layover_h": 1.17
+      }
+     ],
+     "carriers": [
+      "Air France"
+     ],
+     "flight_numbers": [
+      "Air France 423",
+      "Air France 1050"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:3d10764de8b4",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:3d10764de8b4"
+   ],
+   "flags": [],
+   "from": "BOG",
+   "to": "CPH",
+   "depart": "2027-02-03T21:35",
+   "arrive": "2027-02-04T17:00",
+   "total_hours": 13.4,
+   "flying_hours": 13.4,
+   "flights": 2,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "BOG",
+    "CDG",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0170",
+   "shared_ticket": "TQ:3d10764de8b4",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0169"
+  },
+  "I0171": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "SJO",
+     "depart": "2026-12-03T06:45",
+     "arrive": "2026-12-03T16:10",
+     "hours": 16.42,
+     "connections": [
+      {
+       "airport": "CDG",
+       "layover_h": 2.42
+      }
+     ],
+     "carriers": [
+      "Air France"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:98d2cc9062fb",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:98d2cc9062fb"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "SJO",
+   "depart": "2026-12-03T06:45",
+   "arrive": "2026-12-03T16:10",
+   "total_hours": 16.4,
+   "flying_hours": 16.4,
+   "flights": 2,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "CDG",
+    "SJO"
+   ],
+   "score": 5,
+   "id": "I0171",
+   "shared_ticket": "TQ:98d2cc9062fb",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0172"
+  },
+  "H0172": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "BOG",
+     "to": "CPH",
+     "depart": "2027-02-03T21:35",
+     "arrive": "2027-02-04T17:00",
+     "hours": 13.42,
+     "connections": [
+      {
+       "airport": "CDG",
+       "layover_h": 1.17
+      }
+     ],
+     "carriers": [
+      "Air France"
+     ],
+     "flight_numbers": [
+      "Air France 423",
+      "Air France 1050"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:98d2cc9062fb",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:98d2cc9062fb"
+   ],
+   "flags": [],
+   "from": "BOG",
+   "to": "CPH",
+   "depart": "2027-02-03T21:35",
+   "arrive": "2027-02-04T17:00",
+   "total_hours": 13.4,
+   "flying_hours": 13.4,
+   "flights": 2,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "BOG",
+    "CDG",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0172",
+   "shared_ticket": "TQ:98d2cc9062fb",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0171"
+  },
+  "I0173": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "MGA",
+     "depart": "2026-12-03T06:30",
+     "arrive": "2026-12-03T20:12",
+     "hours": 20.7,
+     "connections": [
+      {
+       "airport": "LHR",
+       "layover_h": 3.5
+      },
+      {
+       "airport": "MIA",
+       "layover_h": 2.25
+      }
+     ],
+     "carriers": [
+      "British Airways",
+      "American"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:00ce41dfdeb6",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:00ce41dfdeb6"
+   ],
+   "flags": [
+    "basic_fare",
+    "us_transit"
+   ],
+   "from": "CPH",
+   "to": "MGA",
+   "depart": "2026-12-03T06:30",
+   "arrive": "2026-12-03T20:12",
+   "total_hours": 20.7,
+   "flying_hours": 20.7,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": true,
+   "airports": [
+    "CPH",
+    "LHR",
+    "MIA",
+    "MGA"
+   ],
+   "score": 3,
+   "id": "I0173",
+   "shared_ticket": "TQ:00ce41dfdeb6",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0174"
+  },
+  "H0174": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "BOG",
+     "to": "CPH",
+     "depart": "2027-02-03T15:15",
+     "arrive": "2027-02-04T17:25",
+     "hours": 20.17,
+     "connections": [
+      {
+       "airport": "MIA",
+       "layover_h": 2.57
+      },
+      {
+       "airport": "LHR",
+       "layover_h": 2.92
+      }
+     ],
+     "carriers": [
+      "American",
+      "British Airways"
+     ],
+     "flight_numbers": [
+      "American 916",
+      "American 208",
+      "British Airways 814"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:00ce41dfdeb6",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:00ce41dfdeb6"
+   ],
+   "flags": [
+    "basic_fare",
+    "us_transit"
+   ],
+   "from": "BOG",
+   "to": "CPH",
+   "depart": "2027-02-03T15:15",
+   "arrive": "2027-02-04T17:25",
+   "total_hours": 20.2,
+   "flying_hours": 20.2,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": true,
+   "airports": [
+    "BOG",
+    "MIA",
+    "LHR",
+    "CPH"
+   ],
+   "score": 3,
+   "id": "H0174",
+   "shared_ticket": "TQ:00ce41dfdeb6",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0173"
+  },
+  "I0175": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "SAP",
+     "depart": "2026-12-03T10:05",
+     "arrive": "2026-12-03T23:32",
+     "hours": 20.45,
+     "connections": [
+      {
+       "airport": "CDG",
+       "layover_h": 2.75
+      },
+      {
+       "airport": "PTY",
+       "layover_h": 1.98
+      }
+     ],
+     "carriers": [
+      "Air France",
+      "COPA"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:f15a4085341b",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:f15a4085341b"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "SAP",
+   "depart": "2026-12-03T10:05",
+   "arrive": "2026-12-03T23:32",
+   "total_hours": 20.4,
+   "flying_hours": 20.4,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "CDG",
+    "PTY",
+    "SAP"
+   ],
+   "score": 4,
+   "id": "I0175",
+   "shared_ticket": "TQ:f15a4085341b",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0176"
+  },
+  "H0176": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "BOG",
+     "to": "CPH",
+     "depart": "2027-02-03T21:35",
+     "arrive": "2027-02-04T17:00",
+     "hours": 13.42,
+     "connections": [
+      {
+       "airport": "CDG",
+       "layover_h": 1.17
+      }
+     ],
+     "carriers": [
+      "Air France"
+     ],
+     "flight_numbers": [
+      "Air France 423",
+      "Air France 1050"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:f15a4085341b",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:f15a4085341b"
+   ],
+   "flags": [],
+   "from": "BOG",
+   "to": "CPH",
+   "depart": "2027-02-03T21:35",
+   "arrive": "2027-02-04T17:00",
+   "total_hours": 13.4,
+   "flying_hours": 13.4,
+   "flights": 2,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "BOG",
+    "CDG",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0176",
+   "shared_ticket": "TQ:f15a4085341b",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0175"
+  },
+  "I0177": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "SJO",
+     "depart": "2026-12-03T06:45",
+     "arrive": "2026-12-03T16:10",
+     "hours": 16.42,
+     "connections": [
+      {
+       "airport": "CDG",
+       "layover_h": 2.42
+      }
+     ],
+     "carriers": [
+      "Air France"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:833b79de40c1",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:833b79de40c1"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "SJO",
+   "depart": "2026-12-03T06:45",
+   "arrive": "2026-12-03T16:10",
+   "total_hours": 16.4,
+   "flying_hours": 16.4,
+   "flights": 2,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "CDG",
+    "SJO"
+   ],
+   "score": 5,
+   "id": "I0177",
+   "shared_ticket": "TQ:833b79de40c1",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0178"
+  },
+  "H0178": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "MDE",
+     "to": "CPH",
+     "depart": "2027-02-03T15:15",
+     "arrive": "2027-02-04T13:40",
+     "hours": 16.42,
+     "connections": [
+      {
+       "airport": "PTY",
+       "layover_h": 1.97
+      },
+      {
+       "airport": "AMS",
+       "layover_h": 1.17
+      }
+     ],
+     "carriers": [
+      "COPA",
+      "KLM"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:833b79de40c1",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:833b79de40c1"
+   ],
+   "flags": [],
+   "from": "MDE",
+   "to": "CPH",
+   "depart": "2027-02-03T15:15",
+   "arrive": "2027-02-04T13:40",
+   "total_hours": 16.4,
+   "flying_hours": 16.4,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "MDE",
+    "PTY",
+    "AMS",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0178",
+   "shared_ticket": "TQ:833b79de40c1",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0177"
+  },
+  "I0179": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "SAL",
+     "depart": "2026-12-03T08:10",
+     "arrive": "2026-12-03T20:40",
+     "hours": 19.5,
+     "connections": [
+      {
+       "airport": "AMS",
+       "layover_h": 1.58
+      },
+      {
+       "airport": "PTY",
+       "layover_h": 2.92
+      }
+     ],
+     "carriers": [
+      "SAS",
+      "KLM",
+      "COPA"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:47646fdc88cf",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:47646fdc88cf"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "SAL",
+   "depart": "2026-12-03T08:10",
+   "arrive": "2026-12-03T20:40",
+   "total_hours": 19.5,
+   "flying_hours": 19.5,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "AMS",
+    "PTY",
+    "SAL"
+   ],
+   "score": 5,
+   "id": "I0179",
+   "shared_ticket": "TQ:47646fdc88cf",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0180"
+  },
+  "H0180": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CTG",
+     "to": "CPH",
+     "depart": "2027-02-03T18:55",
+     "arrive": "2027-02-04T13:40",
+     "hours": 12.75,
+     "connections": [
+      {
+       "airport": "AMS",
+       "layover_h": 1.58
+      }
+     ],
+     "carriers": [
+      "KLM"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:47646fdc88cf",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:47646fdc88cf"
+   ],
+   "flags": [],
+   "from": "CTG",
+   "to": "CPH",
+   "depart": "2027-02-03T18:55",
+   "arrive": "2027-02-04T13:40",
+   "total_hours": 12.8,
+   "flying_hours": 12.8,
+   "flights": 2,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CTG",
+    "AMS",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0180",
+   "shared_ticket": "TQ:47646fdc88cf",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0179"
+  },
+  "I0181": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
      "to": "GUA",
      "depart": "2026-12-03T06:00",
      "arrive": "2026-12-03T22:44",
@@ -17083,7 +17908,7 @@
     "GUA"
    ],
    "score": 3,
-   "id": "I0169",
+   "id": "I0181",
    "shared_ticket": "TQ:6b2d2c476a38",
    "price_dkk": 0,
    "extras": {
@@ -17092,9 +17917,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0170"
+   "paired_with": "H0182"
   },
-  "H0170": {
+  "H0182": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17159,7 +17984,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0170",
+   "id": "H0182",
    "shared_ticket": "TQ:6b2d2c476a38",
    "price_dkk": 0,
    "extras": {
@@ -17168,9 +17993,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0169"
+   "paired_with": "I0181"
   },
-  "I0171": {
+  "I0183": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17223,7 +18048,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0171",
+   "id": "I0183",
    "shared_ticket": "TQ:519be2823cb5",
    "price_dkk": 0,
    "extras": {
@@ -17232,9 +18057,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0172"
+   "paired_with": "H0184"
   },
-  "H0172": {
+  "H0184": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17300,7 +18125,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0172",
+   "id": "H0184",
    "shared_ticket": "TQ:519be2823cb5",
    "price_dkk": 0,
    "extras": {
@@ -17309,9 +18134,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0171"
+   "paired_with": "I0183"
   },
-  "I0173": {
+  "I0185": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17370,7 +18195,7 @@
     "SJO"
    ],
    "score": 5,
-   "id": "I0173",
+   "id": "I0185",
    "shared_ticket": "TQ:2c5aa2f4bb31",
    "price_dkk": 0,
    "extras": {
@@ -17379,9 +18204,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0174"
+   "paired_with": "H0186"
   },
-  "H0174": {
+  "H0186": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17446,7 +18271,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0174",
+   "id": "H0186",
    "shared_ticket": "TQ:2c5aa2f4bb31",
    "price_dkk": 0,
    "extras": {
@@ -17455,9 +18280,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0173"
+   "paired_with": "I0185"
   },
-  "I0175": {
+  "I0187": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17516,7 +18341,7 @@
     "SAL"
    ],
    "score": 4,
-   "id": "I0175",
+   "id": "I0187",
    "shared_ticket": "TQ:38267531a2a0",
    "price_dkk": 0,
    "extras": {
@@ -17525,9 +18350,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0176"
+   "paired_with": "H0188"
   },
-  "H0176": {
+  "H0188": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17592,7 +18417,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0176",
+   "id": "H0188",
    "shared_ticket": "TQ:38267531a2a0",
    "price_dkk": 0,
    "extras": {
@@ -17601,9 +18426,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0175"
+   "paired_with": "I0187"
   },
-  "I0177": {
+  "I0189": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17652,7 +18477,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0177",
+   "id": "I0189",
    "shared_ticket": "TQ:c346e72f9141",
    "price_dkk": 0,
    "extras": {
@@ -17661,9 +18486,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0178"
+   "paired_with": "H0190"
   },
-  "H0178": {
+  "H0190": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17719,7 +18544,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0178",
+   "id": "H0190",
    "shared_ticket": "TQ:c346e72f9141",
    "price_dkk": 0,
    "extras": {
@@ -17728,9 +18553,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0177"
+   "paired_with": "I0189"
   },
-  "I0179": {
+  "I0191": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17782,7 +18607,7 @@
     "SAL"
    ],
    "score": 5,
-   "id": "I0179",
+   "id": "I0191",
    "shared_ticket": "TQ:08549f9c4a86",
    "price_dkk": 0,
    "extras": {
@@ -17791,9 +18616,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0180"
+   "paired_with": "H0192"
   },
-  "H0180": {
+  "H0192": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17845,7 +18670,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0180",
+   "id": "H0192",
    "shared_ticket": "TQ:08549f9c4a86",
    "price_dkk": 0,
    "extras": {
@@ -17854,9 +18679,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0179"
+   "paired_with": "I0191"
   },
-  "I0181": {
+  "I0193": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -17908,7 +18733,7 @@
     "GUA"
    ],
    "score": 5,
-   "id": "I0181",
+   "id": "I0193",
    "shared_ticket": "TQ:0eec9795ce58",
    "price_dkk": 0,
    "extras": {
@@ -17917,9 +18742,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0182"
+   "paired_with": "H0194"
   },
-  "H0182": {
+  "H0194": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -17971,7 +18796,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0182",
+   "id": "H0194",
    "shared_ticket": "TQ:0eec9795ce58",
    "price_dkk": 0,
    "extras": {
@@ -17980,9 +18805,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0181"
+   "paired_with": "I0193"
   },
-  "I0183": {
+  "I0195": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -18061,7 +18886,7 @@
     "SAL"
    ],
    "score": 3,
-   "id": "I0183",
+   "id": "I0195",
    "shared_ticket": "TQ:6f19fd85785d",
    "price_dkk": 686,
    "extras": {
@@ -18070,9 +18895,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0184"
+   "paired_with": "H0196"
   },
-  "H0184": {
+  "H0196": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -18149,7 +18974,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0184",
+   "id": "H0196",
    "shared_ticket": "TQ:6f19fd85785d",
    "price_dkk": 381,
    "extras": {
@@ -18158,9 +18983,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0183"
+   "paired_with": "I0195"
   },
-  "I0185": {
+  "I0197": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -18245,7 +19070,7 @@
     "SAP"
    ],
    "score": 1,
-   "id": "I0185",
+   "id": "I0197",
    "shared_ticket": "TQ:284725039eac",
    "price_dkk": 186,
    "extras": {
@@ -18254,9 +19079,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0186"
+   "paired_with": "H0198"
   },
-  "H0186": {
+  "H0198": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -18333,7 +19158,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0186",
+   "id": "H0198",
    "shared_ticket": "TQ:284725039eac",
    "price_dkk": 381,
    "extras": {
@@ -18342,9 +19167,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0185"
+   "paired_with": "I0197"
   },
-  "I0187": {
+  "I0199": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -18426,7 +19251,7 @@
     "MGA"
    ],
    "score": 1,
-   "id": "I0187",
+   "id": "I0199",
    "shared_ticket": "TQ:eea1b884fbec",
    "price_dkk": 186,
    "extras": {
@@ -18435,9 +19260,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0188"
+   "paired_with": "H0200"
   },
-  "H0188": {
+  "H0200": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -18518,7 +19343,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0188",
+   "id": "H0200",
    "shared_ticket": "TQ:eea1b884fbec",
    "price_dkk": 381,
    "extras": {
@@ -18527,9 +19352,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0187"
+   "paired_with": "I0199"
   },
-  "I0189": {
+  "I0201": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -18601,7 +19426,7 @@
     "BOG"
    ],
    "score": 3,
-   "id": "I0189",
+   "id": "I0201",
    "shared_ticket": "TQ:bcb2aa304151",
    "price_dkk": 686,
    "extras": {
@@ -18610,9 +19435,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0190"
+   "paired_with": "H0202"
   },
-  "H0190": {
+  "H0202": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -18691,7 +19516,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0190",
+   "id": "H0202",
    "shared_ticket": "TQ:bcb2aa304151",
    "price_dkk": 412,
    "extras": {
@@ -18700,135 +19525,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0189"
+   "paired_with": "I0201"
   },
-  "I0191": {
-   "direction": "in",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "CPH",
-     "to": "SAL",
-     "depart": "2026-12-03T07:15",
-     "arrive": "2026-12-03T22:47",
-     "hours": 22.53,
-     "connections": [
-      {
-       "airport": "FRA",
-       "layover_h": 2.33
-      },
-      {
-       "airport": "EWR",
-       "layover_h": 4.57
-      }
-     ],
-     "carriers": [
-      "Lufthansa",
-      "United"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": false,
-     "ticket": "TQ:0cd06504c89b",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:0cd06504c89b"
-   ],
-   "flags": [],
-   "from": "CPH",
-   "to": "SAL",
-   "depart": "2026-12-03T07:15",
-   "arrive": "2026-12-03T22:47",
-   "total_hours": 22.5,
-   "flying_hours": 22.5,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": true,
-   "airports": [
-    "CPH",
-    "FRA",
-    "EWR",
-    "SAL"
-   ],
-   "score": 3,
-   "id": "I0191",
-   "shared_ticket": "TQ:0cd06504c89b",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "H0192"
-  },
-  "H0192": {
-   "direction": "home",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "BOG",
-     "to": "CPH",
-     "depart": "2027-02-03T09:45",
-     "arrive": "2027-02-04T12:00",
-     "hours": 20.25,
-     "connections": [
-      {
-       "airport": "EWR",
-       "layover_h": 3.68
-      },
-      {
-       "airport": "FRA",
-       "layover_h": 1.42
-      }
-     ],
-     "carriers": [
-      "United",
-      "Lufthansa City Airlines"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": false,
-     "ticket": "TQ:0cd06504c89b",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:0cd06504c89b"
-   ],
-   "flags": [],
-   "from": "BOG",
-   "to": "CPH",
-   "depart": "2027-02-03T09:45",
-   "arrive": "2027-02-04T12:00",
-   "total_hours": 20.2,
-   "flying_hours": 20.2,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": true,
-   "airports": [
-    "BOG",
-    "EWR",
-    "FRA",
-    "CPH"
-   ],
-   "score": 3,
-   "id": "H0192",
-   "shared_ticket": "TQ:0cd06504c89b",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "I0191"
-  },
-  "I0193": {
+  "I0203": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -18880,7 +19579,7 @@
     "SAL"
    ],
    "score": 3,
-   "id": "I0193",
+   "id": "I0203",
    "shared_ticket": "TQ:205e885fe18a",
    "price_dkk": 0,
    "extras": {
@@ -18889,9 +19588,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0194"
+   "paired_with": "H0204"
   },
-  "H0194": {
+  "H0204": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -18943,7 +19642,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0194",
+   "id": "H0204",
    "shared_ticket": "TQ:205e885fe18a",
    "price_dkk": 0,
    "extras": {
@@ -18952,9 +19651,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0193"
+   "paired_with": "I0203"
   },
-  "I0195": {
+  "I0205": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19006,7 +19705,7 @@
     "SAL"
    ],
    "score": 4,
-   "id": "I0195",
+   "id": "I0205",
    "shared_ticket": "TQ:627a3432b4f8",
    "price_dkk": 0,
    "extras": {
@@ -19015,9 +19714,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0196"
+   "paired_with": "H0206"
   },
-  "H0196": {
+  "H0206": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19069,7 +19768,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0196",
+   "id": "H0206",
    "shared_ticket": "TQ:627a3432b4f8",
    "price_dkk": 0,
    "extras": {
@@ -19078,139 +19777,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0195"
+   "paired_with": "I0205"
   },
-  "I0197": {
-   "direction": "in",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "CPH",
-     "to": "SAP",
-     "depart": "2026-12-03T14:15",
-     "arrive": "2026-12-04T12:02",
-     "hours": 28.78,
-     "connections": [
-      {
-       "airport": "AMS",
-       "layover_h": 1.5
-      },
-      {
-       "airport": "ATL",
-       "layover_h": 13.0
-      }
-     ],
-     "carriers": [
-      "KLM",
-      "Delta"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": true,
-     "ticket": "TQ:e3fa1c5dbe36",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:e3fa1c5dbe36"
-   ],
-   "flags": [
-    "long_layover"
-   ],
-   "from": "CPH",
-   "to": "SAP",
-   "depart": "2026-12-03T14:15",
-   "arrive": "2026-12-04T12:02",
-   "total_hours": 28.8,
-   "flying_hours": 28.8,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": true,
-   "airports": [
-    "CPH",
-    "AMS",
-    "ATL",
-    "SAP"
-   ],
-   "score": 2,
-   "id": "I0197",
-   "shared_ticket": "TQ:e3fa1c5dbe36",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "H0198"
-  },
-  "H0198": {
-   "direction": "home",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "BOG",
-     "to": "CPH",
-     "depart": "2027-02-03T09:00",
-     "arrive": "2027-02-04T09:00",
-     "hours": 18.0,
-     "connections": [
-      {
-       "airport": "ATL",
-       "layover_h": 1.87
-      },
-      {
-       "airport": "AMS",
-       "layover_h": 1.75
-      }
-     ],
-     "carriers": [
-      "Delta",
-      "KLM"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": false,
-     "ticket": "TQ:e3fa1c5dbe36",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:e3fa1c5dbe36"
-   ],
-   "flags": [
-    "long_layover"
-   ],
-   "from": "BOG",
-   "to": "CPH",
-   "depart": "2027-02-03T09:00",
-   "arrive": "2027-02-04T09:00",
-   "total_hours": 18.0,
-   "flying_hours": 18.0,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": true,
-   "airports": [
-    "BOG",
-    "ATL",
-    "AMS",
-    "CPH"
-   ],
-   "score": 4,
-   "id": "H0198",
-   "shared_ticket": "TQ:e3fa1c5dbe36",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "I0197"
-  },
-  "I0199": {
+  "I0207": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19262,7 +19831,7 @@
     "SAP"
    ],
    "score": 4,
-   "id": "I0199",
+   "id": "I0207",
    "shared_ticket": "TQ:4c95c9ba4658",
    "price_dkk": 0,
    "extras": {
@@ -19271,9 +19840,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0200"
+   "paired_with": "H0208"
   },
-  "H0200": {
+  "H0208": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19325,7 +19894,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0200",
+   "id": "H0208",
    "shared_ticket": "TQ:4c95c9ba4658",
    "price_dkk": 0,
    "extras": {
@@ -19334,9 +19903,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0199"
+   "paired_with": "I0207"
   },
-  "I0201": {
+  "I0209": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19390,7 +19959,7 @@
     "SAP"
    ],
    "score": 2,
-   "id": "I0201",
+   "id": "I0209",
    "shared_ticket": "TQ:50a6ab77b846",
    "price_dkk": 0,
    "extras": {
@@ -19399,9 +19968,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0202"
+   "paired_with": "H0210"
   },
-  "H0202": {
+  "H0210": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19455,7 +20024,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0202",
+   "id": "H0210",
    "shared_ticket": "TQ:50a6ab77b846",
    "price_dkk": 0,
    "extras": {
@@ -19464,135 +20033,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0201"
+   "paired_with": "I0209"
   },
-  "I0203": {
-   "direction": "in",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "CPH",
-     "to": "MGA",
-     "depart": "2026-12-03T06:30",
-     "arrive": "2026-12-03T20:12",
-     "hours": 20.7,
-     "connections": [
-      {
-       "airport": "LHR",
-       "layover_h": 3.5
-      },
-      {
-       "airport": "MIA",
-       "layover_h": 2.25
-      }
-     ],
-     "carriers": [
-      "British Airways",
-      "American"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": false,
-     "ticket": "TQ:151ba7502e2c",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:151ba7502e2c"
-   ],
-   "flags": [],
-   "from": "CPH",
-   "to": "MGA",
-   "depart": "2026-12-03T06:30",
-   "arrive": "2026-12-03T20:12",
-   "total_hours": 20.7,
-   "flying_hours": 20.7,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": true,
-   "airports": [
-    "CPH",
-    "LHR",
-    "MIA",
-    "MGA"
-   ],
-   "score": 3,
-   "id": "I0203",
-   "shared_ticket": "TQ:151ba7502e2c",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "H0204"
-  },
-  "H0204": {
-   "direction": "home",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "BOG",
-     "to": "CPH",
-     "depart": "2027-02-03T15:15",
-     "arrive": "2027-02-04T17:25",
-     "hours": 20.17,
-     "connections": [
-      {
-       "airport": "MIA",
-       "layover_h": 2.57
-      },
-      {
-       "airport": "LHR",
-       "layover_h": 2.67
-      }
-     ],
-     "carriers": [
-      "American",
-      "British Airways"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": false,
-     "ticket": "TQ:151ba7502e2c",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:151ba7502e2c"
-   ],
-   "flags": [],
-   "from": "BOG",
-   "to": "CPH",
-   "depart": "2027-02-03T15:15",
-   "arrive": "2027-02-04T17:25",
-   "total_hours": 20.2,
-   "flying_hours": 20.2,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": true,
-   "airports": [
-    "BOG",
-    "MIA",
-    "LHR",
-    "CPH"
-   ],
-   "score": 3,
-   "id": "H0204",
-   "shared_ticket": "TQ:151ba7502e2c",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "I0203"
-  },
-  "I0205": {
+  "I0211": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19644,7 +20087,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0205",
+   "id": "I0211",
    "shared_ticket": "TQ:e13c89d81376",
    "price_dkk": 0,
    "extras": {
@@ -19653,9 +20096,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0206"
+   "paired_with": "H0212"
   },
-  "H0206": {
+  "H0212": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19707,7 +20150,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0206",
+   "id": "H0212",
    "shared_ticket": "TQ:e13c89d81376",
    "price_dkk": 0,
    "extras": {
@@ -19716,9 +20159,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0205"
+   "paired_with": "I0211"
   },
-  "I0207": {
+  "I0213": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19770,7 +20213,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0207",
+   "id": "I0213",
    "shared_ticket": "TQ:2144931a3a2f",
    "price_dkk": 0,
    "extras": {
@@ -19779,9 +20222,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0208"
+   "paired_with": "H0214"
   },
-  "H0208": {
+  "H0214": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19833,7 +20276,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0208",
+   "id": "H0214",
    "shared_ticket": "TQ:2144931a3a2f",
    "price_dkk": 0,
    "extras": {
@@ -19842,9 +20285,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0207"
+   "paired_with": "I0213"
   },
-  "I0209": {
+  "I0215": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -19890,7 +20333,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0209",
+   "id": "I0215",
    "shared_ticket": "TQ:e19973c868b0",
    "price_dkk": 0,
    "extras": {
@@ -19899,9 +20342,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0210"
+   "paired_with": "H0216"
   },
-  "H0210": {
+  "H0216": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -19953,7 +20396,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0210",
+   "id": "H0216",
    "shared_ticket": "TQ:e19973c868b0",
    "price_dkk": 0,
    "extras": {
@@ -19962,9 +20405,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0209"
+   "paired_with": "I0215"
   },
-  "I0211": {
+  "I0217": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20010,7 +20453,7 @@
     "BOG"
    ],
    "score": 5,
-   "id": "I0211",
+   "id": "I0217",
    "shared_ticket": "TQ:31472862ca78",
    "price_dkk": 0,
    "extras": {
@@ -20019,9 +20462,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0212"
+   "paired_with": "H0218"
   },
-  "H0212": {
+  "H0218": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20073,7 +20516,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0212",
+   "id": "H0218",
    "shared_ticket": "TQ:31472862ca78",
    "price_dkk": 0,
    "extras": {
@@ -20082,9 +20525,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0211"
+   "paired_with": "I0217"
   },
-  "I0213": {
+  "I0219": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20136,7 +20579,7 @@
     "MDE"
    ],
    "score": 5,
-   "id": "I0213",
+   "id": "I0219",
    "shared_ticket": "TQ:341de0400ec7",
    "price_dkk": 0,
    "extras": {
@@ -20145,9 +20588,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0214"
+   "paired_with": "H0220"
   },
-  "H0214": {
+  "H0220": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20193,7 +20636,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0214",
+   "id": "H0220",
    "shared_ticket": "TQ:341de0400ec7",
    "price_dkk": 0,
    "extras": {
@@ -20202,9 +20645,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0213"
+   "paired_with": "I0219"
   },
-  "I0215": {
+  "I0221": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20259,7 +20702,7 @@
     "MDE"
    ],
    "score": 5,
-   "id": "I0215",
+   "id": "I0221",
    "shared_ticket": "TQ:04f145390ba8",
    "price_dkk": 0,
    "extras": {
@@ -20268,9 +20711,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0216"
+   "paired_with": "H0222"
   },
-  "H0216": {
+  "H0222": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20326,7 +20769,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0216",
+   "id": "H0222",
    "shared_ticket": "TQ:04f145390ba8",
    "price_dkk": 0,
    "extras": {
@@ -20335,9 +20778,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0215"
+   "paired_with": "I0221"
   },
-  "I0217": {
+  "I0223": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20393,7 +20836,7 @@
     "MGA"
    ],
    "score": 3,
-   "id": "I0217",
+   "id": "I0223",
    "shared_ticket": "TQ:9bd958277ae9",
    "price_dkk": 0,
    "extras": {
@@ -20402,9 +20845,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0218"
+   "paired_with": "H0224"
   },
-  "H0218": {
+  "H0224": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20460,7 +20903,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0218",
+   "id": "H0224",
    "shared_ticket": "TQ:9bd958277ae9",
    "price_dkk": 0,
    "extras": {
@@ -20469,9 +20912,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0217"
+   "paired_with": "I0223"
   },
-  "I0219": {
+  "I0225": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20529,7 +20972,7 @@
     "SJO"
    ],
    "score": 5,
-   "id": "I0219",
+   "id": "I0225",
    "shared_ticket": "TQ:1fc3a851ec47",
    "price_dkk": 0,
    "extras": {
@@ -20538,9 +20981,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0220"
+   "paired_with": "H0226"
   },
-  "H0220": {
+  "H0226": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20598,7 +21041,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0220",
+   "id": "H0226",
    "shared_ticket": "TQ:1fc3a851ec47",
    "price_dkk": 0,
    "extras": {
@@ -20607,9 +21050,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0219"
+   "paired_with": "I0225"
   },
-  "I0221": {
+  "I0227": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20660,7 +21103,7 @@
     "PTY"
    ],
    "score": 5,
-   "id": "I0221",
+   "id": "I0227",
    "shared_ticket": "TQ:e9c283ace88d",
    "price_dkk": 0,
    "extras": {
@@ -20669,9 +21112,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0222"
+   "paired_with": "H0228"
   },
-  "H0222": {
+  "H0228": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20729,7 +21172,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0222",
+   "id": "H0228",
    "shared_ticket": "TQ:e9c283ace88d",
    "price_dkk": 0,
    "extras": {
@@ -20738,9 +21181,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0221"
+   "paired_with": "I0227"
   },
-  "I0223": {
+  "I0229": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -20798,7 +21241,7 @@
     "CLO"
    ],
    "score": 3,
-   "id": "I0223",
+   "id": "I0229",
    "shared_ticket": "TQ:1adaf09e70a0",
    "price_dkk": 0,
    "extras": {
@@ -20807,9 +21250,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0224"
+   "paired_with": "H0230"
   },
-  "H0224": {
+  "H0230": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -20867,7 +21310,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0224",
+   "id": "H0230",
    "shared_ticket": "TQ:1adaf09e70a0",
    "price_dkk": 0,
    "extras": {
@@ -20876,9 +21319,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0223"
+   "paired_with": "I0229"
   },
-  "I0225": {
+  "I0231": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -20957,7 +21400,7 @@
     "SAL"
    ],
    "score": 1,
-   "id": "I0225",
+   "id": "I0231",
    "shared_ticket": "TQ:a8b81fb82f96",
    "price_dkk": 686,
    "extras": {
@@ -20966,9 +21409,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0226"
+   "paired_with": "H0232"
   },
-  "H0226": {
+  "H0232": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21038,7 +21481,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0226",
+   "id": "H0232",
    "shared_ticket": "TQ:a8b81fb82f96",
    "price_dkk": 381,
    "extras": {
@@ -21047,9 +21490,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0225"
+   "paired_with": "I0231"
   },
-  "I0227": {
+  "I0233": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -21128,7 +21571,7 @@
     "SAL"
    ],
    "score": 1,
-   "id": "I0227",
+   "id": "I0233",
    "shared_ticket": "TQ:5f5d62aa3def",
    "price_dkk": 686,
    "extras": {
@@ -21137,9 +21580,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0228"
+   "paired_with": "H0234"
   },
-  "H0228": {
+  "H0234": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21211,7 +21654,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0228",
+   "id": "H0234",
    "shared_ticket": "TQ:5f5d62aa3def",
    "price_dkk": 288,
    "extras": {
@@ -21220,9 +21663,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0227"
+   "paired_with": "I0233"
   },
-  "I0229": {
+  "I0235": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -21294,7 +21737,7 @@
     "BOG"
    ],
    "score": 3,
-   "id": "I0229",
+   "id": "I0235",
    "shared_ticket": "TQ:cc78ca641d60",
    "price_dkk": 186,
    "extras": {
@@ -21303,9 +21746,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0230"
+   "paired_with": "H0236"
   },
-  "H0230": {
+  "H0236": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21377,7 +21820,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0230",
+   "id": "H0236",
    "shared_ticket": "TQ:cc78ca641d60",
    "price_dkk": 288,
    "extras": {
@@ -21386,9 +21829,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0229"
+   "paired_with": "I0235"
   },
-  "I0231": {
+  "I0237": {
    "direction": "in",
    "type": "madrid",
    "timeline": [
@@ -21467,7 +21910,7 @@
     "GUA"
    ],
    "score": 3,
-   "id": "I0231",
+   "id": "I0237",
    "shared_ticket": "TQ:697b4c443a84",
    "price_dkk": 186,
    "extras": {
@@ -21476,9 +21919,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "H0232"
+   "paired_with": "H0238"
   },
-  "H0232": {
+  "H0238": {
    "direction": "home",
    "type": "madrid",
    "timeline": [
@@ -21555,7 +21998,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0232",
+   "id": "H0238",
    "shared_ticket": "TQ:697b4c443a84",
    "price_dkk": 381,
    "extras": {
@@ -21564,9 +22007,9 @@
     "hub_nights": 1,
     "hub_stay_estimate_dkk": 450
    },
-   "paired_with": "I0231"
+   "paired_with": "I0237"
   },
-  "I0233": {
+  "I0239": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -21624,7 +22067,7 @@
     "SAP"
    ],
    "score": 4,
-   "id": "I0233",
+   "id": "I0239",
    "shared_ticket": "TQ:21ac78a3ef89",
    "price_dkk": 0,
    "extras": {
@@ -21633,9 +22076,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0234"
+   "paired_with": "H0240"
   },
-  "H0234": {
+  "H0240": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -21693,7 +22136,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0234",
+   "id": "H0240",
    "shared_ticket": "TQ:21ac78a3ef89",
    "price_dkk": 0,
    "extras": {
@@ -21702,9 +22145,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0233"
+   "paired_with": "I0239"
   },
-  "I0235": {
+  "I0241": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -21759,7 +22202,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0235",
+   "id": "I0241",
    "shared_ticket": "TQ:3c0e9087eaf5",
    "price_dkk": 0,
    "extras": {
@@ -21768,9 +22211,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0236"
+   "paired_with": "H0242"
   },
-  "H0236": {
+  "H0242": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -21826,7 +22269,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0236",
+   "id": "H0242",
    "shared_ticket": "TQ:3c0e9087eaf5",
    "price_dkk": 0,
    "extras": {
@@ -21835,7 +22278,7 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0235"
+   "paired_with": "I0241"
   }
  },
  "options": [
@@ -21870,6 +22313,28 @@
    "way_home": "H0068",
    "shared_ticket": "TQ:031a37859ff5",
    "price_dkk": 7824,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 1120,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 9.2,
+    "price": 4.2,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "GUA-BOG-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "BOG",
+   "way_in": "I0125",
+   "way_home": "H0126",
+   "shared_ticket": "TQ:d9090c079f8f",
+   "price_dkk": 7850,
    "extras": {
     "cabin_bag_fees_dkk": 0,
     "checked_bag_fees_dkk": 1120,
@@ -21923,6 +22388,28 @@
    "rating": {
     "total": 8.8,
     "price": 3.8,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "SJO-BOG-ticket",
+   "type": "ticket",
+   "entry": "SJO",
+   "exit": "BOG",
+   "way_in": "I0171",
+   "way_home": "H0172",
+   "shared_ticket": "TQ:98d2cc9062fb",
+   "price_dkk": 8341,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 1120,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 8.7,
+    "price": 3.7,
     "way_in": 5,
     "way_home": 5
    }
@@ -22192,28 +22679,6 @@
    }
   },
   {
-   "id": "GUA-BOG-ticket",
-   "type": "ticket",
-   "entry": "GUA",
-   "exit": "BOG",
-   "way_in": "I0125",
-   "way_home": "H0126",
-   "shared_ticket": "TQ:4c0db850934c",
-   "price_dkk": 7637,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 1120,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "rating": {
-    "total": 8.6,
-    "price": 4.4,
-    "way_in": 3,
-    "way_home": 5
-   }
-  },
-  {
    "id": "CTG-CTG-ticket",
    "type": "ticket",
    "entry": "CTG",
@@ -22240,8 +22705,8 @@
    "type": "ticket",
    "entry": "MDE",
    "exit": "BOG",
-   "way_in": "I0213",
-   "way_home": "H0214",
+   "way_in": "I0219",
+   "way_home": "H0220",
    "shared_ticket": "TQ:341de0400ec7",
    "price_dkk": 8383,
    "extras": {
@@ -22262,8 +22727,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "MDE",
-   "way_in": "I0209",
-   "way_home": "H0210",
+   "way_in": "I0215",
+   "way_home": "H0216",
    "shared_ticket": "TQ:e19973c868b0",
    "price_dkk": 8396,
    "extras": {
@@ -22306,8 +22771,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "GDL",
-   "way_in": "I0195",
-   "way_home": "H0196",
+   "way_in": "I0205",
+   "way_home": "H0206",
    "shared_ticket": "TQ:627a3432b4f8",
    "price_dkk": 8112,
    "extras": {
@@ -22372,8 +22837,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "GDL",
-   "way_in": "I0211",
-   "way_home": "H0212",
+   "way_in": "I0217",
+   "way_home": "H0218",
    "shared_ticket": "TQ:31472862ca78",
    "price_dkk": 8605,
    "extras": {
@@ -22385,6 +22850,28 @@
    "rating": {
     "total": 8.4,
     "price": 3.4,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "SJO-MDE-ticket",
+   "type": "ticket",
+   "entry": "SJO",
+   "exit": "MDE",
+   "way_in": "I0177",
+   "way_home": "H0178",
+   "shared_ticket": "TQ:833b79de40c1",
+   "price_dkk": 8670,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 805,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 8.3,
+    "price": 3.3,
     "way_in": 5,
     "way_home": 5
    }
@@ -22430,6 +22917,28 @@
     "total": 8.2,
     "price": 4.0,
     "way_in": 3,
+    "way_home": 5
+   }
+  },
+  {
+   "id": "SAL-CTG-ticket",
+   "type": "ticket",
+   "entry": "SAL",
+   "exit": "CTG",
+   "way_in": "I0179",
+   "way_home": "H0180",
+   "shared_ticket": "TQ:47646fdc88cf",
+   "price_dkk": 8786,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 8.2,
+    "price": 3.2,
+    "way_in": 5,
     "way_home": 5
    }
   },
@@ -22500,6 +23009,28 @@
    }
   },
   {
+   "id": "SAL-BOG-ticket",
+   "type": "ticket",
+   "entry": "SAL",
+   "exit": "BOG",
+   "way_in": "I0169",
+   "way_home": "H0170",
+   "shared_ticket": "TQ:3d10764de8b4",
+   "price_dkk": 8948,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": null,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 8.1,
+    "price": 3.1,
+    "way_in": 5,
+    "way_home": 5
+   }
+  },
+  {
    "id": "CUN-CUN-oneways",
    "type": "oneways",
    "entry": "CUN",
@@ -22526,9 +23057,9 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "BOG",
-   "way_in": "I0203",
-   "way_home": "H0204",
-   "shared_ticket": "TQ:151ba7502e2c",
+   "way_in": "I0173",
+   "way_home": "H0174",
+   "shared_ticket": "TQ:00ce41dfdeb6",
    "price_dkk": 6681,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -22592,8 +23123,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "MDE",
-   "way_in": "I0205",
-   "way_home": "H0206",
+   "way_in": "I0211",
+   "way_home": "H0212",
    "shared_ticket": "TQ:e13c89d81376",
    "price_dkk": 6855,
    "extras": {
@@ -22636,8 +23167,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "MDE",
-   "way_in": "I0193",
-   "way_home": "H0194",
+   "way_in": "I0203",
+   "way_home": "H0204",
    "shared_ticket": "TQ:205e885fe18a",
    "price_dkk": 6885,
    "extras": {
@@ -22874,28 +23405,6 @@
    }
   },
   {
-   "id": "SAP-BOG-ticket",
-   "type": "ticket",
-   "entry": "SAP",
-   "exit": "BOG",
-   "way_in": "I0197",
-   "way_home": "H0198",
-   "shared_ticket": "TQ:e3fa1c5dbe36",
-   "price_dkk": 7387,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 560,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "rating": {
-    "total": 7.8,
-    "price": 4.6,
-    "way_in": 2,
-    "way_home": 4
-   }
-  },
-  {
    "id": "PTY-PTY-ticket",
    "type": "ticket",
    "entry": "PTY",
@@ -22940,34 +23449,12 @@
    }
   },
   {
-   "id": "SAL-BOG-ticket",
-   "type": "ticket",
-   "entry": "SAL",
-   "exit": "BOG",
-   "way_in": "I0191",
-   "way_home": "H0192",
-   "shared_ticket": "TQ:0cd06504c89b",
-   "price_dkk": 7457,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "rating": {
-    "total": 7.5,
-    "price": 4.5,
-    "way_in": 3,
-    "way_home": 3
-   }
-  },
-  {
    "id": "SAL-VVI-madrid",
    "type": "madrid",
    "entry": "SAL",
    "exit": "VVI",
-   "way_in": "I0183",
-   "way_home": "H0184",
+   "way_in": "I0195",
+   "way_home": "H0196",
    "shared_ticket": "TQ:6f19fd85785d",
    "price_dkk": 7561,
    "extras": {
@@ -23296,8 +23783,8 @@
    "type": "madrid",
    "entry": "SAL",
    "exit": "BOG",
-   "way_in": "I0225",
-   "way_home": "H0226",
+   "way_in": "I0231",
+   "way_home": "H0232",
    "shared_ticket": "TQ:a8b81fb82f96",
    "price_dkk": 7250,
    "extras": {
@@ -23340,8 +23827,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "GDL",
-   "way_in": "I0201",
-   "way_home": "H0202",
+   "way_in": "I0209",
+   "way_home": "H0210",
    "shared_ticket": "TQ:50a6ab77b846",
    "price_dkk": 8245,
    "extras": {
@@ -23560,8 +24047,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "VVI",
-   "way_in": "I0179",
-   "way_home": "H0180",
+   "way_in": "I0191",
+   "way_home": "H0192",
    "shared_ticket": "TQ:08549f9c4a86",
    "price_dkk": 9071,
    "extras": {
@@ -23648,8 +24135,8 @@
    "type": "ticket",
    "entry": "SJO",
    "exit": "VVI",
-   "way_in": "I0219",
-   "way_home": "H0220",
+   "way_in": "I0225",
+   "way_home": "H0226",
    "shared_ticket": "TQ:1fc3a851ec47",
    "price_dkk": 9189,
    "extras": {
@@ -23670,8 +24157,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "VVI",
-   "way_in": "I0177",
-   "way_home": "H0178",
+   "way_in": "I0189",
+   "way_home": "H0190",
    "shared_ticket": "TQ:c346e72f9141",
    "price_dkk": 10362,
    "extras": {
@@ -23714,8 +24201,8 @@
    "type": "madrid",
    "entry": "SAP",
    "exit": "VVI",
-   "way_in": "I0185",
-   "way_home": "H0186",
+   "way_in": "I0197",
+   "way_home": "H0198",
    "shared_ticket": "TQ:284725039eac",
    "price_dkk": 7567,
    "extras": {
@@ -23758,8 +24245,8 @@
    "type": "ticket",
    "entry": "GUA",
    "exit": "VVI",
-   "way_in": "I0181",
-   "way_home": "H0182",
+   "way_in": "I0193",
+   "way_home": "H0194",
    "shared_ticket": "TQ:0eec9795ce58",
    "price_dkk": 9274,
    "extras": {
@@ -23780,8 +24267,8 @@
    "type": "ticket",
    "entry": "CTG",
    "exit": "VVI",
-   "way_in": "I0235",
-   "way_home": "H0236",
+   "way_in": "I0241",
+   "way_home": "H0242",
    "shared_ticket": "TQ:3c0e9087eaf5",
    "price_dkk": 10470,
    "extras": {
@@ -23864,12 +24351,34 @@
    }
   },
   {
+   "id": "SAP-BOG-ticket",
+   "type": "ticket",
+   "entry": "SAP",
+   "exit": "BOG",
+   "way_in": "I0175",
+   "way_home": "H0176",
+   "shared_ticket": "TQ:f15a4085341b",
+   "price_dkk": 10199,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 1120,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "rating": {
+    "total": 6.4,
+    "price": 1.8,
+    "way_in": 4,
+    "way_home": 5
+   }
+  },
+  {
    "id": "MDE-VVI-ticket",
    "type": "ticket",
    "entry": "MDE",
    "exit": "VVI",
-   "way_in": "I0215",
-   "way_home": "H0216",
+   "way_in": "I0221",
+   "way_home": "H0222",
    "shared_ticket": "TQ:04f145390ba8",
    "price_dkk": 10654,
    "extras": {
@@ -23978,8 +24487,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "MDE",
-   "way_in": "I0199",
-   "way_home": "H0200",
+   "way_in": "I0207",
+   "way_home": "H0208",
    "shared_ticket": "TQ:4c95c9ba4658",
    "price_dkk": 10360,
    "extras": {
@@ -24000,8 +24509,8 @@
    "type": "madrid",
    "entry": "SAL",
    "exit": "MDE",
-   "way_in": "I0227",
-   "way_home": "H0228",
+   "way_in": "I0233",
+   "way_home": "H0234",
    "shared_ticket": "TQ:5f5d62aa3def",
    "price_dkk": 7924,
    "extras": {
@@ -24242,8 +24751,8 @@
    "type": "madrid",
    "entry": "BOG",
    "exit": "VVI",
-   "way_in": "I0189",
-   "way_home": "H0190",
+   "way_in": "I0201",
+   "way_home": "H0202",
    "shared_ticket": "TQ:bcb2aa304151",
    "price_dkk": 9275,
    "extras": {
@@ -24264,8 +24773,8 @@
    "type": "madrid",
    "entry": "MGA",
    "exit": "VVI",
-   "way_in": "I0187",
-   "way_home": "H0188",
+   "way_in": "I0199",
+   "way_home": "H0200",
    "shared_ticket": "TQ:eea1b884fbec",
    "price_dkk": 9049,
    "extras": {
@@ -24286,8 +24795,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "GDL",
-   "way_in": "I0207",
-   "way_home": "H0208",
+   "way_in": "I0213",
+   "way_home": "H0214",
    "shared_ticket": "TQ:2144931a3a2f",
    "price_dkk": 9395,
    "extras": {
@@ -24374,8 +24883,8 @@
    "type": "ticket",
    "entry": "SAP",
    "exit": "VVI",
-   "way_in": "I0233",
-   "way_home": "H0234",
+   "way_in": "I0239",
+   "way_home": "H0240",
    "shared_ticket": "TQ:21ac78a3ef89",
    "price_dkk": 12334,
    "extras": {
@@ -24682,8 +25191,8 @@
    "type": "ticket",
    "entry": "PTY",
    "exit": "VVI",
-   "way_in": "I0221",
-   "way_home": "H0222",
+   "way_in": "I0227",
+   "way_home": "H0228",
    "shared_ticket": "TQ:e9c283ace88d",
    "price_dkk": 10497,
    "extras": {
@@ -24726,8 +25235,8 @@
    "type": "madrid",
    "entry": "GUA",
    "exit": "VVI",
-   "way_in": "I0231",
-   "way_home": "H0232",
+   "way_in": "I0237",
+   "way_home": "H0238",
    "shared_ticket": "TQ:697b4c443a84",
    "price_dkk": 9578,
    "extras": {
@@ -24792,8 +25301,8 @@
    "type": "ticket",
    "entry": "MGA",
    "exit": "VVI",
-   "way_in": "I0217",
-   "way_home": "H0218",
+   "way_in": "I0223",
+   "way_home": "H0224",
    "shared_ticket": "TQ:9bd958277ae9",
    "price_dkk": 11698,
    "extras": {
@@ -24880,8 +25389,8 @@
    "type": "ticket",
    "entry": "CLO",
    "exit": "VVI",
-   "way_in": "I0223",
-   "way_home": "H0224",
+   "way_in": "I0229",
+   "way_home": "H0230",
    "shared_ticket": "TQ:1adaf09e70a0",
    "price_dkk": 9885,
    "extras": {
@@ -25100,8 +25609,8 @@
    "type": "ticket",
    "entry": "SJO",
    "exit": "LPB",
-   "way_in": "I0173",
-   "way_home": "H0174",
+   "way_in": "I0185",
+   "way_home": "H0186",
    "shared_ticket": "TQ:2c5aa2f4bb31",
    "price_dkk": 10970,
    "extras": {
@@ -25122,8 +25631,8 @@
    "type": "ticket",
    "entry": "BOG",
    "exit": "LPB",
-   "way_in": "I0171",
-   "way_home": "H0172",
+   "way_in": "I0183",
+   "way_home": "H0184",
    "shared_ticket": "TQ:519be2823cb5",
    "price_dkk": 11271,
    "extras": {
@@ -25188,8 +25697,8 @@
    "type": "madrid",
    "entry": "BOG",
    "exit": "BOG",
-   "way_in": "I0229",
-   "way_home": "H0230",
+   "way_in": "I0235",
+   "way_home": "H0236",
    "shared_ticket": "TQ:cc78ca641d60",
    "price_dkk": 9976,
    "extras": {
@@ -25364,8 +25873,8 @@
    "type": "ticket",
    "entry": "SAL",
    "exit": "LPB",
-   "way_in": "I0175",
-   "way_home": "H0176",
+   "way_in": "I0187",
+   "way_home": "H0188",
    "shared_ticket": "TQ:38267531a2a0",
    "price_dkk": 10853,
    "extras": {
@@ -25430,8 +25939,8 @@
    "type": "ticket",
    "entry": "GUA",
    "exit": "LPB",
-   "way_in": "I0169",
-   "way_home": "H0170",
+   "way_in": "I0181",
+   "way_home": "H0182",
    "shared_ticket": "TQ:6b2d2c476a38",
    "price_dkk": 10842,
    "extras": {
