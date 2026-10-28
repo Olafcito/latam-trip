@@ -100,8 +100,8 @@ const sameLeg = (a: TripLeg, b: TripLeg) => a.from === b.from && a.to === b.to &
 
 /**
  * Places for a new list of legs. Removing one leg drops the place it led to and rejoins its
- * neighbours. Anything else keeps the places that still match (with their nights and picked
- * flights) and adds the rest with 2 nights. A leg that starts away from the last place gets a hop there first.
+ * neighbours. Anything else keeps the places that still match (with their picked flights)
+ * and adds the rest. A leg that starts away from the last place gets a hop there first.
  */
 export function placesFromLegs(j: Journey, legs: TripLeg[], map: MapData, facts?: LegFacts): Place[] {
   const old = journeyToTrip(j).legs
@@ -125,7 +125,7 @@ export function placesFromLegs(j: Journey, legs: TripLeg[], map: MapData, facts?
       hit.used = true
       return hit.p
     }
-    return { node: to, nights: 2, hop: hopBetween(map, from, to, mode, facts) }
+    return { node: to, hop: hopBetween(map, from, to, mode, facts) }
   }
   const places: Place[] = [j.places[0]]
   for (const l of legs) {

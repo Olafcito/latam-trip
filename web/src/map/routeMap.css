@@ -515,13 +515,26 @@
   .plan-who b { font-size: 14px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .plan-who small { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4A5863; }
   .plan-who small i { width: 8px; height: 8px; border-radius: 50%; }
-  .plan-nights { flex: none; display: flex; align-items: center; border-radius: 10px; background: #E8E2D6; }
-  .plan-nights button { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; cursor: pointer; transition: background .15s ease; }
-  .plan-nights button:hover { background: #D9D1C2; }
-  .plan-nights button:disabled { opacity: .35; cursor: default; }
-  .plan-nights button:focus-visible { outline: 2px solid #C98A12; outline-offset: -2px; }
-  .plan-nights b { min-width: 30px; display: flex; flex-direction: column; align-items: center; font-size: 14px; line-height: 1; font-weight: 800; }
-  .plan-nights b small { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: #5A6873; font-weight: 700; }
+  .plan-when { flex: none; padding: 3px 7px; border-radius: 6px; background: #E8E2D6; font-size: 11px; font-weight: 700; color: #4A5863; white-space: nowrap; }
+  /* folded: a small translucent card in the top right corner, the map gets the room */
+  .panel.plan.mini {
+    top: 14px; right: 14px; bottom: auto; width: var(--side); max-height: none; padding: 10px 12px 10px 14px; gap: 6px;
+    border: 0; border-radius: 14px; background: #F3EFE6C2; color: var(--ink); text-align: left; cursor: pointer;
+    box-shadow: 0 12px 30px -16px #000, inset 0 0 0 1px #FFFFFF66; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    font: inherit; animation-name: chipIn; animation-duration: .45s; transition: background .2s ease, box-shadow .2s ease;
+  }
+  .panel.plan.mini:hover { background: #F3EFE6E8; box-shadow: 0 16px 36px -16px #000, inset 0 0 0 1.5px var(--ink); }
+  .panel.plan.mini:focus-visible { outline: 2px solid #C98A12; outline-offset: 2px; }
+  .mini-h { display: flex; align-items: center; gap: 8px; }
+  .mini-h b { flex: 1; min-width: 0; font-size: 13px; font-weight: 800; letter-spacing: -.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mini-h svg { flex: none; color: #5A6873; }
+  .mini-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #C98A12; box-shadow: 0 0 0 2px #F3EFE6; }
+  .mini-facts { display: flex; gap: 14px; }
+  .mini-facts span { display: flex; flex-direction: column; gap: 1px; }
+  .mini-facts b { font-size: 17px; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+  .mini-facts small { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: #5A6873; }
+  .mini-next { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #4A5863; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mini-next .plan-pulse { flex: none; }
   .plan-next { display: flex; align-items: flex-start; gap: 10px; margin: 6px 0; padding: 10px 12px; border-radius: 12px; border: 1.5px dashed #C98A12; background: #FBF3DF; }
   .plan-next > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
   .plan-next b { font-size: 13.5px; font-weight: 800; }
@@ -574,6 +587,9 @@
   :scope.has-side .ctl-bottom { right: 10px; bottom: calc(42% + 10px); }
   :scope.has-side.has-panel .ctl-bottom { bottom: calc(52% + 10px); }
   .panel.plan { left: 0; right: 0; width: auto; max-height: 42%; animation-name: sheetIn; }
+  .panel.plan.mini { left: auto; right: 10px; top: 10px; width: min(var(--side), calc(100% - 20px)); animation-name: chipIn; }
+  :scope.side-mini .ctl-tr { right: calc(var(--side) + 20px); }
+  :scope.side-mini .ctl-bottom { bottom: 10px; }
   :scope.has-panel .panel.plan { display: none; }
 }
 

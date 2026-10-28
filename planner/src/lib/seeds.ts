@@ -1,6 +1,5 @@
 import type { SeedSegment, SeedWay, Trip } from '@map/data/trips'
 import type { CrawledFlight, InOut, Ticket, Way } from '../data/types'
-import { dayDiff } from './format'
 import { nodeForAirport, type Hop, type Journey, type Place } from './journey'
 
 // The ranked trips in data/saved_trips.json join the planner as journeys, once per browser.
@@ -73,14 +72,12 @@ interface FlightSegment {
   source?: string
 }
 
-/** A seed as a journey: overland blocks and priced flights in order, nights spread over the days between the dated flights. */
+/** A seed as a journey: overland blocks and priced flights in order. */
 export function seedToJourney(inout: InOut, seed: Trip): Journey | null {
   const io = seed.inout
   if (!io) return null
-  const wi = io.way_in
-  const wh = io.way_home
-  const places: Place[] = [{ node: nodeForAirport(inout, io.entry), nights: 0, hop: null }]
-  const add = (to: string, hop: Hop) => places.push({ node: to, nights: 0, hop })
+  const places: Place[] = [{ node: nodeForAirport(inout, io.entry), hop: null }]
+  const add = (to: string, hop: Hop) => places.push({ node: to, hop })
   const segments: SeedSegment[] = seed.segments?.length
     ? seed.segments
     : seed.legs.map((l) => ({ kind: l.mode === 'flight' ? 'flight' : 'overland', from: l.from, to: l.to }))
@@ -103,7 +100,6 @@ export function seedToJourney(inout: InOut, seed: Trip): Journey | null {
       : null
     add(g.to, { from: g.from, to: g.to, mode: 'flight', operator: f.carriers?.join(', ') || null, hours: f.hours ?? null, price_dkk: f.price_dkk ?? null, overnight: false, border: false, flight })
   }
-  spreadNights(places, wi.arrive, wh.depart)
   return {
     id: seed.id,
     name: seed.name,
@@ -113,27 +109,4 @@ export function seedToJourney(inout: InOut, seed: Trip): Journey | null {
     places,
     rank: seed.rank,
   }
-}
-
-/**
- * Nights between two dated moments (the landing, a flight, the flight home) are shared by the
- * places in between: evenly, the first place taking what is left over.
- */
-function spreadNights(places: Place[], landed: string | null, homeDepart: string | null) {
-  let start = 0
-  let since = landed
-  const share = (end: number, until: string | null) => {
-    const n = end - start + 1
-    const days = since && until ? Math.max(0, dayDiff(since, until)) : 2 * n
-    for (let k = start; k <= end; k++) places[k].nights = Math.floor(days / n) + (k === start ? days % n : 0)
-  }
-  places.forEach((_, i) => {
-    const next = places[i + 1]?.hop
-    if (next?.flight) {
-      share(i, next.flight.depart)
-      start = i + 1
-      since = next.flight.arrive
-    }
-  })
-  share(places.length - 1, homeDepart)
 }

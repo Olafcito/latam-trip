@@ -1,6 +1,5 @@
 import type { AppData, CrawledFlight, InOut, MapData, Mode, StopItem, Way } from '../data/types'
-import { dayDiff } from './format'
-import { addDays } from './time'
+import { dayDiff, dayTime } from './format'
 import { edgeHours, edgePrice, type Arc } from './graph'
 import { priceOfWays } from './options'
 
@@ -21,7 +20,6 @@ export interface Hop {
 
 export interface Place {
   node: string
-  nights: number
   /** how we got here from the previous place; null for the first place */
   hop: Hop | null
 }
@@ -49,7 +47,7 @@ export function newJourney(inout: InOut, wayIn: Way, wayHome: Way, optionId: str
     wayIn: wayIn.id,
     wayHome: wayHome.id,
     optionId,
-    places: [{ node: nodeForAirport(inout, wayIn.to), nights: 2, hop: null }],
+    places: [{ node: nodeForAirport(inout, wayIn.to), hop: null }],
   }
 }
 
@@ -72,9 +70,12 @@ export function hopFromArc(from: string, arc: Arc, flight: CrawledFlight | null)
 
 export interface ScheduledPlace {
   node: string
-  arrive: string // local stamp
-  leaveDate: string // planned day to move on
-  nights: number
+  /** when you get here, known only where a dated flight (or the landing) brings you */
+  arrive: string | null
+  /** when you leave, known only where a dated flight takes you on */
+  depart: string | null
+  /** the days between the dated moments around this place, shared evenly with its neighbours */
+  days: number
 }
 
 export interface Warning {
@@ -86,51 +87,48 @@ export interface Schedule {
   places: ScheduledPlace[]
   firstDay: string
   homeDepart: string
-  endDate: string
-  /** days left (positive) or days over (negative) before the flight home */
-  slack: number
+  /** calendar days from the landing to the flight home */
+  totalDays: number
   warnings: Warning[]
 }
 
-const DEFAULT_DEPART = '08:00'
-
-function addHours(stamp: string, h: number): string {
-  const t = Date.UTC(+stamp.slice(0, 4), +stamp.slice(5, 7) - 1, +stamp.slice(8, 10), +stamp.slice(11, 13), +stamp.slice(14, 16))
-  return new Date(t + h * 3600000).toISOString().slice(0, 16)
-}
-
 /**
- * Chain dates: the way-in arrival is day 1, each place adds its nights, each hop departs on the
- * planned day (at the picked flight's time, else 08:00) and arrives after its hours.
+ * The dated moments of a trip are its landing, its picked flights and its flight home. Nothing
+ * else is planned: the days between two dated moments are shared evenly by the places in
+ * between, so the stops need no nights of their own.
  */
 export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string, names: (n: string) => string): Schedule {
   const warnings: Warning[] = []
-  const places: ScheduledPlace[] = []
-  let arrive = wayIn.arrive
-  j.places.forEach((p, i) => {
-    if (i > 0 && p.hop) {
-      const prev = places[i - 1]
-      const h = p.hop
-      if (h.flight) {
-        const dep = prev.leaveDate + 'T' + h.flight.depart.slice(11, 16)
-        const span = dayDiff(h.flight.depart, h.flight.arrive)
-        arrive = addDays(prev.leaveDate, span) + 'T' + h.flight.arrive.slice(11, 16)
-        if (dep < prev.arrive) warnings.push({ level: 'warn', text: `The flight to ${names(p.node)} leaves before you reach ${names(prev.node)}` })
-      } else {
-        arrive = addHours(prev.leaveDate + 'T' + DEFAULT_DEPART, h.hours ?? 0)
-        if (h.hours == null) warnings.push({ level: 'warn', text: `No duration for the hop to ${names(p.node)}` })
-      }
-      if (arrive > wayHome.depart) warnings.push({ level: 'error', text: `The hop to ${names(p.node)} arrives after the flight home leaves` })
+  const places: ScheduledPlace[] = j.places.map((p) => ({ node: p.node, arrive: null, depart: null, days: 0 }))
+  if (places[0]) places[0].arrive = wayIn.arrive
+  let since = wayIn.arrive
+  let start = 0
+  const share = (end: number, until: string) => {
+    const n = end - start + 1
+    const days = dayDiff(since, until)
+    if (until < since) {
+      const where = start === end ? 'there' : names(places[start].node)
+      warnings.push({ level: 'error', text: `The flight on from ${names(places[end].node)} leaves ${dayTime(until)}, before you get to ${where} ${dayTime(since)}` })
     }
-    places.push({ node: p.node, arrive, leaveDate: addDays(arrive.slice(0, 10), Math.max(0, p.nights)), nights: p.nights })
+    for (let k = start; k <= end; k++) places[k].days = Math.max(0, Math.floor(days / n) + (k === start ? days % n : 0))
+  }
+  j.places.forEach((p, i) => {
+    const f = i > 0 ? p.hop?.flight : null
+    if (!f) return
+    places[i - 1].depart = f.depart
+    places[i].arrive = f.arrive
+    share(i - 1, f.depart)
+    if (f.arrive > wayHome.depart) warnings.push({ level: 'error', text: `The flight to ${names(p.node)} lands after the flight home leaves` })
+    since = f.arrive
+    start = i
   })
+  if (places.length) {
+    places[places.length - 1].depart = wayHome.depart
+    share(places.length - 1, wayHome.depart)
+  }
   const last = places[places.length - 1]
-  const endDate = last ? last.leaveDate : wayIn.arrive.slice(0, 10)
-  const homeDate = wayHome.depart.slice(0, 10)
-  const slack = dayDiff(endDate, homeDate)
   if (last && last.node !== exitNode) warnings.push({ level: 'warn', text: `The journey has to end in ${names(exitNode)}, where the way home leaves` })
-  if (slack < 0) warnings.push({ level: 'error', text: `${-slack} ${-slack === 1 ? 'day' : 'days'} over: the nights do not fit before the flight home` })
-  return { places, firstDay: wayIn.arrive.slice(0, 10), homeDepart: wayHome.depart, endDate, slack, warnings }
+  return { places, firstDay: wayIn.arrive.slice(0, 10), homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), warnings }
 }
 
 // ---- totals
@@ -184,7 +182,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null): Total
   }
   const days: Record<string, number> = {}
   const countryOf = (node: string) => map.nodes.find((n) => n.id === node)?.country ?? inout.airports[node]?.country ?? '?'
-  if (sched) sched.places.forEach((sp) => { days[countryOf(sp.node)] = (days[countryOf(sp.node)] ?? 0) + sp.nights })
+  if (sched) sched.places.forEach((sp) => { days[countryOf(sp.node)] = (days[countryOf(sp.node)] ?? 0) + sp.days })
   for (const s of stops) if (s.nights) {
     const c = inout.airports[s.airport]?.country ?? '?'
     days[c] = (days[c] ?? 0) + s.nights

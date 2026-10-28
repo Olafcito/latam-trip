@@ -4,7 +4,8 @@ import { useStore } from '../store'
 import { day, hours, kr } from '../lib/format'
 import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
 import { PickScreen } from './PickScreen'
-import { Download, Pin, Plus, Trash } from '../components/icons'
+import { TripDashboard } from './TripDashboard'
+import { Calendar, Download, Pin, Plus, Trash } from '../components/icons'
 
 // The Trips tab: start a new trip, or open a saved one on the map. Comparing, export and import stay below.
 
@@ -20,7 +21,9 @@ function summarize(data: AppData, j: Journey) {
 
 export function TripsScreen({ data }: { data: AppData }) {
   const view = useStore((s) => s.view)
+  const journey = useStore((s) => s.journey)
   if (view === 'pick') return <PickScreen data={data} />
+  if (view === 'trip' && journey) return <TripDashboard data={data} journey={journey} />
   return <Landing data={data} />
 }
 
@@ -32,6 +35,7 @@ function Landing({ data }: { data: AppData }) {
   const deleteSaved = useStore((s) => s.deleteSaved)
   const importJourneys = useStore((s) => s.importJourneys)
   const openSaved = useStore((s) => s.openSaved)
+  const openTrip = useStore((s) => s.openTrip)
   const go = useStore((s) => s.go)
   const file = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<string | null>(null)
@@ -74,7 +78,7 @@ function Landing({ data }: { data: AppData }) {
           return (
             <article key={j.id} className={`card tripcard${isCur ? ' cur' : ''}`}>
               <header>
-                <h3>{j.name}</h3>
+                <h3><button className="tripcard-open" onClick={() => openTrip(j)} disabled={!s} title="Open the dashboard">{j.name}</button></h3>
                 {j.rank != null && <span className="rank" title="Rank among the seeded trips">#{j.rank}</span>}
                 {j === unsaved && <span className="pill draft">Not saved</span>}
               </header>
@@ -94,7 +98,8 @@ function Landing({ data }: { data: AppData }) {
                 <p className="small muted">Its flights are no longer in the data.</p>
               )}
               <footer>
-                <button className="btn primary small" onClick={() => openSaved(j)} disabled={!s}><Pin />Open on the map</button>
+                <button className="btn primary small" onClick={() => openTrip(j)} disabled={!s}><Calendar />Open</button>
+                <button className="btn small" onClick={() => openSaved(j)} disabled={!s} title="Build this trip on the map"><Pin />Map</button>
                 {j !== unsaved && (
                   <label className="chk small"><input type="checkbox" checked={compare.includes(j.id)} onChange={() => toggleCompare(j.id)} /> Compare</label>
                 )}
