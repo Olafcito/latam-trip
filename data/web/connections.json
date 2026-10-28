@@ -2516,6 +2516,100 @@
   ]
  },
  {
+  "id": "LCE-LEON",
+  "a": "LCE",
+  "b": "LEON",
+  "options": [
+   {
+    "mode": "shuttle",
+    "operators": [
+     "Roneey Shuttles",
+     "Hostal Guacamayos (shared minivan)"
+    ],
+    "duration_min": 900,
+    "duration_range_h": "14-16",
+    "price_dkk": {
+     "min": 580,
+     "typical": null
+    },
+    "price_local": "about US$90 (listed US$23-92, inconsistent)",
+    "frequency": "daily, very early departure (03:30 from León)",
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://www.bookaway.com/routes/honduras/leon-1-to-la-ceiba",
+    "observed_at": "2026",
+    "note": "Bay Islands to Nicaragua in one day: ferry to La Ceiba, then this shuttle. Driver handles the border. price_dkk = US$90 x 6.45.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "LCE-TGU",
+  "a": "LCE",
+  "b": "TGU",
+  "options": [
+   {
+    "mode": "bus",
+    "operators": [
+     "Hedman Alas and others"
+    ],
+    "duration_min": 420,
+    "duration_range_h": "6.5-7.5",
+    "price_dkk": {
+     "min": 226,
+     "typical": null
+    },
+    "price_local": "from about US$35",
+    "frequency": "several daily",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://www.checkmybus.com/tegucigalpa-hn-fm/la-ceiba",
+    "observed_at": "2026",
+    "note": "Duration approximate. First half of the two-day Bay Islands to Nicaragua route.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "LEON-TGU",
+  "a": "LEON",
+  "b": "TGU",
+  "options": [
+   {
+    "mode": "bus",
+    "operators": [
+     "Tica Bus"
+    ],
+    "duration_min": 360,
+    "duration_range_h": "6-7",
+    "price_dkk": {
+     "min": 130,
+     "typical": null
+    },
+    "price_local": "about 420 HNL (US$20), same fare as to Managua; border fees about US$15",
+    "frequency": "daily, morning departure",
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://dontstopliving.net/world-borders-get-honduras-nicaragua-tegucigalpa-leon/",
+    "observed_at": "2015",
+    "note": "El Guasaule border; the crew collects passports and fees; Nicaragua checks all bags (about 40 min). Terminal moved near the airport; buy the day before. Drops at a petrol station a few km outside León.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
   "id": "ANT-GUA",
   "a": "ANT",
   "b": "GUA",
