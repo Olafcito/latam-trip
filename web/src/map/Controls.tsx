@@ -1,4 +1,4 @@
-import type { Ref } from 'react'
+import type { ReactNode, Ref } from 'react'
 import type { Family } from '../data/types'
 import { Fit, Minus, Plus } from './icons'
 
@@ -13,6 +13,8 @@ interface Props {
   hint: 'show' | 'fading' | 'gone'
   controlsRef: Ref<HTMLDivElement>
   bottomRef: Ref<HTMLDivElement>
+  /** A legend for the open trip, above the map legend. */
+  extraLegend?: ReactNode
 }
 
 export function Controls(p: Props) {
@@ -45,6 +47,7 @@ export function Controls(p: Props) {
           </div>
         ) : <span />}
         <div className="legend-col">
+          {p.extraLegend}
           <div className="legend" aria-hidden="true">
             <span><svg width="22" height="8" viewBox="0 0 22 8"><path d="M2 4 L20 4" stroke="#6FD3B8" strokeWidth="2" strokeLinecap="round" /></svg>Bus</span>
             {p.available.includes('boat') && (

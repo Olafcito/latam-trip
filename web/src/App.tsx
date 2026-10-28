@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { loadMapData } from './data/load'
-import { readTrips, writeTrips, type TripState } from './data/trips'
+import { loadMapData, loadSeedTrips } from './data/load'
+import { mergeSeeds, parseSeedFile, readSeeded, readTrips, writeSeeded, writeTrips, type TripState } from './data/trips'
 import type { MapData } from './data/types'
 import { RouteMap } from './map/RouteMap'
 
@@ -14,6 +14,18 @@ export function App() {
     loadMapData().then(setData, (e: unknown) => setError(e instanceof Error ? e.message : String(e)))
   }, [])
   useEffect(() => writeTrips(trips), [trips])
+  // ranked scenarios from data/saved_trips.json join the saved trips once per browser
+  useEffect(() => {
+    loadSeedTrips().then((raw) => {
+      const seeds = parseSeedFile(raw)
+      if (!seeds.length) return
+      setTrips((s) => {
+        const { state, imported } = mergeSeeds(s, seeds, readSeeded())
+        writeSeeded(imported)
+        return state
+      })
+    })
+  }, [])
 
   if (error) {
     return (

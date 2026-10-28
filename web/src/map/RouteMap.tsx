@@ -1,18 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Map as MLMap, setWorkerUrl, type GeoJSONSource, type MapMouseEvent, type PointLike } from 'maplibre-gl'
+import { Map as MLMap, Marker, setWorkerUrl, type GeoJSONSource, type MapMouseEvent, type PointLike } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, type Model } from '../data/model'
-import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripStops, type Trip, type TripState } from '../data/trips'
+import { IO_LABEL, ioMarkers, type Dir } from '../data/inout'
+import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripPieces, tripStops, type Trip, type TripState } from '../data/trips'
 import { familyOf, type Connection, type Family, type MapData, type RouteOption } from '../data/types'
 import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
-import { HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
+import { HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
 import { Panel, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
+import { IoLegend, WayPanel } from './WayPanel'
 import { C, baseStyle } from './style'
 import { Tooltip } from './Tooltip'
 import './routeMap.css'
@@ -31,7 +33,7 @@ export interface RouteMapProps {
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
-const PANEL_W: Record<PanelView, number> = { city: 300, more: 360, route: 360, trips: 340 }
+const PANEL_W: Record<PanelView, number> = { city: 300, more: 360, route: 360, trips: 340, way: 380 }
 /** The most a city tap zooms out, in zoom levels. Chaining legs should not drift the map away. */
 const CITY_EASE_OUT = 0.3
 const NARROW = 720
@@ -260,8 +262,25 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     [onTrips, select],
   )
 
-  const act = useRef({ select, deselect, openRoute, back, dismissHint })
-  act.current = { select, deselect, openRoute, back, dismissHint }
+  // the pane of the open trip's way in, way home, or both when they share an airport
+  const [wayDirs, setWayDirs] = useState<Dir[]>(['in'])
+  const openWay = useCallback(
+    (dirs: Dir[]) => {
+      store.set(null)
+      setCollapsed(false)
+      live.current.collapsed = false
+      setWayDirs(dirs)
+      setView({ ...EMPTY, panel: 'way' })
+    },
+    [store],
+  )
+
+  /** A map place for an airport code: the place itself, or the place that has that airport. */
+  const placeOf = useCallback((code: string) => (model.byId.has(code) ? code : model.places.find((p) => p.iata === code)?.id ?? null), [model])
+  const markers = useMemo(() => ioMarkers(trip, placeOf), [trip, placeOf])
+
+  const act = useRef({ select, deselect, openRoute, openWay, back, dismissHint })
+  act.current = { select, deselect, openRoute, openWay, back, dismissHint }
 
   // ---- map setup -------------------------------------------------------------------------
 
@@ -432,18 +451,25 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     setLabelFocus(map, sel ? [sel, ...near] : [], sel)
     // the open trip steps back while a city's own routes are shown
     for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', (sel ? 0.55 : 1) * (id === 'trip-casing' ? 0.85 : 1))
+    map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', sel ? 0.3 : 0.55)
   }, [map, model, view.sel, families])
 
-  // the open trip: one line per leg, a numbered dot per stop
+  // the open trip: one line per leg or overland block, in travel order, and a numbered dot per stop
   useEffect(() => {
     if (!map) return
     const lines: GeoJSON.Feature[] = []
-    for (const l of trip?.legs ?? []) {
-      const family = familyOf(l.mode)
+    for (const piece of trip ? tripPieces(trip) : []) {
+      const a = model.byId.get(piece.from)
+      const b = model.byId.get(piece.to)
+      const straight = a && b && a !== b ? [[a.lon, a.lat], [b.lon, b.lat]] : null
+      if (piece.kind === 'overland') {
+        const props = { family: 'overland', from: piece.from, to: piece.to, note: piece.note }
+        if (straight) lines.push({ type: 'Feature', properties: props, geometry: { type: 'LineString', coordinates: straight } })
+        continue
+      }
+      const family = familyOf(piece.leg.mode)
       // a leg with no route in the data (the planner's "own way" hops) gets a straight line
-      const a = model.byId.get(l.from)
-      const b = model.byId.get(l.to)
-      const line = model.routeLines.get(`${l.cid}|${family}`) ?? (a && b ? [[a.lon, a.lat], [b.lon, b.lat]] : null)
+      const line = model.routeLines.get(`${piece.leg.cid}|${family}`) ?? straight
       if (line) lines.push({ type: 'Feature', properties: { family }, geometry: { type: 'LineString', coordinates: line } })
     }
     // a place visited twice gets one dot with both numbers
@@ -459,6 +485,24 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     map.getSource<GeoJSONSource>('trip-stops')?.setData({ type: 'FeatureCollection', features: points })
   }, [map, model, trip])
 
+  // where the open trip flies in and flies home from: a ring per airport, both colours when it is one
+  useEffect(() => {
+    if (!map) return
+    const added = markers.flatMap((m) => {
+      const p = model.byId.get(m.place)
+      if (!p) return []
+      const el = document.createElement('button')
+      el.type = 'button'
+      el.className = `io-mark ${m.dirs.join('-')}`
+      const label = `${m.dirs.map((d) => IO_LABEL[d]).join(' and ')}: ${p.short_name}`
+      el.title = label
+      el.setAttribute('aria-label', `${label}. Show the flights`)
+      el.addEventListener('click', () => act.current.openWay(m.dirs))
+      return [new Marker({ element: el }).setLngLat([p.lon, p.lat]).addTo(map)]
+    })
+    return () => added.forEach((m) => m.remove())
+  }, [map, model, markers])
+
   // re-light after any view change (route view pins its route) and on hover
   useEffect(() => {
     paint()
@@ -472,7 +516,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     if (!map) return
     const canvas = map.getCanvas()
 
-    const hitAt = (pt: Point2): { kind: 'place'; id: string } | { kind: 'route'; cid: string } | null => {
+    type Hit = { kind: 'place'; id: string } | { kind: 'route'; cid: string } | { kind: 'overland'; from: string; to: string; note: string }
+    const hitAt = (pt: Point2): Hit | null => {
       const z = map.getZoom()
       const sel = live.current.view.sel
       const lit = new Set(sel ? [sel, ...neighbours(model, sel, live.current.families).map((n) => n.other.id)] : [])
@@ -492,6 +537,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
         .sort((x, y) => near(x.id) - near(y.id))[0]
       if (place) return { kind: 'place', id: place.id }
       const pt2: PointLike = [pt.x, pt.y]
+      const land = map.queryRenderedFeatures(pt2, { layers: [HIT_OVERLAND] })[0]
+      if (land) return { kind: 'overland', from: land.properties.from as string, to: land.properties.to as string, note: land.properties.note as string }
       const routes = map.queryRenderedFeatures(pt2, { layers: [HIT_ROUTES] })
       if (routes.length) return { kind: 'route', cid: routes[0].properties.cid as string }
       return null
@@ -499,6 +546,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
 
     const hoverFor = (hit: ReturnType<typeof hitAt>): Hover => {
       if (!hit) return null
+      if (hit.kind === 'overland') return hit
       const sel = live.current.view.sel
       if (hit.kind === 'route') {
         const conn = model.conns.get(hit.cid)
@@ -521,12 +569,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     const onMove = (e: MapMouseEvent) => {
       if (live.current.space || map.isMoving()) return
       const hit = hitAt(e.point)
-      canvas.style.cursor = hit ? 'pointer' : ''
+      canvas.style.cursor = hit && hit.kind !== 'overland' ? 'pointer' : ''
       setHover(hoverFor(hit))
     }
     const onOut = () => setHover(null)
     const onClick = (e: MapMouseEvent) => {
       act.current.dismissHint()
+      // a marker handles its own click
+      if ((e.originalEvent.target as Element | null)?.closest?.('.io-mark')) return
       if (live.current.space) return
       const hit = hitAt(e.point)
       const sel = live.current.view.sel
@@ -534,6 +584,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
         if (sel) act.current.deselect()
         return
       }
+      if (hit.kind === 'overland') return
       if (hit.kind === 'route') {
         const h = hoverFor(hit)
         if (h?.kind === 'route') act.current.openRoute(h.cid, h.from)
@@ -658,6 +709,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
             hint={hint}
             controlsRef={controlsRef}
             bottomRef={bottomRef}
+            extraLegend={markers.length ? <IoLegend markers={markers} /> : null}
           />
           <Tooltip map={map} model={model} store={store} families={families} getBlocked={getBlocked} />
           <TripBar
@@ -670,6 +722,17 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
             onUndo={() => trip && onTrips((s) => removeLeg(s, trip.id, trip.legs.length - 1))}
             onClose={() => onTrips((s) => openTrip(s, null))}
           />
+          {view.panel === 'way' && trip?.inout && (
+            <WayPanel
+              model={model}
+              trip={trip}
+              dirs={wayDirs}
+              collapsed={collapsed}
+              panelRef={panelRef}
+              onCollapse={setCollapsed}
+              onClose={deselect}
+            />
+          )}
           {view.panel === 'trips' && (
             <TripsPanel
               model={model}

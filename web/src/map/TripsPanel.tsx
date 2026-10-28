@@ -87,6 +87,7 @@ function TripCard(p: Props & { trip: Trip; color: string; active: boolean }) {
         )}
         {p.active && <span className="tc-on mono">On map</span>}
       </div>
+      {trip.inout && <SeedSummary trip={trip} name={name} />}
       <p className="tc-path">{tripStops(trip).map(name).join(' → ') || 'No legs yet'}</p>
       <p className="tc-tot mono">
         <span>{tot.legs} {tot.legs === 1 ? 'leg' : 'legs'} · {duration(tot.min)}</span>
@@ -180,5 +181,26 @@ function NewTrip({ onCreate }: { onCreate(name: string): void }) {
       />
       <button className="tbtn dark" type="submit">Start</button>
     </form>
+  )
+}
+
+/** "3 Dec 22:44" from a local ISO time. */
+function when(iso: string | null | undefined): string {
+  if (!iso) return '?'
+  const d = new Date(iso.slice(0, 10) + 'T00:00:00')
+  const mon = d.toLocaleString('en-GB', { month: 'short' })
+  return `${d.getDate()} ${mon} ${iso.slice(11, 16)}`
+}
+
+/** In and home of a seeded trip, and its flight totals. One fact per line. */
+function SeedSummary({ trip, name }: { trip: Trip; name: (id: string) => string }) {
+  const io = trip.inout!
+  const t = trip.totals
+  return (
+    <div className="tc-io mono">
+      <p>In: {name(io.entry)}, lands {when(io.way_in.arrive)} ({io.way_in.flying_hours} h{io.way_in.us_transit ? ', US transit' : ''})</p>
+      <p>Home: {name(io.exit)} {when(io.way_home.depart)}, in Copenhagen {when(io.way_home.arrive)} ({io.way_home.flying_hours} h)</p>
+      {t && <p>Flights: {kr(t.flights_total_dkk)} (long-haul {kr(t.long_haul_dkk)}, in between {kr(t.in_between_dkk)}) · cabin bags {kr(t.cabin_bag_fees_dkk)}</p>}
+    </div>
   )
 }

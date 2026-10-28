@@ -5,7 +5,7 @@ import { familyOf, type Family } from '../data/types'
 import type { LonLat } from '../lib/geo'
 import { duration, fromPrice, modeLabel } from '../lib/format'
 import { placeTip, type Rect } from '../lib/tooltip'
-import type { Hover, Store } from './hover'
+import { hoverKey, type Hover, type Store } from './hover'
 import { Moon } from './icons'
 
 interface Props {
@@ -33,6 +33,19 @@ export function Tooltip({ map, model, store, families, getBlocked }: Props) {
           <p className="tip-t">{p.short_name}, {country}</p>
           {p.why && <p className="tip-s">{p.why}</p>}
           <p className="tip-foot mono">{n} connection{n === 1 ? '' : 's'} · click to explore</p>
+        </>
+      )
+    }
+  } else if (hover?.kind === 'overland') {
+    const a = model.byId.get(hover.from)
+    const b = model.byId.get(hover.to)
+    if (a && b) {
+      points = [[a.lon, a.lat], [b.lon, b.lat]]
+      body = (
+        <>
+          <p className="tip-t">{a.short_name} to {b.short_name}</p>
+          <p className="tip-c mono">Overland</p>
+          {hover.note && <p className="tip-s">{hover.note}</p>}
         </>
       )
     }
@@ -92,7 +105,7 @@ export function Tooltip({ map, model, store, families, getBlocked }: Props) {
 
   if (!body) return null
   return (
-    <div ref={el} key={hover ? (hover.kind === 'city' ? hover.id : hover.cid) : ''} className="tip" role="tooltip" style={{ visibility: 'hidden' }}>
+    <div ref={el} key={hoverKey(hover)} className="tip" role="tooltip" style={{ visibility: 'hidden' }}>
       {body}
     </div>
   )
