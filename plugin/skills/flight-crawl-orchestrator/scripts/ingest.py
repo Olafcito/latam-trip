@@ -129,7 +129,10 @@ def main():
             qid = "Q:" + hashlib.sha1(key.encode()).hexdigest()[:12]
             hrs = [d.get("hours") for d in legs_of(q) if d and d.get("hours")]
             flags = q.get("flags") or []
-            ok = int(not ({"over_30h", "incomplete"} & set(flags)) and all(x <= MAXH for x in hrs))
+            site = (q.get("notes") or "").split(";")[0].replace("site=", "").strip()
+            if site in ("Sponsoreret", "Annonce"):
+                flags = list(flags) + ["ad_offer"]
+            ok = int(not ({"over_30h", "incomplete", "ad_offer"} & set(flags)) and all(x <= MAXH for x in hrs))
             mid_h = sum((m or {}).get("hours") or 0 for m in mids) or None
             con.execute("INSERT OR IGNORE INTO quotes VALUES (" + ",".join("?" * 31) + ")", (
                 qid, q.get("agent"), q.get("task_id"), q.get("source"), q.get("observed_at"), q.get("structure"),

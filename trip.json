@@ -165,13 +165,11 @@
       "SAL": 3,
       "SAP": 3,
       "MGA": 3,
-      "GUA": 2,
+      "GUA": 1,
       "BOG": 3,
       "MDE": 3,
       "CTG": 2,
-      "GDL": 3,
-      "PTY": 1,
-      "SJO": 1
+      "GDL": 3
     },
     "exits": {
       "VVI": 3,
@@ -182,9 +180,7 @@
       "SAL": 2,
       "SAP": 2,
       "MGA": 2,
-      "GUA": 2,
-      "PTY": 1,
-      "SJO": 1
+      "GUA": 1
     }
   },
   "regional": {
@@ -194,14 +190,11 @@
         "GDL"
       ],
       "CA": [
-        "GUA",
         "SAL",
         "SAP",
         "TGU",
         "RTB",
-        "MGA",
-        "SJO",
-        "PTY"
+        "MGA"
       ],
       "CO": [
         "BOG",
@@ -294,8 +287,79 @@
       "RTB",
       "SMR",
       "ADZ",
-      "CBB"
+      "CBB",
+      "PEI"
     ],
     "note2": "skip_from airports are only searched within their own group (domestic) to keep the matrix small"
-  }
+  },
+  "route_regions": {
+    "MX": [
+      "GDL",
+      "MEX"
+    ],
+    "CA": [
+      "GUA",
+      "SAL",
+      "SAP",
+      "TGU",
+      "RTB",
+      "MGA",
+      "SJO",
+      "LIR",
+      "PTY",
+      "BZE"
+    ],
+    "CO": [
+      "BOG",
+      "MDE",
+      "CTG",
+      "CLO",
+      "SMR",
+      "ADZ",
+      "PEI"
+    ],
+    "BO": [
+      "LPB",
+      "VVI",
+      "CBB"
+    ]
+  },
+  "route_required": [
+    "CA",
+    "CO",
+    "BO"
+  ],
+  "route_optional": [
+    "MX"
+  ],
+  "route_internal": {
+    "BO": [
+      "LPB>CBB",
+      "CBB>VVI"
+    ]
+  },
+  "route_entry_preferred": {
+    "BO": "LPB"
+  },
+  "route_hop_airports": {
+    "CA": [
+      "SAL",
+      "SAP",
+      "TGU",
+      "RTB",
+      "MGA"
+    ]
+  },
+  "route_hop_airports_note": "Simon 28 Oct: Central America = Nicaragua, Honduras, El Salvador; buses inside Central America and inside Colombia are fine, only the larger flights matter",
+  "route_positioning": {
+    "MAD": {
+      "price": 1785,
+      "note": "CPH<>MAD Iberia/Norwegian 985 + 2 Madrid nights 800 (estimate)"
+    },
+    "ALC": {
+      "price": 742,
+      "note": "CPH<>ALC 492 + train 250 (estimate)"
+    }
+  },
+  "christmas_in_bolivia": false
 }
