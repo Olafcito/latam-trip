@@ -3408,6 +3408,96 @@
     "observed_at": "2026",
     "note": "Arrives about 16:00.",
     "booking_url": null
+   },
+   {
+    "mode": "flight",
+    "operators": [
+     "Copa",
+     "avianca"
+    ],
+    "duration_min": 55,
+    "price_dkk": {
+     "min": 1634,
+     "typical": 2198
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": true,
+     "vias": [
+      "PTY"
+     ],
+     "carriers": [
+      "Copa",
+      "avianca"
+     ],
+     "oneway_dkk": {
+      "min": 1634,
+      "observed_at": "2026-10-28T17:33:42Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-15"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-15",
+       "from": "SAL",
+       "to": "SAP",
+       "dkk": 1634,
+       "dep": "07:30",
+       "arr": "12:42",
+       "arr_days": 0,
+       "duration_min": 312,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 884",
+        "Copa 286"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-15",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1634,
+      "duration_min": 312,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-15",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 2198,
+      "duration_min": 55,
+      "vias": [],
+      "carriers": [
+       "avianca"
+      ],
+      "date": "2026-12-15"
+     },
+     "flags": [
+      "tight_connection"
+     ],
+     "quotes": 4
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T17:33:42Z",
+    "note": null,
+    "booking_url": null
    }
   ]
  },
@@ -3775,40 +3865,106 @@
    {
     "mode": "flight",
     "operators": [
+     "Copa",
      "Avianca El Salvador"
     ],
-    "duration_min": 55,
-    "duration_range_h": "0.9",
+    "duration_min": 388,
     "price_dkk": {
-     "min": 2238,
-     "typical": null
+     "min": 3435,
+     "typical": 3435
     },
-    "price_local": "cheapest ticket US$347 (Rome2rio)",
     "frequency": "about 21 weekly",
     "overnight": false,
-    "border": false,
-    "stops": [],
+    "border": true,
+    "stops": [
+     {
+      "place_id": "PTY",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
     "geometry": null,
     "flight": {
-     "nonstop": null,
-     "vias": [],
+     "nonstop": false,
+     "vias": [
+      "PTY"
+     ],
      "carriers": [
-      "Avianca El Salvador"
+      "Copa"
      ],
      "oneway_dkk": {
-      "min": 2238,
-      "observed_at": "2026"
+      "min": 3435,
+      "observed_at": "2026-10-28T17:33:42Z"
      },
      "return_dkk": null,
-     "dates_searched": [],
-     "by_date": [],
-     "round_trips": []
+     "dates_searched": [
+      "2026-12-15"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-15",
+       "from": "MGA",
+       "to": "SAL",
+       "dkk": 3435,
+       "dep": "14:09",
+       "arr": "20:37",
+       "arr_days": 0,
+       "duration_min": 388,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 105",
+        "Copa 881"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-15",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 3435,
+      "duration_min": 388,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-15",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 3435,
+      "duration_min": 388,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-15"
+     },
+     "flags": [],
+     "quotes": 3
     },
-    "source": "manual",
-    "source_url": "https://www.rome2rio.com/s/San-Salvador/Leon-Nicaragua",
-    "observed_at": "2026",
+    "source": "crawl",
+    "observed_at": "2026-10-28T17:33:42Z",
     "note": "Price looks high; Orchestrator should price on Momondo.",
-    "booking_url": null
+    "booking_url": null,
+    "source_url": "https://www.rome2rio.com/s/San-Salvador/Leon-Nicaragua",
+    "researched": {
+     "duration_min": 55,
+     "price_min": 2238,
+     "operators": [
+      "Avianca El Salvador"
+     ],
+     "year": "2026"
+    }
    }
   ]
  },
@@ -14589,6 +14745,110 @@
     },
     "source": "crawl",
     "observed_at": "2026-10-28T17:22:00Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "MGA-SAP",
+  "a": "MGA",
+  "b": "SAP",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Copa",
+     "avianca"
+    ],
+    "duration_min": 235,
+    "price_dkk": {
+     "min": 3709,
+     "typical": 4256
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [
+     {
+      "place_id": "SAL",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "PTY",
+      "SAL"
+     ],
+     "carriers": [
+      "Copa",
+      "avianca"
+     ],
+     "oneway_dkk": {
+      "min": 3709,
+      "observed_at": "2026-10-28T17:33:42Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-15"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-15",
+       "from": "SAP",
+       "to": "MGA",
+       "dkk": 3709,
+       "dep": "04:17",
+       "arr": "13:05",
+       "arr_days": 0,
+       "duration_min": 528,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 458",
+        "Copa 106"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-15",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 3709,
+      "duration_min": 528,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-15",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 4256,
+      "duration_min": 235,
+      "vias": [
+       "SAL"
+      ],
+      "carriers": [
+       "avianca"
+      ],
+      "date": "2026-12-15"
+     },
+     "flags": [],
+     "quotes": 3
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T17:33:42Z",
     "note": null,
     "booking_url": null
    }
