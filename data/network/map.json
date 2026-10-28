@@ -16300,6 +16300,366 @@
    ]
   },
   {
+   "from": "SAL",
+   "to": "SAP",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1634.0,
+   "oneway_min_hours": 5.2,
+   "fastest_hours": 0.92,
+   "fastest_price_dkk": 2198.0,
+   "nonstop": true,
+   "vias": [
+    "PTY"
+   ],
+   "carriers": [
+    "Copa",
+    "avianca"
+   ],
+   "dates": [
+    "2026-12-15"
+   ],
+   "return_min_dkk": null,
+   "quotes": 4,
+   "flights": [
+    {
+     "quote_id": "Q:ab9c473df030",
+     "depart": "2026-12-15T07:30",
+     "arrive": "2026-12-15T12:42",
+     "hours": 5.2,
+     "price_dkk": 1634.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      0.82
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:4cfafb860097",
+     "depart": "2026-12-15T07:40",
+     "arrive": "2026-12-15T08:35",
+     "hours": 0.92,
+     "price_dkk": 2198.0,
+     "carriers": [
+      "avianca"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:639e8d74751f",
+     "depart": "2026-12-15T17:55",
+     "arrive": "2026-12-15T18:50",
+     "hours": 0.92,
+     "price_dkk": 2198.0,
+     "carriers": [
+      "avianca"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:d2b824100cc6",
+     "depart": "2026-12-15T22:45",
+     "arrive": "2026-12-15T23:40",
+     "hours": 0.92,
+     "price_dkk": 2198.0,
+     "carriers": [
+      "avianca"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "SAL",
+   "to": "XPL",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1186.0,
+   "oneway_min_hours": 5.27,
+   "fastest_hours": 5.27,
+   "fastest_price_dkk": 1186.0,
+   "nonstop": false,
+   "vias": [
+    "PTY"
+   ],
+   "carriers": [
+    "Copa"
+   ],
+   "dates": [
+    "2026-12-15"
+   ],
+   "return_min_dkk": null,
+   "quotes": 4,
+   "flights": [
+    {
+     "quote_id": "Q:592886a823af",
+     "depart": "2026-12-15T07:30",
+     "arrive": "2026-12-15T12:46",
+     "hours": 5.27,
+     "price_dkk": 1186.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      1.1
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:8a12388c6c44",
+     "depart": "2026-12-15T04:57",
+     "arrive": "2026-12-15T10:35",
+     "hours": 5.63,
+     "price_dkk": 1186.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      1.5
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:e66bfcd34afa",
+     "depart": "2026-12-15T13:58",
+     "arrive": "2026-12-15T23:33",
+     "hours": 9.58,
+     "price_dkk": 1318.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      5.38
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "SAP",
+   "to": "MGA",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 3709.0,
+   "oneway_min_hours": 8.8,
+   "fastest_hours": 3.92,
+   "fastest_price_dkk": 4256.0,
+   "nonstop": false,
+   "vias": [
+    "PTY",
+    "SAL"
+   ],
+   "carriers": [
+    "Copa",
+    "avianca"
+   ],
+   "dates": [
+    "2026-12-15"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:e2cf02ed3ea1",
+     "depart": "2026-12-15T04:17",
+     "arrive": "2026-12-15T13:05",
+     "hours": 8.8,
+     "price_dkk": 3709.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      4.88
+     ],
+     "fare_brand": "Economy Full",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:da58d6c774e2",
+     "depart": "2026-12-15T20:10",
+     "arrive": "2026-12-16T00:05",
+     "hours": 3.92,
+     "price_dkk": 4256.0,
+     "carriers": [
+      "avianca"
+     ],
+     "via": [
+      "SAL"
+     ],
+     "layover_h": [
+      2.17
+     ],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:9ef34292e74e",
+     "depart": "2026-12-15T04:30",
+     "arrive": "2026-12-15T08:40",
+     "hours": 4.17,
+     "price_dkk": 4256.0,
+     "carriers": [
+      "avianca"
+     ],
+     "via": [
+      "SAL"
+     ],
+     "layover_h": [
+      2.42
+     ],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "MGA",
+   "to": "SAL",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 3435.0,
+   "oneway_min_hours": 6.47,
+   "fastest_hours": 6.47,
+   "fastest_price_dkk": 3435.0,
+   "nonstop": false,
+   "vias": [
+    "PTY"
+   ],
+   "carriers": [
+    "Copa"
+   ],
+   "dates": [
+    "2026-12-15"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:08f565b0e72b",
+     "depart": "2026-12-15T14:09",
+     "arrive": "2026-12-15T20:37",
+     "hours": 6.47,
+     "price_dkk": 3435.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      2.48
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:9c0604d947f0",
+     "depart": "2026-12-15T16:57",
+     "arrive": "2026-12-15T23:38",
+     "hours": 6.68,
+     "price_dkk": 3435.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      2.72
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:c9a2ce8cf576",
+     "depart": "2026-12-15T03:17",
+     "arrive": "2026-12-15T12:41",
+     "hours": 9.4,
+     "price_dkk": 3435.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      5.6
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "personal item + carry-on up to 10 kg",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
    "from": "MDE",
    "to": "LPB",
    "mode": "flight",
@@ -23094,6 +23454,7 @@
   "LHR",
   "MEX",
   "SDQ",
+  "XPL",
   "ZRH"
  ]
 }
