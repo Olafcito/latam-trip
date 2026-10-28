@@ -69,4 +69,4 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 31,exp-31a,sonnet,expedia,8,207178,15,114,22
 31,exp-31c,sonnet,expedia,8,201298,13,125,30
 31,exp-31b,sonnet,expedia,8,207835,13,134,23
-29,gf-29a,sonnet,google_flights,9,,,,22
+29,gf-29a,sonnet,google_flights,9,155604,47,670,22
