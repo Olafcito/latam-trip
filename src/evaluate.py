@@ -85,7 +85,9 @@ for s in SC:
         nseg = sum((d.get("stops") or 0) + 1 for d in r["legs"])
         bag = 0; cabin = 0; bag_notes = []
         for d in r["legs"]:
-            br = bag_for(d.get("carriers") or [], d)
+            first = (d.get("flights") or [None])[0]
+            op = [first.rsplit(" ", 1)[0]] if first and " " in first else (d.get("carriers") or [])[:1]
+            br = bag_for(op or (d.get("carriers") or []), d)
             if br and br.get("checked_dkk") is not None:
                 bag += br["checked_dkk"]; cabin += br.get("cabin_dkk") or 0
                 bag_notes.append(f"{br['match']} {br['checked_dkk']}" + (f", cabin {br['cabin_dkk']}" if br.get("cabin_dkk") else ""))
