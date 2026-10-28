@@ -35,7 +35,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/La-Paz/Santa-Cruz-de-la-Sierra",
@@ -114,6 +115,7 @@
        "dkk": 255,
        "dep": "12:10",
        "arr": "12:55",
+       "arr_days": 0,
        "duration_min": 45,
        "vias": [],
        "carriers": [
@@ -127,6 +129,7 @@
        "link": "https://www.momondo.dk/flight-search/LPB-CBB/2027-01-29"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 255,
       "duration_min": 45,
@@ -225,7 +228,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/La-Paz/Sucre",
@@ -296,7 +300,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://bushop.com/bolivia/guides/lake-titicaca-to-uyuni-itinerary-how-to-travel-across-bolivia/",
@@ -365,7 +370,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.avionio.com/en/flight/8j-351",
@@ -409,7 +415,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://aviacionline.com/boliviana-de-aviacion-boa-inauguro-sus-vuelos-a-riberalta-y-rurrenabaque-beni",
@@ -455,7 +462,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Santa-Cruz-de-la-Sierra/Rurrenabaque",
@@ -532,6 +540,7 @@
        "dkk": 404,
        "dep": "22:25",
        "arr": "23:15",
+       "arr_days": 0,
        "duration_min": 50,
        "vias": [],
        "carriers": [],
@@ -541,6 +550,7 @@
        "link": "https://www.momondo.dk/flight-search/CBB-VVI/2027-02-01"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 404,
       "duration_min": 50,
@@ -641,7 +651,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Santa-Cruz-de-la-Sierra/Sucre",
@@ -711,7 +722,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Cochabamba/Sucre",
@@ -757,7 +769,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/La-Paz/Lima",
@@ -818,6 +831,7 @@
        "dkk": 2000,
        "dep": "17:15",
        "arr": "04:00",
+       "arr_days": 1,
        "duration_min": 585,
        "vias": [
         "LIM"
@@ -840,6 +854,7 @@
        "dkk": 2779,
        "dep": "05:20",
        "arr": "12:15",
+       "arr_days": 0,
        "duration_min": 475,
        "vias": [
         "LIM"
@@ -856,6 +871,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2000,
       "duration_min": 585,
@@ -956,6 +972,7 @@
        "dkk": 1784,
        "dep": "05:30",
        "arr": "16:20",
+       "arr_days": 0,
        "duration_min": 710,
        "vias": [
         "LIM"
@@ -978,6 +995,7 @@
        "dkk": 2179,
        "dep": "05:30",
        "arr": "16:20",
+       "arr_days": 0,
        "duration_min": 710,
        "vias": [
         "LIM"
@@ -1000,6 +1018,7 @@
        "dkk": 2058,
        "dep": "01:10",
        "arr": "11:07",
+       "arr_days": 0,
        "duration_min": 657,
        "vias": [
         "PTY"
@@ -1022,6 +1041,7 @@
        "dkk": 1910,
        "dep": "18:35",
        "arr": "04:35",
+       "arr_days": 1,
        "duration_min": 540,
        "vias": [
         "LIM"
@@ -1044,6 +1064,7 @@
        "dkk": 1755,
        "dep": "05:30",
        "arr": "12:15",
+       "arr_days": 0,
        "duration_min": 465,
        "vias": [
         "LIM"
@@ -1058,6 +1079,125 @@
        "self_transfer": false,
        "searched": "2027-02-01",
        "link": "https://www.momondo.dk/flight-search/VVI-BOG/2027-02-01"
+      }
+     ],
+     "round_trips": [
+      {
+       "from": "BOG",
+       "to": "VVI",
+       "dkk": 4526,
+       "out": {
+        "date": "2026-12-20",
+        "dep": "17:15",
+        "arr": "04:35",
+        "arr_days": 1,
+        "duration_min": 620,
+        "vias": [
+         "LIM"
+        ],
+        "carriers": [
+         "LATAM Airlines"
+        ],
+        "flights": [
+         "LATAM Airlines 2387",
+         "LATAM Airlines 2406"
+        ]
+       },
+       "home": {
+        "date": "2026-12-28",
+        "dep": "05:30",
+        "arr": "12:15",
+        "arr_days": 0,
+        "duration_min": 465,
+        "vias": [
+         "LIM"
+        ],
+        "carriers": [
+         "LATAM Airlines"
+        ],
+        "flights": [
+         "LATAM Airlines 2407",
+         "LATAM Airlines 4901"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://www.momondo.dk/flight-search/BOG-VVI/2026-12-20/2026-12-28"
+      },
+      {
+       "from": "BOG",
+       "to": "VVI",
+       "dkk": 5421,
+       "out": {
+        "date": "2026-12-20",
+        "dep": "10:40",
+        "arr": "22:48",
+        "arr_days": 0,
+        "duration_min": 668,
+        "vias": [
+         "PTY"
+        ],
+        "carriers": [
+         "Copa Airlines"
+        ],
+        "flights": [
+         "Copa Airlines 416",
+         "Copa Airlines 127"
+        ]
+       },
+       "home": {
+        "date": "2026-12-28",
+        "dep": "05:30",
+        "arr": "12:15",
+        "arr_days": 0,
+        "duration_min": 465,
+        "vias": [
+         "LIM"
+        ],
+        "carriers": [
+         "LATAM Airlines"
+        ],
+        "flights": [
+         "LATAM Airlines 2407",
+         "LATAM Airlines 4901"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://www.momondo.dk/flight-search/BOG-VVI/2026-12-20/2026-12-28"
+      },
+      {
+       "from": "BOG",
+       "to": "VVI",
+       "dkk": 5479,
+       "out": {
+        "date": "2026-12-20",
+        "dep": "21:30",
+        "arr": "02:40",
+        "arr_days": 1,
+        "duration_min": 250,
+        "vias": [],
+        "carriers": [
+         "Avianca"
+        ],
+        "flights": [
+         "Avianca 167"
+        ]
+       },
+       "home": {
+        "date": "2026-12-28",
+        "dep": "03:45",
+        "arr": "06:40",
+        "arr_days": 0,
+        "duration_min": 235,
+        "vias": [],
+        "carriers": [
+         "Avianca"
+        ],
+        "flights": [
+         "Avianca 166"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://www.momondo.dk/flight-search/BOG-VVI/2026-12-20/2026-12-28"
       }
      ],
      "cheapest": {
@@ -1139,7 +1279,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Santa-Cruz-de-la-Sierra/Lima",
@@ -1209,7 +1350,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Cusco/La-Paz",
@@ -1255,7 +1397,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Viru_Viru_International_Airport",
@@ -1321,6 +1464,7 @@
        "dkk": 1470,
        "dep": "05:55",
        "arr": "11:51",
+       "arr_days": 0,
        "duration_min": 296,
        "vias": [],
        "carriers": [
@@ -1340,6 +1484,7 @@
        "dkk": 1791,
        "dep": "16:40",
        "arr": "22:46",
+       "arr_days": 0,
        "duration_min": 426,
        "vias": [
         "PTY"
@@ -1356,6 +1501,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1470,
       "duration_min": 296,
@@ -1437,7 +1583,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Guadalajara/Panama-City",
@@ -1487,7 +1634,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Guadalajara/San-Jos%C3%A9-Costa-Rica",
@@ -1549,6 +1697,7 @@
        "dkk": 1111,
        "dep": "07:36",
        "arr": "13:37",
+       "arr_days": 0,
        "duration_min": 361,
        "vias": [
         "MEX"
@@ -1565,6 +1714,7 @@
        "link": "https://www.momondo.dk/flight-search/GDL-GUA/2026-12-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1111,
       "duration_min": 361,
@@ -1671,7 +1821,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Guadalajara/Puerto-Vallarta",
@@ -2743,7 +2894,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/La_Aurora_International_Airport",
@@ -2815,7 +2967,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/La_Aurora_International_Airport",
@@ -3100,7 +3253,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://livinginguatemala.com/transport/guatemala-city-to-san-pedro-sula/",
@@ -3295,7 +3449,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/San-Pedro-Sula/La-Ceiba",
@@ -3369,7 +3524,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.backpackerswanderlust.com/la-ceiba-to-roatan-honduras/",
@@ -3477,7 +3633,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Cop%C3%A1n-Ruins/Roat%C3%A1n",
@@ -3521,7 +3678,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Juan_Manuel_G%C3%A1lvez_International_Airport",
@@ -3589,7 +3747,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/San-Salvador/Leon-Nicaragua",
@@ -3946,7 +4105,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.alongdustyroads.com/posts/how-to-get-to-the-corn-islands",
@@ -4080,7 +4240,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Managua/San-Jos%C3%A9-Costa-Rica",
@@ -4184,7 +4345,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.rome2rio.com/s/Panama-City/San-Jose-Costa-Rica",
@@ -4322,7 +4484,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.boundlessroads.com/panama-to-colombia-by-boat/",
@@ -4399,7 +4562,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://brokenbootstravel.com/?p=7712",
@@ -4467,6 +4631,7 @@
        "dkk": 1462,
        "dep": "06:14",
        "arr": "07:34",
+       "arr_days": 0,
        "duration_min": 80,
        "vias": [],
        "carriers": [
@@ -4486,6 +4651,7 @@
        "dkk": 1341,
        "dep": "18:29",
        "arr": "19:49",
+       "arr_days": 0,
        "duration_min": 80,
        "vias": [],
        "carriers": [
@@ -4505,6 +4671,7 @@
        "dkk": 1535,
        "dep": "05:00",
        "arr": "10:00",
+       "arr_days": 0,
        "duration_min": 300,
        "vias": [
         "CLO"
@@ -4528,6 +4695,7 @@
        "dkk": 1987,
        "dep": "12:40",
        "arr": "14:11",
+       "arr_days": 0,
        "duration_min": 91,
        "vias": [],
        "carriers": [
@@ -4547,6 +4715,7 @@
        "dkk": 1462,
        "dep": "17:49",
        "arr": "19:09",
+       "arr_days": 0,
        "duration_min": 80,
        "vias": [],
        "carriers": [
@@ -4566,6 +4735,7 @@
        "dkk": 1655,
        "dep": "12:55",
        "arr": "14:15",
+       "arr_days": 0,
        "duration_min": 80,
        "vias": [],
        "carriers": [
@@ -4585,6 +4755,7 @@
        "dkk": 1356,
        "dep": "19:49",
        "arr": "21:07",
+       "arr_days": 0,
        "duration_min": 78,
        "vias": [],
        "carriers": [
@@ -4604,6 +4775,7 @@
        "dkk": 1041,
        "dep": "08:45",
        "arr": "10:03",
+       "arr_days": 0,
        "duration_min": 78,
        "vias": [],
        "carriers": [
@@ -4623,6 +4795,7 @@
        "dkk": 1349,
        "dep": "10:05",
        "arr": "14:35",
+       "arr_days": 0,
        "duration_min": 270,
        "vias": [
         "BOG"
@@ -4639,6 +4812,7 @@
        "link": "https://www.momondo.dk/flight-search/PTY-MDE/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1041,
       "duration_min": 78,
@@ -4731,6 +4905,7 @@
        "dkk": 1949,
        "dep": "19:49",
        "arr": "06:20",
+       "arr_days": 1,
        "duration_min": 631,
        "vias": [
         "MDE"
@@ -4747,6 +4922,7 @@
        "link": "https://www.momondo.dk/flight-search/PTY-BOG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1949,
       "duration_min": 631,
@@ -4846,6 +5022,7 @@
        "dkk": 1449,
        "dep": "10:45",
        "arr": "11:55",
+       "arr_days": 0,
        "duration_min": 70,
        "vias": [],
        "carriers": [
@@ -4865,6 +5042,7 @@
        "dkk": 1280,
        "dep": "08:45",
        "arr": "21:47",
+       "arr_days": 0,
        "duration_min": 782,
        "vias": [
         "MDE"
@@ -4887,6 +5065,7 @@
        "dkk": 1533,
        "dep": "02:30",
        "arr": "07:45",
+       "arr_days": 0,
        "duration_min": 315,
        "vias": [
         "BOG"
@@ -4909,6 +5088,7 @@
        "dkk": 1776,
        "dep": "09:48",
        "arr": "11:00",
+       "arr_days": 0,
        "duration_min": 72,
        "vias": [],
        "carriers": [
@@ -4922,6 +5102,7 @@
        "link": "https://www.momondo.dk/flight-search/PTY-CTG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1280,
       "duration_min": 782,
@@ -5028,6 +5209,7 @@
        "dkk": 1287,
        "dep": "10:05",
        "arr": "17:08",
+       "arr_days": 0,
        "duration_min": 483,
        "vias": [
         "SDQ"
@@ -5050,6 +5232,7 @@
        "dkk": 1709,
        "dep": "05:20",
        "arr": "18:55",
+       "arr_days": 0,
        "duration_min": 875,
        "vias": [
         "MDE"
@@ -5073,6 +5256,7 @@
        "dkk": 3302,
        "dep": "15:00",
        "arr": "16:20",
+       "arr_days": 0,
        "duration_min": 140,
        "vias": [],
        "carriers": [
@@ -5092,6 +5276,7 @@
        "dkk": 1775,
        "dep": "22:30",
        "arr": "06:19",
+       "arr_days": 1,
        "duration_min": 529,
        "vias": [
         "MDE"
@@ -5114,6 +5299,7 @@
        "dkk": 1710,
        "dep": "01:55",
        "arr": "06:19",
+       "arr_days": 0,
        "duration_min": 324,
        "vias": [
         "MDE"
@@ -5136,6 +5322,7 @@
        "dkk": 1293,
        "dep": "05:10",
        "arr": "21:30",
+       "arr_days": 0,
        "duration_min": 920,
        "vias": [
         "SAL",
@@ -5155,6 +5342,7 @@
        "link": "https://www.momondo.dk/flight-search/SJO-BOG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1287,
       "duration_min": 483,
@@ -5265,6 +5453,7 @@
        "dkk": 2296,
        "dep": "00:10",
        "arr": "23:38",
+       "arr_days": 0,
        "duration_min": 1468,
        "vias": [
         "CLO",
@@ -5290,6 +5479,7 @@
        "dkk": 2297,
        "dep": "01:40",
        "arr": "12:41",
+       "arr_days": 0,
        "duration_min": 721,
        "vias": [
         "CLO",
@@ -5315,6 +5505,7 @@
        "dkk": 2258,
        "dep": "05:20",
        "arr": "15:50",
+       "arr_days": 0,
        "duration_min": 690,
        "vias": [
         "MDE"
@@ -5338,6 +5529,7 @@
        "dkk": 2305,
        "dep": "05:05",
        "arr": "12:41",
+       "arr_days": 0,
        "duration_min": 516,
        "vias": [
         "CLO",
@@ -5363,6 +5555,7 @@
        "dkk": 2968,
        "dep": "13:40",
        "arr": "15:40",
+       "arr_days": 0,
        "duration_min": 180,
        "vias": [],
        "carriers": [
@@ -5382,6 +5575,7 @@
        "dkk": 2545,
        "dep": "14:50",
        "arr": "18:45",
+       "arr_days": 0,
        "duration_min": 175,
        "vias": [],
        "carriers": [
@@ -5401,6 +5595,7 @@
        "dkk": 2532,
        "dep": "07:45",
        "arr": "11:35",
+       "arr_days": 0,
        "duration_min": 170,
        "vias": [],
        "carriers": [
@@ -5420,6 +5615,7 @@
        "dkk": 2534,
        "dep": "14:50",
        "arr": "18:45",
+       "arr_days": 0,
        "duration_min": 175,
        "vias": [],
        "carriers": [
@@ -5439,6 +5635,7 @@
        "dkk": 2532,
        "dep": "14:50",
        "arr": "18:45",
+       "arr_days": 0,
        "duration_min": 175,
        "vias": [],
        "carriers": [
@@ -5452,6 +5649,7 @@
        "link": "https://www.momondo.dk/flight-search/SAL-BOG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2258,
       "duration_min": 690,
@@ -5559,6 +5757,7 @@
        "dkk": 2307,
        "dep": "07:10",
        "arr": "23:08",
+       "arr_days": 0,
        "duration_min": 1018,
        "vias": [
         "CLO",
@@ -5584,6 +5783,7 @@
        "dkk": 2201,
        "dep": "01:40",
        "arr": "23:08",
+       "arr_days": 0,
        "duration_min": 1348,
        "vias": [],
        "carriers": [],
@@ -5599,6 +5799,7 @@
        "dkk": 1923,
        "dep": "21:05",
        "arr": "10:51",
+       "arr_days": 1,
        "duration_min": 886,
        "vias": [
         "SDQ"
@@ -5621,6 +5822,7 @@
        "dkk": 2308,
        "dep": "00:10",
        "arr": "23:08",
+       "arr_days": 0,
        "duration_min": 1438,
        "vias": [
         "CLO",
@@ -5646,6 +5848,7 @@
        "dkk": 2878,
        "dep": "08:00",
        "arr": "15:55",
+       "arr_days": 0,
        "duration_min": 535,
        "vias": [
         "MEX"
@@ -5668,6 +5871,7 @@
        "dkk": 2201,
        "dep": "03:10",
        "arr": "23:08",
+       "arr_days": 0,
        "duration_min": 1258,
        "vias": [
         "CLO",
@@ -5693,6 +5897,7 @@
        "dkk": 2464,
        "dep": "13:09",
        "arr": "20:12",
+       "arr_days": 0,
        "duration_min": 363,
        "vias": [
         "PTY"
@@ -5709,6 +5914,7 @@
        "link": "https://www.momondo.dk/flight-search/GUA-BOG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1923,
       "duration_min": 886,
@@ -5789,7 +5995,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/La_Aurora_International_Airport",
@@ -5837,7 +6044,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/El_Salvador_International_Airport",
@@ -5881,7 +6089,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Augusto_C._Sandino_International_Airport",
@@ -5965,6 +6174,7 @@
        "dkk": 209,
        "dep": "17:15",
        "arr": "18:27",
+       "arr_days": 0,
        "duration_min": 72,
        "vias": [],
        "carriers": [
@@ -5978,6 +6188,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 209,
       "duration_min": 72,
@@ -6098,6 +6309,7 @@
        "dkk": 380,
        "dep": "17:25",
        "arr": "18:57",
+       "arr_days": 0,
        "duration_min": 92,
        "vias": [],
        "carriers": [
@@ -6109,6 +6321,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 380,
       "duration_min": 92,
@@ -6192,7 +6405,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.kiwi.com/us/cheap-flights/bogota-colombia/santa-marta-colombia/",
@@ -6250,6 +6464,7 @@
        "dkk": 549,
        "dep": "17:40",
        "arr": "20:04",
+       "arr_days": 0,
        "duration_min": 144,
        "vias": [],
        "carriers": [
@@ -6261,6 +6476,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 549,
       "duration_min": 144,
@@ -6374,6 +6590,7 @@
        "dkk": 449,
        "dep": "05:05",
        "arr": "06:15",
+       "arr_days": 0,
        "duration_min": 70,
        "vias": [],
        "carriers": [
@@ -6387,6 +6604,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 449,
       "duration_min": 70,
@@ -6498,7 +6716,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.kiwi.com/us/cheap-flights/bogota-colombia/pereira-colombia/",
@@ -6548,7 +6767,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/El_Dorado_International_Airport",
@@ -6632,6 +6852,7 @@
        "dkk": 385,
        "dep": "20:10",
        "arr": "21:22",
+       "arr_days": 0,
        "duration_min": 72,
        "vias": [],
        "carriers": [
@@ -6643,6 +6864,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 385,
       "duration_min": 72,
@@ -6756,6 +6978,7 @@
        "dkk": 569,
        "dep": "06:35",
        "arr": "07:54",
+       "arr_days": 0,
        "duration_min": 79,
        "vias": [],
        "carriers": [
@@ -6767,6 +6990,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 569,
       "duration_min": 79,
@@ -6845,7 +7069,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.kiwi.com/us/cheap-flights/medellin-colombia/san-andres-colombia/",
@@ -6926,6 +7151,7 @@
        "dkk": 219,
        "dep": "05:00",
        "arr": "06:09",
+       "arr_days": 0,
        "duration_min": 69,
        "vias": [],
        "carriers": [
@@ -6939,6 +7165,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 219,
       "duration_min": 69,
@@ -7042,7 +7269,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.geckoroutes.com/colombia/medellin-to-salento/",
@@ -7092,7 +7320,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Jos%C3%A9_Mar%C3%ADa_C%C3%B3rdova_International_Airport",
@@ -7140,7 +7369,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.kiwi.com/us/cheap-flights/cartagena-colombia/san-andres-colombia/",
@@ -7190,7 +7420,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.kiwi.com/us/cheap-flights/cali-colombia/cartagena-colombia/",
@@ -7236,7 +7467,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.kiwi.com/us/cheap-flights/cali-colombia/santa-marta-colombia/",
@@ -7284,7 +7516,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Alfonso_Bonilla_Arag%C3%B3n_International_Airport",
@@ -7330,7 +7563,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Gustavo_Rojas_Pinilla_International_Airport",
@@ -7376,7 +7610,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Mateca%C3%B1a_International_Airport",
@@ -7420,7 +7655,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Sim%C3%B3n_Bol%C3%ADvar_International_Airport_(Colombia)",
@@ -7464,7 +7700,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/La_Nubia_Airport",
@@ -7534,7 +7771,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://www.alongdustyroads.com/posts/how-to-get-to-providencia-from-san-andres",
@@ -7578,7 +7816,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://en.wikipedia.org/wiki/Tocumen_International_Airport",
@@ -7622,7 +7861,8 @@
      },
      "return_dkk": null,
      "dates_searched": [],
-     "by_date": []
+     "by_date": [],
+     "round_trips": []
     },
     "source": "manual",
     "source_url": "https://outofyourcomfortzone.net/how-to-get-from-colombia-cartagena-to-panama-the-capital-city-for-less-than-150-dollars/",
@@ -8456,6 +8696,7 @@
        "dkk": 1831,
        "dep": "09:35",
        "arr": "12:42",
+       "arr_days": 0,
        "duration_min": 247,
        "vias": [
         "PTY"
@@ -8478,6 +8719,7 @@
        "dkk": 3086,
        "dep": "04:30",
        "arr": "17:22",
+       "arr_days": 0,
        "duration_min": 712,
        "vias": [
         "SAL",
@@ -8503,6 +8745,7 @@
        "dkk": 5611,
        "dep": "04:17",
        "arr": "11:00",
+       "arr_days": 0,
        "duration_min": 343,
        "vias": [
         "PTY"
@@ -8519,6 +8762,7 @@
        "link": "https://www.momondo.dk/flight-search/SAP-CTG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1831,
       "duration_min": 247,
@@ -8612,6 +8856,7 @@
        "dkk": 1911,
        "dep": "08:40",
        "arr": "12:41",
+       "arr_days": 0,
        "duration_min": 301,
        "vias": [
         "PTY"
@@ -8634,6 +8879,7 @@
        "dkk": 2095,
        "dep": "07:30",
        "arr": "14:09",
+       "arr_days": 0,
        "duration_min": 339,
        "vias": [
         "PTY"
@@ -8656,6 +8902,7 @@
        "dkk": 2095,
        "dep": "04:56",
        "arr": "11:00",
+       "arr_days": 0,
        "duration_min": 304,
        "vias": [
         "PTY"
@@ -8678,6 +8925,7 @@
        "dkk": 2528,
        "dep": "14:50",
        "arr": "21:45",
+       "arr_days": 0,
        "duration_min": 355,
        "vias": [
         "BOG"
@@ -8700,6 +8948,7 @@
        "dkk": 2019,
        "dep": "07:30",
        "arr": "17:06",
+       "arr_days": 0,
        "duration_min": 516,
        "vias": [
         "PTY"
@@ -8716,6 +8965,7 @@
        "link": "https://www.momondo.dk/flight-search/SAL-CLO/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1911,
       "duration_min": 301,
@@ -8807,6 +9057,7 @@
        "dkk": 2162,
        "dep": "08:40",
        "arr": "12:42",
+       "arr_days": 0,
        "duration_min": 302,
        "vias": [
         "PTY"
@@ -8829,6 +9080,7 @@
        "dkk": 1855,
        "dep": "04:17",
        "arr": "11:00",
+       "arr_days": 0,
        "duration_min": 343,
        "vias": [
         "PTY"
@@ -8845,6 +9097,7 @@
        "link": "https://www.momondo.dk/flight-search/SAP-CLO/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1855,
       "duration_min": 343,
@@ -8940,6 +9193,7 @@
        "dkk": 2064,
        "dep": "08:40",
        "arr": "13:05",
+       "arr_days": 0,
        "duration_min": 325,
        "vias": [
         "PTY"
@@ -8962,6 +9216,7 @@
        "dkk": 1951,
        "dep": "03:16",
        "arr": "11:00",
+       "arr_days": 0,
        "duration_min": 404,
        "vias": [
         "PTY"
@@ -8984,6 +9239,7 @@
        "dkk": 1876,
        "dep": "03:16",
        "arr": "17:06",
+       "arr_days": 0,
        "duration_min": 770,
        "vias": [
         "PTY"
@@ -9000,6 +9256,7 @@
        "link": "https://www.momondo.dk/flight-search/MGA-CLO/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1876,
       "duration_min": 770,
@@ -9094,6 +9351,7 @@
        "dkk": 6063,
        "dep": "04:30",
        "arr": "02:40",
+       "arr_days": 1,
        "duration_min": 1210,
        "vias": [
         "SAL",
@@ -9118,6 +9376,7 @@
        "dkk": 5432,
        "dep": "03:45",
        "arr": "18:50",
+       "arr_days": 0,
        "duration_min": 1025,
        "vias": [
         "BOG",
@@ -9136,6 +9395,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 5432,
       "duration_min": 1025,
@@ -9231,6 +9491,7 @@
        "dkk": 2611,
        "dep": "06:02",
        "arr": "11:25",
+       "arr_days": 0,
        "duration_min": 323,
        "vias": [
         "MEX"
@@ -9253,6 +9514,7 @@
        "dkk": 4629,
        "dep": "13:41",
        "arr": "22:46",
+       "arr_days": 0,
        "duration_min": 545,
        "vias": [
         "PTY"
@@ -9269,6 +9531,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2611,
       "duration_min": 323,
@@ -9359,6 +9622,7 @@
        "dkk": 3127,
        "dep": "21:32",
        "arr": "11:30",
+       "arr_days": 1,
        "duration_min": 838,
        "vias": [
         "MEX"
@@ -9381,6 +9645,7 @@
        "dkk": 3335,
        "dep": "03:16",
        "arr": "22:46",
+       "arr_days": 0,
        "duration_min": 1170,
        "vias": [
         "PTY"
@@ -9397,6 +9662,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 3127,
       "duration_min": 838,
@@ -9486,6 +9752,7 @@
        "dkk": 1777,
        "dep": "21:32",
        "arr": "14:30",
+       "arr_days": 1,
        "duration_min": 958,
        "vias": [
         "MEX"
@@ -9508,6 +9775,7 @@
        "dkk": 2047,
        "dep": "09:35",
        "arr": "22:49",
+       "arr_days": 0,
        "duration_min": 854,
        "vias": [
         "PTY"
@@ -9524,6 +9792,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1777,
       "duration_min": 958,
@@ -9613,6 +9882,7 @@
        "dkk": 3340,
        "dep": "12:06",
        "arr": "18:30",
+       "arr_days": 1,
        "duration_min": 1764,
        "vias": [
         "MEX"
@@ -9635,6 +9905,7 @@
        "dkk": 1925,
        "dep": "12:02",
        "arr": "22:49",
+       "arr_days": 0,
        "duration_min": 707,
        "vias": [
         "PTY"
@@ -9651,6 +9922,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1925,
       "duration_min": 707,
@@ -9740,6 +10012,7 @@
        "dkk": 2673,
        "dep": "04:30",
        "arr": "14:45",
+       "arr_days": 0,
        "duration_min": 555,
        "vias": [
         "BOG",
@@ -9760,6 +10033,7 @@
        "dkk": 2681,
        "dep": "05:20",
        "arr": "19:55",
+       "arr_days": 0,
        "duration_min": 935,
        "vias": [
         "LIM",
@@ -9778,6 +10052,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2673,
       "duration_min": 555,
@@ -9867,6 +10142,7 @@
        "dkk": 3321,
        "dep": "22:10",
        "arr": "14:45",
+       "arr_days": 1,
        "duration_min": 935,
        "vias": [
         "BOG",
@@ -9887,6 +10163,7 @@
        "dkk": 2602,
        "dep": "03:25",
        "arr": "10:00",
+       "arr_days": 0,
        "duration_min": 455,
        "vias": [
         "BOG"
@@ -9903,6 +10180,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2602,
       "duration_min": 455,
@@ -9995,6 +10273,7 @@
        "dkk": 2384,
        "dep": "04:45",
        "arr": "14:45",
+       "arr_days": 0,
        "duration_min": 540,
        "vias": [
         "BOG",
@@ -10015,6 +10294,7 @@
        "dkk": 2468,
        "dep": "03:25",
        "arr": "10:15",
+       "arr_days": 0,
        "duration_min": 470,
        "vias": [
         "BOG"
@@ -10031,6 +10311,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2384,
       "duration_min": 540,
@@ -10124,6 +10405,7 @@
        "dkk": 3228,
        "dep": "09:20",
        "arr": "02:40",
+       "arr_days": 1,
        "duration_min": 980,
        "vias": [
         "BOG"
@@ -10143,6 +10425,7 @@
        "dkk": 2224,
        "dep": "11:54",
        "arr": "17:55",
+       "arr_days": 0,
        "duration_min": 421,
        "vias": [
         "PTY"
@@ -10159,6 +10442,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2224,
       "duration_min": 421,
@@ -10253,6 +10537,7 @@
        "dkk": 1960,
        "dep": "18:15",
        "arr": "19:05",
+       "arr_days": 1,
        "duration_min": 1490,
        "vias": [
         "MEX"
@@ -10275,6 +10560,7 @@
        "dkk": 1939,
        "dep": "15:18",
        "arr": "20:35",
+       "arr_days": 0,
        "duration_min": 317,
        "vias": [
         "MEX"
@@ -10291,6 +10577,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1939,
       "duration_min": 317,
@@ -10379,6 +10666,7 @@
        "dkk": 1715,
        "dep": "00:12",
        "arr": "22:50",
+       "arr_days": 0,
        "duration_min": 1298,
        "vias": [
         "PTY"
@@ -10401,6 +10689,7 @@
        "dkk": 1639,
        "dep": "14:00",
        "arr": "18:20",
+       "arr_days": 0,
        "duration_min": 320,
        "vias": [],
        "carriers": [
@@ -10414,6 +10703,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1639,
       "duration_min": 320,
@@ -10513,6 +10803,7 @@
        "dkk": 3671,
        "dep": "14:50",
        "arr": "02:20",
+       "arr_days": 1,
        "duration_min": 570,
        "vias": [
         "BOG"
@@ -10535,6 +10826,7 @@
        "dkk": 3497,
        "dep": "14:50",
        "arr": "02:20",
+       "arr_days": 1,
        "duration_min": 570,
        "vias": [
         "BOG"
@@ -10557,6 +10849,7 @@
        "dkk": 6259,
        "dep": "14:50",
        "arr": "07:00",
+       "arr_days": 1,
        "duration_min": 850,
        "vias": [
         "BOG",
@@ -10582,6 +10875,7 @@
        "dkk": 3201,
        "dep": "14:50",
        "arr": "02:20",
+       "arr_days": 1,
        "duration_min": 570,
        "vias": [
         "BOG"
@@ -10604,6 +10898,7 @@
        "dkk": 3497,
        "dep": "22:05",
        "arr": "14:45",
+       "arr_days": 1,
        "duration_min": 880,
        "vias": [
         "BOG",
@@ -10628,6 +10923,7 @@
        "dkk": 4645,
        "dep": "22:05",
        "arr": "14:45",
+       "arr_days": 1,
        "duration_min": 880,
        "vias": [
         "BOG",
@@ -10652,6 +10948,7 @@
        "dkk": 2622,
        "dep": "03:25",
        "arr": "15:40",
+       "arr_days": 0,
        "duration_min": 855,
        "vias": [
         "BOG"
@@ -10668,6 +10965,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2622,
       "duration_min": 855,
@@ -10772,6 +11070,7 @@
        "dkk": 4877,
        "dep": "09:00",
        "arr": "04:35",
+       "arr_days": 1,
        "duration_min": 1055,
        "vias": [
         "SJO",
@@ -10800,6 +11099,7 @@
        "dkk": 5101,
        "dep": "03:45",
        "arr": "18:30",
+       "arr_days": 0,
        "duration_min": 1005,
        "vias": [
         "BOG",
@@ -10818,6 +11118,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 4877,
       "duration_min": 1055,
@@ -10921,6 +11222,7 @@
        "dkk": 2888,
        "dep": "18:09",
        "arr": "03:44",
+       "arr_days": 1,
        "duration_min": 515,
        "vias": [
         "PTY"
@@ -10940,6 +11242,7 @@
        "dkk": 2088,
        "dep": "05:30",
        "arr": "15:15",
+       "arr_days": 0,
        "duration_min": 645,
        "vias": [
         "LIM",
@@ -10958,6 +11261,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2088,
       "duration_min": 645,
@@ -11053,6 +11357,7 @@
        "dkk": 6692,
        "dep": "11:05",
        "arr": "04:00",
+       "arr_days": 1,
        "duration_min": 895,
        "vias": [
         "MEX",
@@ -11072,6 +11377,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 6692,
       "duration_min": 895,
@@ -11172,6 +11478,7 @@
        "dkk": 6456,
        "dep": "20:10",
        "arr": "02:20",
+       "arr_days": 2,
        "duration_min": 1690,
        "vias": [
         "SAL",
@@ -11193,6 +11500,7 @@
        "dkk": 4253,
        "dep": "03:25",
        "arr": "18:50",
+       "arr_days": 0,
        "duration_min": 1045,
        "vias": [
         "BOG",
@@ -11211,6 +11519,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 4253,
       "duration_min": 1045,
@@ -11306,6 +11615,7 @@
        "dkk": 7208,
        "dep": "09:40",
        "arr": "14:45",
+       "arr_days": 1,
        "duration_min": 1625,
        "vias": [
         "MIA",
@@ -11327,6 +11637,7 @@
        "dkk": 3337,
        "dep": "15:50",
        "arr": "08:40",
+       "arr_days": 1,
        "duration_min": 1130,
        "vias": [
         "BOG",
@@ -11345,6 +11656,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 3337,
       "duration_min": 1130,
@@ -11433,6 +11745,7 @@
        "dkk": 4354,
        "dep": "02:00",
        "arr": "14:45",
+       "arr_days": 0,
        "duration_min": 645,
        "vias": [
         "BOG",
@@ -11447,6 +11760,7 @@
        "link": null
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 4354,
       "duration_min": 645,
@@ -11543,6 +11857,7 @@
        "dkk": 2345,
        "dep": "10:43",
        "arr": "17:55",
+       "arr_days": 0,
        "duration_min": 372,
        "vias": [
         "PTY"
@@ -11565,6 +11880,7 @@
        "dkk": 1749,
        "dep": "07:27",
        "arr": "21:51",
+       "arr_days": 0,
        "duration_min": 804,
        "vias": [
         "MDE"
@@ -11587,6 +11903,7 @@
        "dkk": 2345,
        "dep": "10:43",
        "arr": "17:55",
+       "arr_days": 0,
        "duration_min": 372,
        "vias": [
         "PTY"
@@ -11609,6 +11926,7 @@
        "dkk": 1707,
        "dep": "09:30",
        "arr": "09:02",
+       "arr_days": 1,
        "duration_min": 1352,
        "vias": [
         "SDQ"
@@ -11631,6 +11949,7 @@
        "dkk": 1749,
        "dep": "08:37",
        "arr": "21:22",
+       "arr_days": 0,
        "duration_min": 705,
        "vias": [
         "MDE"
@@ -11647,6 +11966,7 @@
        "link": "https://www.momondo.dk/flight-search/GUA-CTG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1707,
       "duration_min": 1352,
@@ -11747,6 +12067,7 @@
        "dkk": 3002,
        "dep": "14:10",
        "arr": "15:50",
+       "arr_days": 0,
        "duration_min": 160,
        "vias": [],
        "carriers": [
@@ -11766,6 +12087,7 @@
        "dkk": 2335,
        "dep": "05:00",
        "arr": "12:41",
+       "arr_days": 0,
        "duration_min": 521,
        "vias": [
         "CLO",
@@ -11791,6 +12113,7 @@
        "dkk": 2421,
        "dep": "05:00",
        "arr": "23:38",
+       "arr_days": 0,
        "duration_min": 1178,
        "vias": [
         "CLO",
@@ -11816,6 +12139,7 @@
        "dkk": 1960,
        "dep": "14:10",
        "arr": "15:50",
+       "arr_days": 0,
        "duration_min": 160,
        "vias": [],
        "carriers": [
@@ -11835,6 +12159,7 @@
        "dkk": 2416,
        "dep": "05:40",
        "arr": "23:38",
+       "arr_days": 0,
        "duration_min": 1138,
        "vias": [
         "CLO",
@@ -11860,6 +12185,7 @@
        "dkk": 3430,
        "dep": "08:35",
        "arr": "12:41",
+       "arr_days": 0,
        "duration_min": 306,
        "vias": [
         "PTY"
@@ -11882,6 +12208,7 @@
        "dkk": 2630,
        "dep": "22:20",
        "arr": "17:15",
+       "arr_days": 1,
        "duration_min": 1075,
        "vias": [
         "LIM",
@@ -11906,6 +12233,7 @@
        "dkk": 2633,
        "dep": "22:20",
        "arr": "13:50",
+       "arr_days": 1,
        "duration_min": 870,
        "vias": [
         "LIM",
@@ -11930,6 +12258,7 @@
        "dkk": 2736,
        "dep": "14:50",
        "arr": "09:04",
+       "arr_days": 1,
        "duration_min": 1034,
        "vias": [
         "BOG",
@@ -11955,6 +12284,7 @@
        "dkk": 2732,
        "dep": "18:00",
        "arr": "14:23",
+       "arr_days": 1,
        "duration_min": 1163,
        "vias": [
         "GUA"
@@ -11972,6 +12302,7 @@
        "link": "https://www.momondo.dk/flight-search/SAL-MDE/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1960,
       "duration_min": 160,
@@ -12064,6 +12395,7 @@
        "dkk": 2678,
        "dep": "18:10",
        "arr": "02:20",
+       "arr_days": 1,
        "duration_min": 430,
        "vias": [
         "BOG"
@@ -12086,6 +12418,7 @@
        "dkk": 2678,
        "dep": "10:05",
        "arr": "02:20",
+       "arr_days": 1,
        "duration_min": 915,
        "vias": [
         "BOG"
@@ -12108,6 +12441,7 @@
        "dkk": 2931,
        "dep": "02:30",
        "arr": "14:45",
+       "arr_days": 0,
        "duration_min": 675,
        "vias": [
         "BOG",
@@ -12126,6 +12460,7 @@
        "link": "https://www.momondo.dk/flight-search/PTY-LPB/2027-01-27"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2678,
       "duration_min": 430,
@@ -12222,6 +12557,7 @@
        "dkk": 1932,
        "dep": "05:30",
        "arr": "16:25",
+       "arr_days": 0,
        "duration_min": 715,
        "vias": [
         "LIM"
@@ -12244,6 +12580,7 @@
        "dkk": 2416,
        "dep": "01:10",
        "arr": "08:15",
+       "arr_days": 0,
        "duration_min": 485,
        "vias": [
         "PTY"
@@ -12266,6 +12603,7 @@
        "dkk": 2385,
        "dep": "01:10",
        "arr": "08:15",
+       "arr_days": 0,
        "duration_min": 485,
        "vias": [
         "PTY"
@@ -12288,6 +12626,7 @@
        "dkk": 1942,
        "dep": "18:10",
        "arr": "04:35",
+       "arr_days": 1,
        "duration_min": 565,
        "vias": [
         "LIM"
@@ -12310,6 +12649,7 @@
        "dkk": 1897,
        "dep": "05:30",
        "arr": "16:25",
+       "arr_days": 0,
        "duration_min": 715,
        "vias": [
         "LIM"
@@ -12326,6 +12666,7 @@
        "link": "https://www.momondo.dk/flight-search/VVI-MDE/2027-02-01"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1897,
       "duration_min": 715,
@@ -12425,6 +12766,7 @@
        "dkk": 4339,
        "dep": "05:30",
        "arr": "18:30",
+       "arr_days": 0,
        "duration_min": 900,
        "vias": [
         "LIM",
@@ -12449,6 +12791,7 @@
        "dkk": 3231,
        "dep": "20:00",
        "arr": "14:33",
+       "arr_days": 1,
        "duration_min": 1233,
        "vias": [
         "LIM",
@@ -12475,6 +12818,7 @@
        "dkk": 3230,
        "dep": "20:00",
        "arr": "17:20",
+       "arr_days": 1,
        "duration_min": 1400,
        "vias": [
         "LIM",
@@ -12495,6 +12839,7 @@
        "link": "https://www.momondo.dk/flight-search/VVI-GDL/2027-01-27"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 3230,
       "duration_min": 1400,
@@ -12588,6 +12933,7 @@
        "dkk": 1561,
        "dep": "10:43",
        "arr": "17:06",
+       "arr_days": 0,
        "duration_min": 323,
        "vias": [
         "PTY"
@@ -12610,6 +12956,7 @@
        "dkk": 1601,
        "dep": "10:43",
        "arr": "17:06",
+       "arr_days": 0,
        "duration_min": 323,
        "vias": [
         "PTY"
@@ -12632,6 +12979,7 @@
        "dkk": 1562,
        "dep": "10:43",
        "arr": "17:34",
+       "arr_days": 0,
        "duration_min": 351,
        "vias": [
         "PTY"
@@ -12654,6 +13002,7 @@
        "dkk": 1485,
        "dep": "10:43",
        "arr": "17:06",
+       "arr_days": 0,
        "duration_min": 323,
        "vias": [
         "PTY"
@@ -12670,6 +13019,7 @@
        "link": "https://www.momondo.dk/flight-search/GUA-CLO/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1485,
       "duration_min": 323,
@@ -12762,6 +13112,7 @@
        "dkk": 1202,
        "dep": "19:54",
        "arr": "22:54",
+       "arr_days": 0,
        "duration_min": 120,
        "vias": [],
        "carriers": [
@@ -12781,6 +13132,7 @@
        "dkk": 978,
        "dep": "05:10",
        "arr": "13:10",
+       "arr_days": 0,
        "duration_min": 420,
        "vias": [
         "SAL"
@@ -12803,6 +13155,7 @@
        "dkk": 945,
        "dep": "07:10",
        "arr": "10:10",
+       "arr_days": 0,
        "duration_min": 120,
        "vias": [],
        "carriers": [
@@ -12822,6 +13175,7 @@
        "dkk": 1205,
        "dep": "16:40",
        "arr": "19:40",
+       "arr_days": 0,
        "duration_min": 120,
        "vias": [],
        "carriers": [
@@ -12841,6 +13195,7 @@
        "dkk": 1095,
        "dep": "08:43",
        "arr": "14:45",
+       "arr_days": 0,
        "duration_min": 302,
        "vias": [
         "PTY"
@@ -12863,6 +13218,7 @@
        "dkk": 1220,
        "dep": "16:05",
        "arr": "19:00",
+       "arr_days": 0,
        "duration_min": 115,
        "vias": [],
        "carriers": [
@@ -12876,6 +13232,7 @@
        "link": "https://www.momondo.dk/flight-search/SJO-MDE/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 945,
       "duration_min": 120,
@@ -12966,6 +13323,7 @@
        "dkk": 1320,
        "dep": "03:59",
        "arr": "11:00",
+       "arr_days": 0,
        "duration_min": 361,
        "vias": [
         "PTY"
@@ -12988,6 +13346,7 @@
        "dkk": 1292,
        "dep": "05:10",
        "arr": "21:51",
+       "arr_days": 0,
        "duration_min": 941,
        "vias": [
         "SAL",
@@ -13013,6 +13372,7 @@
        "dkk": 1352,
        "dep": "05:10",
        "arr": "17:22",
+       "arr_days": 0,
        "duration_min": 672,
        "vias": [
         "SAL",
@@ -13038,6 +13398,7 @@
        "dkk": 1320,
        "dep": "05:34",
        "arr": "11:00",
+       "arr_days": 0,
        "duration_min": 266,
        "vias": [
         "PTY"
@@ -13054,6 +13415,7 @@
        "link": "https://www.momondo.dk/flight-search/SJO-CTG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1292,
       "duration_min": 941,
@@ -13158,6 +13520,7 @@
        "dkk": 2784,
        "dep": "20:55",
        "arr": "13:05",
+       "arr_days": 1,
        "duration_min": 1030,
        "vias": [
         "MDE",
@@ -13183,6 +13546,7 @@
        "dkk": 2185,
        "dep": "05:25",
        "arr": "06:05",
+       "arr_days": 1,
        "duration_min": 1420,
        "vias": [
         "SAL",
@@ -13208,6 +13572,7 @@
        "dkk": 3714,
        "dep": "19:35",
        "arr": "02:00",
+       "arr_days": 1,
        "duration_min": 325,
        "vias": [
         "SAL"
@@ -13230,6 +13595,7 @@
        "dkk": 2212,
        "dep": "05:25",
        "arr": "21:30",
+       "arr_days": 0,
        "duration_min": 905,
        "vias": [
         "SAL",
@@ -13255,6 +13621,7 @@
        "dkk": 3124,
        "dep": "19:30",
        "arr": "05:15",
+       "arr_days": 1,
        "duration_min": 525,
        "vias": [
         "MIA"
@@ -13277,6 +13644,7 @@
        "dkk": 2074,
        "dep": "03:16",
        "arr": "06:05",
+       "arr_days": 1,
        "duration_min": 1549,
        "vias": [
         "PTY",
@@ -13296,6 +13664,7 @@
        "link": "https://www.momondo.dk/flight-search/MGA-BOG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2074,
       "duration_min": 1549,
@@ -13399,6 +13768,7 @@
        "dkk": 2338,
        "dep": "05:00",
        "arr": "23:08",
+       "arr_days": 0,
        "duration_min": 1148,
        "vias": [
         "CLO",
@@ -13424,6 +13794,7 @@
        "dkk": 2091,
        "dep": "05:42",
        "arr": "07:47",
+       "arr_days": 0,
        "duration_min": 185,
        "vias": [],
        "carriers": [
@@ -13443,6 +13814,7 @@
        "dkk": 2083,
        "dep": "20:25",
        "arr": "10:51",
+       "arr_days": 1,
        "duration_min": 926,
        "vias": [
         "SDQ"
@@ -13465,6 +13837,7 @@
        "dkk": 1855,
        "dep": "06:47",
        "arr": "08:52",
+       "arr_days": 0,
        "duration_min": 185,
        "vias": [],
        "carriers": [
@@ -13484,6 +13857,7 @@
        "dkk": 2718,
        "dep": "10:05",
        "arr": "17:30",
+       "arr_days": 0,
        "duration_min": 505,
        "vias": [
         "SDQ"
@@ -13506,6 +13880,7 @@
        "dkk": 1695,
        "dep": "09:30",
        "arr": "19:40",
+       "arr_days": 0,
        "duration_min": 550,
        "vias": [
         "SDQ"
@@ -13528,6 +13903,7 @@
        "dkk": 1453,
        "dep": "08:37",
        "arr": "12:32",
+       "arr_days": 0,
        "duration_min": 175,
        "vias": [],
        "carriers": [
@@ -13547,6 +13923,7 @@
        "dkk": 1476,
        "dep": "16:15",
        "arr": "09:20",
+       "arr_days": 1,
        "duration_min": 965,
        "vias": [
         "SDQ"
@@ -13563,6 +13940,7 @@
        "link": "https://www.momondo.dk/flight-search/GUA-MDE/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1453,
       "duration_min": 175,
@@ -13656,6 +14034,7 @@
        "dkk": 1902,
        "dep": "09:15",
        "arr": "12:42",
+       "arr_days": 0,
        "duration_min": 267,
        "vias": [
         "PTY"
@@ -13678,6 +14057,7 @@
        "dkk": 1901,
        "dep": "18:20",
        "arr": "23:32",
+       "arr_days": 0,
        "duration_min": 372,
        "vias": [
         "PTY"
@@ -13700,6 +14080,7 @@
        "dkk": 1901,
        "dep": "09:15",
        "arr": "12:42",
+       "arr_days": 0,
        "duration_min": 267,
        "vias": [
         "PTY"
@@ -13722,6 +14103,7 @@
        "dkk": 1902,
        "dep": "09:15",
        "arr": "12:42",
+       "arr_days": 0,
        "duration_min": 267,
        "vias": [],
        "carriers": [],
@@ -13737,6 +14119,7 @@
        "dkk": 2144,
        "dep": "04:17",
        "arr": "10:55",
+       "arr_days": 0,
        "duration_min": 338,
        "vias": [
         "PTY"
@@ -13759,6 +14142,7 @@
        "dkk": 2212,
        "dep": "04:17",
        "arr": "09:45",
+       "arr_days": 0,
        "duration_min": 268,
        "vias": [
         "PTY"
@@ -13781,6 +14165,7 @@
        "dkk": 2609,
        "dep": "04:30",
        "arr": "13:10",
+       "arr_days": 0,
        "duration_min": 460,
        "vias": [
         "SAL"
@@ -13803,6 +14188,7 @@
        "dkk": 2144,
        "dep": "04:17",
        "arr": "10:55",
+       "arr_days": 0,
        "duration_min": 338,
        "vias": [
         "PTY"
@@ -13819,6 +14205,7 @@
        "link": "https://www.momondo.dk/flight-search/SAP-MDE/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1901,
       "duration_min": 267,
@@ -13913,6 +14300,7 @@
        "dkk": 2077,
        "dep": "12:40",
        "arr": "15:54",
+       "arr_days": 0,
        "duration_min": 254,
        "vias": [
         "PTY"
@@ -13934,6 +14322,7 @@
        "dkk": 2077,
        "dep": "09:15",
        "arr": "13:05",
+       "arr_days": 0,
        "duration_min": 290,
        "vias": [
         "PTY"
@@ -13956,6 +14345,7 @@
        "dkk": 2336,
        "dep": "14:10",
        "arr": "18:30",
+       "arr_days": 0,
        "duration_min": 320,
        "vias": [
         "SAL"
@@ -13978,6 +14368,7 @@
        "dkk": 2077,
        "dep": "09:15",
        "arr": "13:05",
+       "arr_days": 0,
        "duration_min": 290,
        "vias": [
         "PTY"
@@ -14000,6 +14391,7 @@
        "dkk": 1696,
        "dep": "03:16",
        "arr": "08:15",
+       "arr_days": 0,
        "duration_min": 239,
        "vias": [
         "PTY"
@@ -14016,6 +14408,7 @@
        "link": "https://www.momondo.dk/flight-search/MGA-MDE/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 1696,
       "duration_min": 239,
@@ -14109,6 +14502,7 @@
        "dkk": 2333,
        "dep": "21:58",
        "arr": "15:50",
+       "arr_days": 1,
        "duration_min": 1132,
        "vias": [
         "MDE"
@@ -14132,6 +14526,7 @@
        "dkk": 2283,
        "dep": "10:50",
        "arr": "15:50",
+       "arr_days": 0,
        "duration_min": 360,
        "vias": [
         "MDE"
@@ -14155,6 +14550,7 @@
        "dkk": 2255,
        "dep": "14:50",
        "arr": "22:20",
+       "arr_days": 0,
        "duration_min": 390,
        "vias": [
         "BOG"
@@ -14177,6 +14573,7 @@
        "dkk": 2261,
        "dep": "14:50",
        "arr": "22:20",
+       "arr_days": 0,
        "duration_min": 390,
        "vias": [
         "BOG"
@@ -14193,6 +14590,7 @@
        "link": "https://www.momondo.dk/flight-search/SAL-CTG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2255,
       "duration_min": 390,
@@ -14292,6 +14690,7 @@
        "dkk": 2610,
        "dep": "03:50",
        "arr": "13:05",
+       "arr_days": 0,
        "duration_min": 615,
        "vias": [
         "MDE",
@@ -14317,6 +14716,7 @@
        "dkk": 2755,
        "dep": "08:15",
        "arr": "15:54",
+       "arr_days": 0,
        "duration_min": 519,
        "vias": [
         "CLO",
@@ -14341,6 +14741,7 @@
        "dkk": 2700,
        "dep": "22:45",
        "arr": "13:05",
+       "arr_days": 1,
        "duration_min": 920,
        "vias": [
         "MDE",
@@ -14366,6 +14767,7 @@
        "dkk": 3038,
        "dep": "03:16",
        "arr": "08:15",
+       "arr_days": 0,
        "duration_min": 239,
        "vias": [
         "PTY"
@@ -14388,6 +14790,7 @@
        "dkk": 2160,
        "dep": "03:16",
        "arr": "21:22",
+       "arr_days": 0,
        "duration_min": 1026,
        "vias": [
         "PTY",
@@ -14413,6 +14816,7 @@
        "dkk": 2270,
        "dep": "05:25",
        "arr": "15:56",
+       "arr_days": 0,
        "duration_min": 571,
        "vias": [
         "SAL",
@@ -14432,6 +14836,7 @@
        "link": "https://www.momondo.dk/flight-search/MGA-CTG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2160,
       "duration_min": 1026,
@@ -14530,6 +14935,7 @@
        "dkk": 2089,
        "dep": "16:55",
        "arr": "04:35",
+       "arr_days": 1,
        "duration_min": 580,
        "vias": [
         "LIM"
@@ -14544,6 +14950,90 @@
        "self_transfer": false,
        "searched": "2027-01-28",
        "link": "https://www.momondo.dk/flight-search/SJO-VVI/2027-01-28"
+      }
+     ],
+     "round_trips": [
+      {
+       "from": "SJO",
+       "to": "VVI",
+       "dkk": 6376,
+       "out": {
+        "date": "2026-12-20",
+        "dep": "17:53",
+        "arr": "03:42",
+        "arr_days": 1,
+        "duration_min": 469,
+        "vias": [
+         "PTY"
+        ],
+        "carriers": [
+         "Copa Airlines"
+        ],
+        "flights": [
+         "Copa Airlines 115",
+         "Copa Airlines 221"
+        ]
+       },
+       "home": {
+        "date": "2026-12-28",
+        "dep": "01:10",
+        "arr": "07:05",
+        "arr_days": 0,
+        "duration_min": 475,
+        "vias": [
+         "PTY"
+        ],
+        "carriers": [
+         "Copa Airlines"
+        ],
+        "flights": [
+         "Copa Airlines 126",
+         "Copa Airlines 787"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://www.momondo.dk/flight-search/SJO-VVI/2026-12-20/2026-12-28"
+      },
+      {
+       "from": "SJO",
+       "to": "VVI",
+       "dkk": 6376,
+       "out": {
+        "date": "2026-12-20",
+        "dep": "09:59",
+        "arr": "22:48",
+        "arr_days": 0,
+        "duration_min": 649,
+        "vias": [
+         "PTY"
+        ],
+        "carriers": [
+         "Copa Airlines"
+        ],
+        "flights": [
+         "Copa Airlines 341",
+         "Copa Airlines 127"
+        ]
+       },
+       "home": {
+        "date": "2026-12-28",
+        "dep": "01:10",
+        "arr": "07:05",
+        "arr_days": 0,
+        "duration_min": 475,
+        "vias": [
+         "PTY"
+        ],
+        "carriers": [
+         "Copa Airlines"
+        ],
+        "flights": [
+         "Copa Airlines 126",
+         "Copa Airlines 787"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://www.momondo.dk/flight-search/SJO-VVI/2026-12-20/2026-12-28"
       }
      ],
      "cheapest": {
@@ -14644,6 +15134,7 @@
        "dkk": 3491,
        "dep": "07:30",
        "arr": "22:46",
+       "arr_days": 0,
        "duration_min": 796,
        "vias": [
         "PTY"
@@ -14666,6 +15157,7 @@
        "dkk": 3560,
        "dep": "05:15",
        "arr": "06:35",
+       "arr_days": 1,
        "duration_min": 1640,
        "vias": [
         "LPB",
@@ -14687,6 +15179,7 @@
        "link": "https://www.momondo.dk/flight-search/VVI-SAL/2027-02-01"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 3491,
       "duration_min": 796,
@@ -14785,6 +15278,7 @@
        "dkk": 2419,
        "dep": "18:30",
        "arr": "12:42",
+       "arr_days": 1,
        "duration_min": 1152,
        "vias": [
         "MDE",
@@ -14810,6 +15304,7 @@
        "dkk": 3100,
        "dep": "04:30",
        "arr": "18:45",
+       "arr_days": 0,
        "duration_min": 795,
        "vias": [
         "SAL"
@@ -14826,6 +15321,7 @@
        "link": "https://www.momondo.dk/flight-search/SAP-BOG/2027-01-10"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 2419,
       "duration_min": 1152,
@@ -14922,6 +15418,7 @@
        "dkk": 3424,
        "dep": "10:01",
        "arr": "07:35",
+       "arr_days": 1,
        "duration_min": 1174,
        "vias": [
         "PTY",
@@ -14941,6 +15438,7 @@
        "link": "https://www.momondo.dk/flight-search/SJO-LPB/2027-01-27"
       }
      ],
+     "round_trips": [],
      "cheapest": {
       "dkk": 3424,
       "duration_min": 1174,

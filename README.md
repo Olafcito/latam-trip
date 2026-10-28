@@ -18,7 +18,9 @@ The app reads three files in `data/web/`. Rebuild them after any change to the n
 
     python3 -I src/build_web_data.py
 
-For crawled flights the exporter also reads `data/crawl.db` and keeps the cheapest fare per departure date and direction, with the real departure time. A search for one date returns flights on the days around it, so these dates can differ from the date that was searched. Flights that were only researched have no dates.
+For crawled flights the exporter also reads `data/crawl.db` and keeps the cheapest fare per departure date and direction, with the real departure time. A search for one date returns flights on the days around it, so these dates can differ from the date that was searched. Flights that were only researched have no dates. Regional return quotes are listed one by one with both legs.
+
+The map shows only quotes the crawler accepted (`ok = 1`). Ad offers, incomplete results and trips over 30 hours stay in the DB but off the map. If an accepted regional quote has no flight edge in `data/network/map.json`, the exporter prints a warning, so anything missing on the map is missing from the data.
 
 Add `--fetch-elevation` to look up altitudes for new places. The result is cached in `data/network/elevation.json`.
 

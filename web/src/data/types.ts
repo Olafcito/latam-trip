@@ -62,12 +62,36 @@ export interface DatedFare {
   dkk: number | null
   dep: string | null // HH:MM local
   arr: string | null
+  arr_days: number // the arrival is this many days after the departure
   duration_min: number | null
   vias: string[]
   carriers: string[]
   flights: string[]
   self_transfer: boolean
   searched: string // the date the search asked for
+  link: string | null
+}
+
+/** One leg of a return ticket, as flown. */
+export interface FlownLeg {
+  date: string | null
+  dep: string | null
+  arr: string | null
+  arr_days: number
+  duration_min: number | null
+  vias: string[]
+  carriers: string[]
+  flights: string[]
+}
+
+/** A crawled return ticket: out from `from` to `to`, home the other way. */
+export interface RoundTrip {
+  from: string
+  to: string
+  dkk: number | null
+  out: FlownLeg
+  home: FlownLeg
+  self_transfer: boolean
   link: string | null
 }
 
@@ -79,6 +103,7 @@ export interface FlightInfo {
   return_dkk: { min: number | null; observed_at: string | null } | null
   dates_searched: string[]
   by_date?: DatedFare[]
+  round_trips?: RoundTrip[]
   cheapest?: FlightQuote | null
   fastest?: FlightQuote | null
   flags?: string[]
