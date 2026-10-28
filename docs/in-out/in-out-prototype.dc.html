@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fly in, fly home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F2EE}
+a{color:#1F4FB8}
+.io,.io *{box-sizing:border-box}
+.io{width:100%;min-height:100vh;display:flex;flex-wrap:wrap;align-content:flex-start;gap:20px;padding:24px;background:#F4F2EE;color:#1E2328;font-family:Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.io button{font:inherit;color:inherit}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes tileIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+
+/* header */
+.head{flex:1 1 100%;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;animation:rise .5s ease both}
+.title{margin:0;font-size:24px;font-weight:700;letter-spacing:-.02em}
+.subt{margin:4px 0 0;font-size:13px;color:#6E747C}
+.ctrls{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.seg{display:flex;padding:3px;border-radius:10px;background:#E8E5DF}
+.sbtn{min-height:32px;padding:0 14px;border:0;border-radius:8px;background:transparent;font-size:13px;font-weight:600;color:#5B6169;cursor:pointer;transition:background .2s ease,color .2s ease,box-shadow .2s ease}
+.sbtn.on{background:#FFFFFF;color:#1E2328;box-shadow:0 1px 3px #0000001F}
+.chip{min-height:32px;display:flex;align-items:center;gap:7px;padding:0 12px;border-radius:999px;border:1px solid #D8D4CC;background:#FFFFFF;font-size:12.5px;font-weight:500;color:#40464D;cursor:pointer;transition:border-color .2s ease,background .2s ease}
+.chip:hover{border-color:#A9A49A}
+.chip.on{background:#1E2328;border-color:#1E2328;color:#FFFFFF}
+.chip .ck{width:13px;height:13px;border-radius:4px;border:1.5px solid currentColor;display:grid;place-items:center;opacity:.8}
+
+/* table */
+.tablecard{flex:1 1 560px;min-width:0;background:#FFFFFF;border-radius:16px;padding:18px 18px 14px;box-shadow:0 1px 2px #0000000D,0 8px 24px -16px #00000033;animation:rise .5s .05s ease both}
+.mx-head,.mx-row{display:grid;grid-template-columns:120px repeat(13,minmax(0,1fr));gap:4px;align-items:center}
+.mx-corner{font-size:11px;color:#8A8F96;line-height:1.3}
+.mx-ch{text-align:center;font-size:11px;font-weight:600;color:#6E747C;padding-bottom:6px;border-radius:6px 6px 0 0;transition:color .15s ease,background .15s ease}
+.mx-ch.hot{background:#F1EFEA;color:#1E2328}
+.mx-ch.sel{color:#1F4FB8}
+.mx-reg{margin:10px 0 3px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9A9EA4}
+.mx-row{border-radius:8px;transition:background .15s ease}
+.mx-row.hot{background:#F6F4F0}
+.mx-rh{display:flex;flex-direction:column;padding-left:6px;line-height:1.2;overflow:hidden}
+.mx-rh b{font-size:12.5px;font-weight:600;color:#1E2328;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mx-rh span{font-size:10.5px;color:#9A9EA4}
+.mx-row.sel .mx-rh b{color:#1F4FB8}
+.mx-c{position:relative;height:30px;padding:0;border:0;border-radius:7px;display:grid;place-items:center;font-size:11.5px;font-weight:600;cursor:pointer;animation:tileIn .35s ease both;transition:background .4s ease,color .3s ease,transform .15s ease,box-shadow .15s ease}
+.mx-c:hover{transform:scale(1.1);z-index:2;box-shadow:0 4px 12px -4px #00000040}
+.mx-c.none{background:transparent;cursor:default;animation:none}
+.mx-c.none::after{content:"";width:4px;height:4px;border-radius:50%;background:#E3E0DA}
+.mx-c.none:hover{transform:none;box-shadow:none}
+.mx-c.off{background:#F4F2EE;color:#C2BEB6}
+.mx-c.xh{box-shadow:inset 0 0 0 1.5px #1E232833}
+.mx-c.sel{box-shadow:0 0 0 2px #FFFFFF,0 0 0 4px #1E2328;z-index:3}
+.mx-c.ret::before{content:"";position:absolute;left:4px;top:4px;width:5px;height:5px;border-radius:50%;border:1.5px solid currentColor;opacity:.6}
+.b0{background:#1F4FB8;color:#FFFFFF}
+.b1{background:#4A73D3;color:#FFFFFF}
+.b2{background:#8AA6E6;color:#10244F}
+.b3{background:#BFD0F3;color:#1C2D52}
+.b4{background:#E6EDFB;color:#3B4A66}
+.pips{position:absolute;right:3px;bottom:3px;display:flex;gap:2px}
+.pips i{width:5px;height:5px;border-radius:50%;box-shadow:0 0 0 1px #FFFFFF}
+.mx-foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #EFECE6}
+.read{font-size:12.5px;color:#40464D;min-height:18px}
+.key{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:11.5px;color:#6E747C}
+.ramp{display:flex;gap:2px}
+.ramp i{width:16px;height:9px;border-radius:3px}
+.kk{display:flex;align-items:center;gap:5px}
+.kk i{width:7px;height:7px;border-radius:50%}
+
+/* detail */
+.detail{flex:1 1 440px;max-width:600px;min-width:0;background:#FFFFFF;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px;box-shadow:0 1px 2px #0000000D,0 8px 24px -16px #00000033;animation:rise .5s .1s ease both}
+.dview{display:flex;flex-direction:column;gap:16px;animation:rise .35s ease both}
+.d-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.d-kick{margin:0;font-size:12px;font-weight:500;color:#6E747C;display:flex;align-items:center;gap:6px}
+.d-route{margin:4px 0 0;font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.d-route span{color:#9A9EA4;font-weight:500}
+.d-price{text-align:right}
+.d-total{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.d-break{margin-top:4px;font-size:12px;color:#6E747C}
+.rating{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:3px 10px;border-radius:999px;background:#F1EFEA;font-size:12px;font-weight:600;color:#40464D}
+.rating i{font-style:normal;font-weight:500;color:#9A9EA4}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.obtn{min-height:32px;display:flex;align-items:center;gap:7px;padding:0 12px;border-radius:8px;border:1px solid #D8D4CC;background:#FFFFFF;font-size:12.5px;font-weight:500;cursor:pointer;transition:border-color .2s ease,background .2s ease}
+.obtn:hover{border-color:#A9A49A}
+.obtn.on{border-color:#1E2328;background:#1E2328;color:#FFFFFF}
+.gd{width:8px;height:8px;border-radius:50%;flex:none}
+.legs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.leg-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #EFECE6}
+.leg-k{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.leg-k.out{color:#1F4FB8}
+.leg-k.home{color:#2E7D5B}
+.leg-s{font-size:12px;color:#6E747C}
+
+/* itinerary: time | line | place */
+.it{display:flex;flex-direction:column}
+.pl{display:grid;grid-template-columns:50px 18px minmax(0,1fr);align-items:start;column-gap:8px;animation:rise .35s ease both}
+.tm{display:flex;flex-direction:column;align-items:flex-end;font-size:13px;font-weight:600;line-height:1.35}
+.tm span{font-size:11.5px;font-weight:500;color:#9A9EA4}
+.dt{position:relative;height:100%;display:flex;justify-content:center}
+.dt i{margin-top:4px;width:11px;height:11px;border-radius:50%;background:#FFFFFF;border:2.5px solid #1E2328;z-index:1}
+.pl.end .dt i{background:#1E2328}
+.pl.spain .dt i{border-color:#D9822B}
+.nm{line-height:1.35;padding-bottom:2px}
+.nm b{font-size:13.5px;font-weight:600}
+.nm .cd{font-size:11.5px;color:#9A9EA4;margin-left:4px}
+.nm .dy{display:block;font-size:11.5px;color:#6E747C}
+.wt{display:inline-flex;align-items:center;gap:5px;margin-top:3px;padding:2px 8px;border-radius:6px;background:#F1EFEA;font-size:11.5px;font-weight:500;color:#40464D}
+.wt.long{background:#FBEBD7;color:#8A4B0F}
+.wt.night{background:#ECE8FA;color:#4B3C8C}
+.cn{display:grid;grid-template-columns:50px 18px minmax(0,1fr);column-gap:8px;min-height:30px;animation:rise .35s ease both}
+.cn .ln{justify-self:center;width:2px;background:#1E2328}
+.cn.out .ln{background:#1F4FB8}
+.cn.home .ln{background:#2E7D5B}
+.cn.spain .ln{background:repeating-linear-gradient(180deg,#D9822B 0 4px,transparent 4px 7px)}
+.cn .tx{align-self:center;font-size:11.5px;color:#6E747C;display:flex;align-items:center;gap:6px}
+.cn .tx b{color:#40464D;font-weight:600}
+.flags{display:flex;flex-wrap:wrap;gap:6px}
+.flag{padding:3px 9px;border-radius:999px;background:#F1EFEA;font-size:12px;font-weight:500;color:#40464D}
+.flag.warn{background:#FBEBD7;color:#8A4B0F}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.pbtn{min-height:40px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;border-radius:10px;font-size:13.5px;font-weight:600;text-decoration:none;cursor:pointer}
+.pbtn.primary{flex:1;border:0;background:#1E2328;color:#FFFFFF}
+.pbtn.primary:hover{background:#353C44}
+.pbtn.ghost{border:1px solid #D8D4CC;background:#FFFFFF;color:#1E2328}
+.pbtn.ghost:hover{border-color:#A9A49A}
+.src{margin:0;font-size:11.5px;color:#9A9EA4}
+.empty{font-size:14px;color:#6E747C}
+@media (prefers-reduced-motion: reduce){
+  .io *,.io *::before,.io *::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</helmet>
+<div class="io">
+  <header class="head">
+    <div>
+      <h1 class="title">Fly in, fly home</h1>
+      <p class="subt">Every long-haul ticket we found, from Copenhagen and back</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Show">
+        <button class="sbtn {{byPriceCls}}" aria-pressed="{{byPricePressed}}" onClick="{{byPrice}}">Price</button>
+        <button class="sbtn {{byRateCls}}" aria-pressed="{{byRatePressed}}" onClick="{{byRate}}">Rating</button>
+      </div>
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="3">
+        <button class="chip {{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.toggle}}"><span class="ck"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>{{f.label}}</button>
+      </sc-for>
+    </div>
+  </header>
+
+  <section class="tablecard" aria-label="Arrival and departure airports">
+    <div class="mx-head">
+      <span class="mx-corner">Fly in to ↓<br>Fly home from →</span>
+      <sc-for list="{{mcols}}" as="c" hint-placeholder-count="13">
+        <span class="mx-ch {{c.cls}}" title="{{c.name}}">{{c.code}}</span>
+      </sc-for>
+    </div>
+    <div onMouseLeave="{{leaveCell}}">
+      <sc-for list="{{mrows}}" as="r" hint-placeholder-count="13">
+        <sc-if value="{{r.regionStart}}" hint-placeholder-val="{{ false }}"><div class="mx-reg">{{r.region}}</div></sc-if>
+        <div class="mx-row {{r.cls}}" style="margin-bottom: 4px">
+          <span class="mx-rh"><b>{{r.name}}</b><span>{{r.code}}</span></span>
+          <sc-for list="{{r.cells}}" as="x" hint-placeholder-count="13">
+            <button class="mx-c {{x.cls}}" style="animation-delay: {{x.delay}}" onClick="{{x.pick}}" onMouseEnter="{{x.enter}}" aria-label="{{x.aria}}" disabled="{{x.disabled}}">{{x.label}}<span class="pips"><sc-for list="{{x.pips}}" as="p" hint-placeholder-count="0"><i style="background: {{p.color}}"></i></sc-for></span></button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+    <div class="mx-foot">
+      <span class="read">{{readout}}</span>
+      <div class="key">
+        <span class="ramp"><i class="b0"></i><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></span>
+        <span>{{rampLabel}}</span>
+        <sc-for list="{{gwLegend}}" as="g" hint-placeholder-count="3"><span class="kk"><i style="background: {{g.color}}"></i>{{g.label}}</span></sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail" aria-label="Selected journey">
+    <sc-for list="{{details}}" as="d" hint-placeholder-count="1">
+      <div class="dview">
+        <div class="d-top">
+          <div>
+            <p class="d-kick"><span class="gd" style="background: {{d.gColor}}"></span>{{d.kind}}</p>
+            <h2 class="d-route">{{d.inName}} <span>in</span> · {{d.outName}} <span>home</span></h2>
+          </div>
+          <div class="d-price">
+            <div class="d-total">{{d.total}}</div>
+            <div class="d-break">{{d.breakdown}}</div>
+            <span class="rating" title="Placeholder until the backend calculates it">Rating {{d.rating}} <i>tbd</i></span>
+          </div>
+        </div>
+
+        <sc-if value="{{d.hasOpts}}" hint-placeholder-val="{{ false }}">
+          <div class="opts" role="group" aria-label="Ways to book this pair">
+            <sc-for list="{{d.opts}}" as="o" hint-placeholder-count="2">
+              <button class="obtn {{o.cls}}" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}"><span class="gd" style="background: {{o.color}}"></span>{{o.label}} · {{o.price}}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div class="legs">
+          <sc-for list="{{d.legs}}" as="g" hint-placeholder-count="2">
+            <div>
+              <div class="leg-h"><span class="leg-k {{g.dir}}">{{g.label}}</span><span class="leg-s">{{g.summary}}</span></div>
+              <div class="it">
+                <sc-for list="{{g.items}}" as="i" hint-placeholder-count="5">
+                  <sc-if value="{{i.isPlace}}" hint-placeholder-val="{{ true }}">
+                    <div class="pl {{i.cls}}" style="animation-delay: {{i.delay}}">
+                      <div class="tm">{{i.t1}}<span>{{i.t2}}</span></div>
+                      <div class="dt"><i></i></div>
+                      <div class="nm">
+                        <b>{{i.name}}</b><span class="cd">{{i.code}}</span>
+                        <sc-if value="{{i.hasDay}}" hint-placeholder-val="{{ false }}"><span class="dy">{{i.day}}</span></sc-if>
+                        <sc-if value="{{i.hasWait}}" hint-placeholder-val="{{ false }}">
+                          <span class="wt {{i.waitCls}}">
+                            <sc-if value="{{i.night}}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Overnight"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg></sc-if>
+                            {{i.wait}}
+                          </span>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{i.isLeg}}" hint-placeholder-val="{{ false }}">
+                    <div class="cn {{i.cls}}" style="animation-delay: {{i.delay}}">
+                      <span></span><span class="ln"></span>
+                      <span class="tx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg><b>{{i.dur}}</b>{{i.note}}</span>
+                    </div>
+                  </sc-if>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{d.hasFlags}}" hint-placeholder-val="{{ false }}">
+          <div class="flags"><sc-for list="{{d.flags}}" as="f" hint-placeholder-count="2"><span class="flag {{f.cls}}">{{f.label}}</span></sc-for></div>
+        </sc-if>
+        <div class="acts">
+          <button class="pbtn primary">Add to journey</button>
+          <a class="pbtn ghost" href="#">Open search</a>
+        </div>
+        <p class="src">{{d.src}}</p>
+      </div>
+    </sc-for>
+    <sc-if value="{{noSel}}" hint-placeholder-val="{{ false }}"><p class="empty">No ticket matches the filters.</p></sc-if>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+// Real crawl data (data/crawl.db, ok = 1, cheapest effective cost per pattern), observed 28 Oct 2026.
+// [origin, home, in, out, price_dkk, eff_cost, n_quotes, source, observed, flags, tickets, outLeg, homeLeg]
+// leg = [dep "MM-DD HH:MM" local, arr local, hours, vias, layover hours, carriers]
+const Q = [["ALC","ALC","BOG","VVI",10503,17502,6,"mo","10-28",[],null,["12-03 21:30","12-04 05:50",14.33,["MAD"],[2.7],["Avianca"]],["02-03 03:45","02-04 09:45",25.0,["BOG","MAD"],[7.9,2.3],["Avianca"]]],["ALC","ALC","SAL","VVI",10280,15038,6,"mo","10-28",["basic_fare"],null,["12-02 12:35","12-02 23:38",18.05,["MAD","PTY"],[1.4,2.7],["Air Europa","Copa Airlines"]],["02-02 13:30","02-03 08:10",13.67,["MAD"],[1.8],["Air Europa"]]],["CPH","CPH","BOG","BOG",7824,12012,13,"mo","10-28",[],null,["12-03 06:00","12-03 14:30",14.5,["AMS"],[1.8],["KLM"]],["02-03 21:35","02-04 17:00",13.42,["CDG"],[1.2],["Air France"]]],["CPH","CPH","BOG","CTG",7905,11992,2,"go","10-28",[],1,["12-03 06:00","12-03 14:30",14.5,["AMS"],[1.8],["KLM"]],["02-03 18:55","02-04 13:40",12.75,["AMS"],[null],["KLM"]]],["CPH","CPH","BOG","GDL",8605,13483,2,"go","10-28",[],1,["12-03 06:00","12-03 14:30",14.5,["AMS"],[1.8],["KLM"]],["02-03 15:59","02-04 17:00",18.02,["MEX","CDG"],[2.3,1.6],["Aeromexico","Air France"]]],["CPH","CPH","BOG","LPB",9842,18716,4,"mo","10-28",["self_transfer","basic_fare"],null,["12-03 06:00","12-04 00:05",24.08,["AMS","CUR","PTY"],[3.7,2.5,1.7],["Copa Airlines","KLM","TUI Nederland"]],["02-03 15:50","02-04 20:20",23.5,["BOG","MAD"],[1.1,3.6],["Avianca","Scandinavian Airlines"]]],["CPH","CPH","BOG","MDE",8396,13034,3,"go","10-28",[],1,["12-03 06:00","12-03 14:30",14.5,["AMS"],[1.8],["KLM"]],["02-03 15:15","02-04 13:40",16.42,["PTY","AMS"],[2.0,1.2],["COPA","KLM Cityhopper"]]],["CPH","CPH","BOG","MGA",6742,14075,2,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 22:21",21.85,["LHR","MIA"],[2.0,3.9],["American","British Airways"]],["02-03 14:03","02-04 17:25",20.37,["MIA","LHR"],[4.3,2.9],["American","British Airways"]]],["CPH","CPH","BOG","SAL",6669,13842,1,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 22:21",21.85,["LHR","MIA"],[2.0,3.9],["American","British Airways"]],["02-03 15:07","02-04 17:25",19.3,["DFW","LHR"],[2.1,2.2],["American","British Airways"]]],["CPH","CPH","BOG","SAP",6730,13793,1,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 22:21",21.85,["LHR","MIA"],[2.0,3.9],["American","British Airways"]],["02-03 12:41","02-04 14:15",18.57,["MIA","LHR"],[2.4,3.0],["American","British Airways"]]],["CPH","CPH","BOG","VVI",10362,15399,27,"mo","10-28",[],null,["12-03 06:00","12-03 14:30",14.5,["AMS"],[1.8],["KLM"]],["02-03 09:05","02-04 09:10",19.08,["GRU","CDG"],[1.8,1.1],["Air France","BoA"]]],["CPH","CPH","CLO","CLO",6878,14298,3,"ex","10-28",["basic_economy","us_transit"],1,["12-03 06:30","12-03 21:46",21.27,["LHR","MIA"],[3.5,1.9],["AA"]],["02-02 15:33","02-03 17:05",19.53,["MIA","LHR"],[2.8,2.0],["AA"]]],["CPH","CPH","CLO","VVI",9885,17175,3,"go","10-28",[],1,["12-03 06:00","12-03 23:33",23.55,["AMS","PTY"],[3.8,5.4],["CM","KL"]],["02-03 11:55","02-04 16:40",23.75,["GRU","AMS"],[5.2,3.0],["G3","KL"]]],["CPH","CPH","CTG","CTG",8375,12924,12,"ex","10-28",[],1,["12-03 06:00","12-03 17:35",17.58,["AMS"],[1.8],["KL"]],["02-02 18:55","02-03 13:40",12.75,["AMS"],[1.6],["KL"]]],["CPH","CPH","CTG","VVI",10470,15969,5,"mo","10-28",[],null,["12-03 06:00","12-03 17:35",17.58,["AMS","BOG"],[1.8,1.6],["KLM"]],["02-03 09:05","02-04 09:10",19.08,["GRU","CDG"],[1.8,1.1],["Air France","BoA"]]],["CPH","CPH","GDL","BOG",8446,15584,2,"go","10-28",[],1,["12-03 08:55","12-03 22:35",20.67,["MUC","IAH"],[1.2,3.7],["Lufthansa","United"]],["02-03 09:45","02-04 12:00",20.25,["EWR","FRA"],[3.7,1.4],["Lufthansa","United"]]],["CPH","CPH","GDL","MDE",7874,15099,3,"go","10-28",[],1,["12-03 08:55","12-03 22:35",20.67,["MUC","IAH"],[1.2,3.7],["Lufthansa","United"]],["02-03 10:40","02-04 13:30",20.83,["IAH","FRA"],[1.5,3.3],["Lufthansa","United"]]],["CPH","CPH","GDL","VVI",11259,17222,6,"mo","10-28",["basic_fare"],null,["12-03 09:50","12-03 22:00",19.17,["ZRH","YYZ"],[1.6,1.3],["Air Canada","SWISS"]],["02-03 11:55","02-04 13:30",20.58,["GRU","FRA"],[2.9,1.8],["GOL","Lufthansa"]]],["CPH","CPH","GUA","BOG",7637,13319,3,"go","10-28",[],1,["12-03 06:00","12-03 22:44",23.73,["AMS","PTY"],[3.8,4.8],["COPA","KLM"]],["02-03 21:35","02-04 17:00",13.42,["CDG"],[1.2],["Air France"]]],["CPH","CPH","GUA","GDL",8175,14547,2,"go","10-28",[],1,["12-03 06:00","12-03 22:44",23.73,["AMS","PTY"],[3.8,4.8],["COPA","KLM"]],["02-03 15:59","02-04 17:00",18.02,["MEX","CDG"],[2.3,1.6],["Aeromexico","Air France"]]],["CPH","CPH","GUA","GUA",7364,15656,6,"ex","10-28",["us_transit"],1,["12-03 06:30","12-03 20:27",20.95,["LHR","MIA"],[2.0,3.9],["AA","BA"]],["02-02 06:00","02-03 14:20",25.33,["MIA","LHR"],[8.7,3.1],["AA"]]],["CPH","CPH","GUA","LPB",10842,19837,5,"go","10-28",["home_2feb"],1,["12-03 06:00","12-03 22:44",23.733,["AMS","PTY"],[3.8,4.8],["CM","KL"]],["02-02 03:25","02-03 13:40",29.25,["BOG","CTG","AMS"],[9.9,1.3,1.6],["AV","KL"]]],["CPH","CPH","GUA","MDE",7966,14098,2,"go","10-28",[],1,["12-03 06:00","12-03 22:44",23.73,["AMS","PTY"],[3.8,4.8],["COPA","KLM"]],["02-03 15:15","02-04 13:40",16.42,["PTY","AMS"],[2.0,1.2],["COPA","KLM"]]],["CPH","CPH","GUA","VVI",9274,15751,26,"go","10-28",[],1,["12-02 09:55","12-02 21:36",18.68,["AMS","SJO"],[1.3,2.4],["CM","KL"]],["02-03 11:55","02-04 16:40",23.75,["GRU","AMS"],[5.2,3.0],["G3","KL"]]],["CPH","CPH","LPB","GDL",11930,18782,3,"go","10-28",["long_layover"],1,["12-03 06:00","12-04 02:20",25.33,["AMS","BOG"],[1.8,7.0],["Avianca","KLM"]],["02-03 15:59","02-04 17:00",18.02,["MEX","CDG"],[2.3,1.6],["Aeromexico","Air France"]]],["CPH","CPH","LPB","LPB",11138,23811,1,"ki","10-28",["multi_ticket","airport_change","long_layover"],4,["12-02 15:55","12-03 14:45",27.83,["LGW","BOG","CUZ"],[4.8,4.4,1.1],["AV","D8"]],["02-02 03:25","02-03 13:30",29.08,["BOG","MAD"],[10.4,2.1],["AV","FR"]]],["CPH","CPH","LPB","SAL",10837,17524,3,"go","10-28",["long_layover"],1,["12-03 06:00","12-04 02:20",25.33,["AMS","BOG"],[1.8,7.0],["Avianca","KLM"]],["02-03 13:45","02-04 13:40",16.92,["PTY","AMS"],[1.9,1.2],["COPA","KLM Cityhopper"]]],["CPH","CPH","MDE","BOG",8383,13396,3,"go","10-28",[],1,["12-03 06:00","12-03 20:00",20.0,["AMS","PTY"],[3.8,2.1],["COPA","KLM"]],["02-03 21:35","02-04 17:00",13.42,["CDG"],[1.2],["Air France"]]],["CPH","CPH","MDE","CTG",7096,14044,2,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 21:22",20.87,["LHR","MIA"],[2.0,3.2],["American","British Airways"]],["02-03 16:38","02-04 17:25",18.78,["MIA","LHR"],[2.6,2.3],["American","British Airways"]]],["CPH","CPH","MDE","GDL",8922,14622,3,"go","10-28",[],1,["12-03 06:00","12-03 20:00",20,["AMS","PTY"],[3.8,2.1],["COPA","KLM"]],["02-03 15:59","02-04 17:00",18.0,["MEX","CDG"],[2.3,1.6],["Aeromexico","Air France"]]],["CPH","CPH","MDE","MDE",6872,14313,8,"ex","10-28",["basic_economy","us_transit"],1,["12-03 06:30","12-03 21:22",20.87,["LHR","MIA"],[2.0,3.2],["AA"]],["02-02 15:01","02-03 17:05",20.07,["MIA","LHR"],[3.5,2.0],["AA"]]],["CPH","CPH","MDE","SAL",6830,13856,2,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 21:22",20.87,["LHR","MIA"],[2.0,3.2],["American","British Airways"]],["02-03 15:07","02-04 17:25",19.3,["DFW","LHR"],[2.1,2.2],["American","British Airways"]]],["CPH","CPH","MDE","SAP",6891,13770,2,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 21:22",20.87,["LHR","MIA"],[2.0,3.2],["American","British Airways"]],["02-03 16:06","02-04 17:25",18.32,["MIA","LHR"],[2.4,2.9],["American","British Airways"]]],["CPH","CPH","MDE","VVI",10654,16516,7,"mo","10-28",[],null,["12-03 06:00","12-03 20:00",20.0,["AMS","PTY"],[3.8,2.1],["KLM"]],["02-03 09:05","02-04 09:10",19.08,["GRU","CDG"],[1.8,1.1],["Air France","BoA"]]],["CPH","CPH","MGA","BOG",6681,13812,3,"go","10-28",[],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[3.5,2.2],["American","British Airways"]],["02-03 15:15","02-04 17:25",20.17,["MIA","LHR"],[2.6,2.7],["American","British Airways"]]],["CPH","CPH","MGA","CTG",6868,13790,1,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[3.5,2.2],["American","British Airways"]],["02-03 16:38","02-04 17:25",18.78,["MIA","LHR"],[2.6,2.3],["American","British Airways"]]],["CPH","CPH","MGA","GDL",9395,16653,3,"go","10-28",[],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[3.5,2.2],["American","British Airways"]],["02-03 12:29","02-04 16:30",21.02,["DFW","HEL"],[2.4,4.2],["American","Finnair"]]],["CPH","CPH","MGA","GUA",6557,13388,1,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[3.5,2.2],["American","British Airways"]],["02-03 16:15","02-04 17:25",18.17,["MIA","LHR"],[2.2,2.3],["American","British Airways"]]],["CPH","CPH","MGA","LPB",12346,21596,1,"mo","10-28",["self_transfer","tight_connection","us_transit"],null,["12-03 06:00","12-03 18:40",19.67,["LIS","MIA"],[0.9,2.2],["Avianca","TAP Air Portugal"]],["02-03 15:50","02-04 19:50",23.5,["CUZ","BOG","MAD"],[1.1,1.1,3.6],["Avianca","Scandinavian Airlines"]]],["CPH","CPH","MGA","MDE",6855,14020,3,"go","10-28",[],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[3.5,2.2],["American","British Airways"]],["02-03 15:01","02-04 17:25",20.4,["MIA","LHR"],[3.5,2.3],["American","British Airways"]]],["CPH","CPH","MGA","MGA",6480,13890,8,"ex","10-28",["basic_economy","us_transit"],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[2.0,3.7],["AA"]],["02-02 14:03","02-03 17:05",20.03,["MIA","LHR"],[4.6,2.0],["AA"]]],["CPH","CPH","MGA","SAL",6602,13602,1,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[3.5,2.2],["American","British Airways"]],["02-03 15:07","02-04 17:25",19.3,["DFW","LHR"],[2.1,2.2],["American","British Airways"]]],["CPH","CPH","MGA","SAP",6663,13554,1,"go","10-28",["us_transit","basic_fare"],1,["12-03 06:30","12-03 20:12",20.7,["LHR","MIA"],[3.5,2.2],["American","British Airways"]],["02-03 12:41","02-04 14:15",18.57,["MIA","LHR"],[2.4,3.0],["American","British Airways"]]],["CPH","CPH","MGA","VVI",11698,18061,6,"mo","10-28",[],null,["12-03 19:20","12-04 11:30",23.17,["AMS","MEX"],[1.2,5.5],["Aeromexico","KLM"]],["02-03 09:05","02-04 09:10",19.08,["GRU","CDG"],[1.8,1.1],["Air France","BoA"]]],["CPH","CPH","PTY","PTY",8306,15387,16,"ex","10-28",["basic_economy","us_transit"],1,["12-03 06:55","12-03 20:02",19.12,["BRU","EWR"],[2.8,1.4],["SN","UA"]],["02-02 10:00","02-03 11:25",19.42,["EWR","BRU"],[3.6,1.8],["UA"]]],["CPH","CPH","PTY","VVI",10497,16610,8,"go","10-28",[],1,["12-03 10:05","12-03 20:20",16.25,["CDG"],[2.8],["AF"]],["02-03 11:55","02-04 16:40",23.75,["GRU","AMS"],[5.2,3.0],["G3","KL"]]],["CPH","CPH","SAL","BOG",7457,14874,3,"go","10-28",[],1,["12-03 07:15","12-03 22:47",22.53,["FRA","EWR"],[2.3,4.6],["Lufthansa","United"]],["02-03 09:45","02-04 12:00",20.25,["EWR","FRA"],[3.7,1.4],["Lufthansa City Airlines","United"]]],["CPH","CPH","SAL","CTG",6919,14748,3,"go","10-28",[],1,["12-03 07:15","12-03 22:47",22.53,["FRA","EWR"],[2.3,4.6],["Lufthansa","United"]],["02-03 06:25","02-04 11:25",23.0,["PTY","EWR","BRU"],[2.3,3.6,1.8],["Brussels Airlines","COPA","United"]]],["CPH","CPH","SAL","GDL",8112,13898,3,"go","10-28",[],1,["12-03 10:05","12-03 23:38",20.55,["CDG","PTY"],[2.8,2.1],["Air France","COPA"]],["02-03 15:59","02-04 17:00",18.02,["MEX","CDG"],[2.3,1.6],["Aeromexico","Air France"]]],["CPH","CPH","SAL","GUA",7194,12904,3,"go","10-28",[],1,["12-03 10:05","12-03 23:38",20.55,["CDG","PTY"],[2.8,2.1],["Air France","COPA"]],["02-03 13:09","02-04 13:40",17.52,["PTY","AMS"],[2.1,1.2],["COPA","KLM"]]],["CPH","CPH","SAL","LPB",10853,19260,3,"go","10-28",["home_2feb"],1,["12-03 10:05","12-03 23:38",20.55,["CDG","PTY"],[2.8,2.1],["AF","CM"]],["02-02 03:25","02-03 13:40",29.25,["BOG","CTG","AMS"],[9.9,1.3,1.6],["AV","KL"]]],["CPH","CPH","SAL","MDE",6885,14389,3,"go","10-28",[],1,["12-03 07:15","12-03 22:47",22.53,["FRA","EWR"],[2.3,4.6],["Lufthansa","United"]],["02-03 10:40","02-04 13:30",20.83,["IAH","FRA"],[1.5,3.3],["Lufthansa","United"]]],["CPH","CPH","SAL","MGA",8739,16344,2,"go","10-28",[],1,["12-03 07:15","12-03 22:47",22.53,["FRA","EWR"],[2.3,4.6],["Lufthansa","United"]],["02-03 09:40","02-04 14:10",21.5,["MIA","ZRH"],[3.4,4.5],["Avianca","SWISS"]]],["CPH","CPH","SAL","SAL",7347,16878,6,"ex","10-28",["basic_economy","us_transit"],1,["12-03 06:55","12-03 22:47",22.87,["BRU","EWR"],[2.8,5.1],["UA"]],["02-02 03:00","02-03 13:30",27.5,["LAX","FRA"],[8.5,1.2],["UA"]]],["CPH","CPH","SAL","SAP",7578,15217,3,"go","10-28",[],1,["12-03 07:15","12-03 22:47",22.53,["FRA","EWR"],[2.3,4.6],["Lufthansa","United"]],["02-03 13:41","02-04 18:25",21.73,["IAH","FRA"],[2.2,5.3],["Lufthansa","United"]]],["CPH","CPH","SAL","VVI",9071,15528,26,"go","10-28",[],1,["12-04 12:05","12-04 23:38",18.55,["AMS","PTY"],[1.2,2.5],["CM","KL"]],["02-03 11:55","02-04 16:40",23.75,["GRU","AMS"],[5.2,3.0],["G3","KL"]]],["CPH","CPH","SAP","BOG",7387,17071,3,"go","10-28",["long_layover"],1,["12-03 14:15","12-04 12:02",28.78,["AMS","ATL"],[1.5,13.0],["Delta","KLM"]],["02-03 09:00","02-04 09:00",18.0,["ATL","AMS"],[1.9,1.8],["Delta","KLM"]]],["CPH","CPH","SAP","CTG",7336,16508,2,"go","10-28",["us_transit","long_layover"],1,["12-03 14:15","12-04 12:02",28.78,["AMS","ATL"],[1.5,13.0],["Delta","KLM"]],["02-03 15:30","02-04 17:25",19.92,["ATL","CDG"],[2.2,3.2],["Delta","SAS"]]],["CPH","CPH","SAP","GDL",8245,17689,3,"go","10-28",["long_layover"],1,["12-03 14:15","12-04 12:02",28.78,["AMS","ATL"],[1.5,13.0],["Delta","KLM"]],["02-03 14:16","02-04 13:40",16.4,["ATL","AMS"],[1.7,1.7],["Delta","KLM Cityhopper"]]],["CPH","CPH","SAP","GUA",7263,15949,3,"go","10-28",["us_transit","long_layover"],1,["12-03 14:15","12-04 12:02",28.78,["AMS","ATL"],[1.5,13.0],["Delta","KLM"]],["02-03 13:59","02-04 13:40",16.68,["ATL","AMS"],[1.9,1.7],["Delta","KLM"]]],["CPH","CPH","SAP","MDE",10360,15890,3,"go","10-28",[],1,["12-03 10:05","12-03 23:32",20.45,["CDG","PTY"],[2.8,2.0],["Air France","COPA"]],["02-03 15:15","02-04 13:40",16.42,["PTY","AMS"],[2.0,1.2],["COPA","KLM Cityhopper"]]],["CPH","CPH","SAP","SAL",7231,16292,2,"go","10-28",["us_transit","long_layover"],1,["12-03 14:15","12-04 12:02",28.78,["AMS","ATL"],[1.5,13.0],["Delta","KLM"]],["02-03 15:14","02-04 17:25",19.18,["ATL","CDG"],[2.2,3.2],["Delta","SAS"]]],["CPH","CPH","SAP","SAP",7149,17126,5,"ex","10-28",["us_transit","long_layover"],1,["12-03 14:15","12-04 12:02",28.78,["AMS","ATL"],[1.5,13.0],["DL"]],["02-02 13:23","02-03 16:20",19.95,["ATL","AMS"],[5.2,2.1],["DL"]]],["CPH","CPH","SAP","VVI",12334,18264,6,"mo","10-28",["basic_fare"],null,["12-03 10:05","12-03 23:32",20.45,["CDG","PTY"],[2.8,2.0],["Air France","Copa Airlines"]],["02-03 09:05","02-04 09:10",19.08,["GRU","CDG"],[1.8,1.1],["Air France","BoA"]]],["CPH","CPH","SJO","LPB",10970,19118,4,"go","10-28",["home_2feb"],1,["12-03 10:05","12-03 21:54",18.817,["CDG","PTY"],[2.8,1.1],["AF","CM"]],["02-02 03:25","02-03 13:40",29.25,["BOG","CTG","AMS"],[9.9,1.3,1.6],["AV","KL"]]],["CPH","CPH","SJO","SJO",7149,12662,16,"ex","10-28",[],1,["12-03 10:05","12-03 19:15",16.17,["FRA"],[2.4],["LH"]],["02-02 08:45","02-03 10:20",18.58,["YYZ"],[5.2],["AC"]]],["CPH","CPH","SJO","VVI",9189,15687,18,"go","10-28",[],1,["12-03 10:05","12-03 21:54",18.817,["CDG","PTY"],[2.8,1.1],["AF","CM"]],["02-03 11:55","02-04 16:40",23.75,["GRU","AMS"],[5.2,3.0],["G3","KL"]]],["CPH","CPH","VVI","GDL",10244,16847,4,"go","10-28",[],1,["12-03 15:35","12-04 11:05",24.5,["CDG","GRU"],[5.8,1.7],["Air France","Gol"]],["02-03 15:59","02-04 17:00",18.02,["MEX","CDG"],[2.3,1.6],["Aeromexico","Air France"]]],["CPH","CPH","VVI","VVI",10870,17632,2,"ex","10-28",[],1,["12-03 15:35","12-04 11:05",24.5,["CDG","GRU"],[5.8,1.7],["AF","G3"]],["02-02 09:05","02-03 09:10",19.08,["GRU","CDG"],[1.8,1.1],["AF","OB"]]],["CPH","MAD","SAL","VVI",9438,14421,7,"go","10-28",[],2,["12-04 12:05","12-04 23:38",18.55,["AMS","PTY"],[1.2,2.5],["COPA","KLM"]],["02-03 03:45","02-03 23:25",14.67,["BOG"],[1.2],["Avianca"]]],["MAD","MAD","BOG","BOG",9502,12488,6,"mo","10-28",[],null,["12-03 15:15","12-03 19:35",10.33,[],[],["Air Europa"]],["02-03 21:35","02-04 13:10",9.58,[],[],["Air Europa"]]],["MAD","MAD","BOG","GDL",7988,15314,1,"go","10-28",[],1,["12-02 07:40","12-02 23:05",21.42,["LIS","EWR"],[2.2,3.8],["TAP Air Portugal","United"]],["02-03 05:45","02-04 09:30",20.75,["IAH","EWR"],[1.9,5.5],["United"]]],["MAD","MAD","BOG","MDE",7732,13994,2,"go","10-28",[],1,["12-02 13:25","12-03 05:20",21.92,["YUL","YYZ"],[4.3,1.9],["Air Canada"]],["02-03 06:10","02-04 08:00",19.83,["BOG","YUL"],[1.8,3.8],["Air Canada","Avianca"]]],["MAD","MAD","BOG","VVI",8177,11927,16,"mo","10-28",[],null,["12-02 08:10","12-02 12:30",10.33,[],[],["Avianca"]],["02-02 03:45","02-02 23:25",14.67,["BOG"],[1.2],["Avianca"]]],["MAD","MAD","GDL","BOG",7219,12757,3,"go","10-28",[],1,["12-02 12:35","12-03 00:30",18.92,["CDG","MEX"],[1.1,2.0],["Aeromexico","Air France"]],["02-03 16:05","02-04 16:05",18.0,["CTG","AMS"],[1.3,2.8],["KLM"]]],["MAD","MAD","GDL","GDL",7285,12526,3,"go","10-28",["basic_fare"],1,["12-02 13:00","12-02 23:50",17.83,["DFW"],[4.0],["American"]],["02-03 20:23","02-04 17:10",13.78,["MEX"],[2.3],["Iberia","Viva"]]],["MAD","MAD","GDL","MDE",8544,13995,2,"go","10-28",[],1,["12-02 12:35","12-03 00:30",18.92,["CDG","MEX"],[1.1,2.0],["Aeromexico","Air France"]],["02-03 18:20","02-04 17:45",17.42,["PTY","CDG"],[2.7,1.1],["Air France","COPA"]]],["MAD","MAD","GDL","VVI",8651,15488,3,"go","10-28",[],1,["12-02 12:35","12-03 00:30",18.92,["CDG","MEX"],[1.1,2.0],["Aeromexico","Air France"]],["02-03 11:55","02-04 17:45",24.83,["PTY","CDG"],[6.7,1.1],["Air France","COPA"]]],["MAD","MAD","GUA","VVI",9011,13548,7,"mo","10-28",[],null,["12-03 16:20","12-04 00:55",15.58,["BOG"],[1.9],["Avianca"]],["02-03 03:45","02-03 23:25",14.67,["BOG"],[1.2],["Avianca"]]],["MAD","MAD","LPB","GDL",10269,16182,4,"go","10-28",["long_layover"],1,["12-02 08:10","12-03 02:20",23.17,["BOG"],[9.0],["Avianca"]],["02-03 11:15","02-04 05:00",10.75,[],[],["Aeromexico"]]],["MAD","MAD","MDE","BOG",8174,14584,2,"go","10-28",["basic_fare"],1,["12-02 12:35","12-02 23:39",17.07,["MIA"],[3.3],["American","Iberia"]],["02-03 08:00","02-04 09:00",19.0,["MIA"],[6.4],["American","Iberia"]]],["MAD","MAD","MDE","GDL",9680,14117,3,"go","10-28",[],1,["12-02 10:00","12-02 22:50",18.83,["CDG","PTY"],[2.8,1.1],["Air France","COPA"]],["02-03 11:15","02-04 05:00",10.75,[],[],["Aeromexico"]]],["MAD","MAD","MDE","MDE",8352,14826,2,"go","10-28",[],1,["12-02 12:35","12-02 23:39",17.07,["MIA"],[3.3],["American","Iberia"]],["02-03 07:30","02-04 08:55",19.42,["MIA","PHL"],[4.0,1.7],["American"]]],["MAD","MAD","MDE","VVI",9184,14209,2,"go","10-28",[],1,["12-02 08:10","12-02 21:00",18.83,["BOG"],[7.5],["Avianca"]],["02-03 03:45","02-03 23:25",14.67,["BOG"],[1.2],["Avianca"]]],["MAD","MAD","MGA","BOG",7462,12337,2,"go","10-28",["long_layover"],2,["12-02 08:10","12-03 00:05",22.92,["BOG","SAL"],[7.2,1.4],["Avianca"]],["02-03 07:50","02-03 23:25",9.58,[],[],["Avianca"]]],["MAD","MAD","MGA","GDL",7253,12304,4,"go","10-28",["long_layover"],2,["12-02 08:10","12-03 00:05",22.92,["BOG","SAL"],[7.2,1.4],["Avianca"]],["02-03 11:15","02-04 05:00",10.75,[],[],["Aeromexico"]]],["MAD","MAD","MGA","MDE",8185,13060,3,"go","10-28",["long_layover"],2,["12-02 08:10","12-03 00:05",22.92,["BOG","SAL"],[7.2,1.4],["Avianca"]],["02-03 22:20","02-04 13:55",9.58,[],[],["Avianca"]]],["MAD","MAD","MGA","VVI",8482,13875,6,"mo","10-28",["basic_fare","us_transit"],null,["12-03 10:00","12-03 20:12",17.2,["MIA"],[4.6],["Iberia"]],["02-03 09:05","02-04 05:30",15.42,["GRU"],[2.3],["BoA","Iberia"]]],["MAD","MAD","SAL","BOG",6183,10707,6,"mo","10-28",[],null,["12-02 08:10","12-02 21:45",20.58,["BOG"],[7.2],["Avianca"]],["02-03 07:50","02-03 23:25",9.58,[],[],["Avianca"]]],["MAD","MAD","SAL","GDL",6614,11314,4,"go","10-28",["long_layover"],2,["12-02 08:10","12-02 21:45",20.58,["BOG"],[7.2],["Avianca"]],["02-03 11:15","02-04 05:00",10.75,[],[],["Aeromexico"]]],["MAD","MAD","SAL","MDE",6950,11474,7,"mo","10-28",[],null,["12-02 08:10","12-02 21:45",20.58,["BOG"],[7.2],["Avianca"]],["02-03 22:20","02-04 13:55",9.58,[],[],["Avianca"]]],["MAD","MAD","SAL","VVI",6494,10870,42,"mo","10-28",[],null,["12-02 08:10","12-02 15:40",14.5,[],[],[]],["02-02 03:45","02-02 23:25",14.67,[],[],[]]],["MAD","MAD","SAP","BOG",6746,13614,3,"go","10-28",[],1,["12-02 08:35","12-02 22:57",21.37,["FRA","IAH"],[2.8,1.9],["Lufthansa","United"]],["02-03 09:45","02-04 09:30",17.75,["EWR"],[4.2],["United"]]],["MAD","MAD","SAP","GDL",7224,14336,4,"go","10-28",[],1,["12-02 12:35","12-03 11:25",29.83,["CDG","MEX"],[1.1,11.9],["Aeromexico Connect","Air France"]],["02-03 11:15","02-04 05:00",10.75,[],[],["Aeromexico"]]],["MAD","MAD","SAP","MDE",6604,14184,3,"go","10-28",[],1,["12-02 08:35","12-02 22:57",21.37,["FRA","IAH"],[2.8,1.9],["Lufthansa","United"]],["02-03 05:00","02-04 09:30",22.5,["PTY","EWR"],[3.6,4.7],["COPA","United"]]],["MAD","MAD","SAP","VVI",7000,12276,14,"mo","10-28",[],null,["12-03 10:10","12-03 23:40",20.5,["BOG","SAL"],[5.2,1.0],["Avianca"]],["02-03 03:45","02-03 23:25",14.67,["BOG"],[1.2],["Avianca"]]],["MAD","MAD","VVI","GDL",8384,14200,4,"go","10-28",[],1,["12-02 20:05","12-03 11:05",20.0,["CDG","GRU"],[1.1,1.7],["Air France","Gol"]],["02-03 15:59","02-04 17:45",18.77,["MEX","CDG"],[2.3,2.2],["Aeromexico","Air France"]]]];
+
+// Every trip starts and ends in Copenhagen. A Spanish ticket gets its Copenhagen flights added:
+// crawled CPH fares (28 Oct), flown the day before the long-haul out and after it lands home.
+const GW = {
+  cph:    { label: 'Copenhagen ticket', short: 'CPH ticket', color: '#1E2328', pos: 0 },
+  mad:    { label: 'Madrid ticket + flights to and from Copenhagen', short: 'via Madrid', color: '#D9822B', pos: 985,
+            head: { code: 'MAD', dep: '15:30', arr: '18:55', car: 'Iberia' }, tail: { code: 'MAD', dep: '12:55', arr: '16:10', car: 'Norwegian' } },
+  alc:    { label: 'Alicante ticket + flights to and from Copenhagen', short: 'via Alicante', color: '#8B6BD6', pos: 492,
+            head: { code: 'ALC', dep: '16:10', arr: '19:35', car: 'Ryanair' }, tail: { code: 'ALC', dep: '16:10', arr: '19:25', car: 'Norwegian' } },
+  cphmad: { label: 'Out from Copenhagen, home via Madrid', short: 'home via Madrid', color: '#C2477A', pos: 364,
+            tail: { code: 'MAD', dep: '12:55', arr: '16:10', car: 'Norwegian' } }
+};
+
+const AP = { // [lat, lon, utc offset Dec to Feb, name]
+  CPH: [55.62, 12.65, 1, 'Copenhagen'], AMS: [52.31, 4.76, 1, 'Amsterdam'], CDG: [49.01, 2.55, 1, 'Paris'], FRA: [50.04, 8.56, 1, 'Frankfurt'],
+  MUC: [48.35, 11.79, 1, 'Munich'], ZRH: [47.46, 8.55, 1, 'Zurich'], BRU: [50.9, 4.48, 1, 'Brussels'], MAD: [40.47, -3.56, 1, 'Madrid'],
+  ALC: [38.28, -0.56, 1, 'Alicante'], LHR: [51.47, -0.45, 0, 'London'], LGW: [51.15, -0.19, 0, 'London Gatwick'], LIS: [38.77, -9.13, 0, 'Lisbon'],
+  HEL: [60.32, 24.96, 2, 'Helsinki'], MIA: [25.79, -80.29, -5, 'Miami'], ATL: [33.64, -84.43, -5, 'Atlanta'], EWR: [40.69, -74.17, -5, 'Newark'],
+  PHL: [39.87, -75.24, -5, 'Philadelphia'], YYZ: [43.68, -79.63, -5, 'Toronto'], YUL: [45.47, -73.74, -5, 'Montreal'], IAH: [29.99, -95.34, -6, 'Houston'],
+  DFW: [32.9, -97.04, -6, 'Dallas'], PHX: [33.43, -112.01, -7, 'Phoenix'], LAX: [33.94, -118.41, -8, 'Los Angeles'], MEX: [19.44, -99.07, -6, 'Mexico City'],
+  CUN: [21.04, -86.87, -5, 'Cancún'], GDL: [20.52, -103.31, -6, 'Guadalajara'], GUA: [14.58, -90.53, -6, 'Guatemala City'], SAL: [13.44, -89.06, -6, 'San Salvador'],
+  SAP: [15.45, -87.92, -6, 'San Pedro Sula'], MGA: [12.14, -86.17, -6, 'Managua'], SJO: [9.99, -84.21, -6, 'San José'], PTY: [9.07, -79.38, -5, 'Panama City'],
+  BOG: [4.7, -74.15, -5, 'Bogotá'], MDE: [6.16, -75.42, -5, 'Medellín'], CTG: [10.44, -75.51, -5, 'Cartagena'], CLO: [3.54, -76.38, -5, 'Cali'],
+  CUR: [12.19, -68.96, -4, 'Curaçao'], CUZ: [-13.54, -71.94, -5, 'Cusco'], GRU: [-23.43, -46.47, -3, 'São Paulo'], LPB: [-16.51, -68.19, -4, 'La Paz'],
+  VVI: [-17.64, -63.14, -4, 'Santa Cruz']
+};
+const ORDER = [['Central America', ['GUA', 'SAL', 'SAP', 'MGA', 'SJO', 'PTY']], ['Colombia', ['BOG', 'MDE', 'CTG', 'CLO']], ['Mexico', ['GDL']], ['Bolivia', ['LPB', 'VVI']]];
+const US = ['MIA', 'JFK', 'EWR', 'ATL', 'IAH', 'DFW', 'ORD', 'LAX', 'FLL', 'MCO', 'IAD', 'BOS', 'CLT', 'PHL', 'PHX'];
+const SRC = { mo: 'Momondo', go: 'Google Flights', ex: 'Expedia', ki: 'Kiwi.com' };
+const FLAG = {
+  us_transit: ['US transit', 'warn'], basic_fare: ['Basic fare', ''], basic_economy: ['Basic fare', ''], long_layover: ['Long layover', 'warn'],
+  self_transfer: ['Self-transfer', 'warn'], tight_connection: ['Tight connection', 'warn'], multi_ticket: ['Several tickets', 'warn'],
+  airport_change: ['Airport change', 'warn'], home_2feb: ['Home 2 Feb', '']
+};
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+const dk = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const kr = (n) => dk(n) + ' kr';
+const hm = (h) => { const m = Math.max(0, Math.round(h * 60)); return Math.floor(m / 60) + 'h ' + String(m % 60).padStart(2, '0'); };
+const tz = (c) => (AP[c] ? AP[c][2] : 0);
+const nm = (c) => (AP[c] ? AP[c][3] : c);
+const utcOf = (s, c) => {
+  const mo = +s.slice(0, 2), d = +s.slice(3, 5), h = +s.slice(6, 8), mi = +s.slice(9, 11);
+  return Date.UTC(mo >= 11 ? 2026 : 2027, mo - 1, d, h, mi) / 3.6e6 - tz(c);
+};
+const localDate = (u, c) => new Date((u + tz(c)) * 3.6e6);
+const clk = (u, c) => { const d = localDate(u, c); return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); };
+const dayLbl = (u, c) => { const d = localDate(u, c); return WD[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MON[d.getUTCMonth()]; };
+const mmdd = (u, c) => { const d = localDate(u, c); return String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0'); };
+const hav = (a, b) => {
+  if (!AP[a] || !AP[b]) return 1;
+  const R = Math.PI / 180, [la1, lo1] = AP[a], [la2, lo2] = AP[b];
+  const x = Math.sin((la2 - la1) * R / 2) ** 2 + Math.cos(la1 * R) * Math.cos(la2 * R) * Math.sin((lo2 - lo1) * R / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(x));
+};
+const nightAt = (s, e, c) => { for (let t = s; t < e; t += 0.25) { if (localDate(t, c).getUTCHours() < 5) return true; } return false; };
+
+// one long-haul leg -> segments with UTC times; flying time split by distance (no per-flight times in the data yet)
+const legSegs = (L, from, to) => {
+  const pts = [from].concat(L[3], [to]);
+  const lay = L[3].map((_, i) => (L[4][i] == null ? 1.5 : L[4][i]));
+  const layTot = lay.reduce((a, b) => a + b, 0);
+  const n = pts.length - 1;
+  const dist = [];
+  for (let i = 0; i < n; i++) dist.push(hav(pts[i], pts[i + 1]));
+  const dTot = dist.reduce((a, b) => a + b, 0) || 1;
+  const fly = Math.max(L[2] - layTot, 0.6 * n);
+  let t = utcOf(L[0], from);
+  const segs = [];
+  for (let i = 0; i < n; i++) {
+    const f = fly * dist[i] / dTot;
+    segs.push({ kind: 'fly', a: pts[i], b: pts[i + 1], s: t, e: t + f, car: i === 0 && n === 1 ? L[5].join(', ') : '' });
+    t += f;
+    if (i < n - 1) { segs.push({ kind: 'wait', at: pts[i + 1], s: t, e: t + lay[i] }); t += lay[i]; }
+  }
+  return segs;
+};
+
+const JOURNEYS = Q.map((q, i) => {
+  const gw = q[0] === 'CPH' ? (q[1] === 'MAD' ? 'cphmad' : 'cph') : (q[0] === 'MAD' ? 'mad' : 'alc');
+  const G = GW[gw];
+  let out = legSegs(q[11], q[0], q[2]);
+  let home = legSegs(q[12], q[3], q[1]);
+  if (G.head) {
+    const lhDep = out[0].s;
+    const day = mmdd(lhDep - 24, G.head.code);
+    const s = utcOf(day + ' ' + G.head.dep, 'CPH'), e = utcOf(day + ' ' + G.head.arr, G.head.code);
+    out = [{ kind: 'fly', a: 'CPH', b: G.head.code, s, e, pos: true, car: G.head.car }, { kind: 'wait', at: G.head.code, s: e, e: lhDep, pos: true }].concat(out);
+  }
+  if (G.tail) {
+    const arr = home[home.length - 1].e;
+    let day = mmdd(arr, G.tail.code);
+    let s = utcOf(day + ' ' + G.tail.dep, G.tail.code);
+    if (s - arr < 2) { day = mmdd(arr + 24, G.tail.code); s = utcOf(day + ' ' + G.tail.dep, G.tail.code); }
+    const e = utcOf(day + ' ' + G.tail.arr, 'CPH');
+    home = home.concat([{ kind: 'wait', at: G.tail.code, s: arr, e: s, pos: true }, { kind: 'fly', a: G.tail.code, b: 'CPH', s, e, pos: true, car: G.tail.car }]);
+  }
+  const waits = out.concat(home).filter((x) => x.kind === 'wait');
+  const nightStop = waits.some((w) => !w.pos && nightAt(w.s, w.e, w.at));
+  const lateHome = (() => { const h = localDate(home[home.length - 1].e, 'CPH').getUTCHours(); return h >= 22 || h < 6; })();
+  const vias = q[11][3].concat(q[12][3]);
+  return {
+    id: 'j' + i, q, gw, entry: q[2], exit: q[3], ret: q[2] === q[3],
+    total: q[4] + G.pos, eff: q[5] + G.pos, out, home, nightStop, lateHome,
+    us: q[9].indexOf('us_transit') >= 0 || vias.some((v) => US.indexOf(v) >= 0),
+    long: q[11][2] > 23 || q[12][2] > 23
+  };
+});
+const effs = JOURNEYS.map((j) => j.eff);
+const EMIN = Math.min.apply(null, effs), EMAX = Math.max.apply(null, effs);
+// placeholder rating until the backend calculates one
+JOURNEYS.forEach((j) => { j.rating = Math.round(100 - (j.eff - EMIN) / (EMAX - EMIN) * 65); });
+
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    this.state = { by: 'price', sel: null, hoverCell: null, noUS: false, max23: false, noNight: false };
+  }
+
+  renderVals() {
+    const st = this.state || {};
+    const metric = (j) => (st.by === 'rate' ? 100 - j.rating : j.total);
+    const passes = (j) => !(st.noUS && j.us) && !(st.max23 && j.long) && !(st.noNight && (j.nightStop || j.lateHome));
+    const vis = JOURNEYS.filter(passes);
+    const best = vis.slice().sort((a, b) => metric(a) - metric(b))[0];
+    const sel = JOURNEYS.find((j) => j.id === st.sel && passes(j)) || best || null;
+
+    // ---- table
+    const CODES = [].concat.apply([], ORDER.map((g) => g[1]));
+    const cellBest = {}, cellAll = {};
+    JOURNEYS.forEach((j) => {
+      const k = j.entry + '|' + j.exit;
+      (cellAll[k] = cellAll[k] || []).push(j);
+      if (passes(j) && (!cellBest[k] || metric(j) < metric(cellBest[k]))) cellBest[k] = j;
+    });
+    const bestVals = Object.keys(cellBest).map((k) => metric(cellBest[k])).sort((a, b) => a - b);
+    const bin = (v) => { const r = bestVals.findIndex((x) => x >= v) / Math.max(bestVals.length - 1, 1); return Math.min(4, Math.floor(r * 5)); };
+    const [hIn, hOut] = st.hoverCell ? st.hoverCell.split('|') : [null, null];
+    const mrows = [];
+    ORDER.forEach((g) => g[1].forEach((code, gi) => {
+      const ri = mrows.length;
+      mrows.push({
+        code, name: nm(code), region: g[0], regionStart: gi === 0,
+        cls: (code === hIn ? 'hot ' : '') + (sel && sel.entry === code ? 'sel' : ''),
+        cells: CODES.map((out, cj) => {
+          const k = code + '|' + out, all = cellAll[k], b = cellBest[k];
+          const delay = (0.05 + (ri + cj) * 0.012).toFixed(3) + 's';
+          if (!all) return { cls: 'none', label: '', pips: [], delay, disabled: true, aria: nm(code) + ' to ' + nm(out) + ': not searched', pick: () => {}, enter: () => this.setState({ hoverCell: null }) };
+          const gws = [];
+          all.filter(passes).forEach((j) => { if (j.gw !== 'cph' && gws.indexOf(j.gw) < 0) gws.push(j.gw); });
+          let cls = b ? 'b' + bin(metric(b)) : 'off';
+          if (code === out) cls += ' ret';
+          if (sel && sel.entry === code && sel.exit === out) cls += ' sel';
+          else if (st.hoverCell && (code === hIn || out === hOut)) cls += ' xh';
+          const lead = b || all[0];
+          return {
+            cls, delay, disabled: false,
+            label: st.by === 'rate' ? String(lead.rating) : (lead.total / 1000).toFixed(1).replace('.', ','),
+            pips: gws.map((x) => ({ color: GW[x].color })),
+            aria: 'In ' + nm(code) + ', home from ' + nm(out) + ': ' + kr(lead.total),
+            pick: () => this.setState({ sel: lead.id }),
+            enter: () => { if (st.hoverCell !== k) this.setState({ hoverCell: k }); }
+          };
+        })
+      });
+    }));
+    const mcols = CODES.map((c) => ({ code: c, name: nm(c), cls: (c === hOut ? 'hot ' : '') + (sel && sel.exit === c ? 'sel' : '') }));
+    let readout = 'Prices in thousands of kroner, total from Copenhagen. Hover to compare, click to open.';
+    if (st.hoverCell && cellAll[st.hoverCell]) {
+      const [a, b2] = st.hoverCell.split('|');
+      const opts = cellAll[st.hoverCell].filter(passes).sort((x, y) => metric(x) - metric(y));
+      readout = nm(a) + ' in, ' + nm(b2) + ' home: ' + (opts.length ? opts.map((j) => GW[j.gw].short + ' ' + kr(j.total)).join(', ') : 'hidden by filters');
+    }
+
+    // ---- detail
+    const details = [];
+    if (sel) {
+      const q = sel.q, G = GW[sel.gw];
+      const flags = [];
+      q[9].forEach((f) => { if (FLAG[f] && !flags.some((x) => x.label === FLAG[f][0])) flags.push({ label: FLAG[f][0], cls: FLAG[f][1] }); });
+      if (sel.us && !flags.some((x) => x.label === 'US transit')) flags.push({ label: 'US transit', cls: 'warn' });
+      if (sel.nightStop) flags.push({ label: 'Night at a stop', cls: 'warn' });
+      if (sel.lateHome) flags.push({ label: 'Lands in Copenhagen ' + clk(sel.home[sel.home.length - 1].e, 'CPH'), cls: 'warn' });
+      if (sel.long) flags.push({ label: 'A leg over 23h', cls: 'warn' });
+      if (G.head || G.tail) flags.push({ label: 'Copenhagen flight times assumed daily', cls: '' });
+
+      const legView = (dir, label, segs) => {
+        const items = [];
+        let n = 0, lastDay = '';
+        const first = segs[0], last = segs[segs.length - 1];
+        const dayOf = (u, c) => { const d = dayLbl(u, c); const show = d !== lastDay; lastDay = d; return { day: d, hasDay: show }; };
+        items.push(Object.assign({ isPlace: true, isLeg: false, cls: 'end', name: nm(first.a), code: first.a, t1: clk(first.s, first.a), t2: '', hasWait: false, delay: (n++ * 0.04).toFixed(2) + 's' }, dayOf(first.s, first.a)));
+        segs.forEach((x, k) => {
+          if (x.kind === 'fly') {
+            items.push({ isPlace: false, isLeg: true, cls: x.pos ? 'spain' : dir, dur: hm(x.e - x.s), note: x.car ? ' ' + x.car : (x.pos ? '' : ''), delay: (n++ * 0.04).toFixed(2) + 's' });
+            if (k === segs.length - 1) {
+              items.push(Object.assign({ isPlace: true, isLeg: false, cls: 'end', name: nm(x.b), code: x.b, t1: clk(x.e, x.b), t2: '', hasWait: false, delay: (n++ * 0.04).toFixed(2) + 's' }, dayOf(x.e, x.b)));
+            }
+          } else {
+            const dur = x.e - x.s, night = nightAt(x.s, x.e, x.at);
+            items.push(Object.assign({
+              isPlace: true, isLeg: false, cls: x.pos ? 'spain' : '', name: nm(x.at), code: x.at,
+              t1: clk(x.s, x.at), t2: clk(x.e, x.at), hasWait: true, night,
+              wait: (dur > 10 ? hm(dur) + ' in ' + nm(x.at) : hm(dur) + ' wait'),
+              waitCls: night ? 'night' : dur >= 4 ? 'long' : '', delay: (n++ * 0.04).toFixed(2) + 's'
+            }, dayOf(x.s, x.at)));
+          }
+        });
+        const stops = segs.filter((x) => x.kind === 'wait').length;
+        return { dir, label, items, summary: hm(last.e - first.s) + ' door to door · ' + (stops === 0 ? 'nonstop' : stops + (stops === 1 ? ' stop' : ' stops')) };
+      };
+
+      const alts = JOURNEYS.filter((j) => j.entry === sel.entry && j.exit === sel.exit).sort((a, b) => a.total - b.total);
+      details.push({
+        kind: G.label, gColor: G.color, inName: nm(sel.entry), outName: nm(sel.exit),
+        total: kr(sel.total),
+        breakdown: G.pos ? 'Ticket ' + kr(q[4]) + ' + Copenhagen flights ' + kr(G.pos) : (sel.ret ? 'Return ticket' : 'One open-jaw ticket'),
+        rating: sel.rating,
+        hasOpts: alts.length > 1,
+        opts: alts.map((a) => ({ label: GW[a.gw].short, price: kr(a.total), color: GW[a.gw].color, cls: a.id === sel.id ? 'on' : '', pressed: a.id === sel.id ? 'true' : 'false', pick: () => this.setState({ sel: a.id }) })),
+        legs: [legView('out', 'Out', sel.out), legView('home', 'Home', sel.home)],
+        flags, hasFlags: flags.length > 0,
+        src: 'Cheapest of ' + q[6] + (q[6] === 1 ? ' quote' : ' quotes') + ' on ' + SRC[q[7]] + ', seen 28 Oct. Times are local.'
+      });
+    }
+
+    const tog = (k, label) => ({ label, cls: st[k] ? 'on' : '', pressed: st[k] ? 'true' : 'false', toggle: () => this.setState({ [k]: !st[k] }) });
+    return {
+      byPriceCls: st.by !== 'rate' ? 'on' : '', byRateCls: st.by === 'rate' ? 'on' : '',
+      byPricePressed: st.by !== 'rate' ? 'true' : 'false', byRatePressed: st.by === 'rate' ? 'true' : 'false',
+      byPrice: () => this.setState({ by: 'price' }), byRate: () => this.setState({ by: 'rate' }),
+      filters: [tog('noUS', 'No US transit'), tog('max23', 'Legs up to 23h'), tog('noNight', 'No nights at stops')],
+      mrows, mcols, readout, leaveCell: () => this.setState({ hoverCell: null }),
+      rampLabel: st.by === 'rate' ? 'best rating to lowest (placeholder)' : 'cheapest to priciest',
+      gwLegend: ['mad', 'alc', 'cphmad'].map((g) => ({ label: GW[g].short, color: GW[g].color })),
+      details, noSel: !sel
+    };
+  }
+}
+</script>
+</body>
+</html>
