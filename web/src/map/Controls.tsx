@@ -51,6 +51,9 @@ export function Controls(p: Props) {
               <span><svg width="22" height="8" viewBox="0 0 22 8"><path d="M2 4 L20 4" stroke="#8DB8F2" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 3" /></svg>Boat</span>
             )}
             <span><svg width="22" height="8" viewBox="0 0 22 8"><path d="M2 4 L20 4" stroke="#F2B544" strokeWidth="2.4" strokeLinecap="round" strokeDasharray="0.1 4.4" /></svg>Flight</span>
+            <span><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1 L11 6 L6 11 L1 6 Z" fill="#F2B544" stroke="#0B1720" strokeWidth="1.2" /></svg>Hub</span>
+            <span><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1.6 L10.4 6 L6 10.4 L1.6 6 Z" fill="#0B1720" stroke="#F2B544" strokeWidth="1.6" /></svg>Airport</span>
+            <span><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2.6" fill="#EAF0F2" /></svg>Town</span>
             <span><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#0B1720" stroke="#6FD3B8" strokeWidth="2" /></svg>Stop</span>
             <span><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#F2B544" stroke="#0B1720" strokeWidth="1.5" /></svg>Layover</span>
           </div>

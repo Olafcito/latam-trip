@@ -19,6 +19,7 @@ export const ROUTE_LAYERS: Record<Family, string> = { ground: 'route-ground', bo
 export const HIT_ROUTES = 'route-hit'
 export const HIT_PLACES = 'place-hit'
 export const LABEL_LAYERS = { focus: 'label-focus', dest: 'label-dest', town: 'label-town' }
+export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
 
 /** Overview routes are faint. Hovering a city previews its routes, and a selection shows only its own. */
 export function routeOpacity(base: number): ExpressionSpecification {
@@ -72,7 +73,8 @@ function label(id: string, fontStack: string[], size: number, extra: Partial<Sym
       'text-font': fontStack,
       'text-size': size,
       'text-variable-anchor': ['left', 'right', 'top', 'bottom'],
-      'text-radial-offset': 0.75,
+      // airports are diamonds, a little wider than a dot
+      'text-radial-offset': ['case', ['get', 'hub'], 1.05, ['get', 'airport'], 0.9, 0.75],
       'text-justify': 'auto',
       'text-padding': 3,
       // flight hubs are labelled before the places around them, lower keys place first
@@ -96,7 +98,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     type: 'FeatureCollection',
     features: model.places.map((p) => ({
       type: 'Feature',
-      properties: { id: p.id, short_name: p.short_name, tier: p.tier, popularity: p.popularity, hub: !!p.hub },
+      properties: { id: p.id, short_name: p.short_name, tier: p.tier, popularity: p.popularity, hub: !!p.hub, airport: p.iata === p.id },
       geometry: { type: 'Point', coordinates: [p.lon, p.lat] },
     })),
   }
@@ -107,6 +109,9 @@ export function addRouteLayers(map: MLMap, model: Model) {
   map.addSource('places', { type: 'geojson', data: places, promoteId: 'id' })
   map.addSource('stops', { type: 'geojson', data: empty })
   map.addSource('mover', { type: 'geojson', data: empty })
+  map.addSource('trip', { type: 'geojson', data: empty })
+  map.addSource('trip-stops', { type: 'geojson', data: empty })
+  map.addImage('diamond', diamondSdf(), { sdf: true })
 
   map.addLayer({
     id: 'country-label',
@@ -137,6 +142,31 @@ export function addRouteLayers(map: MLMap, model: Model) {
     paint: { 'line-color': '#000', 'line-opacity': 0, 'line-width': 14 },
   })
 
+  // the open trip: a cased line per leg, drawn over the faint network
+  map.addLayer({
+    id: 'trip-casing',
+    type: 'line',
+    source: 'trip',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': C.ground, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 6.5, 8, 8.5], 'line-opacity': 0.85 },
+  })
+  map.addLayer({
+    id: 'trip-line',
+    type: 'line',
+    source: 'trip',
+    filter: ['!=', ['get', 'family'], 'flight'],
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': ['match', ['get', 'family'], 'boat', C.boat, C.bus], 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4] },
+  })
+  map.addLayer({
+    id: 'trip-flight',
+    type: 'line',
+    source: 'trip',
+    filter: ['==', ['get', 'family'], 'flight'],
+    layout: { 'line-join': 'round' },
+    paint: { 'line-color': C.flight, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4], 'line-dasharray': [1.6, 1.1] },
+  })
+
   map.addLayer({
     id: 'mover-glow',
     type: 'circle',
@@ -155,16 +185,18 @@ export function addRouteLayers(map: MLMap, model: Model) {
     from, ['case', lit, 1, ['==', ['get', 'tier'], 'destination'], ['case', fs('dim'), 0.45, 1], 0],
     to, ['case', lit, 1, fs('dim'), 0.45, 1],
   ]
-  // towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection
+  // towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection.
+  // Places without an airport are small dots, so the airport diamonds stand out.
   const dot: CircleLayerSpecification = {
     id: 'place-dot',
     type: 'circle',
     source: 'places',
+    filter: ['!', ['get', 'airport']],
     paint: {
       'circle-radius': [
         'interpolate', ['linear'], ['zoom'],
-        3, ['*', tier(4, 2.6, 2.2), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
-        8, ['*', tier(6, 4.5, 3.6), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
+        3, ['*', tier(3.2, 2.2, 1.9), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
+        8, ['*', tier(5, 3.8, 3.2), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
       ],
       'circle-color': ['case', ['any', sel, hot], C.flight, near, '#FFFFFF', ['==', ['get', 'tier'], 'destination'], C.dot, C.muted],
       'circle-opacity': fadeIn(5.5, 6.5),
@@ -186,6 +218,25 @@ export function addRouteLayers(map: MLMap, model: Model) {
     },
   })
   map.addLayer(dot)
+  // airports: amber diamonds, filled for flight hubs and outlined for the rest. Always shown.
+  map.addLayer({
+    id: 'place-air',
+    type: 'symbol',
+    source: 'places',
+    filter: ['get', 'airport'],
+    layout: {
+      'icon-image': 'diamond',
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'hub'], 0.5, 0.38], 8, ['case', ['get', 'hub'], 0.68, 0.52]],
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+    paint: {
+      'icon-color': ['case', ['any', sel, hot], '#FFFFFF', ['get', 'hub'], C.flight, C.ground],
+      'icon-halo-color': ['case', ['any', sel, hot], C.flight, ['get', 'hub'], C.ground, C.flight],
+      'icon-halo-width': ['case', ['get', 'hub'], 1.5, 1.7],
+      'icon-opacity': ['case', lit, 1, fs('dim'), 0.45, 1],
+    },
+  })
   map.addLayer({
     id: HIT_PLACES,
     type: 'circle',
@@ -210,6 +261,32 @@ export function addRouteLayers(map: MLMap, model: Model) {
     },
   })
 
+  // numbered stops of the open trip, the last one amber
+  map.addLayer({
+    id: 'trip-stop',
+    type: 'circle',
+    source: 'trip-stops',
+    paint: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'end'], 8.5, 7], 8, ['case', ['get', 'end'], 10, 8.5]],
+      'circle-color': ['case', ['get', 'end'], C.flight, '#FFFFFF'],
+      'circle-stroke-color': C.ground,
+      'circle-stroke-width': 2,
+    },
+  })
+  map.addLayer({
+    id: 'trip-num',
+    type: 'symbol',
+    source: 'trip-stops',
+    layout: {
+      'text-field': ['get', 'n'],
+      'text-font': FONT_BOLD,
+      'text-size': 10,
+      'text-allow-overlap': true,
+      'text-ignore-placement': true,
+    },
+    paint: { 'text-color': C.ground },
+  })
+
   map.addLayer(label(LABEL_LAYERS.town, FONT, 11, { minzoom: 7, filter: ['!=', ['get', 'tier'], 'destination'] }))
   map.addLayer(label(LABEL_LAYERS.dest, FONT_BOLD, 12.5, { filter: ['==', ['get', 'tier'], 'destination'] }))
   map.addLayer({
@@ -229,6 +306,24 @@ export function addRouteLayers(map: MLMap, model: Model) {
   })
   // the selected city and its neighbours: placed first, so they win every collision
   map.addLayer(label(LABEL_LAYERS.focus, FONT_BOLD, 13, { filter: NONE }))
+}
+
+/**
+ * A diamond as a signed distance field, so one image takes any fill and outline colour.
+ * MapLibre reads alpha 0.75 as the edge and one pixel of distance as 1/8 of alpha.
+ */
+function diamondSdf(r = 16, buffer = 8) {
+  const n = 2 * (r + buffer)
+  const data = new Uint8Array(n * n * 4)
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      const d = (Math.abs(x + 0.5 - n / 2) + Math.abs(y + 0.5 - n / 2) - r) / Math.SQRT2
+      const i = (y * n + x) * 4
+      data[i] = data[i + 1] = data[i + 2] = 255
+      data[i + 3] = Math.round(255 * Math.min(1, Math.max(0, 0.75 - d / 8)))
+    }
+  }
+  return { width: n, height: n, data }
 }
 
 const inIds = (ids: string[]): ExpressionSpecification => ['in', ['get', 'id'], ['literal', ids]]
