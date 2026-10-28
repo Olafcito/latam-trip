@@ -1,0 +1,164 @@
+[
+ {
+  "found": "2026-10-26",
+  "source": "momondo/screenshot",
+  "what": "American CPH->MGA return",
+  "price_dkk": 6179
+ },
+ {
+  "found": "2026-10-26",
+  "source": "momondo/screenshot",
+  "what": "American CPH->MDE out, MGA->CPH home (open jaw)",
+  "price_dkk": 6933
+ },
+ {
+  "found": "2026-10-26",
+  "source": "momondo/screenshot",
+  "what": "KLM CPH->SJO return",
+  "price_dkk": 7128
+ },
+ {
+  "found": "2026-10-26",
+  "source": "momondo",
+  "what": "American CPH<->BOG return",
+  "price_dkk": 6552
+ },
+ {
+  "found": "2026-10-26",
+  "source": "momondo",
+  "what": "KLM/Air France CPH<->BOG return",
+  "price_dkk": 8553
+ },
+ {
+  "found": "2026-10-26",
+  "source": "expedia (user)",
+  "what": "CPH->GUA 2 Dec + VVI->CPH 3 Feb multi-city, no bag (return VVI-GRU-CDG-CPH, 1h50 at GRU)",
+  "price_dkk": 10500
+ },
+ {
+  "found": "2026-10-26",
+  "source": "google_flights",
+  "what": "VVI->CPH one-way, 23h45",
+  "price_dkk": 8973
+ },
+ {
+  "found": "2026-10-26",
+  "source": "google_flights",
+  "what": "Santa Cruz->San Jose one-way 20 Jan",
+  "price_dkk": 2482
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo (Simon)",
+  "what": "Volaris MDE<->GDL return 2 Dec / 4 Dec, direct 5h20/4h30, Mix & Match, Economy, 0 checked bags",
+  "price_dkk": 2608
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r2",
+  "what": "CPH->BOG KLM / VVI->CPH BoA+AF 3 Feb, 14.5h/19.1h, 1 ticket",
+  "price_dkk": 10362
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r2",
+  "what": "CPH->SAL KLM / VVI->CPH BoA+AF 3 Feb, 21.7h/19.1h, 1 ticket",
+  "price_dkk": 9931
+ },
+ {
+  "found": "2026-10-28",
+  "source": "expedia r2",
+  "what": "CPH<->BOG AA Basic 3 Dec/3 Feb via LHR+MIA ~21h/20h",
+  "price_dkk": 6549
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r6",
+  "what": "MAD->SAL 2 Dec / VVI->MAD 3 Feb, Avianca via BOG, 20.6h/14.7h, 1 ticket, Light (cabin bag only)",
+  "price_dkk": 5700
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r5/r6",
+  "what": "MAD->SAL 2 Dec / VVI->MAD 2-3 Feb, Avianca 27+382 / 166+46 via BOG, 14.5h/14.7h, 1 ticket (Flysmarter); Google Flights does not list it",
+  "price_dkk": 6494
+ },
+ {
+  "found": "2026-10-28",
+  "source": "google_flights r5",
+  "what": "MAD->SAL 2 Dec / VVI->MAD 2 Feb cheapest on Google, AF+Copa out 20.6h / Avianca home, 2 tickets",
+  "price_dkk": 7199
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r4",
+  "what": "CPH<->ALC 28 Nov / 6 Feb, Ryanair/Norwegian nonstop, cabin bag extra ~600",
+  "price_dkk": 492
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r4",
+  "what": "CPH->AMS->PTY (4-day stop) PTY->SAL 7 Dec / VVI->CPH 3 Feb, KLM+Gol, 1 ticket",
+  "price_dkk": 10215
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r4",
+  "what": "CPH<->BOG return 3 Dec/3 Feb AA Basic via HEL-DFW / MIA-LHR 20.6h/20.2h",
+  "price_dkk": 6553
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r3",
+  "what": "BOG->LPB 28 Jan one-way, LATAM via LIM 9.75h (Avianca nonstop 4539)",
+  "price_dkk": 2000
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r5",
+  "what": "PTY->BOG 10 Jan one-way, Avianca nonstop 02:30 (Copa daytime 2154)",
+  "price_dkk": 2082
+ },
+ {
+  "found": "2026-10-28",
+  "source": "google_flights r3",
+  "what": "CPH->SAL 4 Dec / VVI->CPH 3 Feb, KLM+Copa / Gol+KLM, 18.5h/23.8h, 1 ticket (unchanged at 9,072 on re-check 28 Oct pm)",
+  "price_dkk": 9071
+ },
+ {
+  "found": "2026-10-28",
+  "source": "google_flights r3",
+  "what": "CPH->BOG 3 Dec / VVI->CPH 2 Feb, KLM / Gol+AF, 14.5h/24.1h, 1 ticket (unchanged on re-check)",
+  "price_dkk": 9492
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r7 (verified on Flysmarter page)",
+  "what": "MAD->SAL 2 Dec / VVI->MAD 3 Feb, Avianca 27+382 / 166+46, BOG 1h10 both ways, 14.5h/14.7h, Light (cabin bag), one Avianca ticket",
+  "price_dkk": 6494
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r7",
+  "what": "same with 1 checked bag (Avianca Classic, Flysmarter)",
+  "price_dkk": 7466
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r7",
+  "what": "LPB->CBB 29 Jan BoA nonstop 45 min",
+  "price_dkk": 255
+ },
+ {
+  "found": "2026-10-28",
+  "source": "momondo r7",
+  "what": "CBB->VVI 1 Feb BoA nonstop 50 min",
+  "price_dkk": 404
+ },
+ {
+  "found": "2026-10-28",
+  "source": "avianca.com r7",
+  "what": "MAD->SAL one-way 2 Dec: AV27+AV384 20.6h USD 489.20, AV27+AV382 14.5h USD 629.20",
+  "price_dkk": null
+ }
+]

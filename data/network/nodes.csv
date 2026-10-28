@@ -1,0 +1,68 @@
+id,name,country,lat,lon,type,iata,popularity,why,has_profile
+LPB,La Paz,BO,-16.5,-68.12,city,LPB,2,Bolivia link: Avianca nonstop from Bogota,1
+COPA,Copacabana (Lake Titicaca),BO,-16.17,-69.09,lake,,1,"Lakeside pilgrimage town, base for Isla del Sol and the Peru border (Kasani/Yunguyo)",1
+ISOL,Isla del Sol,BO,-16.02,-69.18,island,,1,Titicaca island with Inca sites and a north-south hike; boats from Copacabana,1
+COR,Coroico (Yungas),BO,-16.19,-67.73,city,,2,Subtropical Yungas town; La Paz-Coroico is usually done as a day trip or short stay (bushop),1
+ORU,Oruro,BO,-17.97,-67.11,city,ORU,3,"Carnival city and rail/bus junction between La Paz, Uyuni and Cochabamba (Sajama NP base)",1
+UYU,Uyuni (Salar de Uyuni),BO,-20.46,-66.82,park,UYU,1,Gateway to the world's largest salt flat; mirror effect forms Dec-Mar; Incahuasi usually closed Jan-Mar,1
+POTO,Potosi,BO,-19.58,-65.75,city,,2,"4,000 m UNESCO silver-mining city (Cerro Rico tours); on the Sucre-Uyuni-La Paz corridor",1
+SRE,Sucre,BO,-19.03,-65.26,city,SRE,1,"Constitutional capital, white colonial city, mild climate; Tarabuco and dinosaur footprints nearby",1
+TUP,Tupiza,BO,-21.44,-65.72,city,,2,"Red-canyon town in the south, starting point for Uyuni 4x4 tours and Villazon (Argentina) border",1
+CBB,Cochabamba,BO,-17.39,-66.16,city,CBB,2,"Third-largest city, food capital, Cristo de la Concordia; road/air hub between altiplano and lowlands",1
+VVI,Santa Cruz de la Sierra,BO,-17.78,-63.18,city,VVI,3,"Bolivia link: Avianca nonstop from Bogota, Copa from Panama",1
+SAMA,Samaipata,BO,-18.18,-63.87,city,,2,Cool hill-town with El Fuerte (UNESCO) and Amboro NP; weekend retreat from Santa Cruz,1
+RBQ,Rurrenabaque (Madidi),BO,-14.44,-67.53,park,RBQ,1,Amazon-edge jungle and pampas tour base for Madidi NP; flights and roads disrupted in rainy season (peak Jan-Feb),1
+PUNO,"Puno (Peru, reference)",PE,-15.84,-70.02,border,,2,Peruvian Titicaca port and transfer point for Copacabana; nearest airport Juliaca (JUL) about 1 h,1
+CUZ,"Cusco (Peru, reference)",PE,-13.52,-71.97,city,CUZ,1,Machu Picchu gateway; tourist bus to La Paz (12-14 h) and Avianca flight CUZ-LPB,1
+LIM,"Lima (Peru, reference)",PE,-12.05,-77.04,hub,LIM,1,"Peru's hub; direct flights to La Paz and Santa Cruz (BoA, LATAM)",1
+BOG,Bogota,CO,4.71,-74.07,hub,BOG,2,"Capital and main air hub; flights to every Colombian node plus Panama, Central America and Bolivia",1
+PTY,Panama City,PA,8.98,-79.52,hub,PTY,2,Copa hub; nearest big neighbour region to Colombia by air,1
+SJO,San Jose (Costa Rica),CR,9.93,-84.08,city,SJO,3,"Central America link from Bogota and Cartagena (Avianca Costa Rica, Copa)",1
+GUA,Guatemala City,GT,14.63,-90.51,hub,GUA,2,"Capital, La Aurora airport and the hub for buses to Flores, Lanquin, El Salvador and Honduras",1
+GDL,Guadalajara,MX,20.67,-103.35,hub,GDL,1,"Jalisco capital and Mexico's second-largest hub; base for Tequila, Chapala, Guanajuato, Vallarta",1
+TEQ,Tequila,MX,20.88,-103.84,city,,2,Agave landscape UNESCO town; tequila distillery tours; day trip from Guadalajara,1
+GTO,Guanajuato,MX,21.02,-101.26,city,BJX,1,Colorful UNESCO colonial city (Bajio airport BJX near Leon about 0.5 h); about 4 h from Guadalajara,1
+CHAP,Lake Chapala / Ajijic,MX,20.29,-103.19,lake,,3,Lake Chapala and expat town Ajijic; day trip from Guadalajara by Chapala Plus bus,1
+PVR,Puerto Vallarta,MX,20.65,-105.23,beach,PVR,1,Pacific resort and beach hub; flights and ETN/Primera Plus buses from Guadalajara,1
+ANT,Antigua Guatemala,GT,14.56,-90.73,city,GUA,1,Colonial town and the main backpacker base with the densest shuttle network in Guatemala,1
+ATIT,Lake Atitlan (Panajachel / San Pedro),GT,14.74,-91.16,lake,GUA,1,Volcano lake with Panajachel gateway and San Pedro / San Marcos / San Juan villages reached by lancha,1
+XELA,Quetzaltenango (Xela),GT,14.84,-91.52,city,GUA,2,"Highland city, Spanish schools, volcano hikes, route to Mexico border",1
+FLR,Flores / Tikal,GT,16.93,-89.89,city,FRS,1,"Island town at Lake Peten Itza, gateway to Tikal and the Belize border (San Ignacio)",1
+LANQ,Lanquin / Semuc Champey,GT,15.57,-89.97,park,,1,"Turquoise pools and caves in Alta Verapaz, backpacker staple",1
+SAL,San Salvador,SV,13.69,-89.19,city,SAL,3,Central America link from Bogota (Avianca nonstop),1
+TUNCO,El Tunco / El Zonte coast,SV,13.49,-89.38,beach,SAL,1,"Surf and backpacker beach town on the Pacific coast, about 1 h from SAL airport",1
+COPAN,Copan Ruinas,HN,14.84,-89.14,city,,2,Maya ruins town just over the Guatemala border at El Florido; shuttle crossing point,1
+SAP,San Pedro Sula,HN,15.5,-88.03,hub,SAP,2,Honduras' commercial hub and international airport; bus gateway to La Ceiba and Tegucigalpa,1
+TGU,Tegucigalpa,HN,14.07,-87.19,hub,TGU,3,"Honduran capital, on the Tica Bus / Pullmantur line between San Salvador and Managua",1
+LCE,La Ceiba,HN,15.78,-86.8,hub,LCE,2,"North coast port town; ferry terminals to Roatan and Utila, Pico Bonito, rafting",1
+RTB,Roatan,HN,16.32,-86.54,island,RTB,1,"Largest Bay Island: West End and West Bay, diving and beaches",1
+UTIL,Utila,HN,16.1,-86.93,island,,1,"Cheapest diving in the Caribbean, backpacker island with no scheduled flights",1
+MGA,Managua,NI,12.13,-86.25,hub,MGA,3,"Capital and hub for all Nicaraguan buses, shuttles and the Corn Islands flights",1
+LEON,Leon,NI,12.44,-86.88,city,MGA,1,"Colonial university city, volcano boarding, Pacific beaches",1
+GRAN,Granada,NI,11.93,-85.96,city,MGA,1,"Colonial city on Lake Nicaragua; base for Masaya, Mombacho and Ometepe",1
+SJDS,San Juan del Sur,NI,11.25,-85.87,beach,,1,"Surf and party beach town, 30 km from the Costa Rica border",1
+OMET,Ometepe,NI,11.51,-85.56,island,,1,"Twin-volcano island in Lake Nicaragua, ferry from San Jorge to Moyogalpa",1
+CORN,Big Corn Island,NI,12.17,-83.04,island,RNI,2,Caribbean island with La Costena flights from MGA; gateway to Little Corn,1
+LCORN,Little Corn Island,NI,12.3,-82.98,island,,1,Car-free Caribbean island reached by panga from Big Corn,1
+LIR,Liberia (Costa Rica),CR,10.64,-85.44,hub,LIR,3,"Northwest Costa Rica airport and bus hub, 3 h from San Juan del Sur by shuttle",1
+SBLAS,San Blas / Guna Yala,PA,9.56,-78.97,island,,1,Guna Yala island chain; the standard Panama to Colombia sailing or speedboat route,1
+CAPU,Capurgana,CO,8.63,-77.34,beach,CPB,3,Car-free Caribbean beach town near the Panama border (airstrip CPB charters),1
+MDE,Medellin,CO,6.25,-75.57,hub,MDE,1,"Most popular backpacker city; second air hub (JMC airport 45 min out, Olaya Herrera EOH for Clic/Satena)",1
+CLO,Cali,CO,3.45,-76.53,city,CLO,3,Salsa capital in the south; air link to Caribbean coast and San Andres,1
+CTG,Cartagena,CO,10.39,-75.48,city,CTG,1,"Walled colonial city, top Caribbean destination and Panama flight/boat gateway",1
+SMR,Santa Marta,CO,11.24,-74.2,city,SMR,1,"Gateway to Tayrona, Minca, Palomino and the Sierra Nevada",1
+PEI,Pereira,CO,4.81,-75.69,hub,PEI,3,"Coffee region air and bus hub for Salento, Manizales and Cocora",1
+ADZ,San Andres,CO,12.58,-81.7,island,ADZ,2,"Caribbean island, direct flights from most Colombian cities and Panama",1
+PVA,Providencia,CO,13.35,-81.37,island,PVA,3,Quiet island reached only by Satena flight or ferry from San Andres,1
+SALE,Salento (Valle de Cocora),CO,4.64,-75.57,city,PEI,1,Coffee-region village and gateway to Valle de Cocora wax palms,1
+MZL,Manizales,CO,5.07,-75.52,city,MZL,3,Coffee-region city near Los Nevados; La Nubia airport has Clic flights,1
+GUAT,Guatape,CO,6.23,-75.16,lake,,1,"Lake town and El Penol rock, standard Medellin day trip (about 2 h)",1
+TAYR,Tayrona National Park,CO,11.31,-74.04,park,SMR,1,"Top Caribbean beach park, entrances El Zaino, Calabazo, Palangana, Bahia Concha",1
+PALO,Palomino,CO,11.25,-73.57,beach,,2,"Backpacker beach town with river tubing, on the coast road east of Tayrona",1
+MINC,Minca,CO,11.13,-74.12,city,SMR,2,"Cloud-forest village above Santa Marta, hostels and coffee farms",1
+BAQ,Barranquilla,CO,10.96,-74.8,hub,BAQ,3,"Transfer city between Cartagena and Santa Marta, airport with Avianca/LATAM/Wingo/JetSmart",1
+SGIL,San Gil (and Barichara),CO,6.55,-73.13,city,,2,"Adventure sports capital of Santander, base for Barichara and Chicamocha",1
+VLEY,Villa de Leyva,CO,5.64,-73.52,city,,2,Colonial town 3-4 h from Bogota,1
+NECO,Necocli,CO,8.42,-76.78,hub,,3,Gulf of Uraba port where boats leave for Capurgana (main route toward Panama),1
+SAPZ,Sapzurro,CO,8.66,-77.35,border,,3,Bay village 10-15 min by boat from Capurgana; trail up to the La Miel border post,1
+OBAL,Puerto Obaldia,PA,8.67,-77.42,border,PUE,3,Panamanian border town with immigration; Air Panama flights to Panama City,1
