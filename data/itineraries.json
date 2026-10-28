@@ -31,6 +31,35 @@
    }
   },
   {
+   "option": "GUA-SJO-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 7498,
+   "total_hours": 32.9,
+   "long_haul_dkk": 7498,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0569",
+   "way_home": "H0570",
+   "rating": {
+    "total": 9.8,
+    "cost": 4.8,
+    "hours": 5.0,
+    "way_home": 5,
+    "hassle": 5.0,
+    "way_in": 5,
+    "hops": 5
+   }
+  },
+  {
    "option": "SAL-SJO-ticket",
    "type": "ticket",
    "entry": "SAL",
@@ -47,8 +76,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0525",
-   "way_home": "H0526",
+   "way_in": "I0527",
+   "way_home": "H0528",
    "rating": {
     "total": 9.6,
     "cost": 4.9,
@@ -176,6 +205,35 @@
    }
   },
   {
+   "option": "GUA-MGA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 7251,
+   "total_hours": 40.9,
+   "long_haul_dkk": 7251,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0597",
+   "way_home": "H0598",
+   "rating": {
+    "total": 8.7,
+    "cost": 4.9,
+    "hours": 4.1,
+    "way_home": 4,
+    "hassle": 4.0,
+    "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
    "option": "SJO-SJO-ticket",
    "type": "ticket",
    "entry": "SJO",
@@ -244,6 +302,74 @@
    }
   },
   {
+   "option": "GUA-SJO-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 9996,
+   "total_hours": 36.8,
+   "long_haul_dkk": 7498,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0569",
+   "way_home": "H0570",
+   "rating": {
+    "total": 8.7,
+    "cost": 3.5,
+    "hours": 4.6,
+    "way_home": 5,
+    "hassle": 5.0,
+    "way_in": 5,
+    "hops": 5
+   }
+  },
+  {
    "option": "SAL-SJO-ticket",
    "type": "ticket",
    "entry": "SAL",
@@ -299,8 +425,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0525",
-   "way_home": "H0526",
+   "way_in": "I0527",
+   "way_home": "H0528",
    "rating": {
     "total": 8.4,
     "cost": 3.6,
@@ -366,6 +492,35 @@
     "way_home": 5,
     "hassle": 3.0,
     "way_in": 1,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-SJO-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 11504,
+   "total_hours": 34.3,
+   "long_haul_dkk": 11504,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0072",
+   "rating": {
+    "total": 8.2,
+    "cost": 2.7,
+    "hours": 5.0,
+    "way_home": 5,
+    "hassle": 4.5,
+    "way_in": 4,
     "hops": 5
    }
   },
@@ -502,8 +657,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0515",
-   "way_home": "H0516",
+   "way_in": "I0517",
+   "way_home": "H0518",
    "rating": {
     "total": 7.9,
     "cost": 4.9,
@@ -845,6 +1000,35 @@
    }
   },
   {
+   "option": "GUA-GUA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 7364,
+   "total_hours": 46.2,
+   "long_haul_dkk": 7364,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0099",
+   "way_home": "H0100",
+   "rating": {
+    "total": 7.6,
+    "cost": 4.8,
+    "hours": 3.5,
+    "way_home": 2,
+    "hassle": 4.0,
+    "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
    "option": "SAP-LIR-ticket",
    "type": "ticket",
    "entry": "SAP",
@@ -861,8 +1045,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0533",
-   "way_home": "H0534",
+   "way_in": "I0535",
+   "way_home": "H0536",
    "rating": {
     "total": 7.6,
     "cost": 3.6,
@@ -954,6 +1138,132 @@
    }
   },
   {
+   "option": "GUA-MGA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 9749,
+   "total_hours": 44.8,
+   "long_haul_dkk": 7251,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0597",
+   "way_home": "H0598",
+   "rating": {
+    "total": 7.5,
+    "cost": 3.6,
+    "hours": 3.6,
+    "way_home": 4,
+    "hassle": 4.0,
+    "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-LIR-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LIR",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 11604,
+   "total_hours": 39.0,
+   "long_haul_dkk": 11604,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0076",
+   "rating": {
+    "total": 7.5,
+    "cost": 2.7,
+    "hours": 4.4,
+    "way_home": 4,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-GUA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 12237,
+   "total_hours": 39.6,
+   "long_haul_dkk": 12237,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0079",
+   "rating": {
+    "total": 7.5,
+    "cost": 2.4,
+    "hours": 4.3,
+    "way_home": 5,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
    "option": "SAP-MGA-ticket",
    "type": "ticket",
    "entry": "SAP",
@@ -970,8 +1280,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0553",
-   "way_home": "H0554",
+   "way_in": "I0555",
+   "way_home": "H0556",
    "rating": {
     "total": 7.5,
     "cost": 2.0,
@@ -1189,6 +1499,35 @@
    }
   },
   {
+   "option": "GUA-SAL-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAL",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 11810,
+   "total_hours": 41.4,
+   "long_haul_dkk": 11810,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0077",
+   "rating": {
+    "total": 7.2,
+    "cost": 2.6,
+    "hours": 4.1,
+    "way_home": 4,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
    "option": "SAL-SAL-oneways",
    "type": "oneways",
    "entry": "SAL",
@@ -1214,6 +1553,74 @@
     "way_home": 4,
     "hassle": 3.0,
     "way_in": 1,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-SJO-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 14002,
+   "total_hours": 38.2,
+   "long_haul_dkk": 11504,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0072",
+   "rating": {
+    "total": 7.0,
+    "cost": 1.5,
+    "hours": 4.5,
+    "way_home": 5,
+    "hassle": 4.5,
+    "way_in": 4,
     "hops": 5
    }
   },
@@ -1860,8 +2267,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0515",
-   "way_home": "H0516",
+   "way_in": "I0517",
+   "way_home": "H0518",
    "rating": {
     "total": 6.7,
     "cost": 3.6,
@@ -2183,12 +2590,63 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0481",
-   "way_home": "H0482",
+   "way_in": "I0483",
+   "way_home": "H0484",
    "rating": {
     "total": 6.6,
     "cost": 2.1,
     "hours": 3.2,
+    "way_home": 5,
+    "hassle": 4.5,
+    "way_in": 5,
+    "hops": 4
+   }
+  },
+  {
+   "option": "GUA-VVI-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "VVI",
+   "order": [
+    "CA",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 12992,
+   "total_hours": 47.5,
+   "long_haul_dkk": 9633,
+   "in_between_dkk": 3359,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0581",
+   "way_home": "H0582",
+   "rating": {
+    "total": 6.6,
+    "cost": 2.0,
+    "hours": 3.3,
     "way_home": 5,
     "hassle": 4.5,
     "way_in": 5,
@@ -2280,8 +2738,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0553",
-   "way_home": "H0554",
+   "way_in": "I0555",
+   "way_home": "H0556",
    "rating": {
     "total": 6.5,
     "cost": 1.0,
@@ -2289,6 +2747,74 @@
     "way_home": 5,
     "hassle": 4.5,
     "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-GUA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 9862,
+   "total_hours": 50.1,
+   "long_haul_dkk": 7364,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0099",
+   "way_home": "H0100",
+   "rating": {
+    "total": 6.4,
+    "cost": 3.6,
+    "hours": 3.0,
+    "way_home": 2,
+    "hassle": 4.0,
+    "way_in": 3,
     "hops": 5
    }
   },
@@ -2348,8 +2874,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0533",
-   "way_home": "H0534",
+   "way_in": "I0535",
+   "way_home": "H0536",
    "rating": {
     "total": 6.4,
     "cost": 2.3,
@@ -2357,6 +2883,35 @@
     "way_home": 4,
     "hassle": 4.0,
     "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-SAP-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAP",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 12919,
+   "total_hours": 42.5,
+   "long_haul_dkk": 12919,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0082",
+   "rating": {
+    "total": 6.4,
+    "cost": 2.0,
+    "hours": 3.9,
+    "way_home": 3,
+    "hassle": 4.5,
+    "way_in": 4,
     "hops": 5
    }
   },
@@ -2606,6 +3161,171 @@
    }
   },
   {
+   "option": "GUA-MGA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 12512,
+   "total_hours": 45.1,
+   "long_haul_dkk": 12512,
+   "in_between_dkk": 0,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0080",
+   "rating": {
+    "total": 6.3,
+    "cost": 2.2,
+    "hours": 3.6,
+    "way_home": 3,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-LIR-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LIR",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 14102,
+   "total_hours": 42.9,
+   "long_haul_dkk": 11604,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0076",
+   "rating": {
+    "total": 6.3,
+    "cost": 1.4,
+    "hours": 3.9,
+    "way_home": 4,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-GUA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 14735,
+   "total_hours": 43.5,
+   "long_haul_dkk": 12237,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0079",
+   "rating": {
+    "total": 6.3,
+    "cost": 1.1,
+    "hours": 3.8,
+    "way_home": 5,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
    "option": "SAL-VVI-madrid",
    "type": "madrid",
    "entry": "SAL",
@@ -2644,8 +3364,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0595",
-   "way_home": "H0596",
+   "way_in": "I0631",
+   "way_home": "H0632",
    "rating": {
     "total": 6.2,
     "cost": 2.6,
@@ -2940,6 +3660,78 @@
    }
   },
   {
+   "option": "GUA-SJO-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 13278,
+   "total_hours": 50.4,
+   "long_haul_dkk": 7498,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0569",
+   "way_home": "H0570",
+   "rating": {
+    "total": 6.1,
+    "cost": 1.9,
+    "hours": 3.0,
+    "way_home": 5,
+    "hassle": 4.0,
+    "way_in": 5,
+    "hops": 3
+   }
+  },
+  {
    "option": "SJO-VVI-oneways",
    "type": "oneways",
    "entry": "SJO",
@@ -3220,6 +4012,74 @@
    }
   },
   {
+   "option": "GUA-SAL-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAL",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 14308,
+   "total_hours": 45.3,
+   "long_haul_dkk": 11810,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0077",
+   "rating": {
+    "total": 6.0,
+    "cost": 1.3,
+    "hours": 3.6,
+    "way_home": 4,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
    "option": "SAL-SAL-oneways",
    "type": "oneways",
    "entry": "SAL",
@@ -3326,8 +4186,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0469",
-   "way_home": "H0470",
+   "way_in": "I0471",
+   "way_home": "H0472",
    "rating": {
     "total": 5.9,
     "cost": 2.1,
@@ -3447,12 +4307,82 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0481",
-   "way_home": "H0482",
+   "way_in": "I0483",
+   "way_home": "H0484",
    "rating": {
     "total": 5.9,
     "cost": 1.3,
     "hours": 3.0,
+    "way_home": 5,
+    "hassle": 4.5,
+    "way_in": 5,
+    "hops": 4
+   }
+  },
+  {
+   "option": "GUA-VVI-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "VVI",
+   "order": [
+    "CA",
+    "CO",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 14509,
+   "total_hours": 49.5,
+   "long_haul_dkk": 9633,
+   "in_between_dkk": 4876,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0581",
+   "way_home": "H0582",
+   "rating": {
+    "total": 5.9,
+    "cost": 1.2,
+    "hours": 3.1,
     "way_home": 5,
     "hassle": 4.5,
     "way_in": 5,
@@ -3815,8 +4745,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0525",
-   "way_home": "H0526",
+   "way_in": "I0527",
+   "way_home": "H0528",
    "rating": {
     "total": 5.7,
     "cost": 2.0,
@@ -3825,6 +4755,57 @@
     "hassle": 3.5,
     "way_in": 4,
     "hops": 3
+   }
+  },
+  {
+   "option": "GUA-VVI-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "VVI",
+   "order": [
+    "CA",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 13225,
+   "total_hours": 48.5,
+   "long_haul_dkk": 9866,
+   "in_between_dkk": 3359,
+   "hub_nights": 1,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0056",
+   "rating": {
+    "total": 5.7,
+    "cost": 1.9,
+    "hours": 3.2,
+    "way_home": 3,
+    "hassle": 4.0,
+    "way_in": 4,
+    "hops": 4
    }
   },
   {
@@ -4311,8 +5292,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0491",
-   "way_home": "H0492",
+   "way_in": "I0493",
+   "way_home": "H0494",
    "rating": {
     "total": 5.6,
     "cost": 1.0,
@@ -4413,8 +5394,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0623",
-   "way_home": "H0624",
+   "way_in": "I0659",
+   "way_home": "H0660",
    "rating": {
     "total": 5.5,
     "cost": 2.0,
@@ -4534,8 +5515,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0595",
-   "way_home": "H0596",
+   "way_in": "I0631",
+   "way_home": "H0632",
    "rating": {
     "total": 5.5,
     "cost": 1.8,
@@ -4814,8 +5795,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0607",
-   "way_home": "H0608",
+   "way_in": "I0643",
+   "way_home": "H0644",
    "rating": {
     "total": 5.4,
     "cost": 2.5,
@@ -4823,6 +5804,57 @@
     "way_home": 3,
     "hassle": 2.5,
     "way_in": 1,
+    "hops": 4
+   }
+  },
+  {
+   "option": "GUA-LPB-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LPB",
+   "order": [
+    "CA",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 13730,
+   "total_hours": 48.8,
+   "long_haul_dkk": 10371,
+   "in_between_dkk": 3359,
+   "hub_nights": 1,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0068",
+   "rating": {
+    "total": 5.4,
+    "cost": 1.6,
+    "hours": 3.1,
+    "way_home": 3,
+    "hassle": 4.0,
+    "way_in": 4,
     "hops": 4
    }
   },
@@ -4865,8 +5897,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0715",
-   "way_home": "H0716",
+   "way_in": "I0751",
+   "way_home": "H0752",
    "rating": {
     "total": 5.4,
     "cost": 1.3,
@@ -5016,6 +6048,74 @@
    }
   },
   {
+   "option": "GUA-SAP-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAP",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 15417,
+   "total_hours": 46.4,
+   "long_haul_dkk": 12919,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0082",
+   "rating": {
+    "total": 5.4,
+    "cost": 1.0,
+    "hours": 3.4,
+    "way_home": 3,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
    "option": "SJO-LPB-oneways",
    "type": "oneways",
    "entry": "SJO",
@@ -5086,6 +6186,95 @@
    }
   },
   {
+   "option": "GUA-SJO-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 16426,
+   "total_hours": 49.5,
+   "long_haul_dkk": 7498,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0569",
+   "way_home": "H0570",
+   "rating": {
+    "total": 5.4,
+    "cost": 1.0,
+    "hours": 3.1,
+    "way_home": 5,
+    "hassle": 3.5,
+    "way_in": 5,
+    "hops": 2
+   }
+  },
+  {
    "option": "SAP-VVI-ticket",
    "type": "ticket",
    "entry": "SAP",
@@ -5143,8 +6332,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0491",
-   "way_home": "H0492",
+   "way_in": "I0493",
+   "way_home": "H0494",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -5859,8 +7048,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0469",
-   "way_home": "H0470",
+   "way_in": "I0471",
+   "way_home": "H0472",
    "rating": {
     "total": 5.2,
     "cost": 1.4,
@@ -6052,6 +7241,97 @@
    }
   },
   {
+   "option": "GUA-SJO-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 14795,
+   "total_hours": 52.4,
+   "long_haul_dkk": 7498,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0569",
+   "way_home": "H0570",
+   "rating": {
+    "total": 5.2,
+    "cost": 1.1,
+    "hours": 2.7,
+    "way_home": 5,
+    "hassle": 3.5,
+    "way_in": 5,
+    "hops": 2
+   }
+  },
+  {
    "option": "LIR-GUA-oneways",
    "type": "oneways",
    "entry": "LIR",
@@ -6206,6 +7486,78 @@
     "hassle": 3.5,
     "way_in": 5,
     "hops": 2
+   }
+  },
+  {
+   "option": "GUA-SJO-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 17284,
+   "total_hours": 51.8,
+   "long_haul_dkk": 11504,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0072",
+   "rating": {
+    "total": 5.2,
+    "cost": 1.0,
+    "hours": 2.8,
+    "way_home": 5,
+    "hassle": 3.5,
+    "way_in": 4,
+    "hops": 3
    }
   },
   {
@@ -6435,6 +7787,163 @@
     "hassle": 3.0,
     "way_in": 1,
     "hops": 5
+   }
+  },
+  {
+   "option": "GUA-MGA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 15010,
+   "total_hours": 49.0,
+   "long_haul_dkk": 12512,
+   "in_between_dkk": 2498,
+   "hub_nights": 0,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0022",
+   "way_home": "H0080",
+   "rating": {
+    "total": 5.1,
+    "cost": 1.0,
+    "hours": 3.1,
+    "way_home": 3,
+    "hassle": 4.5,
+    "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
+   "option": "GUA-SJO-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 20432,
+   "total_hours": 50.9,
+   "long_haul_dkk": 11504,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0072",
+   "rating": {
+    "total": 5.1,
+    "cost": 1.0,
+    "hours": 2.9,
+    "way_home": 5,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
    }
   },
   {
@@ -6804,8 +8313,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0715",
-   "way_home": "H0716",
+   "way_in": "I0751",
+   "way_home": "H0752",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -6893,8 +8402,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0525",
-   "way_home": "H0526",
+   "way_in": "I0527",
+   "way_home": "H0528",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -7105,8 +8614,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0553",
-   "way_home": "H0554",
+   "way_in": "I0555",
+   "way_home": "H0556",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -7185,6 +8694,78 @@
     "hassle": 2.5,
     "way_in": 1,
     "hops": 4
+   }
+  },
+  {
+   "option": "GUA-MGA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 13031,
+   "total_hours": 58.4,
+   "long_haul_dkk": 7251,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0597",
+   "way_home": "H0598",
+   "rating": {
+    "total": 4.9,
+    "cost": 2.0,
+    "hours": 2.0,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 3,
+    "hops": 3
    }
   },
   {
@@ -7295,8 +8876,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0525",
-   "way_home": "H0526",
+   "way_in": "I0527",
+   "way_home": "H0528",
    "rating": {
     "total": 4.9,
     "cost": 1.2,
@@ -7305,6 +8886,76 @@
     "hassle": 3.0,
     "way_in": 4,
     "hops": 2
+   }
+  },
+  {
+   "option": "GUA-VVI-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "VVI",
+   "order": [
+    "CA",
+    "CO",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 14742,
+   "total_hours": 50.5,
+   "long_haul_dkk": 9866,
+   "in_between_dkk": 4876,
+   "hub_nights": 1,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0056",
+   "rating": {
+    "total": 4.9,
+    "cost": 1.1,
+    "hours": 2.9,
+    "way_home": 3,
+    "hassle": 4.0,
+    "way_in": 4,
+    "hops": 4
    }
   },
   {
@@ -7445,6 +9096,97 @@
     "hassle": 4.5,
     "way_in": 5,
     "hops": 4
+   }
+  },
+  {
+   "option": "GUA-SJO-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SJO",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 18801,
+   "total_hours": 53.8,
+   "long_haul_dkk": 11504,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0072",
+   "rating": {
+    "total": 4.9,
+    "cost": 1.0,
+    "hours": 2.5,
+    "way_home": 5,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
    }
   },
   {
@@ -7704,8 +9446,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0553",
-   "way_home": "H0554",
+   "way_in": "I0555",
+   "way_home": "H0556",
    "rating": {
     "total": 4.9,
     "cost": 1.0,
@@ -7918,8 +9660,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0623",
-   "way_home": "H0624",
+   "way_in": "I0659",
+   "way_home": "H0660",
    "rating": {
     "total": 4.8,
     "cost": 1.2,
@@ -7978,6 +9720,76 @@
     "way_home": 3,
     "hassle": 3.5,
     "way_in": 3,
+    "hops": 4
+   }
+  },
+  {
+   "option": "GUA-LPB-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LPB",
+   "order": [
+    "CA",
+    "CO",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 15247,
+   "total_hours": 50.8,
+   "long_haul_dkk": 10371,
+   "in_between_dkk": 4876,
+   "hub_nights": 1,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0068",
+   "rating": {
+    "total": 4.8,
+    "cost": 1.0,
+    "hours": 2.9,
+    "way_home": 3,
+    "hassle": 4.0,
+    "way_in": 4,
     "hops": 4
    }
   },
@@ -8410,8 +10222,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0607",
-   "way_home": "H0608",
+   "way_in": "I0643",
+   "way_home": "H0644",
    "rating": {
     "total": 4.7,
     "cost": 1.7,
@@ -8488,6 +10300,78 @@
     "hassle": 3.5,
     "way_in": 2,
     "hops": 5
+   }
+  },
+  {
+   "option": "GUA-GUA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 18017,
+   "total_hours": 57.1,
+   "long_haul_dkk": 12237,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0079",
+   "rating": {
+    "total": 4.7,
+    "cost": 1.0,
+    "hours": 2.1,
+    "way_home": 5,
+    "hassle": 3.5,
+    "way_in": 4,
+    "hops": 3
    }
   },
   {
@@ -8671,6 +10555,95 @@
    }
   },
   {
+   "option": "GUA-GUA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 21165,
+   "total_hours": 56.2,
+   "long_haul_dkk": 12237,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0079",
+   "rating": {
+    "total": 4.7,
+    "cost": 1.0,
+    "hours": 2.2,
+    "way_home": 5,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
+   }
+  },
+  {
    "option": "MEX-LPB-oneways",
    "type": "oneways",
    "entry": "MEX",
@@ -8821,8 +10794,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0553",
-   "way_home": "H0554",
+   "way_in": "I0555",
+   "way_home": "H0556",
    "rating": {
     "total": 4.6,
     "cost": 1.0,
@@ -9188,6 +11161,78 @@
    }
   },
   {
+   "option": "GUA-LIR-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LIR",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 17384,
+   "total_hours": 56.5,
+   "long_haul_dkk": 11604,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0076",
+   "rating": {
+    "total": 4.5,
+    "cost": 1.0,
+    "hours": 2.2,
+    "way_home": 4,
+    "hassle": 3.5,
+    "way_in": 4,
+    "hops": 3
+   }
+  },
+  {
    "option": "SJO-SAL-oneways",
    "type": "oneways",
    "entry": "SJO",
@@ -9367,6 +11412,57 @@
     "hassle": 2.5,
     "way_in": 3,
     "hops": 2
+   }
+  },
+  {
+   "option": "GUA-VVI-madrid",
+   "type": "madrid",
+   "entry": "GUA",
+   "exit": "VVI",
+   "order": [
+    "CA",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 12573,
+   "total_hours": 60.6,
+   "long_haul_dkk": 9214,
+   "in_between_dkk": 3359,
+   "hub_nights": 2,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0821",
+   "way_home": "H0822",
+   "rating": {
+    "total": 4.4,
+    "cost": 2.2,
+    "hours": 1.7,
+    "way_home": 3,
+    "hassle": 2.5,
+    "way_in": 1,
+    "hops": 4
    }
   },
   {
@@ -9639,6 +11735,57 @@
    }
   },
   {
+   "option": "GUA-LPB-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "LPB",
+   "order": [
+    "CA",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 15890,
+   "total_hours": 57.5,
+   "long_haul_dkk": 12531,
+   "in_between_dkk": 3359,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0445",
+   "way_home": "H0446",
+   "rating": {
+    "total": 4.4,
+    "cost": 1.0,
+    "hours": 2.1,
+    "way_home": 3,
+    "hassle": 4.5,
+    "way_in": 5,
+    "hops": 4
+   }
+  },
+  {
    "option": "SAL-SJO-oneways",
    "type": "oneways",
    "entry": "SAL",
@@ -9869,6 +12016,186 @@
     "hassle": 4.0,
     "way_in": 5,
     "hops": 3
+   }
+  },
+  {
+   "option": "GUA-GUA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 19534,
+   "total_hours": 59.1,
+   "long_haul_dkk": 12237,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0079",
+   "rating": {
+    "total": 4.4,
+    "cost": 1.0,
+    "hours": 1.9,
+    "way_home": 5,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
+   }
+  },
+  {
+   "option": "GUA-LIR-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LIR",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 20532,
+   "total_hours": 55.6,
+   "long_haul_dkk": 11604,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0076",
+   "rating": {
+    "total": 4.4,
+    "cost": 1.0,
+    "hours": 2.3,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
    }
   },
   {
@@ -10484,6 +12811,78 @@
    }
   },
   {
+   "option": "GUA-SAL-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAL",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 17590,
+   "total_hours": 58.9,
+   "long_haul_dkk": 11810,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0077",
+   "rating": {
+    "total": 4.3,
+    "cost": 1.0,
+    "hours": 1.9,
+    "way_home": 4,
+    "hassle": 3.5,
+    "way_in": 4,
+    "hops": 3
+   }
+  },
+  {
    "option": "MGA-GUA-oneways",
    "type": "oneways",
    "entry": "MGA",
@@ -10700,8 +13099,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0457",
-   "way_home": "H0458",
+   "way_in": "I0459",
+   "way_home": "H0460",
    "rating": {
     "total": 4.2,
     "cost": 1.4,
@@ -11031,6 +13430,76 @@
    }
   },
   {
+   "option": "GUA-LPB-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "LPB",
+   "order": [
+    "CA",
+    "CO",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 17407,
+   "total_hours": 59.5,
+   "long_haul_dkk": 12531,
+   "in_between_dkk": 4876,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0445",
+   "way_home": "H0446",
+   "rating": {
+    "total": 4.2,
+    "cost": 1.0,
+    "hours": 1.8,
+    "way_home": 3,
+    "hassle": 4.5,
+    "way_in": 5,
+    "hops": 4
+   }
+  },
+  {
    "option": "MEX-SJO-oneways",
    "type": "oneways",
    "entry": "MEX",
@@ -11193,6 +13662,97 @@
     "hassle": 4.0,
     "way_in": 5,
     "hops": 3
+   }
+  },
+  {
+   "option": "GUA-LIR-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "LIR",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 18901,
+   "total_hours": 58.5,
+   "long_haul_dkk": 11604,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0076",
+   "rating": {
+    "total": 4.2,
+    "cost": 1.0,
+    "hours": 1.9,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
    }
   },
   {
@@ -11413,6 +13973,95 @@
     "hassle": 2.0,
     "way_in": 3,
     "hops": 1
+   }
+  },
+  {
+   "option": "GUA-SAL-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAL",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 20738,
+   "total_hours": 58.0,
+   "long_haul_dkk": 11810,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0077",
+   "rating": {
+    "total": 4.2,
+    "cost": 1.0,
+    "hours": 2.0,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
    }
   },
   {
@@ -11691,8 +14340,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0515",
-   "way_home": "H0516",
+   "way_in": "I0517",
+   "way_home": "H0518",
    "rating": {
     "total": 4.1,
     "cost": 2.0,
@@ -12019,6 +14668,95 @@
     "hassle": 3.5,
     "way_in": 2,
     "hops": 5
+   }
+  },
+  {
+   "option": "GUA-MGA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 16179,
+   "total_hours": 57.5,
+   "long_haul_dkk": 7251,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0597",
+   "way_home": "H0598",
+   "rating": {
+    "total": 4.1,
+    "cost": 1.0,
+    "hours": 2.1,
+    "way_home": 4,
+    "hassle": 2.5,
+    "way_in": 3,
+    "hops": 2
    }
   },
   {
@@ -12526,6 +15264,97 @@
    }
   },
   {
+   "option": "GUA-MGA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 14548,
+   "total_hours": 60.4,
+   "long_haul_dkk": 7251,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0597",
+   "way_home": "H0598",
+   "rating": {
+    "total": 4.0,
+    "cost": 1.2,
+    "hours": 1.7,
+    "way_home": 4,
+    "hassle": 2.5,
+    "way_in": 3,
+    "hops": 2
+   }
+  },
+  {
    "option": "LIR-LPB-oneways",
    "type": "oneways",
    "entry": "LIR",
@@ -12636,8 +15465,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0533",
-   "way_home": "H0534",
+   "way_in": "I0535",
+   "way_home": "H0536",
    "rating": {
     "total": 4.0,
     "cost": 1.0,
@@ -13358,6 +16187,78 @@
    }
   },
   {
+   "option": "GUA-SAP-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAP",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 18699,
+   "total_hours": 60.0,
+   "long_haul_dkk": 12919,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0082",
+   "rating": {
+    "total": 3.9,
+    "cost": 1.0,
+    "hours": 1.8,
+    "way_home": 3,
+    "hassle": 3.5,
+    "way_in": 4,
+    "hops": 3
+   }
+  },
+  {
    "option": "SAP-LIR-ticket",
    "type": "ticket",
    "entry": "SAP",
@@ -13434,8 +16335,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0533",
-   "way_home": "H0534",
+   "way_in": "I0535",
+   "way_home": "H0536",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -13556,6 +16457,97 @@
     "hassle": 2.0,
     "way_in": 3,
     "hops": 1
+   }
+  },
+  {
+   "option": "GUA-SAL-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAL",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 19107,
+   "total_hours": 60.9,
+   "long_haul_dkk": 11810,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0077",
+   "rating": {
+    "total": 3.9,
+    "cost": 1.0,
+    "hours": 1.6,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
    }
   },
   {
@@ -13739,6 +16731,78 @@
    }
   },
   {
+   "option": "GUA-GUA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 13144,
+   "total_hours": 63.7,
+   "long_haul_dkk": 7364,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0099",
+   "way_home": "H0100",
+   "rating": {
+    "total": 3.8,
+    "cost": 1.9,
+    "hours": 1.3,
+    "way_home": 2,
+    "hassle": 3.0,
+    "way_in": 3,
+    "hops": 3
+   }
+  },
+  {
    "option": "SAL-LIR-oneways",
    "type": "oneways",
    "entry": "SAL",
@@ -13868,8 +16932,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0457",
-   "way_home": "H0458",
+   "way_in": "I0459",
+   "way_home": "H0460",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -14478,6 +17542,165 @@
    }
   },
   {
+   "option": "GUA-SAP-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAP",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 21847,
+   "total_hours": 59.1,
+   "long_haul_dkk": 12919,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0082",
+   "rating": {
+    "total": 3.8,
+    "cost": 1.0,
+    "hours": 1.9,
+    "way_home": 3,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
+   }
+  },
+  {
+   "option": "GUA-VVI-madrid",
+   "type": "madrid",
+   "entry": "GUA",
+   "exit": "VVI",
+   "order": [
+    "CA",
+    "CO",
+    "BO"
+   ],
+   "scenario": "A",
+   "total_dkk": 14090,
+   "total_hours": 62.6,
+   "long_haul_dkk": 9214,
+   "in_between_dkk": 4876,
+   "hub_nights": 2,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0821",
+   "way_home": "H0822",
+   "rating": {
+    "total": 3.7,
+    "cost": 1.5,
+    "hours": 1.4,
+    "way_home": 3,
+    "hassle": 2.5,
+    "way_in": 1,
+    "hops": 4
+   }
+  },
+  {
    "option": "SAP-LIR-ticket",
    "type": "ticket",
    "entry": "SAP",
@@ -14556,8 +17779,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0533",
-   "way_home": "H0534",
+   "way_in": "I0535",
+   "way_home": "H0536",
    "rating": {
     "total": 3.7,
     "cost": 1.0,
@@ -15113,6 +18336,78 @@
    }
   },
   {
+   "option": "GUA-MGA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 18292,
+   "total_hours": 62.6,
+   "long_haul_dkk": 12512,
+   "in_between_dkk": 5780,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0080",
+   "rating": {
+    "total": 3.6,
+    "cost": 1.0,
+    "hours": 1.4,
+    "way_home": 3,
+    "hassle": 3.5,
+    "way_in": 4,
+    "hops": 3
+   }
+  },
+  {
    "option": "MGA-SAL-oneways",
    "type": "oneways",
    "entry": "MGA",
@@ -15200,6 +18495,186 @@
     "way_home": 4,
     "hassle": 2.5,
     "way_in": 3,
+    "hops": 2
+   }
+  },
+  {
+   "option": "GUA-SAP-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "SAP",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 20216,
+   "total_hours": 62.0,
+   "long_haul_dkk": 12919,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0082",
+   "rating": {
+    "total": 3.6,
+    "cost": 1.0,
+    "hours": 1.5,
+    "way_home": 3,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
+   }
+  },
+  {
+   "option": "GUA-MGA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 21440,
+   "total_hours": 61.7,
+   "long_haul_dkk": 12512,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0080",
+   "rating": {
+    "total": 3.6,
+    "cost": 1.0,
+    "hours": 1.5,
+    "way_home": 3,
+    "hassle": 3.0,
+    "way_in": 4,
     "hops": 2
    }
   },
@@ -16850,8 +20325,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0515",
-   "way_home": "H0516",
+   "way_in": "I0517",
+   "way_home": "H0518",
    "rating": {
     "total": 3.3,
     "cost": 1.2,
@@ -17206,8 +20681,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0515",
-   "way_home": "H0516",
+   "way_in": "I0517",
+   "way_home": "H0518",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -17546,6 +21021,97 @@
     "hassle": 3.0,
     "way_in": 3,
     "hops": 3
+   }
+  },
+  {
+   "option": "GUA-MGA-oneways",
+   "type": "oneways",
+   "entry": "GUA",
+   "exit": "MGA",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 19809,
+   "total_hours": 64.6,
+   "long_haul_dkk": 12512,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0022",
+   "way_home": "H0080",
+   "rating": {
+    "total": 3.3,
+    "cost": 1.0,
+    "hours": 1.2,
+    "way_home": 3,
+    "hassle": 3.0,
+    "way_in": 4,
+    "hops": 2
    }
   },
   {
@@ -19102,6 +22668,95 @@
    }
   },
   {
+   "option": "GUA-GUA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "BO",
+    "CO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 16292,
+   "total_hours": 62.8,
+   "long_haul_dkk": 7364,
+   "in_between_dkk": 8928,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "VVI",
+     "quote_id": "Q:8b1f3899bb30",
+     "price_dkk": 2400.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4325.0,
+     "depart": "2027-01-18T18:02",
+     "arrive": "2027-01-19T03:44",
+     "hours": 7.7,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-18"
+    },
+    {
+     "from": "VVI",
+     "to": "BOG",
+     "quote_id": "Q:231380090526",
+     "price_dkk": 2601.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3581.0,
+     "depart": "2027-02-01T03:45",
+     "arrive": "2027-02-01T06:40",
+     "hours": 3.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-02-01"
+    },
+    {
+     "from": "BOG",
+     "to": "SAL",
+     "quote_id": "Q:4f132d318af1",
+     "price_dkk": 2968.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 3718.0,
+     "depart": "2026-12-12T13:40",
+     "arrive": "2026-12-12T15:40",
+     "hours": 3.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-12"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0099",
+   "way_home": "H0100",
+   "rating": {
+    "total": 3.0,
+    "cost": 1.0,
+    "hours": 1.4,
+    "way_home": 2,
+    "hassle": 2.5,
+    "way_in": 3,
+    "hops": 2
+   }
+  },
+  {
    "option": "GDL-SAL-ticket",
    "type": "ticket",
    "entry": "GDL",
@@ -20011,6 +23666,97 @@
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0103",
    "way_home": "H0104",
+   "rating": {
+    "total": 2.9,
+    "cost": 1.2,
+    "hours": 1.0,
+    "way_home": 2,
+    "hassle": 2.5,
+    "way_in": 3,
+    "hops": 2
+   }
+  },
+  {
+   "option": "GUA-GUA-ticket",
+   "type": "ticket",
+   "entry": "GUA",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 14661,
+   "total_hours": 65.7,
+   "long_haul_dkk": 7364,
+   "in_between_dkk": 7297,
+   "hub_nights": 0,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0099",
+   "way_home": "H0100",
    "rating": {
     "total": 2.9,
     "cost": 1.2,
