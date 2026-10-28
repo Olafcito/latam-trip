@@ -1,0 +1,45 @@
+{
+ "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
+ "trips": [
+  {"id": "seed-1-gua-bog", "rank": 1, "name": "Guatemala City in, Bogotá home", "option": "GUA-BOG-ticket", "order": ["CA", "BO", "CO"],
+   "segments": [
+    {"kind": "overland", "from": "GUA", "to": "SJO", "countries": ["GT", "SV", "HN", "NI", "CR"], "note": "By bus south through El Salvador, Honduras and Nicaragua to San José. Your own route."},
+    {"kind": "flight", "from": "SJO", "to": "LPB", "quote_id": "Q:8f55e7717892"},
+    {"kind": "flight", "from": "LPB", "to": "CBB", "quote_id": "Q:87e38d9f7133"},
+    {"kind": "flight", "from": "CBB", "to": "VVI", "quote_id": "Q:0bdd2cd96aec"},
+    {"kind": "flight", "from": "VVI", "to": "BOG", "quote_id": "Q:33f610ef55de"},
+    {"kind": "overland", "from": "BOG", "to": "BOG", "countries": ["CO"], "note": "Colombia, back in Bogotá for the flight home."}]},
+  {"id": "seed-2-mga-ctg", "rank": 2, "name": "Managua in, Cartagena home", "option": "MGA-CTG-ticket", "order": ["CA", "BO", "CO"],
+   "segments": [
+    {"kind": "overland", "from": "MGA", "to": "SJO", "countries": ["NI", "HN", "SV", "CR"], "note": "Nicaragua, Honduras and El Salvador, then south to San José by bus (about 2 days from San Salvador) or fly San Salvador to San José (Avianca nonstop, about 2,234 kr)."},
+    {"kind": "flight", "from": "SJO", "to": "LPB", "quote_id": "Q:8f55e7717892"},
+    {"kind": "flight", "from": "LPB", "to": "CBB", "quote_id": "Q:87e38d9f7133"},
+    {"kind": "flight", "from": "CBB", "to": "VVI", "quote_id": "Q:0bdd2cd96aec"},
+    {"kind": "flight", "from": "VVI", "to": "BOG", "quote_id": "Q:33f610ef55de"},
+    {"kind": "overland", "from": "BOG", "to": "CTG", "countries": ["CO"], "note": "Colombia, ending in Cartagena."}]},
+  {"id": "seed-4-sal-mde", "rank": 4, "name": "San Salvador in, Medellín home", "option": "SAL-MDE-ticket", "order": ["CA", "BO", "CO"],
+   "segments": [
+    {"kind": "overland", "from": "SAL", "to": "SJO", "countries": ["SV", "HN", "NI", "CR"], "note": "By bus south through Honduras and Nicaragua to San José."},
+    {"kind": "flight", "from": "SJO", "to": "LPB", "quote_id": "Q:8f55e7717892"},
+    {"kind": "flight", "from": "LPB", "to": "CBB", "quote_id": "Q:87e38d9f7133"},
+    {"kind": "flight", "from": "CBB", "to": "VVI", "quote_id": "Q:0bdd2cd96aec"},
+    {"kind": "flight", "from": "VVI", "to": "BOG", "quote_id": "Q:33f610ef55de"},
+    {"kind": "overland", "from": "BOG", "to": "MDE", "countries": ["CO"], "note": "Colombia, ending in Medellín."}]},
+  {"id": "seed-5-bog-sal", "rank": 5, "name": "Bogotá in, San Salvador home", "option": "BOG-SAL-ticket", "order": ["CO", "BO", "CA"],
+   "segments": [
+    {"kind": "overland", "from": "BOG", "to": "BOG", "countries": ["CO"], "note": "Colombia, back in Bogotá for Bolivia."},
+    {"kind": "flight", "from": "BOG", "to": "LPB", "quote_id": "Q:10bbe28be683"},
+    {"kind": "flight", "from": "LPB", "to": "CBB", "quote_id": "Q:87e38d9f7133"},
+    {"kind": "flight", "from": "CBB", "to": "VVI", "quote_id": "Q:0bdd2cd96aec"},
+    {"kind": "flight", "from": "VVI", "to": "SJO", "quote_id": "Q:bc519ee046d2"},
+    {"kind": "overland", "from": "SJO", "to": "SAL", "countries": ["CR", "NI", "HN", "SV"], "note": "By bus north through Nicaragua and Honduras to San Salvador."}]},
+  {"id": "seed-6-sal-vvi", "rank": 6, "name": "San Salvador in, Santa Cruz home (B)", "option": "SAL-VVI-ticket", "order": ["CA", "CO", "BO"],
+   "segments": [
+    {"kind": "overland", "from": "SAL", "to": "SJO", "countries": ["SV", "HN", "NI", "CR"], "note": "By bus south through Honduras and Nicaragua to San José."},
+    {"kind": "flight", "from": "SJO", "to": "MDE", "quote_id": "Q:f83cd694885f"},
+    {"kind": "overland", "from": "MDE", "to": "BOG", "countries": ["CO"], "note": "Colombia, ending in Bogotá."},
+    {"kind": "flight", "from": "BOG", "to": "LPB", "quote_id": "Q:10bbe28be683"},
+    {"kind": "flight", "from": "LPB", "to": "CBB", "quote_id": "Q:87e38d9f7133"},
+    {"kind": "flight", "from": "CBB", "to": "VVI", "quote_id": "Q:0bdd2cd96aec"}]}
+ ]
+}

@@ -27,6 +27,7 @@ Expansion operators, run in this order, each a round of worker jobs:
 7. E7 carrier expansion: search the carriers that dominate the top (BoA, Copa, Avianca, KLM...).
 8. E8 origin shift: alternative origins with buffer days (cheap positioning flight priced separately).
 9. E9 cross-check: the shortlist on a second engine, and a re-check later to track prices.
+10. E10 self-built chains: one-ways between the origin, cheap European hubs (MAD, BCN, LIS, CDG, AMS, FRA, LGW, IST) and Latin American leisure gateways (CUN, MEX, SDQ, PTY), plus the onward low-cost hops (Viva, Volaris, Arajet, JetSMART). `chains.py` joins them into ways in and home with self-transfers, day stops or 1 to 4 night stopovers, and `routes.py` prices whole trips from them. Users often find these themselves as Momondo "Mix & Match"; treat such a screenshot as a seed and search around it (other hubs, the reverse direction, the hop that follows).
 Priority = gain x novelty x gap / cost. A branch is saturated after 8 tasks with no new best. Kill a branch whose results are all over the hard limit or absurd after one adjustment.
 
 ## Dispatch rules (learned the hard way, see references/lessons.md)
@@ -39,6 +40,6 @@ Priority = gain x novelty x gap / cost. A branch is saturated after 8 tasks with
 
 ## After each round
 1. `python3 -I PLUGIN/skills/flight-crawl-orchestrator/scripts/ingest.py --root ROOT`
-2. `python3 -I PLUGIN/skills/flight-crawl-orchestrator/scripts/scenarios.py --root ROOT` for scenario totals (main ticket + forced regional legs).
+2. `itineraries.py --root ROOT` (whole trips: every option x region order incl. revisits, data/itineraries.json), `inout.py --root ROOT --md FILE` (city in x city out table, three types, rated: data/inout.csv), `chains.py --root ROOT` (self-built ways in/home, data/chains.json), then `routes.py --root ROOT` (every region order for every main ticket and chain pair, data/routes.json), `evaluate.py` for named scenarios with bags, `build_map.py` for the map.
 3. Update `briefs/scenarios.md` and the plan doc with what changed; fold worker `next:` and `problems:` lines into the agent files and references/lessons.md.
 4. Pick the next round by the priority rule. Tell the user only what changed their options.

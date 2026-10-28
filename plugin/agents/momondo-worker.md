@@ -26,8 +26,11 @@ Find the remarkably different options. Momondo shows two useful views: Billigst 
 - Multi-city, 3 to 6 legs: `https://www.momondo.dk/flight-search/CPH-PTY/2026-12-03/PTY-SAL/2026-12-07/VVI-CPH/2027-02-03?sort=price_a`
 - Fastest: `sort=duration_a`.
 
-## Layout
-The crawler was built on Momondo's narrow mobile layout. Before the first search load `mcp__remote-devices__Claude_Browser__resize_window` (same ToolSearch) and set the pane to about 420 x 900 so momondo.dk serves the narrow mobile layout. Desktop layouts have a nav drawer that is also a [role=dialog]; the crawler skips it and opens cards via their "Vælg" button, but report it if rows come back with empty legs.
+## Layout and pacing
+Never resize the pane: changing width triggered Momondo's bot check ("Sikkerhedstjek"). The crawler handles both layouts (desktop: it skips the nav drawer and opens cards via "Vælg"); report it if rows come back with empty legs. Wait about 20 s between searches. If "Sikkerhedstjek", a captcha or "Bekræft at du er et menneske" appears: stop the whole job at once, never solve it, close your tabs and report `blocked` under problems.
+
+## Chains (one-way searches)
+Momondo's one-way results include "Mix & Match" and "Egentransfer" chains (e.g. CPH-MAD Norwegian + MAD-CUN Air Europa). Keep them when every leg is under 30 h: they are the material the orchestrator builds creative routes from. Note the stop city and the layover hours; a layover of 8 h or more that spans a night is a stopover the traveller may enjoy (flag `long_layover`), not a reason to drop the row.
 
 ## Per search (be patient)
 1. tabs_create with the URL (or navigate a fresh tab), wait 8 s.
