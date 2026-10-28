@@ -20,6 +20,8 @@ export const HIT_ROUTES = 'route-hit'
 export const HIT_PLACES = 'place-hit'
 export const LABEL_LAYERS = { focus: 'label-focus', dest: 'label-dest', town: 'label-town' }
 export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
+export const TRIP_OVERLAND = 'trip-overland'
+export const HIT_OVERLAND = 'trip-overland-hit'
 
 /** Overview routes are faint. Hovering a city previews its routes, and a selection shows only its own. */
 export function routeOpacity(base: number): ExpressionSpecification {
@@ -147,6 +149,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     id: 'trip-casing',
     type: 'line',
     source: 'trip',
+    filter: ['!=', ['get', 'family'], 'overland'],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': C.ground, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 6.5, 8, 8.5], 'line-opacity': 0.85 },
   })
@@ -154,7 +157,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     id: 'trip-line',
     type: 'line',
     source: 'trip',
-    filter: ['!=', ['get', 'family'], 'flight'],
+    filter: ['!', ['in', ['get', 'family'], ['literal', ['flight', 'overland']]]],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': ['match', ['get', 'family'], 'boat', C.boat, C.bus], 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4] },
   })
@@ -165,6 +168,21 @@ export function addRouteLayers(map: MLMap, model: Model) {
     filter: ['==', ['get', 'family'], 'flight'],
     layout: { 'line-join': 'round' },
     paint: { 'line-color': C.flight, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4], 'line-dasharray': [1.6, 1.1] },
+  })
+  // overland blocks of a seeded trip: your own route, so only a faint dashed line between the ends
+  map.addLayer({
+    id: TRIP_OVERLAND,
+    type: 'line',
+    source: 'trip',
+    filter: ['==', ['get', 'family'], 'overland'],
+    paint: { 'line-color': C.text, 'line-opacity': 0.55, 'line-width': 1.6, 'line-dasharray': [2, 2.4] },
+  })
+  map.addLayer({
+    id: HIT_OVERLAND,
+    type: 'line',
+    source: 'trip',
+    filter: ['==', ['get', 'family'], 'overland'],
+    paint: { 'line-color': '#000', 'line-opacity': 0, 'line-width': 14 },
   })
 
   map.addLayer({

@@ -5,7 +5,7 @@ import { familyOf, type Connection, type DatedFare, type Family, type FlownLeg, 
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 
-export type PanelView = 'city' | 'more' | 'route' | 'trips'
+export type PanelView = 'city' | 'more' | 'route' | 'trips' | 'way'
 
 export interface View {
   sel: string | null
