@@ -92,7 +92,7 @@ flags: basic_fare | airlines: Avianca, BoA, Copa Airlines, Iberia, LATAM Airline
 
 ## C1 Nicaragua in, Bogota home, Bolivia as a loop at the end
 total 13425 DKK with cabin bag | +2357 with checked bag = 15782 | 65.8 h in the air incl. connections | 15 flights | 6 tickets | eff 24054
-flags: basic_fare | airlines: American, Avianca, BoA, British Airways, Copa Airlines, LATAM Airlines
+flags: basic_fare, us_transit | airlines: American, Avianca, BoA, British Airways, Copa Airlines, LATAM Airlines
   - Long-haul CPH-MGA / BOG-CPH: 6681 | P:CPH>MGA/BOG>CPH 2026-12-03 | 06:30>20:12 20.7 / 15:15>17:25+1 20.17 h | American, British Airways | 6 flights, 1 ticket(s) | bag +1096 (British Airways 548; American 548)
   - Central America > Colombia (from Nicaragua, El Salvador or Honduras): 1696 | R:MGA>MDE 2027-01-12 | 03:16>10:55 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)
   - Colombia > La Paz: 2384 | R:CLO>LPB 2027-01-27 | 04:45>14:45 9.0 h | Avianca | 3 flights, 1 ticket(s) | bag +516 (Avianca 516)

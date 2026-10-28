@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-28T17:19:03Z",
+ "generated_at": "2026-10-28T17:58:15Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {
@@ -27,7 +27,7 @@
      "way_home": 5
     },
     "way_in": {
-     "id": "I0125",
+     "id": "I0133",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -83,7 +83,7 @@
      ]
     },
     "way_home": {
-     "id": "H0126",
+     "id": "H0134",
      "direction": "home",
      "type": "ticket",
      "from": "BOG",
@@ -334,7 +334,7 @@
      "way_home": 4
     },
     "way_in": {
-     "id": "I0117",
+     "id": "I0125",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -390,7 +390,7 @@
      ]
     },
     "way_home": {
-     "id": "H0118",
+     "id": "H0126",
      "direction": "home",
      "type": "ticket",
      "from": "CTG",
@@ -647,7 +647,7 @@
      "way_home": 3
     },
     "way_in": {
-     "id": "I0203",
+     "id": "I0211",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -699,7 +699,7 @@
      ]
     },
     "way_home": {
-     "id": "H0204",
+     "id": "H0212",
      "direction": "home",
      "type": "ticket",
      "from": "MDE",
@@ -943,114 +943,115 @@
     "type": "ticket",
     "entry": "BOG",
     "exit": "SAL",
-    "ticket_quote_id": "Q:99c4f409c805",
-    "price_dkk": 6669,
+    "ticket_quote_id": "Q:016fa4f9e11d",
+    "price_dkk": 7657,
     "rating": {
-     "total": 8.6,
-     "price": 5.0,
-     "way_in": 3,
-     "way_home": 4
+     "total": 9.3,
+     "price": 4.3,
+     "way_in": 5,
+     "way_home": 5
     },
     "way_in": {
-     "id": "I0145",
+     "id": "I0153",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
      "to": "BOG",
-     "depart": "2026-12-03T06:30",
-     "arrive": "2026-12-03T22:21",
-     "total_hours": 21.9,
-     "flying_hours": 21.9,
-     "flights": 3,
+     "depart": "2026-12-03T06:00",
+     "arrive": "2026-12-03T14:30",
+     "total_hours": 14.5,
+     "flying_hours": 14.5,
+     "flights": 2,
      "hub_nights": 0,
      "changes": 0,
-     "us_transit": true,
+     "us_transit": false,
      "airports": [
       "CPH",
-      "LHR",
-      "MIA",
+      "AMS",
       "BOG"
      ],
      "tickets": [
-      "TQ:99c4f409c805"
+      "TQ:016fa4f9e11d"
      ],
      "timeline": [
       {
        "kind": "flight",
        "from": "CPH",
        "to": "BOG",
-       "depart": "2026-12-03T06:30",
-       "arrive": "2026-12-03T22:21",
-       "hours": 21.85,
+       "depart": "2026-12-03T06:00",
+       "arrive": "2026-12-03T14:30",
+       "hours": 14.5,
        "connections": [
         {
-         "airport": "LHR",
-         "layover_h": 2.0
-        },
-        {
-         "airport": "MIA",
-         "layover_h": 3.9
+         "airport": "AMS",
+         "layover_h": 1.83
         }
        ],
        "carriers": [
-        "British Airways",
-        "American"
+        "KLM"
        ],
-       "flight_numbers": [],
+       "flight_numbers": [
+        "KL1266",
+        "KL749"
+       ],
        "overnight_layover": false,
-       "ticket": "TQ:99c4f409c805",
+       "ticket": "TQ:016fa4f9e11d",
        "self_transfer_inside": false
       }
      ]
     },
     "way_home": {
-     "id": "H0146",
+     "id": "H0154",
      "direction": "home",
      "type": "ticket",
      "from": "SAL",
      "to": "CPH",
-     "depart": "2027-02-03T15:07",
-     "arrive": "2027-02-04T17:25",
-     "total_hours": 19.3,
-     "flying_hours": 19.3,
+     "depart": "2027-02-03T13:45",
+     "arrive": "2027-02-04T13:40",
+     "total_hours": 16.9,
+     "flying_hours": 16.9,
      "flights": 3,
      "hub_nights": 0,
      "changes": 0,
-     "us_transit": true,
+     "us_transit": false,
      "airports": [
       "SAL",
-      "DFW",
-      "LHR",
+      "PTY",
+      "AMS",
       "CPH"
      ],
      "tickets": [
-      "TQ:99c4f409c805"
+      "TQ:016fa4f9e11d"
      ],
      "timeline": [
       {
        "kind": "flight",
        "from": "SAL",
        "to": "CPH",
-       "depart": "2027-02-03T15:07",
-       "arrive": "2027-02-04T17:25",
-       "hours": 19.3,
+       "depart": "2027-02-03T13:45",
+       "arrive": "2027-02-04T13:40",
+       "hours": 16.92,
        "connections": [
         {
-         "airport": "DFW",
-         "layover_h": 2.15
+         "airport": "PTY",
+         "layover_h": 1.85
         },
         {
-         "airport": "LHR",
-         "layover_h": 2.2
+         "airport": "AMS",
+         "layover_h": 1.17
         }
        ],
        "carriers": [
-        "American",
-        "British Airways"
+        "COPA",
+        "KLM"
        ],
-       "flight_numbers": [],
+       "flight_numbers": [
+        "CM871",
+        "KL758",
+        "KL1271"
+       ],
        "overnight_layover": false,
-       "ticket": "TQ:99c4f409c805",
+       "ticket": "TQ:016fa4f9e11d",
        "self_transfer_inside": false
       }
      ]
@@ -1224,13 +1225,13 @@
     }
    ],
    "totals": {
-    "long_haul_dkk": 6669,
+    "long_haul_dkk": 7657,
     "in_between_dkk": 5080,
-    "flights_total_dkk": 11749,
+    "flights_total_dkk": 12737,
     "cabin_bag_fees_dkk": 250,
-    "total_with_cabin_bags_dkk": 11999,
+    "total_with_cabin_bags_dkk": 12987,
     "hub_nights": 0,
-    "us_transit": true
+    "us_transit": false
    }
   },
   {
@@ -1257,7 +1258,7 @@
      "way_home": 3
     },
     "way_in": {
-     "id": "I0191",
+     "id": "I0199",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -1309,7 +1310,7 @@
      ]
     },
     "way_home": {
-     "id": "H0192",
+     "id": "H0200",
      "direction": "home",
      "type": "ticket",
      "from": "VVI",

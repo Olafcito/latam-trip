@@ -65,3 +65,7 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 28,gf-28a,sonnet,google_flights,10,158023,42,749,38
 29,exp-29a,sonnet,expedia,8,184717,14,128,18
 30,exp-30a,sonnet,expedia,8,144468,14,73,14
+31,exp-31d,sonnet,expedia,8,184851,13,82,24
+31,exp-31a,sonnet,expedia,8,207178,15,114,22
+31,exp-31c,sonnet,expedia,8,201298,13,125,30
+31,exp-31b,sonnet,expedia,8,207835,13,134,23
