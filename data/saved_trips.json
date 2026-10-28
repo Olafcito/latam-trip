@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-28T20:14:53Z",
+ "generated_at": "2026-10-28T20:56:31Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {
@@ -650,7 +650,7 @@
      "on_total": 8.0
     },
     "way_in": {
-     "id": "I0649",
+     "id": "I0685",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -702,7 +702,7 @@
      ]
     },
     "way_home": {
-     "id": "H0650",
+     "id": "H0686",
      "direction": "home",
      "type": "ticket",
      "from": "MDE",
@@ -1263,7 +1263,7 @@
      "on_total": 6.8
     },
     "way_in": {
-     "id": "I0469",
+     "id": "I0471",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -1318,7 +1318,7 @@
      ]
     },
     "way_home": {
-     "id": "H0470",
+     "id": "H0472",
      "direction": "home",
      "type": "ticket",
      "from": "VVI",
