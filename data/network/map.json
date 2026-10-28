@@ -15818,6 +15818,488 @@
    ]
   },
   {
+   "from": "SJO",
+   "to": "CBB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 6008.37,
+   "oneway_min_hours": 10.45,
+   "fastest_hours": 10.45,
+   "fastest_price_dkk": 6008.37,
+   "nonstop": false,
+   "vias": [
+    "PTY",
+    "VVI"
+   ],
+   "carriers": [
+    "Boliviana de Aviacion",
+    "Copa"
+   ],
+   "dates": [
+    "2026-12-06"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:48b29f5c4e26",
+     "depart": "2026-12-06T17:53",
+     "arrive": "2026-12-07T06:20",
+     "hours": 10.45,
+     "price_dkk": 6008.37,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      1.42,
+      1.88
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:3951163b966c",
+     "depart": "2026-12-06T14:53",
+     "arrive": "2026-12-07T06:20",
+     "hours": 13.45,
+     "price_dkk": 6008.37,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      4.42,
+      1.88
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:d3412e905bd3",
+     "depart": "2026-12-06T12:02",
+     "arrive": "2026-12-07T06:20",
+     "hours": 16.3,
+     "price_dkk": 6008.37,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      2.17,
+      6.78
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "BOG",
+   "to": "CBB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 3977.07,
+   "oneway_min_hours": 8.42,
+   "fastest_hours": 8.42,
+   "fastest_price_dkk": 3977.07,
+   "nonstop": false,
+   "vias": [
+    "LPB",
+    "PTY",
+    "VVI"
+   ],
+   "carriers": [
+    "Boliviana de Aviacion",
+    "Copa",
+    "avianca"
+   ],
+   "dates": [
+    "2027-01-15"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:71abddd769ff",
+     "depart": "2027-01-15T21:30",
+     "arrive": "2027-01-16T06:55",
+     "hours": 8.42,
+     "price_dkk": 3977.07,
+     "carriers": [
+      "avianca",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "LPB"
+     ],
+     "layover_h": [
+      3.83
+     ],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": true,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:c21c31926ecb",
+     "depart": "2027-01-15T10:40",
+     "arrive": "2027-01-16T14:20",
+     "hours": 26.67,
+     "price_dkk": 4607.56,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      4.13,
+      14.82
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": true,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:01125725b64b",
+     "depart": "2027-01-15T16:40",
+     "arrive": "2027-01-16T14:20",
+     "hours": 20.67,
+     "price_dkk": 5106.14,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      3.18,
+      9.85
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": true,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "MDE",
+   "to": "CBB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 4919.74,
+   "oneway_min_hours": 28.08,
+   "fastest_hours": 17.5,
+   "fastest_price_dkk": 5840.8,
+   "nonstop": false,
+   "vias": [
+    "PTY",
+    "VVI"
+   ],
+   "carriers": [
+    "Boliviana de Aviacion",
+    "Copa"
+   ],
+   "dates": [
+    "2027-01-15"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:244ec01004c9",
+     "depart": "2027-01-15T09:15",
+     "arrive": "2027-01-16T14:20",
+     "hours": 28.08,
+     "price_dkk": 4919.74,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      5.92,
+      14.82
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": true,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:ed1d5b6c5ac7",
+     "depart": "2027-01-15T18:20",
+     "arrive": "2027-01-16T12:50",
+     "hours": 17.5,
+     "price_dkk": 5840.8,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      1.92,
+      8.35
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": true,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:053b4eeeff31",
+     "depart": "2027-01-15T12:40",
+     "arrive": "2027-01-16T14:20",
+     "hours": 24.67,
+     "price_dkk": 5840.8,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "PTY",
+      "VVI"
+     ],
+     "layover_h": [
+      2.5,
+      14.82
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": true,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "CBB",
+   "to": "BOG",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 3050.85,
+   "oneway_min_hours": 23.42,
+   "fastest_hours": 8.83,
+   "fastest_price_dkk": 3376.58,
+   "nonstop": false,
+   "vias": [
+    "LPB"
+   ],
+   "carriers": [
+    "Boliviana de Aviacion",
+    "avianca"
+   ],
+   "dates": [
+    "2027-01-20"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:440931157282",
+     "depart": "2027-01-20T22:20",
+     "arrive": "2027-01-21T20:45",
+     "hours": 23.42,
+     "price_dkk": 3050.85,
+     "carriers": [
+      "Boliviana de Aviacion",
+      "avianca"
+     ],
+     "via": [
+      "LPB"
+     ],
+     "layover_h": [
+      16.75
+     ],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": true,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:4f7f7d5c106c",
+     "depart": "2027-01-20T10:40",
+     "arrive": "2027-01-20T20:45",
+     "hours": 11.08,
+     "price_dkk": 3376.58,
+     "carriers": [
+      "Boliviana de Aviacion",
+      "avianca"
+     ],
+     "via": [
+      "LPB"
+     ],
+     "layover_h": [
+      4.42
+     ],
+     "fare_brand": "LIGHT",
+     "cabin_bag": "personal item + carry-on (weight not stated)",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "CBB",
+   "to": "SJO",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 5136.33,
+   "oneway_min_hours": 13.7,
+   "fastest_hours": 13.7,
+   "fastest_price_dkk": 5136.33,
+   "nonstop": false,
+   "vias": [
+    "PTY",
+    "VVI"
+   ],
+   "carriers": [
+    "Boliviana de Aviacion",
+    "Copa"
+   ],
+   "dates": [
+    "2027-01-30"
+   ],
+   "return_min_dkk": null,
+   "quotes": 2,
+   "flights": [
+    {
+     "quote_id": "Q:8496560911c5",
+     "depart": "2027-01-30T19:40",
+     "arrive": "2027-01-31T07:22",
+     "hours": 13.7,
+     "price_dkk": 5136.33,
+     "carriers": [
+      "Boliviana de Aviacion",
+      "Copa"
+     ],
+     "via": [
+      "VVI",
+      "PTY"
+     ],
+     "layover_h": [
+      4.73,
+      1.93
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 7kg",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
+   "from": "PTY",
+   "to": "CBB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 6072.35,
+   "oneway_min_hours": 7.58,
+   "fastest_hours": 7.58,
+   "fastest_price_dkk": 6072.35,
+   "nonstop": false,
+   "vias": [
+    "VVI"
+   ],
+   "carriers": [
+    "Boliviana de Aviacion",
+    "Copa"
+   ],
+   "dates": [
+    "2026-12-20"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:964e70301516",
+     "depart": "2026-12-20T21:45",
+     "arrive": "2026-12-21T06:20",
+     "hours": 7.58,
+     "price_dkk": 6072.35,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "VVI"
+     ],
+     "layover_h": [
+      1.88
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "expedia"
+    },
+    {
+     "quote_id": "Q:14e0be316dd3",
+     "depart": "2026-12-20T16:40",
+     "arrive": "2026-12-21T06:20",
+     "hours": 12.67,
+     "price_dkk": 6072.35,
+     "carriers": [
+      "Copa",
+      "Boliviana de Aviacion"
+     ],
+     "via": [
+      "VVI"
+     ],
+     "layover_h": [
+      6.78
+     ],
+     "fare_brand": "ECONOMY CLASSIC",
+     "cabin_bag": "personal item + carry-on 10kg",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "expedia"
+    }
+   ]
+  },
+  {
    "from": "MDE",
    "to": "LPB",
    "mode": "flight",
