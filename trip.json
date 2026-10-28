@@ -292,7 +292,8 @@
  "route_regions": {
   "MX": [
    "GDL",
-   "MEX"
+   "MEX",
+   "CUN"
   ],
   "CA": [
    "GUA",
@@ -400,7 +401,8 @@
    "PEI",
    "LPB",
    "VVI",
-   "CBB"
+   "CBB",
+   "CUN"
   ],
   "note": "stopovers on the way in or home are welcome when they make the trip cheaper or less tedious (Simon, 28 Oct)"
  }
