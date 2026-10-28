@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-28T18:03:10Z",
+ "generated_at": "2026-10-28T19:04:21Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {
@@ -27,7 +27,7 @@
      "way_home": 5
     },
     "way_in": {
-     "id": "I0133",
+     "id": "I0141",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -83,7 +83,7 @@
      ]
     },
     "way_home": {
-     "id": "H0134",
+     "id": "H0142",
      "direction": "home",
      "type": "ticket",
      "from": "BOG",
@@ -334,7 +334,7 @@
      "way_home": 4
     },
     "way_in": {
-     "id": "I0125",
+     "id": "I0133",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -390,7 +390,7 @@
      ]
     },
     "way_home": {
-     "id": "H0126",
+     "id": "H0134",
      "direction": "home",
      "type": "ticket",
      "from": "CTG",
@@ -647,7 +647,7 @@
      "way_home": 3
     },
     "way_in": {
-     "id": "I0219",
+     "id": "I0227",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -699,7 +699,7 @@
      ]
     },
     "way_home": {
-     "id": "H0220",
+     "id": "H0228",
      "direction": "home",
      "type": "ticket",
      "from": "MDE",
@@ -952,7 +952,7 @@
      "way_home": 5
     },
     "way_in": {
-     "id": "I0153",
+     "id": "I0161",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -1001,7 +1001,7 @@
      ]
     },
     "way_home": {
-     "id": "H0154",
+     "id": "H0162",
      "direction": "home",
      "type": "ticket",
      "from": "SAL",
@@ -1258,7 +1258,7 @@
      "way_home": 3
     },
     "way_in": {
-     "id": "I0207",
+     "id": "I0215",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -1310,7 +1310,7 @@
      ]
     },
     "way_home": {
-     "id": "H0208",
+     "id": "H0216",
      "direction": "home",
      "type": "ticket",
      "from": "VVI",
