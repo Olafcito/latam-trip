@@ -3,7 +3,8 @@
 Usage: python3 -I build_map.py [--root DIR]
 Writes data/network/map.json ({"nodes":[...], "edges":[...]}; profile fields merged into nodes),
 data/network/nodes.csv and data/network/edges.csv.
-Flight edges from the crawl (pattern R:a>b one-ways, RR:a>b/b>a returns) carry: cheapest acceptable one-way price,
+Flight edges from the crawl (pattern R:a>b one-ways, RR:a>b/b>a returns) carry "flights" (up to 6 distinct one-ways with
+quote_id, local depart/arrive, hours, price, carriers, via, fare and bags) and: cheapest acceptable one-way price,
 shortest hours, whether a nonstop exists, vias, carriers, the dates seen, and the return price when searched.
 Airports referenced by edges but missing as nodes are reported (another region's researcher usually supplies them).
 """
@@ -46,8 +47,8 @@ for nid, p in profiles.items():
 # priced flight edges from the crawl
 fl = {}
 con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
-for pid, price, hours, raw in con.execute(
-        "SELECT pattern_id, price_dkk, out_hours, raw FROM quotes WHERE (pattern_id LIKE 'R:%' OR pattern_id LIKE 'RR:%') AND ok=1"):
+for qid, pid, price, hours, raw in con.execute(
+        "SELECT quote_id, pattern_id, price_dkk, out_hours, raw FROM quotes WHERE (pattern_id LIKE 'R:%' OR pattern_id LIKE 'RR:%') AND ok=1"):
     q = json.loads(raw)
     rt = pid.startswith("RR:")
     a, b = pid.split(":")[1].split("/")[0].split(">")
@@ -69,8 +70,19 @@ for pid, price, hours, raw in con.execute(
     e["carriers"].update(o.get("carriers") or [])
     if o.get("dep"):
         e["dates"].add(o["dep"][:10])
+    e.setdefault("flights", []).append({"quote_id": qid, "depart": o.get("dep"), "arrive": o.get("arr"), "hours": hours,
+                                        "price_dkk": price, "carriers": o.get("carriers") or [], "via": o.get("via") or [],
+                                        "layover_h": o.get("layover_h") or [], "fare_brand": q.get("fare_brand"),
+                                        "cabin_bag": q.get("cabin_bag"), "checked_bag": q.get("checked_bag"),
+                                        "overnight_layover": bool(o.get("overnight_layover")), "source": q.get("source")})
 for e in fl.values():
     e["vias"], e["carriers"], e["dates"] = sorted(e["vias"]), sorted(e["carriers"]), sorted(e["dates"])
+    keep, seen = [], set()   # up to 6 distinct flights per route, cheapest first, with clock times
+    for f in sorted(e.get("flights", []), key=lambda f: (f["price_dkk"] or 1e9, f["hours"] or 99)):
+        k = (tuple(f["carriers"]), tuple(f["via"]), (f["depart"] or "")[11:16])
+        if k not in seen:
+            seen.add(k); keep.append(f)
+    e["flights"] = keep[:6]
     edges.append(e)
 
 ids = set(nodes)
