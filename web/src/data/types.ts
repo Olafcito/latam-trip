@@ -54,6 +54,23 @@ export interface FlightQuote {
   self_transfer?: boolean
 }
 
+/** The cheapest crawled one-way that departs on a date, in one direction. */
+export interface DatedFare {
+  date: string // departure date as flown, YYYY-MM-DD
+  from: string
+  to: string
+  dkk: number | null
+  dep: string | null // HH:MM local
+  arr: string | null
+  duration_min: number | null
+  vias: string[]
+  carriers: string[]
+  flights: string[]
+  self_transfer: boolean
+  searched: string // the date the search asked for
+  link: string | null
+}
+
 export interface FlightInfo {
   nonstop: boolean | null
   vias: string[]
@@ -61,6 +78,7 @@ export interface FlightInfo {
   oneway_dkk: { min: number | null; observed_at: string | null }
   return_dkk: { min: number | null; observed_at: string | null } | null
   dates_searched: string[]
+  by_date?: DatedFare[]
   cheapest?: FlightQuote | null
   fastest?: FlightQuote | null
   flags?: string[]

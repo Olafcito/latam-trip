@@ -8,7 +8,7 @@ flights (R: one-ways, RR: returns) of both directions into one list of options.
 --fetch-elevation looks up each place's altitude on the Open-Meteo elevation API (Copernicus DEM)
 and caches it in data/network/elevation.json; without it the cache is used when present.
 """
-import csv, json, os, re, statistics, sys, urllib.request
+import csv, json, os, re, sqlite3, statistics, sys, urllib.request
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
@@ -134,6 +134,15 @@ def build():
             continue
         a, b = pid.split(":")[1].split("/")[0].split(">")
         quotes.setdefault((a, b), []).append(q)
+    # the outbound leg as flown: a search for one date also returns flights on the days around it
+    legs = {}
+    db = os.path.join(ROOT, "data", "crawl.db")
+    if os.path.exists(db):
+        for qid, raw in sqlite3.connect(db).execute("SELECT quote_id, raw FROM quotes WHERE pattern_id LIKE 'R:%' AND ok=1"):
+            legs[qid] = json.loads(raw).get("out") or {}
+
+    def flown(q):
+        return (legs.get(q["quote_id"], {}).get("dep") or q["out_date"])[:10]
 
     def stops_of(via):
         return [{"place_id": v, "type": "layover", "wait_min": None} for v in (via or "").split("-") if v]
@@ -147,6 +156,19 @@ def build():
         ret = min(rr, key=lambda q: float(q["price_dkk"])) if rr else None
         observed = max((q["observed_at"] for q in pair_quotes), default=None)
         flags = sorted({f for q in ow for f in q["flags"].split(",") if f})
+        day_best = {}  # the cheapest one-way per departure date
+        for q in ow:
+            d = flown(q)
+            if d and (d not in day_best or float(q["price_dkk"]) < float(day_best[d]["price_dkk"])):
+                day_best[d] = q
+        by_date = []
+        for d, q in sorted(day_best.items()):
+            leg = legs.get(q["quote_id"], {})
+            by_date.append({"date": d, "from": e["from"], "to": e["to"], "dkk": dkk(q["price_dkk"]),
+                            "dep": (leg.get("dep") or "")[11:16] or None, "arr": (leg.get("arr") or "")[11:16] or None,
+                            "duration_min": minutes(q["out_hours"]), "vias": [v for v in q["out_via"].split("-") if v],
+                            "carriers": [c for c in q["out_carriers"].split(",") if c], "flights": leg.get("flights") or [],
+                            "self_transfer": q["self_transfer"] == "1", "searched": q["out_date"], "link": q["link"] or None})
         return {
             "mode": "flight", "operators": e.get("carriers") or [],
             "duration_min": minutes(e.get("fastest_hours")),
@@ -162,12 +184,13 @@ def build():
                 "return_dkk": {"min": dkk(ret["price_dkk"]), "observed_at": ret["observed_at"]} if ret
                               else ({"min": dkk(e["return_min_dkk"]), "observed_at": None} if e.get("return_min_dkk") else None),
                 "dates_searched": e.get("dates") or [],
+                "by_date": by_date,
                 "cheapest": cheap and {"dkk": dkk(cheap["price_dkk"]), "duration_min": minutes(cheap["out_hours"]),
                                        "vias": [v for v in cheap["out_via"].split("-") if v], "carriers": cheap["out_carriers"].split(","),
-                                       "date": cheap["out_date"], "self_transfer": cheap["self_transfer"] == "1"},
+                                       "date": flown(cheap), "self_transfer": cheap["self_transfer"] == "1"},
                 "fastest": fast and {"dkk": dkk(fast["price_dkk"]), "duration_min": minutes(fast["out_hours"]),
                                      "vias": [v for v in fast["out_via"].split("-") if v], "carriers": fast["out_carriers"].split(","),
-                                     "date": fast["out_date"]},
+                                     "date": flown(fast)},
                 "flags": flags, "quotes": len(pair_quotes),
             },
             "source": "crawl", "observed_at": observed,
@@ -186,7 +209,7 @@ def build():
             "stops": [], "geometry": None,
             "flight": {"nonstop": None, "vias": [], "carriers": [o.strip() for o in re.split(r"\s*/\s*|,\s*", e.get("operator") or "") if o.strip()],
                        "oneway_dkk": {"min": dkk(e.get("price_dkk")), "observed_at": str(e.get("source_year") or "")},
-                       "return_dkk": None, "dates_searched": []} if mode == "flight" else None,
+                       "return_dkk": None, "dates_searched": [], "by_date": []} if mode == "flight" else None,
             "source": "manual", "source_url": src if src.startswith("http") else None,
             "observed_at": str(e.get("source_year") or "") or None,
             "note": e.get("notes"), "booking_url": None,
@@ -221,6 +244,7 @@ def build():
                 if o is best:
                     continue
                 best["flight"]["dates_searched"] = sorted(set(best["flight"]["dates_searched"]) | set(o["flight"]["dates_searched"]))
+                best["flight"]["by_date"] = sorted(best["flight"]["by_date"] + o["flight"]["by_date"], key=lambda r: (r["date"], r["from"]))
                 best["flight"]["vias"] = sorted(set(best["flight"]["vias"]) | set(o["flight"]["vias"]))
                 best["flight"]["carriers"] = sorted(set(best["flight"]["carriers"]) | set(o["flight"]["carriers"]))
                 best["flight"]["nonstop"] = best["flight"]["nonstop"] or o["flight"]["nonstop"]

@@ -1,6 +1,6 @@
 import { useState, type Ref } from 'react'
 import { neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
-import { familyOf, type Connection, type Family, type Place, type RouteOption } from '../data/types'
+import { familyOf, type Connection, type DatedFare, type Family, type Place, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 
@@ -273,7 +273,46 @@ function Stops({ model, conn, o, from }: { model: Model; conn: Connection; o: Ro
   )
 }
 
-function FlightFacts({ o }: { o: RouteOption }) {
+const weekday = (iso: string) => new Date(iso + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' })
+
+/** The cheapest crawled fare per departure date, the travelled direction first. */
+function ByDate({ model, rows, from }: { model: Model; rows: DatedFare[]; from: string }) {
+  const name = (id: string) => model.byId.get(id)?.short_name ?? id
+  const groups = [rows.filter((r) => r.from === from), rows.filter((r) => r.from !== from)].filter((g) => g.length)
+  return (
+    <div className="bydate">
+      {groups.map((g) => {
+        const low = Math.min(...g.map((r) => r.dkk ?? Infinity))
+        return (
+          <div key={g[0].from}>
+            <p className="sec-k mono">Fares by date · {name(g[0].from)} to {name(g[0].to)}</p>
+            <ul>
+              {g.map((r) => {
+                const url = `https://www.momondo.dk/flight-search/${model.byId.get(r.from)?.iata ?? r.from}-${model.byId.get(r.to)?.iata ?? r.to}/${r.date}`
+                const route = r.vias.length ? 'via ' + r.vias.map(name).join(', ') : 'nonstop'
+                return (
+                  <li key={r.date} className={g.length > 1 && r.dkk === low ? 'low' : ''}>
+                    <a href={url} target="_blank" rel="noreferrer" title={r.flights.join(', ') || undefined}>
+                      <span className="bd-day mono">{weekday(r.date)} {shortDate(r.date)}</span>
+                      <span className="bd-price mono">{kr(r.dkk)}</span>
+                      <span className="bd-meta">
+                        {r.dep && r.arr ? <span className="mono">{r.dep} → {r.arr}</span> : null}
+                        <span>{duration(r.duration_min)} · {route}</span>
+                        <span>{r.carriers.join(', ')}{r.self_transfer ? ' · self transfer' : ''}</span>
+                      </span>
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function FlightFacts({ model, o, from }: { model: Model; o: RouteOption; from: string }) {
   const f = o.flight
   if (!f) return null
   const itin = (q: NonNullable<typeof f.cheapest>) =>
@@ -288,9 +327,11 @@ function FlightFacts({ o }: { o: RouteOption }) {
       </div>
       {f.cheapest && <p className="ops"><b>Cheapest</b> · <span className="mono">{itin(f.cheapest)}</span>{f.cheapest.self_transfer ? ' · self transfer' : ''}</p>}
       {f.fastest && f.fastest.dkk !== f.cheapest?.dkk && <p className="ops"><b>Fastest</b> · <span className="mono">{itin(f.fastest)}</span></p>}
-      {!!f.dates_searched.length && (
-        <p className="ops"><b>Dates searched</b> · <span className="mono">{f.dates_searched.map(shortDate).join(', ')}</span></p>
-      )}
+      {f.by_date?.length ? (
+        <ByDate model={model} rows={f.by_date} from={from} />
+      ) : o.source !== 'crawl' ? (
+        <p className="ops"><b>No dated search</b> · this price comes from {o.source_url ? 'a fare page' : 'research'}, not from a search for your dates</p>
+      ) : null}
       {o.observed_at && (
         <p className="ops"><b>Price observed</b> · <span className="mono">{observed(f.oneway_dkk.observed_at ?? o.observed_at)}</span>{f.quotes ? ` · ${f.quotes} quotes` : ''}</p>
       )}
@@ -343,7 +384,7 @@ function RouteView(p: PanelProps & { conn: Connection }) {
           <div className="detail">
             <p className="sec-k mono">{modeLabel(cur.mode)} · stops on the way</p>
             <Stops model={model} conn={conn} o={cur} from={from} />
-            {cur.mode === 'flight' ? <FlightFacts o={cur} /> : (
+            {cur.mode === 'flight' ? <FlightFacts model={model} o={cur} from={from} /> : (
               <div className="facts">
                 <div className="fact"><span className="mono">Frequency</span><span>{cur.frequency || '?'}</span></div>
                 <div className="fact"><span className="mono">Local price</span><span>{cur.price_local || kr(cur.price_dkk.min)}</span></div>
