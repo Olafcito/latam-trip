@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildModel, byCountry, viaLine, type Neighbour } from './model'
+import { airportFlights, buildModel, byCountry, landing, viaLine, type Neighbour } from './model'
 import type { MapData } from './types'
 
 const n = (id: string, country: string, fastest: number) => ({ other: { id, country }, fastest }) as unknown as Neighbour
@@ -36,5 +36,34 @@ describe('flights with layovers', () => {
     const conn = model.conns.get('BOG-SAP')!
     expect(touches(viaLine(model, conn, conn.options[0])!, -89, 13.7)).toBe(true)
     expect(viaLine(model, conn, { ...conn.options[0], stops: [] })).toBeNull()
+  })
+})
+
+describe('airport flights', () => {
+  const place = (id: string, iata: string | null) => ({ id, name: id, short_name: id, country: 'X', lon: 0, lat: 0, tier: 'town', iata })
+  const row = (from: string, to: string, dkk: number) => ({ from, to, dkk, hours: 3, dep: null, arr: null, vias: [], carriers: [], shows: ['cheapest'], notes: [], link: null })
+  const data = {
+    places: [place('ANT', 'GUA'), place('GUA', 'GUA'), place('VVI', 'VVI')],
+    connections: [],
+    countries: [],
+    flights: [row('GUA', 'VVI', 900), row('VVI', 'GUA', 1200), row('LIM', 'VVI', 1500)],
+  } as unknown as MapData
+  const model = buildModel(data)
+
+  it('names an airport after the city whose id it is, not the first town that shares it', () => {
+    expect(model.byIata.get('GUA')?.id).toBe('GUA')
+  })
+
+  it('lists flights into and out of an airport in the data order', () => {
+    expect(airportFlights(model, 'VVI', 'in').map((f) => f.from)).toEqual(['GUA', 'LIM'])
+    expect(airportFlights(model, 'VVI', 'out').map((f) => f.to)).toEqual(['GUA'])
+    expect(airportFlights(model, 'ANT', 'in')).toEqual([])
+  })
+
+  it('tags landings by the local arrival hour', () => {
+    expect(landing('2026-12-10T04:35')).toBe('night')
+    expect(landing('2026-12-10T12:42')).toBe('day')
+    expect(landing('2026-12-10T18:00')).toBe('evening')
+    expect(landing(null)).toBeNull()
   })
 })

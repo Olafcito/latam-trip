@@ -1,4 +1,4 @@
-"""Build the route map frontend data: data/web/places.json, connections.json, countries.json.
+"""Build the route map frontend data: data/web/places.json, connections.json, countries.json, flights.json.
 
 Usage: python3 -I build_web_data.py [--root DIR] [--fetch-elevation]
 Reads data/network/map.json (run build_map.py first) and data/quotes.csv, writes the contract in
@@ -42,6 +42,9 @@ CATEGORIES = {  # fixed list from the handoff; regexes over tagline, summary, th
     "Ruins": r"ruin|maya|inca|archaeolog|tikal|pyramid",
 }
 GROUND = {"bus", "shuttle", "chicken_bus", "colectivo", "train"}
+# flights.json lists regional flights only: nothing from or to Europe, and nothing over a day and a bit
+EU_AIRPORTS = {"CPH", "MAD", "BCN", "LIS", "CDG", "AMS", "FRA", "LGW", "LHR", "IST", "ALC", "ZRH", "MUC", "BRU"}
+MAX_REGIONAL_HOURS = 30
 
 
 SHORT = {"VVI": "Santa Cruz", "TAYR": "Tayrona"}  # map labels for names too long to place
@@ -96,6 +99,57 @@ def tier(n):
     if n["type"] == "border":
         return "stop_only"
     return "destination" if n["popularity"] <= 2 else "town"
+
+
+def airport_flights(db):
+    """The regional one-way quotes per directed airport pair, cut down to the rows worth reading: the cheapest,
+    the fastest and the cheapest that lands by day (06:00 to 23:59 local). A quote that is several of these is
+    one row. Sorted by price, so the city panel can list an airport's flights in and out as they come."""
+    if not os.path.exists(db):
+        return []
+    by_pair = {}
+    for row in sqlite3.connect(db).execute(
+            "SELECT pattern_id, price_dkk, out_hours, out_via, out_carriers, self_transfer, fare_brand, flags, link, raw "
+            "FROM quotes WHERE ok=1 AND pattern_id LIKE 'R:%' AND price_dkk IS NOT NULL AND out_hours IS NOT NULL"):
+        pid, price, hours, via, carriers, selfx, brand, flags, link, raw = row
+        ends = pid.split(":")[1].split("/")[0].split(">")
+        if len(ends) != 2 or EU_AIRPORTS & set(ends) or float(hours) > MAX_REGIONAL_HOURS:
+            continue
+        r = json.loads(raw) if raw else {}
+        out = r.get("out") or {}
+        notes = []
+        if selfx or r.get("self_transfer"):
+            notes.append("self transfer")
+        if r.get("us_transit"):
+            notes.append("US transit")
+        if "basic" in (brand or "").lower() or "basic_fare" in (flags or ""):
+            notes.append("basic fare")
+        if out.get("overnight_layover") or any(l >= 4 for l in out.get("layover_h") or []):
+            notes.append("long layover")
+        by_pair.setdefault(tuple(ends), []).append({
+            "from": ends[0], "to": ends[1], "dkk": dkk(price), "hours": round(float(hours), 2),
+            "dep": out.get("dep") or None, "arr": out.get("arr") or None,
+            "vias": [v for v in (via or "").split("-") if v],
+            # a carrier field now and then carries a notice instead of an airline
+            "carriers": [c.strip() for c in (carriers or "").split(",") if 0 < len(c.strip()) <= 20],
+            "notes": notes, "link": link or None})
+
+    def land_hour(q):
+        return int(q["arr"][11:13]) if q["arr"] and len(q["arr"]) >= 16 else None
+
+    rows = []
+    for quotes in by_pair.values():
+        day = [q for q in quotes if land_hour(q) is not None and 6 <= land_hour(q) <= 23]
+        picks = (("cheapest", min(quotes, key=lambda q: (q["dkk"], q["hours"]))),
+                 ("fastest", min(quotes, key=lambda q: (q["hours"], q["dkk"]))),
+                 ("daytime landing", min(day, key=lambda q: (q["dkk"], q["hours"])) if day else None))
+        chosen = {}
+        for label, q in picks:
+            if q is not None:
+                chosen.setdefault((q["dkk"], q["hours"], q["dep"], q["arr"], tuple(q["vias"])), (q, []))[1].append(label)
+        rows += [{**q, "shows": labels} for q, labels in chosen.values()]
+    rows.sort(key=lambda q: (q["dkk"], q["hours"], q["from"], q["to"]))
+    return rows
 
 
 def build():
@@ -321,10 +375,11 @@ def build():
 
     countries = [{"code": c, "name": n, "label_lat": la, "label_lon": lo} for c, n, la, lo in COUNTRIES]
     os.makedirs(OUT, exist_ok=True)
-    for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries)):
+    flights = airport_flights(db)
+    for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries), ("flights", flights)):
         json.dump(data, open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"places {len(places)}  connections {len(conns)}  options {sum(len(c['options']) for c in conns.values())}"
-          f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  -> {OUT}")
+          f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  flights {len(flights)}  -> {OUT}")
     # every acceptable regional quote should reach the map, so a pair left over means map.json lacks its edge
     for pair in sorted(set(quotes) - used):
         print(f"WARNING {len(quotes[pair])} acceptable quotes for {pair[0]}>{pair[1]} have no flight edge in map.json")
