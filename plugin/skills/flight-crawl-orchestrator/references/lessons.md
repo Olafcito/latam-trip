@@ -56,3 +56,9 @@
 - Momondo cards whose only offers are ads (site "Sponsoreret"/"Annonce") are now skipped by the crawler; segment lines followed by an authority notice ("Service mellem ... godkendelse") now read the airline from the next line. Workers had been cleaning these by hand.
 - Google Flights workers sometimes wrote the home leg reversed (MAD->VVI instead of VVI->MAD); ingest.py now normalises it and flags legs_fixed.
 - Switching computers changes Momondo's layout (wide desktop: a nav drawer is also a [role=dialog] and cards open via "Vælg"). Narrowing the pane to a mobile width triggered Momondo's bot check ("Sikkerhedstjek"), which only a person may pass. Keep one browser profile and width for the whole crawl, and pace Momondo searches.
+
+## Round 25 (28 Oct): self-built chains
+- Simon found on Momondo a Mix & Match CPH-MAD-CUN + Viva CUN-GDL (4,771) and VVI-MAD + Norwegian MAD-CPH next day (3,645). Two one-ways with a night in a hub can beat one-ticket open jaws, and the night is a free stopover. Engines show these only for one-way searches.
+- chains.py builds them from all one-way quotes: about 700 products gave about 800 ways in and 150 ways home in under a second. Cabin-bag fees on low-cost legs (Viva Zero, Norwegian LowFare, Ryanair) and hostel nights are added so totals stay honest.
+- Cheap hub legs found: Ryanair CPH-MAD 186-235 (Expedia shows 0 seats left: verify), Air Europa MAD-CUN nonstop 2,877, World2Fly MAD-SDQ 3,032, Arajet SDQ-MDE 880, Volaris CUN-GUA nonstop 1,294, Viva CUN-GDL 737, Iberia MEX-MAD nonstop 2,796, Air Europa CUN-MAD nonstop 2,598.
+- Expedia's one-way results include Toluca (TLC) for MEX queries: flag airport_change.

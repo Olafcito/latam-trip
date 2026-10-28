@@ -6,6 +6,8 @@ All data lives in the public repo https://github.com/Olafcito/latam-trip (branch
 - Map data: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/network/map.json
 - Recommended trips: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/scenario_results.json
 - All quotes: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/quotes.csv
+- Self-built ways in and home (separate one-way tickets joined at hubs, with clock times): https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/chains.json
+- Every priced region order per long-haul option: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/routes.json
 - Bag fees: https://raw.githubusercontent.com/Olafcito/latam-trip/main/data/bag_rules.json
 - Trip parameters: https://raw.githubusercontent.com/Olafcito/latam-trip/main/trip.json
 - Schema: https://raw.githubusercontent.com/Olafcito/latam-trip/main/plugin/skills/flight-crawl-orchestrator/references/map-schema.md
