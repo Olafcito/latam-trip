@@ -19,3 +19,10 @@ Hard limit: any leg longer than max_hours_one_way (30 h) makes the quote unaccep
 How to calibrate with a user: ask what one hour of travel is worth to them, how many hours they consider normal, and how they feel about self-transfers, US transit and overnight layovers. Write the answers into trip.json.
 
 Scenario totals (scripts/scenarios.py) = main ticket + the regional legs the scenario forces (cheapest acceptable one-way of each), with effective cost added up the same way.
+
+## Scenario rating shown to the traveller (28 Oct, Simon)
+Score each whole-trip scenario 1 to 5 on four parts, then rate /10 = 2 x (0.35 price + 0.30 way home + 0.20 in between + 0.15 way in).
+- Price: 5 at 12,500 kr total with cabin bag, minus 1 per 1,000 kr more (min 1).
+- Way in / way home: start 5; -1 per night at a hub, -1 for a change between separate tickets, -1 US transit, -1 if flying time > 20 h, another -1 if > 23 h.
+- In between: start 5; -1 per regional flight beyond two (domestic Bolivia BoA not counted), -1 if a flight leaves or lands 00:00 to 05:00.
+Layout the traveller asked for: section 1 = one table of only the long-haul in/home flights (returns and separate tickets), one row per flight with departs/arrives, with extra rows for a hub night or a self-transfer and a bold total per option; section 2 = the flights in between as additions; section 3 = the rated scenarios. Never cram several facts into one cell.
