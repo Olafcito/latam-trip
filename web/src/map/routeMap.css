@@ -288,6 +288,7 @@
 .bd-price { font-size: 13px; font-weight: 700; color: #7A4F00; text-align: right; }
 .bydate li.low .bd-price::before { content: "lowest  "; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: #3FA98C; }
 .bd-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0 10px; font-size: 12px; color: #4A5863; }
+.bd-meta b { color: var(--ink); font-weight: 600; }
 .tl { list-style: none; margin: 0; padding: 0 0 0 4px; position: relative; display: flex; flex-direction: column; gap: 12px; }
 .tl::before {
   content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: #D3CBBC;

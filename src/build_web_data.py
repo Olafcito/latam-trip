@@ -8,7 +8,7 @@ flights (R: one-ways, RR: returns) of both directions into one list of options.
 --fetch-elevation looks up each place's altitude on the Open-Meteo elevation API (Copernicus DEM)
 and caches it in data/network/elevation.json; without it the cache is used when present.
 """
-import csv, json, os, re, sqlite3, statistics, sys, urllib.request
+import csv, datetime, json, os, re, sqlite3, statistics, sys, urllib.request
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
@@ -135,14 +135,28 @@ def build():
         a, b = pid.split(":")[1].split("/")[0].split(">")
         quotes.setdefault((a, b), []).append(q)
     # the outbound leg as flown: a search for one date also returns flights on the days around it
-    legs = {}
+    legs, homes = {}, {}
     db = os.path.join(ROOT, "data", "crawl.db")
     if os.path.exists(db):
-        for qid, raw in sqlite3.connect(db).execute("SELECT quote_id, raw FROM quotes WHERE pattern_id LIKE 'R:%' AND ok=1"):
-            legs[qid] = json.loads(raw).get("out") or {}
+        for qid, raw in sqlite3.connect(db).execute(
+                "SELECT quote_id, raw FROM quotes WHERE (pattern_id LIKE 'R:%' OR pattern_id LIKE 'RR:%') AND ok=1"):
+            r = json.loads(raw)
+            legs[qid], homes[qid] = r.get("out") or {}, r.get("home") or {}
 
     def flown(q):
         return (legs.get(q["quote_id"], {}).get("dep") or q["out_date"])[:10]
+
+    def days_after(leg):  # the arrival is this many days after the departure
+        d, a = (leg.get("dep") or "")[:10], (leg.get("arr") or "")[:10]
+        return (datetime.date.fromisoformat(a) - datetime.date.fromisoformat(d)).days if d and a else 0
+
+    used = set()  # directed pairs whose quotes reached an option
+
+    def leg_of(leg, hours, via, carriers, fallback):
+        return {"date": (leg.get("dep") or fallback or "")[:10] or None,
+                "dep": (leg.get("dep") or "")[11:16] or None, "arr": (leg.get("arr") or "")[11:16] or None,
+                "arr_days": days_after(leg), "duration_min": minutes(hours), "vias": [v for v in (via or "").split("-") if v],
+                "carriers": [c for c in (carriers or "").split(",") if c], "flights": leg.get("flights") or []}
 
     def stops_of(via):
         return [{"place_id": v, "type": "layover", "wait_min": None} for v in (via or "").split("-") if v]
@@ -166,9 +180,19 @@ def build():
             leg = legs.get(q["quote_id"], {})
             by_date.append({"date": d, "from": e["from"], "to": e["to"], "dkk": dkk(q["price_dkk"]),
                             "dep": (leg.get("dep") or "")[11:16] or None, "arr": (leg.get("arr") or "")[11:16] or None,
-                            "duration_min": minutes(q["out_hours"]), "vias": [v for v in q["out_via"].split("-") if v],
+                            "arr_days": days_after(leg), "duration_min": minutes(q["out_hours"]), "vias": [v for v in q["out_via"].split("-") if v],
                             "carriers": [c for c in q["out_carriers"].split(",") if c], "flights": leg.get("flights") or [],
                             "self_transfer": q["self_transfer"] == "1", "searched": q["out_date"], "link": q["link"] or None})
+        round_trips, seen = [], set()  # every dated return, both legs as flown
+        for q in sorted(rr, key=lambda q: (q["out_date"], float(q["price_dkk"]))):
+            out = leg_of(legs.get(q["quote_id"], {}), q["out_hours"], q["out_via"], q["out_carriers"], q["out_date"])
+            home = leg_of(homes.get(q["quote_id"], {}), q["home_hours"], q["home_via"], q["home_carriers"], q["home_date"])
+            k = (q["price_dkk"], json.dumps(out), json.dumps(home))
+            if k in seen:
+                continue
+            seen.add(k)
+            round_trips.append({"from": e["from"], "to": e["to"], "dkk": dkk(q["price_dkk"]), "out": out, "home": home,
+                                "self_transfer": q["self_transfer"] == "1", "link": q["link"] or None})
         return {
             "mode": "flight", "operators": e.get("carriers") or [],
             "duration_min": minutes(e.get("fastest_hours")),
@@ -185,6 +209,7 @@ def build():
                               else ({"min": dkk(e["return_min_dkk"]), "observed_at": None} if e.get("return_min_dkk") else None),
                 "dates_searched": e.get("dates") or [],
                 "by_date": by_date,
+                "round_trips": round_trips,
                 "cheapest": cheap and {"dkk": dkk(cheap["price_dkk"]), "duration_min": minutes(cheap["out_hours"]),
                                        "vias": [v for v in cheap["out_via"].split("-") if v], "carriers": cheap["out_carriers"].split(","),
                                        "date": flown(cheap), "self_transfer": cheap["self_transfer"] == "1"},
@@ -209,7 +234,7 @@ def build():
             "stops": [], "geometry": None,
             "flight": {"nonstop": None, "vias": [], "carriers": [o.strip() for o in re.split(r"\s*/\s*|,\s*", e.get("operator") or "") if o.strip()],
                        "oneway_dkk": {"min": dkk(e.get("price_dkk")), "observed_at": str(e.get("source_year") or "")},
-                       "return_dkk": None, "dates_searched": [], "by_date": []} if mode == "flight" else None,
+                       "return_dkk": None, "dates_searched": [], "by_date": [], "round_trips": []} if mode == "flight" else None,
             "source": "manual", "source_url": src if src.startswith("http") else None,
             "observed_at": str(e.get("source_year") or "") or None,
             "note": e.get("notes"), "booking_url": None,
@@ -223,6 +248,7 @@ def build():
         key = tuple(sorted((a, b)))
         c = conns.setdefault(key, {"id": f"{key[0]}-{key[1]}", "a": key[0], "b": key[1], "options": []})
         if e.get("source") == "crawl":
+            used.add((a, b))
             opt = crawl_flight(e, quotes.get((a, b), []))
             # the stops are listed from a to b; a crawl from b to a is reversed
             if (a, b) != key:
@@ -245,6 +271,8 @@ def build():
                     continue
                 best["flight"]["dates_searched"] = sorted(set(best["flight"]["dates_searched"]) | set(o["flight"]["dates_searched"]))
                 best["flight"]["by_date"] = sorted(best["flight"]["by_date"] + o["flight"]["by_date"], key=lambda r: (r["date"], r["from"]))
+                best["flight"]["round_trips"] = sorted(best["flight"]["round_trips"] + o["flight"]["round_trips"],
+                                                       key=lambda r: (r["out"]["date"] or "", r["dkk"] or 0))
                 best["flight"]["vias"] = sorted(set(best["flight"]["vias"]) | set(o["flight"]["vias"]))
                 best["flight"]["carriers"] = sorted(set(best["flight"]["carriers"]) | set(o["flight"]["carriers"]))
                 best["flight"]["nonstop"] = best["flight"]["nonstop"] or o["flight"]["nonstop"]
@@ -280,6 +308,9 @@ def build():
         json.dump(data, open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"places {len(places)}  connections {len(conns)}  options {sum(len(c['options']) for c in conns.values())}"
           f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  -> {OUT}")
+    # every acceptable regional quote should reach the map, so a pair left over means map.json lacks its edge
+    for pair in sorted(set(quotes) - used):
+        print(f"WARNING {len(quotes[pair])} acceptable quotes for {pair[0]}>{pair[1]} have no flight edge in map.json")
 
 
 if __name__ == "__main__":

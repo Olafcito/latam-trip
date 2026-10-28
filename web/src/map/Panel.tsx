@@ -1,6 +1,6 @@
 import { useState, type Ref } from 'react'
 import { neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
-import { familyOf, type Connection, type DatedFare, type Family, type Place, type RouteOption } from '../data/types'
+import { familyOf, type Connection, type DatedFare, type Family, type FlownLeg, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 
@@ -296,7 +296,7 @@ function ByDate({ model, rows, from }: { model: Model; rows: DatedFare[]; from: 
                       <span className="bd-day mono">{weekday(r.date)} {shortDate(r.date)}</span>
                       <span className="bd-price mono">{kr(r.dkk)}</span>
                       <span className="bd-meta">
-                        {r.dep && r.arr ? <span className="mono">{r.dep} → {r.arr}</span> : null}
+                        {r.dep && r.arr ? <span className="mono">{times(r)}</span> : null}
                         <span>{duration(r.duration_min)} · {route}</span>
                         <span>{r.carriers.join(', ')}{r.self_transfer ? ' · self transfer' : ''}</span>
                       </span>
@@ -308,6 +308,51 @@ function ByDate({ model, rows, from }: { model: Model; rows: DatedFare[]; from: 
           </div>
         )
       })}
+    </div>
+  )
+}
+
+const times = (l: { dep: string | null; arr: string | null; arr_days: number }) =>
+  `${l.dep} → ${l.arr}${l.arr_days > 0 ? ` +${l.arr_days}` : ''}`
+
+// "Sun 20 to Mon 28 Dec", with the month only once when both dates share it
+function span(a: string | null, b: string | null) {
+  const day = (d: string | null) => (d ? `${weekday(d)} ${shortDate(d)}` : '?')
+  if (a && b && a.slice(0, 7) === b.slice(0, 7)) return `${weekday(a)} ${Number(a.slice(8))} to ${day(b)}`
+  return `${day(a)} to ${day(b)}`
+}
+
+/** Every crawled return ticket on the pair, with both legs as flown. */
+function RoundTrips({ model, rows }: { model: Model; rows: RoundTrip[] }) {
+  const name = (id: string) => model.byId.get(id)?.short_name ?? id
+  const low = Math.min(...rows.map((r) => r.dkk ?? Infinity))
+  const leg = (label: string, l: FlownLeg) => (
+    <span className="bd-meta">
+      <b>{label}</b>
+      {l.dep && l.arr ? <span className="mono">{times(l)}</span> : null}
+      <span>{duration(l.duration_min)} · {l.vias.length ? 'via ' + l.vias.map(name).join(', ') : 'nonstop'}</span>
+      <span>{l.carriers.join(', ')}</span>
+    </span>
+  )
+  return (
+    <div className="bydate">
+      <div>
+        <p className="sec-k mono">Return tickets · {name(rows[0].from)} to {name(rows[0].to)} and back</p>
+        <ul>
+          {rows.map((r, i) => (
+            <li key={i} className={rows.length > 1 && r.dkk === low ? 'low' : ''}>
+              <a href={r.link ?? undefined} target="_blank" rel="noreferrer"
+                title={[...r.out.flights, ...r.home.flights].join(', ') || undefined}>
+                <span className="bd-day mono">{span(r.out.date, r.home.date)}</span>
+                <span className="bd-price mono">{kr(r.dkk)}</span>
+                {leg('Out', r.out)}
+                {leg('Back', r.home)}
+                {r.self_transfer ? <span className="bd-meta">self transfer</span> : null}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
@@ -327,9 +372,9 @@ function FlightFacts({ model, o, from }: { model: Model; o: RouteOption; from: s
       </div>
       {f.cheapest && <p className="ops"><b>Cheapest</b> · <span className="mono">{itin(f.cheapest)}</span>{f.cheapest.self_transfer ? ' · self transfer' : ''}</p>}
       {f.fastest && f.fastest.dkk !== f.cheapest?.dkk && <p className="ops"><b>Fastest</b> · <span className="mono">{itin(f.fastest)}</span></p>}
-      {f.by_date?.length ? (
-        <ByDate model={model} rows={f.by_date} from={from} />
-      ) : o.source !== 'crawl' ? (
+      {f.by_date?.length ? <ByDate model={model} rows={f.by_date} from={from} /> : null}
+      {f.round_trips?.length ? <RoundTrips model={model} rows={f.round_trips} /> : null}
+      {f.by_date?.length || f.round_trips?.length ? null : o.source !== 'crawl' ? (
         <p className="ops"><b>No dated search</b> · this price comes from {o.source_url ? 'a fare page' : 'research'}, not from a search for your dates</p>
       ) : null}
       {o.observed_at && (
