@@ -34,7 +34,11 @@ export function TripBar(p: Props) {
         <span className="tb-label">{p.trip.name}</span>
       </button>
       <span className="tb-tot mono">
-        {t.legs ? `${t.legs} ${t.legs === 1 ? 'leg' : 'legs'} · ${duration(t.min)} · ${kr(t.dkk)}${t.unknown ? '+' : ''}` : 'tap a city to start'}
+        {t.legs
+          ? `${t.legs} ${t.legs === 1 ? 'leg' : 'legs'} · ${duration(t.min)} · ${kr(t.dkk)}${t.unknown ? '+' : ''}`
+          : p.trip.start
+            ? `starts in ${p.model.byId.get(p.trip.start)?.short_name ?? p.trip.start}`
+            : 'tap a city to start'}
       </span>
       <span className="tb-saved mono" title="Every change is saved on this device">saved</span>
       {t.legs > 0 && <button className="tb-btn" onClick={p.onUndo} title="Remove the last leg">Undo</button>}

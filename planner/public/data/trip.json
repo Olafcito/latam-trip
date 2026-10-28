@@ -1,0 +1,409 @@
+{
+ "trip": "Simon, Latin America Dec 2026 to Feb 2027",
+ "pax": 1,
+ "currency": "DKK",
+ "home_airports": [
+  "CPH"
+ ],
+ "alt_origins": [
+  "MAD",
+  "ALC",
+  "VLC",
+  "RMU"
+ ],
+ "main_dates": {
+  "out": "2026-12-03",
+  "home": "2027-02-03",
+  "home_alt": [
+   "2027-02-02"
+  ]
+ },
+ "max_hours_one_way": 30,
+ "scoring": {
+  "per_hour": 150,
+  "soft_hours": 23,
+  "extra_per_hour": 150,
+  "overnight": 800,
+  "self_transfer": 1500,
+  "us_transit": 500,
+  "airport_change": 1000,
+  "no_changes": 300,
+  "missing_side_hours": 24,
+  "tight_connection": 700,
+  "tight_connection_h": 1.0
+ },
+ "us_airports": [
+  "MIA",
+  "JFK",
+  "EWR",
+  "ATL",
+  "IAH",
+  "DFW",
+  "ORD",
+  "LAX",
+  "FLL",
+  "MCO",
+  "IAD",
+  "BOS",
+  "CLT",
+  "PHL"
+ ],
+ "scenarios_file": "briefs/scenarios.md",
+ "known_prices_file": "data/known_prices.json",
+ "side_trip_airports": {
+  "GDL": "Guadalajara (SC4)"
+ },
+ "region_sequence": [
+  {
+   "name": "Central America",
+   "airports": [
+    "MGA",
+    "SAP",
+    "TGU",
+    "RTB",
+    "SAL",
+    "GUA",
+    "SJO",
+    "LIR",
+    "PTY",
+    "BZE"
+   ],
+   "optional": false,
+   "note": "Honduras and Nicaragua certain"
+  },
+  {
+   "name": "Colombia",
+   "airports": [
+    "BOG",
+    "MDE",
+    "CLO",
+    "CTG",
+    "ADZ",
+    "SMR",
+    "PEI"
+   ],
+   "optional": true,
+   "note": "appeals a lot"
+  },
+  {
+   "name": "Bolivia",
+   "airports": [
+    "LPB",
+    "VVI",
+    "CBB"
+   ],
+   "optional": false,
+   "entry": "LPB",
+   "exit": "VVI",
+   "note": "last; in via La Paz, home from Santa Cruz",
+   "internal_legs": [
+    "LPB>CBB",
+    "CBB>VVI"
+   ],
+   "internal_note": "Simon: La Paz -> Cochabamba -> Santa Cruz (bus alternatives in the network data)"
+  }
+ ],
+ "positioning": {
+  "note": "Start/end at an alternative origin: add the cheapest priced return home<->alt airport found in the table, plus ground legs below (estimates until priced).",
+  "ground_dkk": {
+   "MAD": {
+    "cost": 250,
+    "what": "train Alicante<->Madrid both ways: Trainline/Omio calendar 'from' fares 72 to 103 DKK each way (AVE, Avlo, Ouigo, iryo, 2.3 h); exact trains not read, ESTIMATE"
+   },
+   "ALC": {
+    "cost": 0,
+    "what": "Torrevieja is next to Alicante"
+   },
+   "VLC": {
+    "cost": 500,
+    "what": "train Alicante<->Valencia both ways, ESTIMATE"
+   },
+   "RMU": {
+    "cost": 0,
+    "what": "near Torrevieja"
+   }
+  },
+  "fly_to": [
+   "ALC",
+   "RMU",
+   "MAD"
+  ],
+  "bag_dkk": {
+   "cost": 600,
+   "what": "cabin bag on Ryanair/Norwegian basic fares CPH<->ALC round trip, 578 to 648 seen on Momondo 28 Oct"
+  },
+  "note2": "Simon 28 Oct: CPH->ALC out + MAD->CPH home costs only ~300 more than a plain return; he needs his work laptop (so it either travels with him or he passes Torrevieja)."
+ },
+ "bags": {
+  "wanted": "personal item + cabin bag",
+  "nice_to_have": "1 checked bag",
+  "note": "Simon 28 Oct: price the checked bag on the shortlist"
+ },
+ "spain_buffer": {
+  "ok": true,
+  "note": "Simon 28 Oct: can work from Torrevieja before (about 28 Nov to 1 Dec) and after (about 4 to 6 Feb)"
+ },
+ "stopovers": "welcome_if_cheaper_or_less_tedious",
+ "gateways": {
+  "note": "Main-ticket frontier: every origin x entry x exit (open jaw, or return when entry == exit). Bolivia is last, so it is an exit only.",
+  "origins": {
+   "CPH": {
+    "out": "2026-12-03",
+    "home": "2027-02-03",
+    "weight": 1.0
+   },
+   "MAD": {
+    "out": "2026-12-02",
+    "home": "2027-02-03",
+    "weight": 1.0
+   }
+  },
+  "entries": {
+   "SAL": 3,
+   "SAP": 3,
+   "MGA": 3,
+   "GUA": 1,
+   "BOG": 3,
+   "MDE": 3,
+   "CTG": 2,
+   "GDL": 3
+  },
+  "exits": {
+   "VVI": 3,
+   "BOG": 3,
+   "MDE": 3,
+   "CTG": 2,
+   "GDL": 3,
+   "SAL": 2,
+   "SAP": 2,
+   "MGA": 2,
+   "GUA": 1
+  }
+ },
+ "regional": {
+  "note": "Regional one-way frontier: flights between groups (both directions) and within Colombia; dates are the window centre, searched with Momondo flexible +-3 days.",
+  "groups": {
+   "MX": [
+    "GDL"
+   ],
+   "CA": [
+    "SAL",
+    "SAP",
+    "TGU",
+    "RTB",
+    "MGA"
+   ],
+   "CO": [
+    "BOG",
+    "MDE",
+    "CTG",
+    "CLO",
+    "SMR",
+    "ADZ"
+   ],
+   "BO": [
+    "LPB",
+    "VVI",
+    "CBB"
+   ]
+  },
+  "pairs_between": [
+   [
+    "MX",
+    "CA",
+    "2026-12-10",
+    2
+   ],
+   [
+    "CA",
+    "MX",
+    "2027-01-10",
+    2
+   ],
+   [
+    "MX",
+    "CO",
+    "2026-12-10",
+    2
+   ],
+   [
+    "CO",
+    "MX",
+    "2026-12-20",
+    2
+   ],
+   [
+    "CA",
+    "CO",
+    "2027-01-10",
+    3
+   ],
+   [
+    "CO",
+    "CA",
+    "2026-12-10",
+    3
+   ],
+   [
+    "CO",
+    "BO",
+    "2027-01-27",
+    3
+   ],
+   [
+    "CA",
+    "BO",
+    "2027-01-27",
+    2.5
+   ],
+   [
+    "BO",
+    "CO",
+    "2027-02-01",
+    1.5
+   ],
+   [
+    "BO",
+    "CA",
+    "2027-02-01",
+    1.5
+   ]
+  ],
+  "within": [
+   [
+    "CO",
+    "2027-01-05"
+   ],
+   [
+    "CA",
+    "2026-12-15"
+   ]
+  ],
+  "skip_from": [
+   "TGU",
+   "RTB",
+   "SMR",
+   "ADZ",
+   "CBB",
+   "PEI"
+  ],
+  "note2": "skip_from airports are only searched within their own group (domestic) to keep the matrix small"
+ },
+ "route_regions": {
+  "MX": [
+   "GDL",
+   "MEX",
+   "CUN"
+  ],
+  "CA": [
+   "GUA",
+   "SAL",
+   "SAP",
+   "TGU",
+   "RTB",
+   "MGA",
+   "SJO",
+   "LIR",
+   "PTY",
+   "BZE"
+  ],
+  "CO": [
+   "BOG",
+   "MDE",
+   "CTG",
+   "CLO",
+   "SMR",
+   "ADZ",
+   "PEI"
+  ],
+  "BO": [
+   "LPB",
+   "VVI",
+   "CBB"
+  ]
+ },
+ "route_required": [
+  "CA",
+  "CO",
+  "BO"
+ ],
+ "route_optional": [
+  "MX"
+ ],
+ "route_internal": {
+  "BO": [
+   "LPB>CBB",
+   "CBB>VVI"
+  ]
+ },
+ "route_entry_preferred": {
+  "BO": "LPB"
+ },
+ "route_hop_airports": {
+  "CA": [
+   "SAL",
+   "SAP",
+   "TGU",
+   "RTB",
+   "MGA"
+  ]
+ },
+ "route_hop_airports_note": "Simon 28 Oct: Central America = Nicaragua, Honduras, El Salvador; buses inside Central America and inside Colombia are fine, only the larger flights matter",
+ "route_positioning": {
+  "MAD": {
+   "price": 1785,
+   "note": "CPH<>MAD Iberia/Norwegian 985 + 2 Madrid nights 800 (estimate)"
+  },
+  "ALC": {
+   "price": 742,
+   "note": "CPH<>ALC 492 + train 250 (estimate)"
+  }
+ },
+ "christmas_in_bolivia": false,
+ "chain": {
+  "out_window": [
+   "2026-12-01",
+   "2026-12-04"
+  ],
+  "in_by": "2026-12-08",
+  "home_from": "2027-01-28",
+  "home_by": "2027-02-05",
+  "max_products": 3,
+  "min_connect_h": 3,
+  "max_stop_nights": 4,
+  "night_dkk": {
+   "default": 350,
+   "MAD": 450,
+   "CUN": 300,
+   "BCN": 450,
+   "LIS": 400
+  },
+  "stop_penalty": 300,
+  "day_stop": 400,
+  "date_shift": 300,
+  "entry_airports": [
+   "GDL",
+   "MEX",
+   "GUA",
+   "SAL",
+   "SAP",
+   "TGU",
+   "RTB",
+   "MGA",
+   "SJO",
+   "LIR",
+   "BOG",
+   "MDE",
+   "CTG",
+   "CLO",
+   "SMR",
+   "ADZ",
+   "PEI",
+   "LPB",
+   "VVI",
+   "CBB",
+   "CUN"
+  ],
+  "note": "stopovers on the way in or home are welcome when they make the trip cheaper or less tedious (Simon, 28 Oct)"
+ }
+}

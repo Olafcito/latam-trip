@@ -1,8 +1,22 @@
 /* Route map. Ported from docs/route-map/route-map-prototype.dc.html, with the handoff's panel widths. */
 
-.rmap,
-.rmap * { box-sizing: border-box; }
-.rmap {
+/* Keyframes are global. Every rule below is scoped to the map, so the map can sit inside another app. */
+@keyframes rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes chipIn { from { opacity: 0; transform: translateY(-8px) scale(.92) } to { opacity: 1; transform: none } }
+@keyframes hintIn { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes blink { 50% { opacity: .25 } }
+@keyframes tipIn { from { opacity: 0; transform: scale(.95) } to { opacity: 1; transform: none } }
+@keyframes panelIn { from { opacity: 0; transform: translateX(-24px) scale(.97); filter: blur(4px) } to { opacity: 1; transform: none; filter: blur(0) } }
+@keyframes sheetIn { from { opacity: 0; transform: translateY(40px) } to { opacity: 1; transform: none } }
+@keyframes viewIn { from { opacity: 0; transform: translateX(16px) } to { opacity: 1; transform: none } }
+@keyframes grow { from { transform: scaleY(0) } to { transform: scaleY(1) } }
+@keyframes kenburns { from { transform: scale(1.15) } to { transform: scale(1) } }
+
+@scope (.rmap) {
+
+:scope,
+:scope * { box-sizing: border-box; }
+:scope {
   --ground: #0B1720;
   --land: #14252E;
   --text: #EAF0F2;
@@ -27,17 +41,17 @@
   container-type: size;
   container-name: rmap;
 }
-.rmap:focus-visible { box-shadow: inset 0 0 0 2px var(--flight); }
-.rmap button { font: inherit; color: inherit; }
-.rmap a { color: #7A4F00; }
-.rmap a:hover { color: #4F3300; }
-.rmap .mono { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+:scope:focus-visible { box-shadow: inset 0 0 0 2px var(--flight); }
+:scope button { font: inherit; color: inherit; }
+:scope a { color: #7A4F00; }
+:scope a:hover { color: #4F3300; }
+:scope .mono { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
 
 .rmap-canvas { position: absolute; inset: 0; }
 .rmap-canvas .maplibregl-canvas { outline: none; }
-.rmap.grab .maplibregl-canvas-container,
-.rmap.grab .maplibregl-canvas { cursor: grab !important; }
-.rmap.grab:active .maplibregl-canvas { cursor: grabbing !important; }
+:scope.grab .maplibregl-canvas-container,
+:scope.grab .maplibregl-canvas { cursor: grab !important; }
+:scope.grab:active .maplibregl-canvas { cursor: grabbing !important; }
 .rmap-vignette {
   position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .8;
   background: radial-gradient(130% 100% at 55% 45%, transparent 60%, #060D12 100%);
@@ -47,15 +61,6 @@
   font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
 }
 
-@keyframes rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
-@keyframes chipIn { from { opacity: 0; transform: translateY(-8px) scale(.92) } to { opacity: 1; transform: none } }
-@keyframes hintIn { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
-@keyframes blink { 50% { opacity: .25 } }
-@keyframes tipIn { from { opacity: 0; transform: scale(.95) } to { opacity: 1; transform: none } }
-@keyframes panelIn { from { opacity: 0; transform: translateX(-24px) scale(.97); filter: blur(4px) } to { opacity: 1; transform: none; filter: blur(0) } }
-@keyframes sheetIn { from { opacity: 0; transform: translateY(40px) } to { opacity: 1; transform: none } }
-@keyframes viewIn { from { opacity: 0; transform: translateX(16px) } to { opacity: 1; transform: none } }
-@keyframes grow { from { transform: scaleY(0) } to { transform: scaleY(1) } }
 
 /* ---- controls ---------------------------------------------------------------------- */
 
@@ -114,8 +119,8 @@
 }
 .legend span { display: flex; align-items: center; gap: 6px; }
 .attrib { margin: 0 6px 0 0; font-size: 10px; color: #6C8593; pointer-events: auto; text-align: right; }
-.rmap .attrib a { color: #8FA4AF; text-decoration: none; }
-.rmap .attrib a:hover { color: var(--text); text-decoration: underline; }
+:scope .attrib a { color: #8FA4AF; text-decoration: none; }
+:scope .attrib a:hover { color: var(--text); text-decoration: underline; }
 
 /* ---- tooltip: placed beside its target, never on it ----------------------------------- */
 
@@ -167,7 +172,6 @@
 .phead .kicker { padding-right: 72px; min-height: 24px; }
 .thumb { flex: none; width: 64px; height: 64px; border-radius: 12px; overflow: hidden; position: relative; background: #D8D0C0; }
 .thumb img, .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: kenburns 6s cubic-bezier(.2, .7, .3, 1) both; }
-@keyframes kenburns { from { transform: scale(1.15) } to { transform: scale(1) } }
 .thumb-fallback { position: absolute; inset: 0; display: grid; place-items: center; font-size: 28px; font-weight: 800; color: #9A8F7B; }
 .hero .thumb-fallback { font-size: 64px; }
 .ptext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
@@ -315,8 +319,8 @@
   border-radius: 12px; font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer;
   transition: transform .2s ease, background .2s ease;
 }
-.rmap .pbtn.primary { flex: 1 1 100%; background: var(--ink); color: var(--panel); border: 0; }
-.rmap .pbtn.primary:hover { background: #24394A; color: #FFFFFF; transform: translateY(-1px); }
+:scope .pbtn.primary { flex: 1 1 100%; background: var(--ink); color: var(--panel); border: 0; }
+:scope .pbtn.primary:hover { background: #24394A; color: #FFFFFF; transform: translateY(-1px); }
 .pbtn.ghost { flex: 1; background: transparent; border: 1.5px solid #CFC7B8; color: var(--ink) !important; }
 .pbtn.ghost:hover { background: #E7E1D4; }
 .pbtn.done { border-color: #3FA98C; color: #1F6E58 !important; }
@@ -363,12 +367,12 @@
 .rname:hover { background: #E4DED1; text-decoration-color: #C98A12; }
 .rname:focus-visible { outline: 2px solid #C98A12; outline-offset: 2px; }
 
-.rmap .pbtn.add {
+:scope .pbtn.add {
   flex: 1 1 100%; flex-direction: column; gap: 1px; padding: 8px 16px; background: var(--flight); color: var(--ink) !important;
   border: 0; line-height: 1.2;
 }
 .pbtn.add span { font-size: 11.5px; font-weight: 600; color: #5A4310; }
-.rmap .pbtn.add:hover { background: #F6C463; transform: translateY(-1px); }
+:scope .pbtn.add:hover { background: #F6C463; transform: translateY(-1px); }
 .tripacts {
   position: sticky; bottom: 0; z-index: 1; margin: 0 -14px -14px; padding: 12px 14px 14px; background: var(--panel);
   box-shadow: 0 -14px 14px -6px var(--panel);
@@ -442,7 +446,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rmap *, .rmap *::before, .rmap *::after {
+  :scope *, :scope *::before, :scope *::after {
     animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important;
   }
+}
 }
