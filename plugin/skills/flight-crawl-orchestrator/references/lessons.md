@@ -62,3 +62,5 @@
 - chains.py builds them from all one-way quotes: about 700 products gave about 800 ways in and 150 ways home in under a second. Cabin-bag fees on low-cost legs (Viva Zero, Norwegian LowFare, Ryanair) and hostel nights are added so totals stay honest.
 - Cheap hub legs found: Ryanair CPH-MAD 186-235 (Expedia shows 0 seats left: verify), Air Europa MAD-CUN nonstop 2,877, World2Fly MAD-SDQ 3,032, Arajet SDQ-MDE 880, Volaris CUN-GUA nonstop 1,294, Viva CUN-GDL 737, Iberia MEX-MAD nonstop 2,796, Air Europa CUN-MAD nonstop 2,598.
 - Expedia's one-way results include Toluca (TLC) for MEX queries: flag airport_change.
+- Momondo one-way crawl (mom-25a): CPH-CUN 3,141 (Ryanair + Air Europa via MAD) and 3,482 (Norwegian + Air Europa, 17.4 h); CPH-MEX/GDL chains 3,650 to 4,300; KLM + TUI via Curaçao reaches BOG/MDE/GUA for 4,800 to 5,100. Simon's exact 4,771 GDL chain (overnight in Cancún) did not show again: such stopover chains appear only on some dates, so build them from separate one-ways instead.
+- Known crawler issue: Viva legs inside Momondo chains sometimes read an arrival of 23:59; treat those arrival times as suspect until the dialog parser is fixed.
