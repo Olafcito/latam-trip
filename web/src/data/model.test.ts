@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { airportFlights, buildModel, byCountry, landing, viaLine, type Neighbour } from './model'
+import { airportFlights, buildModel, byCountry, landing, pairFlights, viaLine, type Neighbour } from './model'
 import type { MapData } from './types'
 
 const n = (id: string, country: string, fastest: number) => ({ other: { id, country }, fastest }) as unknown as Neighbour
@@ -58,6 +58,11 @@ describe('airport flights', () => {
     expect(airportFlights(model, 'VVI', 'in').map((f) => f.from)).toEqual(['GUA', 'LIM'])
     expect(airportFlights(model, 'VVI', 'out').map((f) => f.to)).toEqual(['GUA'])
     expect(airportFlights(model, 'ANT', 'in')).toEqual([])
+  })
+
+  it('reads one directed pair, cheapest first', () => {
+    expect(pairFlights(model, 'GUA', 'VVI').map((f) => f.dkk)).toEqual([900])
+    expect(pairFlights(model, 'VVI', 'LIM')).toEqual([])
   })
 
   it('tags landings by the local arrival hour', () => {

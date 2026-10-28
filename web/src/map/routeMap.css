@@ -222,16 +222,19 @@
 .cgroups section:first-child .cgroup { padding-top: 2px; }
 .rcountries { margin: -4px 0 12px !important; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #5A6873; }
 .tip-c { margin: -2px 0 6px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
-.crow { animation: rise .45s cubic-bezier(.2, .9, .2, 1) both; }
-.crow button {
-  width: 100%; min-height: 52px; display: flex; flex-direction: column; align-items: stretch; gap: 5px; padding: 8px 10px;
-  border: 0; border-radius: 12px; background: transparent; text-align: left; cursor: pointer; transition: background .2s ease;
+.crow {
+  animation: rise .45s cubic-bezier(.2, .9, .2, 1) both;
+  display: flex; flex-direction: column; align-items: stretch; gap: 5px; padding: 8px 10px; border-radius: 12px;
+  transition: background .2s ease;
 }
-.crow button:hover { background: #E4DED1; }
-.cr-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.crow:hover { background: #E4DED1; }
+.cr-main {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 24px; padding: 0;
+  border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
 .cr-name { font-size: 15px; font-weight: 700; }
 .cr-arrow { color: #7A4F00; display: inline-flex; transition: transform .25s ease; }
-.crow button:hover .cr-arrow { transform: translateX(3px); }
+.crow:hover .cr-arrow { transform: translateX(3px); }
 .cr-opts { display: flex; flex-wrap: wrap; gap: 6px; }
 .copt {
   display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px 3px 4px; border-radius: 999px; background: #E8E2D6;
@@ -239,6 +242,11 @@
 }
 .copt b { font-weight: 600; color: var(--ink); }
 .copt-m { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; }
+/* a flight chip with crawled fares is a button that unfolds them under the row */
+.cr-fl { border: 0; padding-right: 5px; cursor: pointer; transition: background .2s ease, box-shadow .2s ease; }
+.cr-fl svg:last-child { width: 14px; height: 14px; margin-left: -2px; color: #7A4F00; transition: transform .25s ease; }
+.cr-fl:hover, .cr-fl.on { background: #D9D1C0; }
+.cr-fl.on svg:last-child { transform: translateY(1px); }
 .mchip { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; }
 .mchip.ground { background: var(--bus); color: #06281F; }
 .mchip.boat { background: var(--boat); color: #0A2147; }
@@ -298,29 +306,27 @@
 .bydate li.low .bd-price::before { content: "lowest  "; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: #3FA98C; }
 .bd-meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0 10px; font-size: 12px; color: #4A5863; }
 .bd-meta b { color: var(--ink); font-weight: 600; }
-.seg { display: inline-flex; padding: 2px; border-radius: 999px; background: #E4DED1; }
-.seg button {
-  min-height: 26px; padding: 0 10px; border: 0; border-radius: 999px; background: transparent; font: inherit; font-size: 12px;
+/* the in or out switch in the Connections heading: which way the flight chips read */
+.sechead-r { display: inline-flex; align-items: center; gap: 10px; }
+.dirseg { display: inline-flex; padding: 2px; border-radius: 999px; background: #E4DED1; }
+.dirseg button {
+  min-height: 22px; padding: 0 9px; border: 0; border-radius: 999px; background: transparent; font: inherit; font-size: 11px;
   font-weight: 700; color: #5A6873; cursor: pointer; transition: background .2s ease, color .2s ease;
 }
-.seg button b { font-weight: 600; font-variant-numeric: tabular-nums; opacity: .75; }
-.seg button:hover { color: var(--ink); }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--panel); }
-.seg button[aria-pressed="true"] b { opacity: .85; }
-.seg button:focus-visible { outline: 2px solid #C98A12; outline-offset: 1px; }
-.fl-gate { margin: -2px 14px 8px !important; }
+.dirseg button:hover { color: var(--ink); }
+.dirseg button[aria-pressed="true"] { background: var(--ink); color: var(--panel); }
+.dirseg button:focus-visible { outline: 2px solid #C98A12; outline-offset: 1px; }
 /* flex: none, or the scrolling view would shrink this overflow-hidden list to nothing */
 .flist { flex: none; list-style: none; margin: 0 14px 14px; padding: 0; border-radius: 12px; overflow: hidden; background: #DCD5C7; display: flex; flex-direction: column; gap: 1px; }
+.flist.nested { margin: 3px 0 2px; border-radius: 10px; }
 .frow { animation: rise .45s cubic-bezier(.2, .9, .2, 1) both; }
 .frow a {
-  display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 3px 10px; padding: 9px 12px;
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 3px 10px; padding: 8px 10px;
   background: var(--panel); color: var(--ink); text-decoration: none; transition: background .15s ease;
 }
 .frow a:hover, .frow a:focus-visible { background: #EFE9DD; }
-.fr-name { font-size: 14px; color: #4A5863; }
-.fr-name b { color: var(--ink); font-weight: 700; }
 .fr-price { font-size: 13px; font-weight: 700; color: #7A4F00; text-align: right; }
-.fr-time { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12.5px; font-weight: 600; }
+.fr-time { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12.5px; font-weight: 600; }
 .land { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
 .land.day { background: #DCEFE6; color: #1F6E58; }
 .land.evening { background: #F2E6C8; color: #5A4310; }
