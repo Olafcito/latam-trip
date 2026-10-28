@@ -143,8 +143,8 @@
   "match": "Norwegian",
   "longhaul_dkk": 300,
   "regional_dkk": 300,
-  "note": "LowFare: bag paid, ESTIMATE as Ryanair",
-  "cabin_dkk": 0
+  "note": "LowFare: small personal item; cabin bag and checked bag paid. ESTIMATE",
+  "cabin_dkk": 150
  },
  {
   "match": "Scandinavian",
@@ -159,5 +159,26 @@
   "regional_dkk": 0,
   "note": "United-ticketed itineraries found include a bag",
   "cabin_dkk": 0
+ },
+ {
+  "match": "Viva",
+  "longhaul_dkk": 300,
+  "regional_dkk": 300,
+  "cabin_dkk": 260,
+  "note": "ESTIMATE. Viva Aerobus Zero: personal item only; carry-on and bag roughly USD 35-50 each online"
+ },
+ {
+  "match": "Arajet",
+  "longhaul_dkk": 290,
+  "regional_dkk": 290,
+  "cabin_dkk": 260,
+  "note": "ESTIMATE. Arajet Basic: personal item only; carry-on and bag roughly USD 40-45 online"
+ },
+ {
+  "match": "Vueling",
+  "longhaul_dkk": 250,
+  "regional_dkk": 250,
+  "cabin_dkk": 150,
+  "note": "ESTIMATE. Basic: personal item only"
  }
 ]

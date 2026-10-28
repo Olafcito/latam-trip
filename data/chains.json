@@ -1,0 +1,2932 @@
+{
+ "out": [
+  {
+   "route": "CPH>MAD>CUN",
+   "frm": "CPH",
+   "to": "CUN",
+   "price": 3064,
+   "cabin": 180,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 3694,
+   "eff": 6169,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-02T06:10:00",
+   "end": "2026-12-03T20:25:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Ryanair"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:41ac6bebb121",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T06:10:00",
+     "arr": "2026-12-02T09:35:00",
+     "price": 186.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:a4dd5b1a26e8",
+     "pattern": "P:MAD>CUN/*",
+     "frm": "MAD",
+     "to": "CUN",
+     "dep": "2026-12-03T15:20:00",
+     "arr": "2026-12-03T20:25:00",
+     "price": 2878.0,
+     "hours": 11.08,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>CUN",
+   "frm": "CPH",
+   "to": "CUN",
+   "price": 3113,
+   "cabin": 180,
+   "checked": 800,
+   "stay_cost": 0,
+   "total": 3293,
+   "eff": 6218,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-03T20:25:00",
+   "stops": [
+    "5.8 h self-transfer in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Ryanair"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:df6700956cfa",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 235.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:a4dd5b1a26e8",
+     "pattern": "P:MAD>CUN/*",
+     "frm": "MAD",
+     "to": "CUN",
+     "dep": "2026-12-03T15:20:00",
+     "arr": "2026-12-03T20:25:00",
+     "price": 2878.0,
+     "hours": 11.08,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>CUN",
+   "frm": "CPH",
+   "to": "CUN",
+   "price": 3559,
+   "cabin": 0,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 4009,
+   "eff": 6484,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-02T15:30:00",
+   "end": "2026-12-03T20:25:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Iberia"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:cb22fc41af90",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T15:30:00",
+     "arr": "2026-12-02T18:55:00",
+     "price": 681.0,
+     "hours": 3.42,
+     "carriers": [
+      "Iberia"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:a4dd5b1a26e8",
+     "pattern": "P:MAD>CUN/*",
+     "frm": "MAD",
+     "to": "CUN",
+     "dep": "2026-12-03T15:20:00",
+     "arr": "2026-12-03T20:25:00",
+     "price": 2878.0,
+     "hours": 11.08,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SAL",
+   "frm": "CPH",
+   "to": "SAL",
+   "price": 3267,
+   "cabin": 180,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 3897,
+   "eff": 8097,
+   "hours": 24.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-02T06:10:00",
+   "end": "2026-12-03T21:45:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Avianca",
+    "Ryanair"
+   ],
+   "flags": [
+    "date_shift"
+   ],
+   "products": [
+    {
+     "qid": "Q:41ac6bebb121",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T06:10:00",
+     "arr": "2026-12-02T09:35:00",
+     "price": 186.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:783717cf7cce",
+     "pattern": "P:MAD>SAL/*",
+     "frm": "MAD",
+     "to": "SAL",
+     "dep": "2026-12-03T08:10:00",
+     "arr": "2026-12-03T21:45:00",
+     "price": 3081.0,
+     "hours": 20.58,
+     "carriers": [
+      "Avianca"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SAL",
+   "frm": "CPH",
+   "to": "SAL",
+   "price": 4193,
+   "cabin": 180,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 4823,
+   "eff": 8111,
+   "hours": 17.9,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-02T06:10:00",
+   "end": "2026-12-03T15:40:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Avianca",
+    "Ryanair"
+   ],
+   "flags": [
+    "date_shift"
+   ],
+   "products": [
+    {
+     "qid": "Q:41ac6bebb121",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T06:10:00",
+     "arr": "2026-12-02T09:35:00",
+     "price": 186.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:3d5502013516",
+     "pattern": "P:MAD>SAL/*",
+     "frm": "MAD",
+     "to": "SAL",
+     "dep": "2026-12-03T08:10:00",
+     "arr": "2026-12-03T15:40:00",
+     "price": 4007.0,
+     "hours": 14.5,
+     "carriers": [
+      "Avianca"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SAL",
+   "frm": "CPH",
+   "to": "SAL",
+   "price": 3767,
+   "cabin": 0,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 4217,
+   "eff": 8117,
+   "hours": 24.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-01T15:30:00",
+   "end": "2026-12-02T21:45:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Avianca",
+    "Iberia"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:59b4ea41d8d9",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-01T15:30:00",
+     "arr": "2026-12-01T18:55:00",
+     "price": 686.0,
+     "hours": 3.42,
+     "carriers": [
+      "Iberia"
+     ],
+     "source": "momondo",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:783717cf7cce",
+     "pattern": "P:MAD>SAL/*",
+     "frm": "MAD",
+     "to": "SAL",
+     "dep": "2026-12-02T08:10:00",
+     "arr": "2026-12-02T21:45:00",
+     "price": 3081.0,
+     "hours": 20.58,
+     "carriers": [
+      "Avianca"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>BOG",
+   "frm": "CPH",
+   "to": "BOG",
+   "price": 6124,
+   "cabin": 0,
+   "checked": 560,
+   "stay_cost": 0,
+   "total": 6124,
+   "eff": 8299,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 1,
+   "start": "2026-12-03T06:00:00",
+   "end": "2026-12-03T14:30:00",
+   "stops": [],
+   "carriers": [
+    "KLM"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:2721deec1231",
+     "pattern": "P:CPH>BOG/*",
+     "frm": "CPH",
+     "to": "BOG",
+     "dep": "2026-12-03T06:00:00",
+     "arr": "2026-12-03T14:30:00",
+     "price": 6124.0,
+     "hours": 14.5,
+     "carriers": [
+      "KLM"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>CDG>BOG",
+   "frm": "CPH",
+   "to": "BOG",
+   "price": 5339,
+   "cabin": 150,
+   "checked": 786,
+   "stay_cost": 350,
+   "total": 5839,
+   "eff": 8389,
+   "hours": 13.0,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-03T18:10:00",
+   "end": "2026-12-04T14:00:00",
+   "stops": [
+    "1 night in CDG"
+   ],
+   "carriers": [
+    "Norwegian",
+    "avianca"
+   ],
+   "flags": [
+    "date_shift"
+   ],
+   "products": [
+    {
+     "qid": "Q:d204639b2f81",
+     "pattern": "P:CPH>CDG/*",
+     "frm": "CPH",
+     "to": "CDG",
+     "dep": "2026-12-03T18:10:00",
+     "arr": "2026-12-03T20:10:00",
+     "price": 720.0,
+     "hours": 2.0,
+     "carriers": [
+      "Norwegian"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 150
+    },
+    {
+     "qid": "Q:eaeeca7a67ca",
+     "pattern": "R:CDG>BOG",
+     "frm": "CDG",
+     "to": "BOG",
+     "dep": "2026-12-04T09:00:00",
+     "arr": "2026-12-04T14:00:00",
+     "price": 4619.0,
+     "hours": 11.0,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>SJO",
+   "frm": "CPH",
+   "to": "SJO",
+   "price": 6010,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6010,
+   "eff": 8473,
+   "hours": 16.4,
+   "flights": 2,
+   "tickets": 1,
+   "start": "2026-12-03T06:45:00",
+   "end": "2026-12-03T16:10:00",
+   "stops": [],
+   "carriers": [
+    "AF"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:2e5eaa996271",
+     "pattern": "P:CPH>SJO/*",
+     "frm": "CPH",
+     "to": "SJO",
+     "dep": "2026-12-03T06:45:00",
+     "arr": "2026-12-03T16:10:00",
+     "price": 6010.0,
+     "hours": 16.42,
+     "carriers": [
+      "AF"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>BOG",
+   "frm": "CPH",
+   "to": "BOG",
+   "price": 6383,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6383,
+   "eff": 8558,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 1,
+   "start": "2026-12-03T06:00:00",
+   "end": "2026-12-03T14:30:00",
+   "stops": [],
+   "carriers": [
+    "KL"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:73d327e33d33",
+     "pattern": "P:CPH>BOG/*",
+     "frm": "CPH",
+     "to": "BOG",
+     "dep": "2026-12-03T06:00:00",
+     "arr": "2026-12-03T14:30:00",
+     "price": 6383.0,
+     "hours": 14.5,
+     "carriers": [
+      "KL"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SDQ>MDE",
+   "frm": "CPH",
+   "to": "MDE",
+   "price": 4098,
+   "cabin": 440,
+   "checked": null,
+   "stay_cost": 1150,
+   "total": 5688,
+   "eff": 8564,
+   "hours": 15.2,
+   "flights": 3,
+   "tickets": 3,
+   "start": "2026-12-02T06:10:00",
+   "end": "2026-12-05T09:20:00",
+   "stops": [
+    "1 night in MAD",
+    "2 nights in SDQ"
+   ],
+   "carriers": [
+    "Arajet",
+    "Ryanair",
+    "World2Fly"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:41ac6bebb121",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T06:10:00",
+     "arr": "2026-12-02T09:35:00",
+     "price": 186.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:538359893bb5",
+     "pattern": "P:MAD>SDQ/*",
+     "frm": "MAD",
+     "to": "SDQ",
+     "dep": "2026-12-03T16:20:00",
+     "arr": "2026-12-03T20:35:00",
+     "price": 3032.0,
+     "hours": 9.25,
+     "carriers": [
+      "World2Fly"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:ad86bdcc28d2",
+     "pattern": "R:SDQ>MDE",
+     "frm": "SDQ",
+     "to": "MDE",
+     "dep": "2026-12-05T07:50:00",
+     "arr": "2026-12-05T09:20:00",
+     "price": 880.0,
+     "hours": 2.5,
+     "carriers": [
+      "Arajet"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 260
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SDQ>MDE",
+   "frm": "CPH",
+   "to": "MDE",
+   "price": 4147,
+   "cabin": 440,
+   "checked": null,
+   "stay_cost": 700,
+   "total": 5287,
+   "eff": 8613,
+   "hours": 15.2,
+   "flights": 3,
+   "tickets": 3,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-05T09:20:00",
+   "stops": [
+    "6.8 h self-transfer in MAD",
+    "2 nights in SDQ"
+   ],
+   "carriers": [
+    "Arajet",
+    "Ryanair",
+    "World2Fly"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:df6700956cfa",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 235.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:538359893bb5",
+     "pattern": "P:MAD>SDQ/*",
+     "frm": "MAD",
+     "to": "SDQ",
+     "dep": "2026-12-03T16:20:00",
+     "arr": "2026-12-03T20:35:00",
+     "price": 3032.0,
+     "hours": 9.25,
+     "carriers": [
+      "World2Fly"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:ad86bdcc28d2",
+     "pattern": "R:SDQ>MDE",
+     "frm": "SDQ",
+     "to": "MDE",
+     "dep": "2026-12-05T07:50:00",
+     "arr": "2026-12-05T09:20:00",
+     "price": 880.0,
+     "hours": 2.5,
+     "carriers": [
+      "Arajet"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 260
+    }
+   ]
+  },
+  {
+   "route": "CPH>MEX",
+   "frm": "CPH",
+   "to": "MEX",
+   "price": 4030,
+   "cabin": 0,
+   "checked": 500,
+   "stay_cost": 0,
+   "total": 4030,
+   "eff": 8743,
+   "hours": 21.4,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T09:00:00",
+   "end": "2026-12-03T23:25:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Norwegian",
+    "Viva"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:4acb670e1dea",
+     "pattern": "P:CPH>MEX/*",
+     "frm": "CPH",
+     "to": "MEX",
+     "dep": "2026-12-03T09:00:00",
+     "arr": "2026-12-03T23:25:00",
+     "price": 4030.0,
+     "hours": 21.42,
+     "carriers": [
+      "Air Europa",
+      "Norwegian",
+      "Viva"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SDQ>MDE",
+   "frm": "CPH",
+   "to": "MDE",
+   "price": 4593,
+   "cabin": 260,
+   "checked": null,
+   "stay_cost": 800,
+   "total": 5653,
+   "eff": 8829,
+   "hours": 15.2,
+   "flights": 3,
+   "tickets": 3,
+   "start": "2026-12-03T15:30:00",
+   "end": "2026-12-05T09:20:00",
+   "stops": [
+    "1 night in MAD",
+    "1 night in SDQ"
+   ],
+   "carriers": [
+    "Arajet",
+    "Iberia",
+    "World2Fly"
+   ],
+   "flags": [
+    "date_shift"
+   ],
+   "products": [
+    {
+     "qid": "Q:10321c6b234e",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T15:30:00",
+     "arr": "2026-12-03T18:55:00",
+     "price": 681.0,
+     "hours": 3.42,
+     "carriers": [
+      "Iberia"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:538359893bb5",
+     "pattern": "P:MAD>SDQ/*",
+     "frm": "MAD",
+     "to": "SDQ",
+     "dep": "2026-12-04T16:20:00",
+     "arr": "2026-12-04T20:35:00",
+     "price": 3032.0,
+     "hours": 9.25,
+     "carriers": [
+      "World2Fly"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:ad86bdcc28d2",
+     "pattern": "R:SDQ>MDE",
+     "frm": "SDQ",
+     "to": "MDE",
+     "dep": "2026-12-05T07:50:00",
+     "arr": "2026-12-05T09:20:00",
+     "price": 880.0,
+     "hours": 2.5,
+     "carriers": [
+      "Arajet"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 260
+    }
+   ]
+  },
+  {
+   "route": "CPH>GUA",
+   "frm": "CPH",
+   "to": "GUA",
+   "price": 5718,
+   "cabin": 0,
+   "checked": 560,
+   "stay_cost": 0,
+   "total": 5718,
+   "eff": 8835,
+   "hours": 20.8,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T06:00:00",
+   "end": "2026-12-03T19:47:00",
+   "stops": [],
+   "carriers": [
+    "KLM"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:2d0cbd4e741a",
+     "pattern": "P:CPH>GUA/*",
+     "frm": "CPH",
+     "to": "GUA",
+     "dep": "2026-12-03T06:00:00",
+     "arr": "2026-12-03T19:47:00",
+     "price": 5718.0,
+     "hours": 20.78,
+     "carriers": [
+      "KLM"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>SJO",
+   "frm": "CPH",
+   "to": "SJO",
+   "price": 6017,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6017,
+   "eff": 8954,
+   "hours": 19.6,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T06:00:00",
+   "end": "2026-12-03T18:35:00",
+   "stops": [],
+   "carriers": [
+    "KL"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:d36036eb56b3",
+     "pattern": "P:CPH>SJO/*",
+     "frm": "CPH",
+     "to": "SJO",
+     "dep": "2026-12-03T06:00:00",
+     "arr": "2026-12-03T18:35:00",
+     "price": 6017.0,
+     "hours": 19.58,
+     "carriers": [
+      "KL"
+     ],
+     "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MEX",
+   "frm": "CPH",
+   "to": "MEX",
+   "price": 3649,
+   "cabin": 0,
+   "checked": 500,
+   "stay_cost": 0,
+   "total": 3649,
+   "eff": 8974,
+   "hours": 24.2,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-03T23:25:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Ryanair",
+    "Viva"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:7f583d8cb4ff",
+     "pattern": "P:CPH>MEX/*",
+     "frm": "CPH",
+     "to": "MEX",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T23:25:00",
+     "price": 3649.0,
+     "hours": 24.25,
+     "carriers": [
+      "Air Europa",
+      "Ryanair",
+      "Viva"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>GUA",
+   "frm": "CPH",
+   "to": "GUA",
+   "price": 5894,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 5894,
+   "eff": 9011,
+   "hours": 20.8,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T06:00:00",
+   "end": "2026-12-03T19:47:00",
+   "stops": [],
+   "carriers": [
+    "KL"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:fa3969144c6d",
+     "pattern": "P:CPH>GUA/*",
+     "frm": "CPH",
+     "to": "GUA",
+     "dep": "2026-12-03T06:00:00",
+     "arr": "2026-12-03T19:47:00",
+     "price": 5894.0,
+     "hours": 20.78,
+     "carriers": [
+      "KL"
+     ],
+     "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>GDL",
+   "frm": "CPH",
+   "to": "GDL",
+   "price": 4245,
+   "cabin": 0,
+   "checked": 500,
+   "stay_cost": 0,
+   "total": 4245,
+   "eff": 9042,
+   "hours": 22.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T09:00:00",
+   "end": "2026-12-03T23:59:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Norwegian",
+    "Viva"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:438dc5c0001a",
+     "pattern": "P:CPH>GDL/*",
+     "frm": "CPH",
+     "to": "GDL",
+     "dep": "2026-12-03T09:00:00",
+     "arr": "2026-12-03T23:59:00",
+     "price": 4245.0,
+     "hours": 21.98,
+     "carriers": [
+      "Air Europa",
+      "Norwegian",
+      "Viva"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>GDL",
+   "frm": "CPH",
+   "to": "GDL",
+   "price": 4312,
+   "cabin": 0,
+   "checked": 500,
+   "stay_cost": 0,
+   "total": 4312,
+   "eff": 9109,
+   "hours": 22.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T09:00:00",
+   "end": "2026-12-03T23:59:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Norwegian",
+    "Viva"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:cb0d511ec28d",
+     "pattern": "P:CPH>GDL/*",
+     "frm": "CPH",
+     "to": "GDL",
+     "dep": "2026-12-03T09:00:00",
+     "arr": "2026-12-03T23:59:00",
+     "price": 4312.0,
+     "hours": 21.98,
+     "carriers": [
+      "Air Europa",
+      "Norwegian",
+      "Viva"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MEX",
+   "frm": "CPH",
+   "to": "MEX",
+   "price": 3812,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 3812,
+   "eff": 9188,
+   "hours": 24.4,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T06:00:00",
+   "end": "2026-12-03T23:25:00",
+   "stops": [],
+   "carriers": [
+    "Flair Airlines",
+    "TAP AIR PORTUGAL"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:bd3b67befa44",
+     "pattern": "P:CPH>MEX/*",
+     "frm": "CPH",
+     "to": "MEX",
+     "dep": "2026-12-03T06:00:00",
+     "arr": "2026-12-03T23:25:00",
+     "price": 3812.0,
+     "hours": 24.42,
+     "carriers": [
+      "Flair Airlines",
+      "TAP AIR PORTUGAL"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>GDL",
+   "frm": "CPH",
+   "to": "GDL",
+   "price": 4771,
+   "cabin": 410,
+   "checked": 600,
+   "stay_cost": 0,
+   "total": 5181,
+   "eff": 9741,
+   "hours": 20.4,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T09:00:00",
+   "end": "2026-12-04T13:34:00",
+   "stops": [],
+   "carriers": [
+    "Air Europa",
+    "Norwegian",
+    "Viva Aerobus"
+   ],
+   "flags": [
+    "date_assumed",
+    "mix_match",
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:6fa2fef7efec",
+     "pattern": "M:CPH>CUN+CUN>GDL",
+     "frm": "CPH",
+     "to": "GDL",
+     "dep": "2026-12-03T09:00:00",
+     "arr": "2026-12-04T13:34:00",
+     "price": 4771.0,
+     "hours": 20.4,
+     "carriers": [
+      "Air Europa",
+      "Norwegian",
+      "Viva Aerobus"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 410
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>GUA",
+   "frm": "CPH",
+   "to": "GUA",
+   "price": 6314,
+   "cabin": 180,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 6944,
+   "eff": 9942,
+   "hours": 18.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-02T06:10:00",
+   "end": "2026-12-03T22:44:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Copa",
+    "Ryanair"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:41ac6bebb121",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-02T06:10:00",
+     "arr": "2026-12-02T09:35:00",
+     "price": 186.0,
+     "hours": 3.42,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    },
+    {
+     "qid": "Q:a37b7a62a305",
+     "pattern": "P:MAD>GUA/*",
+     "frm": "MAD",
+     "to": "GUA",
+     "dep": "2026-12-03T15:10:00",
+     "arr": "2026-12-03T22:44:00",
+     "price": 6128.0,
+     "hours": 14.57,
+     "carriers": [
+      "Air Europa",
+      "Copa"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MGA",
+   "frm": "CPH",
+   "to": "MGA",
+   "price": 6630,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6630,
+   "eff": 10131,
+   "hours": 23.2,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T19:20:00",
+   "end": "2026-12-04T11:30:00",
+   "stops": [],
+   "carriers": [
+    "AM",
+    "KL"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:c4b27431d631",
+     "pattern": "P:CPH>MGA/*",
+     "frm": "CPH",
+     "to": "MGA",
+     "dep": "2026-12-03T19:20:00",
+     "arr": "2026-12-04T11:30:00",
+     "price": 6630.0,
+     "hours": 23.17,
+     "carriers": [
+      "AM",
+      "KL"
+     ],
+     "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MGA",
+   "frm": "CPH",
+   "to": "MGA",
+   "price": 6862,
+   "cabin": 0,
+   "checked": 290,
+   "stay_cost": 0,
+   "total": 6862,
+   "eff": 10363,
+   "hours": 23.2,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T19:20:00",
+   "end": "2026-12-04T11:30:00",
+   "stops": [],
+   "carriers": [
+    "Aeromexico",
+    "KLM"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:3570d409cfeb",
+     "pattern": "P:CPH>MGA/*",
+     "frm": "CPH",
+     "to": "MGA",
+     "dep": "2026-12-03T19:20:00",
+     "arr": "2026-12-04T11:30:00",
+     "price": 6862.0,
+     "hours": 23.17,
+     "carriers": [
+      "Aeromexico",
+      "KLM"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>CLO",
+   "frm": "CPH",
+   "to": "CLO",
+   "price": 6765,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6765,
+   "eff": 10380,
+   "hours": 23.6,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T06:00:00",
+   "end": "2026-12-03T23:33:00",
+   "stops": [],
+   "carriers": [
+    "KL"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:20e73cdaedfd",
+     "pattern": "P:CPH>CLO/*",
+     "frm": "CPH",
+     "to": "CLO",
+     "dep": "2026-12-03T06:00:00",
+     "arr": "2026-12-03T23:33:00",
+     "price": 6765.0,
+     "hours": 23.55,
+     "carriers": [
+      "KL"
+     ],
+     "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MGA",
+   "frm": "CPH",
+   "to": "MGA",
+   "price": 7262,
+   "cabin": 0,
+   "checked": 290,
+   "stay_cost": 0,
+   "total": 7262,
+   "eff": 11138,
+   "hours": 24.4,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T18:05:00",
+   "end": "2026-12-04T11:30:00",
+   "stops": [],
+   "carriers": [
+    "Aeromexico",
+    "Scandinavian Airlines"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:7c8c23477056",
+     "pattern": "P:CPH>MGA/*",
+     "frm": "CPH",
+     "to": "MGA",
+     "dep": "2026-12-03T18:05:00",
+     "arr": "2026-12-04T11:30:00",
+     "price": 7262.0,
+     "hours": 24.42,
+     "carriers": [
+      "Aeromexico",
+      "Scandinavian Airlines"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>CLO",
+   "frm": "CPH",
+   "to": "CLO",
+   "price": 7788,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 7788,
+   "eff": 11778,
+   "hours": 21.3,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T06:30:00",
+   "end": "2026-12-03T21:46:00",
+   "stops": [],
+   "carriers": [
+    "AA"
+   ],
+   "flags": [
+    "us_transit"
+   ],
+   "products": [
+    {
+     "qid": "Q:ae0ac667ba9b",
+     "pattern": "P:CPH>CLO/*",
+     "frm": "CPH",
+     "to": "CLO",
+     "dep": "2026-12-03T06:30:00",
+     "arr": "2026-12-03T21:46:00",
+     "price": 7788.0,
+     "hours": 21.27,
+     "carriers": [
+      "AA"
+     ],
+     "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>SJO",
+   "frm": "CPH",
+   "to": "SJO",
+   "price": 6009,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6009,
+   "eff": 12158,
+   "hours": 29.3,
+   "flights": 2,
+   "tickets": 1,
+   "start": "2026-12-03T19:20:00",
+   "end": "2026-12-04T17:40:00",
+   "stops": [],
+   "carriers": [
+    "KL"
+   ],
+   "flags": [
+    "long_layover"
+   ],
+   "products": [
+    {
+     "qid": "Q:17e4845b1f0d",
+     "pattern": "P:CPH>SJO/*",
+     "frm": "CPH",
+     "to": "SJO",
+     "dep": "2026-12-03T19:20:00",
+     "arr": "2026-12-04T17:40:00",
+     "price": 6009.0,
+     "hours": 29.33,
+     "carriers": [
+      "KL"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>LIR",
+   "frm": "CPH",
+   "to": "LIR",
+   "price": 6746,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6746,
+   "eff": 13446,
+   "hours": 29.5,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T14:15:00",
+   "end": "2026-12-04T12:45:00",
+   "stops": [],
+   "carriers": [
+    "DL",
+    "KL"
+   ],
+   "flags": [
+    "long_layover",
+    "us_transit"
+   ],
+   "products": [
+    {
+     "qid": "Q:16d1d08b15b4",
+     "pattern": "P:CPH>LIR/*",
+     "frm": "CPH",
+     "to": "LIR",
+     "dep": "2026-12-03T14:15:00",
+     "arr": "2026-12-04T12:45:00",
+     "price": 6746.0,
+     "hours": 29.5,
+     "carriers": [
+      "DL",
+      "KL"
+     ],
+     "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>CLO",
+   "frm": "CPH",
+   "to": "CLO",
+   "price": 7109,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 7109,
+   "eff": 13459,
+   "hours": 30.0,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2026-12-03T17:55:00",
+   "end": "2026-12-04T17:55:00",
+   "stops": [],
+   "carriers": [
+    "AF",
+    "AV"
+   ],
+   "flags": [
+    "long_layover"
+   ],
+   "products": [
+    {
+     "qid": "Q:ea9cc4d73885",
+     "pattern": "P:CPH>CLO/*",
+     "frm": "CPH",
+     "to": "CLO",
+     "dep": "2026-12-03T17:55:00",
+     "arr": "2026-12-04T17:55:00",
+     "price": 7109.0,
+     "hours": 30.0,
+     "carriers": [
+      "AF",
+      "AV"
+     ],
+     "source": "expedia",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  }
+ ],
+ "home": [
+  {
+   "route": "CUN>MAD>CPH",
+   "frm": "CUN",
+   "to": "CPH",
+   "price": 2979,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 3429,
+   "eff": 5578,
+   "hours": 12.3,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T22:25:00",
+   "end": "2027-02-04T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "SAS"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:29e455219c86",
+     "pattern": "P:*/CUN>MAD",
+     "frm": "CUN",
+     "to": "MAD",
+     "dep": "2027-02-02T22:25:00",
+     "arr": "2027-02-03T13:25:00",
+     "price": 2598.0,
+     "hours": 9.0,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:472fbdb1a276",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T17:00:00",
+     "arr": "2027-02-04T20:20:00",
+     "price": 381.0,
+     "hours": 3.33,
+     "carriers": [
+      "SAS"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "MEX>MAD>CPH",
+   "frm": "MEX",
+   "to": "CPH",
+   "price": 3208,
+   "cabin": 0,
+   "checked": 800,
+   "stay_cost": 0,
+   "total": 3208,
+   "eff": 5634,
+   "hours": 13.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T12:50:00",
+   "end": "2027-02-03T20:20:00",
+   "stops": [
+    "11 h day stop in MAD"
+   ],
+   "carriers": [
+    "Iberia",
+    "Scandinavian Airlines"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:c7472890d801",
+     "pattern": "P:*/MEX>MAD",
+     "frm": "MEX",
+     "to": "MAD",
+     "dep": "2027-02-02T12:50:00",
+     "arr": "2027-02-03T06:00:00",
+     "price": 2796.0,
+     "hours": 10.17,
+     "carriers": [
+      "Iberia"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:68ec7b2c77f1",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T17:00:00",
+     "arr": "2027-02-03T20:20:00",
+     "price": 412.0,
+     "hours": 3.33,
+     "carriers": [
+      "Scandinavian Airlines"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "MEX>CPH",
+   "frm": "MEX",
+   "to": "CPH",
+   "price": 3492,
+   "cabin": 0,
+   "checked": 290,
+   "stay_cost": 0,
+   "total": 3492,
+   "eff": 5642,
+   "hours": 14.3,
+   "flights": 2,
+   "tickets": 1,
+   "start": "2027-02-02T22:30:00",
+   "end": "2027-02-03T19:50:00",
+   "stops": [],
+   "carriers": [
+    "Aeromexico",
+    "Scandinavian Airlines"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:a07853ae563a",
+     "pattern": "P:*/MEX>CPH",
+     "frm": "MEX",
+     "to": "CPH",
+     "dep": "2027-02-02T22:30:00",
+     "arr": "2027-02-03T19:50:00",
+     "price": 3492.0,
+     "hours": 14.33,
+     "carriers": [
+      "Aeromexico",
+      "Scandinavian Airlines"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CUN>MAD>CPH",
+   "frm": "CUN",
+   "to": "CPH",
+   "price": 2946,
+   "cabin": 150,
+   "checked": 600,
+   "stay_cost": 450,
+   "total": 3546,
+   "eff": 5684,
+   "hours": 12.2,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T22:25:00",
+   "end": "2027-02-04T16:10:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Norwegian Air Sweden"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:29e455219c86",
+     "pattern": "P:*/CUN>MAD",
+     "frm": "CUN",
+     "to": "MAD",
+     "dep": "2027-02-02T22:25:00",
+     "arr": "2027-02-03T13:25:00",
+     "price": 2598.0,
+     "hours": 9.0,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:ba4f7606f0cc",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T12:55:00",
+     "arr": "2027-02-04T16:10:00",
+     "price": 348.0,
+     "hours": 3.25,
+     "carriers": [
+      "Norwegian Air Sweden"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 150
+    }
+   ]
+  },
+  {
+   "route": "CUN>MAD>CPH",
+   "frm": "CUN",
+   "to": "CPH",
+   "price": 2962,
+   "cabin": 150,
+   "checked": 600,
+   "stay_cost": 450,
+   "total": 3562,
+   "eff": 5700,
+   "hours": 12.2,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T22:25:00",
+   "end": "2027-02-04T16:10:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Norwegian"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:29e455219c86",
+     "pattern": "P:*/CUN>MAD",
+     "frm": "CUN",
+     "to": "MAD",
+     "dep": "2027-02-02T22:25:00",
+     "arr": "2027-02-03T13:25:00",
+     "price": 2598.0,
+     "hours": 9.0,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:1fbe19389f7e",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T12:55:00",
+     "arr": "2027-02-04T16:10:00",
+     "price": 364.0,
+     "hours": 3.25,
+     "carriers": [
+      "Norwegian"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 150
+    }
+   ]
+  },
+  {
+   "route": "MEX>CPH",
+   "frm": "MEX",
+   "to": "CPH",
+   "price": 2934,
+   "cabin": 0,
+   "checked": 500,
+   "stay_cost": 0,
+   "total": 2934,
+   "eff": 5772,
+   "hours": 18.9,
+   "flights": 2,
+   "tickets": 1,
+   "start": "2027-02-02T12:50:00",
+   "end": "2027-02-03T14:45:00",
+   "stops": [],
+   "carriers": [
+    "Iberia"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:6c22924bafd1",
+     "pattern": "P:*/MEX>CPH",
+     "frm": "MEX",
+     "to": "CPH",
+     "dep": "2027-02-02T12:50:00",
+     "arr": "2027-02-03T14:45:00",
+     "price": 2934.0,
+     "hours": 18.92,
+     "carriers": [
+      "Iberia"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "GDL>MAD>CPH",
+   "frm": "GDL",
+   "to": "CPH",
+   "price": 3394,
+   "cabin": 0,
+   "checked": 800,
+   "stay_cost": 0,
+   "total": 3394,
+   "eff": 6442,
+   "hours": 17.6,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T08:41:00",
+   "end": "2027-02-03T20:20:00",
+   "stops": [
+    "11 h day stop in MAD"
+   ],
+   "carriers": [
+    "Iberia",
+    "Scandinavian Airlines",
+    "Viva"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:2a402cc78ac9",
+     "pattern": "P:*/GDL>MAD",
+     "frm": "GDL",
+     "to": "MAD",
+     "dep": "2027-02-02T08:41:00",
+     "arr": "2027-02-03T06:00:00",
+     "price": 2982.0,
+     "hours": 14.32,
+     "carriers": [
+      "Iberia",
+      "Viva"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:68ec7b2c77f1",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T17:00:00",
+     "arr": "2027-02-03T20:20:00",
+     "price": 412.0,
+     "hours": 3.33,
+     "carriers": [
+      "Scandinavian Airlines"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "GDL>CPH",
+   "frm": "GDL",
+   "to": "CPH",
+   "price": 3402,
+   "cabin": 0,
+   "checked": 548,
+   "stay_cost": 0,
+   "total": 3402,
+   "eff": 6620,
+   "hours": 21.4,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2027-02-03T14:23:00",
+   "end": "2027-02-04T18:50:00",
+   "stops": [],
+   "carriers": [
+    "British Airways"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:cabc6ffb3166",
+     "pattern": "P:*/GDL>CPH",
+     "frm": "GDL",
+     "to": "CPH",
+     "dep": "2027-02-03T14:23:00",
+     "arr": "2027-02-04T18:50:00",
+     "price": 3402.0,
+     "hours": 21.45,
+     "carriers": [
+      "British Airways"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "GDL>CPH",
+   "frm": "GDL",
+   "to": "CPH",
+   "price": 3738,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 3738,
+   "eff": 6628,
+   "hours": 19.3,
+   "flights": 3,
+   "tickets": 1,
+   "start": "2027-02-03T12:29:00",
+   "end": "2027-02-04T14:45:00",
+   "stops": [],
+   "carriers": [],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:1e0d094f8be0",
+     "pattern": "P:*/GDL>CPH",
+     "frm": "GDL",
+     "to": "CPH",
+     "dep": "2027-02-03T12:29:00",
+     "arr": "2027-02-04T14:45:00",
+     "price": 3738.0,
+     "hours": 19.27,
+     "carriers": [],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "VVI>MAD>CPH",
+   "frm": "VVI",
+   "to": "CPH",
+   "price": 3698,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 4148,
+   "eff": 7148,
+   "hours": 18.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-03T03:45:00",
+   "end": "2027-02-04T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Avianca",
+    "SAS"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:5793292737f8",
+     "pattern": "P:*/VVI>MAD",
+     "frm": "VVI",
+     "to": "MAD",
+     "dep": "2027-02-03T03:45:00",
+     "arr": "2027-02-03T23:25:00",
+     "price": 3317.0,
+     "hours": 14.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:472fbdb1a276",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T17:00:00",
+     "arr": "2027-02-04T20:20:00",
+     "price": 381.0,
+     "hours": 3.33,
+     "carriers": [
+      "SAS"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "VVI>MAD>CPH",
+   "frm": "VVI",
+   "to": "CPH",
+   "price": 3729,
+   "cabin": 0,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 4179,
+   "eff": 7180,
+   "hours": 18.0,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T03:45:00",
+   "end": "2027-02-03T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Avianca",
+    "Scandinavian Airlines"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:fc0bbdd87410",
+     "pattern": "P:*/VVI>MAD",
+     "frm": "VVI",
+     "to": "MAD",
+     "dep": "2027-02-02T03:45:00",
+     "arr": "2027-02-02T23:25:00",
+     "price": 3317.0,
+     "hours": 14.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:68ec7b2c77f1",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T17:00:00",
+     "arr": "2027-02-03T20:20:00",
+     "price": 412.0,
+     "hours": 3.33,
+     "carriers": [
+      "Scandinavian Airlines"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "MDE>MAD>CPH",
+   "frm": "MDE",
+   "to": "CPH",
+   "price": 4544,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 4994,
+   "eff": 7218,
+   "hours": 12.8,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T21:50:00",
+   "end": "2027-02-04T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "SAS"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:4789144bcdcb",
+     "pattern": "P:*/MDE>MAD",
+     "frm": "MDE",
+     "to": "MAD",
+     "dep": "2027-02-02T21:50:00",
+     "arr": "2027-02-03T13:20:00",
+     "price": 4163.0,
+     "hours": 9.5,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:472fbdb1a276",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T17:00:00",
+     "arr": "2027-02-04T20:20:00",
+     "price": 381.0,
+     "hours": 3.33,
+     "carriers": [
+      "SAS"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "VVI>MAD>CPH",
+   "frm": "VVI",
+   "to": "CPH",
+   "price": 3605,
+   "cabin": 180,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 4235,
+   "eff": 7224,
+   "hours": 17.9,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T03:45:00",
+   "end": "2027-02-03T13:30:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Avianca",
+    "Ryanair"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:fc0bbdd87410",
+     "pattern": "P:*/VVI>MAD",
+     "frm": "VVI",
+     "to": "MAD",
+     "dep": "2027-02-02T03:45:00",
+     "arr": "2027-02-02T23:25:00",
+     "price": 3317.0,
+     "hours": 14.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:7634968e0820",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T10:15:00",
+     "arr": "2027-02-03T13:30:00",
+     "price": 288.0,
+     "hours": 3.25,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    }
+   ]
+  },
+  {
+   "route": "MDE>MAD>CPH",
+   "frm": "MDE",
+   "to": "CPH",
+   "price": 4511,
+   "cabin": 150,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 5111,
+   "eff": 7324,
+   "hours": 12.8,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T21:50:00",
+   "end": "2027-02-04T16:10:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Norwegian Air Sweden"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:4789144bcdcb",
+     "pattern": "P:*/MDE>MAD",
+     "frm": "MDE",
+     "to": "MAD",
+     "dep": "2027-02-02T21:50:00",
+     "arr": "2027-02-03T13:20:00",
+     "price": 4163.0,
+     "hours": 9.5,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:ba4f7606f0cc",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T12:55:00",
+     "arr": "2027-02-04T16:10:00",
+     "price": 348.0,
+     "hours": 3.25,
+     "carriers": [
+      "Norwegian Air Sweden"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 150
+    }
+   ]
+  },
+  {
+   "route": "MDE>MAD>CPH",
+   "frm": "MDE",
+   "to": "CPH",
+   "price": 4527,
+   "cabin": 150,
+   "checked": 800,
+   "stay_cost": 450,
+   "total": 5127,
+   "eff": 7340,
+   "hours": 12.8,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T21:50:00",
+   "end": "2027-02-04T16:10:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Air Europa",
+    "Norwegian"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:4789144bcdcb",
+     "pattern": "P:*/MDE>MAD",
+     "frm": "MDE",
+     "to": "MAD",
+     "dep": "2027-02-02T21:50:00",
+     "arr": "2027-02-03T13:20:00",
+     "price": 4163.0,
+     "hours": 9.5,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:1fbe19389f7e",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T12:55:00",
+     "arr": "2027-02-04T16:10:00",
+     "price": 364.0,
+     "hours": 3.25,
+     "carriers": [
+      "Norwegian"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 150
+    }
+   ]
+  },
+  {
+   "route": "BOG>MAD>CPH",
+   "frm": "BOG",
+   "to": "CPH",
+   "price": 5157,
+   "cabin": 0,
+   "checked": 786,
+   "stay_cost": 0,
+   "total": 5157,
+   "eff": 7494,
+   "hours": 12.9,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T16:35:00",
+   "end": "2027-02-03T20:20:00",
+   "stops": [
+    "9 h day stop in MAD"
+   ],
+   "carriers": [
+    "Scandinavian Airlines",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:4d11b482ef38",
+     "pattern": "P:*/BOG>MAD",
+     "frm": "BOG",
+     "to": "MAD",
+     "dep": "2027-02-02T16:35:00",
+     "arr": "2027-02-03T08:10:00",
+     "price": 4745.0,
+     "hours": 9.58,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:68ec7b2c77f1",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T17:00:00",
+     "arr": "2027-02-03T20:20:00",
+     "price": 412.0,
+     "hours": 3.33,
+     "carriers": [
+      "Scandinavian Airlines"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "LPB>MAD>CPH",
+   "frm": "LPB",
+   "to": "CPH",
+   "price": 4203,
+   "cabin": 0,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 4653,
+   "eff": 7703,
+   "hours": 18.3,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T03:25:00",
+   "end": "2027-02-03T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Scandinavian Airlines",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:2d80a9675019",
+     "pattern": "P:*/LPB>MAD",
+     "frm": "LPB",
+     "to": "MAD",
+     "dep": "2027-02-02T03:25:00",
+     "arr": "2027-02-02T23:25:00",
+     "price": 3791.0,
+     "hours": 15.0,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:68ec7b2c77f1",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T17:00:00",
+     "arr": "2027-02-03T20:20:00",
+     "price": 412.0,
+     "hours": 3.33,
+     "carriers": [
+      "Scandinavian Airlines"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "LPB>MAD>CPH",
+   "frm": "LPB",
+   "to": "CPH",
+   "price": 4079,
+   "cabin": 180,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 4709,
+   "eff": 7747,
+   "hours": 18.2,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T03:25:00",
+   "end": "2027-02-03T13:30:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Ryanair",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:2d80a9675019",
+     "pattern": "P:*/LPB>MAD",
+     "frm": "LPB",
+     "to": "MAD",
+     "dep": "2027-02-02T03:25:00",
+     "arr": "2027-02-02T23:25:00",
+     "price": 3791.0,
+     "hours": 15.0,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:7634968e0820",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T10:15:00",
+     "arr": "2027-02-03T13:30:00",
+     "price": 288.0,
+     "hours": 3.25,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    }
+   ]
+  },
+  {
+   "route": "BOG>MAD>CPH",
+   "frm": "BOG",
+   "to": "CPH",
+   "price": 5126,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 5576,
+   "eff": 7812,
+   "hours": 12.9,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T16:35:00",
+   "end": "2027-02-04T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "SAS",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:4d11b482ef38",
+     "pattern": "P:*/BOG>MAD",
+     "frm": "BOG",
+     "to": "MAD",
+     "dep": "2027-02-02T16:35:00",
+     "arr": "2027-02-03T08:10:00",
+     "price": 4745.0,
+     "hours": 9.58,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:472fbdb1a276",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T17:00:00",
+     "arr": "2027-02-04T20:20:00",
+     "price": 381.0,
+     "hours": 3.33,
+     "carriers": [
+      "SAS"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "LPB>MAD>CPH",
+   "frm": "LPB",
+   "to": "CPH",
+   "price": 4339,
+   "cabin": 0,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 4789,
+   "eff": 7839,
+   "hours": 18.3,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T03:25:00",
+   "end": "2027-02-03T14:45:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Iberia",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:2d80a9675019",
+     "pattern": "P:*/LPB>MAD",
+     "frm": "LPB",
+     "to": "MAD",
+     "dep": "2027-02-02T03:25:00",
+     "arr": "2027-02-02T23:25:00",
+     "price": 3791.0,
+     "hours": 15.0,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:458ad351a1b8",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T11:25:00",
+     "arr": "2027-02-03T14:45:00",
+     "price": 548.0,
+     "hours": 3.33,
+     "carriers": [
+      "Iberia"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "BOG>MAD>CPH",
+   "frm": "BOG",
+   "to": "CPH",
+   "price": 5033,
+   "cabin": 180,
+   "checked": 786,
+   "stay_cost": 450,
+   "total": 5663,
+   "eff": 7888,
+   "hours": 12.8,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2027-02-02T07:50:00",
+   "end": "2027-02-03T13:30:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Ryanair",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:77694c934701",
+     "pattern": "P:*/BOG>MAD",
+     "frm": "BOG",
+     "to": "MAD",
+     "dep": "2027-02-02T07:50:00",
+     "arr": "2027-02-02T23:25:00",
+     "price": 4745.0,
+     "hours": 9.58,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:7634968e0820",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T10:15:00",
+     "arr": "2027-02-03T13:30:00",
+     "price": 288.0,
+     "hours": 3.25,
+     "carriers": [
+      "Ryanair"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 180
+    }
+   ]
+  },
+  {
+   "route": "CTG>MAD>CPH",
+   "frm": "CTG",
+   "to": "CPH",
+   "price": 5514,
+   "cabin": 0,
+   "checked": 786,
+   "stay_cost": 0,
+   "total": 5514,
+   "eff": 8352,
+   "hours": 16.2,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T11:15:00",
+   "end": "2027-02-03T20:20:00",
+   "stops": [
+    "11 h day stop in MAD"
+   ],
+   "carriers": [
+    "Scandinavian Airlines",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:7479859ae08e",
+     "pattern": "P:*/CTG>MAD",
+     "frm": "CTG",
+     "to": "MAD",
+     "dep": "2027-02-02T11:15:00",
+     "arr": "2027-02-03T06:10:00",
+     "price": 5102.0,
+     "hours": 12.92,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:68ec7b2c77f1",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-03T17:00:00",
+     "arr": "2027-02-03T20:20:00",
+     "price": 412.0,
+     "hours": 3.33,
+     "carriers": [
+      "Scandinavian Airlines"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CTG>MAD>CPH",
+   "frm": "CTG",
+   "to": "CPH",
+   "price": 5483,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 5933,
+   "eff": 8670,
+   "hours": 16.2,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T11:15:00",
+   "end": "2027-02-04T20:20:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "SAS",
+    "avianca"
+   ],
+   "flags": [
+    "basic_fare"
+   ],
+   "products": [
+    {
+     "qid": "Q:7479859ae08e",
+     "pattern": "P:*/CTG>MAD",
+     "frm": "CTG",
+     "to": "MAD",
+     "dep": "2027-02-02T11:15:00",
+     "arr": "2027-02-03T06:10:00",
+     "price": 5102.0,
+     "hours": 12.92,
+     "carriers": [
+      "avianca"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:472fbdb1a276",
+     "pattern": "P:MAD>CPH/*",
+     "frm": "MAD",
+     "to": "CPH",
+     "dep": "2027-02-04T17:00:00",
+     "arr": "2027-02-04T20:20:00",
+     "price": 381.0,
+     "hours": 3.33,
+     "carriers": [
+      "SAS"
+     ],
+     "source": "google_flights",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CTG>CPH",
+   "frm": "CTG",
+   "to": "CPH",
+   "price": 4282,
+   "cabin": 0,
+   "checked": 486,
+   "stay_cost": 0,
+   "total": 4282,
+   "eff": 8756,
+   "hours": 19.8,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2027-02-02T18:00:00",
+   "end": "2027-02-03T19:50:00",
+   "stops": [],
+   "carriers": [
+    "Avianca",
+    "Scandinavian Airlines"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:6e2794efa599",
+     "pattern": "P:*/CTG>CPH",
+     "frm": "CTG",
+     "to": "CPH",
+     "dep": "2027-02-02T18:00:00",
+     "arr": "2027-02-03T19:50:00",
+     "price": 4282.0,
+     "hours": 19.83,
+     "carriers": [
+      "Avianca",
+      "Scandinavian Airlines"
+     ],
+     "source": "momondo",
+     "flights": 3,
+     "cabin": 0
+    }
+   ]
+  }
+ ],
+ "config": {
+  "out_window": [
+   "2026-12-01",
+   "2026-12-04"
+  ],
+  "in_by": "2026-12-08",
+  "home_from": "2027-01-28",
+  "home_by": "2027-02-05",
+  "max_products": 3,
+  "min_connect_h": 3,
+  "max_stop_nights": 4,
+  "night_dkk": {
+   "default": 350,
+   "MAD": 450,
+   "CUN": 300,
+   "BCN": 450,
+   "LIS": 400
+  },
+  "stop_penalty": 300,
+  "day_stop": 400,
+  "date_shift": 300,
+  "entry_airports": [
+   "GDL",
+   "MEX",
+   "GUA",
+   "SAL",
+   "SAP",
+   "TGU",
+   "RTB",
+   "MGA",
+   "SJO",
+   "LIR",
+   "BOG",
+   "MDE",
+   "CTG",
+   "CLO",
+   "SMR",
+   "ADZ",
+   "PEI",
+   "LPB",
+   "VVI",
+   "CBB",
+   "CUN"
+  ],
+  "note": "stopovers on the way in or home are welcome when they make the trip cheaper or less tedious (Simon, 28 Oct)"
+ }
+}

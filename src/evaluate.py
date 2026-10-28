@@ -99,7 +99,8 @@ for s in SC:
         flags |= {f for f in r["flags"] if f in ("self_transfer", "us_transit", "overnight", "tight_connection", "basic_fare", "airport_change")}
         if any(d.get("overnight_layover") for d in r["legs"]): flags.add("overnight")
         airlines |= set(r["cars"])
-        hrs = "/".join(f"{d.get('hours')}" for d in r["legs"])
+        hrs = " / ".join(f"{(d.get('dep') or '')[11:16]}>{(d.get('arr') or '')[11:16]}"
+                         f"{'+1' if (d.get('arr') or '')[:10] > (d.get('dep') or '')[:10] else ''} {d.get('hours')}" for d in r["legs"])
         lines.append(f"{c['label']}: {r['price']:.0f}{f' + cabin bag {cabin}' if cabin else ''} | {r['pid']} {r['legs'][0].get('dep','')[:10]} | {hrs} h | "
                      f"{', '.join(r['cars'])} | {nseg} flights, {tick} ticket(s) | bag +{bag} ({'; '.join(bag_notes)})")
     results.append(dict(id=s["id"], name=s["name"], story=s.get("story", ""), ok=ok, lines=lines, flags=sorted(flags),
