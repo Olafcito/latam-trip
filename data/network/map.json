@@ -7439,6 +7439,192 @@
    "_src": "net-co.jsonl"
   },
   {
+   "from": "GUA",
+   "to": "CTG",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1707.0,
+   "oneway_min_hours": 22.53,
+   "fastest_hours": 6.2,
+   "fastest_price_dkk": 2345.0,
+   "nonstop": false,
+   "vias": [
+    "MDE",
+    "PTY",
+    "SDQ"
+   ],
+   "carriers": [
+    "Arajet",
+    "Copa Airlines",
+    "JetSMART",
+    "Wingo"
+   ],
+   "dates": [
+    "2027-01-07",
+    "2027-01-09",
+    "2027-01-10",
+    "2027-01-11",
+    "2027-01-12"
+   ],
+   "return_min_dkk": null,
+   "quotes": 9
+  },
+  {
+   "from": "SAP",
+   "to": "CTG",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 3086.0,
+   "oneway_min_hours": 11.87,
+   "fastest_hours": 5.72,
+   "fastest_price_dkk": 5611.0,
+   "nonstop": false,
+   "vias": [
+    "MDE",
+    "PTY",
+    "SAL"
+   ],
+   "carriers": [
+    "Avianca",
+    "Copa Airlines",
+    "JetSMART",
+    "Wingo"
+   ],
+   "dates": [
+    "2027-01-10",
+    "2027-01-12"
+   ],
+   "return_min_dkk": null,
+   "quotes": 7
+  },
+  {
+   "from": "BOG",
+   "to": "GUA",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1923.0,
+   "oneway_min_hours": 14.77,
+   "fastest_hours": 3.33,
+   "fastest_price_dkk": 3407.0,
+   "nonstop": true,
+   "vias": [
+    "CLO",
+    "MEX",
+    "PTY",
+    "SDQ"
+   ],
+   "carriers": [
+    "Aeromexico",
+    "Arajet",
+    "Avianca",
+    "Copa Airlines",
+    "Wingo"
+   ],
+   "dates": [
+    "2026-12-07",
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10",
+    "2026-12-11",
+    "2026-12-12"
+   ],
+   "return_min_dkk": null,
+   "quotes": 10
+  },
+  {
+   "from": "MDE",
+   "to": "SAL",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1960.0,
+   "oneway_min_hours": 2.67,
+   "fastest_hours": 2.67,
+   "fastest_price_dkk": 1960.0,
+   "nonstop": true,
+   "vias": [
+    "CLO",
+    "PTY"
+   ],
+   "carriers": [
+    "Avianca",
+    "Copa Airlines",
+    "JetSMART"
+   ],
+   "dates": [
+    "2026-12-07",
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10",
+    "2026-12-11",
+    "2026-12-12"
+   ],
+   "return_min_dkk": null,
+   "quotes": 9
+  },
+  {
+   "from": "SAL",
+   "to": "LPB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 3201.0,
+   "oneway_min_hours": 9.5,
+   "fastest_hours": 9.5,
+   "fastest_price_dkk": 3201.0,
+   "nonstop": false,
+   "vias": [
+    "BOG",
+    "CUZ",
+    "LIM",
+    "PTY",
+    "VVI"
+   ],
+   "carriers": [
+    "Avianca",
+    "BoA",
+    "Copa Airlines",
+    "LATAM Airlines"
+   ],
+   "dates": [
+    "2026-12-16",
+    "2026-12-19",
+    "2026-12-21",
+    "2026-12-22",
+    "2027-01-26",
+    "2027-01-27"
+   ],
+   "return_min_dkk": null,
+   "quotes": 15
+  },
+  {
+   "from": "PTY",
+   "to": "LPB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 2678.0,
+   "oneway_min_hours": 7.17,
+   "fastest_hours": 7.17,
+   "fastest_price_dkk": 2678.0,
+   "nonstop": false,
+   "vias": [
+    "BOG",
+    "CUZ",
+    "LIM",
+    "VVI"
+   ],
+   "carriers": [
+    "Avianca",
+    "BoA",
+    "Copa Airlines"
+   ],
+   "dates": [
+    "2026-12-21",
+    "2026-12-22",
+    "2027-01-27"
+   ],
+   "return_min_dkk": null,
+   "quotes": 9
+  },
+  {
    "from": "BOG",
    "to": "VVI",
    "mode": "flight",
@@ -7959,63 +8145,6 @@
    ],
    "dates": [
     "2026-12-06"
-   ],
-   "return_min_dkk": null,
-   "quotes": 7
-  },
-  {
-   "from": "SAL",
-   "to": "LPB",
-   "mode": "flight",
-   "source": "crawl",
-   "oneway_min_dkk": 3497.0,
-   "oneway_min_hours": 14.67,
-   "fastest_hours": 9.5,
-   "fastest_price_dkk": 4875.0,
-   "nonstop": false,
-   "vias": [
-    "BOG",
-    "CUZ",
-    "LIM",
-    "PTY",
-    "VVI"
-   ],
-   "carriers": [
-    "Avianca",
-    "BoA",
-    "Copa Airlines",
-    "LATAM Airlines"
-   ],
-   "dates": [
-    "2027-01-26",
-    "2027-01-27"
-   ],
-   "return_min_dkk": null,
-   "quotes": 9
-  },
-  {
-   "from": "PTY",
-   "to": "LPB",
-   "mode": "flight",
-   "source": "crawl",
-   "oneway_min_dkk": 2931.0,
-   "oneway_min_hours": 11.25,
-   "fastest_hours": 7.17,
-   "fastest_price_dkk": 4608.0,
-   "nonstop": false,
-   "vias": [
-    "BOG",
-    "CUZ",
-    "LIM",
-    "VVI"
-   ],
-   "carriers": [
-    "Avianca",
-    "BoA",
-    "Copa Airlines"
-   ],
-   "dates": [
-    "2027-01-27"
    ],
    "return_min_dkk": null,
    "quotes": 7

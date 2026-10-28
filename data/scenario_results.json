@@ -1,0 +1,317 @@
+[
+ {
+  "id": "A1",
+  "name": "Madrid start, Ryanair-type hop CPH-MAD (laptop stays home), Central America > Colombia > Bolivia",
+  "story": "Fly CPH-MAD 1 Dec, MAD-San Salvador 2 Dec on one Avianca ticket that also brings you home Santa Cruz-MAD 3 Feb; Central America overland, Managua-Medellin, Bogota-La Paz, BoA inside Bolivia, MAD-CPH 4 Feb.",
+  "ok": true,
+  "lines": [
+   "Positioning CPH<>MAD: 985 | P:CPH>MAD/MAD>CPH 2026-12-01 | 3.42/3.25 h | Iberia, Norwegian | 2 flights, 1 ticket(s) | bag +600 (Iberia 300; Norwegian 300)",
+   "Madrid nights 1 Dec and 3 Feb: 800 (ESTIMATE 2 x 400 hotel near the airport)",
+   "Long-haul MAD-SAL / VVI-MAD (Avianca): 6494 | P:MAD>SAL/VVI>MAD 2026-12-02 | 14.5/14.67 h | Avianca | 4 flights, 1 ticket(s) | bag +972 (Avianca 486; Avianca 486)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "Avianca",
+   "BoA",
+   "Copa Airlines",
+   "Iberia",
+   "LATAM Airlines",
+   "Norwegian"
+  ],
+  "price": 12884.0,
+  "bag": 2317,
+  "hours": 53.82,
+  "flights": 12,
+  "tickets": 6,
+  "eff": 21508.0
+ },
+ {
+  "id": "A2",
+  "name": "Madrid start via Alicante (work days in Torrevieja, laptop travels or stays there)",
+  "story": "As A1, but CPH-Alicante 28 Nov and back, a few days working from the house, train to Madrid.",
+  "ok": true,
+  "lines": [
+   "Positioning CPH<>ALC: 492 + cabin bag 180 | P:CPH>ALC/ALC>CPH 2026-11-28 | 3.42/3.25 h | Norwegian, Ryanair | 2 flights, 1 ticket(s) | bag +600 (Ryanair 300, cabin 180; Norwegian 300)",
+   "Train Alicante<>Madrid: 250 (ESTIMATE from 'from' fares)",
+   "Madrid night 3 Feb: 400 (ESTIMATE)",
+   "Long-haul MAD-SAL / VVI-MAD (Avianca): 6494 | P:MAD>SAL/VVI>MAD 2026-12-02 | 14.5/14.67 h | Avianca | 4 flights, 1 ticket(s) | bag +972 (Avianca 486; Avianca 486)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "Avianca",
+   "BoA",
+   "Copa Airlines",
+   "LATAM Airlines",
+   "Norwegian",
+   "Ryanair"
+  ],
+  "price": 12421.0,
+  "bag": 2317,
+  "hours": 58.82,
+  "flights": 12,
+  "tickets": 6,
+  "eff": 21614.0
+ },
+ {
+  "id": "B1",
+  "name": "Copenhagen open jaw to San Salvador, home from Santa Cruz",
+  "story": "CPH-San Salvador, Central America overland, Managua-Medellin, Bogota-La Paz, BoA inside Bolivia, Santa Cruz-CPH.",
+  "ok": true,
+  "lines": [
+   "Long-haul CPH-SAL / VVI-CPH: 9071 | P:CPH>SAL/VVI>CPH 2026-12-04 | 18.55/23.75 h | CM, G3, KL | 6 flights, 1 ticket(s) | bag +805 (Copa 245; KLM 560)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "BoA",
+   "CM",
+   "Copa Airlines",
+   "G3",
+   "KL",
+   "LATAM Airlines"
+  ],
+  "price": 13676.0,
+  "bag": 1550,
+  "hours": 60.279999999999994,
+  "flights": 12,
+  "tickets": 5,
+  "eff": 23380.0
+ },
+ {
+  "id": "B2",
+  "name": "Copenhagen open jaw to Guatemala City, home from Santa Cruz",
+  "story": "As B1 but starting in Guatemala (one more country overland before Honduras).",
+  "ok": true,
+  "lines": [
+   "Long-haul CPH-GUA / VVI-CPH: 9274 | P:CPH>GUA/VVI>CPH 2026-12-02 | 18.68/23.75 h | CM, G3, KL | 6 flights, 1 ticket(s) | bag +805 (Copa 245; KLM 560)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "BoA",
+   "CM",
+   "Copa Airlines",
+   "G3",
+   "KL",
+   "LATAM Airlines"
+  ],
+  "price": 13879.0,
+  "bag": 1550,
+  "hours": 60.41,
+  "flights": 12,
+  "tickets": 5,
+  "eff": 23603.0
+ },
+ {
+  "id": "C1",
+  "name": "Nicaragua in, Bogota home, Bolivia as a loop at the end",
+  "story": "CPH-Managua, Central America, Managua-Medellin, Colombia, Bogota-La Paz, Bolivia, Santa Cruz-Bogota, Bogota-CPH.",
+  "ok": true,
+  "lines": [
+   "Long-haul CPH-MGA / BOG-CPH: 6681 | P:CPH>MGA/BOG>CPH 2026-12-03 | 20.7/20.17 h | American, British Airways | 6 flights, 1 ticket(s) | bag +1096 (American 548; American 548)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Santa Cruz > Bogota: 1755 + cabin bag 250 | R:VVI>BOG 2027-02-01 | 7.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "American",
+   "BoA",
+   "British Airways",
+   "Copa Airlines",
+   "LATAM Airlines"
+  ],
+  "price": 13291.0,
+  "bag": 2341,
+  "hours": 66.6,
+  "flights": 14,
+  "tickets": 6,
+  "eff": 24582.0
+ },
+ {
+  "id": "D1",
+  "name": "Bolivia over Christmas, Colombia in January, home from Bogota (Madrid start)",
+  "story": "MAD-San Salvador 2 Dec, Central America until about 19 Dec, fly into La Paz, Christmas in Cochabamba, Santa Cruz-Colombia about 28 Dec, January in Colombia, Bogota-MAD 3 Feb.",
+  "ok": false,
+  "lines": [
+   "Positioning CPH<>MAD: 985 | P:CPH>MAD/MAD>CPH 2026-12-01 | 3.42/3.25 h | Iberia, Norwegian | 2 flights, 1 ticket(s) | bag +600 (Iberia 300; Norwegian 300)",
+   "Madrid nights: 800 (ESTIMATE)",
+   "Long-haul MAD-SAL / BOG-MAD: NOT PRICED (['P:MAD>SAL/BOG>MAD'])",
+   "Central America > La Paz (Christmas): 2678 | R:PTY>LPB 2026-12-21 | 7.17 h | Avianca | 2 flights, 1 ticket(s) | bag +516 (Avianca 516)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Santa Cruz > Colombia (after Christmas): NOT PRICED (['R:VVI>MDE', 'R:VVI>BOG'])"
+  ],
+  "flags": [
+   "basic_fare"
+  ],
+  "airlines": [
+   "Avianca",
+   "BoA",
+   "Iberia",
+   "Norwegian"
+  ],
+  "price": 5122.0,
+  "bag": 1116,
+  "hours": 15.42,
+  "flights": 6,
+  "tickets": 4,
+  "eff": 7436.0
+ },
+ {
+  "id": "D2",
+  "name": "Bolivia over Christmas, home from Medellin (Copenhagen start)",
+  "story": "CPH-San Salvador, Central America until about 19 Dec, La Paz and Cochabamba for Christmas, Santa Cruz-Medellin about 28 Dec, January in Colombia, Medellin-CPH 3 Feb.",
+  "ok": false,
+  "lines": [
+   "Long-haul CPH-SAL / MDE-CPH: 6885 | P:CPH>SAL/MDE>CPH 2026-12-03 | 22.53/20.83 h | Lufthansa, United | 6 flights, 1 ticket(s) | bag +0 (United 0; United 0)",
+   "Central America > La Paz (Christmas): 2678 | R:PTY>LPB 2026-12-21 | 7.17 h | Avianca | 2 flights, 1 ticket(s) | bag +516 (Avianca 516)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Santa Cruz > Colombia (after Christmas): NOT PRICED (['R:VVI>MDE', 'R:VVI>BOG'])"
+  ],
+  "flags": [],
+  "airlines": [
+   "Avianca",
+   "BoA",
+   "Lufthansa",
+   "United"
+  ],
+  "price": 10222.0,
+  "bag": 516,
+  "hours": 52.11,
+  "flights": 10,
+  "tickets": 4,
+  "eff": 19039.0
+ },
+ {
+  "id": "E1",
+  "name": "Guadalajara at the end (Bolivia before it)",
+  "story": "CPH-San Salvador, Central America, Colombia, Bolivia, Santa Cruz-Guadalajara, a week in Guadalajara, Guadalajara-CPH.",
+  "ok": false,
+  "lines": [
+   "Long-haul CPH-SAL / GDL-CPH: 8112 | P:CPH>SAL/GDL>CPH 2026-12-03 | 20.55/18.02 h | Aeromexico, Air France, COPA | 6 flights, 1 ticket(s) | bag +535 (Copa 245; Aeromexico 290)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Santa Cruz > Guadalajara: NOT PRICED (R:VVI>GDL)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "Aeromexico",
+   "Air France",
+   "BoA",
+   "COPA",
+   "Copa Airlines",
+   "LATAM Airlines"
+  ],
+  "price": 12717.0,
+  "bag": 1280,
+  "hours": 56.55,
+  "flights": 12,
+  "tickets": 5,
+  "eff": 21750.0
+ },
+ {
+  "id": "E2",
+  "name": "Guadalajara as a side trip from Medellin (Madrid start)",
+  "story": "A1 plus Medellin-Guadalajara-Medellin with Volaris (Simon's find).",
+  "ok": true,
+  "lines": [
+   "Positioning CPH<>MAD: 985 | P:CPH>MAD/MAD>CPH 2026-12-01 | 3.42/3.25 h | Iberia, Norwegian | 2 flights, 1 ticket(s) | bag +600 (Iberia 300; Norwegian 300)",
+   "Madrid nights: 800 (ESTIMATE)",
+   "Long-haul MAD-SAL / VVI-MAD (Avianca): 6494 | P:MAD>SAL/VVI>MAD 2026-12-02 | 14.5/14.67 h | Avianca | 4 flights, 1 ticket(s) | bag +972 (Avianca 486; Avianca 486)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Medellin <> Guadalajara (Volaris): 2608 (Simon's Momondo find, Mix & Match, 2/4 Dec dates; bag Volaris 670 x 2)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "Avianca",
+   "BoA",
+   "Copa Airlines",
+   "Iberia",
+   "LATAM Airlines",
+   "Norwegian"
+  ],
+  "price": 15492.0,
+  "bag": 3657,
+  "hours": 63.620000000000005,
+  "flights": 14,
+  "tickets": 7,
+  "eff": 25586.0
+ },
+ {
+  "id": "F1",
+  "name": "Plain return Copenhagen-Bogota, everything else as hops",
+  "story": "CPH-Bogota and back; fly to Central America and back, Bogota-La Paz, Santa Cruz-Bogota.",
+  "ok": true,
+  "lines": [
+   "Long-haul CPH<>BOG: 7824 | P:CPH>BOG/BOG>CPH 2026-12-03 | 14.5/13.42 h | Air France, KLM | 4 flights, 1 ticket(s) | bag +1120 (KLM 560; Air France 560)",
+   "Colombia > Central America: 1960 | R:MDE>SAL 2026-12-10 | 2.67 h | Avianca | 1 flights, 1 ticket(s) | bag +516 (Avianca 516)",
+   "Nicaragua > Colombia: 1696 | R:MGA>MDE 2027-01-12 | 6.65 h | Copa Airlines | 2 flights, 1 ticket(s) | bag +245 (Copa 245)",
+   "Colombia > La Paz: 2000 + cabin bag 250 | R:BOG>LPB 2027-01-28 | 9.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)",
+   "La Paz > Cochabamba: 255 | R:LPB>CBB 2027-01-29 | 0.75 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Cochabamba > Santa Cruz: 404 | R:CBB>VVI 2027-02-01 | 0.83 h | BoA | 1 flights, 1 ticket(s) | bag +0 (BoA 0)",
+   "Santa Cruz > Bogota: 1755 + cabin bag 250 | R:VVI>BOG 2027-02-01 | 7.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)"
+  ],
+  "flags": [
+   "basic_fare",
+   "overnight"
+  ],
+  "airlines": [
+   "Air France",
+   "Avianca",
+   "BoA",
+   "Copa Airlines",
+   "KLM",
+   "LATAM Airlines"
+  ],
+  "price": 16394.0,
+  "bag": 2881,
+  "hours": 56.32,
+  "flights": 13,
+  "tickets": 7,
+  "eff": 25142.0
+ }
+]

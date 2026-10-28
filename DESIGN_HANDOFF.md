@@ -1,57 +1,56 @@
-# Design handoff: LatAm trip planner (map + scenario builder)
+# Prompt for the designer / builder
 
-Owner: Simon. Data producer: the flight-crawler plugin in this repo (keeps updating `data/`). The app reads data files at runtime; nothing is hardcoded.
+You are designing and building a web app: a trip planner for Simon's backpacking trip through Latin America (Central America, Colombia, Bolivia, optionally Guadalajara) from early December 2026 to early February 2027. The data comes from a crawler that keeps adding to the files in `data/`, so read everything at runtime and hardcode nothing.
 
-## 1. Tabs
+Read these first: `MAP_BRIEF.md`, `plugin/skills/flight-crawl-orchestrator/references/map-schema.md`, `data/network/map.json`, `data/scenario_results.json`, the header of `data/quotes.csv`, and `trip.json`.
+
+## Build two tabs
 
 ### Tab 1: Map
-The regional web: places (nodes) and connections (edges). Full spec in `MAP_BRIEF.md`. Summary:
-- Muted base map with subtle hillshade; data on top.
-- Nodes sized by popularity, coloured by country; airports get a plane glyph.
-- Edges by mode: bus solid, shuttle thin, boat dashed, flight dotted arc (flights behind a toggle). Overnight = moon marker, border crossing = dot.
-- Hover node: small card (image with credit line, tagline, 2-line summary, things-to-do chips, touristy 1-5 dots, 2-3 hostels with dorm/private price per night).
-- Click node: side panel "From here", connections sorted by duration (mode, operator, duration, price, frequency, overnight/border icons).
-- Hover edge: mode, operator, duration, price, frequency; crawled flights also show one-way min, return min, nonstop/vias, dates searched.
-- Filters: mode, max duration, price.
-- "Add to journey" on a node or edge sends it to the Scenario builder.
+Show the regional web of places and connections from `data/network/map.json` (67 places, about 220 connections).
+- Use a muted, low-contrast base map with subtle hillshade, so the Andes, volcanoes and coasts read and the data stands out.
+- Draw places as circles sized by popularity (1 is the top) and coloured by country. Give airports a small plane glyph. Show labels for popularity-1 places when zoomed out and for all places when zoomed in.
+- Style connections by mode: bus as a solid line, shuttle as a thin line, boat as a dashed blue line, flight as a dotted arc in a warmer colour. Put a small moon on overnight legs and a dot where a connection crosses a border. Keep flights behind a toggle that is off by default.
+- On hovering a place, show a card of about 320 px: the image (16:9) with a tiny credit and licence line, the tagline in bold, a 2-line summary, things to do as 3 to 5 chips (these carry the vibe), touristy as 5 dots, and 2 to 3 hostels with dorm and private price per night in DKK, greying out any marked `price_suspect`. Leave out safety, weather, budget and days.
+- On clicking a place, open a side panel titled "From here" that lists its connections sorted by duration: mode icon, destination, operator, duration, price, frequency, and overnight and border icons. Hovering a row highlights the line; clicking it flies to the destination.
+- On hovering a connection, show mode, operator, duration, price, frequency and source. Crawled flights (`source: "crawl"`) also show the cheapest one-way, the cheapest return, nonstop or vias, carriers, and the dates searched.
+- Add filters for mode, maximum duration and maximum price.
+- Every place and connection gets an "Add to journey" action that sends it to Tab 2.
 
 ### Tab 2: Scenarios
-Three sections, left to right or stacked on mobile:
+Lay out three sections side by side on a laptop and stacked on a phone.
 
-**a) Recommended trips** (from `data/scenario_results.json`)
-- Cards ranked by effective cost. Each card: name, one-line story, total DKK with cabin bag only, total with checked bag, hours in the air, number of flights, number of tickets, airline badges, flags (self-transfer, US transit, overnight, tight connection) as warning chips.
-- Expand a card: the components in order (positioning, long-haul out, regional hops, inside Bolivia, long-haul home), each with price, date, hours, carriers, flights, tickets, bag add-on, and a link to the raw quote.
-- Mini route map on the card (entry, hops, exit).
-- Actions: Save (star), Duplicate into builder, Compare (pick 2-3 cards for a side-by-side table).
+1. **Recommended trips**, read from `data/scenario_results.json`.
+   - Show one card per trip, ranked by `eff` (effective cost, lower is better).
+   - Each card shows the name, the story line, the total in DKK with cabin bag, the total with a checked bag (price + bag), hours in the air, number of flights, number of tickets and airline badges. Show warning chips for flags (self-transfer, US transit, overnight layover, tight connection, basic fare).
+   - Expanding a card shows its components in travel order (positioning, long-haul out, regional hops, flights inside Bolivia, long-haul home), each with price, date, hours, carriers, number of flights and tickets, and bag add-on. Each component links to its raw quote.
+   - Add a mini route map on the card.
+   - Card actions: Save (star), Compare (pick 2 or 3 for a side-by-side table), and Open in builder.
+2. **Journey builder.**
+   - The user picks a start (Copenhagen, Madrid or Alicante) and then a long-haul ticket from a filtered list of main tickets in `quotes.csv` (entry and exit airport, date, price, hours, carriers, flags).
+   - The user then adds hops in order, by clicking places on a small map or picking from a list. For each hop, offer the options the data has: crawled flights from `quotes.csv` (patterns starting `R:` for one-ways and `RR:` for returns) and ground connections from `map.json`. The user chooses one.
+   - Show live totals at the top: price with cabin bag, price with checked bag, hours, flights, tickets, airlines and flags. Days per stop are an optional input, so a date chain can be shown.
+   - Journeys can be saved and named, and saved journeys show up next to the recommended trips so they can be compared. For v1, store them in browser storage (wrap every read and write in try/catch) and offer JSON export and import. Later they will be written back to `data/saved_journeys.json`.
+3. **Raw data.**
+   - Show the full table of quotes from `data/quotes.csv` (about 1,200 rows and growing).
+   - Filters: origin, entry, exit, structure (return, open jaw, multi-city, one-way, regional), maximum hours, acceptable only (`ok = 1`, which is the default; `ok = 0` means a leg over 30 hours), source, and date.
+   - Every column is sortable, and each row has an "Add to journey" action.
+   - Show a price-history sparkline for a pattern when the same search has been re-checked over time (`observed_at`).
 
-**b) Journey builder**
-- An ordered list of legs the user builds: pick start (CPH / MAD / ALC), long-haul ticket (filtered list of main tickets: entry and exit airport, date, price, hours, carriers), then add stops/hops by clicking nodes on a small map or picking from a list; for each leg show the options available in the data (flights from `quotes`, ground from `map.json` edges), choose one.
-- Live totals at the top: price (cabin / checked), hours, flights, tickets, airlines, flags; days per stop are optional inputs (date chain).
-- Save as a named journey; saved journeys appear next to the recommended ones and can be compared.
-- Persistence: browser storage for v1 (wrap in try/catch); export/import as JSON so journeys can be shared and later written back to the repo (`data/saved_journeys.json`).
+## Data notes
+- Pattern ids:
+  - `P:CPH>SAL/VVI>CPH` is an open jaw.
+  - `P:CPH>BOG/BOG>CPH` is a return.
+  - `M:a>b+c>d+e>f` is a multi-city ticket.
+  - `R:BOG>LPB` is a regional one-way.
+  - `RR:` is a regional return.
+- Effective cost = price + 150 DKK per travel hour + penalties (overnight layover, self-transfer, US transit, tight connection, and hours beyond 23 on a long-haul leg).
+- Bag add-ons per airline are in `data/bag_rules.json` (`cabin_dkk` and `checked_dkk`, long-haul vs regional). Several are marked ESTIMATE; show them with a small "est." label.
+- Prices are DKK snapshots with the date they were seen. Write numbers Danish style, e.g. 6.494 kr, using tabular figures.
+- Images come from Wikimedia Commons under free licences; always show the credit.
 
-**c) Raw data**
-- Table of all quotes (`data/quotes.csv`, about 1,100 rows and growing): columns pattern, structure, dates, price, eff_cost, out/home hours, vias, carriers, tickets, self-transfer, flags, source, observed_at, link.
-- Filters: origin, entry, exit, structure (return / open jaw / multi-city / one-way / regional), max hours, acceptable only (ok = 1), source, date; sort by any column; "add to journey".
-- A price-history sparkline per pattern when the same search was re-checked over time.
+## Visual direction
+Calm and data-first. Give each transport mode one accent colour and keep the country colours muted. Warnings are small chips, never red walls. Design laptop first, then phone, where panels become bottom sheets and hover becomes tap.
 
-## 2. Data files (contract)
-| File | What | Key fields |
-|---|---|---|
-| `data/network/map.json` | nodes + edges + profiles | see `plugin/skills/flight-crawl-orchestrator/references/map-schema.md` |
-| `data/scenario_results.json` | evaluated whole trips | id, name, story, ok, price, bag, hours, flights, tickets, eff, flags[], airlines[], lines[] (components; a structured `components[]` array will be added) |
-| `data/quotes.csv` | the long table of quotes | quote_id, agent, task_id, source, observed_at, structure, pattern_id, variant, out_date, home_date, n_legs, rank, price_dkk, tickets, self_transfer, fare_brand, checked_bag, out_hours, home_hours, mid_hours, max_leg_hours, out_via, home_via, out_carriers, home_carriers, flags, ok, eff_cost, link |
-| `data/bag_rules.json` | checked/cabin bag add-ons per airline | match, checked_dkk, cabin_dkk, note |
-| `trip.json` | trip parameters (dates, origins, scoring weights, region sequence) | used for labels and the builder's defaults |
-
-Pattern ids: `P:CPH>SAL/VVI>CPH` open jaw, `P:CPH>BOG/BOG>CPH` return, `M:a>b+c>d+e>f` multi-city, `R:BOG>LPB` regional one-way, `RR:` regional return.
-Effective cost = price + 150 DKK per travel hour + penalties (overnight, self-transfer, US transit, tight connection, extra hours beyond 23 h); `ok = 0` means a leg over 30 h (hidden by default).
-
-## 3. Visual direction
-- Calm and data-first, like a good travel tool: one accent colour per transport mode, country colours muted.
-- Numbers in tabular figures; DKK with thousands separator "." (Danish), e.g. 6.494 kr.
-- Warnings as small chips, never red walls.
-- Works on a laptop first, then phone (bottom sheets, cards stack).
-
-## 4. Out of scope for v1
-Booking, live prices from airline APIs, accounts. Prices are snapshots with dates (observed_at).
+## Out of scope for v1
+Booking, live prices from airline APIs, and user accounts.

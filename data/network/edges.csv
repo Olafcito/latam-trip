@@ -188,6 +188,12 @@ PEI,SALE,bus,Expreso Alcala,1.0,0.75-2.0,25,every 30-60 min 06:30-18:30,False,Fa
 PEI,MZL,bus,"Cooperativa Pamplona, Empresa Arauca",1.8,1.75-1.85,39,12 per day 05:10-16:00,False,False,True,,,,,,,,,,https://12go.asia/en/travel/pereira/manizales,2026,
 CLO,PEI,bus,Expreso Palmira,3.8,3.7-3.9,70,hourly-ish,False,False,True,,,,,,,,,,https://12go.asia/en/travel/cali/pereira,2026,Continue PEI-Salento by local bus. No direct Cali-Salento bus found (12go says unavailable).
 SGIL,MDE,bus,"Cotrasangil to Bucaramanga, then Copetran/Brasilia/Bolivariano",12,11-14,163,San Gil-Bucaramanga every 20 min,True,False,True,,,,,,,,,,https://brookebeyond.com/the-best-way-to-get-from-san-gil-to-medellin-bus-vs-flight-colombia-transport-guide,2026,"Transfer in Bucaramanga; price from article originally 2020. San Gil to Bucaramanga COP 12,000-20,000, 2.5-3.5 h."
+GUA,CTG,flight,,,,,,,,,1707.0,22.53,6.2,2345.0,False,MDE PTY SDQ,Arajet Copa Airlines JetSMART Wingo,2027-01-07 2027-01-09 2027-01-10 2027-01-11 2027-01-12,,crawl,,
+SAP,CTG,flight,,,,,,,,,3086.0,11.87,5.72,5611.0,False,MDE PTY SAL,Avianca Copa Airlines JetSMART Wingo,2027-01-10 2027-01-12,,crawl,,
+BOG,GUA,flight,,,,,,,,,1923.0,14.77,3.33,3407.0,True,CLO MEX PTY SDQ,Aeromexico Arajet Avianca Copa Airlines Wingo,2026-12-07 2026-12-08 2026-12-09 2026-12-10 2026-12-11 2026-12-12,,crawl,,
+MDE,SAL,flight,,,,,,,,,1960.0,2.67,2.67,1960.0,True,CLO PTY,Avianca Copa Airlines JetSMART,2026-12-07 2026-12-08 2026-12-09 2026-12-10 2026-12-11 2026-12-12,,crawl,,
+SAL,LPB,flight,,,,,,,,,3201.0,9.5,9.5,3201.0,False,BOG CUZ LIM PTY VVI,Avianca BoA Copa Airlines LATAM Airlines,2026-12-16 2026-12-19 2026-12-21 2026-12-22 2027-01-26 2027-01-27,,crawl,,
+PTY,LPB,flight,,,,,,,,,2678.0,7.17,7.17,2678.0,False,BOG CUZ LIM VVI,Avianca BoA Copa Airlines,2026-12-21 2026-12-22 2027-01-27,,crawl,,
 BOG,VVI,flight,,,,,,,,,1910.0,9.0,4.17,2342.0,True,LIM PTY,Avianca Copa Airlines LATAM Airlines,2027-01-28,4526.0,crawl,,
 MDE,VVI,flight,,,,,,,,,1942.0,9.42,7.67,2812.0,False,BOG LIM,Avianca LATAM Airlines,2027-01-28,,crawl,,
 BOG,LPB,flight,,,,,,,,,2000.0,9.75,3.83,4539.0,True,CUZ LIM MDE,Avianca LATAM Airlines,2027-01-28,,crawl,,
@@ -208,8 +214,6 @@ PTY,BOG,flight,,,,,,,,,1949.0,10.52,1.58,2082.0,True,MDE SAL,Avianca Copa Airlin
 GUA,BOG,flight,,,,,,,,,2464.0,6.05,3.33,2536.0,True,PTY,Avianca Copa Airlines,2027-01-10,,crawl,,
 BOG,MGA,flight,,,,,,,,,2784.0,17.17,5.42,4245.0,False,MDE PTY,Avianca Copa Airlines LATAM Airlines Wingo,2026-12-06,,crawl,,
 BOG,SAP,flight,,,,,,,,,2419.0,19.2,5.0,4178.0,False,MDE PTY SAL,Avianca Copa Airlines JetSMART LATAM Airlines Wingo,2026-12-06,,crawl,,
-SAL,LPB,flight,,,,,,,,,3497.0,14.67,9.5,4875.0,False,BOG CUZ LIM PTY VVI,Avianca BoA Copa Airlines LATAM Airlines,2027-01-26 2027-01-27,,crawl,,
-PTY,LPB,flight,,,,,,,,,2931.0,11.25,7.17,4608.0,False,BOG CUZ LIM VVI,Avianca BoA Copa Airlines,2027-01-27,,crawl,,
 SJO,LPB,flight,,,,,,,,,3424.0,19.57,7.08,5393.0,False,BOG CUZ PTY VVI,Avianca BoA Copa Airlines,2027-01-27,,crawl,,
 BOG,SAL,flight,,,,,,,,,2296.0,24.47,3.0,2968.0,True,CLO PTY,Avianca Copa Airlines LATAM Airlines Wingo,2026-12-06,,crawl,,
 VVI,SAL,flight,,,,,,,,,3560.0,27.33,10.75,5227.0,False,BOG CUZ LIM LPB PTY SJO,Avianca BoA Copa Airlines LATAM Airlines Service mellem VVI og PTY er underlagt myndighedernes,2027-02-01,,crawl,,

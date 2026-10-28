@@ -30,3 +30,5 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 9,map-img-1,sonnet,browser,97,184299,40,466,97
 8,mom-8a,sonnet,momondo,8,173986,185,1293,46
 10,mom-10a,sonnet,momondo,8,145726,88,1032,90
+11,bags-1,sonnet,web_research,0,154266,90,363,21
+9,mom-9a,sonnet,momondo,9,194743,215,1465,47
