@@ -159,6 +159,11 @@ export function airportFlights(model: Model, iata: string, dir: 'in' | 'out'): A
   return (model.data.flights ?? []).filter((f) => f[end] === iata)
 }
 
+/** The crawled flights on one directed airport pair, cheapest first as the data lists them. */
+export function pairFlights(model: Model, from: string, to: string): AirportFlight[] {
+  return (model.data.flights ?? []).filter((f) => f.from === from && f.to === to)
+}
+
 /** When a flight lands, by its local arrival hour: night before 06:00, day until 18:00, evening after. */
 export function landing(arr: string | null): 'night' | 'day' | 'evening' | null {
   const h = arr && arr.length >= 16 ? Number(arr.slice(11, 13)) : NaN

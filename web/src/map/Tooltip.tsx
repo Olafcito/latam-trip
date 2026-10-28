@@ -1,9 +1,9 @@
 import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import type { Map as MLMap } from 'maplibre-gl'
-import { countries, countryName, neighbours, routePoints, viaText, type Model } from '../data/model'
-import { familyOf, type Family } from '../data/types'
+import { countries, countryName, neighbours, pairFlights, routePoints, viaText, type Model } from '../data/model'
+import { familyOf, type Family, type RouteOption } from '../data/types'
 import type { LonLat } from '../lib/geo'
-import { duration, fromPrice, modeLabel } from '../lib/format'
+import { duration, fromPrice, kr, modeLabel } from '../lib/format'
 import { placeTip, type Rect } from '../lib/tooltip'
 import { hoverKey, type Hover, type Store } from './hover'
 import { Moon } from './icons'
@@ -58,6 +58,13 @@ export function Tooltip({ map, model, store, families, getBlocked }: Props) {
         .filter((o) => families.has(familyOf(o.mode)))
         .sort((x, y) => (x.duration_min ?? 1e9) - (y.duration_min ?? 1e9))
       points = routePoints(model, conn, opts)
+      // a flight is priced each way from the crawl, read from the hovered end
+      const price = (o: RouteOption) => {
+        const out = o.mode === 'flight' && a.iata && b.iata ? pairFlights(model, a.iata, b.iata)[0]?.dkk : undefined
+        const back = o.mode === 'flight' && a.iata && b.iata ? pairFlights(model, b.iata, a.iata)[0]?.dkk : undefined
+        if (out == null && back == null) return fromPrice(o.price_dkk.min)
+        return <>{out != null && <>out {kr(out)}</>}{out != null && back != null && <br />}{back != null && <>in {kr(back)}</>}</>
+      }
       body = (
         <>
           <p className="tip-t">{a.short_name} to {b.short_name}</p>
@@ -67,7 +74,7 @@ export function Tooltip({ map, model, store, families, getBlocked }: Props) {
               <div className="tip-row" key={i}>
                 <span className={`mdot ${familyOf(o.mode)}`} />
                 <span className="tip-mode">{modeLabel(o.mode)}{o.overnight && <span title="Overnight"><Moon /></span>}</span>
-                <span className="tip-nums mono"><b>{duration(o.duration_min)}</b><br />{fromPrice(o.price_dkk.min)}</span>
+                <span className="tip-nums mono"><b>{duration(o.duration_min)}</b><br />{price(o)}</span>
                 <span className="tip-via">{viaText(model, conn, o, hover.from)}</span>
               </div>
             ))}

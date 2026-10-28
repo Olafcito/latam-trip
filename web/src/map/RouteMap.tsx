@@ -11,7 +11,7 @@ import type { Rect } from '../lib/tooltip'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
 import { HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
-import { Panel, type PanelView, type View } from './Panel'
+import { Panel, type FlightDir, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
 import { IoLegend, WayPanel } from './WayPanel'
@@ -92,10 +92,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
   const store = useMemo(() => createStore<Hover>(null), [])
 
   // latest values for the map's event handlers, which are bound once
-  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!side, focus, stops: [] as string[] })
+  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!side, focus, stops: [] as string[], dir: 'out' as FlightDir })
+  // which way the selected city's routes read: out of it (the default for every city) or into it
+  const [dir, setDir] = useState<FlightDir>('out')
+  useEffect(() => setDir('out'), [view.sel, view.panel])
   live.current.view = view
   live.current.families = families
   live.current.side = !!side
+  live.current.dir = dir
   live.current.focus = focus
   live.current.collapsed = collapsed
 
@@ -613,13 +617,16 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
       if (hit.kind === 'route') {
         const conn = model.conns.get(hit.cid)
         if (!conn) return null
-        // in the overview a route reads from its first end
-        const from = sel ?? conn.a
+        // in the overview a route reads from its first end, with a city it reads the way its switch says
+        const out = sel ?? conn.a
+        const from = sel && live.current.dir === 'in' ? otherEnd(conn, out) : out
         return { kind: 'route', cid: conn.id, from, to: otherEnd(conn, from) }
       }
       if (sel && hit.id !== sel) {
         const conn = connBetween(model, sel, hit.id)
-        if (conn && enabledOptions(conn, live.current.families).length) return { kind: 'route', cid: conn.id, from: sel, to: hit.id }
+        if (conn && enabledOptions(conn, live.current.families).length) {
+          return live.current.dir === 'in' ? { kind: 'route', cid: conn.id, from: hit.id, to: sel } : { kind: 'route', cid: conn.id, from: sel, to: hit.id }
+        }
       }
       return { kind: 'city', id: hit.id }
     }
@@ -735,13 +742,19 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
   const getBlocked = useCallback((): Rect[] => {
     const box = root.current?.getBoundingClientRect()
     if (!box) return []
-    return [panelRef.current, controlsRef.current, bottomRef.current, tripBarRef.current]
+    const rects = [panelRef.current, controlsRef.current, bottomRef.current, tripBarRef.current]
       .filter((e): e is HTMLElement => !!e)
       .map((e) => {
         const r = e.getBoundingClientRect()
         return { left: r.left - box.left - 6, top: r.top - box.top - 6, right: r.right - box.left + 6, bottom: r.bottom - box.top + 6 }
       })
-  }, [])
+    // the side pane is the host's, so its strip is blocked by where the layout puts it: right on wide, bottom when narrow
+    if (live.current.side) {
+      const W = box.width, H = box.height
+      rects.push(W < 720 ? { left: 0, top: H * 0.58 - 6, right: W, bottom: H } : { left: W - sideWidth - 20, top: 0, right: W, bottom: H })
+    }
+    return rects
+  }, [sideWidth])
 
 
   return (
@@ -832,6 +845,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
           <Panel
             model={model}
             view={view}
+            dir={dir}
+            onDir={setDir}
             families={families}
             collapsed={collapsed}
             trip={trip}
