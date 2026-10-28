@@ -136,7 +136,8 @@
    "Santa Cruz > Bogota: 1755 + cabin bag 250 | R:VVI>BOG 2027-02-01 | 05:30>12:15 7.75 h | LATAM Airlines | 2 flights, 1 ticket(s) | bag +500 (LATAM 500, cabin 250)"
   ],
   "flags": [
-   "basic_fare"
+   "basic_fare",
+   "us_transit"
   ],
   "airlines": [
    "American",
