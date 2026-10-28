@@ -7,42 +7,114 @@
    {
     "mode": "flight",
     "operators": [
+     "Boliviana de Aviacion",
      "BoA",
      "EcoJet"
     ],
-    "duration_min": 78,
-    "duration_range_h": "1.3-1.7",
+    "duration_min": 65,
     "price_dkk": {
-     "min": 684,
-     "typical": null
+     "min": 742,
+     "typical": 742
     },
-    "price_local": "US$106-213 (cheapest seen US$50)",
     "frequency": "~every 3 h, ~72/wk",
     "overnight": false,
     "border": false,
     "stops": [],
     "geometry": null,
     "flight": {
-     "nonstop": null,
+     "nonstop": true,
      "vias": [],
      "carriers": [
+      "Boliviana de Aviacion"
+     ],
+     "oneway_dkk": {
+      "min": 742,
+      "observed_at": "2026-10-28T17:56:56Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2027-01-10",
+      "2027-01-25"
+     ],
+     "by_date": [
+      {
+       "date": "2027-01-10",
+       "from": "VVI",
+       "to": "LPB",
+       "dkk": 853,
+       "dep": "06:30",
+       "arr": "07:35",
+       "arr_days": 0,
+       "duration_min": 65,
+       "vias": [],
+       "carriers": [
+        "Boliviana de Aviacion"
+       ],
+       "flights": [
+        "BoA 663"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-10",
+       "link": null
+      },
+      {
+       "date": "2027-01-25",
+       "from": "LPB",
+       "to": "VVI",
+       "dkk": 742,
+       "dep": "10:50",
+       "arr": "11:55",
+       "arr_days": 0,
+       "duration_min": 65,
+       "vias": [],
+       "carriers": [
+        "Boliviana de Aviacion"
+       ],
+       "flights": [
+        "BoA 668"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-25",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 742,
+      "duration_min": 65,
+      "vias": [],
+      "carriers": [
+       "Boliviana de Aviacion"
+      ],
+      "date": "2027-01-25",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 742,
+      "duration_min": 65,
+      "vias": [],
+      "carriers": [
+       "Boliviana de Aviacion"
+      ],
+      "date": "2027-01-25"
+     },
+     "flags": [],
+     "quotes": 6
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T17:56:56Z",
+    "note": "price_dkk = US$106 low end of listed range x6.45. Amaszonas has been defunct since Aug 2023 (Wikipedia). Rainy season: lowland fog/storm delays, but trunk route is reliable. Bus is 15-18 h.",
+    "booking_url": null,
+    "source_url": "https://www.rome2rio.com/s/La-Paz/Santa-Cruz-de-la-Sierra",
+    "researched": {
+     "duration_min": 78,
+     "price_min": 684,
+     "operators": [
       "BoA",
       "EcoJet"
      ],
-     "oneway_dkk": {
-      "min": 684,
-      "observed_at": "2026"
-     },
-     "return_dkk": null,
-     "dates_searched": [],
-     "by_date": [],
-     "round_trips": []
-    },
-    "source": "manual",
-    "source_url": "https://www.rome2rio.com/s/La-Paz/Santa-Cruz-de-la-Sierra",
-    "observed_at": "2026",
-    "note": "price_dkk = US$106 low end of listed range x6.45. Amaszonas has been defunct since Aug 2023 (Wikipedia). Rainy season: lowland fog/storm delays, but trunk route is reliable. Bus is 15-18 h.",
-    "booking_url": null
+     "year": "2026"
+    }
    }
   ]
  },
@@ -97,7 +169,8 @@
       "VVI"
      ],
      "carriers": [
-      "BoA"
+      "BoA",
+      "Boliviana de Aviacion"
      ],
      "oneway_dkk": {
       "min": 255,
@@ -105,9 +178,30 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2027-01-10",
       "2027-01-29"
      ],
      "by_date": [
+      {
+       "date": "2027-01-10",
+       "from": "CBB",
+       "to": "LPB",
+       "dkk": 497,
+       "dep": "04:40",
+       "arr": "05:25",
+       "arr_days": 0,
+       "duration_min": 45,
+       "vias": [],
+       "carriers": [
+        "Boliviana de Aviacion"
+       ],
+       "flights": [
+        "BoA 600"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-10",
+       "link": null
+      },
       {
        "date": "2027-01-29",
        "from": "LPB",
@@ -150,7 +244,7 @@
       "date": "2027-01-29"
      },
      "flags": [],
-     "quotes": 3
+     "quotes": 6
     },
     "source": "crawl",
     "observed_at": "2026-10-28T12:31:37Z",
@@ -508,7 +602,7 @@
      "BoA",
      "TAM"
     ],
-    "duration_min": 50,
+    "duration_min": 45,
     "price_dkk": {
      "min": 404,
      "typical": 404
@@ -522,7 +616,8 @@
      "nonstop": true,
      "vias": [],
      "carriers": [
-      "BoA"
+      "BoA",
+      "Boliviana de Aviacion"
      ],
      "oneway_dkk": {
       "min": 404,
@@ -530,9 +625,30 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2027-01-10",
       "2027-02-01"
      ],
      "by_date": [
+      {
+       "date": "2027-01-10",
+       "from": "VVI",
+       "to": "CBB",
+       "dkk": 645,
+       "dep": "05:35",
+       "arr": "06:20",
+       "arr_days": 0,
+       "duration_min": 45,
+       "vias": [],
+       "carriers": [
+        "Boliviana de Aviacion"
+       ],
+       "flights": [
+        "BoA 631"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-10",
+       "link": null
+      },
       {
        "date": "2027-02-01",
        "from": "CBB",
@@ -571,7 +687,7 @@
       "date": "2027-02-01"
      },
      "flags": [],
-     "quotes": 2
+     "quotes": 5
     },
     "source": "crawl",
     "observed_at": "2026-10-28T12:35:40Z",
@@ -789,7 +905,9 @@
     "mode": "flight",
     "operators": [
      "Avianca",
-     "LATAM Airlines"
+     "LATAM",
+     "LATAM Airlines",
+     "avianca"
     ],
     "duration_min": 225,
     "price_dkk": {
@@ -825,6 +943,7 @@
      "return_dkk": null,
      "dates_searched": [
       "2026-12-28",
+      "2027-01-05",
       "2027-01-28",
       "2027-02-01"
      ],
@@ -850,6 +969,29 @@
        ],
        "self_transfer": false,
        "searched": "2026-12-28",
+       "link": null
+      },
+      {
+       "date": "2027-01-05",
+       "from": "BOG",
+       "to": "LPB",
+       "dkk": 2522,
+       "dep": "17:15",
+       "arr": "04:00",
+       "arr_days": 1,
+       "duration_min": 585,
+       "vias": [
+        "LIM"
+       ],
+       "carriers": [
+        "LATAM"
+       ],
+       "flights": [
+        "LATAM 2387",
+        "LATAM 2400"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-05",
        "link": null
       },
       {
@@ -913,21 +1055,21 @@
       "self_transfer": false
      },
      "fastest": {
-      "dkk": 4539,
+      "dkk": 3755,
       "duration_min": 230,
       "vias": [],
       "carriers": [
-       "Avianca"
+       "avianca"
       ],
-      "date": "2027-01-28"
+      "date": "2027-01-05"
      },
      "flags": [
       "basic_fare"
      ],
-     "quotes": 11
+     "quotes": 13
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T11:03:25Z",
+    "observed_at": "2026-10-28T17:57:44Z",
     "note": "Avianca nonstop BOG-LPB per Wikipedia; Kiwi cheapest includes connections. Peak Dec 20-Jan 6: expect roughly 1.5x (Medellin) to 2-4x (Cartagena, San Andres) the off-peak fare (La Republica Nov 2023: BOG-CTG return COP 0.60-1.1M, BOG-ADZ return COP 0.66-0.73M, BOG-MDE return COP 0.33-0.43M). price_dkk is the cheapest advertised off-peak one-way fare, not a Christmas fare.",
     "booking_url": "https://www.momondo.dk/flight-search/BOG-LPB/2027-01-28",
     "source_url": "https://www.kiwi.com/us/cheap-flights/bogota-colombia/la-paz-bolivia/",
@@ -951,14 +1093,16 @@
     "mode": "flight",
     "operators": [
      "Avianca",
+     "Copa",
      "Copa Airlines",
+     "LATAM",
      "LATAM Airlines",
      "Service mellem VVI og PTY er underlagt myndighedernes"
     ],
     "duration_min": 235,
     "price_dkk": {
      "min": 1755,
-     "typical": 2072
+     "typical": 2087
     },
     "frequency": "daily",
     "overnight": false,
@@ -977,7 +1121,8 @@
       "Copa Airlines",
       "LATAM",
       "LATAM Airlines",
-      "Service mellem VVI og PTY er underlagt myndighedernes"
+      "Service mellem VVI og PTY er underlagt myndighedernes",
+      "avianca"
      ],
      "oneway_dkk": {
       "min": 1755,
@@ -992,6 +1137,8 @@
       "2026-12-25",
       "2026-12-26",
       "2026-12-31",
+      "2027-01-05",
+      "2027-01-15",
       "2027-01-28",
       "2027-02-01"
      ],
@@ -1087,6 +1234,49 @@
        "self_transfer": false,
        "searched": "2026-12-28",
        "link": "https://www.momondo.dk/flight-search/VVI-BOG/2026-12-28"
+      },
+      {
+       "date": "2027-01-05",
+       "from": "BOG",
+       "to": "VVI",
+       "dkk": 2857,
+       "dep": "21:30",
+       "arr": "02:40",
+       "arr_days": 1,
+       "duration_min": 250,
+       "vias": [],
+       "carriers": [
+        "avianca"
+       ],
+       "flights": [
+        "avianca 167"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-05",
+       "link": null
+      },
+      {
+       "date": "2027-01-15",
+       "from": "VVI",
+       "to": "BOG",
+       "dkk": 2594,
+       "dep": "05:30",
+       "arr": "12:15",
+       "arr_days": 0,
+       "duration_min": 465,
+       "vias": [
+        "LIM"
+       ],
+       "carriers": [
+        "LATAM"
+       ],
+       "flights": [
+        "LATAM 2407",
+        "LATAM 4901"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-15",
+       "link": null
       },
       {
        "date": "2027-01-28",
@@ -1279,10 +1469,10 @@
       "basic_fare",
       "self_transfer"
      ],
-     "quotes": 21
+     "quotes": 28
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T13:42:06Z",
+    "observed_at": "2026-10-28T17:57:44Z",
     "note": "Avianca nonstop BOG-VVI per Wikipedia; Copa also from PTY. Peak Dec 20-Jan 6: expect roughly 1.5x (Medellin) to 2-4x (Cartagena, San Andres) the off-peak fare (La Republica Nov 2023: BOG-CTG return COP 0.60-1.1M, BOG-ADZ return COP 0.66-0.73M, BOG-MDE return COP 0.33-0.43M). price_dkk is the cheapest advertised off-peak one-way fare, not a Christmas fare.",
     "booking_url": "https://www.momondo.dk/flight-search/VVI-BOG/2027-02-01",
     "source_url": "https://www.kiwi.com/us/cheap-flights/bogota-colombia/santa-cruz-de-la-sierra-bolivia/",
@@ -1656,46 +1846,108 @@
    {
     "mode": "flight",
     "operators": [
+     "Copa",
      "Volaris Costa Rica",
      "Aeromexico",
-     "Copa",
      "Viva"
     ],
-    "duration_min": 360,
-    "duration_range_h": "6.0",
+    "duration_min": 197,
     "price_dkk": {
-     "min": 568,
-     "typical": null
+     "min": 1523,
+     "typical": 1621
     },
-    "price_local": "US$88+",
     "frequency": "~35/wk incl. connections",
     "overnight": false,
     "border": true,
     "stops": [],
     "geometry": null,
     "flight": {
-     "nonstop": null,
-     "vias": [],
+     "nonstop": true,
+     "vias": [
+      "PTY"
+     ],
      "carriers": [
+      "Copa",
+      "Volaris Costa Rica"
+     ],
+     "oneway_dkk": {
+      "min": 1523,
+      "observed_at": "2026-10-28T17:56:56Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-05"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "GDL",
+       "to": "SJO",
+       "dkk": 1523,
+       "dep": "12:05",
+       "arr": "07:05",
+       "arr_days": 1,
+       "duration_min": 1140,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 778",
+        "Copa 787"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1523,
+      "duration_min": 1140,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-05",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 1621,
+      "duration_min": 197,
+      "vias": [],
+      "carriers": [
+       "Volaris Costa Rica"
+      ],
+      "date": "2026-12-05"
+     },
+     "flags": [
+      "basic_fare",
+      "long_layover",
+      "tight_connection"
+     ],
+     "quotes": 3
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T17:56:56Z",
+    "note": "price_dkk = cheapest US$88. Nonstop Volaris Costa Rica listed on Wikipedia.",
+    "booking_url": null,
+    "source_url": "https://www.rome2rio.com/s/Guadalajara/San-Jos%C3%A9-Costa-Rica",
+    "researched": {
+     "duration_min": 360,
+     "price_min": 568,
+     "operators": [
       "Volaris Costa Rica",
       "Aeromexico",
       "Copa",
       "Viva"
      ],
-     "oneway_dkk": {
-      "min": 568,
-      "observed_at": "2026"
-     },
-     "return_dkk": null,
-     "dates_searched": [],
-     "by_date": [],
-     "round_trips": []
-    },
-    "source": "manual",
-    "source_url": "https://www.rome2rio.com/s/Guadalajara/San-Jos%C3%A9-Costa-Rica",
-    "observed_at": "2026",
-    "note": "price_dkk = cheapest US$88. Nonstop Volaris Costa Rica listed on Wikipedia.",
-    "booking_url": null
+     "year": "2026"
+    }
    }
   ]
  },
@@ -1708,12 +1960,13 @@
     "mode": "flight",
     "operators": [
      "Aeromexico",
+     "Copa",
      "Volaris"
     ],
     "duration_min": 361,
     "price_dkk": {
      "min": 1111,
-     "typical": 1304
+     "typical": 1498
     },
     "frequency": "resumes 4 Dec 2026",
     "overnight": false,
@@ -1729,10 +1982,12 @@
     "flight": {
      "nonstop": false,
      "vias": [
-      "MEX"
+      "MEX",
+      "PTY"
      ],
      "carriers": [
       "Aeromexico",
+      "Copa",
       "Volaris"
      ],
      "oneway_dkk": {
@@ -1741,9 +1996,33 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-05",
       "2026-12-10"
      ],
      "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "GDL",
+       "to": "GUA",
+       "dkk": 1494,
+       "dep": "12:05",
+       "arr": "08:45",
+       "arr_days": 1,
+       "duration_min": 1240,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 778",
+        "Copa 380"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      },
       {
        "date": "2026-12-10",
        "from": "GDL",
@@ -1794,12 +2073,13 @@
      },
      "flags": [
       "basic_fare",
+      "long_layover",
       "self_transfer_unverified"
      ],
-     "quotes": 2
+     "quotes": 5
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T11:12:22Z",
+    "observed_at": "2026-10-28T17:56:56Z",
     "note": "Wikipedia: Volaris GDL-GUA resumes 4 Dec 2026. Duration/price unknown (rome2rio page empty).",
     "booking_url": "https://www.momondo.dk/flight-search/GDL-GUA/2026-12-10",
     "source_url": "https://en.wikipedia.org/wiki/Guadalajara_International_Airport",
@@ -10735,19 +11015,21 @@
    {
     "mode": "flight",
     "operators": [
-     "Aeromexico"
+     "Aeromexico",
+     "American Airlines",
+     "Copa"
     ],
     "duration_min": 360,
     "price_dkk": {
      "min": 3127,
-     "typical": 3127
+     "typical": 3658
     },
     "frequency": null,
     "overnight": false,
     "border": true,
     "stops": [
      {
-      "place_id": "MEX",
+      "place_id": "PTY",
       "type": "layover",
       "wait_min": null
      }
@@ -10756,11 +11038,14 @@
     "flight": {
      "nonstop": false,
      "vias": [
+      "DFW",
       "MEX",
+      "MIA",
       "PTY"
      ],
      "carriers": [
       "Aeromexico",
+      "American Airlines",
       "Copa"
      ],
      "oneway_dkk": {
@@ -10769,10 +11054,34 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-05",
       "2026-12-10",
       "2027-01-20"
      ],
      "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "GDL",
+       "to": "MGA",
+       "dkk": 4189,
+       "dep": "12:05",
+       "arr": "13:05",
+       "arr_days": 1,
+       "duration_min": 1500,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 778",
+        "Copa 106"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      },
       {
        "date": "2026-12-10",
        "from": "GDL",
@@ -10834,24 +11143,25 @@
       "self_transfer": false
      },
      "fastest": {
-      "dkk": 3127,
-      "duration_min": 838,
+      "dkk": 4458,
+      "duration_min": 609,
       "vias": [
-       "MEX"
+       "PTY"
       ],
       "carriers": [
-       "Aeromexico"
+       "Copa"
       ],
-      "date": "2026-12-10"
+      "date": "2026-12-05"
      },
      "flags": [
       "basic_fare",
-      "long_layover"
+      "long_layover",
+      "us_transit"
      ],
-     "quotes": 6
+     "quotes": 9
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T12:00:00Z",
+    "observed_at": "2026-10-28T17:56:56Z",
     "note": null,
     "booking_url": null
    }
@@ -11674,6 +11984,7 @@
      "carriers": [
       "Aeromexico",
       "Avianca",
+      "Copa",
       "Copa Airlines",
       "Viva",
       "Volaris"
@@ -11684,10 +11995,34 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-05",
       "2026-12-10",
       "2027-01-20"
      ],
      "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "GDL",
+       "to": "SAL",
+       "dkk": 2148,
+       "dep": "12:05",
+       "arr": "20:40",
+       "arr_days": 0,
+       "duration_min": 515,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 778",
+        "Copa 881"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      },
       {
        "date": "2026-12-10",
        "from": "GDL",
@@ -11762,7 +12097,7 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 7
+     "quotes": 10
     },
     "source": "crawl",
     "observed_at": "2026-10-28T15:32Z",
@@ -13093,7 +13428,7 @@
     "duration_min": 445,
     "price_dkk": {
      "min": 2089,
-     "typical": 2462
+     "typical": 2530
     },
     "frequency": null,
     "overnight": false,
@@ -13118,7 +13453,8 @@
       "Copa",
       "Copa Airlines",
       "LATAM",
-      "LATAM Airlines"
+      "LATAM Airlines",
+      "avianca"
      ],
      "oneway_dkk": {
       "min": 2089,
@@ -13130,6 +13466,8 @@
      },
      "dates_searched": [
       "2026-12-06",
+      "2026-12-20",
+      "2027-01-15",
       "2027-01-28",
       "2027-01-30"
      ],
@@ -13155,6 +13493,52 @@
        ],
        "self_transfer": false,
        "searched": "2026-12-06",
+       "link": null
+      },
+      {
+       "date": "2026-12-20",
+       "from": "SJO",
+       "to": "VVI",
+       "dkk": 2400,
+       "dep": "08:05",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 763,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 763",
+        "Copa 127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
+       "link": null
+      },
+      {
+       "date": "2027-01-15",
+       "from": "VVI",
+       "to": "SJO",
+       "dkk": 2680,
+       "dep": "01:14",
+       "arr": "07:02",
+       "arr_days": 0,
+       "duration_min": 468,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 126",
+        "Copa 787"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-15",
        "link": null
       },
       {
@@ -13315,10 +13699,10 @@
       "basic_fare",
       "self_transfer_unverified"
      ],
-     "quotes": 12
+     "quotes": 19
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T16:55:00Z",
+    "observed_at": "2026-10-28T17:57:44Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/SJO-VVI/2027-01-28"
    }
@@ -13334,13 +13718,15 @@
     "operators": [
      "Avianca",
      "BoA",
+     "Boliviana de Aviacion",
+     "Copa",
      "Copa Airlines",
      "LATAM"
     ],
     "duration_min": 425,
     "price_dkk": {
      "min": 2187,
-     "typical": 3767
+     "typical": 4296
     },
     "frequency": null,
     "overnight": false,
@@ -13365,6 +13751,8 @@
      "carriers": [
       "Avianca",
       "BoA",
+      "Boliviana de Aviacion",
+      "Copa",
       "Copa Airlines",
       "LATAM"
      ],
@@ -13375,6 +13763,8 @@
      "return_dkk": null,
      "dates_searched": [
       "2026-12-06",
+      "2026-12-20",
+      "2027-01-05",
       "2027-01-27",
       "2027-01-30"
      ],
@@ -13400,6 +13790,52 @@
        ],
        "self_transfer": false,
        "searched": "2026-12-06",
+       "link": null
+      },
+      {
+       "date": "2026-12-20",
+       "from": "SJO",
+       "to": "LPB",
+       "dkk": 3635,
+       "dep": "13:40",
+       "arr": "04:00",
+       "arr_days": 1,
+       "duration_min": 740,
+       "vias": [
+        "LIM"
+       ],
+       "carriers": [
+        "LATAM"
+       ],
+       "flights": [
+        "LATAM 2939",
+        "LATAM 2400"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
+       "link": null
+      },
+      {
+       "date": "2027-01-05",
+       "from": "SJO",
+       "to": "LPB",
+       "dkk": 3248,
+       "dep": "16:55",
+       "arr": "04:00",
+       "arr_days": 1,
+       "duration_min": 545,
+       "vias": [
+        "LIM"
+       ],
+       "carriers": [
+        "LATAM"
+       ],
+       "flights": [
+        "LATAM 2409",
+        "LATAM 2400"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-05",
        "link": null
       },
       {
@@ -13480,10 +13916,10 @@
       "basic_fare",
       "self_transfer"
      ],
-     "quotes": 6
+     "quotes": 11
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T16:55:00Z",
+    "observed_at": "2026-10-28T17:57:44Z",
     "note": null,
     "booking_url": null
    }
@@ -13498,6 +13934,7 @@
     "mode": "flight",
     "operators": [
      "Avianca",
+     "Copa",
      "Copa Airlines",
      "Service mellem SJO og PTY er underlagt myndighedernes",
      "Wingo",
@@ -13506,7 +13943,7 @@
     "duration_min": 115,
     "price_dkk": {
      "min": 945,
-     "typical": 1187
+     "typical": 1207
     },
     "frequency": null,
     "overnight": false,
@@ -13535,6 +13972,7 @@
      "return_dkk": null,
      "dates_searched": [
       "2026-12-06",
+      "2026-12-20",
       "2027-01-07",
       "2027-01-09",
       "2027-01-10",
@@ -13565,6 +14003,29 @@
        ],
        "self_transfer": false,
        "searched": "2026-12-06",
+       "link": null
+      },
+      {
+       "date": "2026-12-20",
+       "from": "SJO",
+       "to": "MDE",
+       "dkk": 1318,
+       "dep": "17:53",
+       "arr": "14:45",
+       "arr_days": 1,
+       "duration_min": 1192,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "Copa 115",
+        "Copa 764"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
        "link": null
       },
       {
@@ -13738,12 +14199,13 @@
       "date": "2027-01-13"
      },
      "flags": [
-      "basic_fare"
+      "basic_fare",
+      "long_layover"
      ],
-     "quotes": 15
+     "quotes": 19
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T16:55:00Z",
+    "observed_at": "2026-10-28T17:57:44Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/SJO-MDE/2027-01-10"
    }
