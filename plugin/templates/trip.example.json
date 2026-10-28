@@ -1,0 +1,68 @@
+{
+  "trip": "Example: one adult, Copenhagen to Latin America, home from Bolivia",
+  "pax": 1,
+  "currency": "DKK",
+  "home_airports": [
+    "CPH"
+  ],
+  "alt_origins": [
+    "MAD",
+    "ALC",
+    "VLC",
+    "RMU"
+  ],
+  "main_dates": {
+    "out": "2026-12-03",
+    "home": "2027-02-03",
+    "home_alt": [
+      "2027-02-02"
+    ]
+  },
+  "max_hours_one_way": 30,
+  "scoring": {
+    "per_hour": 150,
+    "soft_hours": 23,
+    "extra_per_hour": 150,
+    "overnight": 800,
+    "self_transfer": 1500,
+    "us_transit": 500,
+    "airport_change": 1000,
+    "no_changes": 300,
+    "missing_side_hours": 24
+  },
+  "us_airports": [
+    "MIA",
+    "JFK",
+    "EWR",
+    "ATL",
+    "IAH",
+    "DFW",
+    "ORD",
+    "LAX",
+    "FLL",
+    "MCO",
+    "IAD",
+    "BOS",
+    "CLT",
+    "PHL"
+  ],
+  "scenarios_file": "briefs/scenarios.md",
+  "known_prices_file": "data/known_prices.json",
+  "final_region": {
+    "name": "Bolivia",
+    "airports": [
+      "LPB",
+      "VVI",
+      "CBB"
+    ],
+    "entry_preferred": "LPB",
+    "exit_preferred": "VVI",
+    "entry_date_window": [
+      "2027-01-24",
+      "2027-01-30"
+    ]
+  },
+  "side_trip_airports": {
+    "GDL": "Guadalajara (SC4)"
+  }
+}

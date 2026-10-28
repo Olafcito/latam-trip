@@ -1,0 +1,7 @@
+{
+  "name": "flight-crawler",
+  "version": "0.4.0",
+  "description": "Crawler-style flight search: an orchestrator expands a route tree (returns, open jaws, multi-city, hubs, stopovers, alternative origins), cheap Sonnet browser workers search Momondo and Google Flights, and every quote lands in one long table scored on price, hours and conditions.",
+  "author": {"name": "Simon"},
+  "keywords": ["flights", "travel", "momondo", "google-flights", "crawler", "multi-city", "open-jaw"]
+}
