@@ -325,7 +325,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
 
   // ---- highlight: feature-state only, no React render ------------------------------------
 
-  const prev = useRef({ hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[], via: [] as string[] })
+  const prev = useRef({ hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[], via: [] as string[], stop: [] as string[] })
   const raf = useRef(0)
 
   const runMover = useCallback(
@@ -367,7 +367,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     P.pv.forEach((id) => st('routes', id, { pv: false }))
     P.calm.forEach((id) => st('routes', id, { calm: false }))
     P.via.forEach((id) => st('routes', id, { via: false }))
-    const next = { hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[], via: [] as string[] }
+    P.stop.forEach((id) => st('places', id, { stop: false }))
+    const next = { hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[], via: [] as string[], stop: [] as string[] }
 
     let route: { conn: Connection; from: string; opts: RouteOption[] } | null = null
     if (h?.kind === 'city') {
@@ -410,6 +411,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
           const p = model.byId.get(s.place_id)
           if (!p || seen.has(p.id)) continue
           seen.add(p.id)
+          if (!p.context) next.stop.push(p.id)
           stops.push({
             type: 'Feature',
             properties: { name: p.short_name, kind: s.type, type: s.type, color: MOVER[fam][0] },
@@ -431,6 +433,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     next.pv.forEach((id) => st('routes', id, { pv: true }))
     next.calm.forEach((id) => st('routes', id, { calm: true }))
     next.via.forEach((id) => st('routes', id, { via: true }))
+    next.stop.forEach((id) => st('places', id, { stop: true }))
     prev.current = next
     m.getSource<GeoJSONSource>('stops')?.setData({ type: 'FeatureCollection', features: stops })
     m.getSource<GeoJSONSource>('via')?.setData({ type: 'FeatureCollection', features: vias })

@@ -65,6 +65,8 @@ const labelPaint = {
   'text-halo-color': C.ground,
   'text-halo-width': 1.4,
   'text-halo-blur': 0.4,
+  // a stop on the route in focus is named by the stop label instead
+  'text-opacity': ['case', fs('stop'), 0, 1] as ExpressionSpecification,
 }
 
 function label(id: string, fontStack: string[], size: number, extra: Partial<SymbolLayerSpecification> = {}): SymbolLayerSpecification {
