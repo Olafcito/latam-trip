@@ -57,6 +57,15 @@ const near = fs('near')
 const sel = fs('sel')
 const hot = fs('hot')
 const lit: ExpressionSpecification = ['any', sel, hot, near]
+const DIM = 0.45
+const QUIET = 0.12
+/** Towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection; the rest dims beside one. */
+const placeFade = (dim: number): ExpressionSpecification => [
+  'interpolate', ['linear'], ['zoom'],
+  5.5, ['case', lit, 1, ['==', ['get', 'tier'], 'destination'], ['case', fs('dim'), dim, 1], 0],
+  6.5, ['case', lit, 1, fs('dim'), dim, 1],
+]
+const airFade = (dim: number): ExpressionSpecification => ['case', lit, 1, fs('dim'), dim, 1]
 const tier = (dest: number, town: number, stop: number): ExpressionSpecification =>
   ['match', ['get', 'tier'], 'destination', dest, 'town', town, stop]
 
@@ -215,12 +224,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     paint: { 'circle-radius': 3, 'circle-color': ['get', 'core'] },
   })
 
-  const fadeIn = (from: number, to: number): ExpressionSpecification => [
-    'interpolate', ['linear'], ['zoom'],
-    from, ['case', lit, 1, ['==', ['get', 'tier'], 'destination'], ['case', fs('dim'), 0.45, 1], 0],
-    to, ['case', lit, 1, fs('dim'), 0.45, 1],
-  ]
-  // towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection.
+  const fadeIn = placeFade(DIM)
   // Places without an airport are small dots, so the airport diamonds stand out.
   const dot: CircleLayerSpecification = {
     id: 'place-dot',
@@ -234,10 +238,10 @@ export function addRouteLayers(map: MLMap, model: Model) {
         8, ['*', tier(5, 3.8, 3.2), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
       ],
       'circle-color': ['case', ['any', sel, hot], C.flight, near, '#FFFFFF', ['==', ['get', 'tier'], 'destination'], C.dot, C.muted],
-      'circle-opacity': fadeIn(5.5, 6.5),
+      'circle-opacity': fadeIn,
       'circle-stroke-color': C.ground,
       'circle-stroke-width': 2,
-      'circle-stroke-opacity': fadeIn(5.5, 6.5),
+      'circle-stroke-opacity': fadeIn,
     },
   }
   map.addLayer({
@@ -269,7 +273,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
       'icon-color': ['case', ['any', sel, hot], '#FFFFFF', ['get', 'hub'], C.flight, C.ground],
       'icon-halo-color': ['case', ['any', sel, hot], C.flight, ['get', 'hub'], C.ground, C.flight],
       'icon-halo-width': ['case', ['get', 'hub'], 1.5, 1.7],
-      'icon-opacity': ['case', lit, 1, fs('dim'), 0.45, 1],
+      'icon-opacity': airFade(DIM),
     },
   })
   map.addLayer({
@@ -363,12 +367,23 @@ function diamondSdf(r = 16, buffer = 8) {
 
 const inIds = (ids: string[]): ExpressionSpecification => ['in', ['get', 'id'], ['literal', ids]]
 
-/** Point the label layers at a new focus set (the selected city and its neighbours). The selected label is placed first. */
-export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = null) {
+/**
+ * Point the label layers at a new focus set (the selected city and its neighbours). The selected
+ * label is placed first. With `only`, every other label goes: the map shows just the focus set.
+ */
+export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = null, only = false) {
   map.setFilter(LABEL_LAYERS.focus, ids.length ? inIds(ids) : NONE)
   map.setLayoutProperty(LABEL_LAYERS.focus, 'symbol-sort-key', ['case', ['==', ['get', 'id'], sel ?? ''], -1, ['get', 'popularity']])
-  map.setFilter(LABEL_LAYERS.dest, ['all', ['==', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
-  map.setFilter(LABEL_LAYERS.town, ['all', ['!=', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
+  map.setFilter(LABEL_LAYERS.dest, only ? NONE : ['all', ['==', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
+  map.setFilter(LABEL_LAYERS.town, only ? NONE : ['all', ['!=', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
+}
+
+/** How far places outside the focus set fade: the overview keeps them readable, build mode nearly hides them. */
+export function setQuiet(map: MLMap, quiet: boolean) {
+  const dim = quiet ? QUIET : DIM
+  map.setPaintProperty('place-dot', 'circle-opacity', placeFade(dim))
+  map.setPaintProperty('place-dot', 'circle-stroke-opacity', placeFade(dim))
+  map.setPaintProperty('place-air', 'icon-opacity', airFade(dim))
 }
 
 /** Routes of enabled families take pointer events. With a selection, only the selected city's routes do (null means all). */

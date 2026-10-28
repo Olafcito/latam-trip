@@ -4,13 +4,13 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, viaLine, type Model } from '../data/model'
 import { IO_LABEL, ioMarkers, type Dir } from '../data/inout'
-import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripEnd, tripPieces, tripStops, type Trip, type TripState } from '../data/trips'
+import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripEnd, tripPieces, tripStops, type Trip, type TripLeg, type TripState } from '../data/trips'
 import { familyOf, type Connection, type Family, type MapData, type RouteOption } from '../data/types'
 import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
-import { HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
+import { HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
 import { Panel, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
@@ -36,6 +36,12 @@ export interface RouteMapProps {
    * so the next leg is one click away.
    */
   focus?: boolean
+  /** Build mode: the stop the next leg starts from. Null means the trip's end. */
+  focusAt?: string | null
+  /** Build mode: a tap on one of the trip's stops hands it to the host, which moves its cursor there. */
+  onStop?(id: string): void
+  /** Build mode: the host places a new leg itself (after its cursor) instead of the trip appending it. */
+  onLeg?(leg: TripLeg): void
   /** A pane the host renders on the right of the map; the camera keeps clear of it. */
   side?: ReactNode
   sideWidth?: number
@@ -60,7 +66,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad = false, focus = false, side = null, sideWidth = 360 }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, side = null, sideWidth = 360 }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -86,10 +92,11 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
   const store = useMemo(() => createStore<Hover>(null), [])
 
   // latest values for the map's event handlers, which are bound once
-  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!side })
+  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!side, focus, stops: [] as string[] })
   live.current.view = view
   live.current.families = families
   live.current.side = !!side
+  live.current.focus = focus
   live.current.collapsed = collapsed
 
   // ---- camera ----------------------------------------------------------------------------
@@ -150,7 +157,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
    * most CITY_EASE_OUT when the city's neighbours would not fit. A city already in view stays put.
    */
   const showCity = useCallback(
-    (id: string, panel: PanelView) => {
+    (id: string, panel: PanelView | null) => {
       const m = map
       const p = model.byId.get(id)
       if (!m || !p) return
@@ -240,9 +247,19 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
   // ---- trips ---------------------------------------------------------------------------------
 
   const trip = activeTrip(trips)
-  /** In build mode the trip's end stands in for a selection while nothing is selected. */
-  const focusId = focus && trip && !view.sel ? tripEnd(trip) : null
+  /** In build mode the host's cursor (or the trip's end) stands in for a selection while nothing is selected. */
+  const focusId = focus && trip && !view.sel ? focusAt ?? tripEnd(trip) : null
   live.current.focusId = focusId
+  live.current.stops = trip ? tripStops(trip) : []
+
+  // moving the cursor brings that stop into view, at the zoom the map is at
+  const lastFocus = useRef<string | null | undefined>(undefined)
+  useEffect(() => {
+    if (!map || !focus) return
+    const prev = lastFocus.current
+    lastFocus.current = focusId
+    if (focusId && prev !== undefined && prev !== focusId) showCity(focusId, null)
+  }, [map, focus, focusId, showCity])
 
   const showTrips = useCallback(() => {
     store.set(null)
@@ -270,10 +287,17 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
 
   const addTripLeg = useCallback(
     (conn: Connection, opt: RouteOption, from: string, cont: boolean) => {
-      onTrips((s) => addLeg(s, { cid: conn.id, from, to: otherEnd(conn, from), mode: opt.mode }))
+      const leg: TripLeg = { cid: conn.id, from, to: otherEnd(conn, from), mode: opt.mode }
+      if (onLeg) {
+        // the host's cursor moves to the new stop, so the map lights what comes next from there
+        onLeg(leg)
+        deselect()
+        return
+      }
+      onTrips((s) => addLeg(s, leg))
       if (cont) select(otherEnd(conn, from))
     },
-    [onTrips, select],
+    [onTrips, onLeg, select, deselect],
   )
 
   // the pane of the open trip's way in, way home, or both when they share an airport
@@ -293,8 +317,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
   const placeOf = useCallback((code: string) => (model.byId.has(code) ? code : model.places.find((p) => p.iata === code)?.id ?? null), [model])
   const markers = useMemo(() => ioMarkers(trip, placeOf), [trip, placeOf])
 
-  const act = useRef({ select, deselect, openRoute, openWay, back, dismissHint })
-  act.current = { select, deselect, openRoute, openWay, back, dismissHint }
+  const act = useRef({ select, deselect, openRoute, openWay, back, dismissHint, onStop })
+  act.current = { select, deselect, openRoute, openWay, back, dismissHint, onStop }
 
   // ---- map setup -------------------------------------------------------------------------
 
@@ -387,7 +411,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
     let route: { conn: Connection; from: string; opts: RouteOption[] } | null = null
     if (h?.kind === 'city') {
       next.hot = h.id
-      if (!v.sel) {
+      // in build mode the cursor's routes are the only ones shown, so hovering does not preview others
+      if (!v.sel && !live.current.focusId) {
         for (const c of model.byPlace.get(h.id) ?? []) for (const f of fams) if (model.routeLines.has(`${c.id}|${f}`)) next.pv.push(`${c.id}|${f}`)
       }
     } else if (h?.kind === 'route') {
@@ -480,12 +505,16 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
       map.setLayoutProperty(ROUTE_LAYERS[f], 'visibility', families.has(f) ? 'visible' : 'none')
     }
     setRouteHit(map, sel ? [...cids] : null, [...families])
-    setLabelFocus(map, sel ? [sel, ...near] : [], sel)
+    // build mode shows the trip's own stops and what the cursor reaches, and nothing else
+    const quiet = focus && !!sel
+    const stops = quiet && trip ? tripStops(trip) : []
+    setLabelFocus(map, sel ? [...new Set([sel, ...near, ...stops])] : [], sel, quiet)
+    setQuiet(map, quiet)
     // the open trip steps back while a city's own routes are shown
     const dimTrip = !!view.sel
     for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', (dimTrip ? 0.55 : 1) * (id === 'trip-casing' ? 0.85 : 1))
     map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', dimTrip ? 0.3 : 0.55)
-  }, [map, model, view.sel, focusId, families])
+  }, [map, model, view.sel, focusId, families, focus, trip])
 
   // the open trip: one line per leg or overland block, in travel order, and a numbered dot per stop
   useEffect(() => {
@@ -618,6 +647,12 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad
         return
       }
       if (hit.kind === 'overland') return
+      // in build mode a tap on one of the trip's stops moves the cursor there
+      if (hit.kind === 'place' && live.current.focus && act.current.onStop && hit.id !== sel && hit.id !== live.current.focusId && live.current.stops.includes(hit.id)) {
+        act.current.onStop(hit.id)
+        if (sel) act.current.deselect()
+        return
+      }
       // from the trip's end a reachable city opens its route straight away, and back closes it again
       const back = sel ? 'city' : null
       if (hit.kind === 'route') {

@@ -17,6 +17,10 @@ export function PlannerMap() {
   const saved = useStore((s) => s.saved)
   const mapOpen = useStore((s) => s.mapOpen)
   const applyMapTrips = useStore((s) => s.applyMapTrips)
+  const cursor = useStore((s) => s.cursor)
+  const cursorTo = useStore((s) => s.cursorTo)
+  const insertLeg = useStore((s) => s.insertLeg)
+  const setLegFacts = useStore((s) => s.setLegFacts)
   const [data, setData] = useState<RouteData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -26,6 +30,10 @@ export function PlannerMap() {
 
   const trips = useMemo(() => toTripState(journey, saved, mapOpen, inout), [journey, saved, mapOpen, inout])
   const facts = useMemo(() => (data ? legFactsFrom(data.connections) : undefined), [data])
+  useEffect(() => {
+    if (facts) setLegFacts(facts)
+  }, [facts, setLegFacts])
+  const focusAt = journey && cursor != null ? journey.places[cursor]?.node ?? null : null
   const onTrips = useCallback(
     (update: (s: TripState) => TripState) => {
       const { journey: j, saved: s, mapOpen: o, data: d } = useStore.getState()
@@ -43,7 +51,17 @@ export function PlannerMap() {
     )
   }
   return data ? (
-    <RouteMap data={data} trips={trips} onTrips={onTrips} fitTripOnLoad focus={mapOpen && !!journey} side={<MapSide />} />
+    <RouteMap
+      data={data}
+      trips={trips}
+      onTrips={onTrips}
+      fitTripOnLoad
+      focus={mapOpen && !!journey}
+      focusAt={focusAt}
+      onStop={cursorTo}
+      onLeg={insertLeg}
+      side={<MapSide />}
+    />
   ) : (
     <div className="loading">Loading routes…</div>
   )

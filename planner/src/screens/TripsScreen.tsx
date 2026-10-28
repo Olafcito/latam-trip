@@ -1,9 +1,8 @@
 import { useRef, useState } from 'react'
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
-import { day, dayDiff, hours, kr } from '../lib/format'
+import { day, hours, kr } from '../lib/format'
 import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
-import { countryColor, countryName } from '../lib/colors'
 import { PickScreen } from './PickScreen'
 import { Download, Pin, Plus, Trash } from '../components/icons'
 
@@ -16,9 +15,7 @@ function summarize(data: AppData, j: Journey) {
   const nm = (id: string) => nodeName(data.map, data.inout, id)
   const sched = schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), nm)
   const t = totals(data, j, sched)
-  const countries = Object.entries(t.days_per_country).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1])
-  const days = Math.max(1, dayDiff(wi.arrive, wh.depart))
-  return { wi, wh, sched, t, countries, days, route: j.places.map((p) => nm(p.node)), total: t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) }
+  return { wi, wh, t, route: j.places.map((p) => nm(p.node)), total: t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) }
 }
 
 export function TripsScreen({ data }: { data: AppData }) {
@@ -86,18 +83,11 @@ function Landing({ data }: { data: AppData }) {
                   <p className="route">{s.route.join(' · ')}</p>
                   <div className="facts">
                     <span><b>{kr(s.total)}</b><small>all in</small></span>
-                    <span><b>{s.days}</b><small>days</small></span>
                     <span><b>{day(s.wi.arrive)}</b><small>lands</small></span>
                     <span><b>{day(s.wh.depart)}</b><small>flies home</small></span>
                   </div>
-                  <div className="bar" aria-label="Days per country">
-                    {s.countries.map(([c, n]) => (
-                      <i key={c} style={{ flexGrow: n, background: countryColor(c) }} title={`${countryName(c)}: ${n} ${n === 1 ? 'day' : 'days'}`} />
-                    ))}
-                  </div>
                   <p className="small muted dim">
                     {kr(s.t.tickets_dkk)} long haul · {hours(s.t.air_hours)} in the air
-                    {s.sched.warnings.length > 0 && <span className="warnchip">{s.sched.warnings.length} {s.sched.warnings.length === 1 ? 'warning' : 'warnings'}</span>}
                   </p>
                 </>
               ) : (
@@ -136,7 +126,6 @@ function Landing({ data }: { data: AppData }) {
                   ['Route', (s) => s.route.join(' → ')],
                   ['Lands', (s) => `${data.inout.airports[s.wi.to]?.name ?? s.wi.to}, ${day(s.wi.arrive)}`],
                   ['Flies home', (s) => `${data.inout.airports[s.wh.from]?.name ?? s.wh.from}, ${day(s.wh.depart)}`],
-                  ['Days', (s) => String(s.days)],
                   ['Long-haul tickets', (s) => kr(s.t.tickets_dkk)],
                   ['Regional flights', (s) => kr(s.t.regional_flights_dkk)],
                   ['Cabin-bag fees', (s) => kr(s.t.cabin_bag_dkk)],
@@ -147,8 +136,6 @@ function Landing({ data }: { data: AppData }) {
                   ['All in', (s) => kr(s.total)],
                   ['Flights', (s) => String(s.t.flights)],
                   ['Hours in the air', (s) => hours(s.t.air_hours)],
-                  ['Slack', (s) => (s.sched.slack >= 0 ? `${s.sched.slack} days left` : `${-s.sched.slack} days over`)],
-                  ['Days per country', (s) => s.countries.map(([c, n]) => `${countryName(c)} ${n}`).join(', ')],
                 ] as [string, (s: NonNullable<ReturnType<typeof summarize>>) => string][]).map(([label, f]) => (
                   <tr key={label}>
                     <th>{label}</th>
