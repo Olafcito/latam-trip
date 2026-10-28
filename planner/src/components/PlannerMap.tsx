@@ -5,6 +5,7 @@ import type { MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../data/routeMap'
 import { legFactsFrom, toTripState } from '../lib/mapTrips'
 import { useStore } from '../store'
+import { MapSide } from './TripPanel'
 
 /**
  * The route map with the planner's journeys as its trips, where journeys are built. Every edit
@@ -41,5 +42,9 @@ export function PlannerMap() {
       </div>
     )
   }
-  return data ? <RouteMap data={data} trips={trips} onTrips={onTrips} fitTripOnLoad /> : <div className="loading">Loading routes…</div>
+  return data ? (
+    <RouteMap data={data} trips={trips} onTrips={onTrips} fitTripOnLoad focus={mapOpen && !!journey} side={<MapSide />} />
+  ) : (
+    <div className="loading">Loading routes…</div>
+  )
 }
