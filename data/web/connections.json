@@ -605,7 +605,7 @@
     "duration_min": 45,
     "price_dkk": {
      "min": 404,
-     "typical": 404
+     "typical": 524
     },
     "frequency": "several daily",
     "overnight": false,
@@ -621,7 +621,7 @@
      ],
      "oneway_dkk": {
       "min": 404,
-      "observed_at": "2026-10-28T12:35:40Z"
+      "observed_at": "2026-10-28T20:16:51Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -659,11 +659,35 @@
        "arr_days": 0,
        "duration_min": 50,
        "vias": [],
-       "carriers": [],
-       "flights": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 656"
+       ],
        "self_transfer": false,
        "searched": "2027-02-01",
        "link": "https://www.momondo.dk/flight-search/CBB-VVI/2027-02-01"
+      },
+      {
+       "date": "2027-02-02",
+       "from": "CBB",
+       "to": "VVI",
+       "dkk": 404,
+       "dep": "22:25",
+       "arr": "23:15",
+       "arr_days": 0,
+       "duration_min": 50,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 656"
+       ],
+       "self_transfer": false,
+       "searched": "2027-02-02",
+       "link": "https://www.momondo.dk/flight-search/CBB-VVI/2027-02-02"
       }
      ],
      "round_trips": [],
@@ -672,7 +696,7 @@
       "duration_min": 50,
       "vias": [],
       "carriers": [
-       ""
+       "BoA"
       ],
       "date": "2027-02-01",
       "self_transfer": false
@@ -682,15 +706,18 @@
       "duration_min": 50,
       "vias": [],
       "carriers": [
-       ""
+       "BoA"
       ],
       "date": "2027-02-01"
      },
-     "flags": [],
-     "quotes": 5
+     "flags": [
+      "self_transfer",
+      "tight_connection"
+     ],
+     "quotes": 11
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T12:35:40Z",
+    "observed_at": "2026-10-28T20:22:27Z",
     "note": "Rome2rio fly+bus figure 1h25; the bus (6-10 h) is the usual choice and cheaper (US$2-9).",
     "booking_url": "https://www.momondo.dk/flight-search/CBB-VVI/2027-02-01",
     "source_url": "https://www.rome2rio.com/s/Cochabamba/Santa-Cruz-de-la-Sierra",
