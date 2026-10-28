@@ -16,6 +16,8 @@ export interface Trip {
   name: string
   legs: TripLeg[]
   updated: number
+  /** Where the trip begins before any leg, e.g. the planner's way-in city. */
+  start?: string
 }
 
 export interface TripState {
@@ -135,7 +137,7 @@ export function legOption(model: Model, leg: TripLeg): { conn: Connection; opt: 
 
 /** Places in visiting order. A leg that does not start where the last one ended adds its start too. */
 export function tripStops(trip: Trip): string[] {
-  const out: string[] = []
+  const out: string[] = trip.start ? [trip.start] : []
   for (const l of trip.legs) {
     if (out.at(-1) !== l.from) out.push(l.from)
     out.push(l.to)
@@ -143,7 +145,7 @@ export function tripStops(trip: Trip): string[] {
   return out
 }
 
-export const tripEnd = (trip: Trip): string | null => trip.legs.at(-1)?.to ?? null
+export const tripEnd = (trip: Trip): string | null => trip.legs.at(-1)?.to ?? trip.start ?? null
 
 /** Time and cheapest price over all legs. `unknown` counts legs with a missing number. */
 export function tripTotals(model: Model, trip: Trip) {

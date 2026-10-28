@@ -26,6 +26,8 @@ export interface RouteMapProps {
   onTrips(update: (s: TripState) => TripState): void
   /** How far a trip fit may zoom in, as a multiple of the whole-map scale. */
   maxFitZoom?: number
+  /** Frame the open trip once the map is ready, for a host that opens the map on a trip. */
+  fitTripOnLoad?: boolean
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
@@ -47,7 +49,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2 }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, fitTripOnLoad = false }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -235,13 +237,20 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2 }: RouteMapPro
 
   /** Opening a trip fits all of it once, the one time the camera may zoom out far. */
   const fitTrip = useCallback(
-    (t: Trip) => {
+    (t: Trip, panel: PanelView | null = 'trips') => {
       const pts = tripStops(t).map((id) => model.byId.get(id)).filter((p) => !!p).map((p): LonLat => [p.lon, p.lat])
       // the margin keeps both ends and their labels clear of the edges
-      if (pts.length) fit(boundsOf(pts), 'trips', 6, 90)
+      if (pts.length) fit(boundsOf(pts), panel, 6, 90)
     },
     [fit, model],
   )
+
+  const fitted = useRef(false)
+  useEffect(() => {
+    if (!map || fitted.current || !fitTripOnLoad || !trip) return
+    fitted.current = true
+    fitTrip(trip, null)
+  }, [map, fitTripOnLoad, trip, fitTrip])
 
   const addTripLeg = useCallback(
     (conn: Connection, opt: RouteOption, from: string, cont: boolean) => {
@@ -431,7 +440,10 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2 }: RouteMapPro
     const lines: GeoJSON.Feature[] = []
     for (const l of trip?.legs ?? []) {
       const family = familyOf(l.mode)
-      const line = model.routeLines.get(`${l.cid}|${family}`)
+      // a leg with no route in the data (the planner's "own way" hops) gets a straight line
+      const a = model.byId.get(l.from)
+      const b = model.byId.get(l.to)
+      const line = model.routeLines.get(`${l.cid}|${family}`) ?? (a && b ? [[a.lon, a.lat], [b.lon, b.lat]] : null)
       if (line) lines.push({ type: 'Feature', properties: { family }, geometry: { type: 'LineString', coordinates: line } })
     }
     // a place visited twice gets one dot with both numbers
