@@ -84,3 +84,10 @@ export const Trash = ({ s = 13 }: { s?: number }) => (
     <path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v6M14 11v6" />
   </svg>
 )
+
+/** A drag handle: two columns of dots. */
+export const Grip = ({ s = 14 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={3} {...base}>
+    <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" />
+  </svg>
+)

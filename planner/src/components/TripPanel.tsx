@@ -3,16 +3,17 @@ import type { Family } from '@map/data/types'
 import { TRIP_COLORS } from '@map/data/trips'
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
-import { day, hours, kr, weekdayDay } from '../lib/format'
+import { hours, kr, weekdayDay } from '../lib/format'
 import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
 import { countryColor, countryName } from '../lib/colors'
 import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
 import { hopFromArc } from '../lib/journey'
 import { hoverProps } from './PlaceCard'
-import { Calendar, Close, Download, Land, Minus, ModeChip, Moon, Plus, Warn } from './icons'
+import { Close, Download, Grip, Land, Minus, ModeChip, Moon, Plus } from './icons'
 
-// The open trip, on the right of the map: its two fixed flights, the places between them with
-// their nights, the dates, and what it all costs. Legs are added on the map itself.
+// The open trip, on the right of the map: its two fixed flights and the stops between them.
+// A stop is the cursor: the map lights what it reaches, and a tap on a lit city adds the next
+// stop right after it. Stops can be dragged into another order or removed.
 
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
 
@@ -27,9 +28,15 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
   const saveJourney = useStore((s) => s.saveJourney)
   const closeTrip = useStore((s) => s.closeTrip)
   const go = useStore((s) => s.go)
+  const cursor = useStore((s) => s.cursor)
+  const setCursor = useStore((s) => s.setCursor)
+  const removeStop = useStore((s) => s.removeStop)
+  const moveStop = useStore((s) => s.moveStop)
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(journey.name)
   useEffect(() => setName(journey.name), [journey.name])
+  const [drag, setDrag] = useState<number | null>(null)
+  const [over, setOver] = useState<number | null>(null)
 
   const wi = inout.ways[journey.wayIn]
   const wh = inout.ways[journey.wayHome]
@@ -55,26 +62,28 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
   const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
-  const last = journey.places[journey.places.length - 1]
-  const atExit = last.node === exitNode
-  const countries = Object.entries(t.days_per_country).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1])
-  const totalDays = countries.reduce((a, [, n]) => a + n, 0)
+  const lastIdx = journey.places.length - 1
+  const at = cursor ?? lastIdx
+  const here = journey.places[at]
+  const atEnd = at === lastIdx
+  const endsAtExit = journey.places[lastIdx].node === exitNode
+  const nights = journey.places.reduce((a, p) => a + p.nights, 0)
 
   const update = (places: Journey['places']) => setJourney({ ...journey, places })
   const setNights = (i: number, n: number) => update(journey.places.map((p, k) => (k === i ? { ...p, nights: Math.max(0, n) } : p)))
-  const removeLast = () => journey.places.length > 1 && update(journey.places.slice(0, -1))
   const finish = (metric: PathMetric) => {
-    const r = shortestPath(map, last.node, exitNode, metric)
+    const r = shortestPath(map, here.node, exitNode, metric)
     if (!r || !r.arcs.length) return
-    let from = last.node
+    let from = here.node
     const added = r.arcs.map((arc) => {
       const place = { node: arc.to, nights: 1, hop: hopFromArc(from, arc, null) }
       from = arc.to
       return place
     })
     update([...journey.places, ...added])
+    setCursor(null)
   }
-  const canFinish = !atExit && arcsSorted(map, last.node).length > 0
+  const canFinish = atEnd && !endsAtExit && arcsSorted(map, here.node).length > 0
   const exportJson = () => {
     const blob = new Blob([JSON.stringify(journey, null, 2)], { type: 'application/json' })
     const a = document.createElement('a')
@@ -89,6 +98,28 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
     if (n && n !== journey.name) setJourney({ ...journey, name: n })
     else setName(journey.name)
   }
+  const drop = (i: number) => {
+    if (drag != null && i > 0 && i !== drag) moveStop(drag, i)
+    setDrag(null)
+    setOver(null)
+  }
+
+  const next = (
+    <li className="plan-next" key="next">
+      <span className="plan-pulse" />
+      <div>
+        <b>Next from {nm(here.node)}</b>
+        <small>{atEnd && endsAtExit ? 'Tap a lit city to go on from here. The route must come back for the flight home.' : atEnd ? 'Tap a lit city on the map to add the next stop.' : 'Tap a lit city to add a stop right after this one.'}</small>
+        {canFinish && (
+          <span className="plan-finish">
+            <span>Or route to {nm(exitNode)}:</span>
+            <button onClick={() => finish('hours')}>fastest</button>
+            <button onClick={() => finish('price')}>cheapest</button>
+          </span>
+        )}
+      </div>
+    </li>
+  )
 
   return (
     <aside className="panel plan" aria-label="Open trip">
@@ -112,11 +143,8 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
       </div>
       <div className="plan-sum">
         <span className="plan-total"><b>{kr(allIn)}</b><small>all in</small></span>
-        <span className="plan-days"><b>{totalDays}</b><small>days</small></span>
-        <span className={`plan-slack ${sched.slack < 0 ? 'neg' : 'pos'}`}>
-          <Calendar />
-          {sched.slack === 0 ? 'fits exactly' : sched.slack > 0 ? `${sched.slack} ${sched.slack === 1 ? 'day' : 'days'} free` : `${-sched.slack} ${-sched.slack === 1 ? 'day' : 'days'} over`}
-        </span>
+        <span><b>{journey.places.length}</b><small>{journey.places.length === 1 ? 'stop' : 'stops'}</small></span>
+        <span><b>{nights}</b><small>{nights === 1 ? 'night' : 'nights'}</small></span>
       </div>
 
       <div className="plan-body">
@@ -129,12 +157,19 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
             </div>
             <button className="plan-link" onClick={() => go('trips', 'pick')}>Change</button>
           </li>
-          {journey.places.map((p, i) => {
-            const sp = sched.places[i]
+          {journey.places.flatMap((p, i) => {
             const n = node(p.node)
             const h = p.hop
-            return (
-              <li key={i} className="plan-place">
+            const cur = i === at
+            const c = n?.country ?? inout.airports[p.node]?.country ?? ''
+            const row = (
+              <li
+                key={i}
+                className={`plan-place${over === i && drag !== i ? ' over' : ''}${drag === i ? ' lifted' : ''}`}
+                onDragOver={(e) => { if (drag != null && i > 0) { e.preventDefault(); setOver(i) } }}
+                onDragLeave={() => over === i && setOver(null)}
+                onDrop={(e) => { e.preventDefault(); drop(i) }}
+              >
                 {h && (
                   <div className={`plan-hop ${family(h.mode)}`}>
                     <ModeChip family={family(h.mode)} />
@@ -146,59 +181,56 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
                     {h.border && <span className="plan-border" title="Crosses a border">border</span>}
                   </div>
                 )}
-                <div className="plan-stop">
-                  <span className="plan-n" style={{ background: TRIP_COLORS[0] }}>{i + 1}</span>
+                <div
+                  className={`plan-stop${cur ? ' cur' : ''}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={cur}
+                  aria-label={`Build from ${nm(p.node)}`}
+                  onClick={() => setCursor(i)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCursor(i) } }}
+                >
+                  {i > 0 ? (
+                    <span
+                      className="plan-grip"
+                      draggable
+                      title="Drag to move this stop"
+                      onClick={(e) => e.stopPropagation()}
+                      onDragStart={(e) => { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(i)); setDrag(i) }}
+                      onDragEnd={() => { setDrag(null); setOver(null) }}
+                    >
+                      <Grip />
+                    </span>
+                  ) : (
+                    <span className="plan-grip fixed" title="The trip starts where the flight lands" />
+                  )}
+                  <span className="plan-n" style={{ background: cur ? '#C98A12' : TRIP_COLORS[0] }}>{i + 1}</span>
                   <div className="plan-who">
                     <b {...hoverProps(n)}>{nm(p.node)}</b>
-                    <small>
-                      <i style={{ background: countryColor(n?.country ?? inout.airports[p.node]?.country ?? '') }} />
-                      {countryName(n?.country ?? inout.airports[p.node]?.country ?? '')} · {sp ? day(sp.arrive) : '?'}
-                    </small>
+                    <small><i style={{ background: countryColor(c) }} />{countryName(c)}</small>
                   </div>
-                  <div className="plan-nights" role="group" aria-label={`Nights in ${nm(p.node)}`}>
+                  <div className="plan-nights" role="group" aria-label={`Nights in ${nm(p.node)}`} onClick={(e) => e.stopPropagation()}>
                     <button onClick={() => setNights(i, p.nights - 1)} aria-label="One night less" disabled={p.nights <= 0}><Minus /></button>
                     <b>{p.nights}<small>{p.nights === 1 ? 'night' : 'nights'}</small></b>
                     <button onClick={() => setNights(i, p.nights + 1)} aria-label="One night more"><Plus /></button>
                   </div>
+                  {i > 0 && (
+                    <button className="plan-rm" onClick={(e) => { e.stopPropagation(); removeStop(i) }} aria-label={`Remove ${nm(p.node)}`} title="Remove this stop"><Close /></button>
+                  )}
                 </div>
               </li>
             )
+            return cur ? [row, next] : [row]
           })}
-          <li className="plan-next">
-            <span className="plan-pulse" />
-            <div>
-              <b>Next from {nm(last.node)}</b>
-              <small>{atExit ? 'Click a lit city on the map to go on from here. The route must come back for the flight home.' : 'Click a lit city on the map to add the next leg.'}</small>
-              {canFinish && (
-                  <span className="plan-finish">
-                    <span>Or route to {nm(exitNode)}:</span>
-                    <button onClick={() => finish('hours')}>fastest</button>
-                    <button onClick={() => finish('price')}>cheapest</button>
-                  </span>
-                )}
-            </div>
-          </li>
           <li className="plan-way home">
             <span className="io-dot home" />
             <div>
               <b>Flies home from {nm(exitNode)}</b>
-              <small>{weekdayDay(wh.depart)} {wh.depart.slice(11, 16)} · home {day(wh.arrive)} · {hours(wh.total_hours)}</small>
+              <small>{weekdayDay(wh.depart)} {wh.depart.slice(11, 16)} · {hours(wh.total_hours)}</small>
             </div>
             <Land />
           </li>
         </ol>
-
-        {sched.warnings.length > 0 && (
-          <ul className="plan-warns">
-            {sched.warnings.map((w, i) => <li key={i} className={w.level}><Warn />{w.text}</li>)}
-          </ul>
-        )}
-
-        <div className="plan-bar" aria-label="Days per country">
-          {countries.map(([c, n]) => (
-            <i key={c} style={{ flexGrow: n, background: countryColor(c) }} title={`${countryName(c)}: ${n} ${n === 1 ? 'day' : 'days'}`}>{n >= 4 ? c : ''}</i>
-          ))}
-        </div>
 
         <dl className="plan-tot">
           <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
@@ -212,7 +244,6 @@ export function TripPanel({ data, journey }: { data: AppData; journey: Journey }
 
       <div className="plan-acts">
         <button className={`pbtn ${dirty ? 'primary' : 'ghost done'}`} onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
-        <button className="pbtn ghost" onClick={removeLast} disabled={journey.places.length <= 1} title="Remove the last place">Undo leg</button>
         <button className="x sm" onClick={exportJson} aria-label="Export this trip as JSON" title="Export JSON"><Download /></button>
       </div>
     </aside>
