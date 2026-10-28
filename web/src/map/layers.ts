@@ -240,12 +240,9 @@ export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = nu
   map.setFilter(LABEL_LAYERS.town, ['all', ['!=', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
 }
 
-/** Only routes of the selected city take pointer events, and only for enabled families. */
-export function setRouteHit(map: MLMap, cids: string[], families: Family[]) {
-  map.setFilter(
-    HIT_ROUTES,
-    cids.length
-      ? ['all', ['in', ['get', 'cid'], ['literal', cids]], ['in', ['get', 'family'], ['literal', families]]]
-      : NONE,
-  )
+/** Routes of enabled families take pointer events. With a selection, only the selected city's routes do (null means all). */
+export function setRouteHit(map: MLMap, cids: string[] | null, families: Family[]) {
+  const fam: ExpressionSpecification = ['in', ['get', 'family'], ['literal', families]]
+  if (!cids) return map.setFilter(HIT_ROUTES, fam)
+  map.setFilter(HIT_ROUTES, cids.length ? ['all', ['in', ['get', 'cid'], ['literal', cids]], fam] : NONE)
 }
