@@ -1,96 +1,582 @@
 [
- {"id":"A1","name":"Madrid start, Ryanair-type hop CPH-MAD (laptop stays home), Central America > Colombia > Bolivia",
-  "story":"Fly CPH-MAD 1 Dec, MAD-San Salvador 2 Dec on one Avianca ticket that also brings you home Santa Cruz-MAD 3 Feb; Central America overland, Managua-Medellin, Bogota-La Paz, BoA inside Bolivia, MAD-CPH 4 Feb.",
-  "components":[
-   {"label":"Positioning CPH<>MAD","pattern":"P:CPH>MAD/MAD>CPH","no_flags":["self_transfer","airport_change"]},
-   {"label":"Madrid nights 1 Dec and 3 Feb","price":800,"hours":0,"note":"ESTIMATE 2 x 400 hotel near the airport"},
-   {"label":"Long-haul MAD-SAL / VVI-MAD (Avianca)","pattern":"P:MAD>SAL/VVI>MAD","dates":["2026-12-02"],"carriers":"Avianca"},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"}]},
- {"id":"A2","name":"Madrid start via Alicante (work days in Torrevieja, laptop travels or stays there)",
-  "story":"As A1, but CPH-Alicante 28 Nov and back, a few days working from the house, train to Madrid.",
-  "components":[
-   {"label":"Positioning CPH<>ALC","pattern":"P:CPH>ALC/ALC>CPH","no_flags":["self_transfer","airport_change"]},
-   {"label":"Train Alicante<>Madrid","price":250,"hours":5,"note":"ESTIMATE from 'from' fares"},
-   {"label":"Madrid night 3 Feb","price":400,"hours":0,"note":"ESTIMATE"},
-   {"label":"Long-haul MAD-SAL / VVI-MAD (Avianca)","pattern":"P:MAD>SAL/VVI>MAD","dates":["2026-12-02"],"carriers":"Avianca"},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"}]},
- {"id":"B1","name":"Copenhagen open jaw to San Salvador, home from Santa Cruz",
-  "story":"CPH-San Salvador, Central America overland, Managua-Medellin, Bogota-La Paz, BoA inside Bolivia, Santa Cruz-CPH.",
-  "components":[
-   {"label":"Long-haul CPH-SAL / VVI-CPH","pattern":"P:CPH>SAL/VVI>CPH","no_flags":["self_transfer"]},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"}]},
- {"id":"B2","name":"Copenhagen open jaw to Guatemala City, home from Santa Cruz",
-  "story":"As B1 but starting in Guatemala (one more country overland before Honduras).",
-  "components":[
-   {"label":"Long-haul CPH-GUA / VVI-CPH","pattern":"P:CPH>GUA/VVI>CPH","no_flags":["self_transfer"]},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"}]},
- {"id":"C1","name":"Nicaragua in, Bogota home, Bolivia as a loop at the end",
-  "story":"CPH-Managua, Central America, Managua-Medellin, Colombia, Bogota-La Paz, Bolivia, Santa Cruz-Bogota, Bogota-CPH.",
-  "components":[
-   {"label":"Long-haul CPH-MGA / BOG-CPH","pattern":"P:CPH>MGA/BOG>CPH","no_flags":["self_transfer"]},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"},
-   {"label":"Santa Cruz > Bogota","pattern":"R:VVI>BOG"}]},
- {"id":"D1","name":"Bolivia over Christmas, Colombia in January, home from Bogota (Madrid start)",
-  "story":"MAD-San Salvador 2 Dec, Central America until about 19 Dec, fly into La Paz, Christmas in Cochabamba, Santa Cruz-Colombia about 28 Dec, January in Colombia, Bogota-MAD 3 Feb.",
-  "components":[
-   {"label":"Positioning CPH<>MAD","pattern":"P:CPH>MAD/MAD>CPH","no_flags":["self_transfer","airport_change"]},
-   {"label":"Madrid nights","price":800,"hours":0,"note":"ESTIMATE"},
-   {"label":"Long-haul MAD-SAL / BOG-MAD","pattern":["P:MAD>SAL/BOG>MAD"]},
-   {"label":"Central America > La Paz (Christmas)","pattern":["R:SAL>LPB","R:PTY>LPB"],"dates":["2026-12-16","2026-12-17","2026-12-18","2026-12-19","2026-12-20","2026-12-21","2026-12-22"]},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"},
-   {"label":"Santa Cruz > Colombia (after Christmas)","pattern":["R:VVI>MDE","R:VVI>BOG"],"dates":["2026-12-25","2026-12-26","2026-12-27","2026-12-28","2026-12-29","2026-12-30","2026-12-31"]}]},
- {"id":"D2","name":"Bolivia over Christmas, home from Medellin (Copenhagen start)",
-  "story":"CPH-San Salvador, Central America until about 19 Dec, La Paz and Cochabamba for Christmas, Santa Cruz-Medellin about 28 Dec, January in Colombia, Medellin-CPH 3 Feb.",
-  "components":[
-   {"label":"Long-haul CPH-SAL / MDE-CPH","pattern":"P:CPH>SAL/MDE>CPH","no_flags":["self_transfer"]},
-   {"label":"Central America > La Paz (Christmas)","pattern":["R:SAL>LPB","R:PTY>LPB"],"dates":["2026-12-16","2026-12-17","2026-12-18","2026-12-19","2026-12-20","2026-12-21","2026-12-22"]},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"},
-   {"label":"Santa Cruz > Colombia (after Christmas)","pattern":["R:VVI>MDE","R:VVI>BOG"],"dates":["2026-12-25","2026-12-26","2026-12-27","2026-12-28","2026-12-29","2026-12-30","2026-12-31"]}]},
- {"id":"E1","name":"Guadalajara at the end (Bolivia before it)",
-  "story":"CPH-San Salvador, Central America, Colombia, Bolivia, Santa Cruz-Guadalajara, a week in Guadalajara, Guadalajara-CPH.",
-  "components":[
-   {"label":"Long-haul CPH-SAL / GDL-CPH","pattern":"P:CPH>SAL/GDL>CPH","no_flags":["self_transfer"]},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"},
-   {"label":"Santa Cruz > Guadalajara","pattern":"R:VVI>GDL"}]},
- {"id":"E2","name":"Guadalajara as a side trip from Medellin (Madrid start)",
-  "story":"A1 plus Medellin-Guadalajara-Medellin with Volaris (Simon's find).",
-  "components":[
-   {"label":"Positioning CPH<>MAD","pattern":"P:CPH>MAD/MAD>CPH","no_flags":["self_transfer","airport_change"]},
-   {"label":"Madrid nights","price":800,"hours":0,"note":"ESTIMATE"},
-   {"label":"Long-haul MAD-SAL / VVI-MAD (Avianca)","pattern":"P:MAD>SAL/VVI>MAD","dates":["2026-12-02"],"carriers":"Avianca"},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Medellin <> Guadalajara (Volaris)","price":2608,"hours":9.8,"flights":2,"bag_dkk":1340,"note":"Simon's Momondo find, Mix & Match, 2/4 Dec dates; bag Volaris 670 x 2"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"}]},
- {"id":"F1","name":"Plain return Copenhagen-Bogota, everything else as hops",
-  "story":"CPH-Bogota and back; fly to Central America and back, Bogota-La Paz, Santa Cruz-Bogota.",
-  "components":[
-   {"label":"Long-haul CPH<>BOG","pattern":"P:CPH>BOG/BOG>CPH","no_flags":["self_transfer"]},
-   {"label":"Colombia > Central America","pattern":["R:BOG>SAL","R:MDE>SAL","R:BOG>MGA"]},
-   {"label":"Nicaragua > Colombia","pattern":"R:MGA>MDE"},
-   {"label":"Colombia > La Paz","pattern":"R:BOG>LPB"},
-   {"label":"La Paz > Cochabamba","pattern":"R:LPB>CBB"},
-   {"label":"Cochabamba > Santa Cruz","pattern":"R:CBB>VVI"},
-   {"label":"Santa Cruz > Bogota","pattern":"R:VVI>BOG"}]}
+ {
+  "id": "A1",
+  "name": "Madrid start, Ryanair-type hop CPH-MAD (laptop stays home), Central America > Colombia > Bolivia",
+  "story": "Fly CPH-MAD 1 Dec, MAD-San Salvador 2 Dec on one Avianca ticket that also brings you home Santa Cruz-MAD 3 Feb; Central America overland, Managua-Medellin, Bogota-La Paz, BoA inside Bolivia, MAD-CPH 4 Feb.",
+  "components": [
+   {
+    "label": "Positioning CPH<>MAD",
+    "pattern": "P:CPH>MAD/MAD>CPH",
+    "no_flags": [
+     "self_transfer",
+     "airport_change"
+    ]
+   },
+   {
+    "label": "Madrid nights 1 Dec and 3 Feb",
+    "price": 800,
+    "hours": 0,
+    "note": "ESTIMATE 2 x 400 hotel near the airport"
+   },
+   {
+    "label": "Long-haul MAD-SAL / VVI-MAD (Avianca)",
+    "pattern": "P:MAD>SAL/VVI>MAD",
+    "dates": [
+     "2026-12-02"
+    ],
+    "carriers": "Avianca"
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   }
+  ]
+ },
+ {
+  "id": "A2",
+  "name": "Madrid start via Alicante (work days in Torrevieja, laptop travels or stays there)",
+  "story": "As A1, but CPH-Alicante 28 Nov and back, a few days working from the house, train to Madrid.",
+  "components": [
+   {
+    "label": "Positioning CPH<>ALC",
+    "pattern": "P:CPH>ALC/ALC>CPH",
+    "no_flags": [
+     "self_transfer",
+     "airport_change"
+    ]
+   },
+   {
+    "label": "Train Alicante<>Madrid",
+    "price": 250,
+    "hours": 5,
+    "note": "ESTIMATE from 'from' fares"
+   },
+   {
+    "label": "Madrid night 3 Feb",
+    "price": 400,
+    "hours": 0,
+    "note": "ESTIMATE"
+   },
+   {
+    "label": "Long-haul MAD-SAL / VVI-MAD (Avianca)",
+    "pattern": "P:MAD>SAL/VVI>MAD",
+    "dates": [
+     "2026-12-02"
+    ],
+    "carriers": "Avianca"
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   }
+  ]
+ },
+ {
+  "id": "B1",
+  "name": "Copenhagen open jaw to San Salvador, home from Santa Cruz",
+  "story": "CPH-San Salvador, Central America overland, Managua-Medellin, Bogota-La Paz, BoA inside Bolivia, Santa Cruz-CPH.",
+  "components": [
+   {
+    "label": "Long-haul CPH-SAL / VVI-CPH",
+    "pattern": "P:CPH>SAL/VVI>CPH",
+    "no_flags": [
+     "self_transfer"
+    ]
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   }
+  ]
+ },
+ {
+  "id": "B2",
+  "name": "Copenhagen open jaw to Guatemala City, home from Santa Cruz",
+  "story": "As B1 but starting in Guatemala (one more country overland before Honduras).",
+  "components": [
+   {
+    "label": "Long-haul CPH-GUA / VVI-CPH",
+    "pattern": "P:CPH>GUA/VVI>CPH",
+    "no_flags": [
+     "self_transfer"
+    ]
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   }
+  ]
+ },
+ {
+  "id": "C1",
+  "name": "Nicaragua in, Bogota home, Bolivia as a loop at the end",
+  "story": "CPH-Managua, Central America, Managua-Medellin, Colombia, Bogota-La Paz, Bolivia, Santa Cruz-Bogota, Bogota-CPH.",
+  "components": [
+   {
+    "label": "Long-haul CPH-MGA / BOG-CPH",
+    "pattern": "P:CPH>MGA/BOG>CPH",
+    "no_flags": [
+     "self_transfer"
+    ]
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Bogota",
+    "pattern": "R:VVI>BOG"
+   }
+  ]
+ },
+ {
+  "id": "D1",
+  "name": "Bolivia over Christmas, Colombia in January, home from Bogota (Madrid start)",
+  "story": "MAD-San Salvador 2 Dec, Central America until about 19 Dec, fly into La Paz, Christmas in Cochabamba, Santa Cruz-Colombia about 28 Dec, January in Colombia, Bogota-MAD 3 Feb.",
+  "components": [
+   {
+    "label": "Positioning CPH<>MAD",
+    "pattern": "P:CPH>MAD/MAD>CPH",
+    "no_flags": [
+     "self_transfer",
+     "airport_change"
+    ]
+   },
+   {
+    "label": "Madrid nights",
+    "price": 800,
+    "hours": 0,
+    "note": "ESTIMATE"
+   },
+   {
+    "label": "Long-haul MAD-SAL / BOG-MAD",
+    "pattern": [
+     "P:MAD>SAL/BOG>MAD"
+    ],
+    "carriers": "Avianca"
+   },
+   {
+    "label": "Central America > La Paz (Christmas)",
+    "pattern": [
+     "R:SAL>LPB",
+     "R:PTY>LPB"
+    ],
+    "dates": [
+     "2026-12-16",
+     "2026-12-17",
+     "2026-12-18",
+     "2026-12-19",
+     "2026-12-20",
+     "2026-12-21",
+     "2026-12-22"
+    ]
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Colombia (after Christmas)",
+    "pattern": [
+     "R:VVI>MDE",
+     "R:VVI>BOG"
+    ],
+    "dates": [
+     "2026-12-25",
+     "2026-12-26",
+     "2026-12-27",
+     "2026-12-28",
+     "2026-12-29",
+     "2026-12-30",
+     "2026-12-31"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "D2",
+  "name": "Bolivia over Christmas, home from Medellin (Copenhagen start)",
+  "story": "CPH-San Salvador, Central America until about 19 Dec, La Paz and Cochabamba for Christmas, Santa Cruz-Medellin about 28 Dec, January in Colombia, Medellin-CPH 3 Feb.",
+  "components": [
+   {
+    "label": "Long-haul CPH-SAL / MDE-CPH",
+    "pattern": "P:CPH>SAL/MDE>CPH",
+    "no_flags": [
+     "self_transfer"
+    ]
+   },
+   {
+    "label": "Central America > La Paz (Christmas)",
+    "pattern": [
+     "R:SAL>LPB",
+     "R:PTY>LPB"
+    ],
+    "dates": [
+     "2026-12-16",
+     "2026-12-17",
+     "2026-12-18",
+     "2026-12-19",
+     "2026-12-20",
+     "2026-12-21",
+     "2026-12-22"
+    ]
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Colombia (after Christmas)",
+    "pattern": [
+     "R:VVI>MDE",
+     "R:VVI>BOG"
+    ],
+    "dates": [
+     "2026-12-25",
+     "2026-12-26",
+     "2026-12-27",
+     "2026-12-28",
+     "2026-12-29",
+     "2026-12-30",
+     "2026-12-31"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "E1",
+  "name": "Guadalajara at the end (Bolivia before it)",
+  "story": "CPH-San Salvador, Central America, Colombia, Bolivia, Santa Cruz-Guadalajara, a week in Guadalajara, Guadalajara-CPH.",
+  "components": [
+   {
+    "label": "Long-haul CPH-SAL / GDL-CPH",
+    "pattern": "P:CPH>SAL/GDL>CPH",
+    "no_flags": [
+     "self_transfer"
+    ]
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Guadalajara",
+    "pattern": "R:VVI>GDL",
+    "no_flags": [
+     "self_transfer"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "E2",
+  "name": "Guadalajara as a side trip from Medellin (Madrid start)",
+  "story": "A1 plus Medellin-Guadalajara-Medellin with Volaris (Simon's find).",
+  "components": [
+   {
+    "label": "Positioning CPH<>MAD",
+    "pattern": "P:CPH>MAD/MAD>CPH",
+    "no_flags": [
+     "self_transfer",
+     "airport_change"
+    ]
+   },
+   {
+    "label": "Madrid nights",
+    "price": 800,
+    "hours": 0,
+    "note": "ESTIMATE"
+   },
+   {
+    "label": "Long-haul MAD-SAL / VVI-MAD (Avianca)",
+    "pattern": "P:MAD>SAL/VVI>MAD",
+    "dates": [
+     "2026-12-02"
+    ],
+    "carriers": "Avianca"
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Medellin <> Guadalajara (Volaris)",
+    "price": 2608,
+    "hours": 9.8,
+    "flights": 2,
+    "bag_dkk": 1340,
+    "note": "Simon's Momondo find, Mix & Match, 2/4 Dec dates; bag Volaris 670 x 2"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   }
+  ]
+ },
+ {
+  "id": "F1",
+  "name": "Plain return Copenhagen-Bogota, everything else as hops",
+  "story": "CPH-Bogota and back; fly to Central America and back, Bogota-La Paz, Santa Cruz-Bogota.",
+  "components": [
+   {
+    "label": "Long-haul CPH<>BOG",
+    "pattern": "P:CPH>BOG/BOG>CPH",
+    "no_flags": [
+     "self_transfer"
+    ]
+   },
+   {
+    "label": "Colombia > Central America",
+    "pattern": [
+     "R:BOG>SAL",
+     "R:MDE>SAL",
+     "R:BOG>MGA"
+    ]
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Bogota",
+    "pattern": "R:VVI>BOG"
+   }
+  ]
+ },
+ {
+  "id": "A3",
+  "name": "Madrid start, one Avianca ticket including Bogota-La Paz (multi-city)",
+  "story": "As A1, but MAD-San Salvador, Bogota-La Paz and Santa Cruz-MAD on a single Avianca ticket (protected connections).",
+  "components": [
+   {
+    "label": "Positioning CPH<>MAD",
+    "pattern": "P:CPH>MAD/MAD>CPH",
+    "no_flags": [
+     "self_transfer",
+     "airport_change"
+    ]
+   },
+   {
+    "label": "Madrid nights 1 Dec and 3 Feb",
+    "price": 800,
+    "hours": 0,
+    "note": "ESTIMATE 2 x 400"
+   },
+   {
+    "label": "Avianca multi-city MAD-SAL + BOG-LPB + VVI-MAD",
+    "pattern": "M:MAD>SAL+BOG>LPB+VVI>MAD"
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   }
+  ]
+ },
+ {
+  "id": "C2",
+  "name": "Madrid start, home from Bogota, Bolivia as a loop at the end",
+  "story": "MAD-San Salvador 2 Dec, Central America, Managua-Medellin, Colombia, Bogota-La Paz, Bolivia, Santa Cruz-Bogota, Bogota-MAD nonstop 3 Feb (Avianca both ways).",
+  "components": [
+   {
+    "label": "Positioning CPH<>MAD",
+    "pattern": "P:CPH>MAD/MAD>CPH",
+    "no_flags": [
+     "self_transfer",
+     "airport_change"
+    ]
+   },
+   {
+    "label": "Madrid nights 1 Dec and 3 Feb",
+    "price": 800,
+    "hours": 0,
+    "note": "ESTIMATE 2 x 400"
+   },
+   {
+    "label": "Long-haul MAD-SAL / BOG-MAD",
+    "pattern": "P:MAD>SAL/BOG>MAD",
+    "carriers": "Avianca"
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Bogota",
+    "pattern": "R:VVI>BOG",
+    "dates": [
+     "2027-01-31",
+     "2027-02-01",
+     "2027-02-02"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "E3",
+  "name": "Madrid start, Guadalajara at the end",
+  "story": "MAD-San Salvador, Central America, Colombia, Bolivia, Santa Cruz-Guadalajara, a week in Guadalajara, Guadalajara-MAD.",
+  "components": [
+   {
+    "label": "Positioning CPH<>MAD",
+    "pattern": "P:CPH>MAD/MAD>CPH",
+    "no_flags": [
+     "self_transfer",
+     "airport_change"
+    ]
+   },
+   {
+    "label": "Madrid nights 1 Dec and 3 Feb",
+    "price": 800,
+    "hours": 0,
+    "note": "ESTIMATE 2 x 400"
+   },
+   {
+    "label": "Long-haul MAD-SAL / GDL-MAD",
+    "pattern": "P:MAD>SAL/GDL>MAD"
+   },
+   {
+    "label": "Nicaragua > Colombia",
+    "pattern": "R:MGA>MDE"
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Cochabamba",
+    "pattern": "R:LPB>CBB"
+   },
+   {
+    "label": "Cochabamba > Santa Cruz",
+    "pattern": "R:CBB>VVI"
+   },
+   {
+    "label": "Santa Cruz > Guadalajara",
+    "pattern": "R:VVI>GDL",
+    "no_flags": [
+     "self_transfer"
+    ]
+   }
+  ]
+ }
 ]
