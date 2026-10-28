@@ -74,12 +74,9 @@ export function buildModel(data: MapData): Model {
     const prim = primaryOptions(c)
     const straight = [...prim.keys()].filter((f) => f !== 'flight')
     for (const [family, opt] of prim) {
-      const pts: LonLat[] = [[a.lon, a.lat]]
-      for (const s of opt.stops) {
-        const p = byId.get(s.place_id)
-        if (p) pts.push([p.lon, p.lat])
-      }
-      pts.push([b.lon, b.lat])
+      // a flight is one arc between its ends: drawn through its layovers it would look like a flight
+      // between a layover and a city. viaLine draws that path only for the route in focus.
+      const pts: LonLat[] = family === 'flight' ? [[a.lon, a.lat], [b.lon, b.lat]] : stopPoints(byId, c, opt)
       const coords = opt.geometry ?? pathThrough(pts, family === 'flight')
       const fid = `${c.id}|${family}`
       const side = straight.length > 1 && family !== 'flight' ? (family === 'ground' ? -1 : 1) : 0
@@ -103,6 +100,18 @@ export function buildModel(data: MapData): Model {
     routes: { type: 'FeatureCollection', features },
     routeLines,
   }
+}
+
+function stopPoints(byId: Map<string, Place>, conn: Connection, opt: RouteOption): LonLat[] {
+  const ids = [conn.a, ...opt.stops.map((s) => s.place_id), conn.b]
+  return ids.map((id) => byId.get(id)).filter((p): p is Place => !!p).map((p) => [p.lon, p.lat])
+}
+
+/** A flight's path through its layovers, from a to b, or null when it has none. */
+export function viaLine(model: Model, conn: Connection, opt: RouteOption): LonLat[] | null {
+  if (familyOf(opt.mode) !== 'flight' || !opt.stops.length || opt.geometry) return null
+  const pts = stopPoints(model.byId, conn, opt)
+  return pts.length > 2 ? pathThrough(pts, true) : null
 }
 
 /** Neighbours of a place with only the enabled options, sorted by their fastest option. */
