@@ -1,0 +1,11 @@
+html, body, #root { height: 100%; margin: 0; }
+body { background: #0A141C; color: #EAF0F2; font-family: 'Bricolage Grotesque', system-ui, sans-serif; }
+.mono { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; }
+.app { height: 100dvh; }
+.app-msg {
+  height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  padding: 16px; text-align: center; color: #93A7B2; font-size: 13px;
+}
+.app-msg p { margin: 0; }
+.app-msg-t { font-size: 18px; font-weight: 800; color: #EAF0F2; }
+.app-msg code { font-family: 'IBM Plex Mono', monospace; color: #F2B544; }

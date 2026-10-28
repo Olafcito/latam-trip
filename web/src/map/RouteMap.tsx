@@ -1,0 +1,553 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Map as MLMap, setWorkerUrl, type GeoJSONSource, type MapMouseEvent, type PointLike } from 'maplibre-gl'
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
+import 'maplibre-gl/dist/maplibre-gl.css'
+import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, type Model } from '../data/model'
+import { familyOf, type Connection, type Family, type MapData, type RouteOption } from '../data/types'
+import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
+import type { Rect } from '../lib/tooltip'
+import { Controls } from './Controls'
+import { createStore, hoverKey, type Hover } from './hover'
+import { HIT_PLACES, HIT_ROUTES, ROUTE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
+import { Panel, type PanelView, type View } from './Panel'
+import { C, baseStyle } from './style'
+import { Tooltip } from './Tooltip'
+import './routeMap.css'
+
+// Vite pre-bundles maplibre, which breaks the worker's relative URL, so point at the file directly.
+setWorkerUrl(workerUrl)
+
+export interface RouteMapProps {
+  data: MapData
+  /** Journey keys already added, as `${connectionId}|${mode}`. */
+  journey?: string[]
+  onAddToJourney?(conn: Connection, option: RouteOption, from: string): void
+  /** How far a city fit may zoom in, as a multiple of the whole-map scale. */
+  maxFitZoom?: number
+}
+
+const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
+const PANEL_W: Record<PanelView, number> = { city: 300, more: 360, route: 360 }
+const NARROW = 720
+const MOVER: Record<Family, [string, string]> = { ground: [C.bus, '#E6FFF7'], boat: [C.boat, '#EEF5FF'], flight: [C.flight, '#FFF4D6'] }
+const EMPTY_FC: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
+
+type Point2 = { x: number; y: number }
+
+const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const enabledOptions = (conn: Connection, families: Set<Family>) =>
+  conn.options.filter((o) => families.has(familyOf(o.mode))).sort((x, y) => (x.duration_min ?? 1e9) - (y.duration_min ?? 1e9))
+
+function connBetween(model: Model, a: string, b: string): Connection | undefined {
+  return model.conns.get([a, b].sort().join('-'))
+}
+
+export function RouteMap({ data, journey, onAddToJourney, maxFitZoom = 3.2 }: RouteMapProps) {
+  const model = useMemo(() => buildModel(data), [data])
+  const available = useMemo(
+    () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
+    [model],
+  )
+
+  const root = useRef<HTMLDivElement>(null)
+  const canvasBox = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLElement>(null)
+  const controlsRef = useRef<HTMLDivElement>(null)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  // the map belongs to one model: after a model change its effects must not touch the removed map
+  const [built, setBuilt] = useState<{ map: MLMap; model: Model } | null>(null)
+  const map = built?.model === model ? built.map : null
+  const [view, setView] = useState<View>(EMPTY)
+  const [families, setFamilies] = useState<Set<Family>>(() => new Set(available))
+  const [collapsed, setCollapsed] = useState(false)
+  const [hint, setHint] = useState<'show' | 'fading' | 'gone'>('show')
+  const [space, setSpace] = useState(false)
+  const store = useMemo(() => createStore<Hover>(null), [])
+
+  // latest values for the map's event handlers, which are bound once
+  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[] })
+  live.current.view = view
+  live.current.families = families
+  live.current.collapsed = collapsed
+
+  // ---- camera ----------------------------------------------------------------------------
+
+  const fit = useCallback(
+    (bounds: Bounds | null, panel: PanelView | null, zoomMul = maxFitZoom) => {
+      const m = map
+      const el = root.current
+      if (!m || !el) return
+      const W = el.clientWidth
+      const H = el.clientHeight
+      const narrow = W < NARROW
+      const open = panel && !live.current.collapsed
+      let padding = narrow
+        ? { top: 70, left: 28, right: 64, bottom: open ? Math.round(H * 0.52) + 16 : 70 }
+        : { top: 70, left: open ? PANEL_W[panel!] + 54 : 40, right: 90, bottom: 70 }
+      if (padding.left + padding.right > W - 40 || padding.top + padding.bottom > H - 40) padding = { top: 20, left: 20, right: 20, bottom: 20 }
+      const opts = { padding, duration: reducedMotion() ? 0 : 1000, easing: EASE }
+      if (!bounds) m.fitBounds(model.home, { ...opts, padding: narrow ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: 90, bottom: 80 } })
+      else m.fitBounds(bounds, { ...opts, maxZoom: live.current.homeZoom + Math.log2(zoomMul) })
+    },
+    [map, model, maxFitZoom],
+  )
+
+  const cityBounds = useCallback(
+    (id: string): Bounds => {
+      const p = model.byId.get(id)!
+      const pts: LonLat[] = [[p.lon, p.lat], ...neighbours(model, id, live.current.families).map((n): LonLat => [n.other.lon, n.other.lat])]
+      return boundsOf(pts)
+    },
+    [model],
+  )
+
+  // ---- actions -----------------------------------------------------------------------------
+
+  const dismissHint = useCallback(() => {
+    setHint((h) => {
+      if (h !== 'show') return h
+      setTimeout(() => setHint('gone'), 600)
+      return 'fading'
+    })
+  }, [])
+
+  const select = useCallback(
+    (id: string) => {
+      store.set(null)
+      setCollapsed(false)
+      live.current.collapsed = false
+      setView({ ...EMPTY, sel: id, panel: 'city' })
+      fit(cityBounds(id), 'city')
+    },
+    [fit, cityBounds, store],
+  )
+
+  const deselect = useCallback(() => {
+    store.set(null)
+    setView(EMPTY)
+    fit(null, null)
+  }, [fit, store])
+
+  const openRoute = useCallback(
+    (cid: string, from: string, back: View['back'] = 'city') => {
+      const conn = model.conns.get(cid)
+      if (!conn) return
+      store.set(null)
+      setView((v) => ({ sel: v.sel ?? from, panel: 'route', route: cid, from, opt: 0, back: v.panel === 'more' ? 'more' : back }))
+      fit(boundsOf(routePoints(model, conn, enabledOptions(conn, live.current.families))), 'route', 4)
+    },
+    [fit, model, store],
+  )
+
+  const toCity = useCallback(() => {
+    const sel = live.current.view.sel
+    if (!sel) return
+    setView({ ...EMPTY, sel, panel: 'city' })
+    fit(cityBounds(sel), 'city')
+  }, [fit, cityBounds])
+
+  const back = useCallback(() => {
+    const v = live.current.view
+    if (v.panel === 'route') {
+      if (v.back === 'more' && v.sel) {
+        setView({ ...EMPTY, sel: v.sel, panel: 'more' })
+        fit(cityBounds(v.sel), 'more')
+      } else if (v.back === 'city') toCity()
+      else deselect()
+    } else if (v.panel === 'more') toCity()
+    else if (v.sel) deselect()
+  }, [toCity, deselect, fit, cityBounds])
+
+  const act = useRef({ select, deselect, openRoute, back, dismissHint })
+  act.current = { select, deselect, openRoute, back, dismissHint }
+
+  // ---- map setup -------------------------------------------------------------------------
+
+  useEffect(() => {
+    const el = canvasBox.current!
+    const narrow = el.clientWidth < NARROW
+    const m = new MLMap({
+      container: el,
+      style: baseStyle(),
+      bounds: model.home,
+      fitBoundsOptions: { padding: narrow ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: 90, bottom: 80 } },
+      attributionControl: false,
+      dragRotate: false,
+      pitchWithRotate: false,
+      touchPitch: false,
+      renderWorldCopies: false,
+      minZoom: 1.5,
+      maxZoom: 12,
+    })
+    m.touchZoomRotate.disableRotation()
+    m.keyboard.disableRotation()
+    let alive = true
+    m.on('load', () => {
+      if (!alive) return
+      addRouteLayers(m, model)
+      live.current.homeZoom = m.getZoom()
+      if (import.meta.env.DEV) (window as { __rmap?: MLMap }).__rmap = m
+      setBuilt({ map: m, model })
+    })
+    const ro = new ResizeObserver(() => m.resize())
+    ro.observe(el)
+    return () => {
+      alive = false
+      ro.disconnect()
+      m.remove()
+      setBuilt(null)
+    }
+  }, [model])
+
+  // ---- highlight: feature-state only, no React render ------------------------------------
+
+  const prev = useRef({ hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[] })
+  const raf = useRef(0)
+
+  const runMover = useCallback(
+    (m: MLMap, items: { line: LonLat[]; reverse: boolean; family: Family }[]) => {
+      cancelAnimationFrame(raf.current)
+      const src = m.getSource<GeoJSONSource>('mover')
+      if (!src) return
+      if (!items.length || reducedMotion()) {
+        src.setData(EMPTY_FC)
+        return
+      }
+      const t0 = performance.now()
+      const tick = (now: number) => {
+        const t = ((now - t0) % 2600) / 2600
+        src.setData({
+          type: 'FeatureCollection',
+          features: items.map((it) => ({
+            type: 'Feature',
+            properties: { color: MOVER[it.family][0], core: MOVER[it.family][1] },
+            geometry: { type: 'Point', coordinates: along(it.line, it.reverse ? 1 - t : t) },
+          })),
+        })
+        raf.current = requestAnimationFrame(tick)
+      }
+      raf.current = requestAnimationFrame(tick)
+    },
+    [],
+  )
+
+  const paint = useCallback(() => {
+    const m = map
+    if (!m) return
+    const { view: v, families: fams, shown } = live.current
+    const h = store.get()
+    const P = prev.current
+    const st = (source: string, id: string, s: Record<string, boolean>) => m.setFeatureState({ source, id }, s)
+    if (P.hot) st('places', P.hot, { hot: false })
+    P.hl.forEach((id) => st('routes', id, { hl: false }))
+    P.pv.forEach((id) => st('routes', id, { pv: false }))
+    P.calm.forEach((id) => st('routes', id, { calm: false }))
+    const next = { hot: null as string | null, hl: [] as string[], pv: [] as string[], calm: [] as string[] }
+
+    let route: { conn: Connection; from: string; opts: RouteOption[] } | null = null
+    if (h?.kind === 'city') {
+      next.hot = h.id
+      if (!v.sel) {
+        for (const c of model.byPlace.get(h.id) ?? []) for (const f of fams) if (model.routeLines.has(`${c.id}|${f}`)) next.pv.push(`${c.id}|${f}`)
+      }
+    } else if (h?.kind === 'route') {
+      next.hot = h.to
+      const conn = model.conns.get(h.cid)
+      if (conn) route = { conn, from: h.from, opts: enabledOptions(conn, fams) }
+    }
+    if (!route && v.panel === 'route' && v.route) {
+      const conn = model.conns.get(v.route)
+      if (conn) {
+        const opts = enabledOptions(conn, fams)
+        const cur = opts[Math.min(v.opt, opts.length - 1)]
+        route = { conn, from: v.from ?? conn.a, opts: cur ? [cur] : [] }
+      }
+    }
+
+    const stops: GeoJSON.Feature[] = []
+    const movers: { line: LonLat[]; reverse: boolean; family: Family }[] = []
+    if (route) {
+      const seen = new Set<string>()
+      for (const o of route.opts) {
+        const fam = familyOf(o.mode)
+        const fid = `${route.conn.id}|${fam}`
+        if (model.routeLines.has(fid) && !next.hl.includes(fid)) {
+          next.hl.push(fid)
+          movers.push({ line: model.routeLines.get(fid)!, reverse: route.from !== route.conn.a, family: fam })
+        }
+        for (const s of stopsFrom(route.conn, o, route.from)) {
+          const p = model.byId.get(s.place_id)
+          if (!p || seen.has(p.id)) continue
+          seen.add(p.id)
+          stops.push({
+            type: 'Feature',
+            properties: { name: p.short_name, kind: s.type, type: s.type, color: MOVER[fam][0] },
+            geometry: { type: 'Point', coordinates: [p.lon, p.lat] },
+          })
+        }
+      }
+      next.calm = shown.filter((id) => !next.hl.includes(id))
+    }
+
+    if (next.hot) st('places', next.hot, { hot: true })
+    next.hl.forEach((id) => st('routes', id, { hl: true }))
+    next.pv.forEach((id) => st('routes', id, { pv: true }))
+    next.calm.forEach((id) => st('routes', id, { calm: true }))
+    prev.current = next
+    m.getSource<GeoJSONSource>('stops')?.setData({ type: 'FeatureCollection', features: stops })
+    runMover(m, movers)
+  }, [map, model, store, runMover])
+
+  // selection and mode toggles: which places and routes are lit
+  useEffect(() => {
+    if (!map) return
+    const sel = view.sel
+    const near = new Set(sel ? neighbours(model, sel, families).map((n) => n.other.id) : [])
+    for (const p of model.places) {
+      map.setFeatureState({ source: 'places', id: p.id }, { sel: p.id === sel, near: near.has(p.id), dim: !!sel && p.id !== sel && !near.has(p.id) })
+    }
+    const shown: string[] = []
+    const cids = new Set<string>()
+    for (const f of model.routes.features) {
+      const { fid, cid, family, a, b } = f.properties
+      const show = !!sel && (a === sel || b === sel) && families.has(family)
+      if (show) {
+        shown.push(fid)
+        cids.add(cid)
+      }
+      map.setFeatureState({ source: 'routes', id: fid }, { show })
+    }
+    live.current.shown = shown
+    for (const f of ALL_FAMILIES) {
+      if (!map.getLayer(ROUTE_LAYERS[f])) continue
+      map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(sel ? 0 : 0.25))
+      map.setLayoutProperty(ROUTE_LAYERS[f], 'visibility', families.has(f) ? 'visible' : 'none')
+    }
+    setRouteHit(map, [...cids], [...families])
+    setLabelFocus(map, sel ? [sel, ...near] : [], sel)
+  }, [map, model, view.sel, families])
+
+  // re-light after any view change (route view pins its route) and on hover
+  useEffect(() => {
+    paint()
+  }, [paint, view, families])
+  useEffect(() => store.subscribe(paint), [store, paint])
+  useEffect(() => () => cancelAnimationFrame(raf.current), [])
+
+  // ---- pointer -------------------------------------------------------------------------------
+
+  useEffect(() => {
+    if (!map) return
+    const canvas = map.getCanvas()
+
+    const hitAt = (pt: Point2): { kind: 'place'; id: string } | { kind: 'route'; cid: string } | null => {
+      const z = map.getZoom()
+      const sel = live.current.view.sel
+      const lit = new Set(sel ? [sel, ...neighbours(model, sel, live.current.families).map((n) => n.other.id)] : [])
+      // hit circles of close cities overlap, so take the dot nearest the pointer
+      const near = (id: string) => {
+        const p = model.byId.get(id)!
+        const s = map.project([p.lon, p.lat])
+        return Math.hypot(s.x - pt.x, s.y - pt.y)
+      }
+      const place = map
+        .queryRenderedFeatures([pt.x, pt.y], { layers: [HIT_PLACES] })
+        .map((f) => ({ id: f.properties.id as string, tier: f.properties.tier as string }))
+        .filter((f) => f.tier === 'destination' || z >= 5.8 || lit.has(f.id))
+        .sort((x, y) => near(x.id) - near(y.id))[0]
+      if (place) return { kind: 'place', id: place.id }
+      const pt2: PointLike = [pt.x, pt.y]
+      const routes = map.queryRenderedFeatures(pt2, { layers: [HIT_ROUTES] })
+      if (routes.length) return { kind: 'route', cid: routes[0].properties.cid as string }
+      return null
+    }
+
+    const hoverFor = (hit: ReturnType<typeof hitAt>): Hover => {
+      if (!hit) return null
+      const sel = live.current.view.sel
+      if (hit.kind === 'route') {
+        const conn = model.conns.get(hit.cid)
+        return conn && sel ? { kind: 'route', cid: conn.id, from: sel, to: otherEnd(conn, sel) } : null
+      }
+      if (sel && hit.id !== sel) {
+        const conn = connBetween(model, sel, hit.id)
+        if (conn && enabledOptions(conn, live.current.families).length) return { kind: 'route', cid: conn.id, from: sel, to: hit.id }
+      }
+      return { kind: 'city', id: hit.id }
+    }
+
+    const setHover = (h: Hover) => {
+      if (hoverKey(h) !== hoverKey(store.get())) store.set(h)
+    }
+
+    const onMove = (e: MapMouseEvent) => {
+      if (live.current.space || map.isMoving()) return
+      const hit = hitAt(e.point)
+      canvas.style.cursor = hit ? 'pointer' : ''
+      setHover(hoverFor(hit))
+    }
+    const onOut = () => setHover(null)
+    const onClick = (e: MapMouseEvent) => {
+      act.current.dismissHint()
+      if (live.current.space) return
+      const hit = hitAt(e.point)
+      const sel = live.current.view.sel
+      if (!hit) {
+        if (sel) act.current.deselect()
+        return
+      }
+      if (hit.kind === 'route') {
+        if (sel) act.current.openRoute(hit.cid, sel)
+        return
+      }
+      if (hit.id === sel) return act.current.deselect()
+      const h = hoverFor(hit)
+      if (h?.kind === 'route') act.current.openRoute(h.cid, h.from)
+      else act.current.select(hit.id)
+    }
+    const onDrag = () => {
+      setHover(null)
+      act.current.dismissHint()
+    }
+    const onWheel = () => act.current.dismissHint()
+
+    map.on('mousemove', onMove)
+    map.on('mouseout', onOut)
+    map.on('click', onClick)
+    map.on('dragstart', onDrag)
+    map.on('wheel', onWheel)
+    return () => {
+      map.off('mousemove', onMove)
+      map.off('mouseout', onOut)
+      map.off('click', onClick)
+      map.off('dragstart', onDrag)
+      map.off('wheel', onWheel)
+    }
+  }, [map, model, store])
+
+  // ---- keyboard ----------------------------------------------------------------------------
+
+  // Esc listens on the window: clicking a row unmounts it, and focus then falls back to the body.
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement
+      if (e.key !== 'Escape' || e.defaultPrevented) return
+      if (t !== document.body && !root.current?.contains(t)) return
+      e.preventDefault()
+      act.current.dismissHint()
+      act.current.back()
+    }
+    window.addEventListener('keydown', onEsc)
+    return () => window.removeEventListener('keydown', onEsc)
+  }, [])
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' && !(e.target as HTMLElement).closest('button, a, input')) {
+      e.preventDefault()
+      if (!live.current.space) {
+        live.current.space = true
+        setSpace(true)
+        store.set(null)
+      }
+    }
+  }
+  const onKeyUp = (e: React.KeyboardEvent) => {
+    if (e.key === ' ') {
+      live.current.space = false
+      setSpace(false)
+    }
+  }
+
+  // ---- controls ----------------------------------------------------------------------------
+
+  const toggle = (f: Family) => {
+    act.current.dismissHint()
+    setFamilies((cur) => {
+      const next = new Set(cur)
+      if (next.has(f)) {
+        if (next.size === 1) return cur
+        next.delete(f)
+      } else next.add(f)
+      return next
+    })
+  }
+
+  const getBlocked = useCallback((): Rect[] => {
+    const box = root.current?.getBoundingClientRect()
+    if (!box) return []
+    return [panelRef.current, controlsRef.current, bottomRef.current]
+      .filter((e): e is HTMLElement => !!e)
+      .map((e) => {
+        const r = e.getBoundingClientRect()
+        return { left: r.left - box.left - 6, top: r.top - box.top - 6, right: r.right - box.left + 6, bottom: r.bottom - box.top + 6 }
+      })
+  }, [])
+
+  const journeySet = useMemo(() => new Set(journey ?? []), [journey])
+
+  return (
+    <div
+      ref={root}
+      className={`rmap${space ? ' grab' : ''}`}
+      tabIndex={0}
+      role="region"
+      aria-label="Route map"
+      onKeyDown={onKeyDown}
+      onKeyUp={onKeyUp}
+      onBlur={() => {
+        live.current.space = false
+        setSpace(false)
+      }}
+    >
+      <div ref={canvasBox} className="rmap-canvas" />
+      <div className="rmap-vignette" />
+      {!map && <div className="rmap-loading mono">Loading map…</div>}
+      {map && (
+        <>
+          <Controls
+            available={available}
+            families={families}
+            onToggle={toggle}
+            onZoom={(d) => {
+              act.current.dismissHint()
+              map.zoomTo(map.getZoom() + d, { duration: reducedMotion() ? 0 : 400 })
+            }}
+            onHome={() => {
+              act.current.dismissHint()
+              if (live.current.view.sel) deselect()
+              else fit(null, null)
+            }}
+            hint={hint}
+            controlsRef={controlsRef}
+            bottomRef={bottomRef}
+          />
+          <Tooltip map={map} model={model} store={store} families={families} getBlocked={getBlocked} />
+          <Panel
+            model={model}
+            view={view}
+            families={families}
+            collapsed={collapsed}
+            journey={journeySet}
+            panelRef={panelRef}
+            onCollapse={setCollapsed}
+            onClose={deselect}
+            onMore={() => setView((v) => ({ ...v, panel: 'more' }))}
+            onCity={toCity}
+            onBack={back}
+            onRoute={(cid, from) => openRoute(cid, from)}
+            onOption={(i) => setView((v) => ({ ...v, opt: i }))}
+            onGoTo={select}
+            onHoverRoute={(cid, from) => {
+              if (!cid || !from) return store.set(null)
+              const conn = model.conns.get(cid)
+              if (conn) store.set({ kind: 'route', cid, from, to: otherEnd(conn, from) })
+            }}
+            onAddToJourney={onAddToJourney}
+          />
+        </>
+      )}
+    </div>
+  )
+}
