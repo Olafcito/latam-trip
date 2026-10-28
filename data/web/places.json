@@ -1,0 +1,3996 @@
+[
+ {
+  "id": "LPB",
+  "name": "La Paz",
+  "short_name": "La Paz",
+  "country": "BO",
+  "lat": -16.5,
+  "lon": -68.12,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": "LPB",
+  "airport_transfer_min": null,
+  "why": "Mountain-ringed highland capital with cable cars",
+  "reason": "Bolivia link: Avianca nonstop from Bogota",
+  "summary": "Seat of government at about 3,600 m (El Alto airport at 4,000 m), spread down a canyon under Illimani. Loud, steep, chaotic and fascinating, with the best markets and the most tours in Bolivia.",
+  "categories": [
+   "Altitude",
+   "Markets",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Mi Teleferico cable-car rides",
+   "Witches' Market and Plaza Murillo",
+   "Death Road mountain bike day",
+   "Valle de la Luna and Chacaltaya day trips",
+   "Cholita wrestling in El Alto"
+  ],
+  "touristy": 3,
+  "altitude_m": 3585,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg/1280px-Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_La_Paz,_Bolivia_(24473584779).jpg",
+   "credit": "Murray Foubister",
+   "licence": "CC BY-SA 2.0",
+   "w": 14177,
+   "h": 5200
+  },
+  "hostels": [
+   {
+    "name": "Wild Rover La Paz",
+    "dorm_dkk": 5,
+    "private_dkk": 13,
+    "rating": 9.2,
+    "price_suspect": true,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/la-paz/"
+   },
+   {
+    "name": "Casa de huéspedes La Casa Bonita",
+    "dorm_dkk": 61,
+    "private_dkk": 71,
+    "rating": 9.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/la-paz/"
+   },
+   {
+    "name": "Hotel Martí",
+    "dorm_dkk": 66,
+    "private_dkk": 77,
+    "rating": 8.9,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/la-paz/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026)."
+ },
+ {
+  "id": "COPA",
+  "name": "Copacabana (Lake Titicaca)",
+  "short_name": "Copacabana",
+  "country": "BO",
+  "lat": -16.17,
+  "lon": -69.09,
+  "tier": "destination",
+  "type": "lake",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Lakeside pilgrim town on Titicaca",
+  "reason": "Lakeside pilgrimage town, base for Isla del Sol and the Peru border (Kasani/Yunguyo)",
+  "summary": "Small town at about 3,840 m on Lake Titicaca with a 17th-century basilica and the boats to Isla del Sol. Relaxed and backpacker-friendly, with trout on every menu; the Candelaria feast on 2 Feb brings dances and crowds.",
+  "categories": [
+   "Altitude",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Basilica of Our Lady of Copacabana",
+   "Cerro Calvario sunset climb",
+   "Boat to Isla del Sol",
+   "Grilled lake trout on the waterfront",
+   "Pedal boat or kayak on the lake"
+  ],
+  "touristy": 4,
+  "altitude_m": 3826,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Panorama_de_Copacabana_La_Paz_Bolivia.jpg/1280px-Panorama_de_Copacabana_La_Paz_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_de_Copacabana_La_Paz_Bolivia.jpg",
+   "credit": "Christopher Walker from Krakow, Poland",
+   "licence": "CC BY 2.0",
+   "w": 2904,
+   "h": 1162
+  },
+  "hostels": [
+   {
+    "name": "Hostal Florencia",
+    "dorm_dkk": null,
+    "private_dkk": 41,
+    "rating": 9.3,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/copacabana/"
+   },
+   {
+    "name": "Mia Posada Hostel & Coworking",
+    "dorm_dkk": null,
+    "private_dkk": 6,
+    "rating": 9.7,
+    "price_suspect": true,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/copacabana/"
+   },
+   {
+    "name": "Lodge & Camping Suma Samawi",
+    "dorm_dkk": 48,
+    "private_dkk": 14,
+    "rating": 8.9,
+    "price_suspect": true,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/copacabana/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "ISOL",
+  "name": "Isla del Sol",
+  "short_name": "Isla del Sol",
+  "country": "BO",
+  "lat": -16.02,
+  "lon": -69.18,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Car-free Inca island on Lake Titicaca",
+  "reason": "Titicaca island with Inca sites and a north-south hike; boats from Copacabana",
+  "summary": "Rocky island with about 800 families, over 80 ruins, terraced hills and no cars or paved roads. Quiet village stays with big lake views; the north-south ridge walk is the draw.",
+  "categories": [
+   "Ruins",
+   "Altitude",
+   "Beach"
+  ],
+  "things_to_do": [
+   "Ridge walk Challapampa to Yumani",
+   "Titi Qala sacred rock and Chinkana ruins",
+   "Sunrise and sunset from a Yumani guesthouse",
+   "Inca stairway and terraces",
+   "Boat out to Isla de la Luna"
+  ],
+  "touristy": 4,
+  "altitude_m": 3991,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Panorama_Isla_del_Sol_360%C2%B0.jpg/1280px-Panorama_Isla_del_Sol_360%C2%B0.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_Isla_del_Sol_360%C2%B0.jpg",
+   "credit": "Ivan Mlinaric",
+   "licence": "CC BY 2.0",
+   "w": 19049,
+   "h": 2144
+  },
+  "hostels": [
+   {
+    "name": "Hostal Tawri",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/en/hostels/Bolivia/Isla-del-Sol"
+   }
+  ],
+  "hostel_note": "Guesthouses USD 15-50 per night (bushop 2026). Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "COR",
+  "name": "Coroico (Yungas)",
+  "short_name": "Coroico",
+  "country": "BO",
+  "lat": -16.19,
+  "lon": -67.73,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Warm green Yungas hill town above the jungle",
+  "reason": "Subtropical Yungas town; La Paz-Coroico is usually done as a day trip or short stay (bushop)",
+  "summary": "Small town at about 1,500 m, much warmer than La Paz, with fruit, coca and cloud-forest views. Slow, hammock-and-pool pace, mostly weekend visitors from La Paz.",
+  "categories": [
+   "Nature",
+   "Food",
+   "Markets"
+  ],
+  "things_to_do": [
+   "Cerro Uchumachi hike",
+   "Death Road finish and Yungas road views",
+   "Pool and hammock day at a hillside hostel",
+   "Waterfalls and coffee farms nearby",
+   "Sunday market on the plaza"
+  ],
+  "touristy": 3,
+  "altitude_m": 1671,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Coroico_vista_parcial_%28La_Paz_-_Bolivia%29.jpg/1280px-Coroico_vista_parcial_%28La_Paz_-_Bolivia%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Coroico_vista_parcial_(La_Paz_-_Bolivia).jpg",
+   "credit": "Phil Whitehouse from London, United Kingdom",
+   "licence": "CC BY 2.0",
+   "w": 2048,
+   "h": 1536
+  },
+  "hostels": [
+   {
+    "name": "El Rincon del Jucumari",
+    "dorm_dkk": 35,
+    "private_dkk": 20,
+    "rating": 8.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/coroico/"
+   },
+   {
+    "name": "Villa Camila Hostel",
+    "dorm_dkk": 58,
+    "private_dkk": 66,
+    "rating": 9.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/coroico/"
+   },
+   {
+    "name": "Hostal Voyage Coroico",
+    "dorm_dkk": 101,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/coroico/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "ORU",
+  "name": "Oruro",
+  "short_name": "Oruro",
+  "country": "BO",
+  "lat": -17.97,
+  "lon": -67.11,
+  "tier": "town",
+  "type": "city",
+  "popularity": 3,
+  "iata": "ORU",
+  "airport_transfer_min": null,
+  "why": "Mining city and Carnaval capital, mostly a stopover",
+  "reason": "Carnival city and rail/bus junction between La Paz, Uyuni and Cochabamba (Sajama NP base)",
+  "summary": "Cold high-plains city at about 3,700 m that wakes up for the Carnaval de Oruro in February (UNESCO listed). The rest of the year it is a quiet transit point with few travellers.",
+  "categories": [
+   "Altitude",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Carnaval de Oruro entrada (Feb)",
+   "Virgen del Socavon sanctuary and mirador",
+   "Carnival Museum (Museo Folklorico)",
+   "Sajama and Sabaya lagoons tours (far)"
+  ],
+  "touristy": 2,
+  "altitude_m": 3708,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Oruro_y_el_Lago_Uru_Uru.jpg/1280px-Oruro_y_el_Lago_Uru_Uru.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Oruro_y_el_Lago_Uru_Uru.jpg",
+   "credit": "Alberto Schiappapietra",
+   "licence": "CC BY-SA 4.0",
+   "w": 2048,
+   "h": 1536
+  },
+  "hostels": [
+   {
+    "name": "Backpackers Oruro",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/hostels-in/Bolivia"
+   }
+  ],
+  "hostel_note": "Very few hostels; accommodation fills and prices jump around Carnaval. Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "UYU",
+  "name": "Uyuni (Salar de Uyuni)",
+  "short_name": "Uyuni",
+  "country": "BO",
+  "lat": -20.46,
+  "lon": -66.82,
+  "tier": "destination",
+  "type": "park",
+  "popularity": 1,
+  "iata": "UYU",
+  "airport_transfer_min": null,
+  "why": "Gateway to the world's biggest salt flat",
+  "reason": "Gateway to the world's largest salt flat; mirror effect forms Dec-Mar; Incahuasi usually closed Jan-Mar",
+  "summary": "Dusty railway town at 3,650 m that exists to launch Salar de Uyuni tours. Dec to Feb is rainy season, when a thin water layer gives the famous mirror effect but roads and tours can be disrupted.",
+  "categories": [
+   "Nature",
+   "Altitude",
+   "Ruins"
+  ],
+  "things_to_do": [
+   "Salar de Uyuni 1-day or 3-day jeep tour",
+   "Mirror effect at sunrise and sunset in rainy season",
+   "Train cemetery",
+   "Incahuasi cactus island",
+   "Lagunas Colorada and Verde on multi-day tours"
+  ],
+  "touristy": 5,
+  "altitude_m": 3667,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Salar_de_Uyuni_D%C3%A9cembre_2007_-_Panorama_1_edit.jpg/1280px-Salar_de_Uyuni_D%C3%A9cembre_2007_-_Panorama_1_edit.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Salar_de_Uyuni_D%C3%A9cembre_2007_-_Panorama_1_edit.jpg",
+   "credit": "Martin St-Amant (S23678); derivative work (noise reduction to sky) by Julia W",
+   "licence": "CC BY-SA 3.0",
+   "w": 8827,
+   "h": 1235
+  },
+  "hostels": [
+   {
+    "name": "Piedra Blanca Backpackers Hostel",
+    "dorm_dkk": 76,
+    "private_dkk": 103,
+    "rating": 9.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/uyuni/"
+   },
+   {
+    "name": "Hostal Terra Sal with Garage",
+    "dorm_dkk": 5,
+    "private_dkk": 4,
+    "rating": 7.1,
+    "price_suspect": true,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/uyuni/"
+   },
+   {
+    "name": "Le Ciel D'Uyuni",
+    "dorm_dkk": null,
+    "private_dkk": 65,
+    "rating": 7.9,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/uyuni/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Tourist sources quote dorm USD 10-18 in Uyuni (touristsecrets 2026)."
+ },
+ {
+  "id": "POTO",
+  "name": "Potosi",
+  "short_name": "Potosi",
+  "country": "BO",
+  "lat": -19.58,
+  "lon": -65.75,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Silver-mining city under Cerro Rico at 4,000 m",
+  "reason": "4,000 m UNESCO silver-mining city (Cerro Rico tours); on the Sucre-Uyuni-La Paz corridor",
+  "summary": "One of the world's highest cities, built on the silver of Cerro Rico. Cold, atmospheric colonial centre with working-miner history; mine tours are the draw and are not for everyone.",
+  "categories": [
+   "Altitude",
+   "Colonial"
+  ],
+  "things_to_do": [
+   "Cerro Rico cooperative mine tour",
+   "Casa Nacional de Moneda mint museum",
+   "Santa Teresa convent and cathedral tower",
+   "Colonial streets around Plaza 10 de Noviembre",
+   "Salteñas for breakfast"
+  ],
+  "touristy": 3,
+  "altitude_m": 3962,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Potosi_D%C3%A9cembre_2007_-_Panorama_3.jpg/1280px-Potosi_D%C3%A9cembre_2007_-_Panorama_3.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Potosi_D%C3%A9cembre_2007_-_Panorama_3.jpg",
+   "credit": "Martin St-Amant (S23678)",
+   "licence": "CC BY 3.0",
+   "w": 4670,
+   "h": 1633
+  },
+  "hostels": [
+   {
+    "name": "The Koala Den Hostel",
+    "dorm_dkk": 71,
+    "private_dkk": 84,
+    "rating": 8.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/potosi/"
+   },
+   {
+    "name": "Hostal La Casona Potosi",
+    "dorm_dkk": 56,
+    "private_dkk": 56,
+    "rating": 7.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/potosi/"
+   },
+   {
+    "name": "Hostal Eucalyptus",
+    "dorm_dkk": null,
+    "private_dkk": 96,
+    "rating": 8.9,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/potosi/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "SRE",
+  "name": "Sucre",
+  "short_name": "Sucre",
+  "country": "BO",
+  "lat": -19.03,
+  "lon": -65.26,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "SRE",
+  "airport_transfer_min": null,
+  "why": "White colonial capital with a mild climate",
+  "reason": "Constitutional capital, white colonial city, mild climate; Tarabuco and dinosaur footprints nearby",
+  "summary": "Constitutional capital at 2,800 m with whitewashed colonial buildings, good cafes and a student feel. Milder and calmer than La Paz; popular for Spanish classes and long stays.",
+  "categories": [
+   "Colonial",
+   "Altitude",
+   "Food"
+  ],
+  "things_to_do": [
+   "Plaza 25 de Mayo and Casa de la Libertad",
+   "Mirador de la Recoleta at sunset",
+   "Dinosaur footprints at Cal Orck'o",
+   "Market day in Tarabuco (Sunday)",
+   "Chocolate and cafe crawl"
+  ],
+  "touristy": 3,
+  "altitude_m": 2794,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Panorama%2C_Sucre%2C_Bolivia.jpg/1280px-Panorama%2C_Sucre%2C_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama,_Sucre,_Bolivia.jpg",
+   "credit": "Murray Foubister",
+   "licence": "CC BY-SA 2.0",
+   "w": 18228,
+   "h": 7045
+  },
+  "hostels": [
+   {
+    "name": "Villa Oropeza Hostel",
+    "dorm_dkk": 32,
+    "private_dkk": 43,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/sucre/"
+   },
+   {
+    "name": "Holis",
+    "dorm_dkk": 38,
+    "private_dkk": 64,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/sucre/"
+   },
+   {
+    "name": "Hostal CasArte Takubamba",
+    "dorm_dkk": 95,
+    "private_dkk": 106,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/sucre/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026)."
+ },
+ {
+  "id": "TUP",
+  "name": "Tupiza",
+  "short_name": "Tupiza",
+  "country": "BO",
+  "lat": -21.44,
+  "lon": -65.72,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Red-rock cowboy town in the far south",
+  "reason": "Red-canyon town in the south, starting point for Uyuni 4x4 tours and Villazon (Argentina) border",
+  "summary": "High-desert town at about 2,850 m among red canyons and cacti, tied to the Butch Cassidy legend. Quiet and frontier-like, the cheaper and calmer start for a 3-4 day Salar tour.",
+  "categories": [
+   "Altitude",
+   "Nature",
+   "Ruins"
+  ],
+  "things_to_do": [
+   "Horseback ride through Quebrada Palala and Valle de los Machos",
+   "Canyon del Inca and Puerta del Diablo",
+   "Butch Cassidy trail and San Vicente",
+   "4x4 start of the Salar de Uyuni tour (3 to 4 days)"
+  ],
+  "touristy": 2,
+  "altitude_m": 2960,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/T%C3%BAneles%2C_ruta_Villaz%C3%B3n-Tupiza%2C_Bolivia_-_panoramio.jpg/1280px-T%C3%BAneles%2C_ruta_Villaz%C3%B3n-Tupiza%2C_Bolivia_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:T%C3%BAneles,_ruta_Villaz%C3%B3n-Tupiza,_Bolivia_-_panoramio.jpg",
+   "credit": "rodoluca",
+   "licence": "CC BY-SA 3.0",
+   "w": 2069,
+   "h": 1367
+  },
+  "hostels": [
+   {
+    "name": "Hostal Salares",
+    "dorm_dkk": null,
+    "private_dkk": 32,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/tupiza/"
+   },
+   {
+    "name": "Hostal Butch Cassidy",
+    "dorm_dkk": null,
+    "private_dkk": 41,
+    "rating": 9.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/tupiza/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "CBB",
+  "name": "Cochabamba",
+  "short_name": "Cochabamba",
+  "country": "BO",
+  "lat": -17.39,
+  "lon": -66.16,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": "CBB",
+  "airport_transfer_min": null,
+  "why": "Local-feeling valley city known for food",
+  "reason": "Third-largest city, food capital, Cristo de la Concordia; road/air hub between altiplano and lowlands",
+  "summary": "Warm valley city at 2,550 m with a mild climate and Bolivia's best eating scene. Few tourists, big markets and a laid-back university-town pace.",
+  "categories": [
+   "Altitude",
+   "Food",
+   "Markets"
+  ],
+  "things_to_do": [
+   "Cristo de la Concordia hilltop statue",
+   "La Cancha market",
+   "Lunch at a picanteria (silpancho, pique macho)",
+   "Day trip to Tarata or Incallajta ruins",
+   "Plaza 14 de Septiembre cafes"
+  ],
+  "touristy": 1,
+  "altitude_m": 2562,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Panorama_de_Cochabamba_Bolivia.jpg/1280px-Panorama_de_Cochabamba_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_de_Cochabamba_Bolivia.jpg",
+   "credit": "Lucas from Campinas, Brazil",
+   "licence": "CC BY-SA 2.0",
+   "w": 2592,
+   "h": 1944
+  },
+  "hostels": [
+   {
+    "name": "Running Chaski Hostel",
+    "dorm_dkk": 48,
+    "private_dkk": 58,
+    "rating": 9.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/cochabamba/"
+   },
+   {
+    "name": "El Pueblito Hostel",
+    "dorm_dkk": 67,
+    "private_dkk": 61,
+    "rating": 9.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/cochabamba/"
+   },
+   {
+    "name": "Valley Wasi Hostel",
+    "dorm_dkk": 101,
+    "private_dkk": 84,
+    "rating": 9.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/cochabamba/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "VVI",
+  "name": "Santa Cruz de la Sierra",
+  "short_name": "Santa Cruz de la Sierra",
+  "country": "BO",
+  "lat": -17.78,
+  "lon": -63.18,
+  "tier": "town",
+  "type": "city",
+  "popularity": 3,
+  "iata": "VVI",
+  "airport_transfer_min": null,
+  "why": "Fast-growing lowland business city",
+  "reason": "Bolivia link: Avianca nonstop from Bogota, Copa from Panama",
+  "summary": "Hot, flat and modern, Bolivia's biggest city and a trade hub. Mostly a practical stop with a pleasant colonial plaza, good restaurants and the base for Samaipata and the Jesuit missions.",
+  "categories": [
+   "Food",
+   "Colonial"
+  ],
+  "things_to_do": [
+   "Plaza 24 de Septiembre and the cathedral tower",
+   "Manzana Uno cultural centre",
+   "Biocentro Guembe butterfly and orchid park",
+   "Lowland cooking and cafes around Equipetrol",
+   "Jesuit Missions of Chiquitos day tour"
+  ],
+  "touristy": 1,
+  "altitude_m": 416,
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "credit": "Rojk",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
+  },
+  "hostels": [
+   {
+    "name": "TRAVELERO HOSTEL & TOURS",
+    "dorm_dkk": 6,
+    "private_dkk": 6,
+    "rating": 8.8,
+    "price_suspect": true,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/santa-cruz-de-la-sierra/"
+   },
+   {
+    "name": "Adventure 360º Hostel",
+    "dorm_dkk": 32,
+    "private_dkk": 36,
+    "rating": 7.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/santa-cruz-de-la-sierra/"
+   },
+   {
+    "name": "Ibiza Hostel",
+    "dorm_dkk": 52,
+    "private_dkk": 72,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/santa-cruz-de-la-sierra/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "SAMA",
+  "name": "Samaipata",
+  "short_name": "Samaipata",
+  "country": "BO",
+  "lat": -18.18,
+  "lon": -63.87,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Laid-back expat and backpacker valley town",
+  "reason": "Cool hill-town with El Fuerte (UNESCO) and Amboro NP; weekend retreat from Santa Cruz",
+  "summary": "Small town at about 1,650 m in the foothills near Amboro park with a big foreign-resident scene. Cafes, hammocks and cloud-forest walks, and the base for the pre-Inca El Fuerte site.",
+  "categories": [
+   "Nature",
+   "Ruins"
+  ],
+  "things_to_do": [
+   "El Fuerte de Samaipata carved rock ruins (UNESCO)",
+   "Amboro National Park waterfalls and tree ferns",
+   "Los Volcanes rock formations",
+   "Cafe and bakery lunches on the plaza"
+  ],
+  "touristy": 3,
+  "altitude_m": 1646,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Vista_de_Samaipata_%28O%29_-_Florida%2C_Bolivia.jpg/1280px-Vista_de_Samaipata_%28O%29_-_Florida%2C_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Vista_de_Samaipata_(O)_-_Florida,_Bolivia.jpg",
+   "credit": "Ruditaly",
+   "licence": "CC BY-SA 4.0",
+   "w": 4000,
+   "h": 2250
+  },
+  "hostels": [
+   {
+    "name": "Hostal Andorina",
+    "dorm_dkk": 52,
+    "private_dkk": 75,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/samaipata/"
+   },
+   {
+    "name": "Los Aventureros",
+    "dorm_dkk": 41,
+    "private_dkk": 29,
+    "rating": 8.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/samaipata/"
+   },
+   {
+    "name": "Hostel Serena",
+    "dorm_dkk": 12,
+    "private_dkk": 8,
+    "rating": 9.9,
+    "price_suspect": true,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/samaipata/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. One source quoted Hostel Serena dorms from GBP 9.5 and privates from GBP 29 (alongdustyroads, 2025); not converted to DKK."
+ },
+ {
+  "id": "RBQ",
+  "name": "Rurrenabaque (Madidi)",
+  "short_name": "Rurrenabaque",
+  "country": "BO",
+  "lat": -14.44,
+  "lon": -67.53,
+  "tier": "destination",
+  "type": "park",
+  "popularity": 1,
+  "iata": "RBQ",
+  "airport_transfer_min": null,
+  "why": "Amazon gateway on the Beni River",
+  "reason": "Amazon-edge jungle and pampas tour base for Madidi NP; flights and roads disrupted in rainy season (peak Jan-Feb)",
+  "summary": "Hot, humid river town where the Andes drop into the lowlands. Gateway for Madidi jungle lodges and the Pampas wildlife tours; Dec to Feb is rainy season so trails and flights can be disrupted.",
+  "categories": [
+   "Nature"
+  ],
+  "things_to_do": [
+   "Madidi National Park jungle lodge stay",
+   "Pampas boat tour with caiman, capybara and pink dolphins",
+   "Beni River sunset and the ferry to San Buenaventura",
+   "Fiesta de Rurre on 2 Feb"
+  ],
+  "touristy": 4,
+  "altitude_m": 194,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Rurrenabaque_ciudad.jpg/1280px-Rurrenabaque_ciudad.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Rurrenabaque_ciudad.jpg",
+   "credit": "Rodrigo Mariaca",
+   "licence": "CC BY-SA 4.0",
+   "w": 3793,
+   "h": 2845
+  },
+  "hostels": [
+   {
+    "name": "El Curichal Hostel",
+    "dorm_dkk": 54,
+    "private_dkk": 52,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/rurrenabaque/"
+   },
+   {
+    "name": "Hostal El Lobo",
+    "dorm_dkk": 45,
+    "private_dkk": 64,
+    "rating": 9.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/bolivia/rurrenabaque/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "PUNO",
+  "name": "Puno (Peru, reference)",
+  "short_name": "Puno",
+  "country": "PE",
+  "lat": -15.84,
+  "lon": -70.02,
+  "tier": "stop_only",
+  "type": "border",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Peruvian Titicaca port and transfer point for Copacabana; nearest airport Juliaca (JUL) about 1 h",
+  "reason": "Peruvian Titicaca port and transfer point for Copacabana; nearest airport Juliaca (JUL) about 1 h",
+  "summary": null,
+  "categories": [
+   "Altitude"
+  ],
+  "things_to_do": [],
+  "touristy": null,
+  "altitude_m": 3817,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Vista_de_Puno_y_el_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_53-54_PAN.JPG/1280px-Vista_de_Puno_y_el_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_53-54_PAN.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Vista_de_Puno_y_el_Titicaca,_Per%C3%BA,_2015-08-01,_DD_53-54_PAN.JPG",
+   "credit": "Diego Delso",
+   "licence": "CC BY-SA 4.0",
+   "w": 10214,
+   "h": 4096
+  },
+  "hostels": [],
+  "hostel_note": null
+ },
+ {
+  "id": "CUZ",
+  "name": "Cusco (Peru, reference)",
+  "short_name": "Cusco",
+  "country": "PE",
+  "lat": -13.52,
+  "lon": -71.97,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "CUZ",
+  "airport_transfer_min": null,
+  "why": "Machu Picchu gateway; tourist bus to La Paz (12-14 h) and Avianca flight CUZ-LPB",
+  "reason": "Machu Picchu gateway; tourist bus to La Paz (12-14 h) and Avianca flight CUZ-LPB",
+  "summary": null,
+  "categories": [
+   "Altitude"
+  ],
+  "things_to_do": [],
+  "touristy": null,
+  "altitude_m": 3382,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Vista_de_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_11-17_PAN.JPG/1280px-Vista_de_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_11-17_PAN.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Vista_de_Cusco,_Per%C3%BA,_2015-07-31,_DD_11-17_PAN.JPG",
+   "credit": "Diego Delso",
+   "licence": "CC BY-SA 4.0",
+   "w": 40580,
+   "h": 5281
+  },
+  "hostels": [],
+  "hostel_note": null
+ },
+ {
+  "id": "LIM",
+  "name": "Lima (Peru, reference)",
+  "short_name": "Lima",
+  "country": "PE",
+  "lat": -12.05,
+  "lon": -77.04,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 1,
+  "iata": "LIM",
+  "airport_transfer_min": null,
+  "why": "Peru's hub; direct flights to La Paz and Santa Cruz (BoA, LATAM)",
+  "reason": "Peru's hub; direct flights to La Paz and Santa Cruz (BoA, LATAM)",
+  "summary": null,
+  "categories": [
+   "Transit hub"
+  ],
+  "things_to_do": [],
+  "touristy": null,
+  "altitude_m": 148,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Panorama_de_Lima_%28Per%C3%BA%29_-_Eduardo_Polack%2C_Lima_%28Per%C3%BA%29.png/1280px-Panorama_de_Lima_%28Per%C3%BA%29_-_Eduardo_Polack%2C_Lima_%28Per%C3%BA%29.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_de_Lima_(Per%C3%BA)_-_Eduardo_Polack,_Lima_(Per%C3%BA).png",
+   "credit": "Eduardo Polack-Schneider",
+   "licence": "Public domain",
+   "w": 1316,
+   "h": 418
+  },
+  "hostels": [],
+  "hostel_note": null
+ },
+ {
+  "id": "BOG",
+  "name": "Bogota",
+  "short_name": "Bogota",
+  "country": "CO",
+  "lat": 4.71,
+  "lon": -74.07,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 2,
+  "iata": "BOG",
+  "airport_transfer_min": null,
+  "why": "Cool, high-altitude capital with a graffiti-covered old town",
+  "reason": "Capital and main air hub; flights to every Colombian node plus Panama, Central America and Bolivia",
+  "summary": "Colombia's 2,640 m capital is a sprawling city of museums, street art and food, and Dec to Jan are its driest, sunniest months. Expect cool nights (6 to 8 C) and an urban, big-city pace rather than a beach vibe.",
+  "categories": [
+   "Altitude",
+   "Colonial",
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "La Candelaria old town and street art",
+   "Monserrate cable car or funicular",
+   "Gold Museum and Botero Museum",
+   "Usaquen Sunday flea market",
+   "Zipaquira salt cathedral day trip"
+  ],
+  "touristy": 3,
+  "altitude_m": 2558,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Panorama_van_bogota_2.png/1280px-Panorama_van_bogota_2.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_van_bogota_2.png",
+   "credit": "Panorama_van_bogota.jpg: Jan Arkesteijn derivative work: Niclond23 (talk)",
+   "licence": "Public domain",
+   "w": 4653,
+   "h": 854
+  },
+  "hostels": [
+   {
+    "name": "The Cranky Croc Hostel",
+    "dorm_dkk": 117,
+    "private_dkk": 185,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-bogota"
+   },
+   {
+    "name": "Next Door",
+    "dorm_dkk": 87,
+    "private_dkk": 213,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-bogota"
+   },
+   {
+    "name": "The Hipinto Social Experience",
+    "dorm_dkk": 85,
+    "private_dkk": 369,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-bogota"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "PTY",
+  "name": "Panama City",
+  "short_name": "Panama City",
+  "country": "PA",
+  "lat": 8.98,
+  "lon": -79.52,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 2,
+  "iata": "PTY",
+  "airport_transfer_min": null,
+  "why": "Skyline capital with a colonial old quarter and the Canal",
+  "reason": "Copa hub; nearest big neighbour region to Colombia by air",
+  "summary": "Panama City mixes a glass skyline, the Panama Canal and the restored Casco Viejo old quarter with rooftop bars. The main arrival hub in the region and base for the San Blas and Colombia routes.",
+  "categories": [
+   "Colonial",
+   "Nightlife",
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Casco Viejo old town",
+   "Miraflores Locks on the Panama Canal",
+   "Amador Causeway bike ride",
+   "Cinta Costera and Mercado de Mariscos"
+  ],
+  "touristy": 3,
+  "altitude_m": 13,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Panama_Casco_Antiguo_panorama.jpg/1280px-Panama_Casco_Antiguo_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panama_Casco_Antiguo_panorama.jpg",
+   "credit": "Ivo Kruusamägi",
+   "licence": "CC BY-SA 4.0",
+   "w": 13683,
+   "h": 3989
+  },
+  "hostels": [
+   {
+    "name": "Viajero Casco Viejo Hostel",
+    "dorm_dkk": 104,
+    "private_dkk": 136,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/panama/panama-city/"
+   },
+   {
+    "name": "El Machico Hostel",
+    "dorm_dkk": 94,
+    "private_dkk": 101,
+    "rating": 8.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/panama/panama-city/"
+   },
+   {
+    "name": "Hostal Casa Areka",
+    "dorm_dkk": 67,
+    "private_dkk": 79,
+    "rating": 8.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/panama/panama-city/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SJO",
+  "name": "San Jose (Costa Rica)",
+  "short_name": "San Jose",
+  "country": "CR",
+  "lat": 9.93,
+  "lon": -84.08,
+  "tier": "town",
+  "type": "city",
+  "popularity": 3,
+  "iata": "SJO",
+  "airport_transfer_min": null,
+  "why": "Costa Rican capital, mainly a hub",
+  "reason": "Central America link from Bogota and Cartagena (Avianca Costa Rica, Copa)",
+  "summary": "San Jose is a busy highland capital with a handful of museums and markets, mostly used as a hub for buses and flights. Not a highlight in itself, but it has a decent hostel scene.",
+  "categories": [
+   "Nature",
+   "Food",
+   "Markets"
+  ],
+  "things_to_do": [
+   "Museo del Oro Precolombino",
+   "Mercado Central",
+   "Barrio Escalante food scene",
+   "Day trip to Poas or Irazu volcano"
+  ],
+  "touristy": 2,
+  "altitude_m": 1161,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Costa_Rica_-_San_Jose_panorama.jpg/1280px-Costa_Rica_-_San_Jose_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Costa_Rica_-_San_Jose_panorama.jpg",
+   "credit": "Costa Rica - San Jose and National Museum (5378828668).jpg: Andy Rusch from Santa Barbara, USA derivative work: ויקיג'אנ",
+   "licence": "CC BY 2.0",
+   "w": 7228,
+   "h": 1440
+  },
+  "hostels": [
+   {
+    "name": "Casa Escalante Hostel",
+    "dorm_dkk": 66,
+    "private_dkk": 181,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-san-jose"
+   },
+   {
+    "name": "Gaudys Hostel",
+    "dorm_dkk": 73,
+    "private_dkk": 211,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-san-jose"
+   },
+   {
+    "name": "Chillout Escalante Hostel",
+    "dorm_dkk": 89,
+    "private_dkk": 171,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-san-jose"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "GUA",
+  "name": "Guatemala City",
+  "short_name": "Guatemala City",
+  "country": "GT",
+  "lat": 14.63,
+  "lon": -90.51,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 2,
+  "iata": "GUA",
+  "airport_transfer_min": null,
+  "why": "Big, loud capital that most travellers only pass through",
+  "reason": "Capital, La Aurora airport and the hub for buses to Flores, Lanquin, El Salvador and Honduras",
+  "summary": "Guatemala City is the country's sprawling capital and the hub for onward buses, with a historic centre (Zona 1) and a modern Zona 10 and Zona 4. The vibe is busy and urban, with most backpackers staying one night before heading to Antigua, Flores or the border.",
+  "categories": [
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Palacio Nacional and Plaza de la Constitucion in Zona 1",
+   "Museo Popol Vuh and Museo Ixchel",
+   "Zona 4 cafes and street art",
+   "Day trip to Antigua or Pacaya"
+  ],
+  "touristy": 2,
+  "altitude_m": 1497,
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Guatemala_City_%28panorama%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Guatemala_City_(panorama).jpg",
+   "credit": "Виктор Пинчук",
+   "licence": "CC BY-SA 4.0",
+   "w": 1024,
+   "h": 243
+  },
+  "hostels": [
+   {
+    "name": "Tequila Sunrise",
+    "dorm_dkk": 81,
+    "private_dkk": 60,
+    "rating": 9.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/guatemala/guatemala-city/"
+   },
+   {
+    "name": "Central Hostel Reforma",
+    "dorm_dkk": 68,
+    "private_dkk": 68,
+    "rating": 7.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/guatemala/guatemala-city/"
+   },
+   {
+    "name": "Central Hostel Zona 4",
+    "dorm_dkk": null,
+    "private_dkk": 74,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/guatemala/guatemala-city/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "GDL",
+  "name": "Guadalajara",
+  "short_name": "Guadalajara",
+  "country": "MX",
+  "lat": 20.67,
+  "lon": -103.35,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 1,
+  "iata": "GDL",
+  "airport_transfer_min": null,
+  "why": "Mexico's mariachi and tequila capital",
+  "reason": "Jalisco capital and Mexico's second-largest hub; base for Tequila, Chapala, Guanajuato, Vallarta",
+  "summary": "Large, walkable-in-parts city with a grand colonial centre, big food and craft-market culture and a lively student and art scene. Dec to Feb is dry and sunny.",
+  "categories": [
+   "Food",
+   "Transit hub",
+   "Colonial"
+  ],
+  "things_to_do": [
+   "Centro Historico: cathedral, Plaza de Armas, Hospicio Cabanas",
+   "Tlaquepaque and Tonala craft towns",
+   "Torta ahogada and birria",
+   "Mercado San Juan de Dios",
+   "Tequila train and day tours"
+  ],
+  "touristy": 2,
+  "altitude_m": 1546,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "hostels": [
+   {
+    "name": "Hostel Hospedarte Guadalajara Centro",
+    "dorm_dkk": 94,
+    "private_dkk": 126,
+    "rating": 8.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/guadalajara/"
+   },
+   {
+    "name": "Leveli Coliving & Hostel Guadalajara",
+    "dorm_dkk": 65,
+    "private_dkk": 100,
+    "rating": 9.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/guadalajara/"
+   },
+   {
+    "name": "Hostel Hospedarte Chapultepec",
+    "dorm_dkk": 81,
+    "private_dkk": 117,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/guadalajara/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null."
+ },
+ {
+  "id": "TEQ",
+  "name": "Tequila",
+  "short_name": "Tequila",
+  "country": "MX",
+  "lat": 20.88,
+  "lon": -103.84,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Agave landscape town and tequila heartland",
+  "reason": "Agave landscape UNESCO town; tequila distillery tours; day trip from Guadalajara",
+  "summary": "UNESCO-listed agave landscape an hour from Guadalajara, built around distilleries. Pretty plaza and tasting rooms; most visitors come as a day trip.",
+  "categories": [
+   "Food",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Distillery tours (Jose Cuervo, Sauza)",
+   "Agave fields and Tequila Volcano",
+   "Tequila Express or Jose Cuervo Express train",
+   "Plaza and parish of Santiago Apostol"
+  ],
+  "touristy": 4,
+  "altitude_m": 1194,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Paisaje_agavero_%28Tequila%2C_Jalisco%29_I.jpg/1280px-Paisaje_agavero_%28Tequila%2C_Jalisco%29_I.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Paisaje_agavero_(Tequila,_Jalisco)_I.jpg",
+   "credit": "Juan Carlos Fonseca Mata",
+   "licence": "CC BY-SA 4.0",
+   "w": 6175,
+   "h": 4631
+  },
+  "hostels": [],
+  "hostel_note": "No hostels found; most visitors day-trip from Guadalajara. Prices null."
+ },
+ {
+  "id": "GTO",
+  "name": "Guanajuato",
+  "short_name": "Guanajuato",
+  "country": "MX",
+  "lat": 21.02,
+  "lon": -101.26,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "BJX",
+  "airport_transfer_min": null,
+  "why": "Colourful silver-mining university city",
+  "reason": "Colorful UNESCO colonial city (Bajio airport BJX near Leon about 0.5 h); about 4 h from Guadalajara",
+  "summary": "Steep hillside city of tunnels, plazas and pastel houses, UNESCO listed. Student energy, callejoneadas and museums in a small walkable centre.",
+  "categories": [
+   "Colonial"
+  ],
+  "things_to_do": [
+   "Callejoneada with students and music",
+   "Pipila viewpoint via funicular",
+   "Mummies of Guanajuato museum",
+   "Alley of the Kiss and Teatro Juarez",
+   "Underground tunnel streets"
+  ],
+  "touristy": 4,
+  "altitude_m": 2018,
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Plaza_de_la_Paz%2C_Guanajuato%2C_Guanajuato%2C_Mexico_%2814106314920%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Plaza_de_la_Paz,_Guanajuato,_Guanajuato,_Mexico_(14106314920).jpg",
+   "credit": "SMU Central University Libraries",
+   "licence": "No restrictions",
+   "w": 1000,
+   "h": 181
+  },
+  "hostels": [
+   {
+    "name": "Hostal Casa de Dante",
+    "dorm_dkk": 172,
+    "private_dkk": 176,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/guanajuato/"
+   },
+   {
+    "name": "Corral d Comedias Hostel",
+    "dorm_dkk": 72,
+    "private_dkk": 94,
+    "rating": 7.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/guanajuato/"
+   },
+   {
+    "name": "Casa Lupita Hostel",
+    "dorm_dkk": 105,
+    "private_dkk": 124,
+    "rating": 9.3,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/guanajuato/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Hostelz Mexico average: no figure for Guanajuato."
+ },
+ {
+  "id": "CHAP",
+  "name": "Lake Chapala / Ajijic",
+  "short_name": "Lake Chapala",
+  "country": "MX",
+  "lat": 20.29,
+  "lon": -103.19,
+  "tier": "town",
+  "type": "lake",
+  "popularity": 3,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Lakeside retiree and artist villages",
+  "reason": "Lake Chapala and expat town Ajijic; day trip from Guadalajara by Chapala Plus bus",
+  "summary": "Mexico's biggest lake, with Chapala town and Ajijic's cobbled artsy village, a large North American expat community. Very calm; the lake is not a swimming draw.",
+  "categories": [
+   "Nature",
+   "Food",
+   "Colonial"
+  ],
+  "things_to_do": [
+   "Ajijic malecon and gallery walk",
+   "Chapala pier and fish restaurants",
+   "Scorpion Island and Mezcala boat trip",
+   "Jocotepec hot springs"
+  ],
+  "touristy": 2,
+  "altitude_m": 1531,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Lago_de_Chapala._Panor%C3%A1mica.jpeg/1280px-Lago_de_Chapala._Panor%C3%A1mica.jpeg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lago_de_Chapala._Panor%C3%A1mica.jpeg",
+   "credit": "CarlosFDZ krskt",
+   "licence": "CC BY-SA 4.0",
+   "w": 8405,
+   "h": 2202
+  },
+  "hostels": [
+   {
+    "name": "36 Marcos Castellanos (Ajijic)",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/hostels/Mexico/Ajijic"
+   }
+  ],
+  "hostel_note": "Only one hostel listed (dorm 'from MX$83' on Hostelz, not converted). Hotels and Airbnbs dominate."
+ },
+ {
+  "id": "PVR",
+  "name": "Puerto Vallarta",
+  "short_name": "Puerto Vallarta",
+  "country": "MX",
+  "lat": 20.65,
+  "lon": -105.23,
+  "tier": "destination",
+  "type": "beach",
+  "popularity": 1,
+  "iata": "PVR",
+  "airport_transfer_min": null,
+  "why": "Pacific resort town with cobbled old centre",
+  "reason": "Pacific resort and beach hub; flights and ETN/Primera Plus buses from Guadalajara",
+  "summary": "Beach and party town on Banderas Bay with a malecon, Zona Romantica and jungle-backed beaches. Dec to Feb is peak season with humpback whales and high prices.",
+  "categories": [
+   "Beach",
+   "Colonial",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Malecon sculpture walk at sunset",
+   "Zona Romantica and Playa Los Muertos",
+   "Humpback whale watching (Dec to Mar)",
+   "Boat to Yelapa and Majahuitas",
+   "Snorkelling at Marietas Islands"
+  ],
+  "touristy": 5,
+  "altitude_m": 8,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Puerto_Vallarta%2C_Mexico_%28February_2024%29_-_269.jpg/1280px-Puerto_Vallarta%2C_Mexico_%28February_2024%29_-_269.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Puerto_Vallarta,_Mexico_(February_2024)_-_269.jpg",
+   "credit": "Another Believer",
+   "licence": "CC BY-SA 4.0",
+   "w": 4032,
+   "h": 3024
+  },
+  "hostels": [
+   {
+    "name": "Kualena Hostel",
+    "dorm_dkk": 115,
+    "private_dkk": 162,
+    "rating": 9.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/puerto-vallarta/"
+   },
+   {
+    "name": "Spartacus Boutique Hostel for Men",
+    "dorm_dkk": 235,
+    "private_dkk": null,
+    "rating": 9.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/puerto-vallarta/"
+   },
+   {
+    "name": "Hostel Vallarta",
+    "dorm_dkk": 94,
+    "private_dkk": 99,
+    "rating": 7.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/mexico/puerto-vallarta/"
+   }
+  ],
+  "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Peak season dorm prices run above the average."
+ },
+ {
+  "id": "ANT",
+  "name": "Antigua Guatemala",
+  "short_name": "Antigua Guatemala",
+  "country": "GT",
+  "lat": 14.56,
+  "lon": -90.73,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "GUA",
+  "airport_transfer_min": null,
+  "why": "Colonial town under three volcanoes",
+  "reason": "Colonial town and the main backpacker base with the densest shuttle network in Guatemala",
+  "summary": "Antigua is a cobbled UNESCO colonial town and the main backpacker base in Guatemala, ringed by Agua, Fuego and Acatenango volcanoes. Compact, walkable and very touristy, with language students, cafes, rooftop bars and a dense shuttle network.",
+  "categories": [
+   "Colonial",
+   "Nature",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Acatenango or Pacaya volcano hike",
+   "Arch of Santa Catalina and Parque Central",
+   "Colonial ruins (Capuchinas, San Francisco el Grande)",
+   "Cerro de la Cruz viewpoint",
+   "Coffee farm or ChocoMuseo tour"
+  ],
+  "touristy": 4,
+  "altitude_m": 1542,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Panorama_from_Roof_Terrace_of_Tropicana_Hostal_-_Antigua_Guatemala_-_Sacatepequez_-_Guatemala_%2815919381005%29.jpg/1280px-Panorama_from_Roof_Terrace_of_Tropicana_Hostal_-_Antigua_Guatemala_-_Sacatepequez_-_Guatemala_%2815919381005%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_from_Roof_Terrace_of_Tropicana_Hostal_-_Antigua_Guatemala_-_Sacatepequez_-_Guatemala_(15919381005).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "Tropicana Hostel",
+    "dorm_dkk": 71,
+    "private_dkk": 290,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://thebrokebackpacker.com/?p=42780"
+   },
+   {
+    "name": "Maya Papaya",
+    "dorm_dkk": 155,
+    "private_dkk": 406,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://thebrokebackpacker.com/?p=42780"
+   },
+   {
+    "name": "Adra Hostel",
+    "dorm_dkk": 103,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://thebrokebackpacker.com/?p=42780"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "ATIT",
+  "name": "Lake Atitlan (Panajachel / San Pedro)",
+  "short_name": "Lake Atitlan",
+  "country": "GT",
+  "lat": 14.74,
+  "lon": -91.16,
+  "tier": "destination",
+  "type": "lake",
+  "popularity": 1,
+  "iata": "GUA",
+  "airport_transfer_min": null,
+  "why": "Volcano lake of Maya villages, better for relaxing than partying",
+  "reason": "Volcano lake with Panajachel gateway and San Pedro / San Marcos / San Juan villages reached by lancha",
+  "summary": "Lake Atitlan is a deep volcanic lake ringed by villages, each with its own character: Panajachel is the gateway, San Pedro is the backpacker and party base, San Marcos and Santa Cruz are yoga and chill spots. Boats (lanchas) link everything, and the pace is slow.",
+  "categories": [
+   "Nature",
+   "Nightlife",
+   "Beach"
+  ],
+  "things_to_do": [
+   "Ride lanchas between villages",
+   "Climb San Pedro or Atitlan volcano",
+   "Kayak or dive from Santa Cruz La Laguna",
+   "Visit Santiago Atitlan and the Maximon shrine",
+   "Lake-edge yoga and hammock time"
+  ],
+  "touristy": 4,
+  "altitude_m": 1571,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/1_lake_atitlan_panorama_2009.jpg/1280px-1_lake_atitlan_panorama_2009.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:1_lake_atitlan_panorama_2009.jpg",
+   "credit": "chensiyuan",
+   "licence": "CC BY-SA 4.0",
+   "w": 5846,
+   "h": 3036
+  },
+  "hostels": [
+   {
+    "name": "Mr. Mullets",
+    "dorm_dkk": 161,
+    "private_dkk": 361,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.backpackerswanderlust.com/best-hostels-in-lake-atitlan/"
+   },
+   {
+    "name": "La Iguana Perdida",
+    "dorm_dkk": 97,
+    "private_dkk": 232,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.backpackerswanderlust.com/best-hostels-in-lake-atitlan/"
+   },
+   {
+    "name": "Socialtel Atitlan (ex Selina)",
+    "dorm_dkk": 161,
+    "private_dkk": 580,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.backpackerswanderlust.com/best-hostels-in-lake-atitlan/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "XELA",
+  "name": "Quetzaltenango (Xela)",
+  "short_name": "Quetzaltenango",
+  "country": "GT",
+  "lat": 14.84,
+  "lon": -91.52,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": "GUA",
+  "airport_transfer_min": null,
+  "why": "Highland university city with Spanish schools and volcano hikes",
+  "reason": "Highland city, Spanish schools, volcano hikes, route to Mexico border",
+  "summary": "Quetzaltenango (Xela) is Guatemala's second city, a working highland town with far fewer tourists than Antigua. The vibe is local and student-driven, with cheap Spanish schools, hot springs and a base for volcano treks.",
+  "categories": [
+   "Nature"
+  ],
+  "things_to_do": [
+   "Spanish school immersion",
+   "Santa Maria volcano sunrise hike",
+   "Fuentes Georginas hot springs",
+   "Cathedral and Parque Central",
+   "Quetzaltrekkers 3-day trek to Lake Atitlan"
+  ],
+  "touristy": 2,
+  "altitude_m": 2361,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Quetzaltenango_from_El_Ba%C3%BAl.JPG/1280px-Quetzaltenango_from_El_Ba%C3%BAl.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Quetzaltenango_from_El_Ba%C3%BAl.JPG",
+   "credit": "Simon Burchell",
+   "licence": "CC BY-SA 3.0",
+   "w": 4102,
+   "h": 1015
+  },
+  "hostels": [
+   {
+    "name": "Casa Seibel",
+    "dorm_dkk": 43,
+    "private_dkk": 55,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/guatemala/quetzaltenango/"
+   },
+   {
+    "name": "Kasa Kiwi Hostel & Travel Agency",
+    "dorm_dkk": 66,
+    "private_dkk": 88,
+    "rating": 8.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/guatemala/quetzaltenango/"
+   },
+   {
+    "name": "Casa I'X",
+    "dorm_dkk": 67,
+    "private_dkk": 49,
+    "rating": 8.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/guatemala/quetzaltenango/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "FLR",
+  "name": "Flores / Tikal",
+  "short_name": "Flores",
+  "country": "GT",
+  "lat": 16.93,
+  "lon": -89.89,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "FRS",
+  "airport_transfer_min": null,
+  "why": "Lake-island town and gateway to Tikal",
+  "reason": "Island town at Lake Peten Itza, gateway to Tikal and the Belize border (San Ignacio)",
+  "summary": "Flores is a small, colourful island in Lake Peten Itza linked by a causeway, and the base for Tikal, the Belize border and long bus legs. Relaxed and walkable, with lakeside bars and sunsets, and many people leave at 4am for Tikal sunrise.",
+  "categories": [
+   "Ruins",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Tikal ruins at sunrise or sunset",
+   "Swim and sunset at the lake",
+   "Cave and cenote day trips (Actun Kan)",
+   "Yaxha ruins",
+   "Walk the island and its lakefront bars"
+  ],
+  "touristy": 4,
+  "altitude_m": 115,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Panorama_of_Lake_Peten_Itza_-_Flores_-_Peten_-_Guatemala_%2815675568340%29.jpg/1280px-Panorama_of_Lake_Peten_Itza_-_Flores_-_Peten_-_Guatemala_%2815675568340%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Lake_Peten_Itza_-_Flores_-_Peten_-_Guatemala_(15675568340).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "Los Amigos Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.backpackerswanderlust.com/best-hostels-in-flores-guatemala/"
+   },
+   {
+    "name": "Adra Hostel Peten",
+    "dorm_dkk": 81,
+    "private_dkk": 424,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/en/best-hostels-flores"
+   },
+   {
+    "name": "Hostal Don Cenobio",
+    "dorm_dkk": 99,
+    "private_dkk": 503,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/en/best-hostels-flores"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "LANQ",
+  "name": "Lanquin / Semuc Champey",
+  "short_name": "Lanquin",
+  "country": "GT",
+  "lat": 15.57,
+  "lon": -89.97,
+  "tier": "destination",
+  "type": "park",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Jungle river hostels at the gate of Semuc Champey",
+  "reason": "Turquoise pools and caves in Alta Verapaz, backpacker staple",
+  "summary": "Lanquin is a small village in the Alta Verapaz hills and the base for Semuc Champey's turquoise limestone pools. Hostels sit along the river in the jungle, with a social, party-leaning backpacker crowd and rough minibus access.",
+  "categories": [
+   "Nature",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Swim the Semuc Champey pools and walk to the mirador",
+   "Candlelit cave tour at Kan'ba",
+   "River tubing on the Cahabon",
+   "Lanquin caves at dusk (bats)",
+   "Hostel river swings and communal dinners"
+  ],
+  "touristy": 4,
+  "altitude_m": 507,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/View_of_Lanqu%C3%ADn%2C_Guatemala.jpg/1280px-View_of_Lanqu%C3%ADn%2C_Guatemala.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:View_of_Lanqu%C3%ADn,_Guatemala.jpg",
+   "credit": "Salix Oculus",
+   "licence": "CC BY-SA 4.0",
+   "w": 5412,
+   "h": 3163
+  },
+  "hostels": [
+   {
+    "name": "El Retiro Lodge",
+    "dorm_dkk": 42,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://talesofabackpacker.com/the-best-hostels-in-semuc-champey-guatemala/"
+   },
+   {
+    "name": "Zephyr Lodge",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://talesofabackpacker.com/the-best-hostels-in-semuc-champey-guatemala/"
+   },
+   {
+    "name": "Greengo's",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://talesofabackpacker.com/the-best-hostels-in-semuc-champey-guatemala/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SAL",
+  "name": "San Salvador",
+  "short_name": "San Salvador",
+  "country": "SV",
+  "lat": 13.69,
+  "lon": -89.19,
+  "tier": "town",
+  "type": "city",
+  "popularity": 3,
+  "iata": "SAL",
+  "airport_transfer_min": null,
+  "why": "Buzzing Central American capital with a growing food and museum scene",
+  "reason": "Central America link from Bogota (Avianca nonstop)",
+  "summary": "San Salvador is a bustling, polarised capital of malls, nightlife and gritty districts, ringed by volcanoes. Most travellers use it as a hub and spend a day or two on museums, pupusas and viewpoints before heading to the coast.",
+  "categories": [
+   "Nature",
+   "Nightlife",
+   "Food"
+  ],
+  "things_to_do": [
+   "Metropolitan Cathedral and Historic Downtown",
+   "Monument to Memory and Truth",
+   "Los Planes de Renderos viewpoint and pupusas",
+   "Museo Nacional David J. Guzman",
+   "Day trip to Boqueron volcano"
+  ],
+  "touristy": 2,
+  "altitude_m": 645,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Volcano_San_Salvador_1960.jpg/1280px-Volcano_San_Salvador_1960.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Volcano_San_Salvador_1960.jpg",
+   "credit": "",
+   "licence": "Public domain",
+   "w": 2160,
+   "h": 1440
+  },
+  "hostels": [
+   {
+    "name": "La Zona Hostel",
+    "dorm_dkk": 48,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/hostels/El-Salvador/San-Salvador"
+   },
+   {
+    "name": "Hostal Cumbres del Volcan Flor Blanca",
+    "dorm_dkk": 52,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://en.wikivoyage.org/wiki/San_Salvador"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "TUNCO",
+  "name": "El Tunco / El Zonte coast",
+  "short_name": "El Tunco",
+  "country": "SV",
+  "lat": 13.49,
+  "lon": -89.38,
+  "tier": "destination",
+  "type": "beach",
+  "popularity": 1,
+  "iata": "SAL",
+  "airport_transfer_min": null,
+  "why": "Small surf village with sunset rock and weekend parties",
+  "reason": "Surf and backpacker beach town on the Pacific coast, about 1 h from SAL airport",
+  "summary": "El Tunco is a tiny black-sand surf village on El Salvador's Pacific coast, busy with backpackers and Salvadoran weekenders. El Zonte, a few km along the coast, is the quieter surf and Bitcoin-beach alternative.",
+  "categories": [
+   "Beach",
+   "Nature",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Learn to surf at El Sunzal, La Bocana or Bocanita",
+   "Sunset behind the Tunco rock",
+   "Weekend live music and bar crawl",
+   "Tamanique waterfalls",
+   "Day trip to El Zonte"
+  ],
+  "touristy": 4,
+  "altitude_m": 0,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg/1280px-Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg",
+   "credit": "Daniel chavez castro",
+   "licence": "CC BY 3.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "hostels": [
+   {
+    "name": "Dos Palmas",
+    "dorm_dkk": 67,
+    "private_dkk": 81,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/el-salvador/el-tunco/"
+   },
+   {
+    "name": "The Salty Dogs Hostel - El Tunco",
+    "dorm_dkk": 47,
+    "private_dkk": 84,
+    "rating": 9.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/el-salvador/el-tunco/"
+   },
+   {
+    "name": "The Duck Dive El Tunco",
+    "dorm_dkk": 84,
+    "private_dkk": 84,
+    "rating": 8.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/el-salvador/el-tunco/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "COPAN",
+  "name": "Copan Ruinas",
+  "short_name": "Copan Ruinas",
+  "country": "HN",
+  "lat": 14.84,
+  "lon": -89.14,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Calm Maya-ruins town with a famous hieroglyphic stairway",
+  "reason": "Maya ruins town just over the Guatemala border at El Florido; shuttle crossing point",
+  "summary": "Copan Ruinas is a small, relaxed Honduran hill town of cobbled, colourful streets beside one of the best Maya sites in the region. Easy walking, coffee, birds and hot springs, with a mellow backpacker crowd.",
+  "categories": [
+   "Ruins",
+   "Food",
+   "Colonial"
+  ],
+  "things_to_do": [
+   "Copan archaeological park and Hieroglyphic Stairway",
+   "Macaw Mountain bird park",
+   "Luna Jaguar hot springs",
+   "Horseback or coffee-farm tours",
+   "Tea and chocolate tasting in town"
+  ],
+  "touristy": 3,
+  "altitude_m": 594,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Ruinas_MAYA_Copan_Honduras_10.jpg/1280px-Ruinas_MAYA_Copan_Honduras_10.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Ruinas_MAYA_Copan_Honduras_10.jpg",
+   "credit": "Mónica J. Mora",
+   "licence": "CC BY-SA 4.0",
+   "w": 4160,
+   "h": 3120
+  },
+  "hostels": [
+   {
+    "name": "Hostel Iguana Azul",
+    "dorm_dkk": 77,
+    "private_dkk": 142,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.backpackerswanderlust.com/backpacking-copan-ruinas-hostels/"
+   },
+   {
+    "name": "ViaVia Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://en.wikivoyage.org/wiki/Cop%C3%A1n_Ruinas"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SAP",
+  "name": "San Pedro Sula",
+  "short_name": "San Pedro Sula",
+  "country": "HN",
+  "lat": 15.5,
+  "lon": -88.03,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 2,
+  "iata": "SAP",
+  "airport_transfer_min": null,
+  "why": "Industrial Honduran hub, a transit stop",
+  "reason": "Honduras' commercial hub and international airport; bus gateway to La Ceiba and Tegucigalpa",
+  "summary": "San Pedro Sula is Honduras' commercial centre and the main bus and air hub for the north coast and Copan. It is a working city with little for visitors beyond onward connections.",
+  "categories": [
+   "Transit hub",
+   "Food"
+  ],
+  "things_to_do": [
+   "Onward bus connections",
+   "Malls and local food stop",
+   "Day trip to Lake Yojoa"
+  ],
+  "touristy": 1,
+  "altitude_m": 92,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Sps_de_dia_2020_2.jpg/1280px-Sps_de_dia_2020_2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Sps_de_dia_2020_2.jpg",
+   "credit": "JVC3ETA",
+   "licence": "CC BY-SA 4.0",
+   "w": 4556,
+   "h": 3386
+  },
+  "hostels": [
+   {
+    "name": "Tamarindo Hostel",
+    "dorm_dkk": 67,
+    "private_dkk": 67,
+    "rating": 9.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/san-pedro-sula/"
+   },
+   {
+    "name": "Hostal Juan Lindo",
+    "dorm_dkk": 89,
+    "private_dkk": 136,
+    "rating": 10.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/san-pedro-sula/"
+   },
+   {
+    "name": "Dos Molinos B&B",
+    "dorm_dkk": null,
+    "private_dkk": 98,
+    "rating": 8.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/san-pedro-sula/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "TGU",
+  "name": "Tegucigalpa",
+  "short_name": "Tegucigalpa",
+  "country": "HN",
+  "lat": 14.07,
+  "lon": -87.19,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "TGU",
+  "airport_transfer_min": null,
+  "why": "Hilly colonial capital, mostly a transit point",
+  "reason": "Honduran capital, on the Tica Bus / Pullmantur line between San Salvador and Managua",
+  "summary": "Tegucigalpa is a sprawling hillside capital with a small colonial core, steep stone streets and big city views. Few travellers stay long, but it is the link for Nicaragua and the south.",
+  "categories": [
+   "Colonial",
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Cristo del Picacho viewpoint",
+   "Catedral de San Miguel Arcangel and Parque Central",
+   "Parque La Leona viewpoint"
+  ],
+  "touristy": 1,
+  "altitude_m": 1003,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Sunset_in_Tegucigalpa%2C_Honduras_at_Cafemania.jpg/1280px-Sunset_in_Tegucigalpa%2C_Honduras_at_Cafemania.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Sunset_in_Tegucigalpa,_Honduras_at_Cafemania.jpg",
+   "credit": "Nan Palmero",
+   "licence": "CC BY 2.0",
+   "w": 3492,
+   "h": 1104
+  },
+  "hostels": [
+   {
+    "name": "Palmira Hostel",
+    "dorm_dkk": 64,
+    "private_dkk": 194,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://en.wikivoyage.org/wiki/Tegucigalpa"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "LCE",
+  "name": "La Ceiba",
+  "short_name": "La Ceiba",
+  "country": "HN",
+  "lat": 15.78,
+  "lon": -86.8,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 2,
+  "iata": "LCE",
+  "airport_transfer_min": null,
+  "why": "Caribbean port city and ferry gateway to the Bay Islands",
+  "reason": "North coast port town; ferry terminals to Roatan and Utila, Pico Bonito, rafting",
+  "summary": "La Ceiba is a friendly, laid-back Caribbean port city and the departure point for ferries to Roatan and Utila. It also works as a base for rafting and national parks.",
+  "categories": [
+   "Nature",
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Pico Bonito National Park",
+   "White-water rafting on the Cangrejal river",
+   "Cuero y Salado wildlife refuge",
+   "Ferry to Roatan or Utila"
+  ],
+  "touristy": 2,
+  "altitude_m": 4,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Panoramica_de_Playa_de_Corozal_en_el_Norte_de_Honduras.jpg/1280px-Panoramica_de_Playa_de_Corozal_en_el_Norte_de_Honduras.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panoramica_de_Playa_de_Corozal_en_el_Norte_de_Honduras.jpg",
+   "credit": "Garcia.dennis",
+   "licence": "CC BY-SA 3.0",
+   "w": 2320,
+   "h": 616
+  },
+  "hostels": [
+   {
+    "name": "Jungle River Lodge",
+    "dorm_dkk": 130,
+    "private_dkk": 112,
+    "rating": 9.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/la-ceiba/"
+   },
+   {
+    "name": "Hotel & Hostal Guacamayos La Ceiba",
+    "dorm_dkk": 81,
+    "private_dkk": 67,
+    "rating": 9.2,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/la-ceiba/"
+   },
+   {
+    "name": "Trebol House Hostel",
+    "dorm_dkk": 108,
+    "private_dkk": 84,
+    "rating": 9.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/la-ceiba/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "RTB",
+  "name": "Roatan",
+  "short_name": "Roatan",
+  "country": "HN",
+  "lat": 16.32,
+  "lon": -86.54,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 1,
+  "iata": "RTB",
+  "airport_transfer_min": null,
+  "why": "Largest Bay Island, diving and beaches at higher prices",
+  "reason": "Largest Bay Island: West End and West Bay, diving and beaches",
+  "summary": "Roatan is the biggest of Honduras' Bay Islands, with diving, snorkelling and white-sand beaches, plus cruise-ship traffic at the resort end. West End is the backpacker base and West Bay the best beach, and it is pricier than the mainland.",
+  "categories": [
+   "Beach"
+  ],
+  "things_to_do": [
+   "Scuba diving and dive courses",
+   "Snorkel at Half Moon Bay",
+   "Day at West Bay Beach",
+   "Roatan Brewing Co. and rum tasting",
+   "Sunset in West End"
+  ],
+  "touristy": 4,
+  "altitude_m": 13,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Roatan_Honduras_from_ship.tiff/lossless-page1-1280px-Roatan_Honduras_from_ship.tiff.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Roatan_Honduras_from_ship.tiff",
+   "credit": "Raymondbowen",
+   "licence": "CC BY-SA 3.0",
+   "w": 12036,
+   "h": 1504
+  },
+  "hostels": [
+   {
+    "name": "ONAT Hostel",
+    "dorm_dkk": 116,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.backpackerswanderlust.com/backpacking-roatan-hostels-tips/"
+   },
+   {
+    "name": "Roatan Backpackers' Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.backpackerswanderlust.com/backpacking-roatan-hostels-tips/"
+   },
+   {
+    "name": "Adventure Hostels",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/hostels/Honduras/Roatan"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "UTIL",
+  "name": "Utila",
+  "short_name": "Utila",
+  "country": "HN",
+  "lat": 16.1,
+  "lon": -86.93,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Backpacker dive island with cheap certification",
+  "reason": "Cheapest diving in the Caribbean, backpacker island with no scheduled flights",
+  "summary": "Utila is the smallest and cheapest of the Bay Islands, a low-key Caribbean dive island with a social backpacker scene. Most people come to learn to dive and stay longer than planned.",
+  "categories": [
+   "Beach",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Open-water dive course",
+   "Snorkel and swim at Chepes Beach",
+   "Whale shark season diving (seasonal)",
+   "Sunset at Skidrow Cay",
+   "Bar nights and island parties"
+  ],
+  "touristy": 4,
+  "altitude_m": 1,
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Utila%2C_Honduras_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Utila,_Honduras_-_panoramio.jpg",
+   "credit": "panacheart",
+   "licence": "CC BY 3.0",
+   "w": 1152,
+   "h": 864
+  },
+  "hostels": [
+   {
+    "name": "MAZAPAN",
+    "dorm_dkk": 101,
+    "private_dkk": null,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/utila/"
+   },
+   {
+    "name": "La Hamaca Hostel - Utila",
+    "dorm_dkk": 111,
+    "private_dkk": 151,
+    "rating": 7.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/utila/"
+   },
+   {
+    "name": "Fenix Hotel & Hostel",
+    "dorm_dkk": 80,
+    "private_dkk": 118,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/honduras/utila/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "MGA",
+  "name": "Managua",
+  "short_name": "Managua",
+  "country": "NI",
+  "lat": 12.13,
+  "lon": -86.25,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "MGA",
+  "airport_transfer_min": null,
+  "why": "Sprawling lakeside capital, mainly a transit stop",
+  "reason": "Capital and hub for all Nicaraguan buses, shuttles and the Corn Islands flights",
+  "summary": "Managua is Nicaragua's spread-out capital on Lake Managua, without a real centre, and most travellers move straight on to Granada or Leon. Hot, busy and car-oriented.",
+  "categories": [
+   "Transit hub",
+   "Nature",
+   "Ruins"
+  ],
+  "things_to_do": [
+   "Loma de Tiscapa viewpoint",
+   "Old cathedral ruins and Plaza de la Revolucion",
+   "Onward day trip to Masaya volcano"
+  ],
+  "touristy": 1,
+  "altitude_m": 112,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg/1280px-Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Managua,_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "credit": "Department of Commerce. Bureau of Public Roads. 8/20/1949-4/1/1967",
+   "licence": "Public domain",
+   "w": 7019,
+   "h": 5100
+  },
+  "hostels": [
+   {
+    "name": "Casa Inti",
+    "dorm_dkk": 94,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-managua"
+   },
+   {
+    "name": "La Bicicleta Hostal",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-managua"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "LEON",
+  "name": "Leon",
+  "short_name": "Leon",
+  "country": "NI",
+  "lat": 12.44,
+  "lon": -86.88,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "MGA",
+  "airport_transfer_min": null,
+  "why": "Revolutionary university city and volcano-boarding base",
+  "reason": "Colonial university city, volcano boarding, Pacific beaches",
+  "summary": "Leon is a hot, intellectual colonial city of grand churches, murals and student bars. A popular backpacker stop with cheap beds, and it is where people go to board down Cerro Negro.",
+  "categories": [
+   "Nature",
+   "Colonial",
+   "Beach"
+  ],
+  "things_to_do": [
+   "Volcano boarding on Cerro Negro",
+   "Rooftop of the Cathedral of Leon",
+   "Revolution murals and museums",
+   "Day trip to Las Penitas beach",
+   "Cerro Negro overnight hike"
+  ],
+  "touristy": 3,
+  "altitude_m": 103,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_%2831462520932%29.jpg/1280px-Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_%2831462520932%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_(31462520932).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "Casa Lula Leon Hostal",
+    "dorm_dkk": 37,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-leon-nicaragua"
+   },
+   {
+    "name": "Bigfoot Hostel & Volcano Boarding",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-leon-nicaragua"
+   },
+   {
+    "name": "Poco a Poco Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-leon-nicaragua"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "GRAN",
+  "name": "Granada",
+  "short_name": "Granada",
+  "country": "NI",
+  "lat": 11.93,
+  "lon": -85.96,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "MGA",
+  "airport_transfer_min": null,
+  "why": "Colourful colonial city on Lake Nicaragua",
+  "reason": "Colonial city on Lake Nicaragua; base for Masaya, Mombacho and Ometepe",
+  "summary": "Granada is Nicaragua's pastel colonial showpiece beside Lake Nicaragua, with a lively pedestrian street, plazas and many hostels. Tourist-oriented but relaxed, and the base for Masaya and Mombacho.",
+  "categories": [
+   "Colonial",
+   "Nature",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Calle La Calzada bars and restaurants",
+   "Mombacho volcano or canopy tour",
+   "Isletas boat trip on Lake Nicaragua",
+   "Masaya volcano at night",
+   "Climb the Cathedral or La Merced tower"
+  ],
+  "touristy": 4,
+  "altitude_m": 63,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Granada%2C_Nicaragua_panorama.jpg/1280px-Granada%2C_Nicaragua_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Granada,_Nicaragua_panorama.jpg",
+   "credit": "Mark Larson",
+   "licence": "CC BY-SA 2.0",
+   "w": 2035,
+   "h": 499
+  },
+  "hostels": [
+   {
+    "name": "White Rabbit Hostel",
+    "dorm_dkk": 64,
+    "private_dkk": 184,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-granada-nicaragua"
+   },
+   {
+    "name": "Hostal Azul",
+    "dorm_dkk": 83,
+    "private_dkk": 206,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-granada-nicaragua"
+   },
+   {
+    "name": "Casa Yoly Hostel",
+    "dorm_dkk": 103,
+    "private_dkk": 304,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-granada-nicaragua"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SJDS",
+  "name": "San Juan del Sur",
+  "short_name": "San Juan del Sur",
+  "country": "NI",
+  "lat": 11.25,
+  "lon": -85.87,
+  "tier": "destination",
+  "type": "beach",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Pacific surf town and Sunday Funday party hub",
+  "reason": "Surf and party beach town, 30 km from the Costa Rica border",
+  "summary": "San Juan del Sur is a beach town in a horseshoe bay, with surf camps, sunset hill views and a big party scene. The most tourist-focused place in Nicaragua, with a large expat crowd.",
+  "categories": [
+   "Beach",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Surf lessons at Playa Maderas or Hermosa",
+   "Sunday Funday pool crawl",
+   "Cristo de la Misericordia viewpoint",
+   "Sunset sailing trip",
+   "Beach hopping to Playa Remanso"
+  ],
+  "touristy": 5,
+  "altitude_m": 21,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/24/Panorama_of_Malecon_%28Seawalk%29_-_San_Juan_del_Sur_-_Nicaragua_%2831796546196%29.jpg/1280px-Panorama_of_Malecon_%28Seawalk%29_-_San_Juan_del_Sur_-_Nicaragua_%2831796546196%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Malecon_(Seawalk)_-_San_Juan_del_Sur_-_Nicaragua_(31796546196).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "Dreamsea Surf Camp",
+    "dorm_dkk": 137,
+    "private_dkk": 495,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-san-juan-del-sur"
+   },
+   {
+    "name": "Hola Ola Hostel",
+    "dorm_dkk": 95,
+    "private_dkk": 276,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-san-juan-del-sur"
+   },
+   {
+    "name": "Surf Town Hostel",
+    "dorm_dkk": 92,
+    "private_dkk": 199,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-san-juan-del-sur"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "OMET",
+  "name": "Ometepe",
+  "short_name": "Ometepe",
+  "country": "NI",
+  "lat": 11.51,
+  "lon": -85.56,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Twin-volcano island in Lake Nicaragua with slow rural life",
+  "reason": "Twin-volcano island in Lake Nicaragua, ferry from San Jorge to Moyogalpa",
+  "summary": "Ometepe is a figure-eight island formed by Concepcion and Maderas volcanoes in Lake Nicaragua. Farms, jungle lodges and beaches give it a slow, outdoorsy vibe, and travel across it is by bus or scooter.",
+  "categories": [
+   "Nature",
+   "Beach"
+  ],
+  "things_to_do": [
+   "Climb Maderas or Concepcion volcano",
+   "Ojo de Agua natural pools",
+   "Kayak or SUP at Charco Verde",
+   "Scooter loop round the island",
+   "Hike to San Ramon waterfall"
+  ],
+  "touristy": 3,
+  "altitude_m": 69,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Panorama_of_Scenery_around_Balgue_-_Ometepe_Island_-_Nicaragua_%2830908653204%29.jpg/1280px-Panorama_of_Scenery_around_Balgue_-_Ometepe_Island_-_Nicaragua_%2830908653204%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Scenery_around_Balgue_-_Ometepe_Island_-_Nicaragua_(30908653204).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "Rancho Tranquillo",
+    "dorm_dkk": 53,
+    "private_dkk": 116,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-ometepe"
+   },
+   {
+    "name": "Hostel Life is Good",
+    "dorm_dkk": 64,
+    "private_dkk": 97,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-ometepe"
+   },
+   {
+    "name": "Hospedaje Soma",
+    "dorm_dkk": 64,
+    "private_dkk": 226,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://hostelz.com/best-hostels-ometepe"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "CORN",
+  "name": "Big Corn Island",
+  "short_name": "Big Corn Island",
+  "country": "NI",
+  "lat": 12.17,
+  "lon": -83.04,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 2,
+  "iata": "RNI",
+  "airport_transfer_min": null,
+  "why": "Quiet Caribbean island with Creole culture",
+  "reason": "Caribbean island with La Costena flights from MGA; gateway to Little Corn",
+  "summary": "Big Corn Island is the larger and more developed of the two Corn Islands, quiet, English-Creole in character and good for relaxing, snorkelling and sunsets. It is the arrival point by plane or panga from the mainland.",
+  "categories": [
+   "Beach"
+  ],
+  "things_to_do": [
+   "Snorkel and dive the reefs",
+   "Sunset with a Nica Libre",
+   "Picnic Beach and Long Bay",
+   "Ride around the island loop"
+  ],
+  "touristy": 2,
+  "altitude_m": 8,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Landing_pier_for_ferry_between_Little_and_Big_Corn_Island_-_panoramio.jpg/1280px-Landing_pier_for_ferry_between_Little_and_Big_Corn_Island_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Landing_pier_for_ferry_between_Little_and_Big_Corn_Island_-_panoramio.jpg",
+   "credit": "Michael Luethi",
+   "licence": "CC BY-SA 3.0",
+   "w": 2592,
+   "h": 1936
+  },
+  "hostels": [
+   {
+    "name": "The Wave Hostel",
+    "dorm_dkk": 61,
+    "private_dkk": 67,
+    "rating": 7.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/nicaragua/corn-island/"
+   },
+   {
+    "name": "Guesthouse Island Escape",
+    "dorm_dkk": null,
+    "private_dkk": 42,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/nicaragua/corn-island/"
+   },
+   {
+    "name": "Hospedaje Tropical Dreams",
+    "dorm_dkk": 404,
+    "private_dkk": 91,
+    "rating": 8.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/nicaragua/corn-island/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "LCORN",
+  "name": "Little Corn Island",
+  "short_name": "Little Corn Island",
+  "country": "NI",
+  "lat": 12.3,
+  "lon": -82.98,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Car-free barefoot Caribbean island",
+  "reason": "Car-free Caribbean island reached by panga from Big Corn",
+  "summary": "Little Corn is a one-square-mile island with no cars, sandy paths, simple lodges and a small but lively social scene. Remote and basic, with limited hot water and electricity.",
+  "categories": [
+   "Beach"
+  ],
+  "things_to_do": [
+   "Dive one of about 20 sites",
+   "Yoga at Firefly or the Lighthouse",
+   "Walk to the lighthouse viewpoint",
+   "Happy hours and reggae nights",
+   "Snorkel and beach-hop"
+  ],
+  "touristy": 3,
+  "altitude_m": 5,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Little_Corn_Island_Banner.jpg/1280px-Little_Corn_Island_Banner.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Little_Corn_Island_Banner.jpg",
+   "credit": "Brian Johnson & Dane Kantner",
+   "licence": "CC BY-SA 2.0",
+   "w": 4165,
+   "h": 595
+  },
+  "hostels": [
+   {
+    "name": "Three Brother's Hostel",
+    "dorm_dkk": 54,
+    "private_dkk": 40,
+    "rating": 7.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/nicaragua/little-corn-island/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "LIR",
+  "name": "Liberia (Costa Rica)",
+  "short_name": "Liberia",
+  "country": "CR",
+  "lat": 10.64,
+  "lon": -85.44,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "LIR",
+  "airport_transfer_min": null,
+  "why": "Dry-forest gateway city to Guanacaste beaches and the Nicaragua border",
+  "reason": "Northwest Costa Rica airport and bus hub, 3 h from San Juan del Sur by shuttle",
+  "summary": "Liberia is a hot, practical town in Guanacaste with an international airport, used as a base for beaches, volcano parks and the Penas Blancas crossing. Quiet, with a few hostels.",
+  "categories": [
+   "Nature",
+   "Beach",
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Rincon de la Vieja national park",
+   "Beaches of Guanacaste (Playas del Coco)",
+   "Barra Honda caves",
+   "Day trip to Santa Rosa national park"
+  ],
+  "touristy": 2,
+  "altitude_m": 143,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Costa_Rica_Algo_Picante.jpg/1280px-Costa_Rica_Algo_Picante.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Costa_Rica_Algo_Picante.jpg",
+   "credit": "Cuban Boy",
+   "licence": "CC0",
+   "w": 4032,
+   "h": 3024
+  },
+  "hostels": [
+   {
+    "name": "Hospedaje Dodero",
+    "dorm_dkk": 67,
+    "private_dkk": 85,
+    "rating": 8.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/costa-rica/liberia/"
+   },
+   {
+    "name": "Sunset House Hostel",
+    "dorm_dkk": 168,
+    "private_dkk": 135,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/costa-rica/liberia/"
+   },
+   {
+    "name": "Hostel Casa Mar",
+    "dorm_dkk": 101,
+    "private_dkk": 93,
+    "rating": 9.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/north-america/costa-rica/liberia/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SBLAS",
+  "name": "San Blas / Guna Yala",
+  "short_name": "San Blas",
+  "country": "PA",
+  "lat": 9.56,
+  "lon": -78.97,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Guna-run island archipelago of white-sand cays",
+  "reason": "Guna Yala island chain; the standard Panama to Colombia sailing or speedboat route",
+  "summary": "San Blas (Guna Yala) is an autonomous Guna territory of about 365 small islands on Panama's Caribbean coast. Stays are basic cabins or sailing trips, with no ATMs, and Guna culture and molas are central.",
+  "categories": [
+   "Beach"
+  ],
+  "things_to_do": [
+   "Island-hopping day or overnight trip",
+   "Snorkelling around the cays",
+   "Visit a Guna community and buy molas",
+   "Sailing between Panama and Colombia"
+  ],
+  "touristy": 3,
+  "altitude_m": 4,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Panam%C3%A1%2C_panor%C3%A1micas_%282005%29_03.jpg/1280px-Panam%C3%A1%2C_panor%C3%A1micas_%282005%29_03.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panam%C3%A1,_panor%C3%A1micas_(2005)_03.jpg",
+   "credit": "LBM1948",
+   "licence": "CC BY-SA 4.0",
+   "w": 4984,
+   "h": 1800
+  },
+  "hostels": [],
+  "hostel_note": null
+ },
+ {
+  "id": "CAPU",
+  "name": "Capurgana",
+  "short_name": "Capurgana",
+  "country": "CO",
+  "lat": 8.63,
+  "lon": -77.34,
+  "tier": "town",
+  "type": "beach",
+  "popularity": 3,
+  "iata": "CPB",
+  "airport_transfer_min": null,
+  "why": "Roadless Caribbean village on the Colombia-Panama border",
+  "reason": "Car-free Caribbean beach town near the Panama border (airstrip CPB charters)",
+  "summary": "Capurgana is a small, car-free village in Choco reached only by boat or plane, with jungle trails and calm bays, and the usual stepping stone for Darien crossings. Quiet and low-key.",
+  "categories": [
+   "Beach",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Walk the jungle trails to El Cielito waterfall",
+   "Snorkel at La Mocha and Playa Aguacate",
+   "Boat or walk to Sapzurro and La Miel",
+   "Beach days"
+  ],
+  "touristy": 2,
+  "altitude_m": 0,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Capurgan%C3%A1%2C_centro.JPG/1280px-Capurgan%C3%A1%2C_centro.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Capurgan%C3%A1,_centro.JPG",
+   "credit": "P.sutermeister",
+   "licence": "CC BY-SA 4.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "hostels": [
+   {
+    "name": "Melo Party Hostel Capurganá",
+    "dorm_dkk": null,
+    "private_dkk": 221,
+    "rating": 10.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/capurgana/"
+   },
+   {
+    "name": "Acuali Eco Hostal",
+    "dorm_dkk": 85,
+    "private_dkk": 141,
+    "rating": 10.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/capurgana/"
+   },
+   {
+    "name": "Cabañas Los Almendros",
+    "dorm_dkk": 85,
+    "private_dkk": 129,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/capurgana/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "MDE",
+  "name": "Medellin",
+  "short_name": "Medellin",
+  "country": "CO",
+  "lat": 6.25,
+  "lon": -75.57,
+  "tier": "destination",
+  "type": "hub",
+  "popularity": 1,
+  "iata": "MDE",
+  "airport_transfer_min": null,
+  "why": "City of eternal spring with a reinvented, creative core",
+  "reason": "Most popular backpacker city; second air hub (JMC airport 45 min out, Olaya Herrera EOH for Clic/Satena)",
+  "summary": "Warm valley city (about 22 C all year) known for its metro cable cars, Botero sculptures and a big backpacker and nomad scene around El Poblado. Dec brings the Alumbrados Christmas lights across the city.",
+  "categories": [
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Comuna 13 graffiti and escalators",
+   "Botero Plaza and Museum of Antioquia",
+   "Metrocable up to Parque Arvi",
+   "Alumbrados Christmas lights (December)",
+   "Guatape day trip"
+  ],
+  "touristy": 4,
+  "altitude_m": 1483,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "La Cabana Musical",
+    "dorm_dkk": 62,
+    "private_dkk": 277,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-medellin"
+   },
+   {
+    "name": "Paisa Hostel",
+    "dorm_dkk": 70,
+    "private_dkk": 139,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-medellin"
+   },
+   {
+    "name": "Black Sheep Hostel",
+    "dorm_dkk": 120,
+    "private_dkk": 271,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-medellin"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "CLO",
+  "name": "Cali",
+  "short_name": "Cali",
+  "country": "CO",
+  "lat": 3.45,
+  "lon": -76.53,
+  "tier": "town",
+  "type": "city",
+  "popularity": 3,
+  "iata": "CLO",
+  "airport_transfer_min": null,
+  "why": "Salsa capital of the world, hot and unpolished",
+  "reason": "Salsa capital in the south; air link to Caribbean coast and San Andres",
+  "summary": "Large, hot valley city (about 1,000 m, 24 C average) where salsa clubs and dance schools are the main draw, with far fewer foreign tourists than Medellin or Cartagena. The Cali Fair runs 25 to 30 Dec with concerts and salsa shows.",
+  "categories": [
+   "Nightlife",
+   "Beach",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Salsa clubs and dance classes",
+   "Cristo Rey viewpoint",
+   "San Antonio neighbourhood",
+   "Cerro de las Tres Cruces hike",
+   "Cali Fair (25 to 30 Dec)"
+  ],
+  "touristy": 2,
+  "altitude_m": 994,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/Panor%C3%A1mica_-_Cali_-_Valle_del_Cauca_-_Colombia.jpg/1280px-Panor%C3%A1mica_-_Cali_-_Valle_del_Cauca_-_Colombia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panor%C3%A1mica_-_Cali_-_Valle_del_Cauca_-_Colombia.jpg",
+   "credit": "Neoredacturus",
+   "licence": "CC BY-SA 4.0",
+   "w": 7274,
+   "h": 1880
+  },
+  "hostels": [
+   {
+    "name": "Mango Tree",
+    "dorm_dkk": 95,
+    "private_dkk": 322,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-cali"
+   },
+   {
+    "name": "La Chanca Hostel",
+    "dorm_dkk": 68,
+    "private_dkk": 106,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-cali"
+   },
+   {
+    "name": "La Casa de Adry",
+    "dorm_dkk": 71,
+    "private_dkk": 131,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-cali"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "CTG",
+  "name": "Cartagena",
+  "short_name": "Cartagena",
+  "country": "CO",
+  "lat": 10.39,
+  "lon": -75.48,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "CTG",
+  "airport_transfer_min": null,
+  "why": "Walled UNESCO colonial city on the Caribbean",
+  "reason": "Walled colonial city, top Caribbean destination and Panama flight/boat gateway",
+  "summary": "Pastel colonial streets inside 16th century walls, a hip Getsemani quarter and boat trips to the Rosario Islands; very hot and humid but Dec to Apr is the dry season. The most touristy stop in the country, with prices to match.",
+  "categories": [
+   "Colonial",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Walled City walk and Plaza de Bolivar",
+   "Getsemani street art and nightlife",
+   "Castillo San Felipe de Barajas",
+   "Rosario Islands day trip",
+   "Sunset on the city walls"
+  ],
+  "touristy": 5,
+  "altitude_m": 9,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Cartagena%2C_Colombia_3.jpg/1280px-Cartagena%2C_Colombia_3.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Cartagena,_Colombia_3.jpg",
+   "credit": "User: (WT-shared) Sylx100 at wts wikivoyage",
+   "licence": "Public domain",
+   "w": 2048,
+   "h": 1536
+  },
+  "hostels": [
+   {
+    "name": "Republica Hostel Cartagena",
+    "dorm_dkk": 71,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://gobackpacking.com/travel-guides/colombia/best-hostels-cartagena/"
+   },
+   {
+    "name": "Life is Good Cartagena Hostel",
+    "dorm_dkk": 97,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://gobackpacking.com/travel-guides/colombia/best-hostels-cartagena/"
+   },
+   {
+    "name": "Bourbon St. Hostel Boutique",
+    "dorm_dkk": 90,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://gobackpacking.com/travel-guides/colombia/best-hostels-cartagena/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SMR",
+  "name": "Santa Marta",
+  "short_name": "Santa Marta",
+  "country": "CO",
+  "lat": 11.24,
+  "lon": -74.2,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "SMR",
+  "airport_transfer_min": null,
+  "why": "Caribbean port town and gateway to Tayrona, Minca and Palomino",
+  "reason": "Gateway to Tayrona, Minca, Palomino and the Sierra Nevada",
+  "summary": "Colombia's oldest surviving city is a hot, gritty bay town best used as a base for the Sierra Nevada coast. Dry season runs Dec to Apr, so beach and trekking weather is good.",
+  "categories": [
+   "Ruins",
+   "Beach",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Tayrona day trip",
+   "Minca by moto-taxi",
+   "Ciudad Perdida trek (4 to 6 days)",
+   "Taganga and Rodadero beaches",
+   "Quinta de San Pedro Alejandrino"
+  ],
+  "touristy": 3,
+  "altitude_m": 9,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Santa_Marta_vista_desde_la_Cuchilla_de_San_Lorenzo_en_la_Sierra_Nevada_de_Santa_Marta_-_Panorama_-_Flickr_-_Alejandro_Bayer.jpg/1280px-Santa_Marta_vista_desde_la_Cuchilla_de_San_Lorenzo_en_la_Sierra_Nevada_de_Santa_Marta_-_Panorama_-_Flickr_-_Alejandro_Bayer.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Santa_Marta_vista_desde_la_Cuchilla_de_San_Lorenzo_en_la_Sierra_Nevada_de_Santa_Marta_-_Panorama_-_Flickr_-_Alejandro_Bayer.jpg",
+   "credit": "Alejandro Bayer Tamayo from Armenia, Colombia",
+   "licence": "CC BY-SA 2.0",
+   "w": 3648,
+   "h": 2432
+  },
+  "hostels": [
+   {
+    "name": "Viajero Hostel Santa Marta",
+    "dorm_dkk": 73,
+    "private_dkk": 305,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-santa-marta"
+   },
+   {
+    "name": "Mr. Baboon Hostel",
+    "dorm_dkk": 64,
+    "private_dkk": 181,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-santa-marta"
+   },
+   {
+    "name": "Sana Mar Hostel & Eco-cafe",
+    "dorm_dkk": 49,
+    "private_dkk": 159,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-santa-marta"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "PEI",
+  "name": "Pereira",
+  "short_name": "Pereira",
+  "country": "CO",
+  "lat": 4.81,
+  "lon": -75.69,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "PEI",
+  "airport_transfer_min": null,
+  "why": "Coffee Axis transport hub with an airport",
+  "reason": "Coffee region air and bus hub for Salento, Manizales and Cocora",
+  "summary": "Largest city in the coffee region and the usual gateway to Salento, Manizales and Armenia, with a busy bus terminal and Matecana airport. Little reason to stay beyond a night, though the Megacable gondola and Lake Otun are options.",
+  "categories": [
+   "Food",
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Gateway to Salento and Cocora Valley (about 45 min)",
+   "Megacable gondola",
+   "Ukumari Biopark"
+  ],
+  "touristy": 1,
+  "altitude_m": 1411,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Victoria%27s_City.jpg/1280px-Victoria%27s_City.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Victoria%27s_City.jpg",
+   "credit": "Mauriv",
+   "licence": "Public domain",
+   "w": 8000,
+   "h": 1026
+  },
+  "hostels": [
+   {
+    "name": "Tuki Hostel & Lounge",
+    "dorm_dkk": 113,
+    "private_dkk": 277,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-pereira"
+   },
+   {
+    "name": "Casa Azul Boutique Hostel",
+    "dorm_dkk": 96,
+    "private_dkk": 337,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-pereira"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "ADZ",
+  "name": "San Andres",
+  "short_name": "San Andres",
+  "country": "CO",
+  "lat": 12.58,
+  "lon": -81.7,
+  "tier": "destination",
+  "type": "island",
+  "popularity": 2,
+  "iata": "ADZ",
+  "airport_transfer_min": null,
+  "why": "Caribbean island of seven shades of blue, far off the mainland",
+  "reason": "Caribbean island, direct flights from most Colombian cities and Panama",
+  "summary": "Duty-free island 700 km from the mainland with a crowded main beach strip, reef snorkelling and golf-cart touring; English-based Creole culture gives it a different feel from the rest of Colombia. Busy at New Year and on weekends, quieter in the villages like San Luis.",
+  "categories": [
+   "Beach"
+  ],
+  "things_to_do": [
+   "Johnny Cay boat trip",
+   "Snorkel La Piscinita",
+   "Mangrove kayaking",
+   "Golf cart island loop",
+   "Fried fish and rondon soup"
+  ],
+  "touristy": 5,
+  "altitude_m": 4,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Hotel_Sunrise_San_Andres_Colombia.jpg/1280px-Hotel_Sunrise_San_Andres_Colombia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Hotel_Sunrise_San_Andres_Colombia.jpg",
+   "credit": "buteos",
+   "licence": "CC BY 2.0",
+   "w": 4608,
+   "h": 1949
+  },
+  "hostels": [
+   {
+    "name": "Blue Almond Hostel",
+    "dorm_dkk": 86,
+    "private_dkk": 167,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-san-andres"
+   },
+   {
+    "name": "Karibbik Haus Hostel",
+    "dorm_dkk": 123,
+    "private_dkk": 396,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-san-andres"
+   },
+   {
+    "name": "Viajero Hostel San Andres",
+    "dorm_dkk": 130,
+    "private_dkk": 406,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-san-andres"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "PVA",
+  "name": "Providencia",
+  "short_name": "Providencia",
+  "country": "CO",
+  "lat": 13.35,
+  "lon": -81.37,
+  "tier": "town",
+  "type": "island",
+  "popularity": 3,
+  "iata": "PVA",
+  "airport_transfer_min": null,
+  "why": "Quiet, hilly Creole island for diving and slow days",
+  "reason": "Quiet island reached only by Satena flight or ferry from San Andres",
+  "summary": "About 5,000 residents, English-Creole speaking, with a Rastafari and Raizal heritage, and a UNESCO Seaflower reserve around it. Rebuilt after Hurricane Iota (2020), mostly small guesthouses and cabanas.",
+  "categories": [
+   "Beach",
+   "Nature",
+   "Food"
+  ],
+  "things_to_do": [
+   "Scuba and snorkelling in Seaflower reserve",
+   "McBean Lagoon National Park",
+   "Santa Catalina footbridge and forts",
+   "Scooter or buggy loop road",
+   "Seafood on the beach"
+  ],
+  "touristy": 2,
+  "altitude_m": 318,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Isla_de_Providencia%2C_Colombia_-_Rocky_Point_%28Providencia%2C_Colombia%29_-_Tagzania_-_1786289817663.jpg/1280px-Isla_de_Providencia%2C_Colombia_-_Rocky_Point_%28Providencia%2C_Colombia%29_-_Tagzania_-_1786289817663.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Isla_de_Providencia,_Colombia_-_Rocky_Point_(Providencia,_Colombia)_-_Tagzania_-_1786289817663.jpg",
+   "credit": "isusko (Tagzania user ID: 14079)",
+   "licence": "CC BY-SA 4.0",
+   "w": 2364,
+   "h": 1773
+  },
+  "hostels": [
+   {
+    "name": "Posada Enilda",
+    "dorm_dkk": null,
+    "private_dkk": 204,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/providencia-island/"
+   },
+   {
+    "name": "South West Bay Cabañas",
+    "dorm_dkk": null,
+    "private_dkk": 400,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/providencia-island/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SALE",
+  "name": "Salento (Valle de Cocora)",
+  "short_name": "Salento",
+  "country": "CO",
+  "lat": 4.64,
+  "lon": -75.57,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 1,
+  "iata": "PEI",
+  "airport_transfer_min": null,
+  "why": "Colourful coffee-region village at the gate of Cocora Valley",
+  "reason": "Coffee-region village and gateway to Valle de Cocora wax palms",
+  "summary": "A pretty bahareque village of balconies and craft shops, famous for the 60 m wax palms of the Cocora Valley a jeep ride away. Packed at weekends and holidays, calm mid-week.",
+  "categories": [
+   "Food",
+   "Nature",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Valle de Cocora wax palm hike",
+   "Coffee farm tour (e.g. Don Elias, Finca el Ocaso)",
+   "Alto de la Cruz viewpoint",
+   "Trout and patacon on the plaza",
+   "Tejo and local bars"
+  ],
+  "touristy": 5,
+  "altitude_m": 1996,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Plaza_Principal_Salento_-_panoramio.jpg/1280px-Plaza_Principal_Salento_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Plaza_Principal_Salento_-_panoramio.jpg",
+   "credit": "rothware",
+   "licence": "CC BY-SA 3.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "Posada Aguanile Finca La Diana",
+    "dorm_dkk": 63,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-salento"
+   },
+   {
+    "name": "Yambolombia Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-salento"
+   },
+   {
+    "name": "Hostel Tralala",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-salento"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "MZL",
+  "name": "Manizales",
+  "short_name": "Manizales",
+  "country": "CO",
+  "lat": 5.07,
+  "lon": -75.52,
+  "tier": "town",
+  "type": "city",
+  "popularity": 3,
+  "iata": "MZL",
+  "airport_transfer_min": null,
+  "why": "High-altitude coffee city and university town under a volcano",
+  "reason": "Coffee-region city near Los Nevados; La Nubia airport has Clic flights",
+  "summary": "Steep, cool, spring-like city at about 2,150 m with 30,000 students and the closest base for Nevado del Ruiz and hot springs. Far fewer foreign tourists than Salento. Not usually on the gringo trail.",
+  "categories": [
+   "Food",
+   "Nature",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Nevado del Ruiz National Park",
+   "Hot springs (Termales del Ruiz, Otono)",
+   "Hacienda Venecia coffee tour",
+   "Cable car and cathedral viewpoint",
+   "Student bars around Cable Plaza"
+  ],
+  "touristy": 2,
+  "altitude_m": 2116,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Chipre_%28Manizales%29%2C_2023_-_07.jpg/1280px-Chipre_%28Manizales%29%2C_2023_-_07.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Chipre_(Manizales),_2023_-_07.jpg",
+   "credit": "XalD",
+   "licence": "CC BY-SA 4.0",
+   "w": 4608,
+   "h": 3456
+  },
+  "hostels": [
+   {
+    "name": "Mirador Finca Morrogacho",
+    "dorm_dkk": 136,
+    "private_dkk": 306,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-manizales"
+   },
+   {
+    "name": "Hacienda Venecia Hostel",
+    "dorm_dkk": 103,
+    "private_dkk": 366,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-manizales"
+   },
+   {
+    "name": "Hostal de la 57",
+    "dorm_dkk": 114,
+    "private_dkk": 214,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-manizales"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "GUAT",
+  "name": "Guatape",
+  "short_name": "Guatape",
+  "country": "CO",
+  "lat": 6.23,
+  "lon": -75.16,
+  "tier": "destination",
+  "type": "lake",
+  "popularity": 1,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Painted lakeside town below El Penol rock",
+  "reason": "Lake town and El Penol rock, standard Medellin day trip (about 2 h)",
+  "summary": "Technicolour zocalo-tiled houses on a man-made reservoir, 2 hours from Medellin and swamped by day-trippers at weekends. Staying overnight gives you the calm evenings and quiet mornings.",
+  "categories": [
+   "Nature",
+   "Nightlife",
+   "Ruins"
+  ],
+  "things_to_do": [
+   "Climb El Penol rock (708 steps)",
+   "Zocalo streets and Plaza de Zocalos",
+   "Reservoir boat trip",
+   "Kayak or paddleboard on the lake",
+   "Pablo Escobar's La Manuela ruins"
+  ],
+  "touristy": 5,
+  "altitude_m": 1889,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Dan-gold-guatape-colombia.jpg/1280px-Dan-gold-guatape-colombia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Dan-gold-guatape-colombia.jpg",
+   "credit": "Danielcgold",
+   "licence": "CC BY-SA 4.0",
+   "w": 6000,
+   "h": 3376
+  },
+  "hostels": [
+   {
+    "name": "Viajero Guatape Hostel",
+    "dorm_dkk": 117,
+    "private_dkk": 492,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-guatape"
+   },
+   {
+    "name": "Casa Kayam Hostel",
+    "dorm_dkk": 82,
+    "private_dkk": 286,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-guatape"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "TAYR",
+  "name": "Tayrona National Park",
+  "short_name": "Tayrona National Park",
+  "country": "CO",
+  "lat": 11.31,
+  "lon": -74.04,
+  "tier": "destination",
+  "type": "park",
+  "popularity": 1,
+  "iata": "SMR",
+  "airport_transfer_min": null,
+  "why": "Jungle-and-beach national park on the Caribbean coast",
+  "reason": "Top Caribbean beach park, entrances El Zaino, Calabazo, Palangana, Bahia Concha",
+  "summary": "Coastal rainforest park with white beaches reached on foot or horse, hammock camping at Cabo San Juan and strong currents on most beaches. Typically closes about 1 to 15 February for indigenous rest, so check dates against your itinerary.",
+  "categories": [
+   "Beach",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Hike to Cabo San Juan beach",
+   "Snorkel La Piscina",
+   "Hammock night at Cabo San Juan",
+   "Playa Brava quiet beach",
+   "Walk to Arrecifes (no swimming, currents)"
+  ],
+  "touristy": 4,
+  "altitude_m": 129,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/124_Tayrona_National_Park_Colombia.JPG/1280px-124_Tayrona_National_Park_Colombia.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:124_Tayrona_National_Park_Colombia.JPG",
+   "credit": "David Shankbone",
+   "licence": "CC BY-SA 3.0",
+   "w": 4000,
+   "h": 3000
+  },
+  "hostels": [
+   {
+    "name": "Eco Hostal Yuluka",
+    "dorm_dkk": 113,
+    "private_dkk": 142,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/el-zaino/"
+   },
+   {
+    "name": "Selva Maria Hostal By Nomadax Tayrona",
+    "dorm_dkk": null,
+    "private_dkk": 69,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/el-zaino/"
+   },
+   {
+    "name": "Kimara Hostel",
+    "dorm_dkk": 85,
+    "private_dkk": 107,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/el-zaino/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "PALO",
+  "name": "Palomino",
+  "short_name": "Palomino",
+  "country": "CO",
+  "lat": 11.25,
+  "lon": -73.57,
+  "tier": "destination",
+  "type": "beach",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Barefoot beach village where the river meets the sea",
+  "reason": "Backpacker beach town with river tubing, on the coast road east of Tayrona",
+  "summary": "Laid-back strip of hostels, hammocks and dirt roads between the Sierra Nevada and the Caribbean, with a wide windy beach and river tubing. Backpacker-friendly and growing quickly.",
+  "categories": [
+   "Beach",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Tubing down the Palomino river",
+   "Quebrada Valencia waterfalls",
+   "Long beach walks and sunset",
+   "Day trip to Tayrona",
+   "Hammock hostels and pools"
+  ],
+  "touristy": 3,
+  "altitude_m": 6,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Palomino_beach.JPG/1280px-Palomino_beach.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Palomino_beach.JPG",
+   "credit": "Uhkabu",
+   "licence": "CC BY-SA 3.0",
+   "w": 4000,
+   "h": 2672
+  },
+  "hostels": [
+   {
+    "name": "Palomino Sunrise",
+    "dorm_dkk": 132,
+    "private_dkk": 404,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-palomino"
+   },
+   {
+    "name": "Hostal Zinpar",
+    "dorm_dkk": 60,
+    "private_dkk": 148,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-palomino"
+   },
+   {
+    "name": "Bella Flor Hostel",
+    "dorm_dkk": 73,
+    "private_dkk": 259,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-palomino"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "MINC",
+  "name": "Minca",
+  "short_name": "Minca",
+  "country": "CO",
+  "lat": 11.13,
+  "lon": -74.12,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": "SMR",
+  "airport_transfer_min": null,
+  "why": "Cool mountain hamlet above Santa Marta with jungle ecolodges",
+  "reason": "Cloud-forest village above Santa Marta, hostels and coffee farms",
+  "summary": "Small Sierra Nevada village at about 600 m, popular for waterfalls, coffee farms, birdwatching and sunset viewpoints, and 20 degrees cooler than the coast at night. Most travellers stay in ecolodges outside the village.",
+  "categories": [
+   "Nature",
+   "Food",
+   "Ruins"
+  ],
+  "things_to_do": [
+   "Marinka and Pozo Azul waterfalls",
+   "Finca la Victoria coffee tour",
+   "Sierra Minca sunset viewpoint",
+   "Birdwatching",
+   "Day trip to Tayrona"
+  ],
+  "touristy": 4,
+  "altitude_m": 679,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Fincas_cafeteras_-_Sierra_Nevada_-_panoramio.jpg/1280px-Fincas_cafeteras_-_Sierra_Nevada_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Fincas_cafeteras_-_Sierra_Nevada_-_panoramio.jpg",
+   "credit": "diego_cue",
+   "licence": "CC BY-SA 3.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "hostels": [
+   {
+    "name": "Mano Verde",
+    "dorm_dkk": 80,
+    "private_dkk": 237,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-minca"
+   },
+   {
+    "name": "Finca Carpe Diem",
+    "dorm_dkk": 80,
+    "private_dkk": 285,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-minca"
+   },
+   {
+    "name": "Mundo Nuevo Eco Lodge",
+    "dorm_dkk": 118,
+    "private_dkk": 604,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-minca"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "BAQ",
+  "name": "Barranquilla",
+  "short_name": "Barranquilla",
+  "country": "CO",
+  "lat": 10.96,
+  "lon": -74.8,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "BAQ",
+  "airport_transfer_min": null,
+  "why": "Hot industrial port city, home of Colombia's biggest Carnival",
+  "reason": "Transfer city between Cartagena and Santa Marta, airport with Avianca/LATAM/Wingo/JetSmart",
+  "summary": "Fourth biggest city (1.3 million), relaxed Caribbean pace, Art Deco and Magdalena riverfront; mostly a transit stop but the Carnival is a big draw. Carnival 2027 is expected around 6 to 9 Feb (Saturday to Tuesday before Ash Wednesday, 10 Feb), confirm locally.",
+  "categories": [
+   "Transit hub",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Carnival of Barranquilla (Feb)",
+   "Gran Malecon del Rio",
+   "Bocas de Ceniza",
+   "Art Deco El Prado district"
+  ],
+  "touristy": 2,
+  "altitude_m": 50,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/2019_Barranquilla_%28Colombia%29_-_Teatro_Col%C3%B3n.jpg/1280px-2019_Barranquilla_%28Colombia%29_-_Teatro_Col%C3%B3n.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:2019_Barranquilla_(Colombia)_-_Teatro_Col%C3%B3n.jpg",
+   "credit": "Felipe Restrepo Acosta",
+   "licence": "CC BY-SA 4.0",
+   "w": 4940,
+   "h": 3706
+  },
+  "hostels": [
+   {
+    "name": "Mamy Dorme Hostel",
+    "dorm_dkk": 67,
+    "private_dkk": 39,
+    "rating": 8.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/barranquilla/"
+   },
+   {
+    "name": "La Quinta Bacana Hostal",
+    "dorm_dkk": 62,
+    "private_dkk": 57,
+    "rating": 8.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/barranquilla/"
+   },
+   {
+    "name": "Casa Ventura",
+    "dorm_dkk": 363,
+    "private_dkk": null,
+    "rating": 8.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/barranquilla/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SGIL",
+  "name": "San Gil (and Barichara)",
+  "short_name": "San Gil",
+  "country": "CO",
+  "lat": 6.55,
+  "lon": -73.13,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Adventure capital of Colombia in the Santander hills",
+  "reason": "Adventure sports capital of Santander, base for Barichara and Chicamocha",
+  "summary": "Small market town packed with outfitters for rafting, paragliding over Chicamocha canyon, canyoning and caving, with cheap hostels and a young crowd. Barichara, a preserved white colonial village, is 45 minutes away and quieter.",
+  "categories": [
+   "Nature",
+   "Colonial",
+   "Markets"
+  ],
+  "things_to_do": [
+   "White water rafting on the Suarez or Fonce",
+   "Paragliding over Chicamocha canyon",
+   "Barichara and the Camino Real to Guane",
+   "Pozo Azul and Gallineral park",
+   "Tejo evenings"
+  ],
+  "touristy": 3,
+  "altitude_m": 1101,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/San_Gil_-_Santanderr_%28Night%29.jpg/1280px-San_Gil_-_Santanderr_%28Night%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:San_Gil_-_Santanderr_(Night).jpg",
+   "credit": "Pedro Alejandro Ariza Rubiano",
+   "licence": "CC BY-SA 4.0",
+   "w": 4128,
+   "h": 3096
+  },
+  "hostels": [
+   {
+    "name": "Macondo Hostel",
+    "dorm_dkk": 83,
+    "private_dkk": 80,
+    "rating": 10.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/san-gil/"
+   },
+   {
+    "name": "Traveler Hostel San Gil",
+    "dorm_dkk": 43,
+    "private_dkk": 90,
+    "rating": 9.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/san-gil/"
+   },
+   {
+    "name": "This is Colombia Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/san-gil/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "VLEY",
+  "name": "Villa de Leyva",
+  "short_name": "Villa de Leyva",
+  "country": "CO",
+  "lat": 5.64,
+  "lon": -73.52,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Whitewashed colonial town with the largest plaza in Colombia",
+  "reason": "Colonial town 3-4 h from Bogota",
+  "summary": "Cobbled streets, 16th century buildings and a 14,000 sqm plaza, three hours from Bogota and very busy at weekends and holidays. Dry desert-like valley with fossils, wineries and cloud forest nearby.",
+  "categories": [
+   "Colonial",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Plaza Mayor and cobbled streets",
+   "El Fosil museum",
+   "Pozos Azules and Iguaque National Park",
+   "Cycling to wineries",
+   "Candlelit Festival of Lights (Dec)"
+  ],
+  "touristy": 4,
+  "altitude_m": 2156,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Panor%C3%A1mica_-_Villa_de_Leyva_-_Colombia.jpg/1280px-Panor%C3%A1mica_-_Villa_de_Leyva_-_Colombia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panor%C3%A1mica_-_Villa_de_Leyva_-_Colombia.jpg",
+   "credit": "Neoredacturus",
+   "licence": "CC BY-SA 4.0",
+   "w": 7120,
+   "h": 1664
+  },
+  "hostels": [
+   {
+    "name": "Selina Villa de Leyva",
+    "dorm_dkk": 132,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-villa-de-leyva"
+   },
+   {
+    "name": "Nibiru Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-villa-de-leyva"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "NECO",
+  "name": "Necocli",
+  "short_name": "Necocli",
+  "country": "CO",
+  "lat": 8.42,
+  "lon": -76.78,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Gulf of Uraba port town where boats leave for Capurgana",
+  "reason": "Gulf of Uraba port where boats leave for Capurgana (main route toward Panama)",
+  "summary": "Afro-Colombian beach town, mainly a staging point for boats to Capurgana and Acandi; hot and basic. Also used as a transit point for Darien migrants.",
+  "categories": [
+   "Beach",
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Boat launches to Capurgana and Acandi",
+   "Black sand beach"
+  ],
+  "touristy": 1,
+  "altitude_m": 0,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/HOSPITAL_NECOCLI_-_panoramio.jpg/1280px-HOSPITAL_NECOCLI_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:HOSPITAL_NECOCLI_-_panoramio.jpg",
+   "credit": "JOSE DAVID ROMAN RAM…",
+   "licence": "CC BY 3.0",
+   "w": 2592,
+   "h": 1944
+  },
+  "hostels": [
+   {
+    "name": "Afro Hostel",
+    "dorm_dkk": 57,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/da/hostels/Colombia/Necocli"
+   },
+   {
+    "name": "Hostal Oklahoma 48",
+    "dorm_dkk": 106,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/da/hostels/Colombia/Necocli"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "SAPZ",
+  "name": "Sapzurro",
+  "short_name": "Sapzurro",
+  "country": "CO",
+  "lat": 8.66,
+  "lon": -77.35,
+  "tier": "stop_only",
+  "type": "border",
+  "popularity": 3,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Tiny car-free bay village on the Panama border",
+  "reason": "Bay village 10-15 min by boat from Capurgana; trail up to the La Miel border post",
+  "summary": "About 270 residents on a sheltered bay, no roads and no ATMs, with jungle trails to Panama's La Miel beach. Reach by boat from Capurgana (COP 10,000 per sygic guide).",
+  "categories": [
+   "Beach",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Walk to Playa Blanca and La Miel (Panama)",
+   "Hike over the hill to Capurgana (about 1.5 h)",
+   "Diana waterfall",
+   "Snorkel and freedive",
+   "Cabo Tiburon, border of South and Central America"
+  ],
+  "touristy": 2,
+  "altitude_m": 0,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg/1280px-Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg",
+   "credit": "Johan Andrés Toro",
+   "licence": "CC BY-SA 4.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "hostels": [
+   {
+    "name": "Hilltop Sapzurro",
+    "dorm_dkk": 64,
+    "private_dkk": 171,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/sapzurro/"
+   }
+  ],
+  "hostel_note": null
+ },
+ {
+  "id": "OBAL",
+  "name": "Puerto Obaldia",
+  "short_name": "Puerto Obaldia",
+  "country": "PA",
+  "lat": 8.67,
+  "lon": -77.42,
+  "tier": "stop_only",
+  "type": "border",
+  "popularity": 3,
+  "iata": "PUE",
+  "airport_transfer_min": null,
+  "why": "Panamanian border post and airstrip on the Guna Yala coast",
+  "reason": "Panamanian border town with immigration; Air Panama flights to Panama City",
+  "summary": "Remote settlement of about 670 people with customs and immigration, no roads, only boats and a small airstrip. A functional crossing, not a place to stay.",
+  "categories": [],
+  "things_to_do": [
+   "Panama immigration stamp",
+   "Boat to or from Sapzurro (about 45 min)"
+  ],
+  "touristy": 1,
+  "altitude_m": 0,
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Puerto_Obald%C3%ADa%2C_puerto_%283%29.JPG/1280px-Puerto_Obald%C3%ADa%2C_puerto_%283%29.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Puerto_Obald%C3%ADa,_puerto_(3).JPG",
+   "credit": "P.sutermeister",
+   "licence": "CC BY-SA 4.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "hostels": [],
+  "hostel_note": null
+ },
+ {
+  "id": "SDQ",
+  "name": "Santo Domingo",
+  "short_name": "Santo Domingo",
+  "country": "DO",
+  "lat": 18.43,
+  "lon": -69.67,
+  "tier": "stop_only",
+  "type": "airport",
+  "popularity": 5,
+  "iata": "SDQ",
+  "context": true
+ },
+ {
+  "id": "MEX",
+  "name": "Mexico City",
+  "short_name": "Mexico City",
+  "country": "MX",
+  "lat": 19.44,
+  "lon": -99.07,
+  "tier": "stop_only",
+  "type": "airport",
+  "popularity": 5,
+  "iata": "MEX",
+  "context": true
+ },
+ {
+  "id": "MIA",
+  "name": "Miami",
+  "short_name": "Miami",
+  "country": "US",
+  "lat": 25.79,
+  "lon": -80.29,
+  "tier": "stop_only",
+  "type": "airport",
+  "popularity": 5,
+  "iata": "MIA",
+  "context": true
+ },
+ {
+  "id": "LAP",
+  "name": "La Paz (Baja California)",
+  "short_name": "La Paz (Baja California)",
+  "country": "MX",
+  "lat": 24.07,
+  "lon": -110.36,
+  "tier": "stop_only",
+  "type": "airport",
+  "popularity": 5,
+  "iata": "LAP",
+  "context": true
+ },
+ {
+  "id": "NLU",
+  "name": "Mexico City Felipe Angeles",
+  "short_name": "Mexico City Felipe Angeles",
+  "country": "MX",
+  "lat": 19.74,
+  "lon": -99.02,
+  "tier": "stop_only",
+  "type": "airport",
+  "popularity": 5,
+  "iata": "NLU",
+  "context": true
+ }
+]
