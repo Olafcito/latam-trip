@@ -34,3 +34,5 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 9,mom-9a,sonnet,momondo,9,194743,215,1465,47
 12,gf-12a,sonnet,google_flights,12,164210,49,743,60
 11,mom-11a,sonnet,momondo,8,192219,210,1415,50
+13,gf-13a,sonnet,google_flights,12,173965,43,829,47
+14,gf-14a,sonnet,google_flights,12,176359,60,875,56
