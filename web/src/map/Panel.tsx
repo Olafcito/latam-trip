@@ -1,5 +1,5 @@
 import { useState, type Ref } from 'react'
-import { neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
+import { byCountry, countries, countryName, neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
 import { familyOf, type Connection, type DatedFare, type Family, type FlownLeg, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
@@ -70,10 +70,6 @@ function routeTitle(model: Model, conn: Connection, from: string) {
   return `${a?.short_name} to ${b?.short_name}`
 }
 
-function countryName(model: Model, code: string) {
-  return model.data.countries.find((c) => c.code === code)?.name ?? code
-}
-
 function HeadButtons(p: PanelProps) {
   return (
     <div className="hbtns">
@@ -93,7 +89,24 @@ function OptChip({ o, label }: { o: RouteOption; label?: boolean }) {
   )
 }
 
+/** The connections of `from`, under a heading per country once more than one country is reachable. */
 function ConnList({ p, list, from, compact }: { p: PanelProps; list: Neighbour[]; from: string; compact?: boolean }) {
+  const home = p.model.byId.get(from)?.country ?? ''
+  const groups = byCountry(list, home)
+  if (groups.length < 2) return <ConnRows p={p} list={list} from={from} compact={compact} />
+  return (
+    <div className={`cgroups${compact ? ' flush' : ''}`}>
+      {groups.map((g) => (
+        <section key={g.country}>
+          <p className="cgroup mono">{g.country === home ? `Within ${countryName(p.model, g.country)}` : countryName(p.model, g.country)}</p>
+          <ConnRows p={p} list={g.list} from={from} compact={compact} />
+        </section>
+      ))}
+    </div>
+  )
+}
+
+function ConnRows({ p, list, from, compact }: { p: PanelProps; list: Neighbour[]; from: string; compact?: boolean }) {
   return (
     <ul className={`clist${compact ? ' flush' : ''}`}>
       {list.map((n, i) => (
@@ -405,6 +418,7 @@ function RouteView(p: PanelProps & { conn: Connection }) {
           <HeadButtons {...p} />
         </div>
         <h2 className="rtitle"><span>{a.short_name}</span><Arrow s={22} /><span>{b.short_name}</span></h2>
+        <p className="rcountries mono">{countries(model, a, b)}</p>
         {opts.length > 0 ? (
           <div className="compare">
             {opts.map((o, i) => (

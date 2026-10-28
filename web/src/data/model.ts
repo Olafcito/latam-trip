@@ -138,3 +138,30 @@ export function viaText(model: Model, conn: Connection, opt: RouteOption, from: 
   }
   return opt.border ? 'direct, border crossing' : 'direct'
 }
+
+export function countryName(model: Model, code: string): string {
+  return model.data.countries.find((c) => c.code === code)?.name ?? code
+}
+
+/** "Managua, Nicaragua" when the place lies outside `home`, else just the name. */
+export function placeLabel(model: Model, p: Place, home?: string): string {
+  return p.country === home ? p.short_name : `${p.short_name}, ${countryName(model, p.country)}`
+}
+
+/** Neighbours grouped by country: `home` first, then the others by their fastest link. Order inside a group is kept. */
+export function byCountry(list: Neighbour[], home: string): { country: string; list: Neighbour[] }[] {
+  const groups = new Map<string, Neighbour[]>()
+  for (const n of list) groups.set(n.other.country, [...(groups.get(n.other.country) ?? []), n])
+  return [...groups]
+    .map(([country, list]) => ({ country, list }))
+    .sort((x, y) => Number(y.country === home) - Number(x.country === home) || fastest(x.list) - fastest(y.list))
+}
+
+const fastest = (l: Neighbour[]) => Math.min(...l.map((n) => n.fastest))
+
+/** "Nicaragua to Honduras", or "Within Nicaragua" when both ends share a country. */
+export function countries(model: Model, a: Place, b: Place): string {
+  return a.country === b.country
+    ? `Within ${countryName(model, a.country)}`
+    : `${countryName(model, a.country)} to ${countryName(model, b.country)}`
+}

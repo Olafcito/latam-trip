@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import type { Map as MLMap } from 'maplibre-gl'
-import { neighbours, routePoints, viaText, type Model } from '../data/model'
+import { countries, countryName, neighbours, routePoints, viaText, type Model } from '../data/model'
 import { familyOf, type Family } from '../data/types'
 import type { LonLat } from '../lib/geo'
 import { duration, fromPrice, modeLabel } from '../lib/format'
@@ -25,7 +25,7 @@ export function Tooltip({ map, model, store, families, getBlocked }: Props) {
   if (hover?.kind === 'city') {
     const p = model.byId.get(hover.id)
     if (p) {
-      const country = model.data.countries.find((c) => c.code === p.country)?.name ?? p.country
+      const country = countryName(model, p.country)
       const n = neighbours(model, p.id, families).length
       points = [[p.lon, p.lat]]
       body = (
@@ -48,6 +48,7 @@ export function Tooltip({ map, model, store, families, getBlocked }: Props) {
       body = (
         <>
           <p className="tip-t">{a.short_name} to {b.short_name}</p>
+          <p className="tip-c mono">{countries(model, a, b)}</p>
           <div className="tip-rows">
             {opts.map((o, i) => (
               <div className="tip-row" key={i}>
