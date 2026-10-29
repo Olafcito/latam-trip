@@ -15,6 +15,8 @@ export const FILES = [
   'data/quotes.csv',
   'data/bag_rules.json',
   'trip.json',
+  // when each kind of data was last checked (the freshness corner)
+  'data/web/meta.json',
   // the Map tab's route map
   'data/web/places.json',
   'data/web/connections.json',

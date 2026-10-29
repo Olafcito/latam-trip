@@ -231,10 +231,19 @@ export interface TripParams {
   [key: string]: unknown
 }
 
+/** data/web/meta.json: when the site was built and when each kind of data was last checked.
+ *  A last_checked value is a bare date "2026-10-29", a full ISO time, or null when unknown. */
+export interface Meta {
+  built_at: string | null
+  last_checked: Record<string, string | null>
+}
+
 export interface AppData {
   inout: InOut
   map: MapData
   bags: BagRule[]
   trip: TripParams
   source: 'github' | 'local'
+  /** null when meta.json could not be read */
+  meta: Meta | null
 }
