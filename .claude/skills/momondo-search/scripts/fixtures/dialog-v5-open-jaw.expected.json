@@ -1,0 +1,12 @@
+{
+  "leg_dates": ["2026-12-03", "2027-02-03"],
+  "price": 6938,
+  "allPrices": [6938],
+  "site": "Kiwi.com",
+  "brand": "Basic + Economy + Economy Zero + Light",
+  "selfNote": true,
+  "legs": [
+    {"dep": "2026-12-03T13:40", "arr": "2026-12-05T17:53", "hours": 59.22, "stops": 3, "via": ["BVA", "FRA", "SJD"], "layover_h": [15.92, 1.92, 23.68], "carriers": ["Ryanair", "Condor", "Volaris"], "flights": ["Ryanair 7980", "Condor 4301", "Condor 2124", "Volaris 1143"], "overnight_layover": true, "_self": true, "_apt": true},
+    {"dep": "2027-02-03T03:45", "arr": "2027-02-04T13:25", "hours": 28.67, "stops": 2, "via": ["BOG", "MAD"], "layover_h": [1.17, 10.75], "carriers": ["Avianca", "Ryanair"], "flights": ["Avianca 166", "Avianca 46", "Ryanair 607"], "overnight_layover": true, "_self": true, "_apt": false}
+  ]
+}

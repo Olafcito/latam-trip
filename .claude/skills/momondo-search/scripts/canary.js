@@ -12,7 +12,7 @@ const { parseDlg, PARSER_VERSION } = require('./momondo_crawler.js');
 const here = (f) => path.join(__dirname, 'fixtures', f);
 const [txtPath, expPath] = process.argv.length > 3
   ? [process.argv[2], process.argv[3]]
-  : [here('dialog-open-jaw.txt'), here('dialog-open-jaw.expected.json')];
+  : [here('dialog-v5-open-jaw.txt'), here('dialog-v5-open-jaw.expected.json')];
 
 function check() {
   const txt = fs.readFileSync(txtPath, 'utf8');
