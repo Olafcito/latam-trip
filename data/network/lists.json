@@ -1,0 +1,18 @@
+{
+ "about": "Saved lists. Items are places (map ids) or experiences (experience ids). The app adds to these through a claude-task issue of type lists_update; Claude applies it here.",
+ "updated": "2026-10-29",
+ "lists": [
+  {
+   "id": "want",
+   "name": "Want to check out",
+   "items": [
+    {
+     "type": "place",
+     "id": "DRAKE",
+     "added": "2026-10-29",
+     "note": "Costa Rica wildlife (Corcovado) plus Isla del Caño shark dives"
+    }
+   ]
+  }
+ ]
+}
