@@ -45,6 +45,8 @@ function Timetable({ data }: { data: AppData }) {
   const openSaved = useStore((s) => s.openSaved)
   const openTrip = useStore((s) => s.openTrip)
   const go = useStore((s) => s.go)
+  const notice = useStore((s) => s.notice)
+  const setNotice = useStore((s) => s.setNotice)
   const file = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('rank')
@@ -104,10 +106,18 @@ function Timetable({ data }: { data: AppData }) {
     </div>
   )
 
+  const note = notice && (
+    <p className="tt-notice" role="status">
+      {notice}
+      <button type="button" className="btn link small" onClick={() => setNotice(null)}>Dismiss</button>
+    </p>
+  )
+
   if (!rows.length) {
     return (
       <div className="tt tt-empty">
         <h2 className="sr">Trips</h2>
+        {note}
         <p>No trips yet. Start with the way in and the way home.</p>
         {newTrip}
         {io}
@@ -118,6 +128,7 @@ function Timetable({ data }: { data: AppData }) {
   return (
     <div className="tt">
       <h2 className="sr">Trips</h2>
+      {note}
       <div className="tt-bar">
         <SortSeg value={sort} onChange={setSort} />
         <span className="tt-count mono">{rows.length} {rows.length === 1 ? 'trip' : 'trips'}</span>
@@ -220,8 +231,9 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
         </button>
         <span className="tt-tagline">
           {draft ? <span className="tag draft">not saved</span>
-            : j.rank != null ? <span className="tag" title="Rank among the seeded trips">#{j.rank}</span>
-              : <span className="tag mine">mine</span>}
+            : j.rank != null ? <span className="tag" title="Rank among the planned trips">#{j.rank}</span>
+              : j.version != null ? <span className="tag" title={`Version ${j.version} in the trips table`}>v{j.version}</span>
+                : <span className="tag mine">mine</span>}
         </span>
       </div>
 

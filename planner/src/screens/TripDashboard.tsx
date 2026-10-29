@@ -171,7 +171,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
       <div className="row dash-head">
         <button className="btn link small" onClick={() => go('trips', 'home')}>‹ Trips</button>
         <h2 className="h2">{journey.name}</h2>
-        {journey.rank != null && <span className="rank" title="Rank among the seeded trips">#{journey.rank}</span>}
+        {journey.rank != null && <span className="rank" title="Rank among the planned trips">#{journey.rank}</span>}
         {dirty && <span className="pill draft">Not saved</span>}
         <span className="spacer" />
         <button className="btn primary small" onClick={() => openSaved(journey)}><Pin />Build on the map</button>

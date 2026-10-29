@@ -3,14 +3,19 @@ import type { AppData, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
 import { journeyIsValid, newJourney, type Journey, type Place } from './lib/journey'
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
-import type { Trip, TripLeg, TripState } from '@map/data/trips'
+import type { TripLeg, TripState } from '@map/data/trips'
 import type { Mode } from './data/types'
-import { seedToJourney, withSeedCountries } from './lib/seeds'
+import { localOnly, mergeTrips, retireSeeds } from './lib/repoTrips'
 
 const FILTERS_KEY = 'latam-planner.filters'
+/** the browser's own trips: every trip except a table trip it never changed */
 const SAVED_KEY = 'latam-planner.journeys'
 const CURRENT_KEY = 'latam-planner.current'
+/** table trips deleted in this browser, by id, with the version deleted (a newer version shows again) */
+const HIDDEN_KEY = 'latam-planner.hidden'
+/** the old seed import: which seeded trips this browser was given. Read once when the table trips arrive */
 const SEEDED_KEY = 'latam-planner.seeded'
+const SEED_FILE_KEY = 'latam-planner.seed-file'
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -26,6 +31,14 @@ function write(key: string, value: unknown) {
     localStorage.setItem(key, JSON.stringify(value))
   } catch {
     // storage blocked or full: the app keeps working for this session
+  }
+}
+
+function forget(key: string) {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    // storage blocked: nothing to forget
   }
 }
 
@@ -86,12 +99,20 @@ interface State {
   /** move a stop to another position in the route (the landing stop stays first) */
   moveStop: (from: number, to: number) => void
 
+  /** every trip in the list: the browser's own trips and the table trips it has no copy of */
   saved: Journey[]
   saveJourney: (name: string) => void
   deleteSaved: (id: string) => void
   importJourneys: (list: unknown) => number
-  /** add the ranked trips this browser has not seen yet; the first becomes the current journey when there is none */
-  importSeeds: (seeds: Trip[]) => void
+  /** the trips table of the repo (data/web/trips.json), latest version of each */
+  repo: Journey[]
+  /** table trips deleted in this browser: id to the version deleted */
+  hidden: Record<string, number>
+  /** the table trips arrived: list them next to the browser's own trips */
+  setRepoTrips: (repo: Journey[]) => void
+  /** a one-line message on the Trips list, such as a link to a trip that does not exist */
+  notice: string | null
+  setNotice: (notice: string | null) => void
   compare: string[]
   toggleCompare: (id: string) => void
 
@@ -151,11 +172,11 @@ export const useStore = create<State>((set, get) => ({
   },
   openSaved: (journey) => {
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, paneMini: false })
+    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, paneMini: false, notice: null })
   },
   openTrip: (journey) => {
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'trips', view: 'trip', cursor: null })
+    set({ journey, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, notice: null })
   },
   closeTrip: () => set({ mapOpen: false, screen: 'trips', view: 'home', cursor: null }),
 
@@ -207,49 +228,54 @@ export const useStore = create<State>((set, get) => ({
     if (!j) return
     const copy: Journey = { ...j, id: j.id, name: name || j.name, savedAt: new Date().toISOString() }
     const saved = [...get().saved.filter((s) => s.id !== copy.id), copy]
-    write(SAVED_KEY, saved)
+    write(SAVED_KEY, localOnly(saved, get().repo))
     write(CURRENT_KEY, copy)
     set({ saved, journey: copy })
   },
   deleteSaved: (id) => {
     const saved = get().saved.filter((s) => s.id !== id)
-    write(SAVED_KEY, saved)
-    set({ saved, compare: get().compare.filter((c) => c !== id) })
+    write(SAVED_KEY, localOnly(saved, get().repo))
+    set({ saved, hidden: hide(get(), [id]), compare: get().compare.filter((c) => c !== id) })
   },
   importJourneys: (list) => {
     const arr = (Array.isArray(list) ? list : [list]).filter(journeyIsValid)
     const byId = new Map(get().saved.map((s) => [s.id, s]))
     for (const j of arr) byId.set(j.id, j)
     const saved = [...byId.values()]
-    write(SAVED_KEY, saved)
+    write(SAVED_KEY, localOnly(saved, get().repo))
     set({ saved })
     return arr.length
   },
-  importSeeds: (seeds) => {
+  repo: [],
+  hidden: read<Record<string, number>>(HIDDEN_KEY, {}),
+  setRepoTrips: (repo) => {
     const was = get()
-    const data = was.data
-    if (!data) return
-    // seeded trips saved before their overland blocks named the countries they cross get them now
-    const saved = was.saved.map((j) => withSeedCountries(j, seeds))
-    const journey = was.journey && withSeedCountries(was.journey, seeds)
-    const savedChanged = saved.some((j, i) => j !== was.saved[i])
-    if (savedChanged) write(SAVED_KEY, saved)
-    if (journey !== was.journey) write(CURRENT_KEY, journey)
-    if (savedChanged || journey !== was.journey) set({ saved, journey })
-    const done = read<string[]>(SEEDED_KEY, [])
-    const have = new Set(saved.map((s) => s.id))
-    const fresh = seeds
-      .filter((t) => !have.has(t.id) && !done.includes(t.id))
-      .map((t) => seedToJourney(data.inout, t))
-      .filter((j): j is Journey => !!j)
-    if (!fresh.length) return
-    const next = [...saved, ...fresh]
-    write(SAVED_KEY, next)
-    write(SEEDED_KEY, [...done, ...fresh.map((j) => j.id)])
-    if (journey) return set({ saved: next })
-    write(CURRENT_KEY, fresh[0])
-    set({ saved: next, journey: fresh[0] })
+    let local = localOnly(was.saved, was.repo)
+    let hidden = was.hidden
+    let journey = was.journey
+    const seeded = read<string[] | null>(SEEDED_KEY, null)
+    if (seeded && repo.length) {
+      // the seeded trips moved into the table: an untouched seeded copy gives way to its table trip
+      const r = retireSeeds(local, repo, seeded)
+      local = r.local
+      hidden = { ...r.hidden, ...hidden }
+      const open = journey
+      if (open && seeded.includes(open.id) && !local.some((j) => j.id === open.id)) {
+        const table = repo.find((t) => t.id === open.id)
+        if (table) {
+          journey = table
+          write(CURRENT_KEY, journey)
+        }
+      }
+      write(SAVED_KEY, local)
+      write(HIDDEN_KEY, hidden)
+      forget(SEEDED_KEY)
+      forget(SEED_FILE_KEY)
+    }
+    set({ repo, hidden, journey, saved: mergeTrips(local, repo, hidden) })
   },
+  notice: null,
+  setNotice: (notice) => set({ notice }),
   compare: [],
   toggleCompare: (id) => {
     const c = get().compare
@@ -266,12 +292,26 @@ export const useStore = create<State>((set, get) => ({
     const r = applyTrips(data.inout, data.map, journey, saved, mapOpen, after, facts)
     // a new trip needs a way in and a way home to start from
     if (!r) return set({ screen: 'trips', view: 'pick' })
-    write(SAVED_KEY, r.saved)
+    write(SAVED_KEY, localOnly(r.saved, get().repo))
     if (r.current) write(CURRENT_KEY, r.current)
     else write(CURRENT_KEY, null)
-    set({ journey: r.current, saved: r.saved, mapOpen: r.open, cursor: null, compare: compare.filter((c) => r.saved.some((s) => s.id === c)) })
+    const gone = saved.filter((s) => !r.saved.some((x) => x.id === s.id)).map((s) => s.id)
+    set({
+      journey: r.current, saved: r.saved, hidden: hide(get(), gone), mapOpen: r.open, cursor: null,
+      compare: compare.filter((c) => r.saved.some((s) => s.id === c)),
+    })
   },
 }))
+
+/** Hide deleted table trips at the version deleted, so the next version of the trip shows again. */
+function hide(s: { repo: Journey[]; hidden: Record<string, number> }, ids: string[]): Record<string, number> {
+  const add = s.repo.filter((r) => ids.includes(r.id))
+  if (!add.length) return s.hidden
+  const hidden = { ...s.hidden }
+  for (const r of add) hidden[r.id] = r.version ?? 1
+  write(HIDDEN_KEY, hidden)
+  return hidden
+}
 
 /**
  * Hops after the places moved: a hop that still joins its two places stays (with its picked

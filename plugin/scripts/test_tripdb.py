@@ -261,6 +261,91 @@ class StaysAndExperiencesTest(Base):
             tripdb.cmd_update_experience(self.paths, "nope", ["price_dkk=1"])
 
 
+def trip(**over):
+    way = {"direction": "in", "from": "CPH", "to": "SJO", "depart": "2026-12-03T06:00", "arrive": "2026-12-03T20:00",
+           "price_dkk": 3900, "tickets": ["T1"], "timeline": [], "airports": ["CPH", "MAD", "SJO"]}
+    t = {"id": "costa-rica", "name": "Costa Rica in and out", "why": "Short and cheap",
+         "way_in": way, "way_home": {**way, "direction": "home", "from": "SJO", "to": "CPH",
+                                     "depart": "2027-01-20T21:00", "arrive": "2027-01-21T17:00"},
+         "tickets": {"T1": {"id": "T1", "price_dkk": 6494, "observed_at": "2026-10-20T10:00:00Z"}},
+         "places": [{"node": "SJO", "hop": None, "why": "Where the flight lands"},
+                    {"node": "LIR", "hop": {"from": "SJO", "to": "LIR", "mode": "bus", "operator": "Pulmitan",
+                                            "hours": 4.5, "price_dkk": 60, "observed_at": None, "overnight": False,
+                                            "border": False, "flight": None}, "why": "Beaches", "nights": 3}]}
+    t.update(over)
+    return t
+
+
+class SaveTripTest(Base):
+    def save(self, *trips, by="plan-trip"):
+        f = os.path.join(self.root, "trip.json")
+        with open(f, "w", encoding="utf-8") as fh:
+            json.dump(trips[0] if len(trips) == 1 else list(trips), fh)
+        return self.run_quiet(tripdb.cmd_save_trip, f, by)
+
+    def stored(self):
+        return self.rows(self.paths.src("trips.jsonl"))
+
+    def test_first_save_is_version_1(self):
+        rc, out = self.save(trip(), by="migration")
+        self.assertEqual(rc, 0)
+        self.assertIn("saved costa-rica version 1", out)
+        r = self.stored()[0]
+        self.assertEqual((r["id"], r["version"], r["by"]), ("costa-rica", 1, "migration"))
+        self.assertTrue(r["saved_at"].endswith("Z"))
+        self.assertEqual(tripdb.run_check(self.paths, quiet=True)[0], [])
+
+    def test_second_save_of_the_same_id_is_version_2(self):
+        self.save(trip())
+        rc, out = self.save(trip(why="Two more nights in Liberia", places=trip()["places"][:1]))
+        self.assertIn("saved costa-rica version 2", out)
+        self.assertEqual([r["version"] for r in self.stored()], [1, 2])
+
+    def test_identical_content_is_skipped(self):
+        self.save(trip())
+        rc, out = self.save(trip(), by="planner")
+        self.assertEqual(rc, 0)
+        self.assertIn("skipped costa-rica: same as version 1", out)
+        self.assertEqual(len(self.stored()), 1)
+
+    def test_a_trip_without_id_gets_one_from_its_name(self):
+        self.save(trip())
+        rc, out = self.save(trip(id=None, name="Costa Rica"))
+        self.assertIn("saved costa-rica-2 version 1", out)
+
+    def test_bad_row_is_refused_with_reason(self):
+        bad = trip(places=[{"node": "SJO", "hop": None},
+                           {"node": "LIR", "hop": {"from": "PTY", "to": "LIR", "mode": "rocket"}}])
+        del bad["why"]
+        rc, out = self.save(bad)
+        self.assertEqual(rc, 1)
+        self.assertIn("refused costa-rica: missing why", out)
+        rc, out = self.save(trip(places=[{"node": "SJO", "hop": None},
+                                         {"node": "LIR", "hop": {**trip()["places"][1]["hop"], "from": "PTY"}}]))
+        self.assertIn("places[1].hop starts in PTY, the place before is SJO", out)
+        self.assertFalse(os.path.exists(self.paths.src("trips.jsonl")) and self.stored())
+
+    def test_check_finds_versions_out_of_order(self):
+        self.save(trip())
+        r = dict(self.stored()[0], version=3)
+        self.write(self.paths.src("trips.jsonl"), [self.stored()[0], r])
+        errors, _ = tripdb.run_check(self.paths, quiet=True)
+        self.assertTrue(any("versions [1, 3]" in e for e in errors), errors)
+
+    def test_export_keeps_the_latest_version_and_a_history(self):
+        self.save(trip(why="First idea"))
+        self.save(trip(why="Second idea"))
+        self.save(trip(id="other", name="Other", rank=1))
+        self.assertEqual(tripdb.export_trips(self.paths), 2)
+        with open(os.path.join(self.paths.web, "trips.json"), encoding="utf-8") as fh:
+            doc = json.load(fh)
+        self.assertEqual([t["id"] for t in doc["trips"]], ["other", "costa-rica"])
+        cr = doc["trips"][1]
+        self.assertEqual((cr["version"], cr["why"]), (2, "Second idea"))
+        self.assertEqual([(h["version"], h["why"]) for h in cr["history"]], [(1, "First idea")])
+        self.assertEqual(doc["trips"][0]["history"], [])
+
+
 if __name__ == "__main__":
     unittest.main()
 

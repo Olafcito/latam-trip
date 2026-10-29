@@ -15,6 +15,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   add-stays FILE [--usd RATE] [--eur RATE]      stay-price-worker rows into stays.jsonl, prices in DKK
   list-add LIST TYPE ID [--note TEXT] [--name NAME]  save a place or experience in a list (lists.json)
   list-remove LIST TYPE ID             take it out again
+  save-trip FILE [--by plan-trip|migration|planner]  a trip into trips.jsonl as its next version (prints id and version)
   log-task --issue N --type TYPE --summary TEXT [--outputs a,b] [--task FILE] [--done-at TIME]
   log-usage --round R --agent A --model M --tool T --searches N --tokens N --tool-uses N --seconds N --rows N
   ingest-inbox                         validate data/sources/inbox/*.jsonl (Momondo userscript), add the good rows
@@ -56,12 +57,13 @@ class Paths:
 # ---- schemas ------------------------------------------------------------------------------------
 # A field spec is "type|type" with a leading "!" when the field is required. Types: str int num bool list
 # dict null date (YYYY-MM-DD) time (ISO 8601 date and time) iata (3 capitals) pid (place id) slug cc
-# (2 capitals) enum:a,b,c and const:x. Fields not listed are allowed.
+# (2 capitals) tid (trip id) enum:a,b,c and const:x. Fields not listed are allowed.
 
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
 TIME_RE = re.compile(r"(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?$")
 PATTERNS = {"iata": re.compile(r"[A-Z]{3}$"), "pid": re.compile(r"[A-Z][A-Z0-9_]{1,9}$"),
-            "slug": re.compile(r"[a-z0-9][a-z0-9_-]*$"), "cc": re.compile(r"[A-Z]{2}$")}
+            "slug": re.compile(r"[a-z0-9][a-z0-9_-]*$"), "cc": re.compile(r"[A-Z]{2}$"),
+            "tid": re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")}
 
 
 def _is(v, t):
@@ -150,6 +152,21 @@ STAY = {"kind": "!const:stay_quote", "place": "!pid", "site": "!str", "name": "!
         "check_out": "!date", "url": "str|null", "property_id": "str|null", "observed_at": "time|null", "task_id": "str|null",
         "notes": "str|null"}
 TASK = {"issue": "!int", "type": "str|null", "task": "dict|null", "done_at": "!time", "summary": "str", "outputs": "list"}
+# a saved trip, one row per version: the planner's journey (way in, way home, places with the hop that reached them)
+TRIP = {"id": "!tid", "version": "!int", "name": "!str", "saved_at": "!time", "by": "!enum:plan-trip,migration,planner",
+        "why": "!str", "rank": "int|null", "option_id": "str|null", "way_in": "!dict", "way_home": "!dict",
+        "tickets": "dict|null", "places": "!list", "totals": "dict|null"}
+TRIP_WAY = {"direction": "enum:in,home", "from": "!iata", "to": "!iata", "depart": "!time", "arrive": "!time",
+            "price_dkk": "!num", "tickets": "!list", "timeline": "!list", "airports": "list", "observed_at": "time|null"}
+TRIP_TICKET = {"id": "!str", "price_dkk": "!num", "observed_at": "str|null"}
+TRIP_PLACE = {"node": "!pid", "hop": "!dict|null", "why": "str|null", "nights": "int|null", "arrive": "date|time|null",
+              "depart": "date|time|null", "stay": "dict|null"}
+TRIP_HOP = {"from": "!pid", "to": "!pid", "mode": "!enum:flight,bus,boat,train,colectivo,shuttle,chicken_bus",
+            "operator": "str|null", "hours": "num|null", "price_dkk": "num|null", "observed_at": "time|null",
+            "overnight": "bool|null", "border": "bool|null", "flight": "dict|null", "overland": "str|null",
+            "countries": "list|null"}
+TRIP_FLIGHT = {"quote_id": "!str", "depart": "!time", "arrive": "!time", "hours": "!num", "price_dkk": "!num",
+               "carriers": "!list", "via": "list", "layover_h": "list", "observed_at": "time|null"}
 
 # table: file, schema per kind, what makes a row the same row
 TABLES = {
@@ -161,8 +178,9 @@ TABLES = {
     "experience_images": ("experience_images.jsonl", {"experience_image": EXPERIENCE_IMAGE}),
     "stays": ("stays.jsonl", {"stay_quote": STAY}),
     "task_log": ("task_log.jsonl", {None: TASK}),
+    "trips": ("trips.jsonl", {None: TRIP}),
 }
-DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "bag_fees.json", "seed_spec.json", "scenarios.json",
+DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "bag_fees.json", "scenarios.json",
         "experience_categories.json", "lists.json", "elevation.json", "image_queries.json")
 USAGE_COLS = ["round", "agent", "model", "tool", "searches", "tokens", "tool_uses", "seconds", "rows"]
 
@@ -185,6 +203,44 @@ def quote_errors(q):
     return errs
 
 
+def trip_errors(t):
+    """What check_fields cannot see in a trip row: its ways, tickets and the chain of places."""
+    errs = []
+    if t["version"] < 1:
+        errs.append(f"version {t['version']} is below 1")
+    for name in ("way_in", "way_home"):
+        errs += [f"{name} {e}" for e in check_fields(t[name], TRIP_WAY)]
+    for k, tk in (t.get("tickets") or {}).items():
+        errs += [f"tickets.{k} {e}" for e in check_fields(tk, TRIP_TICKET)]
+    if not t["places"]:
+        errs.append("places is empty")
+    prev = None
+    for i, p in enumerate(t["places"]):
+        pe = check_fields(p, TRIP_PLACE)
+        errs += [f"places[{i}] {e}" for e in pe]
+        if pe:
+            prev = None
+            continue
+        hop = p.get("hop")
+        if i == 0:
+            if hop is not None:
+                errs.append("places[0] has a hop, the first place is where the way in lands")
+        elif hop is None:
+            errs.append(f"places[{i}] {p['node']} has no hop")
+        else:
+            he = check_fields(hop, TRIP_HOP)
+            errs += [f"places[{i}].hop {e}" for e in he]
+            if not he:
+                if prev is not None and hop["from"] != prev:
+                    errs.append(f"places[{i}].hop starts in {hop['from']}, the place before is {prev}")
+                if hop["to"] != p["node"]:
+                    errs.append(f"places[{i}].hop ends in {hop['to']}, the place is {p['node']}")
+                if isinstance(hop.get("flight"), dict):
+                    errs += [f"places[{i}].hop.flight {e}" for e in check_fields(hop["flight"], TRIP_FLIGHT)]
+        prev = p["node"]
+    return errs
+
+
 def row_errors(table, row):
     schemas = TABLES[table][1]
     if not isinstance(row, dict):
@@ -200,6 +256,8 @@ def row_errors(table, row):
         errs += [f"image {e}" for e in check_fields(row["image"], IMAGE)]
     if table == "stays" and not errs and row["check_out"] <= row["check_in"]:
         errs.append("check_out is not after check_in")
+    if table == "trips" and not errs:
+        errs += trip_errors(row)
     return errs
 
 
@@ -231,6 +289,10 @@ def read_input(path):
     else:
         with open(path, encoding="utf-8") as fh:
             text = fh.read()
+    return read_input_text(text)
+
+
+def read_input_text(text):
     out = []
     for n, line in enumerate(text.splitlines(), 1):
         if not line.strip():
@@ -716,6 +778,105 @@ def cmd_log_usage(paths, values):
     return 0
 
 
+# ---- trips --------------------------------------------------------------------------------------
+
+TRIP_META = ("version", "saved_at", "by")
+
+
+def _trip_content(t):
+    return {k: v for k, v in t.items() if k not in TRIP_META}
+
+
+def _trip_slug(name):
+    s = re.sub(r"[^a-z0-9]+", "-", (name or "").lower()).strip("-")
+    return (s or "trip")[:48]
+
+
+def read_trips(path):
+    """The trips in a FILE: one JSON object, a JSON list of them, or JSONL. [(label, trip or None, error or None)]."""
+    if path == "-":
+        text = sys.stdin.read()
+    else:
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
+    try:
+        doc = json.loads(text)
+    except json.JSONDecodeError:
+        return [(f"line {n}", r, e) for n, r, e in read_input_text(text)]
+    items = doc if isinstance(doc, list) else [doc]
+    return [(f"trip {i + 1}", t, None) for i, t in enumerate(items)]
+
+
+def latest_trips(rows):
+    """{id: latest row} plus {id: [every row, oldest first]} from the rows of trips.jsonl."""
+    every = {}
+    for r in rows:
+        if isinstance(r, dict) and isinstance(r.get("id"), str):
+            every.setdefault(r["id"], []).append(r)
+    for vs in every.values():
+        vs.sort(key=lambda r: r.get("version") if isinstance(r.get("version"), int) else 0)
+    return {k: vs[-1] for k, vs in every.items()}, every
+
+
+def cmd_save_trip(paths, file, by="plan-trip"):
+    """Save each trip in FILE as the next version of its id (a new id starts at version 1). A trip the same
+    as its latest version is skipped. Without an id the trip gets one from its name."""
+    dest = paths.src(TABLES["trips"][0])
+    saved, skipped, bad = [], [], []
+    with Lock(paths):
+        latest, _ = latest_trips(rows_of(dest))
+        for label, t, err in read_trips(file):
+            if err or not isinstance(t, dict):
+                bad.append((label, err or "not a JSON object")); continue
+            t = dict(t)
+            if not t.get("id"):
+                base = _trip_slug(t.get("name"))
+                t["id"], k = base, 2
+                while t["id"] in latest:
+                    t["id"], k = f"{base}-{k}", k + 1
+            if not isinstance(t["id"], str):
+                bad.append((label, f"id is {json.dumps(t['id'])[:40]}, expected a string")); continue
+            label = t["id"]
+            prev = latest.get(t["id"])
+            if prev is not None and _trip_content(prev) == _trip_content(t):
+                skipped.append((label, prev["version"])); continue
+            t["version"] = (prev["version"] if prev else 0) + 1
+            t["saved_at"] = now_utc()
+            t["by"] = t.get("by") or by
+            errs = row_errors("trips", t)
+            if errs:
+                bad.append((label, "; ".join(errs))); continue
+            row = {k: t[k] for k in ("id", "version", "name", "saved_at", "by", "why") if k in t}
+            row.update({k: v for k, v in t.items() if k not in row})
+            latest[row["id"]] = row
+            saved.append(row)
+        append_rows(dest, saved)
+    for label, why in bad:
+        print(f"refused {label}: {why}")
+    for label, v in skipped:
+        print(f"skipped {label}: same as version {v}")
+    for r in saved:
+        print(f"saved {r['id']} version {r['version']} (open it at /?trip={r['id']})")
+    print(f"trips: saved {len(saved)}, skipped {len(skipped)}, refused {len(bad)} -> {os.path.relpath(dest, paths.root)}")
+    return 1 if bad else 0
+
+
+def export_trips(paths):
+    """data/web/trips.json: the latest version of every trip, with a short list of its earlier versions."""
+    latest, every = latest_trips(rows_of(paths.src(TABLES["trips"][0])))
+    trips = []
+    for tid, row in latest.items():
+        out = dict(row)
+        out["history"] = [{"version": r.get("version"), "saved_at": r.get("saved_at"), "by": r.get("by"), "why": r.get("why")}
+                          for r in reversed(every[tid][:-1])]
+        trips.append(out)
+    trips.sort(key=lambda t: (t.get("rank") is None, t.get("rank") or 0, t.get("saved_at") or ""))
+    doc = {"generated_at": now_utc(), "source": "data/sources/trips.jsonl", "trips": trips}
+    os.makedirs(paths.web, exist_ok=True)
+    write_atomic(os.path.join(paths.web, "trips.json"), json.dumps(doc, ensure_ascii=False, indent=1) + "\n")
+    return len(trips)
+
+
 # ---- check --------------------------------------------------------------------------------------
 
 def run_check(paths, quiet=False):
@@ -747,6 +908,11 @@ def run_check(paths, quiet=False):
             errs = [err] if err else row_errors(table, r)
             errors += [f"{rel(p)}:{line}: {e}" for e in errs]
         counts[table] = n
+    _, every = latest_trips(rows_of(paths.src(TABLES["trips"][0])))
+    for tid, vs in every.items():
+        got = [r.get("version") for r in vs]
+        if got != list(range(1, len(vs) + 1)):
+            errors.append(f"data/sources/trips.jsonl {tid}: versions {got}, expected 1 to {len(vs)} once each")
     places, exps = place_ids(paths), experience_ids(paths)
     for r in rows_of(paths.src("experiences.jsonl")):
         if isinstance(r, dict):
@@ -919,7 +1085,7 @@ def write_pair_dates(paths):
 
 
 STEPS = ["ingest.py", "build_map.py", "build_web_data.py", "chains.py", "routes.py", "inout.py", "itineraries.py",
-         "dashboard_data.py", "seed_trips.py"]
+         "dashboard_data.py"]
 PUBLISH = [("built", "map.json"), ("built", "inout.json"), ("sources", "bag_rules.json"), ("sources", "trip.json")]
 
 
@@ -957,6 +1123,7 @@ def cmd_build(paths, fetch_elevation=False, sync=True):
             shutil.copyfile(os.path.join(paths.root, "data", where, name), os.path.join(paths.web, name))
         print("data/web: copied " + ", ".join(n for _, n in PUBLISH))
         print(write_pair_dates(paths))
+        print(f"data/web/trips.json: {export_trips(paths)} trips")
     if sync and os.path.isdir(os.path.join(paths.root, "plugin")):
         for l in _run(paths, os.path.join(HERE, "sync_claude_dir.py")):
             print("sync_claude_dir.py:", l)
@@ -1019,6 +1186,9 @@ def main(argv=None):
             return cmd_list_add(paths, a[0], a[1], a[2], note, name)
         if cmd == "list-remove":
             return cmd_list_remove(paths, a[0], a[1], a[2])
+        if cmd == "save-trip":
+            by = _opt(a, "--by", "plan-trip")
+            return cmd_save_trip(paths, a[0], by)
         if cmd == "log-task":
             issue = _opt(a, "--issue")
             if not issue or not issue.isdigit():
