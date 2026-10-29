@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo, useState, type KeyboardEvent } from 'react'
 import type { AppData, InOut, Option, Way } from '../data/types'
 import { useStore, type Pair } from '../store'
 import { clock, day, dec1, hours, kr, nextDayMark, observed, timeUncertain, TYPE_LABEL } from '../lib/format'
@@ -15,9 +15,11 @@ type Row = { o: Option; wi: Way; wh: Way }
 
 const REGION_NAME: Record<string, string> = { CA: 'Central America', CO: 'Colombia', MX: 'Mexico', BO: 'Bolivia' }
 const REGION_ORDER = ['CA', 'CO', 'MX', 'BO']
+/** Best rated sorts high to low, the rest low to high. */
+const SORT_DIR: Record<SortKey, 'ascending' | 'descending'> = { rating: 'descending', price: 'ascending', leave: 'ascending', home: 'ascending' }
 
 function Stamp({ s, from }: { s: string; from?: string }) {
-  if (!s) return <span className="q">?</span>
+  if (!s) return <span className="q" title="Time unknown">?</span>
   const nd = from ? nextDayMark(from, s) : ''
   return (
     <span className="stamp">
@@ -32,7 +34,7 @@ function Stamp({ s, from }: { s: string; from?: string }) {
 function Rate({ v }: { v: number }) {
   return (
     <span className="rate" title="Rating out of 10">
-      <span className="bar"><i style={{ width: `${v * 10}%` }} /></span>
+      <span className="bar" aria-hidden="true"><i style={{ width: `${v * 10}%` }} /></span>
       <b>{dec1(v)}</b>
     </span>
   )
@@ -40,6 +42,14 @@ function Rate({ v }: { v: number }) {
 
 function Num({ v, what }: { v: number | null | undefined; what: string }) {
   return v == null ? <span className="q" title={`${what} unknown`}>?</span> : <>{kr(v)}</>
+}
+
+/** Enter and space open a row the way a click does. */
+const onActivate = (fn: () => void) => (e: KeyboardEvent) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    fn()
+  }
 }
 
 /** The filters without the airport pair: the matrix picks the pair. */
@@ -61,13 +71,14 @@ export function PickScreen({ data }: { data: AppData }) {
   const go = useStore((s) => s.go)
   return (
     <div className="pick">
-      <div className="row pick-head">
-        <button className="btn link small" onClick={() => go('trips', 'home')}>‹ Trips</button>
-        <h2 className="h2">New trip: where in, where home</h2>
-        <span className="spacer" />
-        <div className="seg" role="group" aria-label="Mode">
-          <button className={mode === 'options' ? 'on' : ''} onClick={() => setMode('options')}>Rated pairs</button>
-          <button className={mode === 'mix' ? 'on' : ''} onClick={() => setMode('mix')}>Mix one-ways</button>
+      <div className="pick-head">
+        <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'home')}>‹ Trips</button>
+        <div className="pick-title">
+          <h2 className="h2">New trip: where in, where home</h2>
+          <div className="seg" role="group" aria-label="Mode">
+            <button type="button" className={mode === 'options' ? 'on' : ''} aria-pressed={mode === 'options'} onClick={() => setMode('options')}>Rated pairs</button>
+            <button type="button" className={mode === 'mix' ? 'on' : ''} aria-pressed={mode === 'mix'} onClick={() => setMode('mix')}>Mix one-ways</button>
+          </div>
         </div>
       </div>
       {mode === 'options' ? <OptionsView data={data} /> : <MixView data={data} />}
@@ -83,17 +94,17 @@ function FiltersBar({ sort, onSort }: { sort: SortKey; onSort: (k: SortKey) => v
   const num = (v: string) => (v === '' ? null : Number(v))
   const active = f.maxPrice != null || f.minRating != null || f.maxHours != null || f.maxHubNights != null || f.noUS || !!f.type
   return (
-    <div className="card filters">
+    <div className="filters" role="group" aria-label="Filters">
       <div className="seg" role="group" aria-label="Sort">
-        <button className={sort === 'rating' ? 'on' : ''} onClick={() => onSort('rating')}>Best rated</button>
-        <button className={sort === 'price' ? 'on' : ''} onClick={() => onSort('price')}>Cheapest</button>
+        <button type="button" className={sort === 'rating' ? 'on' : ''} aria-pressed={sort === 'rating'} onClick={() => onSort('rating')}>Best rated</button>
+        <button type="button" className={sort === 'price' ? 'on' : ''} aria-pressed={sort === 'price'} onClick={() => onSort('price')}>Cheapest</button>
       </div>
       <label className="chk"><input type="checkbox" checked={f.noUS} onChange={(e) => set({ noUS: e.target.checked })} /> No US transit</label>
       <label className="fld">Max price (kr)
-        <input type="number" step={500} min={0} value={f.maxPrice ?? ''} onChange={(e) => set({ maxPrice: num(e.target.value) })} />
+        <input type="number" inputMode="numeric" step={500} min={0} placeholder="any" value={f.maxPrice ?? ''} onChange={(e) => set({ maxPrice: num(e.target.value) })} />
       </label>
       <label className="fld">Max hub nights
-        <input type="number" step={1} min={0} value={f.maxHubNights ?? ''} onChange={(e) => set({ maxHubNights: num(e.target.value) })} />
+        <input type="number" inputMode="numeric" step={1} min={0} placeholder="any" value={f.maxHubNights ?? ''} onChange={(e) => set({ maxHubNights: num(e.target.value) })} />
       </label>
       {more && (
         <>
@@ -104,16 +115,18 @@ function FiltersBar({ sort, onSort }: { sort: SortKey; onSort: (k: SortKey) => v
             </select>
           </label>
           <label className="fld">Min rating
-            <input type="number" step={0.5} min={0} max={10} value={f.minRating ?? ''} onChange={(e) => set({ minRating: num(e.target.value) })} />
+            <input type="number" inputMode="decimal" step={0.5} min={0} max={10} placeholder="any" value={f.minRating ?? ''} onChange={(e) => set({ minRating: num(e.target.value) })} />
           </label>
           <label className="fld">Max flying h per way
-            <input type="number" step={1} min={0} value={f.maxHours ?? ''} onChange={(e) => set({ maxHours: num(e.target.value) })} />
+            <input type="number" inputMode="numeric" step={1} min={0} placeholder="any" value={f.maxHours ?? ''} onChange={(e) => set({ maxHours: num(e.target.value) })} />
           </label>
         </>
       )}
       <span className="spacer" />
-      <button className="btn link small" onClick={() => setMore((m) => !m)} aria-expanded={more}>{more ? 'Fewer filters' : 'More filters'}</button>
-      {active && <button className="btn small" onClick={reset}>Clear</button>}
+      <div className="filters-act">
+        <button type="button" className="btn link small" onClick={() => setMore((m) => !m)} aria-expanded={more}>{more ? 'Fewer filters' : 'More filters'}</button>
+        {active && <button type="button" className="btn small" onClick={reset}>Clear</button>}
+      </div>
     </div>
   )
 }
@@ -121,10 +134,11 @@ function FiltersBar({ sort, onSort }: { sort: SortKey; onSort: (k: SortKey) => v
 /** Rows fly in to, columns fly home from, each tile the best option of its pair. */
 function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]; pair: Pair | null; onPick: (p: Pair | null) => void; sort: SortKey }) {
   const ap = inout.airports
+  const byPrice = sort === 'price'
   const [hover, setHover] = useState<Pair | null>(null)
   const { entries, exits, best, lo, hi } = useMemo(() => {
     const best = new Map<string, Row>()
-    const better = (a: Row, b: Row) => (sort === 'price' ? a.o.price_dkk < b.o.price_dkk : a.o.rating.total > b.o.rating.total)
+    const better = (a: Row, b: Row) => (byPrice ? a.o.price_dkk < b.o.price_dkk : a.o.rating.total > b.o.rating.total)
     for (const r of rows) {
       const k = `${r.o.entry}|${r.o.exit}`
       const cur = best.get(k)
@@ -142,57 +156,68 @@ function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]
     }
     const entries = group([...new Set(inout.options.map((o) => o.entry))])
     const exits = group([...new Set(inout.options.map((o) => o.exit))])
-    const vals = [...best.values()].map((r) => (sort === 'price' ? -r.o.price_dkk : r.o.rating.total))
+    const vals = [...best.values()].map((r) => (byPrice ? -r.o.price_dkk : r.o.rating.total))
     return { entries, exits, best, lo: Math.min(...vals), hi: Math.max(...vals) }
-  }, [inout, rows, ap, sort])
+  }, [inout, rows, ap, byPrice])
 
   const step = (r: Row) => {
-    const v = sort === 'price' ? -r.o.price_dkk : r.o.rating.total
+    const v = byPrice ? -r.o.price_dkk : r.o.rating.total
     return hi === lo ? 4 : Math.min(4, Math.floor(((v - lo) / (hi - lo)) * 5))
   }
   const hl = hover ?? pair
   const allExits = exits.flatMap((e) => e.codes)
+  const any = best.size > 0
+  // the ends of the ramp in the unit the tiles are sorted by
+  const end = (v: number) => (byPrice ? kr(-v) : dec1(v))
   return (
-    <div className="card matrix-card">
-      <div className="matrix-legend">
-        <span className="small muted">Rows fly in to, columns fly home from. Each tile is the {sort === 'price' ? 'cheapest' : 'best rated'} option of that pair. Click a tile to see its options.</span>
+    <section className="mx" aria-labelledby="mx-title">
+      <div className="sec-head">
+        <h3 className="sec-title" id="mx-title">Pairs</h3>
+        <span className="count">{best.size} {best.size === 1 ? 'pair' : 'pairs'}</span>
+        <span className="sec-note">Each tile is the {byPrice ? 'cheapest' : 'best rated'} option of its pair. Pick one to list its options.</span>
         <span className="spacer" />
-        <span className="ramp" aria-label={sort === 'price' ? 'Dearer to cheaper' : 'Lower to higher rating'}>
-          <small>{sort === 'price' ? 'dear' : 'low'}</small>
-          {[0, 1, 2, 3, 4].map((i) => <i key={i} className={`s${i}`} />)}
-          <small>{sort === 'price' ? 'cheap' : 'high'}</small>
-        </span>
+        {any && (
+          <span className="ramp" role="img" aria-label={byPrice ? `Price from ${end(lo)} to ${end(hi)}` : `Rating from ${end(lo)} to ${end(hi)}`}>
+            <small className="ramp-k">{byPrice ? 'price' : 'rating'}</small>
+            <small>{end(lo)}</small>
+            {[0, 1, 2, 3, 4].map((i) => <i key={i} className={`s${i}`} />)}
+            <small>{end(hi)}</small>
+          </span>
+        )}
       </div>
-      <div className="tablewrap">
+      <div className="mx-box">
         <table className="matrix" onMouseLeave={() => setHover(null)}>
           <thead>
             <tr>
-              <th className="corner" rowSpan={2}><span className="in">Fly in to</span><span className="out">Fly home from</span></th>
-              {exits.map((g) => <th key={g.g} className="grp" colSpan={g.codes.length}>{REGION_NAME[g.g] ?? g.g}</th>)}
+              <th className="corner" rowSpan={2} scope="col"><span className="in">Fly in to</span><span className="out">Fly home from</span></th>
+              {exits.map((g) => <th key={g.g} className="grp" colSpan={g.codes.length} scope="colgroup"><span>{REGION_NAME[g.g] ?? g.g}</span></th>)}
             </tr>
             <tr>
               {allExits.map((c) => (
-                <th key={c} className={`col${hl?.home === c ? ' hl' : ''}`} title={ap[c]?.name ?? c}>{c}</th>
+                <th key={c} scope="col" className={`col${hl?.home === c ? ' hl' : ''}`} title={ap[c]?.name ?? c}>{c}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {entries.map((g) => (
               <Fragment key={g.g}>
-                <tr className="grp"><th colSpan={allExits.length + 1}>{REGION_NAME[g.g] ?? g.g}</th></tr>
+                <tr className="grp"><th colSpan={allExits.length + 1} scope="rowgroup"><span>{REGION_NAME[g.g] ?? g.g}</span></th></tr>
                 {g.codes.map((en) => (
                   <tr key={en} className={hl?.in === en ? 'hl' : ''}>
-                    <th className="rowh" title={ap[en]?.name ?? en}><b>{ap[en]?.name ?? en}</b><span className="code">{en}</span></th>
+                    <th className="rowh" scope="row" title={ap[en]?.name ?? en}><b>{ap[en]?.name ?? en}</b><span className="code">{en}</span></th>
                     {allExits.map((ex) => {
                       const r = best.get(`${en}|${ex}`)
                       const on = pair?.in === en && pair?.home === ex
+                      const lit = hl && (hl.in === en || hl.home === ex) ? ' hl' : ''
                       if (!r) return <td key={ex} className="none" />
                       return (
-                        <td key={ex} className={`t s${step(r)}${on ? ' on' : ''}${en === ex ? ' same' : ''}${hl && (hl.in === en || hl.home === ex) ? ' hl' : ''}`}>
+                        <td key={ex} className={`t s${step(r)}${on ? ' on' : ''}${en === ex ? ' same' : ''}${lit}`}>
                           <button
+                            type="button"
                             onClick={() => onPick(on ? null : { in: en, home: ex })}
                             onMouseEnter={() => setHover({ in: en, home: ex })}
                             onFocus={() => setHover({ in: en, home: ex })}
+                            onBlur={() => setHover(null)}
                             aria-pressed={on}
                             title={`${ap[en]?.name ?? en} in, ${ap[ex]?.name ?? ex} home: ${kr(r.o.price_dkk)}, rated ${dec1(r.o.rating.total)}`}
                           >
@@ -209,7 +234,8 @@ function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]
           </tbody>
         </table>
       </div>
-    </div>
+      {!any && <div className="empty">No pair matches the filters.</div>}
+    </section>
   )
 }
 
@@ -241,8 +267,8 @@ function OptionsView({ data }: { data: AppData }) {
   }, [rows, pair, sort])
 
   const th = (key: SortKey | null, label: string, num = false) => (
-    <th className={num ? 'num' : ''} onClick={key ? () => setSort(key) : undefined} aria-sort={key && sort === key ? 'descending' : undefined}>
-      {label}
+    <th scope="col" className={num ? 'num' : undefined} aria-sort={key && sort === key ? SORT_DIR[key] : undefined}>
+      {key ? <button type="button" className="sort" onClick={() => setSort(key)}>{label}</button> : label}
     </th>
   )
 
@@ -250,24 +276,24 @@ function OptionsView({ data }: { data: AppData }) {
     <>
       <FiltersBar sort={sort} onSort={setSort} />
       <Matrix inout={inout} rows={rows} pair={pair} onPick={setPair} sort={sort} />
-      <div className="card" id="pick-list">
-        <div className="row pad list-head">
+      <section className="opt-sec" id="pick-list" aria-labelledby="opt-title">
+        <div className="sec-head">
           {pair ? (
             <>
-              <h3 className="h3">{ap(pair.in)} in, {ap(pair.home)} home</h3>
+              <h3 className="sec-title" id="opt-title">{ap(pair.in)} in, {ap(pair.home)} home</h3>
               <span className="count">{list.length} {list.length === 1 ? 'option' : 'options'}</span>
               <span className="spacer" />
-              <button className="btn small" onClick={() => setPair(null)}>Show all pairs</button>
+              <button type="button" className="btn small" onClick={() => setPair(null)}>Show all pairs</button>
             </>
           ) : (
             <>
-              <h3 className="h3">All pairs</h3>
+              <h3 className="sec-title" id="opt-title">All pairs</h3>
               <span className="count">{list.length} of {inout.options.length} options</span>
             </>
           )}
         </div>
-        <div className="tablewrap">
-          <table className="opts">
+        <div className="tablewrap opts-wrap">
+          <table className="grid opts">
             <thead>
               <tr>
                 {!pair && th(null, 'In')}
@@ -288,18 +314,18 @@ function OptionsView({ data }: { data: AppData }) {
                 const open = expanded === o.id
                 return (
                   <Fragment key={o.id}>
-                    <tr className={'main' + (open ? ' open' : '')} onClick={() => toggle(o.id)} aria-expanded={open}>
+                    <tr className={'orow' + (open ? ' open' : '')} tabIndex={0} onClick={() => toggle(o.id)} onKeyDown={onActivate(() => toggle(o.id))} aria-expanded={open}>
                       {!pair && <td className="city"><b>{ap(o.entry)}</b><span className="code">{o.entry}</span></td>}
                       {!pair && <td className="city"><b>{ap(o.exit)}</b><span className="code">{o.exit}</span></td>}
                       <td><span className={'pill ' + o.type}>{TYPE_LABEL[o.type]}</span></td>
-                      <td className="num"><b>{kr(o.price_dkk)}</b></td>
+                      <td className="num price">{kr(o.price_dkk)}</td>
                       <td className="num"><span className="ico"><Bag /><Num v={o.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /></span></td>
                       <td><Rate v={o.rating.total} /></td>
                       <td><Stamp s={wi.depart} /></td>
                       <td><Stamp s={wi.arrive} from={wi.depart} /></td>
                       <td><Stamp s={wh.depart} /></td>
                       <td><Stamp s={wh.arrive} from={wh.depart} /></td>
-                      <td className="num">{o.extras.hub_nights ? <span className="ico"><Moon />{o.extras.hub_nights}</span> : ''}</td>
+                      <td className="num">{o.extras.hub_nights ? <span className="ico"><Moon />{o.extras.hub_nights}</span> : <span className="faint">0</span>}</td>
                     </tr>
                     {open && (
                       <tr className="expand">
@@ -313,7 +339,7 @@ function OptionsView({ data }: { data: AppData }) {
           </table>
           {list.length === 0 && <div className="empty">No option matches the filters.</div>}
         </div>
-      </div>
+      </section>
     </>
   )
 }
@@ -338,8 +364,8 @@ function Expanded({ data, option, wi, wh }: { data: AppData; option: Option; wi:
           <span className="sep" />
           <span className="k">Rating: price, in, home</span><span className="v">{dec1(option.rating.price)} · {option.rating.way_in} · {option.rating.way_home}</span>
         </div>
-        <button className="btn primary wide" onClick={build}><Pin />Build this trip on the map</button>
-        <p className="small faint" style={{ margin: 0 }}>
+        <button type="button" className="btn primary wide" onClick={build}><Pin />Build this trip on the map</button>
+        <p className="prov small faint">
           {tickets.map((t) => `${t.legs.join(' + ')} ${kr(t.price_dkk)}, ${t.source} ${observed(t.observed_at)}`).join(' · ')}
         </p>
       </div>
@@ -361,24 +387,25 @@ function MixView({ data }: { data: AppData }) {
   const ap = (c: string) => inout.airports[c]?.name ?? c
 
   const list = (dir: 'in' | 'home', ways: Way[], sel: string | null) => (
-    <div className="card">
-      <div className="pad" style={{ paddingBottom: 8 }}>
-        <h3 className="h3">{dir === 'in' ? 'One-way in' : 'One-way home'}</h3>
-        <span className="small muted">{ways.length} separate one-way ways, best first. One ticket and Madrid ways always come with their pair.</span>
+    <section className="mix-col" aria-labelledby={`mix-${dir}`}>
+      <div className="sec-head">
+        <h3 className="sec-title" id={`mix-${dir}`}>{dir === 'in' ? 'One-way in' : 'One-way home'}</h3>
+        <span className="count">{ways.length} ways</span>
+        <span className="sec-note">Separate one-way ways, best first. One ticket and Madrid ways always come with their pair.</span>
       </div>
       <div className="waylist">
-        <div className="wayrow head"><span>{dir === 'in' ? 'Lands in' : 'Leaves from'}</span><span>{dir === 'in' ? 'Leaves CPH' : 'Departs'}</span><span>Price</span><span>Flying</span><span>Score</span></div>
+        <div className="wayrow head" aria-hidden="true"><span>{dir === 'in' ? 'Lands in' : 'Leaves from'}</span><span>{dir === 'in' ? 'Leaves CPH' : 'Departs'}</span><span>Price</span><span>Flying</span><span>Score</span></div>
         {ways.map((w) => (
-          <button key={w.id} className={'wayrow' + (sel === w.id ? ' on' : '')} onClick={() => setMix(dir, sel === w.id ? null : w.id)} aria-pressed={sel === w.id}>
-            <span><b>{ap(dir === 'in' ? w.to : w.from)}</b> <span className="faint small">via {w.airports.slice(1, -1).join(', ') || 'nonstop'}{w.hub_nights ? ` · ${w.hub_nights} hub night${w.hub_nights > 1 ? 's' : ''}` : ''}{w.us_transit ? ' · US' : ''}</span></span>
+          <button type="button" key={w.id} className={'wayrow' + (sel === w.id ? ' on' : '')} onClick={() => setMix(dir, sel === w.id ? null : w.id)} aria-pressed={sel === w.id}>
+            <span className="wr-name"><b>{ap(dir === 'in' ? w.to : w.from)}</b> <span className="faint small">via {w.airports.slice(1, -1).join(', ') || 'nonstop'}{w.hub_nights ? ` · ${w.hub_nights} hub night${w.hub_nights > 1 ? 's' : ''}` : ''}{w.us_transit ? ' · US' : ''}</span></span>
             <span><Stamp s={w.depart} /></span>
-            <span>{kr(w.price_dkk)}</span>
-            <span>{hours(w.flying_hours)}</span>
-            <span>{w.score}/5</span>
+            <span className="n">{kr(w.price_dkk)}</span>
+            <span className="n">{hours(w.flying_hours)}</span>
+            <span className="n">{w.score}/5</span>
           </button>
         ))}
       </div>
-    </div>
+    </section>
   )
 
   return (
@@ -388,27 +415,27 @@ function MixView({ data }: { data: AppData }) {
         {list('home', homes, mixHome)}
       </div>
       {mixed && wi && wh ? (
-        <div className="card">
+        <section className="mix-pair" aria-label="The mixed pair">
           <div className="mixbar">
-            <div>
+            <div className="mb-sum">
               <div className="small muted">{ap(wi.to)} in, {ap(wh.from)} home · separate tickets</div>
               <div className="big">{kr(mixed.price_dkk)}</div>
             </div>
-            <div className="small">Cabin bags <Num v={mixed.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /> · checked <Num v={mixed.extras.checked_bag_fees_dkk} what="Checked-bag fee" /> · {mixed.extras.hub_nights} hub nights</div>
+            <div className="mb-facts small">Cabin bags <Num v={mixed.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /> · checked <Num v={mixed.extras.checked_bag_fees_dkk} what="Checked-bag fee" /> · {mixed.extras.hub_nights} hub nights</div>
             <Rate v={mixed.rating.total} />
             <span className="spacer" />
-            <button className="btn primary" onClick={() => startOnMap(wi, wh, null)}><Pin />Build this trip on the map</button>
+            <button type="button" className="btn primary" onClick={() => startOnMap(wi, wh, null)}><Pin />Build this trip on the map</button>
           </div>
-          <div className="expand-in" style={{ paddingTop: 0 }}>
+          <div className="expand-in">
             <div className="ways">
               <WayCard way={wi} inout={inout} dir="in" />
               <WayCard way={wh} inout={inout} dir="home" />
             </div>
             <div className="side"><MiniMap data={inout} ways={[wi, wh]} onOpen={() => startOnMap(wi, wh, null)} /></div>
           </div>
-        </div>
+        </section>
       ) : (
-        <div className="card empty">Pick one way in and one way home to see the pair.</div>
+        <div className="mix-empty">Pick one way in and one way home to see the pair.</div>
       )}
     </>
   )
