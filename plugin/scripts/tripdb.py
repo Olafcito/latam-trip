@@ -181,7 +181,7 @@ TABLES = {
     "task_log": ("task_log.jsonl", {None: TASK}),
     "trips": ("trips.jsonl", {None: TRIP}),
 }
-DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "bag_fees.json", "scenarios.json",
+DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "scenarios.json",
         "experience_categories.json", "lists.json", "elevation.json", "image_queries.json")
 USAGE_COLS = ["round", "agent", "model", "tool", "searches", "tokens", "tool_uses", "seconds", "rows"]
 
