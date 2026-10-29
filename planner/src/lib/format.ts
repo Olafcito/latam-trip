@@ -39,6 +39,12 @@ export function day(local: string): string {
   return `${d} ${MON[m - 1] ?? '?'}`
 }
 
+/** "13 to 17 Dec", or "28 Dec to 3 Jan" across a month. */
+export function dayRange(a: string, b: string): string {
+  if (a.slice(0, 10) === b.slice(0, 10)) return day(a)
+  return a.slice(5, 7) === b.slice(5, 7) ? `${Number(a.slice(8, 10))} to ${day(b)}` : `${day(a)} to ${day(b)}`
+}
+
 /** "2026-12-03" -> "Thu 3 Dec". */
 export function weekdayDay(local: string): string {
   const dt = new Date(local.slice(0, 10) + 'T00:00:00Z')
