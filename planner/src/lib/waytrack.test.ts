@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Airport, FlightItem, StopItem, Way } from '../data/types'
-import { nights, wayTrack, wayTrackLabel } from './waytrack'
+import { nights, wayAxis, wayTrack, wayTrackLabel } from './waytrack'
 
 const fl = (over: Partial<FlightItem>): FlightItem => ({
   kind: 'flight', from: 'CPH', to: 'MAD', depart: '2026-12-02T06:10', arrive: '2026-12-02T09:35', hours: 3.42,
@@ -59,5 +59,44 @@ describe('wayTrackLabel', () => {
     const w = { ...way, timeline: [fl({ arrive: '2026-12-03T01:20' }), stop({ kind: 'connection', hours: 1.17 })] }
     expect(wayTrackLabel(w)).toBe('CPH 06:10 2 Dec to MAD 01:20 3 Dec, change in MAD, 1h 10m')
     expect(nights(2)).toBe('2 nights')
+  })
+})
+
+describe('wayAxis', () => {
+  it('lays the parts end to end by their hours from the take-off', () => {
+    const a = wayAxis(wayTrack(way))
+    expect(a.parts.map((p) => p.part.kind)).toEqual(['fly', 'wait', 'fly', 'wait', 'fly'])
+    expect(a.parts[0].start).toBe(0)
+    expect(a.parts[1].start).toBeCloseTo(3.42)
+    expect(a.parts[2].start).toBeCloseTo(3.42 + 22.58)
+    // the second ticket splits its 20.58 hours: 7.17 waiting in Bogotá, the rest in the air in two halves
+    expect(a.parts[3].hours).toBeCloseTo(7.17)
+    expect(a.total).toBeCloseTo(3.42 + 22.58 + 20.58)
+    for (let i = 1; i < a.parts.length; i++) expect(a.parts[i].start).toBeCloseTo(a.parts[i - 1].start + a.parts[i - 1].hours)
+  })
+
+  it('marks the ruler every 12 hours on a two day way, and keeps the last tick off the landing', () => {
+    expect(wayAxis(wayTrack(way)).ticks).toEqual([12, 24, 36])
+    const short = wayAxis(wayTrack({ ...way, timeline: [fl({ hours: 13 })] }))
+    expect(short.ticks).toEqual([6])
+  })
+
+  it('gives a change with no hours in the data one hour', () => {
+    const w = { ...way, timeline: [fl({ hours: 10, connections: [{ airport: 'BOG', layover_h: null }] })] }
+    const a = wayAxis(wayTrack(w as Way))
+    expect(a.parts[1].hours).toBe(1)
+  })
+
+  it('draws the parts to scale on the line, with a floor for short ones', () => {
+    const a = wayAxis(wayTrack(way))
+    expect(a.parts.reduce((s, p) => s + p.width, 0)).toBeCloseTo(1)
+    expect(a.parts[0].left).toBe(0)
+    for (const p of a.parts) expect(p.width).toBeGreaterThan(0.08)
+    // the night in Bogotá is the longest part and stays the widest
+    expect(Math.max(...a.parts.map((p) => p.width))).toBe(a.parts[1].width)
+    // the ruler follows the parts: the start, a part's start and the landing land on its edges
+    expect(a.x(0)).toBe(0)
+    expect(a.x(a.parts[2].start)).toBeCloseTo(a.parts[2].left)
+    expect(a.x(a.total)).toBeCloseTo(1)
   })
 })

@@ -2,7 +2,8 @@ import type { Airport, FlightItem, StopKind, Way } from '../data/types'
 import { clock, day, dayDiff, hours } from './format'
 
 // A long-haul way as a transit line: the flights as stretches, every wait between them as a stop.
-// Evenly spaced, not to scale. Times are local at each airport, as in the data.
+// Times are local at each airport, as in the data. wayAxis lays the parts out to scale, by the hours
+// each one takes from the first take-off, with a floor so a short hop still has room for its labels.
 
 /** A stretch in the air. approx when it is a share of one ticket's flight split around its changes. */
 export interface TrackFly {
@@ -59,6 +60,51 @@ export function wayTrack(w: Way): WayTrackModel {
     parts.push({ kind: 'fly', hours: each, approx: legs > 1 })
   }
   return { start: { code: w.from, time: w.depart || null }, end: { code: w.to, time: w.arrive || null }, parts }
+}
+
+/** One part placed on the axis: where it starts and how long it lasts, in hours from the take-off. */
+/** A part on the axis: its hours from the take-off, and where it is drawn as shares of the line. */
+export interface AxisPart { part: TrackFly | TrackWait; start: number; hours: number; left: number; width: number }
+export interface WayAxis {
+  parts: AxisPart[]
+  total: number
+  /** hours on the ruler */
+  ticks: number[]
+  /** where an hour from the take-off falls on the line, 0 to 1 */
+  x: (h: number) => number
+}
+
+/** the least share of the line a part gets, so a 1 hour change between two long flights can carry its code */
+const FLOOR = 0.1
+
+export function wayAxis(t: WayTrackModel): WayAxis {
+  let at = 0
+  const raw = t.parts.map((part) => {
+    const h = Math.max(0, part.hours ?? 1)
+    const out = { part, start: at, hours: h }
+    at += h
+    return out
+  })
+  const total = at
+  const floor = Math.min(FLOOR, 0.5 / Math.max(1, raw.length))
+  const weight = raw.map((p) => Math.max(p.hours, total * floor))
+  const sum = weight.reduce((a, b) => a + b, 0) || 1
+  let left = 0
+  const parts = raw.map((p, i) => {
+    const out = { ...p, left, width: weight[i] / sum }
+    left += out.width
+    return out
+  })
+  const x = (h: number) => {
+    const p = parts.find((q) => h <= q.start + q.hours) ?? parts[parts.length - 1]
+    if (!p) return 0
+    return p.left + (p.hours > 0 ? Math.min(1, Math.max(0, (h - p.start) / p.hours)) : 0) * p.width
+  }
+  const step = total <= 24 ? 6 : total <= 48 ? 12 : 24
+  const ticks: number[] = []
+  // leave the last stretch before the landing clear, so the last tick does not sit on the end label
+  for (let h = step; h < total - step * 0.35; h += step) ticks.push(h)
+  return { parts, total, ticks, x }
 }
 
 /** "1 night", "2 nights". */
