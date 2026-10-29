@@ -29,7 +29,6 @@ const placed = {
   CPH: ap('Copenhagen', 55.62, 12.65, 1), MAD: ap('Madrid', 40.47, -3.56, 1),
   BOG: ap('Bogotá', 4.7, -74.15, -5), SAL: ap('San Salvador', 13.44, -89.06, -6),
 }
-const mins = (a: string, b: string) => (Date.parse(b + ':00Z') - Date.parse(a + ':00Z')) / 60000
 
 describe('wayTrack', () => {
   it('runs from the first take-off to the last landing, a wait between every two flights', () => {
@@ -41,8 +40,8 @@ describe('wayTrack', () => {
 
   it('keeps a stop between tickets with its own times, a change inside a ticket has none without the airports', () => {
     const [, night, , change] = wayTrack(way).parts
-    expect(night).toMatchObject({ kind: 'wait', arrive: '2026-12-02T09:35', depart: '2026-12-03T08:10', nights: 1, stay: 450, est: false })
-    expect(change).toMatchObject({ kind: 'wait', hours: 7.17, arrive: null, depart: null, est: true })
+    expect(night).toMatchObject({ kind: 'wait', arrive: '2026-12-02T09:35', depart: '2026-12-03T08:10', nights: 1, stay: 450 })
+    expect(change).toMatchObject({ kind: 'wait', hours: 7.17, arrive: null, depart: null })
   })
 
   it('splits a flight with a change evenly when the airports are not known, and marks those lengths as rough', () => {
@@ -52,18 +51,15 @@ describe('wayTrack', () => {
     expect(flies.slice(1).every((f) => f.kind === 'fly' && f.approx)).toBe(true)
   })
 
-  it('shares a ticket out by distance and works out the local times at its change', () => {
+  it('shares a ticket out by distance, and makes up no clock times at its change', () => {
     const parts = wayTrack(way, placed).parts
     const [, , long, change, short] = parts
     if (long.kind !== 'fly' || short.kind !== 'fly' || change.kind !== 'wait') throw new Error('shape')
     // Madrid to Bogotá is far longer than Bogotá to San Salvador, the air time still adds up
     expect(long.hours).toBeGreaterThan(short.hours * 3)
     expect(long.hours + short.hours).toBeCloseTo(20.58 - 7.17)
-    // lands in Bogotá in the early afternoon local time, leaves 7h 10m later
-    expect(change.arrive?.slice(0, 13)).toBe('2026-12-03T12')
-    expect(mins(change.arrive!, change.depart!)).toBeCloseTo(7.17 * 60, 0)
-    // and the last flight from there lands on the ticket's own landing, an hour behind Bogotá
-    expect(Math.abs(mins(change.depart!, '2026-12-03T21:45') - (short.hours - 1) * 60)).toBeLessThan(5)
+    // the change keeps its length from the data, but the data has no times for it
+    expect(change).toMatchObject({ hours: 7.17, arrive: null, depart: null })
   })
 })
 

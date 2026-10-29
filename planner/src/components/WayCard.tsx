@@ -22,12 +22,12 @@ function Stamp({ s, from, big }: { s: string; from?: string; big?: boolean }) {
   )
 }
 
-/** A clock time on the axis, with "+1" when it falls on a later day than the way leaves, "~" when worked out. */
-function Time({ t, start, est = false }: { t: string; start: string; est?: boolean }) {
+/** A clock time on the axis, with "+1" when it falls on a later day than the way leaves. */
+function Time({ t, start }: { t: string; start: string }) {
   const nd = nextDayMark(start, t)
   return (
-    <span className="wx-tm" data-est={est || undefined}>
-      {est ? '~' : ''}{clock(t)}
+    <span className="wx-tm">
+      {clock(t)}
       {nd && <sup className="nd">{nd}</sup>}
       {timeUncertain(t) && <span className="warnmark" title="Time not known exactly">!</span>}
     </span>
@@ -49,8 +49,7 @@ function waitTitle(p: TrackWait): string {
     : p.type === 'day_stop' ? `Day stop in ${p.code}, ${hours(p.hours)}`
     : p.type === 'self_transfer' ? `Self-transfer in ${p.code}, ${hours(p.hours)} between separate tickets`
     : `${p.overnight ? 'Overnight change' : 'Change'} in ${p.code}, ${hours(p.hours)}`
-  if (p.arrive && p.depart && !p.est) return `${what}. Lands ${day(p.arrive)} ${clock(p.arrive)}, leaves ${day(p.depart)} ${clock(p.depart)}`
-  if (p.arrive && p.depart) return `${what}. Lands about ${clock(p.arrive)}, leaves about ${clock(p.depart)}, worked out from the distances`
+  if (p.arrive && p.depart) return `${what}. Lands ${day(p.arrive)} ${clock(p.arrive)}, leaves ${day(p.depart)} ${clock(p.depart)}`
   return p.type === 'layover' ? `${what}. The times of the change are not in the data` : what
 }
 
@@ -59,7 +58,8 @@ function waitTitle(p: TrackWait): string {
  * as the hours it takes, with a floor so a short hop keeps room for its labels, so a night in Madrid
  * fills the line the way it fills the trip. Flights are solid bars with their time over them, waits
  * sit between them in their own style, and every airport is a point with its code and local times
- * under it, so the time points are the axis. Times worked out inside one ticket are marked "~".
+ * under it, so the time points are the axis. A change inside one ticket shows its code and its
+ * length only, since the data has no clock times for it, and its two flights carry no hours.
  */
 export function WayTrack({ way, airports, compact = false }: { way: Way; airports?: Record<string, Airport>; compact?: boolean }) {
   const t = wayTrack(way, airports)
@@ -67,13 +67,16 @@ export function WayTrack({ way, airports, compact = false }: { way: Way; airport
   const start = way.depart
   const pct = (f: number) => `${f * 100}%`
   const span = (p: { left: number; width: number }): CSSProperties => ({ left: pct(p.left), width: pct(p.width) })
+  // a flight split around a change carries no hours, so the change's label may borrow from both sides and stay centred
+  const quiet = (i: number) => { const q = ax.parts[i]?.part; return q?.kind === 'fly' && q.approx ? ax.parts[i].width / 2 : 0 }
+  const room = (i: number) => { const q = ax.parts[i]; const e = Math.min(quiet(i - 1), quiet(i + 1)); return { left: q.left - e, width: q.width + 2 * e } }
   const dt = (s: string | null) => (s && !compact ? <small className="wx-dt">{day(s)}</small> : null)
   return (
     <div className={`wx${compact ? ' compact' : ''}`} role="img" aria-label={wayTrackLabel(way, airports)}>
       <div className="wx-over" aria-hidden="true">
         {ax.parts.map((q, i) => { const p = q.part; return (
-          <span key={i} className="wx-lab" data-k={p.kind} style={span(q)} title={p.kind === 'wait' ? waitTitle(p) : undefined}>
-            {p.kind === 'fly' ? <span className="wx-dur">{p.approx ? '~' : ''}{hours(p.hours)}</span> : <WaitLabel p={p} />}
+          <span key={i} className="wx-lab" data-k={p.kind} style={span(p.kind === 'wait' ? room(i) : q)} title={p.kind === 'wait' ? waitTitle(p) : undefined}>
+            {p.kind === 'fly' ? !p.approx && <span className="wx-dur">{hours(p.hours)}</span> : <WaitLabel p={p} />}
           </span>
         ) })}
       </div>
@@ -98,14 +101,14 @@ export function WayTrack({ way, airports, compact = false }: { way: Way; airport
             <span key={i} className="wx-wait" style={span(q)}>
               {/* wide: the landing under the left edge, the take-off under the right. Narrow: stacked in the middle */}
               <span className="wx-wide">
-                {p.arrive && <span className="wx-at l"><Time t={p.arrive} start={start} est={p.est} /></span>}
+                {p.arrive && <span className="wx-at l"><Time t={p.arrive} start={start} /></span>}
                 <b className="wx-code">{p.code}</b>
-                {p.depart && <span className="wx-at r"><Time t={p.depart} start={start} est={p.est} /></span>}
+                {p.depart && <span className="wx-at r"><Time t={p.depart} start={start} /></span>}
               </span>
               <span className="wx-narrow">
                 <b>{p.code}</b>
-                {p.arrive && <Time t={p.arrive} start={start} est={p.est} />}
-                {p.depart && <Time t={p.depart} start={start} est={p.est} />}
+                {p.arrive && <Time t={p.arrive} start={start} />}
+                {p.depart && <Time t={p.depart} start={start} />}
               </span>
             </span>
           )
