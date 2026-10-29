@@ -48,7 +48,7 @@ export function LegCard({ h, ends, family, date, quotes, link }: {
   const others = quotes.filter((q) => !(f && q.d === clock(f.depart) && q.a === clock(f.arrive))).slice(0, 3)
   const task = ends.fromCode && ends.toCode ? flightPricesTask({ from: ends.fromCode, to: ends.toCode, date, fromName: ends.fromName, toName: ends.toName }) : null
   const facts = [
-    f?.carriers.join(', ') || h.operator,
+    f?.carriers.join(', ') || (h.operator !== h.overland ? h.operator : null),
     f ? stopsText(f.via.length) : null,
     f?.cabin_bag ? `Cabin bag ${f.cabin_bag}` : null,
     f?.checked_bag ? `Checked bag ${f.checked_bag}` : null,
