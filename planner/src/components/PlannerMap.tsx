@@ -68,7 +68,7 @@ export function PlannerMap() {
         focusAt={focusAt}
         onStop={cursorTo}
         onLeg={insertLeg}
-        side={<MapSide />}
+        side={hasPane ? <MapSide /> : null}
         sideWidth={hasPane && paneMini ? 236 : 360}
         sideMini={hasPane && paneMini}
       />
