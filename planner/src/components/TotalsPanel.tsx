@@ -3,7 +3,7 @@ import { hours, kr } from '../lib/format'
 import { Chevron, DisclosurePanel, useDisclosure } from './Disclosure'
 
 function V({ v, what }: { v: number | null; what: string }) {
-  return v == null ? <span className="q" title={`${what} unknown for at least one ticket`}>?</span> : <>{kr(v)}</>
+  return v == null ? <span className="q" title={`${what} unknown for at least one ticket`}>not known</span> : <>{kr(v)}</>
 }
 
 /** The total and the three costs that make most of it. Bags, hub nights and flight counts open on a click. */
@@ -16,7 +16,7 @@ export function TotalsPanel({ t, total }: { t: Totals; total: number }) {
         <span className="sep" />
         <span className="k">Long-haul</span><span className="v">{kr(t.tickets_dkk)}</span>
         <span className="k">Regional flights</span><span className="v">{kr(t.regional_flights_dkk)}</span>
-        <span className="k">Ground</span><span className="v">{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}> +?</span> : null}</span>
+        <span className="k">Ground</span><span className="v">{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}>, some not priced</span> : null}</span>
       </div>
       <button className="disc-btn tot-more" {...more.trigger}>All costs<Chevron open={more.open} /></button>
       <DisclosurePanel {...more.panel}>

@@ -10,7 +10,7 @@ import { wayLinks } from '../lib/links'
 // with every airport, its local times and the waits between flights.
 
 function Stamp({ s, from, big }: { s: string; from?: string; big?: boolean }) {
-  if (!s) return <span className="wc-t">?</span>
+  if (!s) return null
   const nd = from ? nextDayMark(from, s) : ''
   return (
     <span className={`wc-t${big ? ' big' : ''}`}>

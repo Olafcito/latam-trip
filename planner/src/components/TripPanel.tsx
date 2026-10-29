@@ -23,7 +23,7 @@ import { hopLink } from '../lib/links'
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
 
 function Money({ v }: { v: number | null }) {
-  return v == null ? <span className="q" title="Unknown for at least one part">?</span> : <>{kr(v)}</>
+  return v == null ? <span className="q" title="Unknown for at least one part">not known</span> : <>{kr(v)}</>
 }
 
 /** The route map's model and the modes switched on on it, for the list of places one leg away. */
@@ -271,7 +271,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
           <dl className="plan-tot">
             <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
             <dt>Regional flights</dt><dd>{kr(t.regional_flights_dkk)}</dd>
-            <dt>Ground transport</dt><dd>{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}> +?</span> : null}</dd>
+            <dt>Ground transport</dt><dd>{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}>, some not priced</span> : null}</dd>
             <dt>Cabin bags</dt><dd><Money v={t.cabin_bag_dkk} /></dd>
             <dt>Hub nights, stay est.</dt><dd>{t.hub_nights} · <Money v={t.hub_stay_dkk} /></dd>
             <dt>Flights, hours in the air</dt><dd>{t.flights} · {hours(t.air_hours)}</dd>

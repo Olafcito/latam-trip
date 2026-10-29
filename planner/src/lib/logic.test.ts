@@ -53,7 +53,7 @@ const map: MapData = {
 describe('format', () => {
   it('writes Danish numbers and unknowns as ?', () => {
     expect(kr(6494)).toBe('6.494 kr')
-    expect(kr(null)).toBe('?')
+    expect(kr(null)).toBe('no price')
     expect(hours(14.5)).toBe('14h 30m')
     expect(dayTime('2026-12-03T06:00')).toBe('3 Dec 06:00')
     expect(nextDayMark('2026-12-03T22:00', '2026-12-04T05:00')).toBe('+1')

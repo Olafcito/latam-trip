@@ -246,8 +246,8 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
         {s ? (
           <>
             <span className="tt-big">
+              {s.partial && <span className="tt-q" title="Some legs have no price yet, so this is a floor">from </span>}
               {kr(s.total)}
-              {s.partial && <span className="tt-q" title="Some legs have no price yet, so this is a floor">+?<span className="sr"> plus unpriced legs</span></span>}
             </span>
             <span className="tt-sub">{kr(s.t.tickets_dkk)} long haul</span>
           </>
@@ -260,7 +260,7 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
   )
 }
 
-const Q = () => <span className="tt-q">?<span className="sr"> unknown</span></span>
+const Q = () => <span className="tt-q">not known</span>
 
 const Check = () => (
   <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
