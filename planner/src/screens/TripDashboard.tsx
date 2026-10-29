@@ -14,6 +14,7 @@ import { MiniMap } from '../components/MiniMap'
 import { hoverProps } from '../components/PlaceCard'
 import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosure'
 import { FlyOnChips, RouteLine } from '../components/RouteLine'
+import { LegPrices } from '../components/LegPrices'
 import { Download, Home, Land, ModeChip, Moon, Pin, Transfer, Warn } from '../components/icons'
 
 // The dashboard of one trip. Calm by default: the route as flags with the all-in price and the
@@ -125,7 +126,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const openSaved = useStore((s) => s.openSaved)
   const saveJourney = useStore((s) => s.saveJourney)
   const go = useStore((s) => s.go)
-  // the leg picked in the hero. Picking does nothing else yet, it is where a fare lookup hooks in.
+  // the leg picked in the hero. Its known prices on its day show under the chips.
   const [leg, setLeg] = useState<string | null>(null)
   const pickLeg = (l: RouteLeg) => setLeg((k) => (k === l.key ? null : l.key))
 
@@ -163,6 +164,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const countryOf = (id: string) => node(id)?.country ?? inout.airports[id]?.country ?? ''
   const route = tripRoute(data, journey)
   const partial = t.ground_unknown > 0 || t.hub_stay_dkk == null
+  const picked = route && leg ? flightLegs(route).find((l) => l.key === leg) ?? null : null
 
   return (
     <div className="dash">
@@ -193,6 +195,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
               <FlyOnChips legs={flightLegs(route)} pickedLeg={leg} onPickLeg={pickLeg} labelledBy="fly-on" />
             </div>
           )}
+          {picked && <LegPrices key={picked.key} leg={picked} map={map} />}
         </div>
       </div>
 
