@@ -2,7 +2,7 @@ Build the next version of the trip app in the repo Olafcito/latam-trip (the Reac
 
 Read first:
 - The design from the Claude app (attached): the screens, flows and look. This decides the UX.
-- `docs/ux-brief-experiences-and-tasks.md`: the features and user stories the design was made from (experiences, saved lists, trip builder, asking Claude, freshness).
+- `docs/design-brief.md`: the features and user stories the design was made from (experiences, saved lists, trip builder, asking Claude, freshness).
 - `docs/claude-tasks.md`: the fixed contract for tasks (issue format, task types and fields, the prompt template for "Ask Claude now", the public issues endpoint).
 - `DESIGN_HANDOFF.md` and `docs/route-map/MAP_DESIGN_HANDOFF.md`: the current app's design, for anything the new design doesn't cover.
 
