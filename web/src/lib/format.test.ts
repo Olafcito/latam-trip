@@ -23,8 +23,8 @@ describe('duration', () => {
 
 describe('prices', () => {
   it('formats from prices and plain amounts', () => {
-    expect(fromPrice(1040)).toBe('fra 1.040 kr')
-    expect(fromPrice(null)).toBe('pris ukendt')
+    expect(fromPrice(1040)).toBe('from 1.040 kr')
+    expect(fromPrice(null)).toBe('?')
     expect(kr(255)).toBe('255 kr')
   })
 })

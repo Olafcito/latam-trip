@@ -3,6 +3,7 @@ import { airportFlights, byCountry, countries, countryName, landing, neighbours,
 import { tripEnd, type Trip } from '../data/trips'
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
+import { Flag as CountryFlag } from './Flag'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 
 export type PanelView = 'city' | 'more' | 'route' | 'trips' | 'way'
@@ -87,12 +88,12 @@ function HeadButtons(p: PanelProps) {
   )
 }
 
-function OptChip({ o, label }: { o: RouteOption; label?: boolean }) {
+/** A connection at a glance: the mode as an icon, the time and the lowest price. The words sit in the title. */
+function OptChip({ o }: { o: RouteOption }) {
   return (
-    <span className="copt mono">
+    <span className="copt mono" title={`${modeLabel(o.mode)}, ${duration(o.duration_min)}, ${fromPrice(o.price_dkk.min)}`}>
       <ModeChip family={familyOf(o.mode)} />
-      {label && <span className="copt-m">{modeLabel(o.mode).toLowerCase()}</span>}
-      <b>{duration(o.duration_min)}</b> {fromPrice(o.price_dkk.min)}
+      <b>{duration(o.duration_min)}</b> {kr(o.price_dkk.min)}
     </span>
   )
 }
@@ -114,7 +115,7 @@ function ConnList({ p, list, from, dir = 'out', compact }: ConnListProps) {
     <div className={`cgroups${compact ? ' flush' : ''}`}>
       {groups.map((g) => (
         <section key={g.country}>
-          <p className="cgroup mono">{g.country === home ? `Within ${countryName(p.model, g.country)}` : countryName(p.model, g.country)}</p>
+          <p className="cgroup"><CountryFlag code={g.country} size={11} />{countryName(p.model, g.country)}</p>
           <ConnRows p={p} list={g.list} from={from} dir={dir} compact={compact} />
         </section>
       ))}
@@ -158,23 +159,21 @@ function ConnRow({ p, n, from, dir, i }: { p: PanelProps; n: Neighbour; from: st
               type="button"
               className={`copt mono cr-fl${open ? ' on' : ''}`}
               aria-expanded={open}
-              title={`${pair.length} crawled fare${pair.length === 1 ? '' : 's'} ${dir === 'out' ? 'to' : 'from'} ${n.other.short_name}`}
+              title={`Flight, ${pair.length} crawled fare${pair.length === 1 ? '' : 's'} ${dir === 'out' ? 'to' : 'from'} ${n.other.short_name}, ${fromPrice(pair[0].dkk)}`}
               onClick={() => setOpen(!open)}
             >
               <ModeChip family={familyOf(o.mode)} />
-              <span className="copt-m">flight</span>
-              <b>{duration(o.duration_min)}</b> {fromPrice(pair[0].dkk)}
+              <b>{duration(o.duration_min)}</b> {kr(pair[0].dkk)}
               <Chevron up={open} />
             </button>
           ) : o.mode === 'flight' && dir === 'in' && here ? (
             // the crawl did not search this way in, so there is no price to read
-            <span key={j} className="copt mono" title={`No crawled fares from ${n.other.short_name}`}>
+            <span key={j} className="copt mono" title={`Flight, no crawled fares from ${n.other.short_name}`}>
               <ModeChip family={familyOf(o.mode)} />
-              <span className="copt-m">flight</span>
-              <b>{duration(o.duration_min)}</b> {fromPrice(null)}
+              <b>{duration(o.duration_min)}</b> ?
             </span>
           ) : (
-            <OptChip key={j} o={o} label />
+            <OptChip key={j} o={o} />
           ),
         )}
       </span>
@@ -203,7 +202,6 @@ function Thumb({ city, w, className }: { city: Place; w: number; className: stri
 function CityView(p: PanelProps & { city: Place }) {
   const { model, city, dir } = p
   const list = neighbours(model, city.id, p.families)
-  const kicker = [countryName(model, city.country), altitude(city.altitude_m)].filter(Boolean).join(' · ')
   // the in or out switch only once the airport has crawled fares to read either way
   const flown = !!city.iata && (airportFlights(model, city.iata, 'in').length > 0 || airportFlights(model, city.iata, 'out').length > 0)
   return (
@@ -211,7 +209,7 @@ function CityView(p: PanelProps & { city: Place }) {
       <div className="phead stg">
         <Thumb city={city} w={250} className="thumb" />
         <div className="ptext">
-          <p className="kicker mono">{kicker}</p>
+          <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
           <h2 className="pname">{city.short_name}</h2>
           {city.why && <p className="why">{city.why}</p>}
         </div>
@@ -227,15 +225,12 @@ function CityView(p: PanelProps & { city: Place }) {
         </p>
       )}
       <div className="pmid stg">
-        {!!city.categories?.length && (
-          <div className="tags">{city.categories.map((c) => <span key={c} className="tag">{c}</span>)}</div>
-        )}
         {!!(city.summary || city.things_to_do?.length) && (
           <button className="more" onClick={p.onMore}>More about {city.short_name} <span className="arr"><Arrow /></span></button>
         )}
       </div>
       <div className="sechead">
-        <p className="sub mono">Connections</p>
+        <p className="sub">Connections</p>
         <span className="sechead-r">
           {flown && (
             <span className="dirseg" role="group" aria-label="Read flights in or out">
@@ -243,7 +238,7 @@ function CityView(p: PanelProps & { city: Place }) {
               <button type="button" aria-pressed={dir === 'out'} onClick={() => p.onDir('out')}>Out</button>
             </span>
           )}
-          <p className="sub mono">{list.length}</p>
+          <p className="sub">{list.length}</p>
         </span>
       </div>
       {list.length ? <ConnList p={p} list={list} from={city.id} dir={dir} /> : <p className="empty">No connections with the selected modes.</p>}
@@ -313,7 +308,7 @@ function MoreView(p: PanelProps & { city: Place }) {
           )}
         </div>
         <div>
-          <p className="kicker mono">{countryName(model, city.country)}</p>
+          <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
           <h2 className="pname" style={{ marginTop: 4 }}>{city.name}</h2>
         </div>
         {city.why && <p className="p-why">{city.why}</p>}
