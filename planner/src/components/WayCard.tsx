@@ -82,12 +82,38 @@ function StopChip({ item }: { item: StopItem }) {
   )
 }
 
+/** The way's track alone: flights as bars scaled by hours, every stop between them as a chip. */
+export function WayTrack({ way, compact = false }: { way: Way; compact?: boolean }) {
+  const segs = segments(way)
+  return (
+    <div className="wc-track" role="img" aria-label={`${way.flights} flights, ${hours(way.flying_hours)} in the air`}>
+      {segs.map((s, i) => {
+        if (s.kind === 'fly')
+          return (
+            <span key={i} className="wc-fly" style={{ flexGrow: Math.max(MIN_FLY, s.hours) }}>
+              <Plane s={12} />
+              {!compact && <i>{hours(s.hours)}</i>}
+            </span>
+          )
+        if (s.kind === 'conn')
+          return (
+            <span key={i} className={`wc-chip conn${s.night ? ' night' : ''}`} style={{ flexGrow: Math.max(MIN_STOP, s.hours / 2) }} title={`${s.night ? 'Overnight layover' : 'Layover'} in ${s.code}, ${hours(s.hours)}`}>
+              {s.night ? <Moon /> : <Clock />}
+              <b>{s.code}</b>
+              <i>{hours(s.hours)}</i>
+            </span>
+          )
+        return <StopChip key={i} item={s.item} />
+      })}
+    </div>
+  )
+}
+
 export function WayCard({ way, inout, dir, compact = false }: { way: Way; inout: InOut; dir: 'in' | 'home'; compact?: boolean }) {
   const a = inout.airports
   const far = dir === 'in' ? way.to : way.from
   const city = a[far]?.name ?? far
   const carriers = [...new Set(way.timeline.flatMap((t) => (t.kind === 'flight' ? t.carriers : [])))]
-  const segs = segments(way)
   const own = way.shared_ticket ? null : way.price_dkk
   return (
     <section className={`wc ${dir}${compact ? ' compact' : ''}`} aria-label={dir === 'in' ? `Way in to ${city}` : `Way home from ${city}`}>
@@ -106,26 +132,7 @@ export function WayCard({ way, inout, dir, compact = false }: { way: Way; inout:
           <Stamp s={way.arrive} from={way.depart} big />
         </div>
       </div>
-      <div className="wc-track" role="img" aria-label={`${way.flights} flights, ${hours(way.flying_hours)} in the air`}>
-        {segs.map((s, i) => {
-          if (s.kind === 'fly')
-            return (
-              <span key={i} className="wc-fly" style={{ flexGrow: Math.max(MIN_FLY, s.hours) }}>
-                <Plane s={12} />
-                {!compact && <i>{hours(s.hours)}</i>}
-              </span>
-            )
-          if (s.kind === 'conn')
-            return (
-              <span key={i} className={`wc-chip conn${s.night ? ' night' : ''}`} style={{ flexGrow: Math.max(MIN_STOP, s.hours / 2) }} title={`${s.night ? 'Overnight layover' : 'Layover'} in ${s.code}, ${hours(s.hours)}`}>
-                {s.night ? <Moon /> : <Clock />}
-                <b>{s.code}</b>
-                <i>{hours(s.hours)}</i>
-              </span>
-            )
-          return <StopChip key={i} item={s.item} />
-        })}
-      </div>
+      <WayTrack way={way} compact={compact} />
       {!compact && (
         <footer className="wc-f">
           <span>{way.flights} {way.flights === 1 ? 'flight' : 'flights'}</span>
