@@ -32,7 +32,7 @@
 .ramp small { font-size: inherit; }
 .ramp small:nth-of-type(2) { margin-right: 2px; }
 .ramp small:last-of-type { margin-left: 2px; }
-.ramp .ramp-k { margin-right: 4px; color: var(--faint); text-transform: lowercase; }
+.ramp .ramp-k { margin-right: 4px; color: var(--faint); text-transform: none; }
 .ramp i { width: 18px; height: 12px; border-radius: 3px; }
 
 /* ---- the matrix ----------------------------------------------------------------------------- */
@@ -44,13 +44,13 @@ table.matrix { border-collapse: separate; border-spacing: 0; font-size: 12px; }
 .matrix thead tr:first-child th { height: 24px; }
 .matrix thead tr + tr th { top: 24px; }
 .matrix th.corner { left: 0; z-index: 4; width: 164px; min-width: 164px; }
-.matrix th.corner span { position: absolute; font-family: var(--font-num); font-size: 10.5px; font-weight: 500; text-transform: lowercase; color: var(--faint); }
+.matrix th.corner span { position: absolute; font-family: var(--font-num); font-size: 10.5px; font-weight: 500; text-transform: none; color: var(--faint); }
 .matrix th.corner .in { left: 4px; bottom: 5px; }
 .matrix th.corner .out { right: 8px; top: 5px; }
-.matrix th.grp { padding: 0 4px; text-align: left; vertical-align: bottom; font-family: var(--font-num); font-size: 10.5px; text-transform: lowercase; color: var(--faint); box-shadow: inset 0 -1px 0 var(--line); }
+.matrix th.grp { padding: 0 4px; text-align: left; vertical-align: bottom; font-family: var(--font-num); font-size: 10.5px; text-transform: none; color: var(--faint); box-shadow: inset 0 -1px 0 var(--line); }
 .matrix th.col { padding: 6px 0 5px; text-align: center; font-family: var(--font-num); font-size: 11px; border-radius: 5px; }
 .matrix th.col.hl { background: var(--surface-2); color: var(--text); }
-.matrix tr.grp th { padding: 12px 4px 4px; text-align: left; font-family: var(--font-num); font-size: 10.5px; text-transform: lowercase; color: var(--faint); }
+.matrix tr.grp th { padding: 12px 4px 4px; text-align: left; font-family: var(--font-num); font-size: 10.5px; text-transform: none; color: var(--faint); }
 .matrix tr.grp th span { position: sticky; left: 4px; }
 .matrix th.rowh { position: sticky; left: 0; z-index: 2; padding: 0 12px 0 4px; text-align: left; border-radius: 5px; }
 .matrix th.rowh b { font-size: 12.5px; font-weight: 600; color: var(--text); }
@@ -155,7 +155,7 @@ table.grid.opts { font-size: var(--fs-small); }
   cursor: pointer;
   transition: background-color var(--t-fast) ease;
 }
-.wayrow.head { position: sticky; top: 0; z-index: 1; min-height: 0; background: var(--ground); border-bottom-color: var(--line-2); font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: lowercase; color: var(--faint); cursor: default; }
+.wayrow.head { position: sticky; top: 0; z-index: 1; min-height: 0; background: var(--ground); border-bottom-color: var(--line-2); font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--faint); cursor: default; }
 .wayrow.head > :nth-child(n + 3), .wayrow .n { text-align: right; }
 .wayrow .n { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 .wayrow .wr-name { min-width: 0; }

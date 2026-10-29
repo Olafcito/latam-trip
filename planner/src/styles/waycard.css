@@ -5,7 +5,7 @@
 .wc { --io: var(--in); --io-bg: color-mix(in srgb, var(--io) 14%, var(--surface)); display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 10px; border-radius: 10px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
 .wc.home { --io: var(--home); }
 .wc-h { display: flex; align-items: center; gap: 8px; }
-.wc-dir { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: lowercase; color: var(--io); }
+.wc-dir { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--io); }
 .wc-dur { font-family: var(--font-num); font-size: 12.5px; font-weight: 500; color: var(--muted); }
 .wc-us { margin-left: auto; font-family: var(--font-num); font-size: 11px; font-weight: 500; color: var(--flight); cursor: help; }
 .wc-ends { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
