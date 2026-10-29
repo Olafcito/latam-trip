@@ -2499,6 +2499,17 @@
     "touristy": 3,
     "hostels": [
      {
+      "name": "La Urraca Loca",
+      "rank": 1,
+      "recommended": true,
+      "dorm_dkk": 70,
+      "private_dkk": 181,
+      "rating": 9.7,
+      "source": "https://www.hostelworld.com/hostels/p/276077/la-urraca-loca/",
+      "source_year": 2026,
+      "note": "Recommended. Balgüe, Maderas side, quiet jungle garden with Concepcion view, 2 min from the bus stop, 627 reviews. Prices from hostelz 2024 (dorm US$10.82, private US$28), Hostelworld showed no rates. Card payments +5%."
+     },
+     {
       "name": "Rancho Tranquillo",
       "dorm_dkk": 53,
       "private_dkk": 116,
