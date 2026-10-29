@@ -3088,12 +3088,28 @@
   },
   "hostels": [
    {
+    "name": "Cool Spot Grace Place (Grace's)",
+    "dorm_dkk": null,
+    "private_dkk": 110,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://littlecornisland.net/accommodations/"
+   },
+   {
+    "name": "Carlito's Place (Carlito's Sunrise Paradise)",
+    "dorm_dkk": null,
+    "private_dkk": 129,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://carlitosplacelittlecorn.com"
+   },
+   {
     "name": "Three Brother's Hostel",
-    "dorm_dkk": 54,
-    "private_dkk": 40,
+    "dorm_dkk": 52,
+    "private_dkk": 65,
     "rating": 7.6,
     "price_suspect": false,
-    "url": "https://www.hostelworld.com/hostels/north-america/nicaragua/little-corn-island/"
+    "url": "https://www.hostelworld.com/hostels/p/315207/three-brother-s-hostel/"
    }
   ],
   "hostel_note": null,
