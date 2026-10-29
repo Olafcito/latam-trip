@@ -7856,6 +7856,25 @@
    "_src": "net-mx-yucatan.jsonl"
   },
   {
+   "kind": "edge",
+   "from": "GUA",
+   "to": "SAP",
+   "mode": "flight",
+   "operator": "Avianca",
+   "duration_h": 3.17,
+   "duration_range": "3.2",
+   "price_dkk": 1359,
+   "price_range_local": "DKK 1,359 to 1,579 one way (Momondo, Light)",
+   "frequency": "at least 2 daily (05:25 and 15:40)",
+   "overnight": false,
+   "border": false,
+   "both": true,
+   "source": "https://www.momondo.dk",
+   "source_year": 2026,
+   "notes": "1 stop in San Salvador (SAL). Priced GUA to SAP only: 21 Dec 15:40 to 18:50 for 1,359 kr, 24 Dec 05:25 to 08:35 for 1,579 kr.",
+   "_src": "momondo-manual.jsonl"
+  },
+  {
    "from": "SJO",
    "to": "LPB",
    "mode": "flight",
@@ -22534,6 +22553,69 @@
      "checked_bag": null,
      "overnight_layover": false,
      "source": "google_flights"
+    }
+   ]
+  },
+  {
+   "from": "GUA",
+   "to": "SAP",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1359.0,
+   "oneway_min_hours": 3.17,
+   "fastest_hours": 3.17,
+   "fastest_price_dkk": 1359.0,
+   "nonstop": false,
+   "vias": [
+    "SAL"
+   ],
+   "carriers": [
+    "Avianca"
+   ],
+   "dates": [
+    "2026-12-21",
+    "2026-12-24"
+   ],
+   "return_min_dkk": null,
+   "quotes": 2,
+   "flights": [
+    {
+     "quote_id": "Q:d34866e8fb10",
+     "depart": "2026-12-21T15:40",
+     "arrive": "2026-12-21T18:50",
+     "hours": 3.17,
+     "price_dkk": 1359.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "SAL"
+     ],
+     "layover_h": [],
+     "fare_brand": "Light",
+     "cabin_bag": "not included (Momondo icon grey)",
+     "checked_bag": "not included",
+     "overnight_layover": false,
+     "source": "momondo-manual"
+    },
+    {
+     "quote_id": "Q:60aa9a597535",
+     "depart": "2026-12-24T05:25",
+     "arrive": "2026-12-24T08:35",
+     "hours": 3.17,
+     "price_dkk": 1579.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "SAL"
+     ],
+     "layover_h": [],
+     "fare_brand": "Light",
+     "cabin_bag": "1 cabin bag included (Momondo)",
+     "checked_bag": "not included",
+     "overnight_layover": false,
+     "source": "momondo-manual"
     }
    ]
   },

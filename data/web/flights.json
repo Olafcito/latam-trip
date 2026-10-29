@@ -1091,6 +1091,29 @@
   ]
  },
  {
+  "from": "GUA",
+  "to": "SAP",
+  "dkk": 1359,
+  "hours": 3.17,
+  "dep": "2026-12-21T15:40",
+  "arr": "2026-12-21T18:50",
+  "vias": [
+   "SAL"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "SJO",
   "to": "CTG",
   "dkk": 1376,
