@@ -1,4 +1,4 @@
-Build the next version of the trip app in the repo Olafcito/latam-trip (the React app in `web/`, on the branch `seed-trips`).
+Build the next version of the trip app in the repo Olafcito/latam-trip (the React app in `web/`, on `main`, the only branch).
 
 Read first:
 - `docs/ux-brief-experiences-and-tasks.md`: the features and user stories (experiences, saved lists, trip builder, asking Claude, freshness). This is the spec.
@@ -26,4 +26,4 @@ Rules:
 - Prices in kroner, local clock times, no em or en dashes in any UI copy. Never offer booking.
 - It must work well on a phone.
 - Keep `npm run typecheck` and `npm test` green. Add tests for building the task JSON, the issue URL and the prompt, for parsing the task JSON back out of an issue body, and for itinerary validation.
-- Commit in small steps on `seed-trips` and push. End your reply with what's done, what's left, and any data fields you need from the crawler side.
+- Commit in small steps on `main` and push. End your reply with what's done, what's left, and any data fields you need from the crawler side.

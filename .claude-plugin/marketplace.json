@@ -1,0 +1,7 @@
+{
+  "name": "latam-trip",
+  "owner": { "name": "Olafcito" },
+  "plugins": [
+    { "name": "flight-crawler", "source": "./plugin", "description": "Flight crawler, trip checklist, price and place workers for the Latin America trip" }
+  ]
+}
