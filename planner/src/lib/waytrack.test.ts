@@ -23,8 +23,13 @@ const way: Way = {
   ],
 }
 
-const ap = (name: string): Airport => ({ name, country: '', lat: 0, lon: 0, region: null, utc_offset: 0, home: false })
+const ap = (name: string, lat = 0, lon = 0, utc_offset = 0): Airport => ({ name, country: '', lat, lon, region: null, utc_offset, home: false })
 const airports = { CPH: ap('Copenhagen'), MAD: ap('Madrid'), SAL: ap('San Salvador'), BOG: ap('Bogotá') }
+const placed = {
+  CPH: ap('Copenhagen', 55.62, 12.65, 1), MAD: ap('Madrid', 40.47, -3.56, 1),
+  BOG: ap('Bogotá', 4.7, -74.15, -5), SAL: ap('San Salvador', 13.44, -89.06, -6),
+}
+const mins = (a: string, b: string) => (Date.parse(b + ':00Z') - Date.parse(a + ':00Z')) / 60000
 
 describe('wayTrack', () => {
   it('runs from the first take-off to the last landing, a wait between every two flights', () => {
@@ -34,17 +39,31 @@ describe('wayTrack', () => {
     expect(t.parts.map((p) => (p.kind === 'fly' ? 'fly' : `${p.type} ${p.code}`))).toEqual(['fly', 'night MAD', 'fly', 'layover BOG', 'fly'])
   })
 
-  it('keeps a stop between tickets with its own times, a change inside a ticket has none', () => {
+  it('keeps a stop between tickets with its own times, a change inside a ticket has none without the airports', () => {
     const [, night, , change] = wayTrack(way).parts
-    expect(night).toMatchObject({ kind: 'wait', arrive: '2026-12-02T09:35', depart: '2026-12-03T08:10', nights: 1, stay: 450 })
-    expect(change).toMatchObject({ kind: 'wait', hours: 7.17, arrive: null, depart: null })
+    expect(night).toMatchObject({ kind: 'wait', arrive: '2026-12-02T09:35', depart: '2026-12-03T08:10', nights: 1, stay: 450, est: false })
+    expect(change).toMatchObject({ kind: 'wait', hours: 7.17, arrive: null, depart: null, est: true })
   })
 
-  it('splits a flight with a change evenly around it and marks those lengths as rough', () => {
+  it('splits a flight with a change evenly when the airports are not known, and marks those lengths as rough', () => {
     const flies = wayTrack(way).parts.filter((p) => p.kind === 'fly')
     expect(flies[0]).toEqual({ kind: 'fly', hours: 3.42, approx: false })
     expect(flies[1].hours).toBeCloseTo((20.58 - 7.17) / 2)
     expect(flies.slice(1).every((f) => f.kind === 'fly' && f.approx)).toBe(true)
+  })
+
+  it('shares a ticket out by distance and works out the local times at its change', () => {
+    const parts = wayTrack(way, placed).parts
+    const [, , long, change, short] = parts
+    if (long.kind !== 'fly' || short.kind !== 'fly' || change.kind !== 'wait') throw new Error('shape')
+    // Madrid to Bogotá is far longer than Bogotá to San Salvador, the air time still adds up
+    expect(long.hours).toBeGreaterThan(short.hours * 3)
+    expect(long.hours + short.hours).toBeCloseTo(20.58 - 7.17)
+    // lands in Bogotá in the early afternoon local time, leaves 7h 10m later
+    expect(change.arrive?.slice(0, 13)).toBe('2026-12-03T12')
+    expect(mins(change.arrive!, change.depart!)).toBeCloseTo(7.17 * 60, 0)
+    // and the last flight from there lands on the ticket's own landing, an hour behind Bogotá
+    expect(Math.abs(mins(change.depart!, '2026-12-03T21:45') - (short.hours - 1) * 60)).toBeLessThan(5)
   })
 })
 
@@ -73,12 +92,6 @@ describe('wayAxis', () => {
     expect(a.parts[3].hours).toBeCloseTo(7.17)
     expect(a.total).toBeCloseTo(3.42 + 22.58 + 20.58)
     for (let i = 1; i < a.parts.length; i++) expect(a.parts[i].start).toBeCloseTo(a.parts[i - 1].start + a.parts[i - 1].hours)
-  })
-
-  it('marks the ruler every 12 hours on a two day way, and keeps the last tick off the landing', () => {
-    expect(wayAxis(wayTrack(way)).ticks).toEqual([12, 24, 36])
-    const short = wayAxis(wayTrack({ ...way, timeline: [fl({ hours: 13 })] }))
-    expect(short.ticks).toEqual([6])
   })
 
   it('gives a change with no hours in the data one hour', () => {

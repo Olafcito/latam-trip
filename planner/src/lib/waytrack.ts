@@ -1,9 +1,13 @@
 import type { Airport, FlightItem, StopKind, Way } from '../data/types'
 import { clock, day, dayDiff, hours } from './format'
+import { toUtcMs } from './time'
 
 // A long-haul way as a transit line: the flights as stretches, every wait between them as a stop.
-// Times are local at each airport, as in the data. wayAxis lays the parts out to scale, by the hours
-// each one takes from the first take-off, with a floor so a short hop still has room for its labels.
+// Times are local at each airport, as in the data. A ticket with changes only knows its first
+// take-off and last landing, so its flights are shared out by the distance each one covers and the
+// times at the changes are worked out from that, marked as estimates. wayAxis lays the parts out to
+// scale, by the hours each one takes from the first take-off, with a floor so a short hop still has
+// room for its labels.
 
 /** A stretch in the air. approx when it is a share of one ticket's flight split around its changes. */
 export interface TrackFly {
@@ -22,9 +26,11 @@ export interface TrackWait {
   nights: number
   /** a layover inside one ticket that runs over night */
   overnight: boolean
-  /** local times, known for a stop between tickets, null for a change inside one ticket */
+  /** local times: from the data for a stop between tickets, worked out for a change inside one */
   arrive: string | null
   depart: string | null
+  /** the times are worked out, not in the data */
+  est: boolean
   stay: number | null
 }
 
@@ -35,41 +41,72 @@ export interface WayTrackModel {
   parts: (TrackFly | TrackWait)[]
 }
 
+/** km between two airports along the earth */
+function km(a: Airport, b: Airport): number {
+  const r = Math.PI / 180
+  const h = Math.sin(((b.lat - a.lat) * r) / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(((b.lon - a.lon) * r) / 2) ** 2
+  return 12742 * Math.asin(Math.sqrt(h))
+}
+
+/** a local "2026-12-02T06:10" at one offset, moved on by some hours and read at another offset */
+function localAt(local: string, from: number, h: number, to: number): string {
+  return new Date(toUtcMs(local, from) + (h + to) * 3600000).toISOString().slice(0, 16)
+}
+
+/**
+ * The hours in the air of each flight on one ticket. With every airport known, each gets a share in
+ * proportion to a rough block time for its distance, 800 km an hour plus half an hour on the ground.
+ * Without, the shares are even.
+ */
+function shares(path: string[], air: number, airports: Record<string, Airport>): number[] {
+  const legs = path.length - 1
+  const ap = path.map((c) => airports[c])
+  if (ap.some((a) => !a)) return Array(legs).fill(air / legs)
+  const rough = ap.slice(1).map((b, i) => km(ap[i], b) / 800 + 0.5)
+  const sum = rough.reduce((a, b) => a + b, 0)
+  return rough.map((r) => (air * r) / sum)
+}
+
 /** The way's flights split around their changes, with the stops between tickets kept as they are. */
-export function wayTrack(w: Way): WayTrackModel {
+export function wayTrack(w: Way, airports: Record<string, Airport> = {}): WayTrackModel {
   const parts: (TrackFly | TrackWait)[] = []
   for (const it of w.timeline) {
     if (it.kind !== 'flight') {
       parts.push({
         kind: 'wait', code: it.airport, type: it.kind, hours: it.hours, nights: it.nights, overnight: it.kind === 'night',
-        arrive: it.arrive || null, depart: it.depart || null, stay: it.stay_estimate_dkk,
+        arrive: it.arrive || null, depart: it.depart || null, est: false, stay: it.stay_estimate_dkk,
       })
       continue
     }
     const f = it as FlightItem
     const legs = f.connections.length + 1
     const lay = f.connections.reduce((a, c) => a + (c.layover_h ?? 0), 0)
-    const each = legs === 1 ? f.hours : Math.max(0.5, (f.hours - lay) / legs)
+    const path = [f.from, ...f.connections.map((c) => c.airport), f.to]
+    const each = legs === 1 ? [f.hours] : shares(path, Math.max(0.5 * legs, f.hours - lay), airports)
+    // walk the ticket from its take-off to read the local time at each change
+    const off = (c: string) => airports[c]?.utc_offset
+    let at = f.depart && off(f.from) != null ? { t: f.depart, o: off(f.from)! } : null
     f.connections.forEach((c, i) => {
-      parts.push({ kind: 'fly', hours: each, approx: true })
+      parts.push({ kind: 'fly', hours: each[i], approx: true })
+      const o = off(c.airport)
+      const arrive = at && o != null ? localAt(at.t, at.o, each[i], o) : null
+      const depart = arrive && c.layover_h != null ? localAt(arrive, o!, c.layover_h, o!) : null
+      at = depart ? { t: depart, o: o! } : null
       parts.push({
         kind: 'wait', code: c.airport, type: 'layover', hours: c.layover_h, nights: 0,
-        overnight: f.overnight_layover && i === f.connections.length - 1, arrive: null, depart: null, stay: null,
+        overnight: f.overnight_layover && i === f.connections.length - 1, arrive, depart, est: true, stay: null,
       })
     })
-    parts.push({ kind: 'fly', hours: each, approx: legs > 1 })
+    parts.push({ kind: 'fly', hours: each[legs - 1], approx: legs > 1 })
   }
   return { start: { code: w.from, time: w.depart || null }, end: { code: w.to, time: w.arrive || null }, parts }
 }
 
-/** One part placed on the axis: where it starts and how long it lasts, in hours from the take-off. */
 /** A part on the axis: its hours from the take-off, and where it is drawn as shares of the line. */
 export interface AxisPart { part: TrackFly | TrackWait; start: number; hours: number; left: number; width: number }
 export interface WayAxis {
   parts: AxisPart[]
   total: number
-  /** hours on the ruler */
-  ticks: number[]
   /** where an hour from the take-off falls on the line, 0 to 1 */
   x: (h: number) => number
 }
@@ -100,11 +137,7 @@ export function wayAxis(t: WayTrackModel): WayAxis {
     if (!p) return 0
     return p.left + (p.hours > 0 ? Math.min(1, Math.max(0, (h - p.start) / p.hours)) : 0) * p.width
   }
-  const step = total <= 24 ? 6 : total <= 48 ? 12 : 24
-  const ticks: number[] = []
-  // leave the last stretch before the landing clear, so the last tick does not sit on the end label
-  for (let h = step; h < total - step * 0.35; h += step) ticks.push(h)
-  return { parts, total, ticks, x }
+  return { parts, total, x }
 }
 
 /** "1 night", "2 nights". */
