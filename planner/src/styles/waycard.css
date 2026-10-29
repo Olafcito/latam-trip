@@ -1,0 +1,35 @@
+/* WayCard: a way as a picture, the two ends with their times and a track scaled by hours. */
+@scope (:root) to (.rmap) {
+/* ---- a way as a picture: the two ends with their times and a track scaled by hours ---------- */
+.wc { --io: var(--blue); --io-bg: #e6edfb; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 10px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px var(--line), 0 6px 18px -14px #00000050; }
+.wc.home { --io: var(--green); --io-bg: #e5f2ec; }
+.wc-h { display: flex; align-items: center; gap: 8px; }
+.wc-dir { padding: 2px 9px; border-radius: 999px; background: var(--io); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.wc-dur { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
+.wc-us { margin-left: auto; padding: 2px 7px; border-radius: 6px; background: var(--warn-bg); color: var(--warn); font-size: 11px; font-weight: 700; cursor: help; }
+.wc-ends { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.wc-end { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.wc-end.right { align-items: flex-end; text-align: right; }
+.wc-city { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--ink2); }
+.wc-city svg { color: var(--io); }
+.wc-t { display: inline-flex; align-items: baseline; gap: 5px; font-size: 13px; }
+.wc-t.big b { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+.wc-t small { font-size: 11.5px; color: var(--muted); }
+.wc-t .nd { margin-left: 0; vertical-align: baseline; }
+.wc-track { display: flex; align-items: stretch; gap: 3px; height: 30px; }
+.wc-fly { display: flex; align-items: center; justify-content: center; gap: 6px; flex-basis: 0; min-width: 28px; border-radius: 8px; background: var(--io-bg); color: var(--io); font-size: 11px; font-weight: 600; position: relative; overflow: hidden; }
+.wc-fly::before { content: ""; position: absolute; left: 8px; right: 8px; top: 50%; border-top: 1.5px dashed currentColor; opacity: 0.35; }
+.wc-fly svg, .wc-fly i { position: relative; background: var(--io-bg); padding: 0 3px; font-style: normal; }
+.wc-chip { display: flex; align-items: center; justify-content: center; gap: 4px; flex-basis: 0; min-width: 54px; padding: 0 6px; border-radius: 8px; font-size: 11px; white-space: nowrap; cursor: help; }
+.wc-chip b { font-weight: 700; }
+.wc-chip i { font-style: normal; opacity: 0.8; }
+.wc-chip.conn { background: var(--soft); color: var(--ink2); }
+.wc-chip.night { background: var(--night-bg); color: var(--night); }
+.wc-chip.day { background: #fdf3e6; color: var(--warn); }
+.wc-chip.xfer { background: var(--warn-bg); color: var(--warn); }
+.wc-f { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11.5px; color: var(--muted); }
+.wc-price { font-weight: 700; color: var(--ink); }
+.wc.compact { padding: 10px 12px 8px; }
+.wc.compact .wc-t.big b { font-size: 18px; }
+.wc.compact .wc-track { height: 24px; }
+}

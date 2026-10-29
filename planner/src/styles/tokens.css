@@ -1,0 +1,22 @@
+/* Design tokens for the planner. The route map (.rmap) keeps its own scope with the same values. */
+:root {
+  --bg: #f4f2ee;
+  --card: #ffffff;
+  --ink: #1e2328;
+  --ink2: #40464d;
+  --muted: #6e747c;
+  --faint: #9a9ea4;
+  --line: #e6e2db;
+  --line2: #d8d4cc;
+  --soft: #f1efea;
+  --blue: #1f4fb8;
+  --green: #2e7d5b;
+  --orange: #d9822b;
+  --warn-bg: #fbebd7;
+  --warn: #8a4b0f;
+  --err-bg: #fbe0dc;
+  --err: #9b2b1d;
+  --night-bg: #ece8fa;
+  --night: #4b3c8c;
+  color-scheme: light;
+}

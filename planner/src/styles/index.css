@@ -1,0 +1,8 @@
+/* The planner's styles, in cascade order. */
+@import './tokens.css';
+@import './base.css';
+@import './shell.css';
+@import './trips.css';
+@import './dash.css';
+@import './pick.css';
+@import './waycard.css';
