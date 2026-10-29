@@ -107,6 +107,17 @@ def build():
         elev.update(fetch_elevation(list(nodes.values())))
         json.dump(elev, open(elev_path, "w", encoding="utf-8"), indent=1, sort_keys=True)
 
+    def load_json(name, default):
+        f = os.path.join(NET, name)
+        return json.load(open(f, encoding="utf-8")) if os.path.exists(f) else default
+    shortlist = load_json("shortlist.json", {"places": []})
+    diving = load_json("diving.json", {"sites": []})
+    starred = {x["id"] for x in shortlist.get("places", [])}
+    dives_at = {}
+    for d in diving.get("sites", []):
+        if d.get("node"):
+            dives_at.setdefault(d["node"], []).append(d["id"])
+
     places = []
     for n in nodes.values():
         p = n.get("profile") or {}
@@ -125,6 +136,7 @@ def build():
                          "rating": h.get("rating"), "price_suspect": bool(h.get("price_suspect")), "url": h.get("source")}
                         for h in (p.get("hostels") or [])],
             "hostel_note": p.get("hostel_price_note"),
+            "shortlist": n["id"] in starred, "dive_sites": dives_at.get(n["id"], []),
         })
     for code, (name, country, lat, lon) in CONTEXT_AIRPORTS.items():
         if code not in nodes:
@@ -321,7 +333,8 @@ def build():
 
     countries = [{"code": c, "name": n, "label_lat": la, "label_lon": lo} for c, n, la, lo in COUNTRIES]
     os.makedirs(OUT, exist_ok=True)
-    for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries)):
+    for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries),
+                       ("diving", diving), ("shortlist", shortlist)):
         json.dump(data, open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"places {len(places)}  connections {len(conns)}  options {sum(len(c['options']) for c in conns.values())}"
           f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  -> {OUT}")

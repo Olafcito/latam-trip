@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-28T20:56:31Z",
+ "generated_at": "2026-10-29T09:51:12Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {

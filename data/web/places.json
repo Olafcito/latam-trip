@@ -63,6 +63,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026).",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -128,6 +130,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -178,6 +182,8 @@
    }
   ],
   "hostel_note": "Guesthouses USD 15-50 per night (bushop 2026). Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -244,6 +250,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -292,6 +300,8 @@
    }
   ],
   "hostel_note": "Very few hostels; accommodation fills and prices jump around Carnaval. Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -358,6 +368,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Tourist sources quote dorm USD 10-18 in Uyuni (touristsecrets 2026).",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -423,6 +435,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -489,6 +503,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026).",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -546,6 +562,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -612,6 +630,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -677,6 +697,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -741,6 +763,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. One source quoted Hostel Serena dorms from GBP 9.5 and privates from GBP 29 (alongdustyroads, 2025); not converted to DKK.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -796,6 +820,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -829,6 +855,8 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -862,6 +890,8 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -895,6 +925,8 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -961,6 +993,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -1026,6 +1060,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -1091,6 +1127,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -1154,6 +1192,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -1220,6 +1260,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -1259,6 +1301,8 @@
   },
   "hostels": [],
   "hostel_note": "No hostels found; most visitors day-trip from Guadalajara. Prices null.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1323,6 +1367,8 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Hostelz Mexico average: no figure for Guanajuato.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1372,6 +1418,8 @@
    }
   ],
   "hostel_note": "Only one hostel listed (dorm 'from MX$83' on Hostelz, not converted). Hotels and Airbnbs dominate.",
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1438,6 +1486,62 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Peak season dorm prices run above the average.",
+  "shortlist": false,
+  "dive_sites": [],
+  "hub": false
+ },
+ {
+  "id": "DRAKE",
+  "name": "Drake Bay (Osa Peninsula)",
+  "short_name": "Drake Bay",
+  "country": "CR",
+  "lat": 8.69,
+  "lon": -83.67,
+  "tier": "destination",
+  "type": "park",
+  "popularity": 2,
+  "iata": "DRK",
+  "airport_transfer_min": null,
+  "why": "Rainforest bay for Corcovado wildlife and Caño Island diving",
+  "reason": "Remote Osa Peninsula base for Corcovado wildlife and Isla del Caño shark dives",
+  "summary": "A calm, remote bay on Costa Rica's Osa Peninsula, reached by boat from Sierpe or a small plane. Base for guided hikes into Corcovado National Park (scarlet macaws, rare mammals) and for diving or snorkelling at Isla del Caño, with white-tip reef sharks, turtles and rays.",
+  "categories": [
+   "Nature",
+   "Beach"
+  ],
+  "things_to_do": [
+   "Two-tank dive at Isla del Caño",
+   "Guided hike in Corcovado (San Pedrillo)",
+   "Snorkel at Caño Island",
+   "Night insect walk",
+   "Whale and dolphin spotting by boat"
+  ],
+  "touristy": 3,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "Life for Life Hostel Drake Bay",
+    "dorm_dkk": 48,
+    "private_dkk": null,
+    "rating": 9.7,
+    "price_suspect": true,
+    "url": "https://www.hostelz.com/best-hostels-bahia-drake"
+   },
+   {
+    "name": "Corcovado Jungle Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-bahia-drake"
+   }
+  ],
+  "hostel_note": null,
+  "shortlist": true,
+  "dive_sites": [
+   "cano"
+  ],
   "hub": false
  },
  {
@@ -1504,6 +1608,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1570,6 +1676,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1634,6 +1742,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1699,6 +1809,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1764,6 +1876,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1822,6 +1936,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -1888,6 +2004,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -1946,6 +2064,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2009,6 +2129,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -2056,6 +2178,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2120,6 +2244,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2184,6 +2310,11 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [
+   "cara-a-cara",
+   "roatan-wrecks"
+  ],
   "hub": true
  },
  {
@@ -2249,6 +2380,10 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [
+   "utila"
+  ],
   "hub": false
  },
  {
@@ -2305,6 +2440,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -2371,6 +2508,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2437,6 +2576,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2502,6 +2643,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2567,6 +2710,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2630,6 +2775,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2678,6 +2825,10 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [
+   "little-corn"
+  ],
   "hub": false
  },
  {
@@ -2743,6 +2894,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2781,6 +2934,8 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2845,6 +3000,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -2909,6 +3066,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -2975,6 +3134,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -3040,6 +3201,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -3106,6 +3269,10 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [
+   "taganga"
+  ],
   "hub": true
  },
  {
@@ -3161,6 +3328,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -3225,6 +3394,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -3283,6 +3454,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3349,6 +3522,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3415,6 +3590,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3473,6 +3650,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3538,6 +3717,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3603,6 +3784,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3669,6 +3852,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3733,6 +3918,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": true
  },
  {
@@ -3799,6 +3986,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3856,6 +4045,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3910,6 +4101,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3959,6 +4152,8 @@
    }
   ],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
@@ -3993,6 +4188,8 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "shortlist": false,
+  "dive_sites": [],
   "hub": false
  },
  {
