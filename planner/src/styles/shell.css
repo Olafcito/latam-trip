@@ -1,0 +1,34 @@
+/* Shell: the page, the header and its tabs, the Map tab frame and the floating place card. */
+@scope (:root) to (.rmap) {
+.app { max-width: 1440px; margin: 0 auto; padding: 18px 20px 40px; display: flex; flex-direction: column; gap: 16px; }
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.brand h1 { margin: 0; font-size: 22px; letter-spacing: -0.02em; }
+.brand p { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+.tabs { display: flex; padding: 3px; gap: 3px; border-radius: 10px; background: #e8e5df; }
+.tab { min-height: 34px; padding: 0 14px; border: 0; border-radius: 8px; background: transparent; font-weight: 600; font-size: 13px; color: #5b6169; cursor: pointer; }
+.tab.on { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px #0000001f; }
+.tab:disabled { opacity: 0.45; cursor: default; }
+.tab .n { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: 6px; border-radius: 50%; background: var(--soft); font-size: 11px; }
+.tab.on .n { background: var(--ink); color: #fff; }
+
+/* Map tab: the route map fills the window under the header */
+.app.wide { max-width: none; height: 100dvh; padding-bottom: 18px; }
+.mapscreen { flex: 1; min-height: 480px; border-radius: 14px; overflow: hidden; background: #0B1720; }
+.mapscreen > .loading { color: #93A7B2; }
+.mapwrap { width: 100%; height: 100%; }
+
+/* place card */
+.pcard { position: fixed; z-index: 50; width: 320px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 16px 40px -12px #00000055; pointer-events: none; animation: fade 0.15s ease; }
+.pcard .img { aspect-ratio: 16 / 9; background: #ddd center / cover no-repeat; }
+.pcard .credit { font-size: 10px; color: var(--faint); padding: 3px 10px 0; }
+.pcard .body { padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+.pcard .tag { font-weight: 700; font-size: 13.5px; }
+.pcard .sum { font-size: 12px; color: var(--ink2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { padding: 2px 8px; border-radius: 999px; background: var(--soft); font-size: 11px; }
+.dots { display: inline-flex; gap: 3px; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: #ddd8cf; }
+.dots i.f { background: var(--orange); }
+.hostel { display: flex; justify-content: space-between; font-size: 11.5px; }
+.hostel.sus { color: var(--faint); }
+}
