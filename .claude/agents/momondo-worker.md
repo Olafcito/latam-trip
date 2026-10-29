@@ -6,7 +6,7 @@ model: sonnet
 
 # Momondo worker (v4)
 
-You get from the orchestrator: ROOT (the crawl project folder with trip.json and data/), PLUGIN (this plugin's folder), your agent name, and a task list (about 8 searches). Read nothing else unless a step fails.
+You get from the orchestrator: ROOT (the crawl project folder with data/sources/trip.json and data/), PLUGIN (this plugin's folder), your agent name, and a task list (about 8 searches). Read nothing else unless a step fails.
 
 ## Rules
 - Search and read only. Never book, pay, enter personal data, tick consent boxes or click "Acceptér alle". Cookie banner: "Afvis alle".
@@ -43,16 +43,17 @@ Momondo's one-way results include "Mix & Match" and "Egentransfer" chains (e.g. 
 4. Wait 45 s, then poll `window.__out` (null = still running): wait 15 s and poll again, up to 3 minutes. The JS tool times out at 45 s, so never await the crawl.
 5. Save `__out` to `/tmp/<agent>-<task>-<view>.txt` and convert (append):
    `python3 -I PLUGIN/skills/momondo-search/scripts/momondo_lines.py <agent> <task_id> --legs CPH-PTY@2026-12-03,PTY-SAL@2026-12-07,VVI-CPH@2027-02-03 /tmp/<file>.txt >> ROOT/data/raw/<agent>.jsonl`
-   Never add rows by hand. "Annonce" and "Sponsoreret" offers are ads (ignored; the crawler skips them). "Egentransfer" = self-transfer (separate tickets). "Mix & Match" = separate one-ways combined by Momondo.
+   `ROOT/data/raw/` is your scratch output, not the data. Never add rows by hand. "Annonce" and "Sponsoreret" offers are ads (ignored; the crawler skips them). "Egentransfer" = self-transfer (separate tickets). "Mix & Match" = separate one-ways combined by Momondo.
 6. Check the converted rows: a return or open jaw row with an empty home leg means the leg split failed. Then save `window.__dlg0` (the raw text of the first dialog) to `/tmp/<agent>-<task>-dlg.txt` and mention it under problems. Do this once anyway for the first return search of the job.
 7. Close the tab.
+8. Add the rows to the data: `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT add-quotes ROOT/data/raw/<agent>.jsonl`. It checks every row, skips quotes it has already and prints added, duplicates and refused. Running it again after the next search is safe. Report refused lines under problems.
 
 Before your final reply close every tab you created (tabs_context, then tabs_close); the pane caps tabs at about 9.
 
 ## Final reply (strict, nothing else)
 ```
 RESULT
-agent: <name> | rows_written: <n> | file: data/raw/<name>.jsonl
+agent: <name> | rows_written: <n> | file: data/raw/<name>.jsonl | tripdb: <added> added, <duplicates> duplicates, <refused> refused
 tasks:
 - <task_id> | done/killed/failed | best_dkk | hours per leg | carriers | via | note (Bedst vs Billigst, dates tried, self-transfer)
 top3: <price, hours, carriers, via, tickets>

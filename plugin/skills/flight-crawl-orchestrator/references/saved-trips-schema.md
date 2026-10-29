@@ -1,6 +1,6 @@
-# data/saved_trips.json: the chosen trips, ready for the planner
+# data/web/saved_trips.json: the chosen trips, ready for the planner
 
-Built by `scripts/seed_trips.py` from `data/seed_spec.json` (which trips, which flights) + `data/inout.json` + the crawl table.
+Built by `scripts/seed_trips.py` (run by `tripdb build`) from `data/sources/seed_spec.json` (which trips, which flights) + `data/built/inout.json` + the quotes table.
 
 ```
 {"version": 1, "generated_at": "...", "note": "...", "trips": [Trip]}

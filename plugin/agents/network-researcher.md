@@ -16,7 +16,7 @@ A complete, honest web of how a traveller moves around the region, for a program
 ## Sources (cite every edge)
 Operator sites, Rome2rio, Bookaway, 12Go, Busbud, redBus, Tica Bus, Seat61-style guides, Lonely Planet / Wikivoyage "Get in / Get around", recent traveller reports (2024 to 2026). Prefer operator pages for prices and timetables; Rome2rio for durations; note the year of any price you use. Convert to DKK: USD x 6.45, EUR x 7.46, other currencies via the USD rate you state in notes.
 
-## Output: ROOT/data/network/<agent>.jsonl (one JSON object per line, append)
+## Output: ROOT/data/raw/<agent>.jsonl (one JSON object per line, append), then tripdb
 Node:
 {"kind":"node","id":"ANT","name":"Antigua Guatemala","country":"GT","lat":14.56,"lon":-90.73,"type":"city|beach|island|lake|park|border|hub","iata":"GUA or null (nearest airport if within 1 h)","popularity":1-3 (1 = top),"why":"one line","source":"url"}
 Edge (one per direction only if they differ; otherwise "both":true):
@@ -31,11 +31,12 @@ Edge (one per direction only if they differ; otherwise "both":true):
 2. For each node, find its connections; write edges as you go (so partial work survives).
 3. Cross-border edges between the countries of your region, and into the neighbouring regions named by the orchestrator.
 4. Stop at about 25 nodes and 60 edges, or when every node has its main connections.
+5. Add your file to the data: `python -I -X utf8 ROOT/plugin/scripts/tripdb.py --root ROOT add-place ROOT/data/raw/<agent>.jsonl --origin <agent>`, then the same with `add-connection`. Each command takes its own kind of row, checks it and skips what is stored already. Fix and rerun any line it refuses. Never write to data/sources yourself.
 
 ## Final reply (strict, nothing else)
 ```
 RESULT
-agent: <name> | nodes: <n> | edges: <n> | file: data/network/<name>.jsonl
+agent: <name> | nodes: <n> | edges: <n> | file: data/raw/<name>.jsonl | tripdb: <nodes added>, <edges added>, <refused>
 coverage: <one line: which nodes lack edges, which edges lack price or duration>
 notable: <max 5 lines: long or overnight legs, boats, border points, flights that save a full day>
 problems: <one line or none>

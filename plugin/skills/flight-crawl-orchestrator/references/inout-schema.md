@@ -1,4 +1,4 @@
-# data/inout.json: ways in, ways home, tickets, options
+# data/built/inout.json (copied to data/web/inout.json): ways in, ways home, tickets, options
 
 Built by `scripts/inout.py` from the crawl table (and `chains.py`). Every journey starts and ends at the home airport
 (Copenhagen). A **way** is one direction: Copenhagen → an airport in Latin America (`in`) or an airport → Copenhagen
@@ -19,7 +19,7 @@ way from its `timeline` and prices a journey from `options` or from any way in +
 ## Ticket (something you buy)
 | field | meaning |
 |---|---|
-| id, quote_id | ticket id; quote_id is the row in quotes.csv |
+| id, quote_id | ticket id; quote_id is the row in the quotes table of data/built/trip.db |
 | source, observed_at | engine and when the price was seen |
 | structure | one_way, return, open_jaw, multi_city |
 | legs | e.g. ["MAD>SAL", "VVI>MAD"] |

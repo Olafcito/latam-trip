@@ -8,12 +8,13 @@ description: Plan and run a crawler-style flight search for a long trip, coverin
 You are the orchestrator. Workers do the browsing; you plan, dispatch, ingest, score and decide what to expand next. Keep your own context small: read workers' RESULT blocks and the ingest report, never raw pages.
 
 ## Project layout (ROOT, the user's crawl folder)
-- `trip.json`: travellers, home airports, alternative origins, main dates, hard limits (max hours one way), scoring weights. Copy `templates/trip.example.json` and fill it in with the user.
+Every write goes through tripdb (`PLUGIN/scripts/tripdb.py`, see ROOT/data/README.md). Workers write their raw rows to `data/raw/` and add them with tripdb. Nothing else writes under data/.
+- `data/sources/trip.json`: travellers, home airports, alternative origins, main dates, hard limits (max hours one way), scoring weights. Copy `templates/trip.example.json` and fill it in with the user.
 - `briefs/scenarios.md`: the trip scenarios (L0), written with the user.
-- `data/raw/<agent>.jsonl`: append-only quotes, one file per worker.
-- `data/known_prices.json`: prices the user or earlier rounds found, for price-movement checks.
-- `data/agent_usage.csv`: round, agent, model, tool, searches, tokens, tool_uses, seconds, rows.
-- `data/crawl.db`, `data/quotes.csv`: built by `scripts/ingest.py`, the long table.
+- `data/raw/<agent>.jsonl`: a worker's raw output (scratch, not committed). `tripdb add-quotes` copies the good rows into `data/sources/quotes/<agent>.jsonl`, the quote table.
+- `data/sources/known_prices.json`: prices the user or earlier rounds found, for price-movement checks.
+- `data/sources/agent_usage.csv`: round, agent, model, tool, searches, tokens, tool_uses, seconds, rows. Written by `tripdb log-usage`.
+- `data/built/trip.db`: built by `tripdb build` (it runs `scripts/ingest.py` for the quotes table, then loads every other table). `data/built/` holds the other generated files, `data/web/` what the apps read.
 
 ## Method (details in references/method.md)
 Route tree: L0 scenario, L1 pattern `P:{start}>{entry}/{exit}>{end}` (multi-city `M:a>b+c>d+...`, regional `R:a>b`), L2 variant (vias, tickets, stopover), L3 date pair, L4 quote.
@@ -34,13 +35,13 @@ Priority = gain x novelty x gap / cost. A branch is saturated after 8 tasks with
 - Sonnet workers only (Haiku made mistakes that cost more than it saved). One job = about 8 searches: each agent has 50 to 70k tokens of fixed start-up cost and prompt caching makes later searches cheap.
 - The worker brief is the agent file (`agents/momondo-worker.md`, `agents/gflights-worker.md`). The task prompt adds only: ROOT, PLUGIN, agent name, numbered tasks with task_id, legs, dates, neighbouring dates, and a one-line purpose per task.
 - At most 2 browser workers at once on the same machine (tab cap, rate limits). Different engines can run in parallel.
-- Run workers in the background; ingest when each RESULT arrives. Log usage to `data/agent_usage.csv` from the task notification.
+- Run workers in the background; ingest when each RESULT arrives. Log usage from the task notification with `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT log-usage --round R --agent A --model M --tool T --searches N --tokens N --tool-uses N --seconds N --rows N`.
 - Momondo is the primary engine (finds hidden connections, BoA, self-transfer combos). Google Flights is for date grids and cross-checks. Expedia only as a scout. Kiwi was dropped (no bookable wins, checkout surcharges).
 - Never let a worker book, pay, enter personal data, accept consent, or create scheduled tasks.
 
 ## After each round
-1. `python3 -I PLUGIN/skills/flight-crawl-orchestrator/scripts/ingest.py --root ROOT`
-2. `itineraries.py --root ROOT` (whole trips: every option x region order incl. revisits, data/itineraries.json), `inout.py --root ROOT --md FILE` (city in x city out table, three types, rated: data/inout.csv), `chains.py --root ROOT` (self-built ways in/home, data/chains.json), then `routes.py --root ROOT` (every region order for every main ticket and chain pair, data/routes.json), `evaluate.py` for named scenarios with bags, `build_map.py` for the map.
-3. Dashboard (Simon's main view, https://claude.ai/artifact/6uswkG2eQzuiwAVESHxKjA, type Dashboard): `inout.py --root ROOT` and `itineraries.py --root ROOT`, then `dashboard_data.py --root ROOT` (writes data/web/dash_trips.json, dash_journeys.json and dash_flights.json). Upload each with the Artifact tool (`url` = the dashboard, `asset: true`, `file_path`), then ArtifactData `update` of `datasets/trips`, `datasets/journeys` and `datasets/flights` (`source.url` = the new `/_blob/...`, `updated.at`), pinned to their version. The page (`files/index.html`) only changes when its columns change; the doc keeps prose and links, never the generated tables.
+1. Check that every worker ran `tripdb add-quotes` (its RESULT says what was added and refused). If one did not, run `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT add-quotes ROOT/data/raw/<agent>.jsonl` yourself. Then `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT build`: it takes in the Momondo inbox, checks every source and rebuilds trip.db, chains, routes, inout, itineraries, the map, the dashboard data, saved_trips and data/web.
+2. What the build made: data/built/itineraries.json (whole trips: every option x region order incl. revisits), data/built/inout.csv (city in x city out table, three types, rated, `inout.py --root ROOT --md FILE` for a Markdown copy), data/built/chains.json (self-built ways in/home), data/built/routes.json (every region order for every main ticket and chain pair). `evaluate.py --root ROOT` scores the named scenarios with bags when you need it.
+3. Dashboard (Simon's main view, https://claude.ai/artifact/6uswkG2eQzuiwAVESHxKjA, type Dashboard): `tripdb build` wrote data/web/dash_trips.json, dash_journeys.json and dash_flights.json. Upload each with the Artifact tool (`url` = the dashboard, `asset: true`, `file_path`), then ArtifactData `update` of `datasets/trips`, `datasets/journeys` and `datasets/flights` (`source.url` = the new `/_blob/...`, `updated.at`), pinned to their version. The page (`files/index.html`) only changes when its columns change; the doc keeps prose and links, never the generated tables.
 4. Update `briefs/scenarios.md` and the plan doc with what changed; fold worker `next:` and `problems:` lines into the agent files and references/lessons.md.
 5. Pick the next round by the priority rule. Tell the user only what changed their options.

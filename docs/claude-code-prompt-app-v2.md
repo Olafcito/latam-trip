@@ -6,7 +6,7 @@ Read first:
 - `docs/claude-tasks.md`: the fixed contract for tasks (issue format, task types and fields, the prompt template for "Ask Claude now", the public issues endpoint).
 - `DESIGN_HANDOFF.md` and `docs/route-map/MAP_DESIGN_HANDOFF.md`: the current app's design, for anything the new design doesn't cover.
 
-Data (read only, built by `plugin/skills/flight-crawl-orchestrator/scripts/build_web_data.py`; don't change the exporters or anything in `data/`, and if you need a field that doesn't exist, list it at the end of your reply instead):
+Data (read only, built by `python -I -X utf8 plugin/scripts/tripdb.py --root . build`; don't change the exporters or anything in `data/`, and if you need a field that doesn't exist, list it at the end of your reply instead):
 - `data/web/places.json`: now also has `experience_ids`, `saved_in` and `stay_quotes` per place.
 - `data/web/experiences.json`, `data/web/experience_categories.json`, `data/web/lists.json`, `data/web/task_log.json`, `data/web/meta.json` (new).
 - `data/web/connections.json` and the `dash_*.json` datasets (existing), for the trip builder's known prices.

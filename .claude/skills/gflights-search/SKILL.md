@@ -10,6 +10,7 @@ The worker procedure is in `agents/gflights-worker.md`.
 - `scripts/gf_tfs.py`: `tfs([(date, from, to), ...])` builds the protobuf tfs parameter for any number of legs (multi-city). URL: `https://www.google.com/travel/flights/search?tfs=<tfs>&hl=en&curr=DKK`.
 - `scripts/gf_extract.js`: stored as `localStorage.r`; waits for rows, settles 6 s, expands "View more flights", lists the top first-leg rows, then opens the cheapest and the cheapest other-airline pick to read leg 2 and the booking page.
 - `scripts/gf_dec.py`: decodes flight numbers from the booking tfs.
+- Rows go to the worker's scratch file `ROOT/data/raw/<agent>.jsonl` and into the data with `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT add-quotes ROOT/data/raw/<agent>.jsonl`.
 - `references/howto.md`: full notes (consent page, aria-label format, pitfalls).
 
 Facts: the first-leg price is the whole-trip total with the cheapest second leg; trust the booking-page price; Boliviana (BoA) is never listed; absurd rows (50k+) appear and are ignored.

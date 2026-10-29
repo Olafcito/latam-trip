@@ -67,7 +67,7 @@
 - Momondo one-way home crawl (mom-25b): MEX-CPH 2,372 (BA via ORD+LHR, one ticket, US transit), Iberia MEX-MAD-CPH 2,934 one ticket (arr 14:45), CUN-CPH 3,054 (Air Europa + SAS, 2 tickets), GDL-CPH 3,107 (Volaris + Icelandair via ORD-KEF). None beat the self-built Madrid chains once hours are priced in, so the in/out table did not change.
 - Crawler issues seen: rank 1 was skipped on these one-way pages (crawl started at rank 2), and Mix & Match dialogs have no "Bookingmuligheder" section, so site, fare and bag fields come back empty. Fix in the crawler before the next Momondo round.
 - 28 Oct evening: KLM + Copa sells Colombia in / Central America out on one ticket without US transit for only about 1,000 kr more than BA/AA via Miami (CPH-BOG / GUA-CPH 7,612; BOG / SAL 7,657; CTG / SAL 7,763). Home SAL/GUA 13:45 via Panama and Amsterdam, lands CPH 13:40 next day. Honduras (SAP, TGU, RTB) has no home flight without US transit at a sane time.
-- Generated files (data/saved_trips.json, data/web/*) conflict when merging main into the planner branch: regenerate them after the merge instead of resolving by hand.
+- Generated files (data/web/*, data/built/*) conflict when merging main into the planner branch: regenerate them after the merge instead of resolving by hand.
 
 ## Round 32/33 (28 Oct evening): scope change
 - Simon's rule: long-haul is ALWAYS searched as one combined ticket from and back to Copenhagen (open jaw or multi-city). Never scout Europe one-ways into the region on their own. Regional hops inside the trip stay one-way.
