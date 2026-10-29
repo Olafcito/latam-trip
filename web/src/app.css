@@ -1,7 +1,7 @@
 html, body, #root { height: 100%; margin: 0; }
 body { background: #0A141C; color: #EAF0F2; font-family: 'Bricolage Grotesque', system-ui, sans-serif; }
 .mono { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; }
-.app { height: 100dvh; }
+.app { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 .app-msg {
   height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
   padding: 16px; text-align: center; color: #93A7B2; font-size: 13px;
@@ -9,3 +9,42 @@ body { background: #0A141C; color: #EAF0F2; font-family: 'Bricolage Grotesque', 
 .app-msg p { margin: 0; }
 .app-msg-t { font-size: 18px; font-weight: 800; color: #EAF0F2; }
 .app-msg code { font-family: 'IBM Plex Mono', monospace; color: #F2B544; }
+
+/* ---- top bar */
+.bar {
+  flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 46px; padding: 0 10px 0 16px;
+  background: #0F1F29; border-bottom: 1px solid #24404D;
+}
+.bar-brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.bar-name { font-size: 15px; font-weight: 800; letter-spacing: -.01em; white-space: nowrap; }
+.bar-sub { font-size: 12px; color: #93A7B2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-toggle {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px 0 12px; border: 1px solid #24404D; border-radius: 999px;
+  background: transparent; color: #C6D3D9; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.bar-toggle:hover { background: #17303D; color: #FFFFFF; }
+.bar-toggle.on { background: #EAF0F2; color: #0F1D26; border-color: #EAF0F2; }
+.bar-toggle:focus-visible { outline: 2px solid #F2B544; outline-offset: 2px; }
+
+/* ---- map and options side by side */
+.app-body { flex: 1 1 auto; min-height: 0; display: flex; position: relative; }
+.app-map { flex: 1 1 auto; min-width: 0; min-height: 0; position: relative; }
+.app-options {
+  flex: none; width: clamp(420px, 46vw, 760px); min-height: 0; border-left: 1px solid #24404D; background: #0D1B24;
+  animation: optionsIn .35s cubic-bezier(.22, .9, .24, 1) both;
+}
+@keyframes optionsIn { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+
+/* ---- narrow: the options pane takes the whole screen below the bar */
+@media (max-width: 719px) {
+  .bar { padding-left: 12px; }
+  .bar-sub { display: none; }
+  .app-options { position: absolute; inset: 0; z-index: 20; width: auto; border-left: 0; animation-name: optionsUp; }
+  @keyframes optionsUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-options { animation: none; }
+  .bar-toggle { transition: none; }
+}
