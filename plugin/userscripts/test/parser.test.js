@@ -53,6 +53,41 @@ test('return dialog with self transfer: Afrejse and Hjemrejse legs, overnight la
   assert.equal(p.brand, 'Basic + Economy');
 });
 
+test('v5 layout, one way: offers first, legs after, ads skipped, cheapest real offer wins', () => {
+  const p = crawler.parseDlg(fixture('dialog-v5-oneway.txt'), ['2027-01-14']);
+  assert.equal(p.legs.length, 1);
+  const [l] = p.legs;
+  assert.equal(l.dep, '2027-01-14T05:25');
+  assert.equal(l.arr, '2027-01-14T13:10');
+  assert.equal(l.hours, 6.75);
+  assert.equal(l.stops, 1);
+  assert.deepEqual(l.via, ['SAL']);
+  assert.deepEqual(l.layover_h, [3.25]);
+  assert.deepEqual(l.flights, ['Avianca 314', 'Avianca 369']);
+  assert.equal(p.price, 1745);
+  assert.equal(p.site, 'Travellink.dk');
+  assert.equal(p.brand, 'Light');
+  assert.equal(p.alt, 'Opodo 1811 / Avianca 1842 / Travellink.dk 1938');
+  assert.match(p.bagSeg, /1 x håndbagage/);
+  assert.equal(p.selfNote, false);
+});
+
+test('v5 layout, open jaw with self transfers: Afgang after the time line, airport change, +2 days', () => {
+  const p = crawler.parseDlg(fixture('dialog-v5-open-jaw.txt'), ['2026-12-03', '2027-02-03']);
+  assert.equal(p.legs.length, 2);
+  const [out, home] = p.legs;
+  assert.equal(out.arr, '2026-12-05T17:53');
+  assert.equal(out.hours, 59.22);
+  assert.deepEqual(out.via, ['BVA', 'FRA', 'SJD']);
+  assert.equal(out._apt, true);
+  assert.equal(out._self, true);
+  assert.equal(home.dep, '2027-02-03T03:45');
+  assert.equal(home.arr, '2027-02-04T13:25');
+  assert.equal(p.price, 6938);
+  assert.equal(p.prot, true);
+  assert.equal(p.brand, 'Basic + Economy + Economy Zero + Light');
+});
+
 test('dialog in an unknown layout gives no legs and no price', () => {
   const p = crawler.parseDlg(fixture('dialog-broken.txt'), ['2026-12-03', '2027-02-03']);
   assert.equal(p.legs.length, 0);

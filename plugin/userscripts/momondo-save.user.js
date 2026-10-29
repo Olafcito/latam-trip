@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Momondo save (latam-trip)
 // @namespace    https://github.com/Olafcito/latam-trip
-// @version      1.0.4.2
+// @version      1.0.5.0
 // @description  Save Momondo prices or one opened trip into the latam-trip repo
 // @match        https://www.momondo.dk/flight-search/*
 // @match        https://momondo.dk/flight-search/*
@@ -31,8 +31,70 @@ function lines(r, m, n) { return window.lines(r, m, n); }
 // BEGIN plugin/skills/momondo-search/scripts/momondo_crawler.js
 // Momondo dialog parser and crawler. Workers paste this file into the page. Node and the userscript build load it too.
 if(typeof window==='undefined')globalThis.window={};
-window.PARSER_VERSION='4.2';
+window.PARSER_VERSION='5.0';
+// Layout from Oct 2026: booking offers first (site, labels, brand, price, Book, then bags), then legs as
+// "CPH → GDL" / "tor. 3. dec." / "3 stop • 59 t. 13 min." with segments "13:40 - 15:35(1 t. 55 min.)",
+// an optional "Afgang fre. 4. dec." right after the time line, then airports and flight number.
+window.parseDlgV5=function(txt, legDates){
+  const MON={jan:'01',feb:'02',mar:'03',apr:'04',maj:'05',jun:'06',jul:'07',aug:'08',sep:'09',okt:'10',nov:'11',dec:'12'};
+  const dur=s=>{const h=/(\d+)\s*t\./.exec(s),m=/(\d+)\s*min\./.exec(s);return (h?+h[1]:0)+(m?+m[1]:0)/60};
+  const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
+  const mins=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
+  // Day and month to a date, in the year that puts it closest to the requested leg date.
+  const ymd=(d,mo,ref)=>{const y0=+(ref||legDates[0]||'2026').slice(0,4);const c=[y0-1,y0,y0+1].map(y=>y+'-'+MON[mo]+'-'+String(d).padStart(2,'0'));
+    return ref?c.sort((a,b)=>Math.abs(new Date(a)-new Date(ref))-Math.abs(new Date(b)-new Date(ref)))[0]:c[1]};
+  const LEG=/^[A-Z]{3} → [A-Z]{3}$/;
+  const all=txt.split('\n').map(s=>s.trim()).filter(Boolean);
+  const first=all.findIndex(l=>LEG.test(l));const endBook=all.findIndex(l=>/^Alle priser er endelige/.test(l));
+  const bl=all.slice(0,endBook>0&&endBook<first?endBook:first), lines=all.slice(first);
+  const legIdx=[];lines.forEach((l,i)=>{if(LEG.test(l))legIdx.push(i)});
+  const extra=[];
+  const res=legIdx.map((s,n)=>lines.slice(s,legIdx[n+1]||lines.length)).map((L,n)=>{
+    const ref=legDates[n];const hd=/^\S+\s+(\d+)\.\s*([a-zæø]+)/i.exec(L[1]||'');const mo=hd&&hd[2].slice(0,3).toLowerCase();
+    const date=hd&&MON[mo]?ymd(hd[1],mo,ref):ref;let cur=date;
+    const stopsLine=L.find(l=>/^(\d+ stop|Direkte)/i.test(l))||'';const sn=/^(\d+) stop/.exec(stopsLine);
+    const segs=[],lay=[],layCodes=[],flags=[];let overnight=false,selfx=false,aptChange=false,dated=false;
+    for(let i=2;i<L.length;i++){
+      const l=L[i];
+      const sg=/^(\d\d:\d\d) [–-] (\d\d:\d\d)(?:\+(\d))?\((.*)\)$/.exec(l);
+      if(sg){let j=i+1;const af=/^Afgang \S+ (\d+)\. ([a-zæø]+)/i.exec(L[j]||'');
+        if(af){cur=ymd(af[1],af[2].slice(0,3).toLowerCase(),cur);j++}
+        else if(segs.length&&!dated){const p=segs[segs.length-1];const t=mins(p.arr)+60*(lay[segs.length-1]||0);cur=addDays(p.arrDate,Math.floor(t/1440))}
+        dated=false;
+        const codes=(L[j]||'').match(/\(([A-Z]{3})\)/g)||[];const fl=(L[j+1]||'').split(' • ')[0];
+        const plus=sg[3]!=null?+sg[3]:(mins(sg[2])<mins(sg[1])?1:0);
+        segs.push({dep:sg[1],arr:sg[2],dur:sg[4],date:cur,arrDate:addDays(cur,plus),from:(codes[0]||'').replace(/[()]/g,''),to:(codes[1]||'').replace(/[()]/g,''),fl});
+        i=j+1;continue}
+      const lv=/^(.*?)•Skift (fly|lufthavn|terminal)/.exec(l);
+      if(lv){lay.push(+dur(lv[1]).toFixed(2));const p=segs[segs.length-1]||{};layCodes.push((/\(([A-Z]{3})\)\s*$/.exec(l)||[])[1]||p.to||'');
+        if(lv[2]==='lufthavn'){aptChange=true;extra.push(l)}continue}
+      if(/^Afgang \S+ (\d+)\. ([a-zæø]+)/i.test(l)){const af=/^Afgang \S+ (\d+)\. ([a-zæø]+)/i.exec(l);cur=ymd(af[1],af[2].slice(0,3).toLowerCase(),cur);dated=true;continue}
+      if(/^Egentransfer$/.test(l))selfx=true;
+      if(/^Lang mellemlanding/.test(l))flags.push('long_layover');
+      if(/overnat|visum|Natophold/i.test(l)&&!/^\d\d:\d\d/.test(l))extra.push(l);
+    }
+    if(!segs.length)return null;
+    for(let i=0;i<segs.length-1;i++){
+      if(lay[i]!=null&&mins(segs[i].arr)+lay[i]*60>=1440)overnight=true;
+      if(segs[i].to!==segs[i+1].from)aptChange=true;
+    }
+    const a=segs[0],z=segs[segs.length-1];
+    return {dep:a.date+'T'+a.dep,arr:z.arrDate+'T'+z.arr,hours:+dur(stopsLine.split('•')[1]||'').toFixed(2),stops:sn?+sn[1]:0,via:layCodes,layover_h:lay,carriers:[...new Set(segs.map(s=>s.fl.replace(/\s*\d+$/,'')))],flights:segs.map(s=>s.fl),overnight_layover:overnight,_self:selfx,_apt:aptChange,_segs:segs.map(s=>s.from+'-'+s.to+' '+s.dep+'-'+s.arr),_flags:flags};
+  }).filter(Boolean);
+  // Offers: a price line followed by "Book". The up to 4 lines above it are site, labels and fare brand.
+  const LAB=/^(Laveste pris|Egentransfer-beskyttelse|Annonce|Sponsoreret|Bedste valg|Billigst|Hurtigst|Flyselskab)$/;
+  const STOP=/:|^Book$|gebyr|refunderes|benplads|bagage|sædevalg|billetændring|ændring af billet|→|muligheder|bookingsiden|gennemført|^Trin \d|^Bestil /i;
+  const offers=[];
+  bl.forEach((l,j)=>{if(!/^[\d.]+\s*kr\.$/.test(l)||bl[j+1]!=='Book')return;let k=j-1;while(k>=0&&j-k<=4&&!STOP.test(bl[k]))k--;
+    const grp=bl.slice(k+1,j),labs=grp.filter(x=>LAB.test(x)),names=grp.filter(x=>!LAB.test(x));
+    offers.push({start:k+1,j,site:names[0]||null,brand:names.length>1?names[names.length-1]:null,price:+l.replace(/\D/g,''),prot:labs.includes('Egentransfer-beskyttelse'),ad:labs.includes('Annonce')||labs.includes('Sponsoreret')});});
+  offers.forEach((o,i)=>{o.txt=bl.slice(o.j,offers[i+1]?offers[i+1].start:bl.length).join(' | ')});
+  const real=offers.filter(o=>!o.ad);const best=(real.length?real:offers).slice().sort((x,y)=>x.price-y.price)[0]||{};
+  const alt=offers.filter(o=>o!==best&&!o.ad).slice(0,3).map(o=>o.site+' '+o.price).join(' / ');
+  return {price:best.price||null,allPrices:offers.map(o=>o.price),alt,prot:!!best.prot,site:best.site||null,brand:best.brand||null,selfNote:res.some(l=>l._self),bagSeg:best.txt||'',extra,legs:res};
+};
 window.parseDlg=function(txt, legDates){
+  if(/^[A-Z]{3} → [A-Z]{3}$/m.test(txt))return window.parseDlgV5(txt,legDates);
   const MON={jan:'01',feb:'02',mar:'03',apr:'04',maj:'05',jun:'06',jul:'07',aug:'08',sep:'09',okt:'10',nov:'11',dec:'12'};
   const dur=s=>{const h=/(\d+)\s*t\./.exec(s),m=/(\d+)\s*min\./.exec(s);return (h?+h[1]:0)+(m?+m[1]:0)/60};
   const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
@@ -87,7 +149,7 @@ window.crawl=async (start,end,legDates)=>{
     if(!card){out.push({rank:i+1,err:'nocard'});continue}
     card.scrollIntoView();const vb=[...card.querySelectorAll('button,a,[role="button"]')].find(b=>/^Vælg$/.test((b.innerText||'').trim()));(vb||card).click();let d=null;for(let w=0;w<10&&!d;w++){await sleep(400);d=[...document.querySelectorAll('[role="dialog"]')].find(x=>!/drawer/i.test(x.className)&&/(Fly \d+|Afrejse|Hjemrejse) •|\d\d:\d\d - \d\d:\d\d\(/.test(x.innerText));}
     if(!d){out.push({rank:i+1,err:'nodialog'});continue}
-    d.querySelectorAll('.E69K-leg-dropdown-header[role="button"]').forEach(b=>b.click());const NL=legDates.length;for(let w=0;w<10;w++){await sleep(400);const tx=d.innerText;const hdr=(tx.match(/(Fly \d+|Afrejse|Udrejse|Hjemrejse) •/g)||[]).length;const sg=(tx.match(/\d\d:\d\d - \d\d:\d\d(?:\+\d)?\(/g)||[]).length;if(sg>=Math.max(hdr,1)&&(hdr>=Math.min(NL,2)||NL==1||w>=4))break;}
+    d.querySelectorAll('.E69K-leg-dropdown-header[role="button"]').forEach(b=>b.click());const NL=legDates.length;for(let w=0;w<10;w++){await sleep(400);const tx=d.innerText;const hdr=(tx.match(/(Fly \d+|Afrejse|Udrejse|Hjemrejse) •|^[A-Z]{3} → [A-Z]{3}$/gm)||[]).length;const sg=(tx.match(/\d\d:\d\d - \d\d:\d\d(?:\+\d)?\(/g)||[]).length;if(sg>=Math.max(hdr,1)&&(hdr>=Math.min(NL,2)||NL==1||w>=4))break;}
     if(i===start)window.__dlg0=d.innerText;const p=parseDlg(d.innerText,legDates);p.rank=i+1;p.cardPrice=+(((card.innerText.match(/([\d.]+)\s*kr\./g)||[]).pop()||'').replace(/\D/g,''))||null;
     const sig=p.legs.map(l=>l.flights.join('+')+l.dep).join('/');
     p.dup=seen.has(sig+p.price);seen.add(sig+p.price);
