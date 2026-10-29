@@ -48,7 +48,6 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
   const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
-  const partial = !!t.ground_unknown
   const heads = journey.places.map((p, i) => ({ name: nm(p.node), node: map.nodes.find((n) => n.id === p.node), days: sched.places[i].days, inDay: sched.places[i].inDay }))
 
   return (
@@ -76,7 +75,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
 
       <div className="dash-grid">
         <section className="card pad dash-route" aria-label="Route">
-          <TripHead places={heads} from={wi.depart} to={wh.arrive} total={allIn} partial={partial} />
+          <TripHead places={heads} />
           <Story data={data} journey={journey} sched={sched} wayIn={wi} wayHome={wh} />
         </section>
 
