@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T20:40:48Z",
+ "generated_at": "2026-10-29T13:01:45Z",
  "currency": "DKK",
  "home": [
   "CPH"
@@ -98,8 +98,9 @@
   "CUN": {
    "name": "Cancún",
    "country": "MX",
-   "lat": 21.04,
-   "lon": -86.87,
+   "lat": 21.16,
+   "lon": -86.85,
+   "map_node": "CUN",
    "region": "MX",
    "utc_offset": -5,
    "home": false
@@ -318,8 +319,9 @@
   "MEX": {
    "name": "Mexico City",
    "country": "MX",
-   "lat": 19.44,
-   "lon": -99.07,
+   "lat": 19.43,
+   "lon": -99.13,
+   "map_node": "MEX",
    "region": "MX",
    "utc_offset": -6,
    "home": false
@@ -9798,28 +9800,29 @@
    "flags": [],
    "notes": "site=; other= | offerprice null; protection=0"
   },
-  "TQ:7221e32ed926": {
-   "id": "TQ:7221e32ed926",
-   "quote_id": "Q:7221e32ed926",
+  "TQ:ccf563e85ff9": {
+   "id": "TQ:ccf563e85ff9",
+   "quote_id": "Q:ccf563e85ff9",
    "source": "momondo",
-   "observed_at": "2026-10-28T20:29:46Z",
+   "observed_at": "2026-10-28T20:54:42Z",
    "structure": "open_jaw",
    "legs": [
     "CPH>GUA",
     "VVI>CPH"
    ],
-   "price_dkk": 9908.0,
+   "price_dkk": 9633.0,
    "fare_brand": null,
    "cabin_bag": null,
    "cabin_bag_fee_dkk": 0,
    "checked_bag": null,
-   "checked_bag_fee_dkk": 1120,
+   "checked_bag_fee_dkk": 805,
    "tickets_inside": 1,
    "self_transfer": false,
-   "link": "https://www.momondo.dk/flight-search/CPH-GUA/2026-12-03/VVI-CPH/2027-02-02",
+   "link": "https://www.momondo.dk/flight-search/CPH-GUA/2026-12-02/VVI-CPH/2027-02-02",
    "carriers": [
     "Air France",
     "BoA",
+    "Copa Airlines",
     "KLM"
    ],
    "flags": [],
@@ -54388,42 +54391,43 @@
      "kind": "flight",
      "from": "CPH",
      "to": "GUA",
-     "depart": "2026-12-03T06:00",
-     "arrive": "2026-12-03T19:47",
-     "hours": 20.78,
+     "depart": "2026-12-02T06:00",
+     "arrive": "2026-12-02T21:36",
+     "hours": 22.6,
      "connections": [
       {
        "airport": "AMS",
-       "layover_h": 3.83
+       "layover_h": 5.17
       },
       {
-       "airport": "PTY",
-       "layover_h": 1.9
+       "airport": "SJO",
+       "layover_h": 2.42
       }
      ],
      "carriers": [
+      "Copa Airlines",
       "KLM"
      ],
      "flight_numbers": [
       "KLM 1266",
-      "KLM 757",
-      "KLM 3023"
+      "KLM 759",
+      "Copa Airlines 391"
      ],
      "overnight_layover": false,
-     "ticket": "TQ:7221e32ed926",
+     "ticket": "TQ:ccf563e85ff9",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:7221e32ed926"
+    "TQ:ccf563e85ff9"
    ],
    "flags": [],
    "from": "CPH",
    "to": "GUA",
-   "depart": "2026-12-03T06:00",
-   "arrive": "2026-12-03T19:47",
-   "total_hours": 20.8,
-   "flying_hours": 20.8,
+   "depart": "2026-12-02T06:00",
+   "arrive": "2026-12-02T21:36",
+   "total_hours": 22.6,
+   "flying_hours": 22.6,
    "flights": 3,
    "hub_nights": 0,
    "changes": 0,
@@ -54431,12 +54435,12 @@
    "airports": [
     "CPH",
     "AMS",
-    "PTY",
+    "SJO",
     "GUA"
    ],
    "score": 4,
    "id": "I0595",
-   "shared_ticket": "TQ:7221e32ed926",
+   "shared_ticket": "TQ:ccf563e85ff9",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -54477,12 +54481,12 @@
       "Air France 1750"
      ],
      "overnight_layover": false,
-     "ticket": "TQ:7221e32ed926",
+     "ticket": "TQ:ccf563e85ff9",
      "self_transfer_inside": false
     }
    ],
    "tickets": [
-    "TQ:7221e32ed926"
+    "TQ:ccf563e85ff9"
    ],
    "flags": [],
    "from": "VVI",
@@ -54503,7 +54507,7 @@
    ],
    "score": 5,
    "id": "H0596",
-   "shared_ticket": "TQ:7221e32ed926",
+   "shared_ticket": "TQ:ccf563e85ff9",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,

@@ -20,12 +20,12 @@ Rating /10 = 2 x (0.35 cost + 0.35 hours + 0.15 way home + 0.15 hassle):
 import json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-OUT = args[args.index("--json") + 1] if "--json" in args else os.path.join(ROOT, "data", "itineraries.json")
+OUT = args[args.index("--json") + 1] if "--json" in args else os.path.join(ROOT, "data", "built", "itineraries.json")
 TOP = int(args[args.index("--top") + 1]) if "--top" in args else 40
-IO = json.load(open(os.path.join(ROOT, "data", "inout.json")))
-cfg = json.load(open(os.path.join(ROOT, "trip.json")))
-BAGS = json.load(open(os.path.join(ROOT, "data", "bag_rules.json")))
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+IO = json.load(open(os.path.join(ROOT, "data", "built", "inout.json")))
+cfg = json.load(open(os.path.join(ROOT, "data", "sources", "trip.json")))
+BAGS = json.load(open(os.path.join(ROOT, "data", "sources", "bag_rules.json")))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 W = cfg["scoring"]
 
 REG = {**{a: "CA" for a in "GUA SAL SAP TGU RTB MGA SJO LIR".split()},
@@ -131,7 +131,7 @@ for r in results:   # one row per (entry, exit, order, type)
     k = (r["entry"], r["exit"], tuple(r["order"]), r["type"])
     if k not in seen:
         seen.add(k); uniq.append(r)
-json.dump({"generated_from": "inout.json + crawl.db", "itineraries": uniq}, open(OUT, "w"), indent=1, ensure_ascii=False)
+json.dump({"generated_from": "inout.json + trip.db", "itineraries": uniq}, open(OUT, "w"), indent=1, ensure_ascii=False)
 LBL = {"CA": "Central America", "CO": "Colombia", "BO": "Bolivia"}
 print(f"itineraries: {len(uniq)} (from {len(results)})")
 for r in uniq[:TOP]:

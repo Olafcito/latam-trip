@@ -12,10 +12,10 @@ import itertools, json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
 TOP = int(args[args.index("--top") + 1]) if "--top" in args else 8
-cfg = json.load(open(os.path.join(ROOT, "trip.json")))
+cfg = json.load(open(os.path.join(ROOT, "data", "sources", "trip.json")))
 SEQ = cfg["region_sequence"]
 SIDE = set(cfg.get("side_trip_airports", {}))
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 
 reg = {}
 for pid, eff, price, h, car in con.execute(

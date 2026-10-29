@@ -47,7 +47,7 @@
     "PHL"
   ],
   "scenarios_file": "briefs/scenarios.md",
-  "known_prices_file": "data/known_prices.json",
+  "known_prices_file": "data/sources/known_prices.json",
   "final_region": {
     "name": "Bolivia",
     "airports": [

@@ -1,12 +1,12 @@
 """Evaluate whole-trip scenarios component by component from the crawl table.
 
 Usage: python3 -I evaluate.py [--root DIR] [--md FILE]
-Reads ROOT/data/scenarios.json:
+Reads ROOT/data/sources/scenarios.json:
  [{"id","name","story", "components": [
     {"label":"Long-haul", "pattern":"P:MAD>SAL/VVI>MAD" | ["alt1","alt2"], "pick":"value|cheap|fast",
      "dates":["2026-12-02"], "carriers":"Avianca", "no_flags":["self_transfer","us_transit"], "max_hours":24,
      "price":123, "hours":2.3, "flights":0, "note":"..." (fixed component, e.g. a train)} ]}]
-and ROOT/data/bag_rules.json: [{"match":"Avianca","checked_dkk":..,"cabin_dkk":..,"note":..}] (per flown direction/ticket leg).
+and ROOT/data/sources/bag_rules.json: [{"match":"Avianca","checked_dkk":..,"cabin_dkk":..,"note":..}] (per flown direction/ticket leg).
 Per component it picks one acceptable quote (pick=value: lowest effective cost; cheap: lowest price; fast: shortest
 longest leg), then sums price, a checked-bag variant, flight hours, number of flights, tickets, airlines and flags.
 """
@@ -14,9 +14,9 @@ import json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
 MD = args[args.index("--md") + 1] if "--md" in args else None
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
-SC = json.load(open(os.path.join(ROOT, "data", "scenarios.json")))
-BAGS = json.load(open(os.path.join(ROOT, "data", "bag_rules.json"))) if os.path.exists(os.path.join(ROOT, "data", "bag_rules.json")) else []
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
+SC = json.load(open(os.path.join(ROOT, "data", "sources", "scenarios.json")))
+BAGS = json.load(open(os.path.join(ROOT, "data", "sources", "bag_rules.json"))) if os.path.exists(os.path.join(ROOT, "data", "sources", "bag_rules.json")) else []
 
 
 CODES = {"KL": "KLM", "AF": "Air France", "CM": "Copa", "G3": "GOL", "AV": "Avianca", "AA": "American", "UA": "United",
@@ -118,4 +118,4 @@ txt = "\n".join(out)
 print(txt)
 if MD:
     open(MD, "w").write(txt)
-json.dump(results, open(os.path.join(ROOT, "data", "scenario_results.json"), "w"), indent=1, default=list)
+json.dump(results, open(os.path.join(ROOT, "data", "built", "scenario_results.json"), "w"), indent=1, default=list)

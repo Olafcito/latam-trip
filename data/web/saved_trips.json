@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-29T10:25:38Z",
+ "generated_at": "2026-10-29T13:01:45Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {
@@ -223,7 +223,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -250,7 +250,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -282,7 +282,7 @@
       "LATAM Airlines 4901"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 1755.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -559,7 +559,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -586,7 +586,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -618,7 +618,7 @@
       "LATAM Airlines 4901"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 1755.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -887,7 +887,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -914,7 +914,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -946,7 +946,7 @@
       "LATAM Airlines 4901"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 1755.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -1186,7 +1186,7 @@
       "LATAM Airlines 2400"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 2000.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -1213,7 +1213,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -1240,7 +1240,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -1560,7 +1560,7 @@
       "LATAM Airlines 2400"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 2000.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -1587,7 +1587,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -1614,7 +1614,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x håndbagage",
+     "cabin_bag": "1 x hÃ¥ndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0

@@ -18,7 +18,7 @@ Rating /10 (long-haul only) = 2 x (0.5 price + 0.3 way home + 0.2 way in):
   price score 5 at inout.price_anchor (7,000 kr) for tickets + cabin-bag fees, minus 1 per 1,000 kr more (min 1);
   way score: 5, -1 per night at a hub, -1 if any change between separate tickets, -1 US transit,
   -1 if flying time > 20 h, another -1 if > 23 h (min 1).
-Writes data/inout.json (airports, tickets, ways, options), data/inout.csv (options) and, with --md, a table.
+Writes data/built/inout.json (airports, tickets, ways, options), data/built/inout.csv (options) and, with --md, a table.
 """
 import csv, datetime as dt, importlib.util, json, os, sqlite3, sys
 args = sys.argv[1:]
@@ -61,7 +61,7 @@ HUB_META = {"CPH": ("Copenhagen", "DK", 55.62, 12.65), "MAD": ("Madrid", "ES", 4
             "PHX": ("Phoenix", "US", 33.43, -112.01), "CLT": ("Charlotte", "US", 35.21, -80.94), "IAD": ("Washington", "US", 38.95, -77.46),
             "NLU": ("Mexico City Felipe Ángeles", "MX", 19.74, -99.02), "MTY": ("Monterrey", "MX", 25.78, -100.11),
             "BOS": ("Boston", "US", 42.36, -71.01), "LAX": ("Los Angeles", "US", 33.94, -118.41), "RDU": ("Raleigh-Durham", "US", 35.88, -78.79)}
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 RAW = {}
 
 
@@ -298,7 +298,7 @@ for kind, wi, wh, shared in OPTIONS:
 opts = sorted(best_opt.values(), key=lambda o: (-o["rating"]["total"], o["price_dkk"]))
 
 nodes = {}
-mp = os.path.join(ROOT, "data", "network", "map.json")
+mp = os.path.join(ROOT, "data", "built", "map.json")
 if os.path.exists(mp):
     for n in json.load(open(mp))["nodes"]:
         if n.get("iata") and (n["id"] == n["iata"] or n["iata"] not in nodes):   # the airport's own node wins over nearby places
@@ -313,7 +313,7 @@ json.dump({"generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%
                       "price_basis": "tickets + cabin-bag fees (hub stays not included)",
                       "way_score": "5, -1 per night at a hub, -1 if any change between separate tickets, -1 US transit, -1 if flying > 20 h, -1 more if > 23 h"},
            "airports": AIRPORTS, "tickets": TICKETS, "ways": WAYS, "options": opts},
-          open(os.path.join(ROOT, "data", "inout.json"), "w"), indent=1, ensure_ascii=False)
+          open(os.path.join(ROOT, "data", "built", "inout.json"), "w"), indent=1, ensure_ascii=False)
 
 NAME = lambda a: AIRPORTS.get(a, {}).get("name", a)
 TYPE = {"ticket": "One ticket", "madrid": "Madrid ticket + own hops", "oneways": "Separate one-ways"}
@@ -326,7 +326,7 @@ def stops_txt(w):
     return "; ".join(one(x) for x in w["timeline"] if x["kind"] in ("night", "day_stop", "self_transfer"))
 
 
-with open(os.path.join(ROOT, "data", "inout.csv"), "w", newline="") as f:
+with open(os.path.join(ROOT, "data", "built", "inout.csv"), "w", newline="") as f:
     wr = csv.writer(f)
     wr.writerow(["rating", "type", "entry", "exit", "price_dkk", "cabin_bag_fees_dkk", "checked_bag_fees_dkk", "hub_nights",
                  "way_in", "in_depart", "in_arrive", "in_flying_h", "in_total_h", "in_stops",

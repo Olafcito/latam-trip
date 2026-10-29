@@ -1,10 +1,10 @@
-"""Markdown tables from data/routes.json: in/home tickets, region hops, best route orders.
+"""Markdown tables from data/built/routes.json: in/home tickets, region hops, best route orders.
 Usage: python3 -I report_md.py [--root DIR] > analysis.md"""
 import json, os, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-D = json.load(open(os.path.join(ROOT, "data", "routes.json")))
-cfg = json.load(open(os.path.join(ROOT, "trip.json")))
+D = json.load(open(os.path.join(ROOT, "data", "built", "routes.json")))
+cfg = json.load(open(os.path.join(ROOT, "data", "sources", "trip.json")))
 POS = cfg.get("route_positioning", {})
 NAMES = {"CPH": "Copenhagen", "MAD": "Madrid", "ALC": "Alicante", "GUA": "Guatemala City", "SAL": "San Salvador",
          "SAP": "San Pedro Sula", "MGA": "Managua", "SJO": "San José CR", "PTY": "Panama City", "BOG": "Bogotá",

@@ -49,7 +49,7 @@
   "PHL"
  ],
  "scenarios_file": "briefs/scenarios.md",
- "known_prices_file": "data/known_prices.json",
+ "known_prices_file": "data/sources/known_prices.json",
  "side_trip_airports": {
   "GDL": "Guadalajara (SC4)"
  },

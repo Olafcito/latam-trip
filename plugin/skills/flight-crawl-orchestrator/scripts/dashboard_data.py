@@ -7,8 +7,8 @@ import datetime as dt, json, os, sys
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-IO = json.load(open(os.path.join(ROOT, "data", "inout.json")))
-IT = json.load(open(os.path.join(ROOT, "data", "itineraries.json")))["itineraries"]
+IO = json.load(open(os.path.join(ROOT, "data", "built", "inout.json")))
+IT = json.load(open(os.path.join(ROOT, "data", "built", "itineraries.json")))["itineraries"]
 OUT = os.path.join(ROOT, "data", "web")
 os.makedirs(OUT, exist_ok=True)
 
@@ -97,7 +97,7 @@ print(f"trips {len(trips)} | journeys {len(journeys)} | best trip: {trips[0]['in
 # Per airport pair up to three rows: the cheapest, the fastest, and the cheapest that lands between 06:00 and 23:59.
 import sqlite3
 EU = {"CPH", "MAD", "BCN", "LIS", "CDG", "AMS", "FRA", "LGW", "LHR", "IST", "ALC", "ZRH", "MUC", "BRU"}
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 pairs = {}
 for qid, pid, d, price, hours, via, carriers, flags, raw in con.execute(
         "SELECT quote_id, pattern_id, out_date, price_dkk, out_hours, out_via, out_carriers, flags, raw FROM quotes "

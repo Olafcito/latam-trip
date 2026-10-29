@@ -16,14 +16,14 @@ Cost per chain = sum of product effective costs + cabin-bag add-ons (bag_rules.j
 trip.json "chain": {"out_window": ["2026-12-01","2026-12-04"], "in_by": "2026-12-08", "home_from": "2027-01-28",
   "home_by": "2027-02-05", "max_products": 3, "min_connect_h": 3, "max_stop_nights": 4, "night_dkk": {"default": 350},
   "stop_penalty": 300, "day_stop": 400, "date_shift": 300}
-Writes data/chains.json: {"out": [...], "home": [...]} sorted by effective cost, best few per entry/exit airport.
+Writes data/built/chains.json: {"out": [...], "home": [...]} sorted by effective cost, best few per entry/exit airport.
 """
 import datetime as dt, json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-OUT = args[args.index("--json") + 1] if "--json" in args else os.path.join(ROOT, "data", "chains.json")
+OUT = args[args.index("--json") + 1] if "--json" in args else os.path.join(ROOT, "data", "built", "chains.json")
 TOP = int(args[args.index("--top") + 1]) if "--top" in args else 3
-cfg = json.load(open(os.path.join(ROOT, "trip.json")))
+cfg = json.load(open(os.path.join(ROOT, "data", "sources", "trip.json")))
 W = cfg["scoring"]
 C = {"out_window": ["2026-12-01", "2026-12-04"], "in_by": "2026-12-08", "home_from": "2027-01-28", "home_by": "2027-02-05",
      "max_products": 3, "min_connect_h": 3, "max_stop_nights": 4, "night_dkk": {"default": 350}, "stop_penalty": 300,
@@ -33,8 +33,8 @@ HOME = set(cfg.get("home_airports", ["CPH"]))
 REG = cfg["route_regions"]
 reg_of = {a: r for r, aps in REG.items() for a in aps}
 ENTRY = set(C.get("entry_airports") or reg_of)   # region airports allowed as the first/last airport of a chain
-BAGS = json.load(open(os.path.join(ROOT, "data", "bag_rules.json")))
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+BAGS = json.load(open(os.path.join(ROOT, "data", "sources", "bag_rules.json")))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 
 
 def bag(carriers, hours):

@@ -1,18 +1,19 @@
 """Build the route map frontend data: data/web/places.json, connections.json, countries.json, flights.json.
 
 Usage: python3 -I build_web_data.py [--root DIR] [--fetch-elevation]
-Reads data/network/map.json (run build_map.py first) and data/quotes.csv, writes the contract in
+Reads data/built/map.json (run build_map.py first), data/built/trip.db and the data/sources tables, writes the contract in
 MAP_DESIGN_HANDOFF.md section 7: integer DKK prices, durations in minutes, lat/lon coordinates.
 Undirected pairs: every connection merges the researched ground/boat/flight edges and the crawled
 flights (R: one-ways, RR: returns) of both directions into one list of options.
 --fetch-elevation looks up each place's altitude on the Open-Meteo elevation API (Copernicus DEM)
-and caches it in data/network/elevation.json; without it the cache is used when present.
+and caches it in data/sources/elevation.json; without it the cache is used when present.
 """
-import glob, csv, datetime, json, os, re, sqlite3, statistics, sys, urllib.request
+import glob, datetime, json, os, re, sqlite3, statistics, sys, urllib.request
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-NET = os.path.join(ROOT, "data", "network")
+NET = os.path.join(ROOT, "data", "sources")
+BUILT = os.path.join(ROOT, "data", "built")
 OUT = os.path.join(ROOT, "data", "web")
 
 COUNTRIES = [  # code, name, label_lat, label_lon (context countries carry no places)
@@ -152,8 +153,18 @@ def airport_flights(db):
     return rows
 
 
+def quote_rows(db):
+    """The quotes table without the raw column, every value as text the way the old quotes.csv held it."""
+    if not os.path.exists(db):
+        return
+    cur = sqlite3.connect(db).execute("SELECT * FROM quotes")
+    cols = [c[0] for c in cur.description][:-1]
+    for row in cur:
+        yield {c: "" if v is None else str(v) for c, v in zip(cols, row)}
+
+
 def build():
-    m = json.load(open(os.path.join(NET, "map.json"), encoding="utf-8"))
+    m = json.load(open(os.path.join(BUILT, "map.json"), encoding="utf-8"))
     nodes = {n["id"]: n for n in m["nodes"]}
     elev_path = os.path.join(NET, "elevation.json")
     elev = json.load(open(elev_path, encoding="utf-8")) if os.path.exists(elev_path) else {}
@@ -176,7 +187,7 @@ def build():
                         "licence": img.get("license") or img.get("licence"), "w": img.get("w"), "h": img.get("h")}
 
     # experiences database, categories, saved lists, stay quotes and the task log
-    exp_images = {r["id"]: r.get("image") for r in load_jsonl("exp-img-*.jsonl") if r.get("kind") == "experience_image"}
+    exp_images = {r["id"]: r.get("image") for r in load_jsonl("experience_images.jsonl") if r.get("kind") == "experience_image"}
     cat_doc = load_json("experience_categories.json", {"categories": []})
     node_image = {nid: web_image((n.get("profile") or {}).get("image")) for nid, n in nodes.items()}
     exp_categories = [{"id": c["id"], "name": c["name"], "place_categories": c["place_categories"],
@@ -237,7 +248,8 @@ def build():
 
     # crawled one-way quotes per directed pair: cheapest, fastest, typical, observed_at, link
     quotes = {}
-    for q in csv.DictReader(open(os.path.join(ROOT, "data", "quotes.csv"), encoding="utf-8")):
+    db = os.path.join(ROOT, "data", "built", "trip.db")
+    for q in quote_rows(db):
         pid = q["pattern_id"]
         if not pid.startswith(("R:", "RR:")) or q["ok"] != "1" or not q["price_dkk"]:
             continue
@@ -245,7 +257,6 @@ def build():
         quotes.setdefault((a, b), []).append(q)
     # the outbound leg as flown: a search for one date also returns flights on the days around it
     legs, homes = {}, {}
-    db = os.path.join(ROOT, "data", "crawl.db")
     if os.path.exists(db):
         for qid, raw in sqlite3.connect(db).execute(
                 "SELECT quote_id, raw FROM quotes WHERE (pattern_id LIKE 'R:%' OR pattern_id LIKE 'RR:%') AND ok=1"):
@@ -428,7 +439,7 @@ def build():
     def latest(vals):
         vals = [v for v in vals if v]
         return max(vals) if vals else None
-    db_path = os.path.join(ROOT, "data", "crawl.db")
+    db_path = db
     flights_checked = sqlite3.connect(db_path).execute("SELECT max(observed_at) FROM quotes WHERE ok=1").fetchone()[0] \
         if os.path.exists(db_path) else None
     meta = {"built_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="minutes"),

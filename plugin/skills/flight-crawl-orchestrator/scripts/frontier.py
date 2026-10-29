@@ -10,8 +10,8 @@ args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
 KIND = args[args.index("--kind") + 1] if "--kind" in args else "all"
 LIMIT = int(args[args.index("--limit") + 1]) if "--limit" in args else 40
-cfg = json.load(open(os.path.join(ROOT, "trip.json")))
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+cfg = json.load(open(os.path.join(ROOT, "data", "sources", "trip.json")))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 have = {r[0] for r in con.execute("SELECT DISTINCT pattern_id FROM quotes")}
 tasks = []
 if KIND in ("main", "all"):

@@ -1,20 +1,27 @@
-"""Build the map dataset: nodes + edges + profiles from data/network/*.jsonl, plus priced flight edges from the crawl table.
+"""Build the map dataset: nodes + edges + profiles from data/sources (places, connections,
+profiles and place_images), plus priced flight edges from the crawl table.
 
 Usage: python3 -I build_map.py [--root DIR]
-Writes data/network/map.json ({"nodes":[...], "edges":[...]}; profile fields merged into nodes),
-data/network/nodes.csv and data/network/edges.csv.
+Writes data/built/map.json ({"nodes":[...], "edges":[...]}; profile fields merged into nodes),
+data/built/nodes.csv and data/built/edges.csv.
+Source rows carry "origin", the worker file they first came from. It is dropped from nodes and profiles and
+becomes the edge "_src".
 Flight edges from the crawl (pattern R:a>b one-ways, RR:a>b/b>a returns) carry "flights" (up to 6 distinct one-ways with
 quote_id, local depart/arrive, hours, price, carriers, via, fare and bags) and: cheapest acceptable one-way price,
 shortest hours, whether a nonstop exists, vias, carriers, the dates seen, and the return price when searched.
 Airports referenced by edges but missing as nodes are reported (another region's researcher usually supplies them).
 """
-import csv, glob, json, os, sqlite3, sys
+import csv, json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-NET = os.path.join(ROOT, "data", "network")
+NET = os.path.join(ROOT, "data", "sources")
+BUILT = os.path.join(ROOT, "data", "built")
+os.makedirs(BUILT, exist_ok=True)
 nodes, edges, profiles, patches = {}, [], {}, []
-for f in sorted(glob.glob(os.path.join(NET, "*.jsonl"))):
-    for line in open(f):
+for f in [os.path.join(NET, n) for n in ("places.jsonl", "connections.jsonl", "profiles.jsonl", "place_images.jsonl")]:
+    if not os.path.exists(f):
+        continue
+    for line in open(f, encoding="utf-8"):
         line = line.strip()
         if not line:
             continue
@@ -23,10 +30,11 @@ for f in sorted(glob.glob(os.path.join(NET, "*.jsonl"))):
         except json.JSONDecodeError:
             continue
         k = r.get("kind")
+        origin = r.pop("origin", None)
         if k == "node":
             nodes.setdefault(r["id"], {}).update({x: y for x, y in r.items() if y is not None})
         elif k == "edge":
-            r["_src"] = os.path.basename(f)
+            r["_src"] = (origin + ".jsonl") if origin else os.path.basename(f)
             edges.append(r)
         elif k == "profile":
             profiles.setdefault(r["id"], {}).update({x: y for x, y in r.items() if not (x == "image" and y is None and profiles.get(r["id"], {}).get("image"))})
@@ -46,7 +54,7 @@ for nid, p in profiles.items():
 
 # priced flight edges from the crawl
 fl = {}
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 for qid, pid, price, hours, raw in con.execute(
         "SELECT quote_id, pattern_id, price_dkk, out_hours, raw FROM quotes WHERE (pattern_id LIKE 'R:%' OR pattern_id LIKE 'RR:%') AND ok=1"):
     q = json.loads(raw)
@@ -88,16 +96,16 @@ for e in fl.values():
 ids = set(nodes)
 missing = sorted({x for e in edges for x in (e["from"], e["to"]) if x not in ids})
 json.dump({"nodes": list(nodes.values()), "edges": edges, "missing_nodes": missing},
-          open(os.path.join(NET, "map.json"), "w"), ensure_ascii=False, indent=1)
+          open(os.path.join(BUILT, "map.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 ncols = ["id", "name", "country", "lat", "lon", "type", "iata", "popularity", "why"]
-with open(os.path.join(NET, "nodes.csv"), "w", newline="") as fh:
+with open(os.path.join(BUILT, "nodes.csv"), "w", newline="", encoding="utf-8") as fh:
     w = csv.writer(fh); w.writerow(ncols + ["has_profile"])
     for n in nodes.values():
         w.writerow([n.get(c) for c in ncols] + [int("profile" in n)])
 ecols = ["from", "to", "mode", "operator", "duration_h", "duration_range", "price_dkk", "frequency", "overnight", "border",
          "both", "oneway_min_dkk", "oneway_min_hours", "fastest_hours", "fastest_price_dkk", "nonstop", "vias", "carriers",
          "dates", "return_min_dkk", "source", "source_year", "notes"]
-with open(os.path.join(NET, "edges.csv"), "w", newline="") as fh:
+with open(os.path.join(BUILT, "edges.csv"), "w", newline="", encoding="utf-8") as fh:
     w = csv.writer(fh); w.writerow(ecols)
     for e in edges:
         w.writerow([" ".join(e[c]) if isinstance(e.get(c), list) else e.get(c) for c in ecols])

@@ -1,4 +1,4 @@
-// Downloads the crawler data from GitHub into public/data so the app also works offline.
+// Downloads what the apps read (data/web, written by tripdb build) from GitHub into public/data so the app also works offline.
 // Usage: npm run sync-data   (optional: DATA_REPO=owner/repo DATA_BRANCH=main)
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
@@ -10,11 +10,10 @@ const base = `https://raw.githubusercontent.com/${repo}/${branch}/`
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'data')
 
 export const FILES = [
-  'data/inout.json',
-  'data/network/map.json',
-  'data/quotes.csv',
-  'data/bag_rules.json',
-  'trip.json',
+  'data/web/inout.json',
+  'data/web/map.json',
+  'data/web/bag_rules.json',
+  'data/web/trip.json',
   // when each kind of data was last checked (the freshness corner)
   'data/web/meta.json',
   // the Map tab's route map
@@ -22,6 +21,8 @@ export const FILES = [
   'data/web/connections.json',
   'data/web/countries.json',
   'data/web/flights.json',
+  // the ranked trips to start from
+  'data/web/saved_trips.json',
 ]
 
 let failed = 0

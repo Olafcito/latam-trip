@@ -4,11 +4,11 @@ Usage:
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py list                      open tasks: number, type, title
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py show N                    the task JSON of issue N
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py done N SUMMARY_FILE [--outputs a,b] [--root DIR]
-                                                    comment SUMMARY_FILE on issue N, close it, log it in task_log.jsonl
+                                                    comment SUMMARY_FILE on issue N, close it, log it with tripdb log-task
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py url TASK_JSON_FILE        the prefilled new-issue link the app would open (for testing)
 Needs the gh CLI (REST only).
 """
-import datetime as dt, json, os, re, subprocess, sys, urllib.parse
+import json, os, re, subprocess, sys, urllib.parse
 
 REPO = "Olafcito/latam-trip"
 LABEL = "claude-task"
@@ -55,11 +55,19 @@ def cmd_done(n, summary_file, outputs, root):
     gh(f"repos/{REPO}/issues/{n}/comments", "-f", f"body={body}")
     gh(f"repos/{REPO}/issues/{n}", "-X", "PATCH", "-f", "state=closed", "-f", "state_reason=completed")
     first = next((l.strip("# ").strip() for l in body.splitlines() if l.strip()), "")
-    with open(os.path.join(root, "data", "network", "task_log.jsonl"), "a", encoding="utf-8") as f:
-        f.write(json.dumps({"issue": int(n), "type": t and t["type"], "task": t,
-                            "done_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"),
-                            "summary": first[:300], "outputs": outputs}, ensure_ascii=False) + "\n")
     print(f"closed #{n}")
+    cmd = [sys.executable, "-I", "-X", "utf8", os.path.join(root, "plugin", "scripts", "tripdb.py"), "--root", root, "log-task",
+           "--issue", str(int(n)), "--summary", first[:300], "--outputs", ",".join(outputs)]
+    if t:
+        tmp = os.path.join(root, "data", "sources", f".task-{n}.json")
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(t, f, ensure_ascii=False)
+        cmd += ["--type", t["type"], "--task", tmp]
+    try:
+        subprocess.run(cmd, check=True)
+    finally:
+        if t:
+            os.remove(tmp)
 
 
 def cmd_url(path):
