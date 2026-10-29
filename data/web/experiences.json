@@ -275,8 +275,10 @@
   "tags": [
    "sharks"
   ],
-  "places": [],
-  "area": "Playa del Carmen",
+  "places": [
+   "PCM"
+  ],
+  "area": null,
   "country": "MX",
   "lat": 20.63,
   "lon": -87.07,
@@ -317,7 +319,9 @@
   "name": "Cozumel",
   "category": "diving",
   "tags": [],
-  "places": [],
+  "places": [
+   "PCM"
+  ],
   "area": "Cozumel",
   "country": "MX",
   "lat": 20.42,
@@ -11148,6 +11152,490 @@
    "h": 2112
   },
   "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "cun-playa-delfines-and-the-hotel-zone-beaches",
+  "name": "Playa Delfines and the hotel-zone beaches",
+  "category": "beach",
+  "tags": [],
+  "places": [
+   "CUN"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 21.16,
+  "lon": -86.85,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Canc%C3%BAn",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "cun-ferry-to-isla-mujeres",
+  "name": "Ferry to Isla Mujeres",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "CUN"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 21.16,
+  "lon": -86.85,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Canc%C3%BAn",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "cun-cenotes-along-the-ruta-de-los-cenotes",
+  "name": "Cenotes along the Ruta de los Cenotes",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "CUN"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 21.16,
+  "lon": -86.85,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Canc%C3%BAn",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "cun-mercado-28-and-downtown-taquerias",
+  "name": "Mercado 28 and downtown taquerías",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "CUN"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 21.16,
+  "lon": -86.85,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Canc%C3%BAn",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "cun-whale-shark-trips-jun-to-sep",
+  "name": "Whale shark trips (Jun to Sep)",
+  "category": "diving",
+  "tags": [],
+  "places": [
+   "CUN"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 21.16,
+  "lon": -86.85,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Canc%C3%BAn",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Scuba_Divers_in_Cozumel%2C_Mexico_swimming_through_a_coral_cave.jpg/1280px-Scuba_Divers_in_Cozumel%2C_Mexico_swimming_through_a_coral_cave.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Scuba_Divers_in_Cozumel,_Mexico_swimming_through_a_coral_cave.jpg",
+   "credit": "Matthew T Rader",
+   "licence": "CC BY-SA 4.0",
+   "w": 2841,
+   "h": 1750
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "mex-centro-historico-and-the-zocalo",
+  "name": "Centro Histórico and the Zócalo",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "MEX"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 19.43,
+  "lon": -99.13,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Mexico_City",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "mex-museo-nacional-de-antropologia",
+  "name": "Museo Nacional de Antropología",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "MEX"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 19.43,
+  "lon": -99.13,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Mexico_City",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "mex-teotihuacan-pyramids-day-trip",
+  "name": "Teotihuacan pyramids day trip",
+  "category": "ruins",
+  "tags": [],
+  "places": [
+   "MEX"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 19.43,
+  "lon": -99.13,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Mexico_City",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Tikal-Plaza-And-North-Acropolis.jpg/1280px-Tikal-Plaza-And-North-Acropolis.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Tikal-Plaza-And-North-Acropolis.jpg",
+   "credit": "Bjørn Christian Tørrissen",
+   "licence": "CC BY-SA 3.0",
+   "w": 5037,
+   "h": 2145
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "mex-tacos-and-markets-in-roma-and-condesa",
+  "name": "Tacos and markets in Roma and Condesa",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "MEX"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 19.43,
+  "lon": -99.13,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Mexico_City",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "mex-lucha-libre-at-arena-mexico",
+  "name": "Lucha libre at Arena México",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "MEX"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 19.43,
+  "lon": -99.13,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Mexico_City",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "pcm-cenote-swimming-and-diving",
+  "name": "Cenote swimming and diving",
+  "category": "diving",
+  "tags": [],
+  "places": [
+   "PCM"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 20.63,
+  "lon": -87.08,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Playa_del_Carmen",
+   "https://hostelz.com/best-hostels-playa-del-carmen",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Scuba_Divers_in_Cozumel%2C_Mexico_swimming_through_a_coral_cave.jpg/1280px-Scuba_Divers_in_Cozumel%2C_Mexico_swimming_through_a_coral_cave.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Scuba_Divers_in_Cozumel,_Mexico_swimming_through_a_coral_cave.jpg",
+   "credit": "Matthew T Rader",
+   "licence": "CC BY-SA 4.0",
+   "w": 2841,
+   "h": 1750
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "pcm-quinta-avenida-and-playa-mamitas",
+  "name": "Quinta Avenida and Playa Mamitas",
+  "category": "culture",
+  "tags": [],
+  "places": [
+   "PCM"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 20.63,
+  "lon": -87.08,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Playa_del_Carmen",
+   "https://hostelz.com/best-hostels-playa-del-carmen",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "pcm-day-trip-to-the-tulum-ruins",
+  "name": "Day trip to the Tulum ruins",
+  "category": "ruins",
+  "tags": [],
+  "places": [
+   "PCM"
+  ],
+  "area": null,
+  "country": "MX",
+  "lat": 20.63,
+  "lon": -87.08,
+  "summary": null,
+  "season": null,
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {},
+  "researched": false,
+  "checked_at": "2026-10-29",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Playa_del_Carmen",
+   "https://hostelz.com/best-hostels-playa-del-carmen",
+   "https://www.booking.com"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Tikal-Plaza-And-North-Acropolis.jpg/1280px-Tikal-Plaza-And-North-Acropolis.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Tikal-Plaza-And-North-Acropolis.jpg",
+   "credit": "Bjørn Christian Tørrissen",
+   "licence": "CC BY-SA 3.0",
+   "w": 5037,
+   "h": 2145
+  },
+  "image_source": "category",
   "saved_in": []
  }
 ]

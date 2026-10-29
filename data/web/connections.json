@@ -10518,6 +10518,221 @@
   ]
  },
  {
+  "id": "CUN-GDL",
+  "a": "CUN",
+  "b": "GDL",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Viva Aerobus",
+     "Volaris (nonstop)"
+    ],
+    "duration_min": 306,
+    "price_dkk": {
+     "min": 737,
+     "typical": 737
+    },
+    "frequency": "5 to 6 nonstops a day",
+    "overnight": false,
+    "border": false,
+    "stops": [
+     {
+      "place_id": "NLU",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "MEX",
+      "NLU"
+     ],
+     "carriers": [
+      "Viva Aerobus"
+     ],
+     "oneway_dkk": {
+      "min": 737,
+      "observed_at": "2026-10-28T15:40:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-05"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "CUN",
+       "to": "GDL",
+       "dkk": 737,
+       "dep": "10:20",
+       "arr": "14:26",
+       "arr_days": 0,
+       "duration_min": 306,
+       "vias": [
+        "NLU"
+       ],
+       "carriers": [
+        "Viva Aerobus"
+       ],
+       "flights": [
+        "VB 7416",
+        "VB 7241"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 737,
+      "duration_min": 306,
+      "vias": [
+       "NLU"
+      ],
+      "carriers": [
+       "Viva Aerobus"
+      ],
+      "date": "2026-12-05",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 737,
+      "duration_min": 306,
+      "vias": [
+       "NLU"
+      ],
+      "carriers": [
+       "Viva Aerobus"
+      ],
+      "date": "2026-12-05"
+     },
+     "flags": [],
+     "quotes": 3
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T15:40:00Z",
+    "note": "Kiwi.com connector search 2026-10-29 for 3 to 7 Dec, cabin bag included. Cheapest CUN>GDL: Viva 22:05 > 23:59 (lands at midnight); daytime Viva 11:35 > 13:34 from 1,405 kr. GDL>CUN: Viva 17:34 > 21:15 from 1,053 kr. Clock times local (Cancún is 1 h ahead of Guadalajara). The crawl also holds a CUN>GDL quote from 737 kr.",
+    "booking_url": null,
+    "source_url": "https://www.kiwi.com",
+    "researched": {
+     "duration_min": 174,
+     "price_min": 1269,
+     "operators": [
+      "Viva Aerobus",
+      "Volaris (nonstop)"
+     ],
+     "year": "2026"
+    }
+   }
+  ]
+ },
+ {
+  "id": "CUN-MEX",
+  "a": "CUN",
+  "b": "MEX",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Viva Aerobus (nonstop; also Aeroméxico",
+     "Volaris)"
+    ],
+    "duration_min": 144,
+    "duration_range_h": "2.3-2.4",
+    "price_dkk": {
+     "min": 759,
+     "typical": null
+    },
+    "price_local": "CUN>Mexico City 759 to 837 kr; Mexico City>CUN 709 to 828 kr (3 to 7 Dec)",
+    "frequency": "many daily",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": null,
+     "vias": [],
+     "carriers": [
+      "Viva Aerobus (nonstop; also Aeroméxico",
+      "Volaris)"
+     ],
+     "oneway_dkk": {
+      "min": 759,
+      "observed_at": "2026"
+     },
+     "return_dkk": null,
+     "dates_searched": [],
+     "by_date": [],
+     "round_trips": []
+    },
+    "source": "manual",
+    "source_url": "https://www.kiwi.com",
+    "observed_at": "2026",
+    "note": "Kiwi.com connector search 2026-10-29 for 3 to 7 Dec, cabin bag included. Cheapest fares use NLU (Felipe Ángeles, 45 km north of the centre): CUN 07:20 > NLU 08:42 from 766 kr. To MEX (city airport): CUN 06:15 > MEX 07:40 from 778 kr. Back: NLU 17:25 > CUN 20:35 from 711 kr; MEX 21:05 > CUN 00:10 from 797 kr. Mexico City is 1 h behind Cancún.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "CUN-PCM",
+  "a": "CUN",
+  "b": "PCM",
+  "options": [
+   {
+    "mode": "bus",
+    "operators": [
+     "ADO (from the airport terminals or downtown Cancún)"
+    ],
+    "duration_min": 72,
+    "duration_range_h": "1-1.5",
+    "price_dkk": {
+     "min": 80,
+     "typical": null
+    },
+    "price_local": "airport MXN 208 to 230; downtown MXN 65 to 85",
+    "frequency": "every 30 to 60 min, about 07:00 to 23:00",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://letstraveltomexico.com/how-to-get-from-cancun-to-playa-del-carmen/",
+    "observed_at": "2026",
+    "note": "Colectivo vans from downtown Cancún about MXN 45 to 60, not from the airport. price_dkk = MXN 230 x 0.349.",
+    "booking_url": null
+   },
+   {
+    "mode": "train",
+    "operators": [
+     "Tren Maya"
+    ],
+    "duration_min": 78,
+    "duration_range_h": "1.25-1.5",
+    "price_dkk": {
+     "min": 45,
+     "typical": null
+    },
+    "price_local": "MXN 60 to 130 by class, plus about MXN 35 shuttle from the airport to the station",
+    "frequency": "about 4 to 6 trains a day",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://letstraveltomexico.com/how-to-get-from-cancun-to-playa-del-carmen/",
+    "observed_at": "2026",
+    "note": "35 to 40 min on the train; about 1 h 15 min door to door from airport Terminal 3. price_dkk = MXN 130 x 0.349.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
   "id": "LPB-SJO",
   "a": "LPB",
   "b": "SJO",
@@ -15663,6 +15878,417 @@
     },
     "source": "crawl",
     "observed_at": "2026-10-28T15:32:37Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "CUN-SAL",
+  "a": "CUN",
+  "b": "SAL",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Aeromexico",
+     "Copa"
+    ],
+    "duration_min": 386,
+    "price_dkk": {
+     "min": 2697,
+     "typical": 2968
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [
+     {
+      "place_id": "PTY",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "MEX",
+      "PTY"
+     ],
+     "carriers": [
+      "Aeromexico",
+      "Copa"
+     ],
+     "oneway_dkk": {
+      "min": 2697,
+      "observed_at": "2026-10-28T15:40:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-05"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "CUN",
+       "to": "SAL",
+       "dkk": 2697,
+       "dep": "06:49",
+       "arr": "14:02",
+       "arr_days": 0,
+       "duration_min": 493,
+       "vias": [
+        "MEX"
+       ],
+       "carriers": [
+        "Aeromexico"
+       ],
+       "flights": [
+        "AM 505",
+        "AM 628"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 2697,
+      "duration_min": 493,
+      "vias": [
+       "MEX"
+      ],
+      "carriers": [
+       "Aeromexico"
+      ],
+      "date": "2026-12-05",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 2968,
+      "duration_min": 386,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-05"
+     },
+     "flags": [],
+     "quotes": 3
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T15:40:00Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "CUN-GUA",
+  "a": "CUN",
+  "b": "GUA",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Aeromexico"
+    ],
+    "duration_min": 352,
+    "price_dkk": {
+     "min": 1393,
+     "typical": 1611
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [
+     {
+      "place_id": "MEX",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "MEX"
+     ],
+     "carriers": [
+      "Aeromexico"
+     ],
+     "oneway_dkk": {
+      "min": 1393,
+      "observed_at": "2026-10-28T15:40:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-05"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "CUN",
+       "to": "GUA",
+       "dkk": 1393,
+       "dep": "06:09",
+       "arr": "11:01",
+       "arr_days": 0,
+       "duration_min": 352,
+       "vias": [
+        "MEX"
+       ],
+       "carriers": [
+        "Aeromexico"
+       ],
+       "flights": [
+        "AM 501",
+        "AM 672"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1393,
+      "duration_min": 352,
+      "vias": [
+       "MEX"
+      ],
+      "carriers": [
+       "Aeromexico"
+      ],
+      "date": "2026-12-05",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 1393,
+      "duration_min": 352,
+      "vias": [
+       "MEX"
+      ],
+      "carriers": [
+       "Aeromexico"
+      ],
+      "date": "2026-12-05"
+     },
+     "flags": [
+      "long_layover"
+     ],
+     "quotes": 2
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T15:40:00Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "BOG-CUN",
+  "a": "BOG",
+  "b": "CUN",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Copa",
+     "Viva Aerobus"
+    ],
+    "duration_min": 205,
+    "price_dkk": {
+     "min": 1464,
+     "typical": 1999
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": true,
+     "vias": [
+      "NLU",
+      "PTY"
+     ],
+     "carriers": [
+      "Copa",
+      "Viva Aerobus"
+     ],
+     "oneway_dkk": {
+      "min": 1464,
+      "observed_at": "2026-10-28T15:40:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-05"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "CUN",
+       "to": "BOG",
+       "dkk": 1464,
+       "dep": "13:40",
+       "arr": "01:10",
+       "arr_days": 1,
+       "duration_min": 690,
+       "vias": [
+        "NLU"
+       ],
+       "carriers": [
+        "Viva Aerobus"
+       ],
+       "flights": [
+        "VB 2282",
+        "VB 770"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1464,
+      "duration_min": 690,
+      "vias": [
+       "NLU"
+      ],
+      "carriers": [
+       "Viva Aerobus"
+      ],
+      "date": "2026-12-05",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 1999,
+      "duration_min": 205,
+      "vias": [],
+      "carriers": [
+       "Viva Aerobus"
+      ],
+      "date": "2026-12-05"
+     },
+     "flags": [
+      "long_layover"
+     ],
+     "quotes": 3
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T15:40:00Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "CUN-MDE",
+  "a": "CUN",
+  "b": "MDE",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Copa",
+     "avianca"
+    ],
+    "duration_min": 420,
+    "price_dkk": {
+     "min": 2605,
+     "typical": 2605
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [
+     {
+      "place_id": "PTY",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "BOG",
+      "PTY"
+     ],
+     "carriers": [
+      "Copa",
+      "avianca"
+     ],
+     "oneway_dkk": {
+      "min": 2605,
+      "observed_at": "2026-10-28T15:40:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-05"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-05",
+       "from": "CUN",
+       "to": "MDE",
+       "dkk": 2605,
+       "dep": "07:15",
+       "arr": "14:15",
+       "arr_days": 0,
+       "duration_min": 420,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM 104",
+        "CM 654"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 2605,
+      "duration_min": 420,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-05",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 2605,
+      "duration_min": 420,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-05"
+     },
+     "flags": [
+      "long_layover"
+     ],
+     "quotes": 3
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T15:40:00Z",
     "note": null,
     "booking_url": null
    }
