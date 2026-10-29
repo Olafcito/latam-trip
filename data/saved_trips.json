@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-29T09:51:12Z",
+ "generated_at": "2026-10-29T10:25:38Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {
@@ -20,6 +20,12 @@
     "exit": "BOG",
     "ticket_quote_id": "Q:d9090c079f8f",
     "price_dkk": 7850,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 1120,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
     "rating": {
      "total": 9.2,
      "price": 4.2,
@@ -50,6 +56,13 @@
      "tickets": [
       "TQ:d9090c079f8f"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -81,7 +94,8 @@
        "ticket": "TQ:d9090c079f8f",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:d9090c079f8f"
     },
     "way_home": {
      "id": "H0252",
@@ -105,6 +119,13 @@
      "tickets": [
       "TQ:d9090c079f8f"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -130,7 +151,8 @@
        "ticket": "TQ:d9090c079f8f",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:d9090c079f8f"
     }
    },
    "segments": [
@@ -201,7 +223,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -228,7 +250,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -260,7 +282,7 @@
       "LATAM Airlines 4901"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 1755.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -328,6 +350,12 @@
     "exit": "CTG",
     "ticket_quote_id": "Q:540ee9c70ec1",
     "price_dkk": 6868,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 1096,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
     "rating": {
      "total": 8.6,
      "price": 5.0,
@@ -358,6 +386,13 @@
      "tickets": [
       "TQ:540ee9c70ec1"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -389,7 +424,8 @@
        "ticket": "TQ:540ee9c70ec1",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:540ee9c70ec1"
     },
     "way_home": {
      "id": "H0244",
@@ -414,6 +450,13 @@
      "tickets": [
       "TQ:540ee9c70ec1"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -445,7 +488,8 @@
        "ticket": "TQ:540ee9c70ec1",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:540ee9c70ec1"
     }
    },
    "segments": [
@@ -515,7 +559,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -542,7 +586,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -574,7 +618,7 @@
       "LATAM Airlines 4901"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 1755.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -642,6 +686,12 @@
     "exit": "MDE",
     "ticket_quote_id": "Q:205e885fe18a",
     "price_dkk": 6885,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 0,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
     "rating": {
      "total": 8.0,
      "price": 5.0,
@@ -672,6 +722,13 @@
      "tickets": [
       "TQ:205e885fe18a"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -699,7 +756,8 @@
        "ticket": "TQ:205e885fe18a",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:205e885fe18a"
     },
     "way_home": {
      "id": "H0686",
@@ -724,6 +782,13 @@
      "tickets": [
       "TQ:205e885fe18a"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -751,7 +816,8 @@
        "ticket": "TQ:205e885fe18a",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:205e885fe18a"
     }
    },
    "segments": [
@@ -821,7 +887,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -848,7 +914,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -880,7 +946,7 @@
       "LATAM Airlines 4901"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 1755.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -948,6 +1014,12 @@
     "exit": "SAL",
     "ticket_quote_id": "Q:016fa4f9e11d",
     "price_dkk": 7657,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 805,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
     "rating": {
      "total": 9.3,
      "price": 4.3,
@@ -977,6 +1049,13 @@
      "tickets": [
       "TQ:016fa4f9e11d"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -1002,7 +1081,8 @@
        "ticket": "TQ:016fa4f9e11d",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:016fa4f9e11d"
     },
     "way_home": {
      "id": "H0328",
@@ -1027,6 +1107,13 @@
      "tickets": [
       "TQ:016fa4f9e11d"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -1058,7 +1145,8 @@
        "ticket": "TQ:016fa4f9e11d",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:016fa4f9e11d"
     }
    },
    "segments": [
@@ -1098,7 +1186,7 @@
       "LATAM Airlines 2400"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 2000.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -1125,7 +1213,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -1152,7 +1240,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -1255,6 +1343,12 @@
     "exit": "VVI",
     "ticket_quote_id": "Q:6ac0246c3aa4",
     "price_dkk": 9363,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 1120,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
     "rating": {
      "total": 6.8,
      "price": 2.6,
@@ -1285,6 +1379,13 @@
      "tickets": [
       "TQ:6ac0246c3aa4"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -1315,7 +1416,8 @@
        "ticket": "TQ:6ac0246c3aa4",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:6ac0246c3aa4"
     },
     "way_home": {
      "id": "H0472",
@@ -1340,6 +1442,13 @@
      "tickets": [
       "TQ:6ac0246c3aa4"
      ],
+     "price_dkk": 0,
+     "extras": {
+      "cabin_bag_fees_dkk": 0,
+      "checked_bag_fees_dkk": 0,
+      "hub_nights": 0,
+      "hub_stay_estimate_dkk": 0
+     },
      "timeline": [
       {
        "kind": "flight",
@@ -1371,7 +1480,8 @@
        "ticket": "TQ:6ac0246c3aa4",
        "self_transfer_inside": false
       }
-     ]
+     ],
+     "shared_ticket": "TQ:6ac0246c3aa4"
     }
    },
    "segments": [
@@ -1450,7 +1560,7 @@
       "LATAM Airlines 2400"
      ],
      "fare_brand": "Basic",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 2000.0,
      "cabin_bag_fee_dkk": 250,
      "checked_bag_fee_dkk": 500
@@ -1477,7 +1587,7 @@
       "BoA 613"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 255.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0
@@ -1504,7 +1614,7 @@
       "BoA 640"
      ],
      "fare_brand": "Economy",
-     "cabin_bag": "1 x hÃ¥ndbagage",
+     "cabin_bag": "1 x håndbagage",
      "price_dkk": 404.0,
      "cabin_bag_fee_dkk": 0,
      "checked_bag_fee_dkk": 0

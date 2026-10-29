@@ -1,5 +1,5 @@
 import { boundsOf, pathThrough, type Bounds, type LonLat } from '../lib/geo'
-import { familyOf, type Connection, type Family, type MapData, type Place, type RouteOption } from './types'
+import { familyOf, type AirportFlight, type Connection, type Family, type MapData, type Place, type RouteOption } from './types'
 
 export interface Neighbour {
   conn: Connection
@@ -13,6 +13,7 @@ export interface Model {
   data: MapData
   places: Place[] // map places (no context airports)
   byId: Map<string, Place>
+  byIata: Map<string, Place> // the place an airport code stands for, the airport's own city first
   conns: Map<string, Connection>
   byPlace: Map<string, Connection[]>
   home: Bounds
@@ -54,6 +55,9 @@ export function stopsFrom(conn: Connection, opt: RouteOption, from: string) {
 export function buildModel(data: MapData): Model {
   const byId = new Map(data.places.map((p) => [p.id, p]))
   const places = data.places.filter((p) => !p.context)
+  // several towns share an airport (Antigua flies from Guatemala City): the code names the city whose id it is
+  const byIata = new Map<string, Place>()
+  for (const p of data.places) if (p.iata && (!byIata.has(p.iata) || p.id === p.iata)) byIata.set(p.iata, p)
   // Context airports only give layovers a position. A connection that ends at one has no city to select, so it is left out.
   const usable = data.connections.filter((c) => [c.a, c.b].every((id) => byId.has(id) && !byId.get(id)!.context))
   const conns = new Map(usable.map((c) => [c.id, c]))
@@ -74,12 +78,9 @@ export function buildModel(data: MapData): Model {
     const prim = primaryOptions(c)
     const straight = [...prim.keys()].filter((f) => f !== 'flight')
     for (const [family, opt] of prim) {
-      const pts: LonLat[] = [[a.lon, a.lat]]
-      for (const s of opt.stops) {
-        const p = byId.get(s.place_id)
-        if (p) pts.push([p.lon, p.lat])
-      }
-      pts.push([b.lon, b.lat])
+      // a flight is one arc between its ends: drawn through its layovers it would look like a flight
+      // between a layover and a city. viaLine draws that path only for the route in focus.
+      const pts: LonLat[] = family === 'flight' ? [[a.lon, a.lat], [b.lon, b.lat]] : stopPoints(byId, c, opt)
       const coords = opt.geometry ?? pathThrough(pts, family === 'flight')
       const fid = `${c.id}|${family}`
       const side = straight.length > 1 && family !== 'flight' ? (family === 'ground' ? -1 : 1) : 0
@@ -97,12 +98,25 @@ export function buildModel(data: MapData): Model {
     data,
     places,
     byId,
+    byIata,
     conns,
     byPlace,
     home: boundsOf(places.map((p) => [p.lon, p.lat])),
     routes: { type: 'FeatureCollection', features },
     routeLines,
   }
+}
+
+function stopPoints(byId: Map<string, Place>, conn: Connection, opt: RouteOption): LonLat[] {
+  const ids = [conn.a, ...opt.stops.map((s) => s.place_id), conn.b]
+  return ids.map((id) => byId.get(id)).filter((p): p is Place => !!p).map((p) => [p.lon, p.lat])
+}
+
+/** A flight's path through its layovers, from a to b, or null when it has none. */
+export function viaLine(model: Model, conn: Connection, opt: RouteOption): LonLat[] | null {
+  if (familyOf(opt.mode) !== 'flight' || !opt.stops.length || opt.geometry) return null
+  const pts = stopPoints(model.byId, conn, opt)
+  return pts.length > 2 ? pathThrough(pts, true) : null
 }
 
 /** Neighbours of a place with only the enabled options, sorted by their fastest option. */
@@ -137,6 +151,23 @@ export function viaText(model: Model, conn: Connection, opt: RouteOption, from: 
     return ''
   }
   return opt.border ? 'direct, border crossing' : 'direct'
+}
+
+/** The crawled flights into (`in`) or out of (`out`) an airport, cheapest first as the data lists them. */
+export function airportFlights(model: Model, iata: string, dir: 'in' | 'out'): AirportFlight[] {
+  const end = dir === 'in' ? 'to' : 'from'
+  return (model.data.flights ?? []).filter((f) => f[end] === iata)
+}
+
+/** The crawled flights on one directed airport pair, cheapest first as the data lists them. */
+export function pairFlights(model: Model, from: string, to: string): AirportFlight[] {
+  return (model.data.flights ?? []).filter((f) => f.from === from && f.to === to)
+}
+
+/** When a flight lands, by its local arrival hour: night before 06:00, day until 18:00, evening after. */
+export function landing(arr: string | null): 'night' | 'day' | 'evening' | null {
+  const h = arr && arr.length >= 16 ? Number(arr.slice(11, 13)) : NaN
+  return Number.isNaN(h) ? null : h < 6 ? 'night' : h < 18 ? 'day' : 'evening'
 }
 
 export function countryName(model: Model, code: string): string {

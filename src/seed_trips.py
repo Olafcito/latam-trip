@@ -52,8 +52,9 @@ def resolve(seg):
 
 def way(wid):
     w = IO["ways"][wid]
-    return {k: w[k] for k in ("id", "direction", "type", "from", "to", "depart", "arrive", "total_hours", "flying_hours",
-                              "flights", "hub_nights", "changes", "us_transit", "airports", "tickets", "timeline")}
+    out = {k: w[k] for k in ("id", "direction", "type", "from", "to", "depart", "arrive", "total_hours", "flying_hours",
+                             "flights", "hub_nights", "changes", "us_transit", "airports", "tickets", "price_dkk", "extras", "timeline")}
+    return {**out, "shared_ticket": w.get("shared_ticket")}
 
 
 trips = []
@@ -70,7 +71,7 @@ for t in spec["trips"]:
         "id": t["id"], "name": t["name"], "rank": t["rank"], "order": t["order"], "seed": True,
         "inout": {"option_id": o["id"], "type": o["type"], "entry": o["entry"], "exit": o["exit"],
                   "ticket_quote_id": ticket["quote_id"] if ticket else None, "price_dkk": long_haul,
-                  "rating": o["rating"], "way_in": way(o["way_in"]), "way_home": way(o["way_home"])},
+                  "extras": o["extras"], "rating": o["rating"], "way_in": way(o["way_in"]), "way_home": way(o["way_home"])},
         "segments": segs,
         "legs": [{"cid": s["cid"], "from": s["from"], "to": s["to"], "mode": "flight"} for s in fl if s.get("cid")],
         "totals": {"long_haul_dkk": long_haul, "in_between_dkk": between, "flights_total_dkk": long_haul + between,

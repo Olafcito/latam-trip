@@ -1,0 +1,300 @@
+import { useEffect, useState } from 'react'
+import type { Family } from '@map/data/types'
+import { TRIP_COLORS } from '@map/data/trips'
+import type { AppData } from '../data/types'
+import { useStore } from '../store'
+import { hours, kr, weekdayDay } from '../lib/format'
+import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
+import { countryColor, countryName } from '../lib/colors'
+import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
+import { hopFromArc } from '../lib/journey'
+import { hoverProps } from './PlaceCard'
+import { Calendar, Close, Download, Grip, Land, ModeChip, Moon } from './icons'
+
+// The open trip, on the right of the map: its two fixed flights and the stops between them.
+// A stop is the cursor: the map lights what it reaches, and a tap on a lit city adds the next
+// stop right after it. Stops can be dragged into another order or removed. A tap on the map
+// beside the pane folds it to a small card in the corner, a tap on the card unfolds it.
+
+const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
+
+function Money({ v }: { v: number | null }) {
+  return v == null ? <span className="q" title="Unknown for at least one part">?</span> : <>{kr(v)}</>
+}
+
+export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; journey: Journey; mini: boolean; onExpand: () => void }) {
+  const { inout, map } = data
+  const saved = useStore((s) => s.saved)
+  const setJourney = useStore((s) => s.setJourney)
+  const saveJourney = useStore((s) => s.saveJourney)
+  const closeTrip = useStore((s) => s.closeTrip)
+  const openTrip = useStore((s) => s.openTrip)
+  const go = useStore((s) => s.go)
+  const cursor = useStore((s) => s.cursor)
+  const setCursor = useStore((s) => s.setCursor)
+  const removeStop = useStore((s) => s.removeStop)
+  const moveStop = useStore((s) => s.moveStop)
+  const [editing, setEditing] = useState(false)
+  const [name, setName] = useState(journey.name)
+  useEffect(() => setName(journey.name), [journey.name])
+  const [drag, setDrag] = useState<number | null>(null)
+  const [over, setOver] = useState<number | null>(null)
+
+  const wi = inout.ways[journey.wayIn]
+  const wh = inout.ways[journey.wayHome]
+  const nm = (id: string) => nodeName(map, inout, id)
+  const node = (id: string) => map.nodes.find((n) => n.id === id)
+  const stored = saved.find((s) => s.id === journey.id)
+  const dirty = !stored || JSON.stringify({ ...stored, savedAt: 0 }) !== JSON.stringify({ ...journey, savedAt: 0 })
+
+  if (!wi || !wh) {
+    return (
+      <aside className="panel plan">
+        <div className="plan-h">
+          <h2>{journey.name}</h2>
+          <button className="x" onClick={closeTrip} aria-label="Close trip"><Close /></button>
+        </div>
+        <p className="plan-empty">Its flights are no longer in the data. Pick a new way in and home.</p>
+        <div className="plan-acts"><button className="pbtn primary" onClick={() => go('trips', 'pick')}>Pick in and out</button></div>
+      </aside>
+    )
+  }
+
+  const exitNode = nodeForAirport(inout, wh.from)
+  const sched = schedule(journey, wi, wh, exitNode, nm)
+  const t = totals(data, journey, sched)
+  const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
+  const lastIdx = journey.places.length - 1
+  const at = cursor ?? lastIdx
+  const here = journey.places[at]
+  const atEnd = at === lastIdx
+  const endsAtExit = journey.places[lastIdx].node === exitNode
+
+  const update = (places: Journey['places']) => setJourney({ ...journey, places })
+  const finish = (metric: PathMetric) => {
+    const r = shortestPath(map, here.node, exitNode, metric)
+    if (!r || !r.arcs.length) return
+    let from = here.node
+    const added = r.arcs.map((arc) => {
+      const place = { node: arc.to, hop: hopFromArc(from, arc, null) }
+      from = arc.to
+      return place
+    })
+    update([...journey.places, ...added])
+    setCursor(null)
+  }
+  const canFinish = atEnd && !endsAtExit && arcsSorted(map, here.node).length > 0
+  const exportJson = () => {
+    const blob = new Blob([JSON.stringify(journey, null, 2)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `${journey.name.replace(/[^\w-]+/g, '_')}.json`
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+  const commitName = () => {
+    setEditing(false)
+    const n = name.trim()
+    if (n && n !== journey.name) setJourney({ ...journey, name: n })
+    else setName(journey.name)
+  }
+  const drop = (i: number) => {
+    if (drag != null && i > 0 && i !== drag) moveStop(drag, i)
+    setDrag(null)
+    setOver(null)
+  }
+
+  if (mini) {
+    return (
+      <button type="button" className="panel plan mini" onClick={onExpand} aria-expanded={false} aria-label={`Open trip ${journey.name}, folded. Unfold`} title="Unfold the trip">
+        <span className="mini-h">
+          <b>{journey.name}</b>
+          {dirty && <span className="mini-dot" title="Not saved" />}
+          <Grip />
+        </span>
+        <span className="mini-facts">
+          <span><b>{kr(allIn)}</b><small>all in</small></span>
+          <span><b>{journey.places.length}</b><small>{journey.places.length === 1 ? 'stop' : 'stops'}</small></span>
+          <span><b>{sched.totalDays}</b><small>days</small></span>
+        </span>
+        <span className="mini-next"><span className="plan-pulse" />Next from {nm(here.node)}</span>
+      </button>
+    )
+  }
+
+  const next = (
+    <li className="plan-next" key="next">
+      <span className="plan-pulse" />
+      <div>
+        <b>Next from {nm(here.node)}</b>
+        <small>{atEnd && endsAtExit ? 'Tap a lit city to go on from here. The route must come back for the flight home.' : atEnd ? 'Tap a lit city on the map to add the next stop.' : 'Tap a lit city to add a stop right after this one.'}</small>
+        {canFinish && (
+          <span className="plan-finish">
+            <span>Or route to {nm(exitNode)}:</span>
+            <button onClick={() => finish('hours')}>fastest</button>
+            <button onClick={() => finish('price')}>cheapest</button>
+          </span>
+        )}
+      </div>
+    </li>
+  )
+
+  return (
+    <aside className="panel plan" aria-label="Open trip">
+      <div className="plan-h">
+        {editing ? (
+          <input
+            className="plan-name"
+            value={name}
+            autoFocus
+            onChange={(e) => setName(e.target.value)}
+            onBlur={commitName}
+            onKeyDown={(e) => { if (e.key === 'Enter') commitName(); if (e.key === 'Escape') { setName(journey.name); setEditing(false) } }}
+            aria-label="Trip name"
+          />
+        ) : (
+          <button className="plan-title" onClick={() => setEditing(true)} title="Rename">
+            <h2>{journey.name}</h2>
+          </button>
+        )}
+        <button className="x sm" onClick={() => openTrip(journey)} aria-label="Open the trip dashboard" title="Dashboard"><Calendar /></button>
+        <button className="x" onClick={closeTrip} aria-label="Close trip"><Close /></button>
+      </div>
+      <div className="plan-sum">
+        <span className="plan-total"><b>{kr(allIn)}</b><small>all in</small></span>
+        <span><b>{journey.places.length}</b><small>{journey.places.length === 1 ? 'stop' : 'stops'}</small></span>
+        <span><b>{sched.totalDays}</b><small>days</small></span>
+      </div>
+
+      <div className="plan-body">
+        <ol className="plan-list">
+          <li className="plan-way in">
+            <span className="io-dot in" />
+            <div>
+              <b>Lands {nm(nodeForAirport(inout, wi.to))}</b>
+              <small>{weekdayDay(wi.arrive)} {wi.arrive.slice(11, 16)} · {hours(wi.total_hours)} from Copenhagen</small>
+            </div>
+            <button className="plan-link" onClick={() => go('trips', 'pick')}>Change</button>
+          </li>
+          {journey.places.flatMap((p, i) => {
+            const n = node(p.node)
+            const h = p.hop
+            const cur = i === at
+            const c = n?.country ?? inout.airports[p.node]?.country ?? ''
+            const row = (
+              <li
+                key={i}
+                className={`plan-place${over === i && drag !== i ? ' over' : ''}${drag === i ? ' lifted' : ''}`}
+                onDragOver={(e) => { if (drag != null && i > 0) { e.preventDefault(); setOver(i) } }}
+                onDragLeave={() => over === i && setOver(null)}
+                onDrop={(e) => { e.preventDefault(); drop(i) }}
+              >
+                {h && (
+                  <div className={`plan-hop ${family(h.mode)}`}>
+                    <ModeChip family={family(h.mode)} />
+                    <span className="plan-hopt">
+                      {h.overland ? h.overland : `${hours(h.hours)} · ${kr(h.price_dkk)}`}
+                      {h.flight?.via.length ? ` · via ${h.flight.via.join(', ')}` : ''}
+                    </span>
+                    {h.overnight && <Moon />}
+                    {h.border && <span className="plan-border" title="Crosses a border">border</span>}
+                  </div>
+                )}
+                <div
+                  className={`plan-stop${cur ? ' cur' : ''}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={cur}
+                  aria-label={`Build from ${nm(p.node)}`}
+                  onClick={() => setCursor(i)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCursor(i) } }}
+                >
+                  {i > 0 ? (
+                    <span
+                      className="plan-grip"
+                      draggable
+                      title="Drag to move this stop"
+                      onClick={(e) => e.stopPropagation()}
+                      onDragStart={(e) => { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(i)); setDrag(i) }}
+                      onDragEnd={() => { setDrag(null); setOver(null) }}
+                    >
+                      <Grip />
+                    </span>
+                  ) : (
+                    <span className="plan-grip fixed" title="The trip starts where the flight lands" />
+                  )}
+                  <span className="plan-n" style={{ background: cur ? '#C98A12' : TRIP_COLORS[0] }}>{i + 1}</span>
+                  <div className="plan-who">
+                    <b {...hoverProps(n)}>{nm(p.node)}</b>
+                    <small><i style={{ background: countryColor(c) }} />{countryName(c)}</small>
+                  </div>
+                  {sched.places[i]?.arrive && <span className="plan-when" title="A dated flight brings you here">{weekdayDay(sched.places[i].arrive!)}</span>}
+                  {i > 0 && (
+                    <button className="plan-rm" onClick={(e) => { e.stopPropagation(); removeStop(i) }} aria-label={`Remove ${nm(p.node)}`} title="Remove this stop"><Close /></button>
+                  )}
+                </div>
+              </li>
+            )
+            return cur ? [row, next] : [row]
+          })}
+          <li className="plan-way home">
+            <span className="io-dot home" />
+            <div>
+              <b>Flies home from {nm(exitNode)}</b>
+              <small>{weekdayDay(wh.depart)} {wh.depart.slice(11, 16)} · {hours(wh.total_hours)}</small>
+            </div>
+            <Land />
+          </li>
+        </ol>
+
+        <dl className="plan-tot">
+          <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
+          <dt>Regional flights</dt><dd>{kr(t.regional_flights_dkk)}</dd>
+          <dt>Ground transport</dt><dd>{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}> +?</span> : null}</dd>
+          <dt>Cabin bags</dt><dd><Money v={t.cabin_bag_dkk} /></dd>
+          <dt>Hub nights, stay est.</dt><dd>{t.hub_nights} · <Money v={t.hub_stay_dkk} /></dd>
+          <dt>Flights, hours in the air</dt><dd>{t.flights} · {hours(t.air_hours)}</dd>
+        </dl>
+      </div>
+
+      <div className="plan-acts">
+        <button className={`pbtn ${dirty ? 'primary' : 'ghost done'}`} onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
+        <button className="x sm" onClick={exportJson} aria-label="Export this trip as JSON" title="Export JSON"><Download /></button>
+      </div>
+    </aside>
+  )
+}
+
+/** What sits beside the map: the open trip, or the way to one when none is open. */
+export function MapSide() {
+  const data = useStore((s) => s.data)
+  const journey = useStore((s) => s.journey)
+  const mapOpen = useStore((s) => s.mapOpen)
+  const saved = useStore((s) => s.saved)
+  const openSaved = useStore((s) => s.openSaved)
+  const go = useStore((s) => s.go)
+  const paneMini = useStore((s) => s.paneMini)
+  const setPaneMini = useStore((s) => s.setPaneMini)
+  if (!data) return null
+  if (journey && mapOpen) return <TripPanel data={data} journey={journey} mini={paneMini} onExpand={() => setPaneMini(false)} />
+  const list = [...saved].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
+  return (
+    <aside className="panel plan idle" aria-label="Trips">
+      <div className="plan-h"><h2>No trip open</h2></div>
+      <p className="plan-empty">A trip starts with the flights in and home. Then its route is built here, one city at a time.</p>
+      <div className="plan-acts"><button className="pbtn primary" onClick={() => go('trips', 'pick')}>New trip</button></div>
+      {list.length > 0 && (
+        <ul className="plan-saved">
+          {list.map((j) => (
+            <li key={j.id}>
+              <button onClick={() => openSaved(j)}>
+                <b>{j.name}</b>
+                <small>{j.places.length} {j.places.length === 1 ? 'place' : 'places'}{j.rank != null ? ` · #${j.rank}` : ''}</small>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </aside>
+  )
+}
