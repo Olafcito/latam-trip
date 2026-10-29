@@ -5,7 +5,7 @@ import { journeyIsValid, newJourney, type Journey, type Place } from './lib/jour
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
 import type { Trip, TripLeg, TripState } from '@map/data/trips'
 import type { Mode } from './data/types'
-import { seedToJourney } from './lib/seeds'
+import { seedToJourney, withSeedCountries } from './lib/seeds'
 
 const FILTERS_KEY = 'latam-planner.filters'
 const SAVED_KEY = 'latam-planner.journeys'
@@ -226,8 +226,16 @@ export const useStore = create<State>((set, get) => ({
     return arr.length
   },
   importSeeds: (seeds) => {
-    const { data, saved, journey } = get()
+    const was = get()
+    const data = was.data
     if (!data) return
+    // seeded trips saved before their overland blocks named the countries they cross get them now
+    const saved = was.saved.map((j) => withSeedCountries(j, seeds))
+    const journey = was.journey && withSeedCountries(was.journey, seeds)
+    const savedChanged = saved.some((j, i) => j !== was.saved[i])
+    if (savedChanged) write(SAVED_KEY, saved)
+    if (journey !== was.journey) write(CURRENT_KEY, journey)
+    if (savedChanged || journey !== was.journey) set({ saved, journey })
     const done = read<string[]>(SEEDED_KEY, [])
     const have = new Set(saved.map((s) => s.id))
     const fresh = seeds
