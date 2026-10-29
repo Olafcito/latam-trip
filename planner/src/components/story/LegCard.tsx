@@ -48,7 +48,8 @@ export function LegCard({ h, ends, family, date, quotes, link }: {
   const others = quotes.filter((q) => !(f && q.d === clock(f.depart) && q.a === clock(f.arrive))).slice(0, 3)
   const task = ends.fromCode && ends.toCode ? flightPricesTask({ from: ends.fromCode, to: ends.toCode, date, fromName: ends.fromName, toName: ends.toName }) : null
   const facts = [
-    f?.carriers.join(', ') || (h.operator !== h.overland ? h.operator : null),
+    // the overland note already names who runs it
+    f?.carriers.join(', ') || (h.overland ? null : h.operator),
     f ? stopsText(f.via.length) : null,
     f?.cabin_bag ? `Cabin bag ${f.cabin_bag}` : null,
     f?.checked_bag ? `Checked bag ${f.checked_bag}` : null,
@@ -65,16 +66,16 @@ export function LegCard({ h, ends, family, date, quotes, link }: {
 
       <div className="lc-ends">
         <div className="lc-end">
-          <b className="lc-time">{f ? clock(f.depart) : '?'}</b>
+          {f && <b className="lc-time">{clock(f.depart)}</b>}
           <span className="lc-code">{ends.fromCode ?? ''}</span>
           <small>{ends.fromName}</small>
         </div>
         <div className="lc-mid">
-          <span className="lc-dur">{hours(f?.hours ?? h.hours)}</span>
+          <span className="lc-dur">{(f?.hours ?? h.hours) != null ? hours(f?.hours ?? h.hours) : 'times ?'}</span>
           <Track codes={codes} waits={f?.layover_h ?? []} family={family} />
         </div>
         <div className="lc-end to">
-          <b className="lc-time">{f ? clock(f.arrive) : '?'}{f && <sup>{nextDayMark(f.depart, f.arrive)}</sup>}</b>
+          {f && <b className="lc-time">{clock(f.arrive)}<sup>{nextDayMark(f.depart, f.arrive)}</sup></b>}
           <span className="lc-code">{ends.toCode ?? ''}</span>
           <small>{ends.toName}</small>
         </div>
@@ -84,7 +85,7 @@ export function LegCard({ h, ends, family, date, quotes, link }: {
       {facts.length > 0 && <ul className="lc-facts">{facts.map((x) => <li key={x}>{x}</li>)}</ul>}
 
       <div className="lc-price">
-        <b>{kr(h.price_dkk)}</b>
+        {h.price_dkk != null && <b>{kr(h.price_dkk)}</b>}
         <small>{f ? `${f.source ? sourceLabel(f.source) : 'Picked fare'}${seen ? `, seen ${observed(seen)}` : ''}` : h.price_dkk != null ? 'Typical price for this route' : 'No price yet'}</small>
       </div>
 

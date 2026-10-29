@@ -97,7 +97,7 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
   }
 
   return (
-    <div className="wp">
+    <div className="wp" data-fares={cheapest != null} data-overland={!codes || undefined}>
       <div className="wp-top">
         <div className="seg wp-seg" role="radiogroup" aria-label="Show the days as">
           <button type="button" role="radio" aria-checked={lens === 'date'} onClick={() => pick('date')}>Date</button>
@@ -105,7 +105,7 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
         </div>
         <span className="wp-read" aria-live="polite">
           <b>{weekdayDay(date)}</b>
-          <small>Day {tripDay(date)}{fares[date] != null ? ` · ${kr(fares[date])}` : ''}</small>
+          <small>Day {tripDay(date)}{fares[date] != null ? ` · ${kr(fares[date])}${fares[date] === cheapest ? ', the cheapest' : ''}` : ''}</small>
         </span>
       </div>
 
