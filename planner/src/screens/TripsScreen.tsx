@@ -1,20 +1,20 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react'
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
-import { hours, kr } from '../lib/format'
+import { kr } from '../lib/format'
 import type { Journey } from '../lib/journey'
-import { stripDomain, stripLayout, type StripLayout } from '../lib/strip'
-import { monthMarks, weekMarks } from '../lib/timeaxis'
+import { tripRoute, type TripRoute } from '../lib/route'
 import { SORT_LABEL, sortTrips, type SortKey } from '../lib/tripsort'
 import { summarize, type Summary } from '../lib/tripsummary'
 import { CompareTray } from '../components/CompareTray'
-import { TripStrip } from '../components/TripStrip'
+import { RouteLine } from '../components/RouteLine'
 import { Download, Pin, Plus, Trash } from '../components/icons'
 import { PickScreen } from './PickScreen'
 import { TripDashboard } from './TripDashboard'
 
-// The Trips tab. Its home is a timetable: one row per trip on a shared month axis, the name on the
-// left, the trip strip in the middle and the numbers in the right margin. Compare docks to the bottom.
+// The Trips tab. Its home is a list: one row per trip with its name, its route as flags from the
+// landing to the way out, and the all-in price. Every trip runs early December to early February, so
+// dates and nights stay off the list. Compare docks to the bottom.
 
 export function TripsScreen({ data }: { data: AppData }) {
   const view = useStore((s) => s.view)
@@ -27,32 +27,12 @@ export function TripsScreen({ data }: { data: AppData }) {
 interface Row {
   j: Journey
   s: Summary | null
-  layout: StripLayout | null
+  route: TripRoute | null
   draft: boolean
   rank?: number
   savedAt?: string
   total: number | null
   air: number | null
-}
-
-const nightsText = (n: number) => `${n} ${n === 1 ? 'night' : 'nights'}`
-const pct = (f: number) => `${(f * 100).toFixed(3)}%`
-
-/** The stops of a trip in order with their nights, for the tooltip and the strip's accessible name. */
-const stopList = (l: StripLayout) => l.stays.map((x) => `${x.name} ${nightsText(x.nights)}`).join(', ')
-
-/** The inner width of an element, kept current as it resizes. */
-function useWidth<T extends HTMLElement>() {
-  const ref = useRef<T>(null)
-  const [w, setW] = useState(0)
-  useLayoutEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const ro = new ResizeObserver(([e]) => setW(Math.round(e.contentRect.width)))
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
-  return [ref, w] as const
 }
 
 function Timetable({ data }: { data: AppData }) {
@@ -68,7 +48,6 @@ function Timetable({ data }: { data: AppData }) {
   const file = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('rank')
-  const [axisRef, axisW] = useWidth<HTMLDivElement>()
 
   const unsaved = journey && !saved.some((s) => s.id === journey.id) ? journey : null
   const rows = useMemo<Row[]>(() => {
@@ -77,7 +56,7 @@ function Timetable({ data }: { data: AppData }) {
       const s = summarize(data, j)
       return {
         j, s,
-        layout: s ? stripLayout(data, j) : null,
+        route: s ? tripRoute(data, j) : null,
         draft: j === unsaved,
         rank: j.rank,
         savedAt: j.savedAt,
@@ -87,9 +66,6 @@ function Timetable({ data }: { data: AppData }) {
     })
   }, [data, saved, unsaved])
   const sorted = useMemo(() => sortTrips(rows, sort), [rows, sort])
-  const domain = useMemo(() => stripDomain(rows.flatMap((r) => (r.layout ? [r.layout] : []))), [rows])
-  const months = useMemo(() => monthMarks(domain), [domain])
-  const weeks = useMemo(() => weekMarks(domain), [domain])
 
   const cmp = compare
     .map((id) => rows.find((r) => r.j.id === id && !r.draft))
@@ -153,29 +129,9 @@ function Timetable({ data }: { data: AppData }) {
       <div className="tt-table">
         <div className="tt-head" aria-hidden="true">
           <span className="tt-h tt-h-name">trip</span>
-          <div className="tt-axis">
-            <div className="tt-track" ref={axisRef}>
-              {months.map((m) => (
-                <span key={m.t} className="tt-month" style={{ left: pct(m.f) }}>{m.label}</span>
-              ))}
-              {weeks.map((f) => (
-                <span key={f} className="tt-week" style={{ left: pct(f) }} />
-              ))}
-            </div>
-          </div>
+          <span className="tt-h">route</span>
           <span className="tt-h num">all in</span>
-          <span className="tt-h num">air</span>
-          <span className="tt-h num">nights</span>
-          <span className="tt-h num">stops</span>
           <span className="tt-h" />
-        </div>
-
-        <div className="tt-guides" aria-hidden="true">
-          <div className="tt-guide-col">
-            <div className="tt-guide-track">
-              {months.filter((m) => m.f > 0).map((m) => <span key={m.t} style={{ left: pct(m.f) }} />)}
-            </div>
-          </div>
         </div>
 
         <ol className="tt-rows" aria-label="Trips">
@@ -183,8 +139,6 @@ function Timetable({ data }: { data: AppData }) {
             <TripRow
               key={r.j.id}
               row={r}
-              domain={domain}
-              width={axisW}
               selected={compare.includes(r.j.id)}
               onOpen={() => openTrip(r.j)}
               onMap={() => openSaved(r.j)}
@@ -240,8 +194,6 @@ function SortSeg({ value, onChange }: { value: SortKey; onChange: (k: SortKey) =
 
 interface RowProps {
   row: Row
-  domain: [number, number]
-  width: number
   selected: boolean
   onOpen: () => void
   onMap: () => void
@@ -249,8 +201,8 @@ interface RowProps {
   onDelete: () => void
 }
 
-function TripRow({ row, domain, width, selected, onOpen, onMap, onCompare, onDelete }: RowProps) {
-  const { j, s, layout, draft } = row
+function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps) {
+  const { j, s, route, draft } = row
   const name = j.name
   // the whole row opens the trip, except a click on a control in it or one that ends a text selection
   const onRowClick = (e: MouseEvent<HTMLLIElement>) => {
@@ -259,8 +211,6 @@ function TripRow({ row, domain, width, selected, onOpen, onMap, onCompare, onDel
     if (window.getSelection()?.toString()) return
     onOpen()
   }
-  const label = layout && s ? `${name}: lands ${s.lands}, ${stopList(layout)}, flies home ${s.home}` : name
-  const mid = layout ? ((layout.land + layout.leave) / 2 - domain[0]) / Math.max(1, domain[1] - domain[0]) : 0.5
 
   return (
     <li className="tt-row" data-selected={selected || undefined} data-off={!s || undefined} onClick={onRowClick}>
@@ -272,21 +222,12 @@ function TripRow({ row, domain, width, selected, onOpen, onMap, onCompare, onDel
           {draft ? <span className="tag draft">not saved</span>
             : j.rank != null ? <span className="tag" title="Rank among the seeded trips">#{j.rank}</span>
               : <span className="tag mine">mine</span>}
-          {s && <span className="tt-dates mono">{s.lands} to {s.home}</span>}
         </span>
       </div>
 
-      <div className="tt-strip" style={{ '--mid': pct(Math.min(0.92, Math.max(0.08, mid))) } as CSSProperties}>
-        {layout && s ? (
-          <>
-            <TripStrip layout={layout} domain={domain} size="row" label={label} width={width || undefined} />
-            <span className="tt-tip" aria-hidden="true">
-              <span className="tt-tip-in">{stopList(layout)}</span>
-            </span>
-          </>
-        ) : (
-          <span className="tt-gone">{s ? 'No stops to draw yet' : 'Its flights are no longer in the data'}</span>
-        )}
+      <div className="tt-route">
+        {route ? <RouteLine route={route} />
+          : <span className="tt-gone">{s ? 'No stops to draw yet' : 'Its flights are no longer in the data'}</span>}
       </div>
 
       <span className="tt-n tt-total">
@@ -300,11 +241,6 @@ function TripRow({ row, domain, width, selected, onOpen, onMap, onCompare, onDel
           </>
         ) : <Q />}
         <span className="sr"> all in</span>
-      </span>
-      <span className="tt-meta">
-        <span className="tt-n tt-air">{s ? hours(s.t.air_hours) : <Q />}<span className="tt-unit"> air</span></span>
-        <span className="tt-n tt-nights">{s ? s.nights : <Q />}<span className="tt-unit"> {s && s.nights === 1 ? 'night' : 'nights'}</span></span>
-        <span className="tt-n tt-stops">{j.places.length}<span className="tt-unit"> {j.places.length === 1 ? 'stop' : 'stops'}</span></span>
       </span>
 
       <RowActions name={name} draft={draft} canOpen={!!s} selected={selected} onMap={onMap} onCompare={onCompare} onDelete={onDelete} />

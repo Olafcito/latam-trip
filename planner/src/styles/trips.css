@@ -1,4 +1,4 @@
-/* Trips home: the timetable of trips on one month axis, the compare tray, export and import. */
+/* Trips home: the list of trips with their routes as flags, the compare tray, export and import. */
 @scope (:root) to (.rmap) {
 /* read by screen readers, never seen */
 .sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
@@ -7,10 +7,8 @@
 .rank { font-family: var(--font-num); font-size: 12px; font-weight: 500; color: var(--faint); }
 
 .tt {
-  /* name, strip, all in, air, nights, stops, actions */
-  --cols: 240px minmax(0, 1fr) 106px 72px 56px 48px 148px;
-  /* the arcs in and home reach about 32px past the landing and the flight home */
-  --strip-pad: 36px;
+  /* name, route, all in, actions */
+  --cols: 240px minmax(0, 1fr) 128px 148px;
   display: flex; flex-direction: column; gap: 14px;
 }
 
@@ -31,29 +29,12 @@
 }
 .tt-h { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--faint); padding-bottom: 6px; align-self: end; }
 .tt-h.num { text-align: right; }
-.tt-axis { padding: 0 var(--strip-pad); min-width: 0; }
-.tt-track { position: relative; height: 30px; }
-.tt-month {
-  position: absolute; bottom: 6px;
-  padding-left: 5px;
-  border-left: 1px solid var(--line-2);
-  font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; line-height: 16px;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.tt-week { position: absolute; bottom: 0; width: 1px; height: 5px; background: var(--line-2); }
-
-/* month lines behind the strips, on the same columns as the rows */
-.tt-guides { position: absolute; inset: 0; z-index: 0; display: grid; grid-template-columns: var(--cols); pointer-events: none; }
-.tt-guide-col { grid-column: 2; padding: 0 var(--strip-pad); }
-.tt-guide-track { position: relative; height: 100%; }
-.tt-guide-track > span { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
 
 .tt-rows { list-style: none; margin: 0; padding: 0; position: relative; z-index: 1; }
 .tt-row {
   position: relative; z-index: 1;
-  min-height: 62px;
-  padding: 8px 0;
+  min-height: 72px;
+  padding: 10px 0;
   border-bottom: 1px solid var(--line);
   cursor: pointer;
   transition: background-color var(--t-fast) ease;
@@ -74,44 +55,18 @@
 }
 .tt-open:disabled { color: var(--muted); cursor: default; }
 .tt-tagline { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.tt-dates { font-size: 11.5px; color: var(--faint); white-space: nowrap; }
 
-/* the strip, with the stop list as a tooltip */
-.tt-strip { position: relative; min-width: 0; padding: 0 var(--strip-pad); }
-.tt-strip > .strip { display: block; }
+/* the route as flags, sized by its own cell */
+.tt-route { min-width: 0; container-type: inline-size; padding-right: 8px; }
 .tt-gone { display: block; font-size: var(--fs-small); color: var(--faint); }
-.tt-tip {
-  position: absolute; bottom: calc(100% - 2px); left: var(--mid); z-index: 5;
-  transform: translate(-50%, 4px) scale(0.95); transform-origin: 50% 100%;
-  opacity: 0;
-  pointer-events: none;
-}
-.tt-tip-in {
-  display: block; width: max-content; max-width: 360px;
-  padding: 6px 10px;
-  border: 1px solid var(--line-2); border-radius: 8px;
-  background: var(--surface-3);
-  font-size: var(--fs-small); line-height: 1.4; color: var(--text);
-  text-wrap: balance;
-}
-.tt-tip::after {
-  content: ''; position: absolute; left: 50%; bottom: -4px;
-  width: 8px; height: 8px;
-  background: var(--surface-3);
-  border-right: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2);
-  transform: translateX(-50%) rotate(45deg);
-}
 
-/* the numbers margin. Air, nights and stops share a wrapper that only exists once the rows stack. */
-.tt-meta { display: contents; }
+/* the all-in price */
 .tt-n { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: var(--fs-num); color: var(--text); text-align: right; white-space: nowrap; padding-left: 8px; }
 .tt-total { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-.tt-big { font-size: 14px; font-weight: 500; }
+.tt-big { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
 .tt-sub { font-size: 11px; color: var(--faint); }
 .tt-q { color: var(--faint); }
 .tt-big .tt-q { margin-left: 3px; cursor: help; }
-/* the column heads name the numbers on a wide screen, the words come back when the rows stack */
-.tt-unit { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* row actions: faint until the row is pointed at or holds focus */
 .tt-act {
@@ -166,11 +121,6 @@
   .tt-open:not(:disabled):hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
   .tt-icon:not(:disabled):hover, .tt-no:hover { background: var(--surface-2); }
   .tt-yes:hover { background: color-mix(in srgb, var(--err) 12%, transparent); }
-  /* the stop list shows after a short rest on the strip and leaves at once */
-  .tt-strip:hover .tt-tip {
-    opacity: 1; transform: translate(-50%, 0) scale(1);
-    transition: opacity var(--t-fast) var(--ease-out) 400ms, transform var(--t-fast) var(--ease-out) 400ms;
-  }
 }
 /* on touch nothing hovers, so the actions stay readable */
 @media (hover: none) {
@@ -224,31 +174,25 @@
 .cmp-best { display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--flight); vertical-align: 2px; }
 .cmp-q { color: var(--faint); }
 
-/* ---- narrow: the rows stack, name and total, the strip at full width, then the counts ---- */
+/* ---- narrow: the rows stack, name and total, the route at full width, then the actions ---- */
 @media (max-width: 1023px) {
   .tt-head { grid-template-columns: minmax(0, 1fr); }
   .tt-h { display: none; }
-  .tt-guides { display: none; }
   .tt-row {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       'name total'
-      'strip strip'
-      'meta act';
-    row-gap: 8px;
-    padding: 12px 0 4px;
+      'route route'
+      'act act';
+    row-gap: 10px;
+    padding: 12px 0 2px;
   }
   .tt-name { grid-area: name; }
   .tt-total { grid-area: total; }
-  .tt-strip { grid-area: strip; }
-  .tt-meta { grid-area: meta; display: flex; flex-wrap: wrap; gap: 2px 10px; min-width: 0; }
-  .tt-act { grid-area: act; padding-left: 0; gap: 0; }
-  .tt-meta > .tt-n { padding: 0; text-align: left; font-size: 12px; color: var(--muted); }
-  .tt-unit { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+  .tt-route { grid-area: route; padding-right: 0; }
+  .tt-act { grid-area: act; padding-left: 0; gap: 0; margin-top: -6px; }
 }
 @media (max-width: 639px) {
-  /* the axis keeps its month names only */
-  .tt-week { display: none; }
   /* count and new trip on the first line, the sort across the second */
   .tt-bar .btn.primary { margin-left: auto; }
   .tt-spacer { display: none; }
