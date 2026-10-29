@@ -2,6 +2,8 @@
 @scope (:root) to (.rmap) {
 .st {
   --gut: 64px; --rail: 40px;
+  /* the small grey text, lifted to pass 4.5:1 on the cards and popovers */
+  --faint: #7f97a4;
   list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;
 }
 .st > li { position: relative; display: grid; grid-template-columns: var(--gut) var(--rail) minmax(0, 1fr); align-items: stretch; }
@@ -79,6 +81,7 @@
 .st-leg[data-f='boat'] .st-hl { background: repeating-linear-gradient(90deg, var(--stroke) 0 2px, transparent 2px 6px); }
 .st-hm { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .st-hm svg { flex: none; }
+.st-hm [data-none] { font-weight: 500; color: var(--muted); }
 .st-moon { display: inline-flex; color: var(--faint); }
 .st-hop[aria-expanded='true'] { color: var(--text); }
 .st-hop[aria-expanded='true'] .st-hl { opacity: 0.9; }
@@ -108,6 +111,12 @@
 .st-body > .pop { left: 6px; }
 .pop::before { content: ''; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
 .st-end .pop { display: flex; flex-direction: column; gap: 10px; width: min(460px, calc(100vw - 32px)); }
+.pop-x {
+  display: none; position: absolute; top: 6px; right: 6px; width: 40px; height: 40px; place-items: center;
+  border: 0; border-radius: 50%; background: var(--surface-3); color: var(--muted); cursor: pointer;
+}
+.pop-x:active { transform: scale(0.94); }
+.pop-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 
 /* ---- the boarding pass ---- */
 .lc { --tone: var(--bus); display: flex; flex-direction: column; gap: 12px; }
@@ -121,7 +130,7 @@
 .lc-time { font-size: 24px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
 .lc-time sup { font-size: 11px; font-weight: 600; color: var(--tone); margin-left: 2px; }
 .lc-code { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--tone); }
-.lc-end small { max-width: 11ch; font-size: 11.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lc-end small { max-width: 16ch; font-size: 11.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lc-mid { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding-top: 6px; }
 .lc-dur { align-self: center; font-size: 11.5px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
 .lc-track { display: flex; align-items: center; height: 14px; }
@@ -156,10 +165,10 @@
 .wp-read b { font-size: 13.5px; font-weight: 650; }
 .wp-read small { font-size: 11px; color: var(--muted); }
 .wp-cal { display: flex; flex-direction: column; gap: 4px; }
-.wp-nav { display: flex; align-items: center; justify-content: space-between; height: 28px; margin-bottom: 2px; }
+.wp-nav { display: flex; align-items: center; justify-content: space-between; height: 32px; margin-bottom: 2px; }
 .wp-nav b { font-size: 13px; font-weight: 600; }
 .wp-arr {
-  display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 8px;
+  display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px;
   background: none; color: var(--muted); cursor: pointer;
   transition: background-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
@@ -173,7 +182,7 @@
   transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease;
 }
 .wp-d b { font-size: 13px; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
-.wp-d small { min-height: 11px; font-size: 9.5px; font-weight: 600; line-height: 1.15; color: var(--faint); font-variant-numeric: tabular-nums; }
+.wp-d small { min-height: 13px; font-size: 11px; font-weight: 600; line-height: 1.15; color: var(--faint); font-variant-numeric: tabular-nums; }
 .wp-d:disabled { color: var(--faint); opacity: 0.4; cursor: default; }
 .wp-d:not(:disabled):active { transform: scale(0.94); }
 .wp-d[data-priced='true'] small { color: var(--muted); }
@@ -184,6 +193,11 @@
 /* the estimated day, before one is picked: a ring, not a fill */
 .wp-d[data-sel='true'][data-set='false'] { background: none; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--flight); }
 .wp-d[data-sel='true'][data-set='false'] small { color: var(--muted); }
+/* no fares to show: no empty price line under the days */
+.wp[data-fares='false'] .wp-d small { display: none; }
+/* a bus or a boat: the chosen day in plain white, the amber belongs to flights */
+.wp[data-overland] .wp-d[data-sel='true'] { background: var(--text); color: var(--surface); }
+.wp[data-overland] .wp-d[data-sel='true'][data-set='false'] { background: none; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--muted); }
 .wp-d:focus-visible, .wp-arr:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
 .wp-stay { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 10px; background: var(--surface-2); font-size: 12.5px; color: var(--muted); }
 .wp-stay b { color: var(--text); font-weight: 600; }
@@ -201,7 +215,8 @@
 }
 
 @media (max-width: 560px) {
-  .st { --gut: 50px; --rail: 32px; }
+  .st { --gut: 60px; --rail: 32px; }
+  .st-gut { padding-right: 8px; }
   .st-gut > small, .st-date small { display: none; }
   .st-tag { display: none; }
   /* on a phone the popovers rise as a sheet from the bottom instead of hanging off their trigger */
@@ -211,6 +226,13 @@
     @starting-style { opacity: 0; transform: translateY(12px); }
   }
   .wp-d { height: 44px; }
+  /* thumb sized targets */
+  .st-date { min-height: 44px; justify-content: center; }
+  .st-step button, .wp-step button { width: 32px; height: 32px; }
+  .wp-arr { width: 40px; height: 40px; }
+  .wp-nav { height: 40px; }
+  .pop-x { display: grid; }
+  .pop, .pop.wide, .st-end .pop { padding-top: 52px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pop { transition: opacity 150ms ease; @starting-style { opacity: 0; transform: none; } }
