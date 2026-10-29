@@ -1,3 +1,6 @@
+// Momondo dialog parser and crawler. Workers paste this file into the page. Node and the userscript build load it too.
+if(typeof window==='undefined')globalThis.window={};
+window.PARSER_VERSION='4.2';
 window.parseDlg=function(txt, legDates){
   const MON={jan:'01',feb:'02',mar:'03',apr:'04',maj:'05',jun:'06',jul:'07',aug:'08',sep:'09',okt:'10',nov:'11',dec:'12'};
   const dur=s=>{const h=/(\d+)\s*t\./.exec(s),m=/(\d+)\s*min\./.exec(s);return (h?+h[1]:0)+(m?+m[1]:0)/60};
@@ -72,3 +75,4 @@ for(let w=0;w<60;w++){const t=document.body.innerText;if(/Færdig/.test(t)&&docu
 await sleep(1500);const t=document.body.innerText;const cnt=(/([\d.]+) resultater/.exec(t)||[])[1];
 const fin=/Færdig/.test(t);
 const R=await crawl(0,n,dates);window.R=R;return 'count='+cnt+' done='+fin+' title='+document.title+'\n'+lines(R,max,dates.length);};
+if(typeof module!=='undefined'&&module.exports)module.exports={parseDlg:window.parseDlg,lines:window.lines,PARSER_VERSION:window.PARSER_VERSION};
