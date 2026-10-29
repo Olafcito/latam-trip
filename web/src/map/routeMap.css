@@ -522,6 +522,8 @@
   .plan-hop.boat { border-left-style: dashed; border-left-color: var(--boat); }
   .plan-hopt { display: flex; gap: 10px; min-width: 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .plan-hop svg { flex: none; }
+  .plan-hop-link { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: -6px 0 -6px auto; border-radius: 999px; color: var(--flight); }
+  .plan-hop-link:hover { background: var(--chrome-line); }
   .plan-stop { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 4px; border-radius: 12px; box-shadow: inset 0 0 0 1.5px var(--line); background: var(--panel); cursor: pointer; transition: var(--tint); }
   .plan-stop.cur { background: var(--surface-2); box-shadow: inset 0 0 0 2px var(--flight); }
   .plan-place.over > .plan-stop { box-shadow: inset 0 0 0 2px var(--text); }
