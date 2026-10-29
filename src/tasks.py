@@ -12,7 +12,7 @@ import datetime as dt, json, os, re, subprocess, sys, urllib.parse
 
 REPO = "Olafcito/latam-trip"
 LABEL = "claude-task"
-TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question"}
+TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh"}
 
 
 def gh(*a, inp=None):
