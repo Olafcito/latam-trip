@@ -2950,30 +2950,6 @@
     "rating": 9.7,
     "price_suspect": false,
     "url": "https://www.hostelworld.com/hostels/p/276077/la-urraca-loca/"
-   },
-   {
-    "name": "Rancho Tranquillo",
-    "dorm_dkk": 53,
-    "private_dkk": 116,
-    "rating": null,
-    "price_suspect": false,
-    "url": "https://hostelz.com/best-hostels-ometepe"
-   },
-   {
-    "name": "Hostel Life is Good",
-    "dorm_dkk": 64,
-    "private_dkk": 97,
-    "rating": null,
-    "price_suspect": false,
-    "url": "https://hostelz.com/best-hostels-ometepe"
-   },
-   {
-    "name": "Hospedaje Soma",
-    "dorm_dkk": 64,
-    "private_dkk": 226,
-    "rating": null,
-    "price_suspect": false,
-    "url": "https://hostelz.com/best-hostels-ometepe"
    }
   ],
   "hostel_note": null,
