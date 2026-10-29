@@ -23,6 +23,8 @@ export const FILES = [
   'data/web/flights.json',
   // the ranked trips to start from
   'data/web/saved_trips.json',
+  // every regional price by pair and day, for the fly-on leg picked in the trip hero
+  'data/web/pair_dates.json',
 ]
 
 let failed = 0
