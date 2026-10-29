@@ -22557,6 +22557,115 @@
    ]
   },
   {
+   "from": "MEX",
+   "to": "GDL",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 484.0,
+   "oneway_min_hours": 1.25,
+   "fastest_hours": 1.25,
+   "fastest_price_dkk": 484.0,
+   "nonstop": false,
+   "vias": [],
+   "carriers": [
+    "Aeromexico",
+    "Viva",
+    "Volaris"
+   ],
+   "dates": [
+    "2026-12-04"
+   ],
+   "return_min_dkk": null,
+   "quotes": 5,
+   "flights": [
+    {
+     "quote_id": "Q:4a3caa9de445",
+     "depart": "2026-12-04T22:35",
+     "arrive": "2026-12-04T23:50",
+     "hours": 1.25,
+     "price_dkk": 484.0,
+     "carriers": [
+      "Viva"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "no overhead bin access in price",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "google_flights"
+    },
+    {
+     "quote_id": "Q:b8c928d0f1f9",
+     "depart": "2026-12-04T18:05",
+     "arrive": "2026-12-04T19:25",
+     "hours": 1.33,
+     "price_dkk": 513.0,
+     "carriers": [
+      "Viva"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "no overhead bin access in price",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "google_flights"
+    },
+    {
+     "quote_id": "Q:8dce182fbe99",
+     "depart": "2026-12-04T16:00",
+     "arrive": "2026-12-04T17:20",
+     "hours": 1.33,
+     "price_dkk": 551.0,
+     "carriers": [
+      "Viva"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "no overhead bin access in price",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "google_flights"
+    },
+    {
+     "quote_id": "Q:676949700572",
+     "depart": "2026-12-04T14:40",
+     "arrive": "2026-12-04T16:00",
+     "hours": 1.33,
+     "price_dkk": 652.0,
+     "carriers": [
+      "Volaris"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "no overhead bin access in price",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "google_flights"
+    },
+    {
+     "quote_id": "Q:5a5d6410135a",
+     "depart": "2026-12-04T06:01",
+     "arrive": "2026-12-04T07:39",
+     "hours": 1.63,
+     "price_dkk": 1106.0,
+     "carriers": [
+      "Aeromexico"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "google_flights"
+    }
+   ]
+  },
+  {
    "from": "BCN",
    "to": "GDL",
    "mode": "flight",

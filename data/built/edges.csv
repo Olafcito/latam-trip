@@ -346,6 +346,7 @@ MDE,SAP,flight,,,,,,,,,1901.0,4.45,4.4,4283.0,False,BOG MEX PTY SAL,Aeromexico A
 MDE,XPL,flight,,,,,,,,,1995.0,5.58,4.5,4843.0,False,IAH PTY SAL,Avianca COPA United,2027-01-05 2027-01-08,,crawl,,
 MDE,RTB,flight,,,,,,,,,20920.0,13.12,13.12,20920.0,False,DFW IAH MEX MIA PUJ,American Avianca JetSMART United,2027-01-05,,crawl,,
 BOG,SAP,flight,,,,,,,,,2419.0,19.2,4.98,5823.0,False,IAH MDE PTY SAL,Avianca COPA Copa Airlines JetSMART LATAM Airlines United Wingo,2026-12-06 2027-01-05 2027-01-08,,crawl,,
+MEX,GDL,flight,,,,,,,,,484.0,1.25,1.25,484.0,False,,Aeromexico Viva Volaris,2026-12-04,,crawl,,
 BCN,GDL,flight,,,,,,,,,,,,,False,,,,8849.0,crawl,,
 LIS,GDL,flight,,,,,,,,,,,,,False,,,,9429.0,crawl,,
 AMS,GDL,flight,,,,,,,,,,,,,False,,,,8949.0,crawl,,
