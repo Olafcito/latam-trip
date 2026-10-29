@@ -1,0 +1,152 @@
+[
+ {
+  "id": "diving",
+  "name": "Diving & snorkelling",
+  "place_categories": [
+   "Beach"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg/1280px-Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg",
+   "credit": "Johan Andrés Toro",
+   "licence": "CC BY-SA 4.0",
+   "w": 1920,
+   "h": 1080
+  }
+ },
+ {
+  "id": "wildlife",
+  "name": "Wildlife",
+  "place_categories": [
+   "Nature"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/124_Tayrona_National_Park_Colombia.JPG/1280px-124_Tayrona_National_Park_Colombia.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:124_Tayrona_National_Park_Colombia.JPG",
+   "credit": "David Shankbone",
+   "licence": "CC BY-SA 3.0",
+   "w": 4000,
+   "h": 3000
+  }
+ },
+ {
+  "id": "hiking",
+  "name": "Hiking & volcanoes",
+  "place_categories": [
+   "Nature",
+   "Altitude"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_%2831462520932%29.jpg/1280px-Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_%2831462520932%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_(31462520932).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  }
+ },
+ {
+  "id": "beach",
+  "name": "Beaches & islands",
+  "place_categories": [
+   "Beach"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Palomino_beach.JPG/1280px-Palomino_beach.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Palomino_beach.JPG",
+   "credit": "Uhkabu",
+   "licence": "CC BY-SA 3.0",
+   "w": 4000,
+   "h": 2672
+  }
+ },
+ {
+  "id": "ruins",
+  "name": "Ruins & history",
+  "place_categories": [
+   "Ruins",
+   "Colonial"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Ruinas_MAYA_Copan_Honduras_10.jpg/1280px-Ruinas_MAYA_Copan_Honduras_10.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Ruinas_MAYA_Copan_Honduras_10.jpg",
+   "credit": "Mónica J. Mora",
+   "licence": "CC BY-SA 4.0",
+   "w": 4160,
+   "h": 3120
+  }
+ },
+ {
+  "id": "culture",
+  "name": "Culture & markets",
+  "place_categories": [
+   "Colonial",
+   "Markets"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Plaza_de_la_Paz%2C_Guanajuato%2C_Guanajuato%2C_Mexico_%2814106314920%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Plaza_de_la_Paz,_Guanajuato,_Guanajuato,_Mexico_(14106314920).jpg",
+   "credit": "SMU Central University Libraries",
+   "licence": "No restrictions",
+   "w": 1000,
+   "h": 181
+  }
+ },
+ {
+  "id": "food",
+  "name": "Food & drink",
+  "place_categories": [
+   "Food"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Fincas_cafeteras_-_Sierra_Nevada_-_panoramio.jpg/1280px-Fincas_cafeteras_-_Sierra_Nevada_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Fincas_cafeteras_-_Sierra_Nevada_-_panoramio.jpg",
+   "credit": "diego_cue",
+   "licence": "CC BY-SA 3.0",
+   "w": 5184,
+   "h": 3456
+  }
+ },
+ {
+  "id": "nightlife",
+  "name": "Nightlife & dance",
+  "place_categories": [
+   "Nightlife"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Cartagena%2C_Colombia_3.jpg/1280px-Cartagena%2C_Colombia_3.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Cartagena,_Colombia_3.jpg",
+   "credit": "User: (WT-shared) Sylx100 at wts wikivoyage",
+   "licence": "Public domain",
+   "w": 2048,
+   "h": 1536
+  }
+ },
+ {
+  "id": "training",
+  "name": "Training",
+  "place_categories": [],
+  "image": null
+ },
+ {
+  "id": "adventure",
+  "name": "Adventure",
+  "place_categories": [
+   "Nature"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Salar_de_Uyuni_D%C3%A9cembre_2007_-_Panorama_1_edit.jpg/1280px-Salar_de_Uyuni_D%C3%A9cembre_2007_-_Panorama_1_edit.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Salar_de_Uyuni_D%C3%A9cembre_2007_-_Panorama_1_edit.jpg",
+   "credit": "Martin St-Amant (S23678); derivative work (noise reduction to sky) by Julia W",
+   "licence": "CC BY-SA 3.0",
+   "w": 8827,
+   "h": 1235
+  }
+ },
+ {
+  "id": "courses",
+  "name": "Courses",
+  "place_categories": [],
+  "image": null
+ }
+]

@@ -8,7 +8,7 @@ flights (R: one-ways, RR: returns) of both directions into one list of options.
 --fetch-elevation looks up each place's altitude on the Open-Meteo elevation API (Copernicus DEM)
 and caches it in data/network/elevation.json; without it the cache is used when present.
 """
-import csv, datetime, json, os, re, sqlite3, statistics, sys, urllib.request
+import glob, csv, datetime, json, os, re, sqlite3, statistics, sys, urllib.request
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
@@ -110,13 +110,49 @@ def build():
     def load_json(name, default):
         f = os.path.join(NET, name)
         return json.load(open(f, encoding="utf-8")) if os.path.exists(f) else default
-    shortlist = load_json("shortlist.json", {"places": []})
-    diving = load_json("diving.json", {"sites": []})
-    starred = {x["id"] for x in shortlist.get("places", [])}
-    dives_at = {}
-    for d in diving.get("sites", []):
-        if d.get("node"):
-            dives_at.setdefault(d["node"], []).append(d["id"])
+
+    def load_jsonl(pattern):
+        rows = []
+        for f in sorted(glob.glob(os.path.join(NET, pattern))):
+            rows += [json.loads(l) for l in open(f, encoding="utf-8") if l.strip()]
+        return rows
+
+    def web_image(img):
+        return img and {"url": img.get("url"), "page": img.get("page"), "credit": img.get("credit"),
+                        "licence": img.get("license") or img.get("licence"), "w": img.get("w"), "h": img.get("h")}
+
+    # experiences database, categories, saved lists, stay quotes and the task log
+    exp_images = {r["id"]: r.get("image") for r in load_jsonl("exp-img-*.jsonl") if r.get("kind") == "experience_image"}
+    cat_doc = load_json("experience_categories.json", {"categories": []})
+    node_image = {nid: web_image((n.get("profile") or {}).get("image")) for nid, n in nodes.items()}
+    exp_categories = [{"id": c["id"], "name": c["name"], "place_categories": c["place_categories"],
+                       "image": web_image(exp_images.get(c["image_id"])) or node_image.get(c.get("fallback_place"))}
+                      for c in cat_doc["categories"]]
+    cat_image = {c["id"]: c["image"] for c in exp_categories}
+    experiences = []
+    for e in load_jsonl("experiences.jsonl"):
+        if e.get("kind") != "experience":
+            continue
+        own = web_image(exp_images.get(e["id"]))
+        at = next((node_image[p] for p in e.get("places") or [] if node_image.get(p)), None)
+        img, src = (own, "own") if own else (at, "place") if at else (cat_image.get(e["category"]), "category")
+        experiences.append({k: v for k, v in e.items() if k != "kind"} | {"image": img, "image_source": src if img else None})
+    lists = load_json("lists.json", {"lists": []})
+    saved_in = {}
+    for l in lists.get("lists", []):
+        for it in l.get("items", []):
+            saved_in.setdefault((it["type"], it["id"]), []).append(l["id"])
+    for e in experiences:
+        e["saved_in"] = saved_in.get(("experience", e["id"]), [])
+    exp_at = {}
+    for e in experiences:
+        for pid in e.get("places") or []:
+            exp_at.setdefault(pid, []).append(e["id"])
+    stays = {}
+    for r in load_jsonl("stays.jsonl"):
+        if r.get("kind") == "stay_quote":
+            stays.setdefault(r["place"], []).append({k: v for k, v in r.items() if k not in ("kind", "place")})
+    task_log = load_jsonl("task_log.jsonl")
 
     places = []
     for n in nodes.values():
@@ -136,7 +172,8 @@ def build():
                          "rating": h.get("rating"), "price_suspect": bool(h.get("price_suspect")), "url": h.get("source")}
                         for h in (p.get("hostels") or [])],
             "hostel_note": p.get("hostel_price_note"),
-            "shortlist": n["id"] in starred, "dive_sites": dives_at.get(n["id"], []),
+            "saved_in": saved_in.get(("place", n["id"]), []), "experience_ids": exp_at.get(n["id"], []),
+            "stay_quotes": sorted(stays.get(n["id"], []), key=lambda r: (r["check_in"], r["room"], r["dkk_per_night"])),
         })
     for code, (name, country, lat, lon) in CONTEXT_AIRPORTS.items():
         if code not in nodes:
@@ -334,7 +371,8 @@ def build():
     countries = [{"code": c, "name": n, "label_lat": la, "label_lon": lo} for c, n, la, lo in COUNTRIES]
     os.makedirs(OUT, exist_ok=True)
     for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries),
-                       ("diving", diving), ("shortlist", shortlist)):
+                       ("experiences", experiences), ("experience_categories", exp_categories), ("lists", lists),
+                       ("task_log", task_log)):
         json.dump(data, open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"places {len(places)}  connections {len(conns)}  options {sum(len(c['options']) for c in conns.values())}"
           f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  -> {OUT}")
