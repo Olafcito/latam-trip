@@ -4,8 +4,8 @@ import { TRIP_COLORS } from '@map/data/trips'
 import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, MapNode, Way } from '../data/types'
 import { useStore } from '../store'
-import { clock, day, hours, kr, weekdayDay } from '../lib/format'
-import { nodeForAirport, nodeName, schedule, totals, type Hop, type Journey, type ScheduledPlace } from '../lib/journey'
+import { clock, day, dayRange, hours, kr, weekdayDay } from '../lib/format'
+import { legDay, nodeForAirport, nodeName, schedule, totals, type Hop, type Journey, type ScheduledPlace } from '../lib/journey'
 import { countryName } from '../lib/colors'
 import { flightLegs, tripRoute, type RouteLeg } from '../lib/route'
 import { WayTrack } from '../components/WayCard'
@@ -16,30 +16,41 @@ import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosur
 import { FlyOnChips, RouteLine } from '../components/RouteLine'
 import { LegPrices } from '../components/LegPrices'
 import { FlightLinks } from '../components/FlightLinks'
+import { DateChip } from '../components/DateChip'
 import { hopLink, wayLinks } from '../lib/links'
 import { Download, Home, Land, ModeChip, Moon, Pin, Transfer, Warn } from '../components/icons'
 
 // The dashboard of one trip. Calm by default: the route as flags with the all-in price and the
-// rough day each flight leaves, then the stops and legs. Everything else opens on a click.
+// day each flight leaves, then the stops with their days and the legs with the day each leaves,
+// which a click sets. Everything else opens on a click.
 
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
 const MODE_NAME: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Ground' }
 
-/** A stop: number, flag and city. Opens to its country, dates and description. */
-function StopRow({ i, name, node, country, sp }: { i: number; name: string; node: MapNode | undefined; country: string; sp: ScheduledPlace }) {
+/** A stop: number, flag, city, its days and dates, and a bar for its share of the trip. Opens to its country and description. */
+function StopRow({ i, name, node, country, sp, total }: { i: number; name: string; node: MapNode | undefined; country: string; sp: ScheduledPlace; total: number }) {
   const d = useDisclosure()
-  const dates = [sp.arrive && weekdayDay(sp.arrive), sp.depart && weekdayDay(sp.depart)].filter(Boolean).join(' to ')
+  const times = [sp.arrive && sp.arrive.length > 10 && `Arrives ${weekdayDay(sp.arrive)} ${clock(sp.arrive)}`, sp.depart && sp.depart.length > 10 && `leaves ${weekdayDay(sp.depart)} ${clock(sp.depart)}`].filter(Boolean).join(', ')
+  const est = sp.exact ? '' : '~'
+  const tip = sp.exact ? 'Between two dated legs' : 'Estimated: the days between the dated legs around this stop, shared evenly. Set a day on a leg to fix it'
   return (
     <li className="tl-stop">
       <button className="disc-btn tl-row" {...d.trigger}>
         <span className="tl-n" style={{ background: TRIP_COLORS[0] }}>{i + 1}</span>
         <Flag code={country} size={13} title={countryName(country)} />
-        <b className="tl-name" {...hoverProps(node)}>{name}</b>
+        <span className="tl-nm">
+          <b className="tl-name" {...hoverProps(node)}>{name}</b>
+          <small className="tl-dates" data-exact={sp.exact}>{est}{dayRange(sp.inDay, sp.outDay)}</small>
+        </span>
+        <span className="tl-days" data-exact={sp.exact} title={tip}>
+          {sp.days > 0 ? <><b>{est}{sp.days}</b> {sp.days === 1 ? 'day' : 'days'}</> : 'Same day'}
+        </span>
         <Chevron open={d.open} />
       </button>
+      {total > 0 && <span className="tl-bar" aria-hidden="true" data-exact={sp.exact} style={{ width: `${Math.min(100, (sp.days / total) * 100)}%` }} />}
       <DisclosurePanel {...d.panel}>
         <div className="tl-more">
-          <span>{countryName(country)}{dates ? ` · ${dates}` : ''}</span>
+          <span>{countryName(country)}{times ? ` · ${times}` : ''}</span>
           {node?.profile?.tagline && <p>{node.profile.tagline}</p>}
         </div>
       </DisclosurePanel>
@@ -47,8 +58,11 @@ function StopRow({ i, name, node, country, sp }: { i: number; name: string; node
   )
 }
 
-/** A leg between stops: mode, duration and price. Opens to carrier, times and via. */
-function HopRow({ h, inout }: { h: Hop; inout: InOut }) {
+/** The day a leg leaves and how to set it. */
+interface LegDay { date: string; min: string; max: string; label: string; onSet: (date: string | null) => void }
+
+/** A leg between stops: the day it leaves, mode, duration and price. Opens to carrier, times and via. */
+function HopRow({ h, inout, when }: { h: Hop; inout: InOut; when: LegDay }) {
   const d = useDisclosure()
   const link = hopLink(h, inout)
   const fam = family(h.mode)
@@ -73,13 +87,17 @@ function HopRow({ h, inout }: { h: Hop; inout: InOut }) {
       {h.overnight && <span className="tl-ico" title="Overnight"><Moon /></span>}
     </>
   )
-  if (!details.length) return <li className={`tl-hop ${fam}`}><div className="tl-row">{body}</div></li>
+  const chip = <DateChip {...when} set={!!h.date} known={!!(h.date || f)} />
+  if (!details.length) return <li className={`tl-hop ${fam}`}><div className="tl-hrow">{chip}<div className="tl-row">{body}</div></div></li>
   return (
     <li className={`tl-hop ${fam}`}>
-      <button className="disc-btn tl-row" {...d.trigger}>
-        {body}
-        <Chevron open={d.open} />
-      </button>
+      <div className="tl-hrow">
+        {chip}
+        <button className="disc-btn tl-row" {...d.trigger}>
+          {body}
+          <Chevron open={d.open} />
+        </button>
+      </div>
       <DisclosurePanel {...d.panel}>
         <ul className="tl-more">
           {details.map((x) => <li key={x}>{x}</li>)}
@@ -133,6 +151,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const openSaved = useStore((s) => s.openSaved)
   const saveJourney = useStore((s) => s.saveJourney)
   const go = useStore((s) => s.go)
+  const setHopDate = useStore((s) => s.setHopDate)
   // the leg picked in the hero. Its known prices on its day show under the chips.
   const [leg, setLeg] = useState<string | null>(null)
   const pickLeg = (l: RouteLeg) => setLeg((k) => (k === l.key ? null : l.key))
@@ -223,8 +242,16 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
             </li>
             {journey.places.map((p, i) => (
               <Fragment key={i}>
-                {p.hop && <HopRow h={p.hop} inout={inout} />}
-                <StopRow i={i} name={nm(p.node)} node={node(p.node)} country={countryOf(p.node)} sp={sched.places[i]} />
+                {p.hop && (
+                  <HopRow h={p.hop} inout={inout} when={{
+                    date: legDay(p.hop, sched.places[i - 1].outDay),
+                    min: sched.firstDay,
+                    max: sched.homeDepart.slice(0, 10),
+                    label: `${nm(journey.places[i - 1].node)} to ${nm(p.node)}`,
+                    onSet: (date) => setHopDate(i, date),
+                  }} />
+                )}
+                <StopRow i={i} name={nm(p.node)} node={node(p.node)} country={countryOf(p.node)} sp={sched.places[i]} total={sched.totalDays} />
               </Fragment>
             ))}
             <li className="tl-way home">

@@ -53,12 +53,18 @@
 .tl-way .io-dot.in { background: var(--in); }
 .tl-way .io-dot.home { background: var(--home); }
 
-.tl-stop { border-radius: var(--radius); box-shadow: inset 0 0 0 1px var(--line); background: var(--surface); transition: background-color var(--t-fast) ease; }
+.tl-stop { position: relative; overflow: hidden; border-radius: var(--radius); box-shadow: inset 0 0 0 1px var(--line); background: var(--surface); transition: background-color var(--t-fast) ease; }
 .tl-stop > .tl-row { min-height: max(var(--hit), 44px); padding: 8px 12px 8px 10px; }
 .tl-n { flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; color: var(--flight-ink); font-size: 12px; font-weight: 600; }
-.tl-name { flex: 1 1 auto; min-width: 0; font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tl-days { flex: none; font-size: var(--fs-small); color: var(--muted); white-space: nowrap; cursor: help; }
+.tl-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.tl-name { min-width: 0; font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl-dates { font-size: 12px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tl-days { flex: none; font-size: var(--fs-small); color: var(--muted); white-space: nowrap; cursor: help; font-variant-numeric: tabular-nums; }
 .tl-days b { font-size: 15px; font-weight: 600; color: var(--text); }
+.tl-days[data-exact='false'] b { color: color-mix(in srgb, var(--text) 72%, transparent); }
+/* the stop's share of the trip, along the bottom of its card */
+.tl-bar { position: absolute; left: 0; bottom: 0; height: 3px; border-radius: 0 2px 2px 0; background: var(--in); opacity: 0.75; pointer-events: none; }
+.tl-bar[data-exact='false'] { opacity: 0.4; }
 .tl-more { list-style: none; margin: 0; display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-small); color: var(--muted); }
 .tl-more p { margin: 0; max-width: 62ch; line-height: 1.45; color: var(--text); }
 .tl-stop .tl-more { padding: 0 12px 12px 46px; }
@@ -67,17 +73,43 @@
 .tl-hop::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--bus); }
 .tl-hop.flight::before { background: repeating-linear-gradient(to bottom, var(--flight) 0 3px, transparent 3px 6px); }
 .tl-hop.boat::before { background: repeating-linear-gradient(to bottom, var(--boat) 0 6px, transparent 6px 10px); }
-.tl-hop > .tl-row { display: flex; align-items: center; gap: 8px; min-height: var(--hit); padding: 4px 8px 4px 2px; }
+.tl-hrow { display: flex; align-items: center; gap: 8px; }
+.tl-hrow > .tl-row { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: var(--hit); padding: 4px 8px 4px 2px; }
 .tl-hop .disc-chev { margin-left: auto; }
 .tl-hopt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; min-width: 0; }
 .tl-price { color: var(--text); font-weight: 500; }
 .tl-mode { flex: none; display: inline-flex; }
 .tl-ico { display: inline-flex; color: var(--boat); }
-.tl-hop .tl-more { padding: 0 8px 8px 32px; }
+.tl-hop .tl-more { padding: 0 8px 8px 2px; }
+
+/* the day a leg leaves: solid when set or a picked flight's, dashed and "~" when estimated */
+.dchip { position: relative; flex: none; display: inline-flex; align-items: center; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); background: var(--surface); color: var(--text); }
+.dchip[data-known='false'] { box-shadow: none; outline: 1px dashed color-mix(in srgb, var(--muted) 55%, transparent); outline-offset: -1px; background: transparent; color: var(--muted); }
+.dchip[data-set='true'] { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--in) 60%, transparent); background: color-mix(in srgb, var(--in) 12%, var(--surface)); }
+.dchip-btn {
+  position: relative; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 30px; padding: 0 10px; border: 0; border-radius: inherit; background: none; color: inherit;
+  font: inherit; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease;
+}
+.dchip-btn::after { content: ''; position: absolute; inset: -7px -2px; }
+.dchip-btn svg { flex: none; opacity: 0.8; }
+.dchip-btn:active { transform: scale(0.97); }
+.dchip-btn:focus-visible, .dchip-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.dchip[data-set='true'] .dchip-btn { padding-right: 4px; }
+.dchip-x { display: grid; place-items: center; width: 24px; height: 24px; margin-right: 3px; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
+.dchip-x svg { width: 11px; height: 11px; }
+/* the browser's own picker opens from here, under the chip */
+.dchip-in { position: absolute; left: 0; bottom: 0; width: 100%; height: 0; padding: 0; border: 0; opacity: 0; pointer-events: none; }
+@media (hover: hover) and (pointer: fine) {
+  .dchip:hover { color: var(--text); }
+  .dchip[data-known='false']:hover { outline-color: var(--muted); }
+  .dchip-x:hover { color: var(--text); background: var(--surface-2); }
+}
 .tl-hop .tl-more li { overflow-wrap: anywhere; }
 @media (hover: hover) and (pointer: fine) {
   .tl-stop:has(> .tl-row:hover) { background: var(--surface-2); }
-  .tl-hop > .disc-btn:hover { color: var(--text); }
+  .tl-hrow > .disc-btn:hover { color: var(--text); }
 }
 
 /* ---- Copenhagen and back: one line per way, the track behind a click ---- */
@@ -110,7 +142,7 @@
 .dash-legend b { font-weight: 600; }
 
 @media (max-width: 900px) {
-  .dash-grid { grid-template-columns: 1fr; }
+  .dash-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* totals */

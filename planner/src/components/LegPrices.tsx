@@ -47,7 +47,7 @@ export function LegPrices({ leg, map }: { leg: RouteLeg; map: MapData }) {
     <section className="lp" aria-label={`Prices from ${leg.fromName} to ${leg.toName}`} aria-live="polite">
       <p className="lp-head">
         <b>{leg.fromName} to {leg.toName}</b>
-        <span>{weekdayDay(leg.date)}{leg.dated ? '' : ', a rough day'}</span>
+        <span>{weekdayDay(leg.date)}{leg.dated ? '' : ', estimated. Set the day on the leg in the Route'}</span>
       </p>
       {shown.length > 0 && (
         <ul className="lp-list">
