@@ -1,6 +1,6 @@
-/* WayCard: a way as a picture, the two ends with their times and a track scaled by hours. */
+/* WayCard: a way as a picture, the two ends with their times and the way as a transit line. */
 @scope (:root) to (.rmap) {
-/* ---- a way as a picture: the two ends with their times and a track scaled by hours ---------- */
+/* ---- a way as a picture: the two ends with their times and a transit line ------------------- */
 /* --io is the way's colour as on the map: green in, orange home */
 .wc { --io: var(--in); --io-bg: color-mix(in srgb, var(--io) 14%, var(--surface)); display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 10px; border-radius: 10px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
 .wc.home { --io: var(--home); }
@@ -15,22 +15,101 @@
 .wc-city svg { color: var(--io); }
 .wc-t { display: inline-flex; align-items: baseline; gap: 5px; font-family: var(--font-num); font-size: 13px; }
 .wc-t.big b { font-size: 22px; font-weight: 500; line-height: 1; }
-.wc-t small { font-size: 11.5px; color: var(--muted); }
+.wc-t small { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
 .wc-t .nd { margin-left: 0; vertical-align: baseline; }
-.wc-track { display: flex; align-items: stretch; gap: 3px; height: 30px; }
-.wc-fly { display: flex; align-items: center; justify-content: center; gap: 6px; flex-basis: 0; min-width: 28px; border-radius: 6px; background: var(--io-bg); color: var(--io); font-family: var(--font-num); font-size: 11px; font-weight: 500; position: relative; overflow: hidden; }
-.wc-fly::before { content: ""; position: absolute; left: 8px; right: 8px; top: 50%; border-top: 1.5px dashed currentColor; opacity: 0.35; }
-.wc-fly svg, .wc-fly i { position: relative; background: var(--io-bg); padding: 0 3px; font-style: normal; }
-.wc-chip { display: flex; align-items: center; justify-content: center; gap: 4px; flex-basis: 0; min-width: 54px; padding: 0 6px; border-radius: 6px; font-family: var(--font-num); font-size: 11px; white-space: nowrap; cursor: help; }
-.wc-chip b { font-weight: 600; }
-.wc-chip i { font-style: normal; opacity: 0.8; }
-.wc-chip.conn { background: var(--surface-2); color: var(--muted); }
-.wc-chip.night { background: color-mix(in srgb, var(--boat) 14%, var(--surface)); color: var(--boat); }
-.wc-chip.day { background: color-mix(in srgb, var(--flight) 10%, var(--surface)); color: var(--flight); }
-.wc-chip.xfer { background: color-mix(in srgb, var(--flight) 18%, var(--surface)); color: var(--flight); }
 .wc-f { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11.5px; color: var(--muted); }
 .wc-price { font-family: var(--font-num); font-weight: 500; color: var(--text); }
 .wc.compact { padding: 10px 12px 8px; }
 .wc.compact .wc-t.big b { font-size: 18px; }
-.wc.compact .wc-track { height: 24px; }
+
+/* ---- the way as a transit line --------------------------------------------------------------
+   After the ReUI stepper on 21st.dev, as the flag route is: a ring at every airport with a gap
+   before the line, the flights solid in the way's colour, the waits dashed and dimmer, the code and
+   local times under each ring. Evenly spaced, not to scale. --io comes from the card or the row. */
+.wt-box {
+  --top: 18px;   /* the row above the line, for durations and waits */
+  --dot: 14px;   /* the row the line runs through */
+  --ring: 9px;
+  --lw: 2px;
+  --gap: 2px;
+  --wait-line: repeating-linear-gradient(90deg, color-mix(in srgb, var(--io) 50%, transparent) 0 4px, transparent 4px 8px);
+  container-type: inline-size;
+  min-width: 0;
+}
+.wt {
+  display: flex; align-items: flex-start;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  padding: 2px 0 1px;
+}
+.wt::-webkit-scrollbar { display: none; }
+.wt:focus-visible { outline: 2px solid var(--io); outline-offset: 2px; border-radius: 6px; }
+.wt[data-prev] { mask-image: linear-gradient(90deg, transparent, #000 28px); }
+.wt[data-next] { mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+.wt[data-prev][data-next] { mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+.wt-wide { display: contents; }
+.wt-narrow { display: none; }
+
+/* a node: the wait above it when it is folded, the ring on the line, the code and times under it */
+.wt-n {
+  position: relative; flex: none;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: calc(var(--ring) + 20px);
+  padding: 0 3px;
+  font-family: var(--font-num); font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.wt-top { height: var(--top); display: flex; align-items: center; font-size: 11.5px; font-weight: 500; }
+.wt-dot { height: var(--dot); display: grid; place-items: center; }
+.wt-ring { display: block; width: var(--ring); height: var(--ring); border-radius: 50%; box-shadow: inset 0 0 0 var(--lw) var(--io); }
+.wt-n[data-end] { --gap: 5px; }
+.wt-n[data-end] .wt-ring { background: var(--io); outline: 1.5px solid color-mix(in srgb, var(--io) 45%, transparent); outline-offset: 2px; }
+/* the line runs into the node from either side and stops a little before the ring */
+.wt-n::before, .wt-n::after {
+  content: ''; position: absolute;
+  top: calc(var(--top) + var(--dot) / 2 - var(--lw) / 2); height: var(--lw);
+}
+.wt-n::before { left: 0; right: calc(50% + var(--ring) / 2 + var(--gap)); }
+.wt-n::after { right: 0; left: calc(50% + var(--ring) / 2 + var(--gap)); }
+.wt-n[data-l='fly']::before, .wt-n[data-r='fly']::after { background: var(--io); }
+.wt-n[data-l='wait']::before, .wt-n[data-r='wait']::after { background: var(--wait-line); }
+.wt-c { margin-top: 3px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; line-height: 1.25; color: var(--muted); }
+.wt-n[data-end] .wt-c { color: var(--io); }
+.wt-tm { font-size: 13px; font-weight: 500; line-height: 1.3; color: var(--text); }
+.wt-tm .nd { margin-left: 1px; }
+.wt-dt { font-size: 11px; line-height: 1.25; color: var(--faint); }
+
+/* a stretch: a flight or a wait, its length or its nights above the line */
+.wt-s {
+  position: relative;
+  flex: 1 1 0;
+  display: flex; justify-content: center;
+  height: calc(var(--top) + var(--dot));
+  padding: 0 6px;
+}
+.wt-s::after {
+  content: ''; position: absolute; left: 0; right: 0;
+  top: calc(var(--top) + var(--dot) / 2 - var(--lw) / 2); height: var(--lw);
+  background: var(--io);
+}
+.wt-s[data-k='wait']::after { background: var(--wait-line); }
+.wt-sl {
+  height: var(--top); display: flex; align-items: center;
+  font-family: var(--font-num); font-variant-numeric: tabular-nums;
+  font-size: 11.5px; font-weight: 500; color: var(--muted); white-space: nowrap;
+}
+.wt-w { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.wt-w svg { flex: none; }
+.wt-w.night { color: var(--boat); }
+.wt-w.day, .wt-w.xfer { color: var(--flight); }
+.wt-box.compact .wt-dt { display: none; }
+
+/* a narrow card folds each wait into one node with both times, and leaves the dates to the title */
+@container (max-width: 480px) {
+  .wt-wide { display: none; }
+  .wt-narrow { display: contents; }
+  .wt-dt { display: none; }
+  .wt-n { min-width: calc(var(--ring) + 14px); padding: 0 2px; }
+  .wt-s { padding: 0 5px; }
+}
 }

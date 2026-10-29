@@ -87,7 +87,7 @@ export function seedToJourney(inout: InOut, seed: Trip): Journey | null {
     if (g.from !== prev) add(g.from, { from: prev, to: g.from, mode: 'bus', operator: OVERLAND, hours: null, price_dkk: null, overnight: false, border: false, flight: null, overland: OVERLAND })
     if (g.kind === 'overland') {
       const note = g.note || OVERLAND
-      add(g.to, { from: g.from, to: g.to, mode: 'bus', operator: note, hours: null, price_dkk: null, overnight: false, border: (g.countries?.length ?? 0) > 1, flight: null, overland: note })
+      add(g.to, { from: g.from, to: g.to, mode: 'bus', operator: note, hours: null, price_dkk: null, overnight: false, border: (g.countries?.length ?? 0) > 1, flight: null, overland: note, ...(g.countries?.length ? { countries: g.countries } : {}) })
       continue
     }
     const f = g as typeof g & FlightSegment
@@ -109,4 +109,23 @@ export function seedToJourney(inout: InOut, seed: Trip): Journey | null {
     places,
     rank: seed.rank,
   }
+}
+
+/**
+ * A seeded journey saved before its overland blocks carried their countries, given them from the seed.
+ * Only a block that still runs between the seed's own two places is touched. The same journey back when nothing changes.
+ */
+export function withSeedCountries(j: Journey, seeds: readonly Trip[]): Journey {
+  const seed = seeds.find((t) => t.id === j.id)
+  if (!seed?.segments?.length) return j
+  let changed = false
+  const places = j.places.map((p) => {
+    const h = p.hop
+    if (!h?.overland || h.countries) return p
+    const g = seed.segments!.find((x) => x.kind === 'overland' && x.from === h.from && x.to === h.to && x.countries?.length)
+    if (!g) return p
+    changed = true
+    return { ...p, hop: { ...h, countries: g.countries } }
+  })
+  return changed ? { ...j, places } : j
 }
