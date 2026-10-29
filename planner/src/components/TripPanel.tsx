@@ -12,7 +12,8 @@ import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
 import { hopFromArc } from '../lib/journey'
 import { hoverProps } from './PlaceCard'
 import { ReachList } from './ReachList'
-import { Calendar, Close, Download, Grip, Land, ModeChip, Moon, Plane } from './icons'
+import { Calendar, Close, Download, External, Grip, Land, ModeChip, Moon, Plane } from './icons'
+import { hopLink } from '../lib/links'
 
 // The open trip, on the right of the map: its two fixed flights and the stops between them.
 // A stop is the cursor: the map lights what it reaches, and a tap on a lit city adds the next
@@ -209,6 +210,14 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                       {h.price_dkk != null && <span>{kr(h.price_dkk)}</span>}
                     </span>
                     {h.overnight && <Moon />}
+                    {(() => {
+                      const l = hopLink(h, inout)
+                      return l && (
+                        <a className="plan-hop-link" href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.saved ? `Open this flight on ${l.site}` : `Search this flight on ${l.site}`} title={l.saved ? `Open on ${l.site}` : `Search ${l.site}`}>
+                          <External />
+                        </a>
+                      )
+                    })()}
                   </div>
                 )}
                 <div

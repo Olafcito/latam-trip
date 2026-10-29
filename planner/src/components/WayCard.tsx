@@ -4,6 +4,8 @@ import { clock, day, hours, kr, nextDayMark, timeUncertain } from '../lib/format
 import { nights, wayTrack, wayTrackLabel, type TrackWait } from '../lib/waytrack'
 import { Home, Land, Moon, Sun, Transfer } from './icons'
 import { useEdgeFade } from './useEdgeFade'
+import { FlightLinks } from './FlightLinks'
+import { wayLinks } from '../lib/links'
 
 // One way as a picture: the two ends with their big times, and under them the way as a transit line
 // with every airport, its local times and the waits between flights.
@@ -172,6 +174,7 @@ export function WayCard({ way, inout, dir, compact = false }: { way: Way; inout:
           <span className="wc-price">{own != null ? kr(own) : 'on the return ticket'}</span>
         </footer>
       )}
+      {!compact && <FlightLinks links={wayLinks(way, inout)} />}
     </section>
   )
 }

@@ -15,6 +15,8 @@ import { hoverProps } from '../components/PlaceCard'
 import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosure'
 import { FlyOnChips, RouteLine } from '../components/RouteLine'
 import { LegPrices } from '../components/LegPrices'
+import { FlightLinks } from '../components/FlightLinks'
+import { hopLink, wayLinks } from '../lib/links'
 import { Download, Home, Land, ModeChip, Moon, Pin, Transfer, Warn } from '../components/icons'
 
 // The dashboard of one trip. Calm by default: the route as flags with the all-in price and the
@@ -46,8 +48,9 @@ function StopRow({ i, name, node, country, sp }: { i: number; name: string; node
 }
 
 /** A leg between stops: mode, duration and price. Opens to carrier, times and via. */
-function HopRow({ h }: { h: Hop }) {
+function HopRow({ h, inout }: { h: Hop; inout: InOut }) {
   const d = useDisclosure()
+  const link = hopLink(h, inout)
   const fam = family(h.mode)
   const f = h.flight
   const details = [
@@ -78,14 +81,17 @@ function HopRow({ h }: { h: Hop }) {
         <Chevron open={d.open} />
       </button>
       <DisclosurePanel {...d.panel}>
-        <ul className="tl-more">{details.map((x) => <li key={x}>{x}</li>)}</ul>
+        <ul className="tl-more">
+          {details.map((x) => <li key={x}>{x}</li>)}
+          {link && <li><FlightLinks links={[link]} /></li>}
+        </ul>
       </DisclosurePanel>
     </li>
   )
 }
 
 /** One long-haul way on one line: direction, from and to, departure and duration. Opens to its track. */
-function WayRow({ way, inout, dir }: { way: Way; inout: InOut; dir: 'in' | 'home' }) {
+function WayRow({ way, other, inout, dir }: { way: Way; other: Way; inout: InOut; dir: 'in' | 'home' }) {
   const d = useDisclosure()
   const far = dir === 'in' ? way.to : way.from
   const city = inout.airports[far]?.name ?? far
@@ -114,6 +120,7 @@ function WayRow({ way, inout, dir }: { way: Way; inout: InOut; dir: 'in' | 'home
             {carriers.length > 0 && ` · ${carriers.join(', ')}`}
             {' · '}{own != null ? kr(own) : 'On the return ticket'}
           </p>
+          <FlightLinks links={wayLinks(way, inout, other)} />
         </div>
       </DisclosurePanel>
     </div>
@@ -216,7 +223,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
             </li>
             {journey.places.map((p, i) => (
               <Fragment key={i}>
-                {p.hop && <HopRow h={p.hop} />}
+                {p.hop && <HopRow h={p.hop} inout={inout} />}
                 <StopRow i={i} name={nm(p.node)} node={node(p.node)} country={countryOf(p.node)} sp={sched.places[i]} />
               </Fragment>
             ))}
@@ -232,8 +239,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
           <section className="card pad" aria-label="Flights in and home">
             <h3 className="h3">Copenhagen and back</h3>
             <div className="ways">
-              <WayRow way={wi} inout={inout} dir="in" />
-              <WayRow way={wh} inout={inout} dir="home" />
+              <WayRow way={wi} other={wh} inout={inout} dir="in" />
+              <WayRow way={wh} other={wi} inout={inout} dir="home" />
             </div>
           </section>
           <section className="card pad" aria-label="Costs">

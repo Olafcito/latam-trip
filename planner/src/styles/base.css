@@ -175,3 +175,19 @@ select option { background: var(--surface-2); color: var(--text); }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 }
+
+/* ---- links out to the flight sites ---- */
+.fl-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.fl-link {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 4px 10px;
+  border: 1px solid var(--line-2); border-radius: 999px; background: var(--surface-2);
+  font-size: var(--fs-small); font-weight: 500; color: var(--flight); text-decoration: none;
+  transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.fl-link.search { color: var(--text); }
+.fl-link:active { transform: scale(0.97); }
+.fl-route { color: var(--muted); font-weight: 400; }
+@media (hover: hover) and (pointer: fine) {
+  .fl-link:hover { background: var(--surface-3); border-color: var(--flight); }
+}
+@media (pointer: coarse) { .fl-link { min-height: 36px; } }
