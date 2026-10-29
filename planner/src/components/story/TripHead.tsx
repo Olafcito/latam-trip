@@ -1,10 +1,10 @@
-import { useId, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import type { MapNode } from '../../data/types'
 import { day, kr } from '../../lib/format'
 import { countryName } from '../../lib/colors'
 
 // The top of the route, after the 21st Hover Expand Gallery: its places as narrow panels with their
-// names, the one under the mouse or the keys opens to its photo. A click opens that place's
+// names, the one under the mouse or the Tab key opens to its photo. A click opens that place's
 // itinerary under the strip, after the 21st Expandable Card (id 35717): what to do there and where
 // to sleep. The panel stays mounted so it can open and close from wherever it is, its words fade
 // in once it has made room, Escape closes it and gives the focus back. On a phone the places are a
@@ -22,22 +22,31 @@ export function TripHead({ places }: { places: HeadPlace[] }) {
   const [shown, setShown] = useState(0)
   const btns = useRef<(HTMLButtonElement | null)[]>([])
   const panelId = useId()
-  const open = hover ?? pick ?? 0
+  // the picked place holds the big panel while its itinerary is open, a hover only brightens the others
+  const open = pick ?? hover ?? 0
 
   const choose = (i: number) => {
     const next = pick === i ? null : i
     setPick(next)
-    if (next != null) setShown(next)
+    if (next == null) return
+    setShown(next)
+    btns.current[i]?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   }
-  const close = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape' || pick == null) return
-    e.preventDefault()
+  const close = () => {
+    if (pick == null) return
     btns.current[pick]?.focus()
+    setHover(null)
     setPick(null)
   }
+  useEffect(() => {
+    if (pick == null) return
+    const onKey = (e: globalThis.KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); close() } }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  })
 
   return (
-    <header className="tg" onKeyDown={close}>
+    <header className="tg">
       <h3 className="tg-title">Route<span>{places.length} {places.length === 1 ? 'place' : 'places'}</span></h3>
       <ul
         className="tg-strip"
@@ -69,7 +78,7 @@ export function TripHead({ places }: { places: HeadPlace[] }) {
       </ul>
       <div id={panelId} className="tg-it" data-open={pick != null} inert={pick == null} role="region" aria-label={places[shown] ? `${short(places[shown].name)} itinerary` : undefined}>
         <div className="tg-it-in">
-          {places[shown] && <Itinerary key={shown} place={places[shown]} onClose={() => { btns.current[shown]?.focus(); setPick(null) }} />}
+          {places[shown] && <Itinerary key={shown} place={places[shown]} onClose={close} />}
         </div>
       </div>
     </header>
@@ -102,7 +111,7 @@ function Itinerary({ place, onClose }: { place: HeadPlace; onClose: () => void }
               <h5>Things to do</h5>
               <ul className="tg-todo">{todo.map((t) => <li key={t}>{t}</li>)}</ul>
               {p?.touristy != null && (
-                <p className="tg-tour">Touristy <span className="dots" aria-label={`${p.touristy} of 5`}>{[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= p.touristy! ? 'f' : ''} />)}</span></p>
+                <p className="tg-tour">Touristy <span className="dots" role="img" aria-label={`${p.touristy} of 5`}>{[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= p.touristy! ? 'f' : ''} />)}</span></p>
               )}
             </section>
           )}
@@ -111,10 +120,10 @@ function Itinerary({ place, onClose }: { place: HeadPlace; onClose: () => void }
               <h5 className="tg-bh"><span>Hostels</span><span>Dorm</span><span>Private</span></h5>
               <ul className="tg-beds">
                 {beds.map((h) => (
-                  <li key={h.name} data-sus={h.price_suspect || undefined} title={h.price_suspect ? 'The price looks wrong in the source' : undefined}>
+                  <li key={h.name} data-sus={h.price_suspect || undefined}>
                     {h.source ? <a href={h.source} target="_blank" rel="noopener noreferrer" title={h.name}>{h.name}</a> : <span title={h.name}>{h.name}</span>}
-                    <span>{h.dorm_dkk != null && kr(h.dorm_dkk)}</span>
-                    <span>{h.private_dkk != null && kr(h.private_dkk)}</span>
+                    <span>{h.dorm_dkk != null && kr(h.dorm_dkk)}{h.price_suspect && h.dorm_dkk != null && <small>unsure</small>}</span>
+                    <span>{h.private_dkk != null && kr(h.private_dkk)}{h.price_suspect && h.private_dkk != null && <small>unsure</small>}</span>
                   </li>
                 ))}
               </ul>
