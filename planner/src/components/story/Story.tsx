@@ -4,7 +4,7 @@ import { Flag, hasFlag } from '@map/map/Flag'
 import type { AppData, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
-import { clock, dayDiff, dayRange, hours, kr, weekdayDay } from '../../lib/format'
+import { clock, day, dayDiff, dayRange, hours, weekdayDay } from '../../lib/format'
 import { legDay, nodeForAirport, nodeName, type Hop, type Journey, type Schedule } from '../../lib/journey'
 import { iataOf, pricesOn, type PairDates } from '../../lib/prices'
 import { familyOf } from '../../lib/route'
@@ -14,18 +14,21 @@ import { addDays, dateRange } from '../../lib/time'
 import { hoverProps } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
-import { Calendar, Home, Land, Minus, ModeChip, Moon, Plus } from '../icons'
+import { Boat, Bus, Home, Land, Minus, Moon, Plane, Plus } from '../icons'
 import { LegCard, type LegEnds } from './LegCard'
 import { WhenPicker } from './WhenPicker'
 import { usePop } from './usePop'
 
 // The route as a story, read top to bottom like the flag strip on the hero is read left to right.
-// A rail runs down the left with the day of the trip beside it. Stops are chapters on the rail,
-// tall in proportion to the nights there. Travel is the line between them, drawn the way the map
-// draws it, with the leg riding on it as one pill: rest on it for the boarding pass, click to pin
-// it. The day a leg leaves sits next to it and opens a picker by date, by trip day or by nights.
+// A plain rail runs down the left with the dates beside it. Stops are chapters on the rail, tall in
+// proportion to the nights there. Travel is a quiet line between two stops with the mode and the
+// time it takes on it: rest on it for the boarding pass, click to pin it. The date a leg leaves sits
+// in the gutter, and a click on it opens the calendar.
 
 const MODE: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Bus' }
+const ICON: Record<Family, (p: { s?: number }) => ReactNode> = { flight: Plane, boat: Boat, ground: Bus }
+/** "Thu" for a date */
+const wd = (d: string) => weekdayDay(d).split(' ')[0]
 
 /** the cheapest fare known for a leg on each day of a window */
 function faresFor(pd: PairDates | null, from: string | null, to: string | null, days: string[]): Record<string, number> {
@@ -46,11 +49,12 @@ function Disc({ country, ring }: { country: string; ring?: 'in' | 'out' }) {
   )
 }
 
+/** The date beside the rail, with the day of the trip under it. */
 function Gutter({ n, date, est }: { n: number; date: string; est: boolean }) {
   return (
     <span className="st-gut" data-est={est}>
-      <b>Day {n}</b>
-      <small>{est ? '~' : ''}{weekdayDay(date)}</small>
+      <b>{est ? '~' : ''}{day(date)}</b>
+      <small>Day {n}</small>
     </span>
   )
 }
@@ -113,43 +117,40 @@ function Stop({ name, node, country, inDay, outDay, days, exact, onNights, last,
   )
 }
 
-/** The day a leg leaves, as a chip that opens the picker. */
-function When({ children, label, picker, set, known }: { children: ReactNode; label: string; picker: ReactNode; set: boolean; known: boolean }) {
-  const pop = usePop(false)
-  return (
-    <span className="pop-wrap st-when" {...pop.wrap}>
-      <button type="button" className="st-wbtn" data-set={set} data-known={known} aria-label={label} {...pop.trigger}>
-        <Calendar s={12} />{children}
-      </button>
-      {pop.open && <div className="pop wide" role="dialog" aria-label={label} {...pop.panel}>{picker}</div>}
-    </span>
-  )
-}
-
-/** Travel between two stops: the line, the day it leaves, and the pill with the boarding pass behind it. */
+/**
+ * Travel between two stops. The date it leaves sits in the gutter and opens the calendar. The body is
+ * a line in the mode's stroke with the mode and the time it takes on it, and the boarding pass behind.
+ */
 function Leg({ h, ends, date, set, known, picker, card }: { h: Hop; ends: LegEnds; date: string; set: boolean; known: boolean; picker: ReactNode; card: ReactNode }) {
+  const when = usePop(false)
   const pop = usePop()
   const fam = familyOf(h.mode)
-  const f = h.flight
-  const what = f ? `${clock(f.depart)} to ${clock(f.arrive)}` : h.overland ? 'Overland' : MODE[fam]
+  const Icon = ICON[fam]
+  const dur = h.flight?.hours ?? h.hours
+  const route = `${ends.fromName} to ${ends.toName}`
   return (
     <li className="st-leg" data-f={fam}>
-      <span className="st-gut" />
-      <span className="st-rail"><span className="st-line" /><ModeChip family={fam} /></span>
-      <div className="st-body st-legrow">
-        <When label={`${ends.fromName} to ${ends.toName}, leaves ${weekdayDay(date)}. Change the day`} picker={picker} set={set} known={known}>
-          <span>{known ? '' : '~'}{weekdayDay(date)}</span>
-        </When>
-        <span className="pop-wrap" {...pop.wrap}>
-          <button type="button" className="st-pill" {...pop.trigger} aria-label={`${MODE[fam]} ${ends.fromName} to ${ends.toName}, details`}>
-            <span className="st-p-what">{what}</span>
-            {(f?.hours ?? h.hours) != null && <span className="st-p-dur">{hours(f?.hours ?? h.hours)}</span>}
-            {f && f.via.length > 0 && <span className="st-p-via">via {f.via.join(', ')}</span>}
-            {h.overnight && <span className="st-p-moon" title="Overnight"><Moon /></span>}
-            <b className="st-p-kr">{kr(h.price_dkk)}</b>
+      <span className="st-gut">
+        <span className="pop-wrap" {...when.wrap}>
+          <button type="button" className="st-date" data-set={set} data-known={known} aria-label={`${route}, leaves ${weekdayDay(date)}${known ? '' : ', estimated'}. Change the day`} {...when.trigger}>
+            <b>{known ? '' : '~'}{day(date)}</b>
+            <small>{wd(date)}</small>
           </button>
-          {pop.open && <div className="pop" role="dialog" aria-label={`${ends.fromName} to ${ends.toName}`} {...pop.panel}>{card}</div>}
+          {when.open && <div className="pop wide" role="dialog" aria-label={`When ${route} leaves`} {...when.panel}>{picker}</div>}
         </span>
+      </span>
+      <span className="st-rail" />
+      <div className="st-body pop-wrap" {...pop.wrap}>
+        <button type="button" className="st-hop" aria-label={`${MODE[fam]} ${route}${dur != null ? `, ${hours(dur)}` : ''}${h.overnight ? ', overnight' : ''}. Details`} {...pop.trigger}>
+          <i className="st-hl" />
+          <span className="st-hm">
+            <Icon s={14} />
+            {dur != null && <span>{hours(dur)}</span>}
+            {h.overnight && <span className="st-moon" title="Overnight"><Moon /></span>}
+          </span>
+          <i className="st-hl" />
+        </button>
+        {pop.open && <div className="pop" role="dialog" aria-label={route} {...pop.panel}>{card}</div>}
       </div>
     </li>
   )
