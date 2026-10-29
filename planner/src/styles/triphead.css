@@ -55,7 +55,7 @@
   display: grid; grid-template-rows: 0fr;
   transition: grid-template-rows var(--t-med) var(--ease-out);
 }
-.tg-it[data-open='true'] { grid-template-rows: 1fr; transition-duration: 320ms; transition-timing-function: var(--ease-drawer); }
+.tg-it[data-open='true'] { grid-template-rows: 1fr; transition-duration: 280ms; transition-timing-function: var(--ease-drawer); }
 .tg-it-in { min-height: 0; overflow: hidden; }
 .tg-card {
   padding: 16px 2px 2px;
@@ -67,7 +67,7 @@
 .tg-id h4 { display: flex; align-items: baseline; gap: 8px; margin: 0; font-size: var(--fs-title); font-weight: 600; color: var(--text); text-wrap: balance; }
 .tg-id h4 span { font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
 .tg-tag { margin: 2px 0 0; font-size: var(--fs-small); color: var(--muted); }
-.tg-stay { display: grid; justify-items: end; font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tg-stay { display: none; justify-items: end; font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tg-stay small { font-size: var(--fs-label); font-weight: 400; color: var(--faint); }
 .tg-x {
   display: grid; place-items: center; width: 28px; height: 28px; margin: -4px -6px 0 0; padding: 0;
@@ -75,7 +75,7 @@
   transition: background var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .tg-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
-.tg-x:active { transform: scale(0.94); }
+.tg-x:active { transform: scale(0.96); }
 .tg-about { max-width: 68ch; margin: 10px 0 0; font-size: var(--fs-body); line-height: 1.5; color: color-mix(in srgb, var(--text) 86%, transparent); }
 .tg-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 28px; margin-top: 14px; }
 .tg-cols h5 { margin: 0 0 6px; font-size: var(--fs-label); font-weight: 500; color: var(--faint); }
@@ -90,7 +90,8 @@
 .tg-beds a, .tg-beds li > span:first-child { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--text); }
 .tg-beds a { text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; transition: text-decoration-color var(--t-fast) ease; }
 .tg-beds a:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 2px; }
-.tg-beds li[data-sus] span:not(:first-child) { color: var(--faint); text-decoration: line-through; text-decoration-color: var(--line-2); }
+.tg-beds li[data-sus] span:not(:first-child) { color: var(--faint); }
+.tg-beds small { display: block; font-size: var(--fs-label); line-height: 1.2; }
 .tg-none { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
 .tg-cr { margin: 12px 0 0; font-size: var(--fs-label); color: var(--faint); }
 
@@ -116,6 +117,9 @@
   .tg-meta, .tg-p[data-open] .tg-meta { left: 10px; right: 10px; bottom: 8px; opacity: 1; }
   .tg-from { display: none; }
   .tg-cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  /* the phone strip drops the arrival day, so the itinerary carries it */
+  .tg-stay { display: grid; justify-items: end; }
+  .tg-x { width: 40px; height: 40px; margin: -10px -10px 0 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
