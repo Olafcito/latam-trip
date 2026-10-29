@@ -10839,6 +10839,68 @@
   ]
  },
  {
+  "id": "LEON-SAL",
+  "a": "LEON",
+  "b": "SAL",
+  "options": [
+   {
+    "mode": "boat",
+    "operators": [
+     "Shuttle to La Union + speedboat across the Gulf of Fonseca to Potosi + shuttle to Leon (Civitatis package; Ruta del Golfo boat)"
+    ],
+    "duration_min": 480,
+    "duration_range_h": "6.5-9",
+    "price_dkk": {
+     "min": 684,
+     "typical": null
+    },
+    "price_local": "US$106 package from San Salvador or El Tunco (Civitatis); DIY US$55 boat + US$20 Potosi to Leon shuttle (2022) plus getting to La Union",
+    "frequency": "Ruta del Golfo boat Tue and Fri (2022), morning departure about 08:45",
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://www.civitatis.com/en/el-tunco/potosi-speedboat-transfer/",
+    "observed_at": "2026",
+    "note": "Skips Honduras by sea. Migration fee about US$12 to 13 not included, paid in cash at Potosi (no ATM there). Bring passport copies. Boat crossing about 2 h 15 min. Details: https://www.nomadicbackpacker.com/la-union-to-potosi-by-boat.html",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "LEON-TUNCO",
+  "a": "LEON",
+  "b": "TUNCO",
+  "options": [
+   {
+    "mode": "boat",
+    "operators": [
+     "Shuttle to La Union + speedboat across the Gulf of Fonseca to Potosi + shuttle to Leon (Civitatis package; Ruta del Golfo boat)"
+    ],
+    "duration_min": 480,
+    "duration_range_h": "6.5-9",
+    "price_dkk": {
+     "min": 684,
+     "typical": null
+    },
+    "price_local": "US$106 package from San Salvador or El Tunco (Civitatis); DIY US$55 boat + US$20 Potosi to Leon shuttle (2022) plus getting to La Union",
+    "frequency": "Ruta del Golfo boat Tue and Fri (2022), morning departure about 08:45",
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://www.civitatis.com/en/el-tunco/potosi-speedboat-transfer/",
+    "observed_at": "2026",
+    "note": "Skips Honduras by sea. Migration fee about US$12 to 13 not included, paid in cash at Potosi (no ATM there). Bring passport copies. Boat crossing about 2 h 15 min. Details: https://www.nomadicbackpacker.com/la-union-to-potosi-by-boat.html",
+    "booking_url": null
+   }
+  ]
+ },
+ {
   "id": "LPB-SJO",
   "a": "LPB",
   "b": "SJO",
