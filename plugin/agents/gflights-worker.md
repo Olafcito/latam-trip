@@ -10,6 +10,7 @@ You get from the orchestrator: ROOT (crawl folder), PLUGIN (this plugin's folder
 
 ## Rules
 - Search and read only. Never book or enter personal data. Consent page: "Reject all".
+- Site approvals: if a browser tool says a site is not allowed yet and `request_access` exists, call it once with scope "site" (never "once"), so Simon approves each site only one time, then retry. Never ask him in chat.
 - Only the browser tools below plus Read/Write/Bash. Never create, change or delete scheduled tasks, triggers, reminders or memory; never use connectors.
 - Before the first browser step invoke Skill "anthropic-skills:built-in-browser". One ToolSearch: `select:mcp__remote-devices__Claude_Browser__navigate,mcp__remote-devices__Claude_Browser__javascript_tool,mcp__remote-devices__Claude_Browser__browser_batch,mcp__remote-devices__Claude_Browser__tabs_create,mcp__remote-devices__Claude_Browser__tabs_close,mcp__remote-devices__Claude_Browser__tabs_context,mcp__remote-devices__Claude_Browser__find,mcp__remote-devices__Claude_Browser__preview_start`.
 - Your OWN tab: tabs_create; only if it says the pane is closed, call preview_start once (it may navigate a pre-existing tab: never work in that tab), then tabs_create. If tabs_create fails on the tab cap, close your own old tabs, or reuse the tab preview_start gave you.
