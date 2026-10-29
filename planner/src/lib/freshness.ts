@@ -48,9 +48,9 @@ export function freshness(meta: Meta | null, now: number): Fresh[] {
   })
 }
 
-/** '?' for unknown, 'today', '1 d', '5 d'. */
+/** 'never' for unknown, 'today', '1 d', '5 d'. */
 export function ageLabel(ageDays: number | null): string {
-  if (ageDays == null) return '?'
+  if (ageDays == null) return 'never'
   return ageDays === 0 ? 'today' : `${ageDays} d`
 }
 
@@ -64,13 +64,13 @@ export function ageWords(ageDays: number | null): string {
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 /** When a type was checked, for the popover: '29 Oct' for a bare date, '28 Oct 21:37' in the
- *  viewer's clock for a full time, '?' when unknown. */
+ *  viewer's clock for a full time, 'not checked' when unknown. */
 export function checkedLabel(at: string | null): string {
-  if (at == null) return '?'
+  if (at == null) return 'not checked'
   const m = BARE_DATE.exec(at)
-  if (m) return `${+m[3]} ${MON[+m[2] - 1] ?? '?'}`
+  if (m) return `${+m[3]} ${MON[+m[2] - 1] ?? ''}`
   const d = new Date(at)
-  if (Number.isNaN(d.getTime())) return '?'
+  if (Number.isNaN(d.getTime())) return 'not checked'
   const hh = String(d.getHours()).padStart(2, '0')
   const mm = String(d.getMinutes()).padStart(2, '0')
   return `${d.getDate()} ${MON[d.getMonth()]} ${hh}:${mm}`

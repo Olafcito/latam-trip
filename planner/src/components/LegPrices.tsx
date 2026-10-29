@@ -22,7 +22,7 @@ function QuoteRow({ q, now }: { q: PairQuote; now: number }) {
     <li className="lp-q">
       <b className="lp-p">{kr(q.p)}</b>
       <span className="lp-t">
-        {times ?? 'Times ?'}
+        {times}
         {q.n ? <sup className="lp-n" title={`Lands ${q.n === 1 ? 'the next day' : `${q.n} days later`}`}>+{q.n}</sup> : null}
         <span className="lp-h">{hours(q.h)}</span>
       </span>

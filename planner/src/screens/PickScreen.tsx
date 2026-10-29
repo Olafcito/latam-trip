@@ -21,7 +21,7 @@ const REGION_ORDER = ['CA', 'CO', 'MX', 'BO']
 const SORT_DIR: Record<SortKey, 'ascending' | 'descending'> = { rating: 'descending', price: 'ascending', leave: 'ascending', home: 'ascending' }
 
 function Stamp({ s, from }: { s: string; from?: string }) {
-  if (!s) return <span className="q" title="Time unknown">?</span>
+  if (!s) return <span className="q" title="Time unknown">no time</span>
   const nd = from ? nextDayMark(from, s) : ''
   return (
     <span className="stamp">
@@ -43,7 +43,7 @@ function Rate({ v }: { v: number }) {
 }
 
 function Num({ v, what }: { v: number | null | undefined; what: string }) {
-  return v == null ? <span className="q" title={`${what} unknown`}>?</span> : <>{kr(v)}</>
+  return v == null ? <span className="q" title={`${what} unknown`}>not known</span> : <>{kr(v)}</>
 }
 
 /** Enter and space open a row the way a click does. */

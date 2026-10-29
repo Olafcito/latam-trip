@@ -38,10 +38,10 @@ const LINES = (data: AppData): Line[] => {
     { label: 'Hub stay est.', text: (s) => (s.t.hub_stay_dkk == null ? null : kr(s.t.hub_stay_dkk)), value: (s) => known(s.t.hub_stay_dkk) },
     {
       label: 'Ground transport',
-      text: (s) => (s.t.ground_unknown ? `${kr(s.t.ground_dkk)} +?` : kr(s.t.ground_dkk)),
+      text: (s) => (s.t.ground_unknown ? `${kr(s.t.ground_dkk)}, some not priced` : kr(s.t.ground_dkk)),
       value: (s) => (s.t.ground_unknown ? null : s.t.ground_dkk),
     },
-    { label: 'All in', text: (s) => (s.partial ? `${kr(s.total)} +?` : kr(s.total)), value: (s) => (s.partial ? null : s.total) },
+    { label: 'All in', text: (s) => (s.partial ? `${kr(s.total)}, some not priced` : kr(s.total)), value: (s) => (s.partial ? null : s.total) },
     { label: 'Nights there', text: (s) => String(s.nights), count: true },
     { label: 'Stops', text: (s) => String(s.stops), count: true },
     { label: 'Flights', text: (s) => String(s.t.flights), value: (s) => s.t.flights },
@@ -50,7 +50,7 @@ const LINES = (data: AppData): Line[] => {
 }
 
 const Unknown = () => (
-  <span className="cmp-q">?<span className="sr"> unknown</span></span>
+  <span className="cmp-q">not known</span>
 )
 
 /** "A", "A and B", "A, B and C" */
@@ -62,12 +62,13 @@ export function CompareTray({ data, items, onClear }: { data: AppData; items: Co
   const cell = (line: Line, s: Summary | null, best: boolean): ReactNode => {
     const text = s ? line.text(s) : null
     if (text == null) return <Unknown />
-    // a "+?" tail is the unpriced part of a floor, faint like any unknown
-    const floor = text.endsWith(' +?')
+    // a ", some not priced" tail marks a floor, faint like any unknown
+    const TAIL = ', some not priced'
+    const floor = text.endsWith(TAIL)
     return (
       <>
         {best && <span className="cmp-best" aria-hidden="true" />}
-        {floor ? <>{text.slice(0, -3)} <span className="cmp-q">+?<span className="sr"> plus unpriced legs</span></span></> : text}
+        {floor ? <>{text.slice(0, -TAIL.length)} <span className="cmp-q">some not priced</span></> : text}
         {best && <span className="sr"> (lowest)</span>}
       </>
     )
@@ -96,7 +97,7 @@ export function CompareTray({ data, items, onClear }: { data: AppData; items: Co
               {shown.map(({ j, s }) => (
                 <th key={j.id} scope="col">
                   <span className="cmp-name">{j.name}</span>
-                  <span className="cmp-detail mono">{s ? kr(s.total) : '?'}</span>
+                  <span className="cmp-detail mono">{s ? kr(s.total) : 'not planned'}</span>
                 </th>
               ))}
             </tr>

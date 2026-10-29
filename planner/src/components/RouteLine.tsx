@@ -23,7 +23,7 @@ function Country({ c, ring }: { c: RouteCountry; ring?: Ring }) {
     : `${name}, crossed overland`
   return (
     <span className="rt-c" data-ring={ring} title={tip}>
-      {hasFlag(c.country) ? <Flag code={c.country} /> : <span className="rt-nf">{c.country || '?'}</span>}
+      {hasFlag(c.country) ? <Flag code={c.country} /> : <span className="rt-nf">{c.country}</span>}
     </span>
   )
 }
