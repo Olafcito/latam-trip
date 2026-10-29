@@ -14,7 +14,7 @@ import { addDays, dateRange } from '../../lib/time'
 import { hoverProps } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
-import { Boat, Bus, Home, Land, Minus, Moon, Plane, Plus } from '../icons'
+import { Boat, Bus, Close, Home, Land, Minus, Moon, Plane, Plus } from '../icons'
 import { LegCard, type LegEnds } from './LegCard'
 import { WhenPicker } from './WhenPicker'
 import { usePop } from './usePop'
@@ -22,8 +22,8 @@ import { usePop } from './usePop'
 // The route as a story, read top to bottom like the flag strip on the hero is read left to right.
 // A plain rail runs down the left with the dates beside it. Stops are chapters on the rail, tall in
 // proportion to the nights there. Travel is a quiet line between two stops with the mode and the
-// time it takes on it: rest on it for the boarding pass, click to pin it. The date a leg leaves sits
-// in the gutter, and a click on it opens the calendar.
+// time it takes on it: click it for the boarding pass. The date a leg leaves sits in the gutter, and
+// a click on it opens the calendar. A stop reached the day its leg leaves shows only its trip day.
 
 const MODE: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Bus' }
 const ICON: Record<Family, (p: { s?: number }) => ReactNode> = { flight: Plane, boat: Boat, ground: Bus }
@@ -49,19 +49,24 @@ function Disc({ country, ring }: { country: string; ring?: 'in' | 'out' }) {
   )
 }
 
-/** The date beside the rail, with the day of the trip under it. */
-function Gutter({ n, date, est }: { n: number; date: string; est: boolean }) {
+/** The date beside the rail, with the day of the trip under it. No date when the leg above has it. */
+function Gutter({ n, date, est }: { n: number | null; date: string | null; est: boolean }) {
   return (
     <span className="st-gut" data-est={est}>
-      <b>{est ? '~' : ''}{day(date)}</b>
-      <small>Day {n}</small>
+      {date && <b>{est ? '~' : ''}{day(date)}</b>}
+      {n != null && <small>Day {n}</small>}
     </span>
   )
 }
 
-/** The way in or home: an end of the rail. Rest on it for its track. */
+/** Shut a popover. Shown on a phone, where the popover is a sheet and there is no outside to click. */
+function Shut({ on }: { on: () => void }) {
+  return <button type="button" className="pop-x" aria-label="Close" onClick={on}><Close /></button>
+}
+
+/** The way in or home: an end of the rail. Click it for its track. */
 function End({ dir, way, other, data, dayN, place }: { dir: 'in' | 'home'; way: Way; other: Way; data: AppData; dayN: number; place: string }) {
-  const pop = usePop()
+  const pop = usePop(false)
   const at = dir === 'in' ? way.arrive : way.depart
   return (
     <li className={`st-end ${dir}`}>
@@ -74,6 +79,7 @@ function End({ dir, way, other, data, dayN, place }: { dir: 'in' | 'home'; way: 
         </button>
         {pop.open && (
           <div className="pop" role="dialog" aria-label={dir === 'in' ? 'The way in' : 'The way home'} {...pop.panel}>
+            <Shut on={pop.dismiss} />
             <WayTrack way={way} airports={data.inout.airports} compact />
             <FlightLinks links={wayLinks(way, data.inout, other)} />
           </div>
@@ -84,17 +90,20 @@ function End({ dir, way, other, data, dayN, place }: { dir: 'in' | 'home'; way: 
 }
 
 /** A stop: flag on the rail, the city, its dates, and the nights there, which you can change. */
-function Stop({ name, node, country, inDay, outDay, days, exact, onNights, last, dayN }: {
+function Stop({ name, node, country, inDay, outDay, days, exact, dated, onNights, last, dayN }: {
   name: string; node: MapNode | undefined; country: string; inDay: string; outDay: string; days: number; exact: boolean
+  /** the date beside the rail: shown, shown and known, or left to the leg above */
+  dated: 'est' | 'known' | null
   /** set the nights here, or null when the flight home decides them */
   onNights: ((n: number) => void) | null
   last: boolean
-  dayN: number
+  /** the trip day beside the rail, null when the row above says it */
+  dayN: number | null
 }) {
   const est = !exact
   return (
     <li className="st-stop" style={{ '--nights': Math.min(days, 12) } as CSSProperties} data-last={last}>
-      <Gutter n={dayN} date={inDay} est={est} />
+      <Gutter n={dayN} date={dated ? inDay : null} est={dated === 'est'} />
       <span className="st-rail"><Disc country={country} /></span>
       <div className="st-body st-card">
         <span className="st-nm">
@@ -123,7 +132,7 @@ function Stop({ name, node, country, inDay, outDay, days, exact, onNights, last,
  */
 function Leg({ h, ends, date, set, known, picker, card }: { h: Hop; ends: LegEnds; date: string; set: boolean; known: boolean; picker: ReactNode; card: ReactNode }) {
   const when = usePop(false)
-  const pop = usePop()
+  const pop = usePop(false)
   const fam = familyOf(h.mode)
   const Icon = ICON[fam]
   const dur = h.flight?.hours ?? h.hours
@@ -136,7 +145,7 @@ function Leg({ h, ends, date, set, known, picker, card }: { h: Hop; ends: LegEnd
             <b>{known ? '' : '~'}{day(date)}</b>
             <small>{wd(date)}</small>
           </button>
-          {when.open && <div className="pop wide" role="dialog" aria-label={`When ${route} leaves`} {...when.panel}>{picker}</div>}
+          {when.open && <div className="pop wide" role="dialog" aria-label={`When ${route} leaves`} {...when.panel}><Shut on={when.dismiss} />{picker}</div>}
         </span>
       </span>
       <span className="st-rail" />
@@ -145,12 +154,12 @@ function Leg({ h, ends, date, set, known, picker, card }: { h: Hop; ends: LegEnd
           <i className="st-hl" />
           <span className="st-hm">
             <Icon s={14} />
-            {dur != null && <span>{hours(dur)}</span>}
+            <span data-none={dur == null || undefined}>{dur != null ? hours(dur) : 'time ?'}</span>
             {h.overnight && <span className="st-moon" title="Overnight"><Moon /></span>}
           </span>
           <i className="st-hl" />
         </button>
-        {pop.open && <div className="pop" role="dialog" aria-label={route} {...pop.panel}>{card}</div>}
+        {pop.open && <div className="pop" role="dialog" aria-label={route} {...pop.panel}><Shut on={pop.dismiss} />{card}</div>}
       </div>
     </li>
   )
@@ -170,7 +179,10 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const items: ReactNode[] = [
     <End key="in" dir="in" way={wayIn} other={wayHome} data={data} dayN={1} place={nm(nodeForAirport(inout, wayIn.to))} />,
   ]
+  // the day the last leg left, so the stop it reaches that day does not say the date again
+  let legDate: string | null = null
   ps.forEach((p, i) => {
+    legDate = null
     if (p.hop && i > 0) {
       const h = p.hop
       const prev = sched.places[i - 1]
@@ -185,6 +197,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       if (h.flight) fares[h.flight.depart.slice(0, 10)] ??= h.flight.price_dkk
       const quotes = fromCode && toCode && pd ? pricesOn(pd, fromCode, toCode, date) : []
       const codes = fam === 'flight' && fromCode && toCode ? { from: fromCode, to: toCode } : null
+      legDate = date
       items.push(
         <Leg
           key={`h${i}`}
@@ -210,8 +223,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         outDay={sp.outDay}
         days={sp.days}
         exact={sp.exact}
+        dated={i === 0 || legDate === sp.inDay ? null : sp.exact ? 'known' : 'est'}
         last={i === ps.length - 1}
-        dayN={tripDay(sp.inDay)}
+        dayN={i === 0 ? null : tripDay(sp.inDay)}
         onNights={next?.hop ? (n) => setHopDate(i + 1, addDays(sp.inDay, Math.max(0, n))) : null}
       />,
     )
