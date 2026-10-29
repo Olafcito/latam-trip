@@ -122,7 +122,9 @@ function dated(h: Hop): { depart: string; arrive: string } | null {
   const f = h.flight
   if (h.date) {
     if (f && f.depart.slice(0, 10) === h.date) return { depart: f.depart, arrive: f.arrive }
-    return { depart: h.date, arrive: h.overnight ? addDays(h.date, 1) : h.date }
+    // the same flight on another day still lands as many days after it leaves
+    const span = f ? dayDiff(f.depart, f.arrive) : h.overnight ? 1 : 0
+    return { depart: h.date, arrive: addDays(h.date, span) }
   }
   return f ? { depart: f.depart, arrive: f.arrive } : null
 }
@@ -192,6 +194,31 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
   const last = places[places.length - 1]
   if (last && last.node !== exitNode) warnings.push({ level: 'warn', text: `The journey has to end in ${names(exitNode)}, where the way home leaves` })
   return { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), warnings }
+}
+
+/**
+ * One night more or less at stop i, traded with a stop beside it so nothing else moves. A night less
+ * goes to the stop before, a night more comes from the stop after. The first and the last stop trade
+ * the other way, having no stop on that side. Returns the leg days to set, or null when no stop beside
+ * has a night to give.
+ */
+export function nightTrade(j: Journey, s: Schedule, i: number, more: boolean): { hop: number; date: string }[] | null {
+  const n = j.places.length
+  const hop = (k: number) => (k >= 1 && k < n ? j.places[k].hop : null)
+  const dayOf = (k: number) => legDay(hop(k)!, s.places[k - 1].outDay)
+  // a leg with no day and no flight floats on the even share, so it is pinned where it is
+  const floats = (k: number) => { const h = hop(k); return !!h && !h.date && !h.flight }
+  /** leg k a day later (+1) or earlier (-1): the stop before it gains that, the stop after it pays */
+  const trade = (k: number, by: 1 | -1) => {
+    const payer = by > 0 ? k : k - 1
+    if (!hop(k) || !(s.places[payer]?.days > 0)) return null
+    const out = [{ hop: k, date: addDays(dayOf(k), by) }]
+    // pinning the leg before splits the share behind it, so every floating leg back to a dated one is pinned
+    for (let m = k - 1; floats(m); m--) out.push({ hop: m, date: dayOf(m) })
+    if (floats(k + 1)) out.push({ hop: k + 1, date: dayOf(k + 1) })
+    return out
+  }
+  return more ? trade(i + 1, 1) ?? trade(i, -1) : trade(i, 1) ?? trade(i + 1, -1)
 }
 
 // ---- totals
