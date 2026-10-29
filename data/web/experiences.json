@@ -11194,7 +11194,7 @@
  {
   "id": "cun-ferry-to-isla-mujeres",
   "name": "Ferry to Isla Mujeres",
-  "category": "culture",
+  "category": "beach",
   "tags": [],
   "places": [
    "CUN"
@@ -11218,12 +11218,12 @@
    "https://www.booking.com"
   ],
   "image": {
-   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
-   "licence": "CC BY 3.0",
-   "w": 2039,
-   "h": 2056
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
   },
   "image_source": "category",
   "saved_in": []
@@ -11231,7 +11231,7 @@
  {
   "id": "cun-cenotes-along-the-ruta-de-los-cenotes",
   "name": "Cenotes along the Ruta de los Cenotes",
-  "category": "culture",
+  "category": "adventure",
   "tags": [],
   "places": [
    "CUN"
@@ -11255,12 +11255,12 @@
    "https://www.booking.com"
   ],
   "image": {
-   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
-   "licence": "CC BY 3.0",
-   "w": 2039,
-   "h": 2056
+   "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Zip-line_over_rainforest_canopy_4_January_2005%2C_Costa_Rica.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Zip-line_over_rainforest_canopy_4_January_2005,_Costa_Rica.jpg",
+   "credit": "Khaufle at English Wikipedia",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
   },
   "image_source": "category",
   "saved_in": []
@@ -11268,7 +11268,7 @@
  {
   "id": "cun-mercado-28-and-downtown-taquerias",
   "name": "Mercado 28 and downtown taquerías",
-  "category": "culture",
+  "category": "food",
   "tags": [],
   "places": [
    "CUN"
@@ -11292,12 +11292,12 @@
    "https://www.booking.com"
   ],
   "image": {
-   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
-   "licence": "CC BY 3.0",
-   "w": 2039,
-   "h": 2056
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Pupusas.jpg/1280px-Pupusas.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Pupusas.jpg",
+   "credit": "Renee Comet (photographer)",
+   "licence": "Public domain",
+   "w": 1852,
+   "h": 1744
   },
   "image_source": "category",
   "saved_in": []
@@ -11453,7 +11453,7 @@
  {
   "id": "mex-tacos-and-markets-in-roma-and-condesa",
   "name": "Tacos and markets in Roma and Condesa",
-  "category": "culture",
+  "category": "food",
   "tags": [],
   "places": [
    "MEX"
@@ -11477,12 +11477,12 @@
    "https://www.booking.com"
   ],
   "image": {
-   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
-   "licence": "CC BY 3.0",
-   "w": 2039,
-   "h": 2056
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Pupusas.jpg/1280px-Pupusas.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Pupusas.jpg",
+   "credit": "Renee Comet (photographer)",
+   "licence": "Public domain",
+   "w": 1852,
+   "h": 1744
   },
   "image_source": "category",
   "saved_in": []
@@ -11565,7 +11565,7 @@
  {
   "id": "pcm-quinta-avenida-and-playa-mamitas",
   "name": "Quinta Avenida and Playa Mamitas",
-  "category": "culture",
+  "category": "beach",
   "tags": [],
   "places": [
    "PCM"
@@ -11590,12 +11590,12 @@
    "https://www.booking.com"
   ],
   "image": {
-   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
-   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
-   "licence": "CC BY 3.0",
-   "w": 2039,
-   "h": 2056
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
   },
   "image_source": "category",
   "saved_in": []
