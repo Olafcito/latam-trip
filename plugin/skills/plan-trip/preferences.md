@@ -19,8 +19,17 @@
 
 ## Fixed parts of this trip
 - About 2 Dec 2026 to 3 Feb 2027. Long haul is one combined ticket from and back to Copenhagen.
-- Central America north to south first (likely starting in Guatemala City), Colombia with Medellín (Cali maybe, Bogotá only for transit), then Bolivia last: old friends in Cochabamba (he lived there years ago), La Paz and Santa Cruz. The last week in Cochabamba. Home from Santa Cruz.
+- Central America north to south first (starting in Guadalajara if it works, otherwise Guatemala City), Colombia with Medellín (Cali maybe, Bogotá only for transit), then Bolivia last: old friends in Cochabamba (he lived there years ago), La Paz and Santa Cruz. A few days in Cochabamba from about 26 or 27 Jan, then 1 full day in Santa Cruz. Home from Santa Cruz.
 - Mexico (Cancún, Playa del Carmen, Guadalajara) is an option, not a must.
+
+## Route wishes (29 Oct 2026, in his words)
+- "I actually wanna try this route: Guadalajera (was thinking I could start in Cancun if that is cheaper and then fly over perhaps spend a few days in Playa Del carmen), maybe Antigua for just 3-4 days, El Salvador and experience el tunco on thurs-satur (doesnt have to be all days), and Utila for davanced scuba diving."
+- "Then I wanna experience different parts of Nicaragua Except Managua for transit. I heard 5-7 days in little corn islands should be nice flying from Managua. Also either Granda or Leon or both for dancing and meeting locals. I think San Juan del Sur is also a given. So new years in Central America it must be."
+- "For Bolivia I would like to be in Cochabamba maybe the 26th or 27th of january." "Just a few days in cochabamba and 1 full day in Santa Cruz or so before flying to Denmark." "I fly home from Santa Cruz."
+- "Would be nice to visit Medellin for a week or so and/or Cali, but dont want trip too packed either. Maybe I should cut off either Columbia or Mexico, or Honduras or something."
+- "Potentially start in Guadalajara, skip Guatamala also a possibility and fly to El salvador. perhaps build a few different trips actually where I can skip differently."
+- On the islands: "Would you sacrifice either Utila or Little Corn? Perhaps the way is to cut Utila then yes?" So Utila can go, and the Advanced course can move to Little Corn.
+- He wants to see the cost of a return ticket to Guatemala City next to the open jaw.
 
 ## Flight rules
 - At most 30 h in one direction. About 22 to 23 h preferred. Judge time and price together. A few hundred kroner don't matter.
