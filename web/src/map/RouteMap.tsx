@@ -44,6 +44,8 @@ export interface RouteMapProps {
   onStop?(id: string): void
   /** Build mode: the host places a new leg itself (after its cursor) instead of the trip appending it. */
   onLeg?(leg: TripLeg): void
+  /** The modes switched on with the Bus, Boat and Flight toggles, told to the host on every change. */
+  onFamilies?(families: Set<Family>): void
   /** A pane the host renders on the right of the map; the camera keeps clear of it. */
   side?: ReactNode
   sideWidth?: number
@@ -70,7 +72,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, side = null, sideWidth = 360, sideMini = false }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, side = null, sideWidth = 360, sideMini = false }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -94,6 +96,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   const [space, setSpace] = useState(false)
   const [narrow, setNarrow] = useState(false)
   const store = useMemo(() => createStore<Hover>(null), [])
+
+  useEffect(() => onFamilies?.(families), [families, onFamilies])
 
   // latest values for the map's event handlers, which are bound once
   const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!side, sideMini, focus, stops: [] as string[], dir: 'out' as FlightDir })

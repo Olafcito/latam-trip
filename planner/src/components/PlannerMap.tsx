@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState, type PointerEvent } from 'react'
 import { RouteMap } from '@map/map/RouteMap'
+import { buildModel } from '@map/data/model'
 import type { TripState } from '@map/data/trips'
-import type { MapData as RouteData } from '@map/data/types'
+import type { Family, MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../data/routeMap'
 import { legFactsFrom, toTripState } from '../lib/mapTrips'
 import { useStore } from '../store'
@@ -25,6 +26,9 @@ export function PlannerMap() {
   const setPaneMini = useStore((s) => s.setPaneMini)
   const [data, setData] = useState<RouteData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // the modes switched on on the map, so the trip pane lists the same places the map lights
+  const [families, setFamilies] = useState<Set<Family> | null>(null)
+  const model = useMemo(() => (data ? buildModel(data) : null), [data])
 
   useEffect(() => {
     loadRouteData().then(setData, (e: unknown) => setError(e instanceof Error ? e.message : String(e)))
@@ -68,7 +72,8 @@ export function PlannerMap() {
         focusAt={focusAt}
         onStop={cursorTo}
         onLeg={insertLeg}
-        side={hasPane ? <MapSide /> : null}
+        onFamilies={setFamilies}
+        side={hasPane ? <MapSide reach={model && families ? { model, families } : null} /> : null}
         sideWidth={hasPane && paneMini ? 236 : 360}
         sideMini={hasPane && paneMini}
       />
