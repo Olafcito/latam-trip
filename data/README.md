@@ -62,7 +62,6 @@ These are single JSON files that a person edits by hand. tripdb has no writer fo
 |---|---|---|
 | `trip.json` | Travellers, home airports, dates, hour limit, scoring weights | by hand |
 | `bag_rules.json` | Bag prices per carrier that the scoring adds to a fare | by hand |
-| `bag_fees.json` | Researched bag fees per airline and fare, with notes | by hand |
 | `known_prices.json` | Prices Simon saw outside the crawl, with where and when | by hand |
 | `scenarios.json` | The named trip scenarios | by hand |
 | `experience_categories.json` | Categories for experiences, their keywords and the place categories they match | by hand |

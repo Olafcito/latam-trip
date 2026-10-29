@@ -2,8 +2,6 @@
 
 Simon's Latin America trip (Dec 2026 to Feb 2027): a crawled flight and ground-transport dataset, the crawler plugin that produces it, and the brief for an interactive map + scenario builder.
 
-- `DESIGN_HANDOFF.md`: what the app should look like and do (Map tab, Scenarios tab with recommended trips, journey builder and raw data).
-- `MAP_BRIEF.md`: the map spec.
 - `data/`: `sources/` (quotes, places, connections, profiles, experiences, stays and the hand-edited documents such as `trip.json` and `bag_rules.json`), `built/` (`trip.db` with every table, `map.json` and the other derived files) and `web/` (what the apps read). `data/README.md` describes every table.
 - `plugin/`: the flight-crawler Claude plugin (agents, skills, scripts), with `plugin/scripts/tripdb.py`, the one tool that writes data.
 
@@ -28,8 +26,6 @@ Add `--fetch-elevation` to `tripdb build` to look up altitudes for new places. T
 The Options button in the top bar opens a third pane beside the map with the flight option tables: whole trips, long-haul tickets, regional flights and a note on how the ratings work. Clicking a whole trip or a long-haul ticket rings its arrival and home airports on the map. The pane reads three more files in `data/web/`, `dash_trips.json`, `dash_journeys.json` and `dash_flights.json`, and shows them as they are. Nothing is recomputed in the browser. If one file is missing, that tab says so and the others keep working. The same build makes them:
 
     python -I -X utf8 plugin/scripts/tripdb.py --root . build
-
-The same tables are in `data/web/dash_index.html`, a standalone page that the pane was built from.
 
 Run the app locally:
 
