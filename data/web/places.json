@@ -4900,19 +4900,54 @@
   "popularity": 2,
   "iata": "MGA",
   "airport_transfer_min": null,
-  "why": "Quiet Pacific beach village 35 min from Leon, surf, turtle and mangrove tours, easy day trip or beach stay from Leon",
+  "why": "Sleepy surf and fishing village on a long grey-sand beach by a mangrove reserve",
   "reason": "Quiet Pacific beach village 35 min from Leon, surf, turtle and mangrove tours, easy day trip or beach stay from Leon",
-  "summary": null,
+  "summary": "Las Penitas is a small fishing village of about a thousand people beside the Juan Venado mangrove island reserve, 30 minutes from Leon by chicken bus. You meet a mix of surfers, volcano-boarding backpackers on a beach break from Leon, long-stay expats and Spanish students, plus Nicaraguan families on weekends. Hostels are small and relaxed with bonfires and happy hours rather than a big party scene, so it suits a 30-year-old far better than a young drinking circuit.",
   "categories": [
-   "Beach"
+   "Beach",
+   "Nature",
+   "Nightlife"
   ],
-  "things_to_do": [],
-  "touristy": null,
+  "things_to_do": [
+   "Dawn boat trip through the Juan Venado mangroves for birds and crocodiles",
+   "Night turtle-nesting walk and hatchery visit (about August to December)",
+   "Surf lesson on the beginner-friendly beach break",
+   "Sunset beach walk and fresh seafood at the shacks",
+   "Day trip to Cerro Negro volcano boarding from Leon"
+  ],
+  "touristy": 3,
   "altitude_m": null,
   "image": null,
-  "hostels": [],
+  "hostels": [
+   {
+    "name": "Mano a Mano Beach Hostel",
+    "dorm_dkk": 93,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/280126/mano-a-mano-beach-hostel/"
+   },
+   {
+    "name": "Caracolito",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/294751/caracolito/"
+   },
+   {
+    "name": "Tapihouse",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hostels/city/ni/las-penitas.html"
+   }
+  ],
   "hostel_note": null,
-  "saved_in": [],
+  "saved_in": [
+   "want"
+  ],
   "experience_ids": [],
   "stay_quotes": [],
   "hub": false
@@ -4929,17 +4964,50 @@
   "popularity": 2,
   "iata": "MGA",
   "airport_transfer_min": null,
-  "why": "Nicaragua's main surf area on the Tola coast (Popoyo, Guasacate, Santana breaks) with surf camps and a growing digital nomad scene, no public transport beyond a few buses from Rivas",
+  "why": "Nicaragua's most consistent surf coast with a small hostel and yoga scene",
   "reason": "Nicaragua's main surf area on the Tola coast (Popoyo, Guasacate, Santana breaks) with surf camps and a growing digital nomad scene, no public transport beyond a few buses from Rivas",
-  "summary": null,
+  "summary": "Popoyo and Playa Guasacate form a spread-out surf strip on the Tola coast with no real town centre, just beachfront hostels, a few restaurants and surf camps. You meet mostly surfers of all ages including many in their late 20s to 40s, yoga-minded expats and digital nomads, with local families in the background. Some hostels run group happy hours and there are occasional electronic music nights, but most evenings are quiet and early-to-bed because of dawn surf sessions.",
   "categories": [
-   "Beach"
+   "Beach",
+   "Nightlife",
+   "Food"
   ],
-  "things_to_do": [],
-  "touristy": null,
+  "things_to_do": [
+   "Surf Popoyo, Beginner's Bay or boat charters to Playgrounds and Lance's Left",
+   "Beachfront yoga class (about 10 USD)",
+   "Sunset at Finca Popoyo bar or horseback ride on the beach",
+   "Guasacate tide pools at low tide",
+   "Soak in the Las Salinas Nahualapa sulphur springs"
+  ],
+  "touristy": 3,
   "altitude_m": null,
   "image": null,
-  "hostels": [],
+  "hostels": [
+   {
+    "name": "Marumar",
+    "dorm_dkk": 52,
+    "private_dkk": 152,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-popoyo"
+   },
+   {
+    "name": "Finca Popoyo",
+    "dorm_dkk": 136,
+    "private_dkk": 427,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-popoyo"
+   },
+   {
+    "name": "Big Surf House",
+    "dorm_dkk": 112,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/br/hostels/p/324334/big-surf-house/"
+   }
+  ],
   "hostel_note": null,
   "saved_in": [],
   "experience_ids": [],
@@ -4958,18 +5026,50 @@
   "popularity": 2,
   "iata": null,
   "airport_transfer_min": null,
-  "why": "Northern highland city with cigar factories, murals and coffee; base for Miraflor nature reserve homestays (cloud forest, orchids, hiking, buses from Cotran Norte), Somoto Canyon and the Honduras border",
+  "why": "Highland cigar town with murals, cloud forest and farm homestays nearby",
   "reason": "Northern highland city with cigar factories, murals and coffee; base for Miraflor nature reserve homestays (cloud forest, orchids, hiking, buses from Cotran Norte), Somoto Canyon and the Honduras border",
-  "summary": null,
+  "summary": "Esteli is a working Nicaraguan city of tobacco factories, murals and coffee shops at about 800 m, with cool evenings and very few tourists. You mostly meet locals, students, volunteers and Spanish learners, plus a thin trickle of backpackers passing through to Somoto or Miraflor, so it is one of the least touristy and least party-driven stops in the north. Nightlife is small bars, cigar lounges and local salsa and reggaeton spots that close around 2 to 3 am.",
   "categories": [
    "Nature",
+   "Nightlife",
    "Food"
   ],
-  "things_to_do": [],
-  "touristy": null,
+  "things_to_do": [
+   "Tour a family cigar factory and roll your own",
+   "Mural walk and Casa de la Cultura evening events",
+   "Overnight farm homestay in the Miraflor cloud-forest reserve (hiking, horses, birds)",
+   "Day trip to Somoto Canyon",
+   "Local salsa bar night and a football game"
+  ],
+  "touristy": 2,
   "altitude_m": null,
   "image": null,
-  "hostels": [],
+  "hostels": [
+   {
+    "name": "Sonati Hostal",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/271300/sonati-hostal-esteli/"
+   },
+   {
+    "name": "Luna International Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/hostel/386782-Luna-International-Hostel"
+   },
+   {
+    "name": "Finca Fuente de Vida",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hostels/city/ni/esteli.html"
+   }
+  ],
   "hostel_note": null,
   "saved_in": [],
   "experience_ids": [],
@@ -4988,17 +5088,42 @@
   "popularity": 3,
   "iata": null,
   "airport_transfer_min": null,
-  "why": "Canyon national monument for floating and wading tours, trailhead on the Panamericana about 20 min from the town of Somoto and near the El Espino/Las Manos Honduras border road",
+  "why": "Small border-region town beside a wade-swim-jump canyon",
   "reason": "Canyon national monument for floating and wading tours, trailhead on the Panamericana about 20 min from the town of Somoto and near the El Espino/Las Manos Honduras border road",
-  "summary": null,
+  "summary": "Somoto is a small, quiet northern town whose main draw is the Somoto Canyon, a 6 to 12 km river walk with swimming and cliff jumps of 3 m up to 10 m and a boat finish. You meet local guides, Nicaraguan weekend groups and a handful of backpackers, many of them on a day trip from Esteli, so there is almost no party scene and evenings are early. December to February is the dry season with lower water, and the rainy months of September and October are best avoided.",
   "categories": [
-   "Nature"
+   "Nature",
+   "Nightlife",
+   "Markets"
   ],
-  "things_to_do": [],
-  "touristy": null,
+  "things_to_do": [
+   "Guided 6 km canyon circuit: wade, swim and jump (about 25 USD with a local operator)",
+   "Optional 10 m jump or boat-only float for a tamer option",
+   "Walk the town market and plaza",
+   "Ride the local bus to the canyon entrance (2 USD entry)",
+   "Horseback ride or stay at a rural eco-lodge near the canyon"
+  ],
+  "touristy": 2,
   "altitude_m": null,
   "image": null,
-  "hostels": [],
+  "hostels": [
+   {
+    "name": "Hostal San Jose",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.booking.com/region/ni/madriz.en-gb.html"
+   },
+   {
+    "name": "Somoto's Hostal",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.booking.com/region/ni/madriz.en-gb.html"
+   }
+  ],
   "hostel_note": null,
   "saved_in": [],
   "experience_ids": [],
@@ -5017,18 +5142,50 @@
   "popularity": 3,
   "iata": null,
   "airport_transfer_min": null,
-  "why": "Cool-climate coffee town in the northern highlands, coffee farm tours and cloud forest day trips, 51 km from Esteli",
+  "why": "Coffee-country city in the northern highlands with cloud-forest farms nearby",
   "reason": "Cool-climate coffee town in the northern highlands, coffee farm tours and cloud forest day trips, 51 km from Esteli",
-  "summary": null,
+  "summary": "Matagalpa is a busy, compact highland city built around coffee, with a market, a coffee museum and cloud-forest estates such as Selva Negra within reach. You mostly meet locals and a few travellers who come for farm tours and hikes, some of them volunteers and coffee enthusiasts, so the crowd is small, older-leaning and not party-oriented. Nightlife is quiet apart from a few cafe bars with live guitar, and harvest season runs roughly November to February, which overlaps your trip.",
   "categories": [
    "Nature",
-   "Food"
+   "Food",
+   "Nightlife"
   ],
-  "things_to_do": [],
-  "touristy": null,
+  "things_to_do": [
+   "Coffee farm tour and harvest visit (peak season November to February)",
+   "Selva Negra cloud-forest trails and birdwatching",
+   "Cerro Apante reserve viewpoint hike",
+   "Mercado de Matagalpa for cheap meals and local coffee",
+   "Live-guitar cafe on Calle Central in the evening"
+  ],
+  "touristy": 2,
   "altitude_m": null,
   "image": null,
-  "hostels": [],
+  "hostels": [
+   {
+    "name": "La Buena Onda",
+    "dorm_dkk": 52,
+    "private_dkk": 110,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://twomonkeystravelgroup.com/?p=10783"
+   },
+   {
+    "name": "Estacion Biologica Aguali",
+    "dorm_dkk": 68,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/42740/la-buena-onda/"
+   },
+   {
+    "name": "Martina's Place",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://eternalarrival.com/best-hostels-in-nicaragua/"
+   }
+  ],
   "hostel_note": null,
   "saved_in": [],
   "experience_ids": [],

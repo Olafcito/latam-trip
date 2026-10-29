@@ -70,8 +70,8 @@ OBAL,Puerto Obaldia,PA,8.67,-77.42,border,PUE,3,Panamanian border town with immi
 CUN,Cancún,MX,21.16,-86.85,hub,CUN,2,"Caribbean gateway with cheap flights to Europe, Mexico, Central America and Colombia",1
 MEX,Mexico City,MX,19.43,-99.13,hub,MEX,2,"Capital and Mexico's biggest hub (MEX, plus NLU Felipe Ángeles 45 km north)",1
 PCM,Playa del Carmen,MX,20.63,-87.08,beach,,1,"Riviera Maya beach town, 1 h from Cancún airport; base for Cozumel and bull shark dives",1
-LPEN,Las Penitas,NI,12.37,-87.03,beach,MGA,2,"Quiet Pacific beach village 35 min from Leon, surf, turtle and mangrove tours, easy day trip or beach stay from Leon",0
-POPO,Popoyo / Playa Guasacate,NI,11.47,-86.11,beach,MGA,2,"Nicaragua's main surf area on the Tola coast (Popoyo, Guasacate, Santana breaks) with surf camps and a growing digital nomad scene, no public transport beyond a few buses from Rivas",0
-ESTE,Esteli,NI,13.09,-86.35,city,,2,"Northern highland city with cigar factories, murals and coffee; base for Miraflor nature reserve homestays (cloud forest, orchids, hiking, buses from Cotran Norte), Somoto Canyon and the Honduras border",0
-SOMO,Somoto Canyon (Somoto),NI,13.48,-86.58,park,,3,"Canyon national monument for floating and wading tours, trailhead on the Panamericana about 20 min from the town of Somoto and near the El Espino/Las Manos Honduras border road",0
-MATA,Matagalpa,NI,12.93,-85.92,city,,3,"Cool-climate coffee town in the northern highlands, coffee farm tours and cloud forest day trips, 51 km from Esteli",0
+LPEN,Las Penitas,NI,12.37,-87.03,beach,MGA,2,"Quiet Pacific beach village 35 min from Leon, surf, turtle and mangrove tours, easy day trip or beach stay from Leon",1
+POPO,Popoyo / Playa Guasacate,NI,11.47,-86.11,beach,MGA,2,"Nicaragua's main surf area on the Tola coast (Popoyo, Guasacate, Santana breaks) with surf camps and a growing digital nomad scene, no public transport beyond a few buses from Rivas",1
+ESTE,Esteli,NI,13.09,-86.35,city,,2,"Northern highland city with cigar factories, murals and coffee; base for Miraflor nature reserve homestays (cloud forest, orchids, hiking, buses from Cotran Norte), Somoto Canyon and the Honduras border",1
+SOMO,Somoto Canyon (Somoto),NI,13.48,-86.58,park,,3,"Canyon national monument for floating and wading tours, trailhead on the Panamericana about 20 min from the town of Somoto and near the El Espino/Las Manos Honduras border road",1
+MATA,Matagalpa,NI,12.93,-85.92,city,,3,"Cool-climate coffee town in the northern highlands, coffee farm tours and cloud forest day trips, 51 km from Esteli",1
