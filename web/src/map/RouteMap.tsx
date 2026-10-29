@@ -518,8 +518,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   useEffect(() => {
     if (!map) return
     const sel = view.sel ?? focusId
-    // flights fan out from everywhere, so they show only for a city that was clicked
-    const lit = view.sel ? families : new Set([...families].filter((f) => f !== 'flight'))
+    // a clicked city or the trip cursor lights every mode that is switched on, flights too
+    const lit = families
     const near = new Set(sel ? neighbours(model, sel, lit).map((n) => n.other.id) : [])
     for (const p of model.places) {
       map.setFeatureState({ source: 'places', id: p.id }, { sel: p.id === sel, near: near.has(p.id), dim: !!sel && p.id !== sel && !near.has(p.id) })
