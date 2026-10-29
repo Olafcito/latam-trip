@@ -16,9 +16,9 @@ export function duration(min: number | null | undefined): string {
   return r === 0 ? `${h}h` : `${h}h${String(r).padStart(2, '0')}`
 }
 
-/** "fra 1.040 kr", or "pris ukendt" when there is no price. */
+/** "from 1.040 kr", or "?" when there is no price. */
 export function fromPrice(dkk: number | null | undefined): string {
-  return dkk == null ? 'pris ukendt' : `fra ${thousands(dkk)} kr`
+  return dkk == null ? '?' : `from ${thousands(dkk)} kr`
 }
 
 export function kr(dkk: number | null | undefined): string {
