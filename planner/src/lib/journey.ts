@@ -14,16 +14,20 @@ export interface Hop {
   border: boolean
   /** a picked crawled flight; its price was seen for its own date */
   flight: CrawledFlight | null
-  /** an overland block of a seeded trip: your own route, drawn as one dashed line; the note says how */
+  /** an overland block of a planned trip: your own route, drawn as one dashed line; the note says how */
   overland?: string
   /** the countries an overland block passes through, in order, ends included */
   countries?: string[]
+  /** when the hop's price was seen (a trip from the trips table) */
+  observed_at?: string | null
 }
 
 export interface Place {
   node: string
   /** how we got here from the previous place; null for the first place */
   hop: Hop | null
+  /** why the stop is in the trip (a trip from the trips table) */
+  why?: string
 }
 
 export interface Journey {
@@ -34,8 +38,12 @@ export interface Journey {
   optionId: string | null
   places: Place[]
   savedAt?: string
-  /** a ranked trip from data/saved_trips.json */
+  /** a ranked trip from the trips table (data/web/trips.json) */
   rank?: number
+  /** the version of the table trip this journey is, or was edited from */
+  version?: number
+  /** why the trip looks the way it does (a trip from the trips table) */
+  why?: string
 }
 
 export function nodeForAirport(inout: InOut, code: string): string {

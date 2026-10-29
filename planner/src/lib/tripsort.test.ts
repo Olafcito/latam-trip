@@ -13,7 +13,7 @@ describe('sortTrips', () => {
     row('seed-1', { rank: 1, total: 8000, air: 40 }),
   ]
 
-  it('puts seeded trips by rank first, then saved ones by save time, then the draft', () => {
+  it('puts ranked trips first, then saved ones by save time, then the draft', () => {
     expect(ids(sortTrips(rows, 'rank'))).toEqual(['seed-1', 'seed-2', 'mine-early', 'mine-late', 'draft'])
   })
 

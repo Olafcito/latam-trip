@@ -3,7 +3,7 @@
 export type SortKey = 'rank' | 'price' | 'air'
 
 export interface SortRow {
-  /** a ranked trip from data/saved_trips.json */
+  /** a ranked trip from the trips table (data/web/trips.json) */
   rank?: number
   savedAt?: string
   /** the trip being built that is not saved yet */
@@ -23,7 +23,7 @@ function byValue(a: number | null, b: number | null): number {
   return a - b
 }
 
-/** rank: the seeded trips by rank, then the ones you saved in the order you saved them, then the unsaved draft. */
+/** rank: the ranked trips by rank, then the ones you saved in the order you saved them, then the unsaved draft. */
 function byRank(a: SortRow, b: SortRow): number {
   const group = (r: SortRow) => (r.draft ? 2 : r.rank != null ? 0 : 1)
   const g = group(a) - group(b)

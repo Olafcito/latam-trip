@@ -21,8 +21,8 @@ export const FILES = [
   'data/web/connections.json',
   'data/web/countries.json',
   'data/web/flights.json',
-  // the ranked trips to start from
-  'data/web/saved_trips.json',
+  // the trips table: the latest version of every planned trip
+  'data/web/trips.json',
 ]
 
 let failed = 0
