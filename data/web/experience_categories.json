@@ -1,0 +1,166 @@
+[
+ {
+  "id": "diving",
+  "name": "Diving & snorkelling",
+  "place_categories": [
+   "Beach"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Scuba_Divers_in_Cozumel%2C_Mexico_swimming_through_a_coral_cave.jpg/1280px-Scuba_Divers_in_Cozumel%2C_Mexico_swimming_through_a_coral_cave.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Scuba_Divers_in_Cozumel,_Mexico_swimming_through_a_coral_cave.jpg",
+   "credit": "Matthew T Rader",
+   "licence": "CC BY-SA 4.0",
+   "w": 2841,
+   "h": 1750
+  }
+ },
+ {
+  "id": "wildlife",
+  "name": "Wildlife",
+  "place_categories": [
+   "Nature"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Brown-throated_three-toed_sloth_female.JPG/1280px-Brown-throated_three-toed_sloth_female.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Brown-throated_three-toed_sloth_female.JPG",
+   "credit": "Charles J. Sharp",
+   "licence": "CC BY-SA 3.0",
+   "w": 4272,
+   "h": 2848
+  }
+ },
+ {
+  "id": "hiking",
+  "name": "Hiking & volcanoes",
+  "place_categories": [
+   "Nature",
+   "Altitude"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Volc%C3%A1n_de_Fuego_and_Acatenango.jpg/1280px-Volc%C3%A1n_de_Fuego_and_Acatenango.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Volc%C3%A1n_de_Fuego_and_Acatenango.jpg",
+   "credit": "Scottydude",
+   "licence": "CC BY-SA 4.0",
+   "w": 1600,
+   "h": 1200
+  }
+ },
+ {
+  "id": "beach",
+  "name": "Beaches & islands",
+  "place_categories": [
+   "Beach"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  }
+ },
+ {
+  "id": "ruins",
+  "name": "Ruins & history",
+  "place_categories": [
+   "Ruins",
+   "Colonial"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Tikal-Plaza-And-North-Acropolis.jpg/1280px-Tikal-Plaza-And-North-Acropolis.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Tikal-Plaza-And-North-Acropolis.jpg",
+   "credit": "Bjørn Christian Tørrissen",
+   "licence": "CC BY-SA 3.0",
+   "w": 5037,
+   "h": 2145
+  }
+ },
+ {
+  "id": "culture",
+  "name": "Culture & markets",
+  "place_categories": [
+   "Colonial",
+   "Markets"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg/1280px-Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Arco_de_Santa_Catalina_Antigua_Guatemala_edit2.jpg",
+   "credit": "Adalberto.H.Vega; derivative work by MrPanyGoff",
+   "licence": "CC BY 3.0",
+   "w": 2039,
+   "h": 2056
+  }
+ },
+ {
+  "id": "food",
+  "name": "Food & drink",
+  "place_categories": [
+   "Food"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Pupusas.jpg/1280px-Pupusas.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Pupusas.jpg",
+   "credit": "Renee Comet (photographer)",
+   "licence": "Public domain",
+   "w": 1852,
+   "h": 1744
+  }
+ },
+ {
+  "id": "nightlife",
+  "name": "Nightlife & dance",
+  "place_categories": [
+   "Nightlife"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Streets_in_Guatemala_City_at_night.jpg/1280px-Streets_in_Guatemala_City_at_night.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Streets_in_Guatemala_City_at_night.jpg",
+   "credit": "Rene Hernandez",
+   "licence": "CC BY-SA 2.0",
+   "w": 4608,
+   "h": 2592
+  }
+ },
+ {
+  "id": "training",
+  "name": "Training",
+  "place_categories": [],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  }
+ },
+ {
+  "id": "adventure",
+  "name": "Adventure",
+  "place_categories": [
+   "Nature"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Zip-line_over_rainforest_canopy_4_January_2005%2C_Costa_Rica.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Zip-line_over_rainforest_canopy_4_January_2005,_Costa_Rica.jpg",
+   "credit": "Khaufle at English Wikipedia",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
+  }
+ },
+ {
+  "id": "courses",
+  "name": "Courses",
+  "place_categories": [],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Dive_class_%2883766971%29.jpg/1280px-Dive_class_%2883766971%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Dive_class_(83766971).jpg",
+   "credit": "Dorothy from USA",
+   "licence": "CC BY 2.0",
+   "w": 2592,
+   "h": 1725
+  }
+ }
+]

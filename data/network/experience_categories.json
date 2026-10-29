@@ -1,0 +1,127 @@
+{
+ "about": "Over-categories for experiences. place_categories links each one to the place categories the map already shows (from taglines, summaries and things to do), so a place tagged Beach suggests Diving and Beaches. keywords is the regex used to sort an experience into a category when it was added from a place's things-to-do list. image_id points at an experience_image row. fallback_place: a map place whose photo stands in until the category has its own image.",
+ "order": [
+  "diving",
+  "wildlife",
+  "hiking",
+  "beach",
+  "ruins",
+  "culture",
+  "food",
+  "nightlife",
+  "training",
+  "adventure",
+  "courses"
+ ],
+ "categories": [
+  {
+   "id": "diving",
+   "name": "Diving & snorkelling",
+   "place_categories": [
+    "Beach"
+   ],
+   "image_id": "cat-diving",
+   "keywords": "dive|diving|scuba|snorkel|reef|shark",
+   "fallback_place": "SAPZ"
+  },
+  {
+   "id": "wildlife",
+   "name": "Wildlife",
+   "place_categories": [
+    "Nature"
+   ],
+   "image_id": "cat-wildlife",
+   "keywords": "wildlife|sloth|monkey|macaw|bird|turtle|whale|dolphin|caiman|animal|frog|condor|flamingo|butterfl|insect|orchid|pampas",
+   "fallback_place": "TAYR"
+  },
+  {
+   "id": "hiking",
+   "name": "Hiking & volcanoes",
+   "place_categories": [
+    "Nature",
+    "Altitude"
+   ],
+   "image_id": "cat-hiking",
+   "keywords": "hike|hiking|trek|volcano|summit|viewpoint|mirador|trail|walk|lighthouse|cerro|hill|climb",
+   "fallback_place": "LEON"
+  },
+  {
+   "id": "beach",
+   "name": "Beaches & islands",
+   "place_categories": [
+    "Beach"
+   ],
+   "image_id": "cat-beach",
+   "keywords": "beach|island|\\bcays?\\b|swim|sunset|lagoon|lake|boat",
+   "fallback_place": "PALO"
+  },
+  {
+   "id": "ruins",
+   "name": "Ruins & history",
+   "place_categories": [
+    "Ruins",
+    "Colonial"
+   ],
+   "image_id": "cat-ruins",
+   "keywords": "ruin|maya|inca|archaeolog|tikal|pyramid|temple|fort\\b|fortress|mission|history|\\bwar\\b",
+   "fallback_place": "COPAN"
+  },
+  {
+   "id": "culture",
+   "name": "Culture & markets",
+   "place_categories": [
+    "Colonial",
+    "Markets"
+   ],
+   "image_id": "cat-culture",
+   "keywords": "museum|market|church|cathedral|colonial|plaza|old town|walking tour|art|graffiti|mural|cemetery|mine|cholita|festival|witches|christmas|cultural|statue|square|town",
+   "fallback_place": "GTO"
+  },
+  {
+   "id": "food",
+   "name": "Food & drink",
+   "place_categories": [
+    "Food"
+   ],
+   "image_id": "cat-food",
+   "keywords": "food|coffee|chocolate|choco|cooking|ceviche|\\brum\\b|brew|tequila|\\bmezcal\\b|tasting|cuisine|pupusa|lunch|cafe|picanteria|wine|distiller|trout|grilled|agave",
+   "fallback_place": "MINC"
+  },
+  {
+   "id": "nightlife",
+   "name": "Nightlife & dance",
+   "place_categories": [
+    "Nightlife"
+   ],
+   "image_id": "cat-nightlife",
+   "keywords": "nightlife|bars?\\b|party|parties|salsa|club|happy hour|reggae|dance|live music|karaoke",
+   "fallback_place": "CTG"
+  },
+  {
+   "id": "training",
+   "name": "Training",
+   "place_categories": [],
+   "image_id": "cat-training",
+   "keywords": "muay thai|boxing|kickbox|gym|yoga|crossfit|fitness|martial|jiu",
+   "fallback_place": null
+  },
+  {
+   "id": "adventure",
+   "name": "Adventure",
+   "place_categories": [
+    "Nature"
+   ],
+   "image_id": "cat-adventure",
+   "keywords": "zip.?line|canopy|\\braft|surf|kite|paraglid|bike|biking|death road|kayak|canyon|tubing|sandboard|cave|caving|horse|bungee|swing|moto|jeep|4x4|salt flat",
+   "fallback_place": "UYU"
+  },
+  {
+   "id": "courses",
+   "name": "Courses",
+   "place_categories": [],
+   "image_id": "cat-courses",
+   "keywords": "course|school|lesson|class|learn",
+   "fallback_place": null
+  }
+ ]
+}

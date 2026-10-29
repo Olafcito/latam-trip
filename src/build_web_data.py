@@ -8,7 +8,7 @@ flights (R: one-ways, RR: returns) of both directions into one list of options.
 --fetch-elevation looks up each place's altitude on the Open-Meteo elevation API (Copernicus DEM)
 and caches it in data/network/elevation.json; without it the cache is used when present.
 """
-import csv, datetime, json, os, re, sqlite3, statistics, sys, urllib.request
+import glob, csv, datetime, json, os, re, sqlite3, statistics, sys, urllib.request
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
@@ -107,6 +107,53 @@ def build():
         elev.update(fetch_elevation(list(nodes.values())))
         json.dump(elev, open(elev_path, "w", encoding="utf-8"), indent=1, sort_keys=True)
 
+    def load_json(name, default):
+        f = os.path.join(NET, name)
+        return json.load(open(f, encoding="utf-8")) if os.path.exists(f) else default
+
+    def load_jsonl(pattern):
+        rows = []
+        for f in sorted(glob.glob(os.path.join(NET, pattern))):
+            rows += [json.loads(l) for l in open(f, encoding="utf-8") if l.strip()]
+        return rows
+
+    def web_image(img):
+        return img and {"url": img.get("url"), "page": img.get("page"), "credit": img.get("credit"),
+                        "licence": img.get("license") or img.get("licence"), "w": img.get("w"), "h": img.get("h")}
+
+    # experiences database, categories, saved lists, stay quotes and the task log
+    exp_images = {r["id"]: r.get("image") for r in load_jsonl("exp-img-*.jsonl") if r.get("kind") == "experience_image"}
+    cat_doc = load_json("experience_categories.json", {"categories": []})
+    node_image = {nid: web_image((n.get("profile") or {}).get("image")) for nid, n in nodes.items()}
+    exp_categories = [{"id": c["id"], "name": c["name"], "place_categories": c["place_categories"],
+                       "image": web_image(exp_images.get(c["image_id"])) or node_image.get(c.get("fallback_place"))}
+                      for c in cat_doc["categories"]]
+    cat_image = {c["id"]: c["image"] for c in exp_categories}
+    experiences = []
+    for e in load_jsonl("experiences.jsonl"):
+        if e.get("kind") != "experience":
+            continue
+        own = web_image(exp_images.get(e["id"]))
+        at = next((node_image[p] for p in e.get("places") or [] if node_image.get(p)), None)
+        img, src = (own, "own") if own else (at, "place") if at else (cat_image.get(e["category"]), "category")
+        experiences.append({k: v for k, v in e.items() if k != "kind"} | {"image": img, "image_source": src if img else None})
+    lists = load_json("lists.json", {"lists": []})
+    saved_in = {}
+    for l in lists.get("lists", []):
+        for it in l.get("items", []):
+            saved_in.setdefault((it["type"], it["id"]), []).append(l["id"])
+    for e in experiences:
+        e["saved_in"] = saved_in.get(("experience", e["id"]), [])
+    exp_at = {}
+    for e in experiences:
+        for pid in e.get("places") or []:
+            exp_at.setdefault(pid, []).append(e["id"])
+    stays = {}
+    for r in load_jsonl("stays.jsonl"):
+        if r.get("kind") == "stay_quote":
+            stays.setdefault(r["place"], []).append({k: v for k, v in r.items() if k not in ("kind", "place")})
+    task_log = load_jsonl("task_log.jsonl")
+
     places = []
     for n in nodes.values():
         p = n.get("profile") or {}
@@ -125,6 +172,8 @@ def build():
                          "rating": h.get("rating"), "price_suspect": bool(h.get("price_suspect")), "url": h.get("source")}
                         for h in (p.get("hostels") or [])],
             "hostel_note": p.get("hostel_price_note"),
+            "saved_in": saved_in.get(("place", n["id"]), []), "experience_ids": exp_at.get(n["id"], []),
+            "stay_quotes": sorted(stays.get(n["id"], []), key=lambda r: (r["check_in"], r["room"], r["dkk_per_night"])),
         })
     for code, (name, country, lat, lon) in CONTEXT_AIRPORTS.items():
         if code not in nodes:
@@ -321,7 +370,21 @@ def build():
 
     countries = [{"code": c, "name": n, "label_lat": la, "label_lon": lo} for c, n, la, lo in COUNTRIES]
     os.makedirs(OUT, exist_ok=True)
-    for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries)):
+    def latest(vals):
+        vals = [v for v in vals if v]
+        return max(vals) if vals else None
+    db_path = os.path.join(ROOT, "data", "crawl.db")
+    flights_checked = sqlite3.connect(db_path).execute("SELECT max(observed_at) FROM quotes WHERE ok=1").fetchone()[0] \
+        if os.path.exists(db_path) else None
+    meta = {"built_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="minutes"),
+            "last_checked": {"flights": flights_checked,
+                             "stays": latest(q.get("observed_at") for v in stays.values() for q in v),
+                             "experiences": latest(e.get("checked_at") for e in experiences if e.get("researched")),
+                             "places": latest((n.get("profile") or {}).get("checked_at") for n in nodes.values()),
+                             "tasks": latest(t.get("done_at") for t in task_log)}}
+    for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries),
+                       ("experiences", experiences), ("experience_categories", exp_categories), ("lists", lists),
+                       ("task_log", task_log), ("meta", meta)):
         json.dump(data, open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"places {len(places)}  connections {len(conns)}  options {sum(len(c['options']) for c in conns.values())}"
           f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  -> {OUT}")

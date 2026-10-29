@@ -63,6 +63,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026).",
+  "saved_in": [],
+  "experience_ids": [
+   "lpb-mi-teleferico-cable-car-rides",
+   "lpb-witches-market-and-plaza-murillo",
+   "lpb-death-road-mountain-bike-day",
+   "lpb-valle-de-la-luna-and-chacaltaya-day-trips",
+   "lpb-cholita-wrestling-in-el-alto"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -128,6 +137,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "copa-basilica-of-our-lady-of-copacabana",
+   "copa-cerro-calvario-sunset-climb",
+   "copa-boat-to-isla-del-sol",
+   "copa-grilled-lake-trout-on-the-waterfront",
+   "copa-pedal-boat-or-kayak-on-the-lake"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -178,6 +196,15 @@
    }
   ],
   "hostel_note": "Guesthouses USD 15-50 per night (bushop 2026). Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "isol-ridge-walk-challapampa-to-yumani",
+   "isol-titi-qala-sacred-rock-and-chinkana-ruins",
+   "isol-sunrise-and-sunset-from-a-yumani-guesthouse",
+   "isol-inca-stairway-and-terraces",
+   "isol-boat-out-to-isla-de-la-luna"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -244,6 +271,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "cor-cerro-uchumachi-hike",
+   "cor-death-road-finish-and-yungas-road-views",
+   "cor-pool-and-hammock-day-at-a-hillside-hostel",
+   "cor-waterfalls-and-coffee-farms-nearby",
+   "cor-sunday-market-on-the-plaza"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -292,6 +328,14 @@
    }
   ],
   "hostel_note": "Very few hostels; accommodation fills and prices jump around Carnaval. Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "oru-carnaval-de-oruro-entrada-feb",
+   "oru-virgen-del-socavon-sanctuary-and-mirador",
+   "oru-carnival-museum-museo-folklorico",
+   "oru-sajama-and-sabaya-lagoons-tours-far"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -358,6 +402,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Tourist sources quote dorm USD 10-18 in Uyuni (touristsecrets 2026).",
+  "saved_in": [],
+  "experience_ids": [
+   "uyu-salar-de-uyuni-1-day-or-3-day-jeep-tour",
+   "uyu-mirror-effect-at-sunrise-and-sunset-in-rainy-sea",
+   "uyu-train-cemetery",
+   "uyu-incahuasi-cactus-island",
+   "uyu-lagunas-colorada-and-verde-on-multi-day-tours"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -423,6 +476,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "poto-cerro-rico-cooperative-mine-tour",
+   "poto-casa-nacional-de-moneda-mint-museum",
+   "poto-santa-teresa-convent-and-cathedral-tower",
+   "poto-colonial-streets-around-plaza-10-de-noviembre",
+   "poto-saltenas-for-breakfast"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -489,6 +551,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. City dorm range USD 6-14 (bushop 2026).",
+  "saved_in": [],
+  "experience_ids": [
+   "sre-plaza-25-de-mayo-and-casa-de-la-libertad",
+   "sre-mirador-de-la-recoleta-at-sunset",
+   "sre-dinosaur-footprints-at-cal-orck-o",
+   "sre-market-day-in-tarabuco-sunday",
+   "sre-chocolate-and-cafe-crawl"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -546,6 +617,14 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "tup-horseback-ride-through-quebrada-palala-and-valle",
+   "tup-canyon-del-inca-and-puerta-del-diablo",
+   "tup-butch-cassidy-trail-and-san-vicente",
+   "tup-4x4-start-of-the-salar-de-uyuni-tour-3-to-4-days"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -612,6 +691,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "cbb-cristo-de-la-concordia-hilltop-statue",
+   "cbb-la-cancha-market",
+   "cbb-lunch-at-a-picanteria-silpancho-pique-macho",
+   "cbb-day-trip-to-tarata-or-incallajta-ruins",
+   "cbb-plaza-14-de-septiembre-cafes"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -677,6 +765,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "vvi-plaza-24-de-septiembre-and-the-cathedral-tower",
+   "vvi-manzana-uno-cultural-centre",
+   "vvi-biocentro-guembe-butterfly-and-orchid-park",
+   "vvi-lowland-cooking-and-cafes-around-equipetrol",
+   "vvi-jesuit-missions-of-chiquitos-day-tour"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -741,6 +838,14 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. One source quoted Hostel Serena dorms from GBP 9.5 and privates from GBP 29 (alongdustyroads, 2025); not converted to DKK.",
+  "saved_in": [],
+  "experience_ids": [
+   "sama-el-fuerte-de-samaipata-carved-rock-ruins-unesco",
+   "sama-amboro-national-park-waterfalls-and-tree-ferns",
+   "sama-los-volcanes-rock-formations",
+   "sama-cafe-and-bakery-lunches-on-the-plaza"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -796,6 +901,14 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "rbq-madidi-national-park-jungle-lodge-stay",
+   "rbq-pampas-boat-tour-with-caiman-capybara-and-pink-d",
+   "rbq-beni-river-sunset-and-the-ferry-to-san-buenavent",
+   "rbq-fiesta-de-rurre-on-2-feb"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -829,6 +942,9 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -862,6 +978,9 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -895,6 +1014,9 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -961,6 +1083,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "bog-la-candelaria-old-town-and-street-art",
+   "bog-monserrate-cable-car-or-funicular",
+   "bog-gold-museum-and-botero-museum",
+   "bog-usaquen-sunday-flea-market",
+   "bog-zipaquira-salt-cathedral-day-trip"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -1026,6 +1157,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "pty-casco-viejo-old-town",
+   "pty-miraflores-locks-on-the-panama-canal",
+   "pty-amador-causeway-bike-ride",
+   "pty-cinta-costera-and-mercado-de-mariscos"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -1091,6 +1230,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sjo-museo-del-oro-precolombino",
+   "sjo-mercado-central",
+   "sjo-barrio-escalante-food-scene",
+   "sjo-day-trip-to-poas-or-irazu-volcano"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -1154,6 +1301,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "gua-palacio-nacional-and-plaza-de-la-constitucion-in",
+   "gua-museo-popol-vuh-and-museo-ixchel",
+   "gua-zona-4-cafes-and-street-art",
+   "gua-day-trip-to-antigua-or-pacaya"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -1220,6 +1375,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null.",
+  "saved_in": [],
+  "experience_ids": [
+   "gdl-centro-historico-cathedral-plaza-de-armas-hospic",
+   "gdl-tlaquepaque-and-tonala-craft-towns",
+   "gdl-torta-ahogada-and-birria",
+   "gdl-mercado-san-juan-de-dios",
+   "gdl-tequila-train-and-day-tours"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -1259,6 +1423,14 @@
   },
   "hostels": [],
   "hostel_note": "No hostels found; most visitors day-trip from Guadalajara. Prices null.",
+  "saved_in": [],
+  "experience_ids": [
+   "teq-distillery-tours-jose-cuervo-sauza",
+   "teq-agave-fields-and-tequila-volcano",
+   "teq-tequila-express-or-jose-cuervo-express-train",
+   "teq-plaza-and-parish-of-santiago-apostol"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1323,6 +1495,15 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Hostelz Mexico average: no figure for Guanajuato.",
+  "saved_in": [],
+  "experience_ids": [
+   "gto-callejoneada-with-students-and-music",
+   "gto-pipila-viewpoint-via-funicular",
+   "gto-mummies-of-guanajuato-museum",
+   "gto-alley-of-the-kiss-and-teatro-juarez",
+   "gto-underground-tunnel-streets"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1372,6 +1553,14 @@
    }
   ],
   "hostel_note": "Only one hostel listed (dorm 'from MX$83' on Hostelz, not converted). Hotels and Airbnbs dominate.",
+  "saved_in": [],
+  "experience_ids": [
+   "chap-ajijic-malecon-and-gallery-walk",
+   "chap-chapala-pier-and-fish-restaurants",
+   "chap-scorpion-island-and-mezcala-boat-trip",
+   "chap-jocotepec-hot-springs"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1438,6 +1627,75 @@
    }
   ],
   "hostel_note": "Per-hostel nightly prices not published without dates; Hostelz/Hostelworld 'from' prices judged unreliable, so null. Peak season dorm prices run above the average.",
+  "saved_in": [],
+  "experience_ids": [
+   "pvr-malecon-sculpture-walk-at-sunset",
+   "pvr-zona-romantica-and-playa-los-muertos",
+   "pvr-humpback-whale-watching-dec-to-mar",
+   "pvr-boat-to-yelapa-and-majahuitas",
+   "pvr-snorkelling-at-marietas-islands"
+  ],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
+  "id": "DRAKE",
+  "name": "Drake Bay (Osa Peninsula)",
+  "short_name": "Drake Bay",
+  "country": "CR",
+  "lat": 8.69,
+  "lon": -83.67,
+  "tier": "destination",
+  "type": "park",
+  "popularity": 2,
+  "iata": "DRK",
+  "airport_transfer_min": null,
+  "why": "Rainforest bay for Corcovado wildlife and Caño Island diving",
+  "reason": "Remote Osa Peninsula base for Corcovado wildlife and Isla del Caño shark dives",
+  "summary": "A calm, remote bay on Costa Rica's Osa Peninsula, reached by boat from Sierpe or a small plane. Base for guided hikes into Corcovado National Park (scarlet macaws, rare mammals) and for diving or snorkelling at Isla del Caño, with white-tip reef sharks, turtles and rays.",
+  "categories": [
+   "Nature",
+   "Beach"
+  ],
+  "things_to_do": [
+   "Two-tank dive at Isla del Caño",
+   "Guided hike in Corcovado (San Pedrillo)",
+   "Snorkel at Caño Island",
+   "Night insect walk",
+   "Whale and dolphin spotting by boat"
+  ],
+  "touristy": 3,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "Life for Life Hostel Drake Bay",
+    "dorm_dkk": 48,
+    "private_dkk": null,
+    "rating": 9.7,
+    "price_suspect": true,
+    "url": "https://www.hostelz.com/best-hostels-bahia-drake"
+   },
+   {
+    "name": "Corcovado Jungle Hostel",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelz.com/best-hostels-bahia-drake"
+   }
+  ],
+  "hostel_note": null,
+  "saved_in": [
+   "want"
+  ],
+  "experience_ids": [
+   "cano",
+   "corcovado",
+   "drake-night-insect-walk",
+   "drake-whale-and-dolphin-spotting-by-boat"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1504,6 +1762,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "acatenango",
+   "ant-arch-of-santa-catalina-and-parque-central",
+   "ant-colonial-ruins-capuchinas-san-francisco-el-grand",
+   "ant-cerro-de-la-cruz-viewpoint",
+   "ant-coffee-farm-or-chocomuseo-tour"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1570,6 +1837,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "atit-ride-lanchas-between-villages",
+   "atit-climb-san-pedro-or-atitlan-volcano",
+   "atit-kayak-or-dive-from-santa-cruz-la-laguna",
+   "atit-visit-santiago-atitlan-and-the-maximon-shrine",
+   "atit-lake-edge-yoga-and-hammock-time"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1634,6 +1910,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "xela-spanish-school-immersion",
+   "xela-santa-maria-volcano-sunrise-hike",
+   "xela-fuentes-georginas-hot-springs",
+   "xela-cathedral-and-parque-central",
+   "xela-quetzaltrekkers-3-day-trek-to-lake-atitlan"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1699,6 +1984,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "flr-tikal-ruins-at-sunrise-or-sunset",
+   "flr-swim-and-sunset-at-the-lake",
+   "flr-cave-and-cenote-day-trips-actun-kan",
+   "flr-yaxha-ruins",
+   "flr-walk-the-island-and-its-lakefront-bars"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1764,6 +2058,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "lanq-swim-the-semuc-champey-pools-and-walk-to-the-mir",
+   "lanq-candlelit-cave-tour-at-kan-ba",
+   "lanq-river-tubing-on-the-cahabon",
+   "lanq-lanquin-caves-at-dusk-bats",
+   "lanq-hostel-river-swings-and-communal-dinners"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1822,6 +2125,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sal-metropolitan-cathedral-and-historic-downtown",
+   "sal-monument-to-memory-and-truth",
+   "sal-los-planes-de-renderos-viewpoint-and-pupusas",
+   "sal-museo-nacional-david-j-guzman",
+   "sal-day-trip-to-boqueron-volcano"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -1888,6 +2200,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "tunco-learn-to-surf-at-el-sunzal-la-bocana-or-bocanita",
+   "tunco-sunset-behind-the-tunco-rock",
+   "tunco-weekend-live-music-and-bar-crawl",
+   "tunco-tamanique-waterfalls",
+   "tunco-day-trip-to-el-zonte"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -1946,6 +2267,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "copan-copan-archaeological-park-and-hieroglyphic-stair",
+   "copan-macaw-mountain-bird-park",
+   "copan-luna-jaguar-hot-springs",
+   "copan-horseback-or-coffee-farm-tours",
+   "copan-tea-and-chocolate-tasting-in-town"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2009,6 +2339,12 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sap-malls-and-local-food-stop",
+   "sap-day-trip-to-lake-yojoa"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -2056,6 +2392,13 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "tgu-cristo-del-picacho-viewpoint",
+   "tgu-catedral-de-san-miguel-arcangel-and-parque-centr",
+   "tgu-parque-la-leona-viewpoint"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2120,6 +2463,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "lce-pico-bonito-national-park",
+   "lce-white-water-rafting-on-the-cangrejal-river",
+   "lce-cuero-y-salado-wildlife-refuge",
+   "lce-ferry-to-roatan-or-utila"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2184,6 +2535,17 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "cara-a-cara",
+   "roatan-wrecks",
+   "rtb-scuba-diving-and-dive-courses",
+   "rtb-snorkel-at-half-moon-bay",
+   "rtb-day-at-west-bay-beach",
+   "rtb-roatan-brewing-co-and-rum-tasting",
+   "rtb-sunset-in-west-end"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -2249,6 +2611,13 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "utila",
+   "util-sunset-at-skidrow-cay",
+   "util-bar-nights-and-island-parties"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2305,6 +2674,12 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "mga-loma-de-tiscapa-viewpoint",
+   "mga-old-cathedral-ruins-and-plaza-de-la-revolucion"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -2371,6 +2746,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "leon-volcano-boarding-on-cerro-negro",
+   "leon-rooftop-of-the-cathedral-of-leon",
+   "leon-revolution-murals-and-museums",
+   "leon-day-trip-to-las-penitas-beach",
+   "leon-cerro-negro-overnight-hike"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2437,6 +2821,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "gran-calle-la-calzada-bars-and-restaurants",
+   "gran-mombacho-volcano-or-canopy-tour",
+   "gran-isletas-boat-trip-on-lake-nicaragua",
+   "gran-masaya-volcano-at-night",
+   "gran-climb-the-cathedral-or-la-merced-tower"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2502,6 +2895,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sjds-surf-lessons-at-playa-maderas-or-hermosa",
+   "sjds-sunday-funday-pool-crawl",
+   "sjds-cristo-de-la-misericordia-viewpoint",
+   "sjds-sunset-sailing-trip",
+   "sjds-beach-hopping-to-playa-remanso"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2567,6 +2969,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "omet-climb-maderas-or-concepcion-volcano",
+   "omet-ojo-de-agua-natural-pools",
+   "omet-kayak-or-sup-at-charco-verde",
+   "omet-scooter-loop-round-the-island",
+   "omet-hike-to-san-ramon-waterfall"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2630,6 +3041,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "corn-snorkel-and-dive-the-reefs",
+   "corn-sunset-with-a-nica-libre",
+   "corn-picnic-beach-and-long-bay",
+   "corn-ride-around-the-island-loop"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2678,6 +3097,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "little-corn",
+   "lcorn-yoga-at-firefly-or-the-lighthouse",
+   "lcorn-walk-to-the-lighthouse-viewpoint",
+   "lcorn-happy-hours-and-reggae-nights"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2743,6 +3170,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "lir-rincon-de-la-vieja-national-park",
+   "lir-beaches-of-guanacaste-playas-del-coco",
+   "lir-barra-honda-caves",
+   "lir-day-trip-to-santa-rosa-national-park"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2781,6 +3216,14 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sblas-island-hopping-day-or-overnight-trip",
+   "sblas-snorkelling-around-the-cays",
+   "sblas-visit-a-guna-community-and-buy-molas",
+   "sblas-sailing-between-panama-and-colombia"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2845,6 +3288,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "capu-walk-the-jungle-trails-to-el-cielito-waterfall",
+   "capu-snorkel-at-la-mocha-and-playa-aguacate",
+   "capu-boat-or-walk-to-sapzurro-and-la-miel",
+   "capu-beach-days"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -2909,6 +3360,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "mde-comuna-13-graffiti-and-escalators",
+   "mde-botero-plaza-and-museum-of-antioquia",
+   "mde-metrocable-up-to-parque-arvi",
+   "mde-alumbrados-christmas-lights-december",
+   "mde-guatape-day-trip"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -2975,6 +3435,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "clo-salsa-clubs-and-dance-classes",
+   "clo-cristo-rey-viewpoint",
+   "clo-san-antonio-neighbourhood",
+   "clo-cerro-de-las-tres-cruces-hike",
+   "clo-cali-fair-25-to-30-dec"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -3040,6 +3509,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "ctg-walled-city-walk-and-plaza-de-bolivar",
+   "ctg-getsemani-street-art-and-nightlife",
+   "ctg-castillo-san-felipe-de-barajas",
+   "ctg-rosario-islands-day-trip",
+   "ctg-sunset-on-the-city-walls"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -3106,6 +3584,16 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "taganga",
+   "smr-tayrona-day-trip",
+   "smr-minca-by-moto-taxi",
+   "smr-ciudad-perdida-trek-4-to-6-days",
+   "smr-taganga-and-rodadero-beaches",
+   "smr-quinta-de-san-pedro-alejandrino"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -3161,6 +3649,13 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "pei-gateway-to-salento-and-cocora-valley-about-45-mi",
+   "pei-megacable-gondola",
+   "pei-ukumari-biopark"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -3225,6 +3720,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "adz-johnny-cay-boat-trip",
+   "adz-snorkel-la-piscinita",
+   "adz-mangrove-kayaking",
+   "adz-golf-cart-island-loop",
+   "adz-fried-fish-and-rondon-soup"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -3283,6 +3787,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "pva-scuba-and-snorkelling-in-seaflower-reserve",
+   "pva-mcbean-lagoon-national-park",
+   "pva-santa-catalina-footbridge-and-forts",
+   "pva-scooter-or-buggy-loop-road",
+   "pva-seafood-on-the-beach"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3349,6 +3862,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sale-valle-de-cocora-wax-palm-hike",
+   "sale-coffee-farm-tour-e-g-don-elias-finca-el-ocaso",
+   "sale-alto-de-la-cruz-viewpoint",
+   "sale-trout-and-patacon-on-the-plaza",
+   "sale-tejo-and-local-bars"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3415,6 +3937,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "mzl-nevado-del-ruiz-national-park",
+   "mzl-hot-springs-termales-del-ruiz-otono",
+   "mzl-hacienda-venecia-coffee-tour",
+   "mzl-cable-car-and-cathedral-viewpoint",
+   "mzl-student-bars-around-cable-plaza"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3473,6 +4004,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "guat-climb-el-penol-rock-708-steps",
+   "guat-zocalo-streets-and-plaza-de-zocalos",
+   "guat-reservoir-boat-trip",
+   "guat-kayak-or-paddleboard-on-the-lake",
+   "guat-pablo-escobar-s-la-manuela-ruins"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3538,6 +4078,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "tayr-hike-to-cabo-san-juan-beach",
+   "tayr-snorkel-la-piscina",
+   "tayr-hammock-night-at-cabo-san-juan",
+   "tayr-playa-brava-quiet-beach",
+   "tayr-walk-to-arrecifes-no-swimming-currents"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3603,6 +4152,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "palo-tubing-down-the-palomino-river",
+   "palo-quebrada-valencia-waterfalls",
+   "palo-long-beach-walks-and-sunset",
+   "palo-day-trip-to-tayrona",
+   "palo-hammock-hostels-and-pools"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3669,6 +4227,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "minc-marinka-and-pozo-azul-waterfalls",
+   "minc-finca-la-victoria-coffee-tour",
+   "minc-sierra-minca-sunset-viewpoint",
+   "minc-birdwatching",
+   "minc-day-trip-to-tayrona"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3733,6 +4300,14 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "baq-carnival-of-barranquilla-feb",
+   "baq-gran-malecon-del-rio",
+   "baq-bocas-de-ceniza",
+   "baq-art-deco-el-prado-district"
+  ],
+  "stay_quotes": [],
   "hub": true
  },
  {
@@ -3799,6 +4374,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sgil-white-water-rafting-on-the-suarez-or-fonce",
+   "sgil-paragliding-over-chicamocha-canyon",
+   "sgil-barichara-and-the-camino-real-to-guane",
+   "sgil-pozo-azul-and-gallineral-park",
+   "sgil-tejo-evenings"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3856,6 +4440,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "vley-plaza-mayor-and-cobbled-streets",
+   "vley-el-fosil-museum",
+   "vley-pozos-azules-and-iguaque-national-park",
+   "vley-cycling-to-wineries",
+   "vley-candlelit-festival-of-lights-dec"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3910,6 +4503,12 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "neco-boat-launches-to-capurgana-and-acandi",
+   "neco-black-sand-beach"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3959,6 +4558,15 @@
    }
   ],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "sapz-walk-to-playa-blanca-and-la-miel-panama",
+   "sapz-hike-over-the-hill-to-capurgana-about-1-5-h",
+   "sapz-diana-waterfall",
+   "sapz-snorkel-and-freedive",
+   "sapz-cabo-tiburon-border-of-south-and-central-america"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
@@ -3993,6 +4601,12 @@
   },
   "hostels": [],
   "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "obal-panama-immigration-stamp",
+   "obal-boat-to-or-from-sapzurro-about-45-min"
+  ],
+  "stay_quotes": [],
   "hub": false
  },
  {
