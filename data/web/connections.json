@@ -4096,40 +4096,125 @@
    {
     "mode": "flight",
     "operators": [
-     "TAG Airlines"
+     "Avianca"
     ],
-    "duration_min": null,
-    "duration_range_h": null,
+    "duration_min": 190,
     "price_dkk": {
-     "min": null,
-     "typical": null
+     "min": 1359,
+     "typical": 1469
     },
-    "price_local": "round trip from US$481 (TAG site, Oct 2026)",
-    "frequency": "not published",
+    "frequency": "at least 2 daily (05:25 and 15:40)",
     "overnight": false,
-    "border": false,
-    "stops": [],
+    "border": true,
+    "stops": [
+     {
+      "place_id": "SAL",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
     "geometry": null,
     "flight": {
-     "nonstop": null,
-     "vias": [],
+     "nonstop": false,
+     "vias": [
+      "SAL"
+     ],
      "carriers": [
-      "TAG Airlines"
+      "Avianca"
      ],
      "oneway_dkk": {
-      "min": null,
-      "observed_at": "2026"
+      "min": 1359,
+      "observed_at": "2026-10-29T13:13Z"
      },
      "return_dkk": null,
-     "dates_searched": [],
-     "by_date": [],
-     "round_trips": []
+     "dates_searched": [
+      "2026-12-21",
+      "2026-12-24"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-21",
+       "from": "GUA",
+       "to": "SAP",
+       "dkk": 1359,
+       "dep": "15:40",
+       "arr": "18:50",
+       "arr_days": 0,
+       "duration_min": 190,
+       "vias": [
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [],
+       "self_transfer": false,
+       "searched": "2026-12-21",
+       "link": null
+      },
+      {
+       "date": "2026-12-24",
+       "from": "GUA",
+       "to": "SAP",
+       "dkk": 1579,
+       "dep": "05:25",
+       "arr": "08:35",
+       "arr_days": 0,
+       "duration_min": 190,
+       "vias": [
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [],
+       "self_transfer": false,
+       "searched": "2026-12-24",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1359,
+      "duration_min": 190,
+      "vias": [
+       "SAL"
+      ],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2026-12-21",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 1359,
+      "duration_min": 190,
+      "vias": [
+       "SAL"
+      ],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2026-12-21"
+     },
+     "flags": [
+      "basic_fare"
+     ],
+     "quotes": 2
     },
-    "source": "manual",
-    "source_url": "https://livinginguatemala.com/transport/guatemala-city-to-san-pedro-sula/",
-    "observed_at": "2026",
-    "note": "One-way fare, schedule and duration unknown; US$30 exit tax by air.",
-    "booking_url": null
+    "source": "crawl",
+    "observed_at": "2026-10-29T13:13Z",
+    "note": "1 stop in San Salvador (SAL). Priced GUA to SAP only: 21 Dec 15:40 to 18:50 for 1,359 kr, 24 Dec 05:25 to 08:35 for 1,579 kr.",
+    "booking_url": null,
+    "source_url": "https://www.momondo.dk",
+    "researched": {
+     "duration_min": 190,
+     "price_min": 1359,
+     "operators": [
+      "Avianca"
+     ],
+     "year": "2026"
+    }
    }
   ]
  },
