@@ -15,7 +15,7 @@ The planner at planner/ is a two tab React app (Map and Trips) that runs on http
 | data/web/places.json | Map nodes (id, name, country, lat, lon, iata, profile with tagline and hostels). |
 | data/web/connections.json | Map edges between nodes with mode, hours, price, operator. |
 | data/web/flights.json | Crawled regional one way flights, a list of {from, to, dkk, hours, dep, arr, vias, carriers, notes, shows}. |
-| data/saved_trips.json | The seeded trips the app imports on first run. Built by `python src/seed_trips.py` from data/seed_spec.json. |
+| data/saved_trips.json | The seeded trips the app imports on first run. Built by `python plugin/skills/flight-crawl-orchestrator/scripts/seed_trips.py` from data/seed_spec.json. |
 | data/seed_spec.json | Hand written trip seeds: id, rank, name, option id, order of countries, segments (overland notes and flights by quote_id). |
 
 The app copies data into planner/public with `npm run sync-data` in planner/. Run it after changing anything under data/.
@@ -52,7 +52,7 @@ Three ways, from least to most invasive:
 
 1. **In the app.** Trips tab, New trip, pick a way in and a way home (the Pick screen filters by price, hours, hub nights, US transit), then build the route on the map: click a lit city to add it, pick a flight in the city panel, drag the grip to reorder, Save trip in the pane. The Trips tab then opens the dashboard of that trip.
 2. **Import a JSON file.** Trips tab, Import trips, with a file holding a journey or a list of journeys in the shape above. Playwright can do it with `setInputFiles` on the hidden file input.
-3. **Seed it.** Add a trip to data/seed_spec.json, run `python src/seed_trips.py --root .` then `npm run sync-data` in planner/. The app imports new seeds once (localStorage key `latam-planner.seeded` remembers the file version, clear it to re-import).
+3. **Seed it.** Add a trip to data/seed_spec.json, run `python plugin/skills/flight-crawl-orchestrator/scripts/seed_trips.py --root .` then `npm run sync-data` in planner/. The app imports new seeds once (localStorage key `latam-planner.seeded` remembers the file version, clear it to re-import).
 
 With Playwright or the browser console, the saved trips live in localStorage under `latam-planner.journeys` (a list) and the open trip under `latam-planner.current`. Writing those and reloading is the fastest way to put a trip into the UI.
 

@@ -1,11 +1,11 @@
 """The claude-task checklist on GitHub issues (see docs/claude-tasks.md).
 
 Usage:
-  python3 -I src/tasks.py list                      open tasks: number, type, title
-  python3 -I src/tasks.py show N                    the task JSON of issue N
-  python3 -I src/tasks.py done N SUMMARY_FILE [--outputs a,b] [--root DIR]
+  python3 -I plugin/skills/trip-checklist/scripts/tasks.py list                      open tasks: number, type, title
+  python3 -I plugin/skills/trip-checklist/scripts/tasks.py show N                    the task JSON of issue N
+  python3 -I plugin/skills/trip-checklist/scripts/tasks.py done N SUMMARY_FILE [--outputs a,b] [--root DIR]
                                                     comment SUMMARY_FILE on issue N, close it, log it in task_log.jsonl
-  python3 -I src/tasks.py url TASK_JSON_FILE        the prefilled new-issue link the app would open (for testing)
+  python3 -I plugin/skills/trip-checklist/scripts/tasks.py url TASK_JSON_FILE        the prefilled new-issue link the app would open (for testing)
 Needs the gh CLI (REST only).
 """
 import datetime as dt, json, os, re, subprocess, sys, urllib.parse
