@@ -1,9 +1,11 @@
 // Momondo dialog parser and crawler. Workers paste this file into the page. Node and the userscript build load it too.
 if(typeof window==='undefined')globalThis.window={};
-window.PARSER_VERSION='5.0';
+window.PARSER_VERSION='6.0';
 // Layout from Oct 2026: booking offers first (site, labels, brand, price, Book, then bags), then legs as
 // "CPH → GDL" / "tor. 3. dec." / "3 stop • 59 t. 13 min." with segments "13:40 - 15:35(1 t. 55 min.)",
 // an optional "Afgang fre. 4. dec." right after the time line, then airports and flight number.
+// Layout v6 (29 Oct 2026): "Fly 1 • ons. 2. dec." above the leg, "06:10 – 10:50+1(35 t. 40 min.)" as the leg's
+// total time, then "3 stop • 6 t. 45 min. i Madrid ...", and the offers after "Trin 2" below the legs.
 window.parseDlgV5=function(txt, legDates){
   const MON={jan:'01',feb:'02',mar:'03',apr:'04',maj:'05',jun:'06',jul:'07',aug:'08',sep:'09',okt:'10',nov:'11',dec:'12'};
   const dur=s=>{const h=/(\d+)\s*t\./.exec(s),m=/(\d+)\s*min\./.exec(s);return (h?+h[1]:0)+(m?+m[1]:0)/60};
@@ -14,30 +16,38 @@ window.parseDlgV5=function(txt, legDates){
     return ref?c.sort((a,b)=>Math.abs(new Date(a)-new Date(ref))-Math.abs(new Date(b)-new Date(ref)))[0]:c[1]};
   const LEG=/^[A-Z]{3} → [A-Z]{3}$/;
   const all=txt.split('\n').map(s=>s.trim()).filter(Boolean);
+  const AF=/^Afgang (?:\S+ )?(\d+)\. ([a-zæø]+)/i, SUM=/^(\d\d:\d\d) [–-] (\d\d:\d\d)(?:\+(\d))?\((.*)\)$/, APT=/\([A-Z]{3}\) - .*\([A-Z]{3}\)$/;
   const first=all.findIndex(l=>LEG.test(l));const endBook=all.findIndex(l=>/^Alle priser er endelige/.test(l));
-  const bl=all.slice(0,endBook>0&&endBook<first?endBook:first), lines=all.slice(first);
+  const trin1=all.findIndex((l,i)=>i>first&&/^Trin 1:/.test(l)), trin2=all.findIndex((l,i)=>i>first&&/^Trin 2:/.test(l));
+  const bl=all.slice(0,endBook>0&&endBook<first?endBook:first).concat(trin2>0?all.slice(trin2,endBook>trin2?endBook:all.length):[]);
+  const lines=all.slice(first,trin1>first?trin1:all.length);
   const legIdx=[];lines.forEach((l,i)=>{if(LEG.test(l))legIdx.push(i)});
   const extra=[];
   const res=legIdx.map((s,n)=>lines.slice(s,legIdx[n+1]||lines.length)).map((L,n)=>{
-    const ref=legDates[n];const hd=/^\S+\s+(\d+)\.\s*([a-zæø]+)/i.exec(L[1]||'');const mo=hd&&hd[2].slice(0,3).toLowerCase();
+    const ref=legDates[n];const above=all[first+legIdx[n]-1]||'';
+    const hd=/^\S+\s+(\d+)\.\s*([a-zæø]+)/i.exec(L[1]||'')||/^Fly \d+ • \S+ (\d+)\. ([a-zæø]+)/i.exec(above);const mo=hd&&hd[2].slice(0,3).toLowerCase();
     const date=hd&&MON[mo]?ymd(hd[1],mo,ref):ref;let cur=date;
-    const stopsLine=L.find(l=>/^(\d+ stop|Direkte)/i.test(l))||'';const sn=/^(\d+) stop/.exec(stopsLine);
+    const stopsLine=L.find(l=>/^(\d+ stop|Direkte)/i.test(l))||'';const sum=SUM.exec(L[1]||'');
+    const total=sum&&!APT.test(L[2]||'')?dur(sum[4]):dur(stopsLine.split('•')[1]||'');const sn=/^(\d+) stop/.exec(stopsLine);
     const segs=[],lay=[],layCodes=[],flags=[];let overnight=false,selfx=false,aptChange=false,dated=false;
-    for(let i=2;i<L.length;i++){
+    for(let i=sum?2:1;i<L.length;i++){
       const l=L[i];
       const sg=/^(\d\d:\d\d) [–-] (\d\d:\d\d)(?:\+(\d))?\((.*)\)$/.exec(l);
-      if(sg){let j=i+1;const af=/^Afgang \S+ (\d+)\. ([a-zæø]+)/i.exec(L[j]||'');
-        if(af){cur=ymd(af[1],af[2].slice(0,3).toLowerCase(),cur);j++}
-        else if(segs.length&&!dated){const p=segs[segs.length-1];const t=mins(p.arr)+60*(lay[segs.length-1]||0);cur=addDays(p.arrDate,Math.floor(t/1440))}
+      if(sg){let j=i+1,afd=false;
+        while(j<L.length&&j<=i+3&&!APT.test(L[j])){const af=AF.exec(L[j]);if(af){cur=ymd(af[1],af[2].slice(0,3).toLowerCase(),cur);afd=true}j++}
+        if(!APT.test(L[j]||''))j=i+1;
+        if(!afd&&segs.length&&!dated){const p=segs[segs.length-1];const t=mins(p.arr)+60*(lay[segs.length-1]||0);cur=addDays(p.arrDate,Math.floor(t/1440))}
         dated=false;
-        const codes=(L[j]||'').match(/\(([A-Z]{3})\)/g)||[];const fl=(L[j+1]||'').split(' • ')[0];
+        const codes=(L[j]||'').match(/\(([A-Z]{3})\)/g)||[];let fl=(L[j+1]||'').split(' • ')[0];
+        if(/Betjenes af|Service mellem|godkendelse/i.test(fl))fl=(L[j+2]||'').split(' • ')[0];
+        if(!/\d+$/.test(fl)||APT.test(fl)||/^\d\d:\d\d/.test(fl))fl='?';
         const plus=sg[3]!=null?+sg[3]:(mins(sg[2])<mins(sg[1])?1:0);
         segs.push({dep:sg[1],arr:sg[2],dur:sg[4],date:cur,arrDate:addDays(cur,plus),from:(codes[0]||'').replace(/[()]/g,''),to:(codes[1]||'').replace(/[()]/g,''),fl});
         i=j+1;continue}
       const lv=/^(.*?)•Skift (fly|lufthavn|terminal)/.exec(l);
       if(lv){lay.push(+dur(lv[1]).toFixed(2));const p=segs[segs.length-1]||{};layCodes.push((/\(([A-Z]{3})\)\s*$/.exec(l)||[])[1]||p.to||'');
         if(lv[2]==='lufthavn'){aptChange=true;extra.push(l)}continue}
-      if(/^Afgang \S+ (\d+)\. ([a-zæø]+)/i.test(l)){const af=/^Afgang \S+ (\d+)\. ([a-zæø]+)/i.exec(l);cur=ymd(af[1],af[2].slice(0,3).toLowerCase(),cur);dated=true;continue}
+      if(AF.test(l)){const af=AF.exec(l);cur=ymd(af[1],af[2].slice(0,3).toLowerCase(),cur);dated=true;continue}
       if(/^Egentransfer$/.test(l))selfx=true;
       if(/^Lang mellemlanding/.test(l))flags.push('long_layover');
       if(/overnat|visum|Natophold/i.test(l)&&!/^\d\d:\d\d/.test(l))extra.push(l);
@@ -48,7 +58,7 @@ window.parseDlgV5=function(txt, legDates){
       if(segs[i].to!==segs[i+1].from)aptChange=true;
     }
     const a=segs[0],z=segs[segs.length-1];
-    return {dep:a.date+'T'+a.dep,arr:z.arrDate+'T'+z.arr,hours:+dur(stopsLine.split('•')[1]||'').toFixed(2),stops:sn?+sn[1]:0,via:layCodes,layover_h:lay,carriers:[...new Set(segs.map(s=>s.fl.replace(/\s*\d+$/,'')))],flights:segs.map(s=>s.fl),overnight_layover:overnight,_self:selfx,_apt:aptChange,_segs:segs.map(s=>s.from+'-'+s.to+' '+s.dep+'-'+s.arr),_flags:flags};
+    return {dep:a.date+'T'+a.dep,arr:z.arrDate+'T'+z.arr,hours:+total.toFixed(2),stops:sn?+sn[1]:0,via:layCodes,layover_h:lay,carriers:[...new Set(segs.filter(s=>s.fl!=='?').map(s=>s.fl.replace(/\s*\d+$/,'')))],flights:segs.map(s=>s.fl),overnight_layover:overnight,_self:selfx,_apt:aptChange,_segs:segs.map(s=>s.from+'-'+s.to+' '+s.dep+'-'+s.arr),_flags:flags};
   }).filter(Boolean);
   // Offers: a price line followed by "Book". The up to 4 lines above it are site, labels and fare brand.
   const LAB=/^(Laveste pris|Egentransfer-beskyttelse|Annonce|Sponsoreret|Bedste valg|Billigst|Hurtigst|Flyselskab)$/;
@@ -133,8 +143,12 @@ const cab=(/(\d) x håndbagage/.exec(p.bagSeg)||[])[0]||(/Gebyr for håndbagage/
 o.push([p.rank,p.cardPrice||p.price,p.site,p.selfNote?1:0,p.brand,cab,chk,/Ændring af billet mod gebyr/.test(p.bagSeg)?'fee':'',(p.alt+(p.cardPrice&&p.price!==p.cardPrice?' | offerprice '+p.price:'')),p.prot?1:0].join(';')+'~'+Array.from({length:nl},(_,i)=>p.legs[i]?leg(p.legs[i]):'').join('~'));}
 return o.join('\n');};
 window.run=async(n,dates,max)=>{const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-for(let w=0;w<60;w++){const t=document.body.innerText;if(/Færdig/.test(t)&&document.querySelectorAll('[role="group"]').length>3)break;await sleep(2000);}
-await sleep(1500);const t=document.body.innerText;const cnt=(/([\d.]+) resultater/.exec(t)||[])[1];
-const fin=/Færdig/.test(t);
+// Done when Momondo says so, or when the result list has not changed for 4 polls (the progress bar can stall at 50%).
+const sig=()=>{const g=document.querySelectorAll('[role="group"][aria-label^="Resultat nr."]');return g.length+'|'+((g[0]&&g[0].innerText.match(/[\d.]+\s*kr\./g))||[]).pop()};
+const DONE=/Færdig|Resultaterne er hentet/;let last='',same=0,fin=false;
+for(let w=0;w<60;w++){const t=document.body.innerText,n=document.querySelectorAll('[role="group"]').length;if(DONE.test(t)&&n>3){fin=true;break}
+const s=sig();same=s===last&&n>3?same+1:0;last=s;if(same>=4)break;await sleep(2000);}
+await sleep(1500);const t=document.body.innerText;const cnt=(/([\d.]+) resultater/.exec(t)||[])[1]||document.querySelectorAll('[role="group"][aria-label^="Resultat nr."]').length;
+fin=fin||DONE.test(t);
 const R=await crawl(0,n,dates);window.R=R;return 'count='+cnt+' done='+fin+' title='+document.title+'\n'+lines(R,max,dates.length);};
 if(typeof module!=='undefined'&&module.exports)module.exports={parseDlg:window.parseDlg,lines:window.lines,PARSER_VERSION:window.PARSER_VERSION};
