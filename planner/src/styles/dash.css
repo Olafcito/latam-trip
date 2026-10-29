@@ -22,6 +22,7 @@
 .dash-warn { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
 .dash-warn li { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 500; }
 .dash-warn li svg { flex: none; }
+.dash-warn li .btn { margin-left: auto; flex: none; }
 .dash-warn li.warn { color: var(--flight); }
 .dash-warn li.error { color: var(--err); }
 .dash-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr); gap: 14px; align-items: start; }

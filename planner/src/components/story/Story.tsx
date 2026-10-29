@@ -5,7 +5,7 @@ import type { AppData, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, dayDiff, dayRange, hours, weekdayDay } from '../../lib/format'
-import { legDay, nodeForAirport, nodeName, type Hop, type Journey, type Schedule } from '../../lib/journey'
+import { legDay, nodeForAirport, nodeName, type Hop, type Journey, type Schedule, type Warning } from '../../lib/journey'
 import { iataOf, pricesOn, type PairDates } from '../../lib/prices'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
@@ -14,7 +14,7 @@ import { addDays, dateRange } from '../../lib/time'
 import { hoverProps } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
-import { Boat, Bus, Close, Home, Land, Minus, Moon, Plane, Plus } from '../icons'
+import { Boat, Bus, Close, Home, Land, Minus, Moon, Plane, Plus, Warn } from '../icons'
 import { LegCard, type LegEnds } from './LegCard'
 import { WhenPicker } from './WhenPicker'
 import { usePop } from './usePop'
@@ -24,6 +24,7 @@ import { usePop } from './usePop'
 // proportion to the nights there. Travel is a quiet line between two stops with the mode and the
 // time it takes on it: click it for the boarding pass. The date a leg leaves sits in the gutter, and
 // a click on it opens the calendar. A stop reached the day its leg leaves shows only its trip day.
+// A leg that leaves before you get there shows it on its own date, with the day to move it to.
 
 const MODE: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Bus' }
 const ICON: Record<Family, (p: { s?: number }) => ReactNode> = { flight: Plane, boat: Boat, ground: Bus }
@@ -130,7 +131,13 @@ function Stop({ name, node, country, inDay, outDay, days, exact, dated, onNights
  * Travel between two stops. The date it leaves sits in the gutter and opens the calendar. The body is
  * a line in the mode's stroke with the mode and the time it takes on it, and the boarding pass behind.
  */
-function Leg({ h, ends, date, set, known, picker, card }: { h: Hop; ends: LegEnds; date: string; set: boolean; known: boolean; picker: ReactNode; card: ReactNode }) {
+function Leg({ h, ends, date, set, known, clash, onSet, picker, card }: {
+  h: Hop; ends: LegEnds; date: string; set: boolean; known: boolean
+  /** the warning when this leg leaves before you get there */
+  clash: Warning | undefined
+  onSet: (date: string) => void
+  picker: ReactNode; card: ReactNode
+}) {
   const when = usePop(false)
   const pop = usePop(false)
   const fam = familyOf(h.mode)
@@ -141,7 +148,7 @@ function Leg({ h, ends, date, set, known, picker, card }: { h: Hop; ends: LegEnd
     <li className="st-leg" data-f={fam}>
       <span className="st-gut">
         <span className="pop-wrap" {...when.wrap}>
-          <button type="button" className="st-date" data-set={set} data-known={known} aria-label={`${route}, leaves ${weekdayDay(date)}${known ? '' : ', estimated'}. Change the day`} {...when.trigger}>
+          <button type="button" className="st-date" data-set={set} data-known={known} data-clash={!!clash} aria-label={`${route}, leaves ${weekdayDay(date)}${known ? '' : ', estimated'}${clash ? ', before you get there' : ''}. Change the day`} {...when.trigger}>
             <b>{known ? '' : '~'}{day(date)}</b>
             <small>{wd(date)}</small>
           </button>
@@ -161,6 +168,12 @@ function Leg({ h, ends, date, set, known, picker, card }: { h: Hop; ends: LegEnd
         </button>
         {pop.open && <div className="pop" role="dialog" aria-label={route} {...pop.panel}><Shut on={pop.dismiss} />{card}</div>}
       </div>
+      {clash && (
+        <p className="st-clash" role="alert">
+          <Warn />Leaves before you get to {ends.fromName}
+          {clash.fix && <button type="button" className="btn small" onClick={() => onSet(clash.fix!)}>Move to {day(clash.fix)}</button>}
+        </p>
+      )}
     </li>
   )
 }
@@ -206,6 +219,8 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           date={date}
           set={!!h.date}
           known={!!(h.date || h.flight)}
+          clash={sched.warnings.find((w) => w.leg === i)}
+          onSet={(d) => setHopDate(i, d)}
           picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} onSet={(d) => setHopDate(i, d)} />}
           card={<LegCard h={h} ends={ends} family={fam} date={date} quotes={quotes} link={hopLink(h, inout)} />}
         />,

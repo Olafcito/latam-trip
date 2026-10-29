@@ -2,8 +2,6 @@
 @scope (:root) to (.rmap) {
 .st {
   --gut: 64px; --rail: 40px;
-  /* the small grey text, lifted to pass 4.5:1 on the cards and popovers */
-  --faint: #7f97a4;
   list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;
 }
 .st > li { position: relative; display: grid; grid-template-columns: var(--gut) var(--rail) minmax(0, 1fr); align-items: stretch; }
@@ -32,9 +30,9 @@
 .st-disc .flag { width: 34px !important; height: 34px !important; object-fit: cover; transform: scale(1.6); }
 .st-nf { font-size: 10px; font-weight: 700; color: var(--muted); }
 .st-card {
-  display: flex; align-items: center; gap: 12px; margin: 0 0 0 6px; padding: 10px 12px 10px 14px;
-  border-radius: 12px; background: linear-gradient(180deg, var(--surface-2), var(--surface)); box-shadow: inset 0 0 0 1px var(--line), 0 1px 0 rgba(0, 0, 0, 0.2);
-  transition: box-shadow var(--t-fast) ease, transform var(--t-med) var(--ease-out);
+  display: flex; align-items: center; gap: 12px; margin: 0 0 0 2px; padding: 8px 10px 8px 12px;
+  border-radius: 10px;
+  transition: background-color var(--t-fast) ease;
 }
 .st-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .st-nm > b { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
@@ -89,13 +87,18 @@
 
 @media (hover: hover) and (pointer: fine) {
   .st-endbtn:hover { background: var(--surface-2); }
-  .st-stop:hover .st-card { box-shadow: inset 0 0 0 1px var(--line-2), 0 6px 18px -10px rgba(0, 0, 0, 0.6); }
+  .st-stop:hover .st-card { background: var(--surface-2); }
   .st-date:hover { background: var(--surface-2); }
   .st-date:hover b { text-decoration-color: var(--text); }
   .st-hop:hover { color: var(--text); }
   .st-hop:hover .st-hl { opacity: 0.9; }
   .st-step button:hover, .wp-step button:hover { color: var(--text); background: var(--line-2); }
 }
+
+/* a leg that leaves before you get there: its date in the error colour, the fix under the line */
+.st-date[data-clash='true'] b { color: var(--err); text-decoration-color: color-mix(in srgb, var(--err) 60%, transparent); }
+.st-clash { grid-column: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: -6px 0 6px 8px; font-size: 12.5px; font-weight: 500; color: var(--err); }
+.st-clash svg { flex: none; }
 
 /* ---- popovers: rise from their trigger ---- */
 .pop-wrap { position: relative; display: inline-flex; }
@@ -217,6 +220,9 @@
 @media (max-width: 560px) {
   .st { --gut: 60px; --rail: 32px; }
   .st-gut { padding-right: 8px; }
+  /* the nights take only the number's width, so a name like San Jose (Costa Rica) keeps two lines */
+  .st-card { gap: 8px; padding-inline: 8px 4px; }
+  .st-nights { min-width: 44px; }
   .st-gut > small, .st-date small { display: none; }
   .st-tag { display: none; }
   /* on a phone the popovers rise as a sheet from the bottom instead of hanging off their trigger */
