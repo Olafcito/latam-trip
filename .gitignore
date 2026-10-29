@@ -4,3 +4,4 @@ __pycache__/
 data/sources/.tripdb.lock
 data/sources/.task-*.json
 *.tmp
+data/raw/
