@@ -20,6 +20,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   ingest-inbox                         validate data/sources/inbox/*.jsonl (Momondo userscript), add the good rows
   check                                validate every source against its schema
   build [--fetch-elevation] [--no-sync]  ingest-inbox, check, then rebuild data/built, data/web and .claude
+                                       (data/web/pair_dates.json: every regional quote by pair and departure date)
 FILE may be - for stdin. Every row is checked against its schema and a bad row is refused with the reason.
 Nothing is overwritten without --replace. Writes hold data/sources/.tripdb.lock and append in one write.
 """
@@ -821,6 +822,82 @@ def load_tables(paths):
     con.close()
 
 
+# Airports whose flights are the long-haul tickets, not regional hops. The trip's home airports and alt origins
+# from trip.json are added to these.
+LONG_HAUL = {"CPH", "MAD", "BCN", "LIS", "CDG", "AMS", "FRA", "LGW", "LHR", "IST", "ALC", "VLC", "RMU", "ZRH", "MUC", "BRU"}
+PAIR_DATES_SKIP = {"over_30h", "incomplete", "ad_offer"}
+
+
+def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
+    """Every regional one-way quote by directed pair and departure date, cheapest first.
+
+    {"pairs": {"BOG-VVI": {"2027-01-28": [quote, ...]}}} where a quote is
+    {"p": price kr, "d": local departure "06:10", "a": local arrival "12:40", "n": days later it lands (only when > 0),
+     "h": hours, "c": airlines, "s": stops, "src": source, "at": newest observed_at (UTC, "2026-10-28T10:00Z")}.
+    The same quote seen more than once (tripdb's quote key) is one entry with its newest observed_at."""
+    newest = {}
+    for q in quotes:
+        if not isinstance(q, dict) or q.get("structure") != "one_way":
+            continue
+        legs = q.get("legs_requested") or []
+        out = q.get("out") or {}
+        if len(legs) != 1 or q.get("price_dkk") is None or not isinstance(out, dict):
+            continue
+        a, b = legs[0].get("from"), legs[0].get("to")
+        if not a or not b or a in long_haul or b in long_haul:
+            continue
+        if PAIR_DATES_SKIP & set(q.get("flags") or []):
+            continue
+        if not isinstance(out.get("hours"), (int, float)) or out["hours"] > max_hours:
+            continue
+        if (q.get("notes") or "").split(";")[0].replace("site=", "").strip() in ("Sponsoreret", "Annonce"):
+            continue
+        t = parse_time(q.get("observed_at"))
+        if not t:
+            continue
+        k = quote_key(q)
+        if k not in newest or t > newest[k][0]:
+            newest[k] = (t, q)
+
+    pairs = {}
+    for t, q in newest.values():
+        leg, out = q["legs_requested"][0], q["out"]
+        dep, arr = out.get("dep") or "", out.get("arr") or ""
+        date = dep[:10] if DATE_RE.match(dep[:10]) else leg.get("date")
+        if not date:
+            continue
+        row = {"p": int(round(float(q["price_dkk"]))), "d": dep[11:16] or None, "a": arr[11:16] or None}
+        if DATE_RE.match(arr[:10]) and DATE_RE.match(dep[:10]):
+            n = (dt.date.fromisoformat(arr[:10]) - dt.date.fromisoformat(dep[:10])).days
+            if n > 0:
+                row["n"] = n
+        via = out.get("via") or []
+        row.update({"h": round(float(out["hours"]), 2),
+                    "c": [c.strip() for c in out.get("carriers") or [] if isinstance(c, str) and 0 < len(c.strip()) <= 20],
+                    "s": out["stops"] if isinstance(out.get("stops"), int) else len(via),
+                    "src": q.get("source"), "at": t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")})
+        pairs.setdefault(f"{leg['from']}-{leg['to']}", {}).setdefault(date, []).append(row)
+    for dates in pairs.values():
+        for rows in dates.values():
+            rows.sort(key=lambda r: (r["p"], r["h"], r["d"] or "", r["src"] or ""))
+    return {"pairs": {k: dict(sorted(v.items())) for k, v in sorted(pairs.items())}}
+
+
+def write_pair_dates(paths):
+    trip = load_doc(paths, "trip.json", {}) or {}
+    long_haul = LONG_HAUL | set(trip.get("home_airports") or []) | set(trip.get("alt_origins") or [])
+    quotes = []
+    if os.path.isdir(paths.quotes):
+        for f in sorted(os.listdir(paths.quotes)):
+            if f.endswith(".jsonl"):
+                quotes += rows_of(os.path.join(paths.quotes, f))
+    doc = pair_dates(quotes, long_haul, trip.get("max_hours_one_way", 30))
+    os.makedirs(paths.web, exist_ok=True)
+    write_atomic(os.path.join(paths.web, "pair_dates.json"), json.dumps(doc, ensure_ascii=False, separators=(",", ":")) + "\n")
+    n = sum(len(r) for d in doc["pairs"].values() for r in d.values())
+    return f"pair_dates.json: {len(doc['pairs'])} pairs, {n} quotes"
+
+
 STEPS = ["ingest.py", "build_map.py", "build_web_data.py", "chains.py", "routes.py", "inout.py", "itineraries.py",
          "dashboard_data.py", "seed_trips.py"]
 PUBLISH = [("built", "map.json"), ("built", "inout.json"), ("sources", "bag_rules.json"), ("sources", "trip.json")]
@@ -859,6 +936,7 @@ def cmd_build(paths, fetch_elevation=False, sync=True):
         for where, name in PUBLISH:
             shutil.copyfile(os.path.join(paths.root, "data", where, name), os.path.join(paths.web, name))
         print("data/web: copied " + ", ".join(n for _, n in PUBLISH))
+        print(write_pair_dates(paths))
     if sync and os.path.isdir(os.path.join(paths.root, "plugin")):
         for l in _run(paths, os.path.join(HERE, "sync_claude_dir.py")):
             print("sync_claude_dir.py:", l)

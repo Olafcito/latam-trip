@@ -263,3 +263,52 @@ class StaysAndExperiencesTest(Base):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PairDatesTest(Base):
+    def regional(self, a="BOG", b="VVI", date="2027-01-28", **over):
+        leg = {"dep": f"{date}T06:10", "arr": f"{date}T12:40", "hours": 5.5, "stops": 1, "via": ["LIM"],
+               "carriers": ["Avianca"], "flights": None}
+        leg.update(over.pop("out", {}))
+        return quote(legs_requested=[{"from": a, "to": b, "date": date}], out=leg, **over)
+
+    def test_export_groups_by_date_both_ways_and_skips_long_haul(self):
+        self.write(os.path.join(self.paths.quotes, "mom-1.jsonl"), [
+            self.regional(price_dkk=1900, price=1900),
+            self.regional(price_dkk=1500, price=1500, source="expedia"),
+            self.regional(date="2027-01-29", price_dkk=1700, price=1700),
+            self.regional("VVI", "BOG", "2027-02-02", price_dkk=2100, price=2100,
+                          out={"arr": "2027-02-03T01:05", "hours": 20.9}),
+            quote(),  # CPH to SJO: a long-haul ticket
+            self.regional("MAD", "BOG"),  # an alt origin from trip.json is long haul too
+            self.regional("BOG", "LIM", flags=["incomplete"]),
+            self.regional("BOG", "LIM", structure="return"),
+        ])
+        with open(self.paths.src("trip.json"), "w", encoding="utf-8") as fh:
+            json.dump({"home_airports": ["CPH"], "alt_origins": ["MAD"]}, fh)
+        msg = tripdb.write_pair_dates(self.paths)
+        self.assertIn("2 pairs, 4 quotes", msg)
+        with open(os.path.join(self.paths.web, "pair_dates.json"), encoding="utf-8") as fh:
+            doc = json.load(fh)
+        self.assertEqual(sorted(doc["pairs"]), ["BOG-VVI", "VVI-BOG"])
+        there = doc["pairs"]["BOG-VVI"]
+        self.assertEqual(sorted(there), ["2027-01-28", "2027-01-29"])
+        self.assertEqual([r["p"] for r in there["2027-01-28"]], [1500, 1900])  # cheapest first
+        first = there["2027-01-28"][0]
+        self.assertEqual(first, {"p": 1500, "d": "06:10", "a": "12:40", "h": 5.5, "c": ["Avianca"], "s": 1,
+                                 "src": "expedia", "at": "2026-10-20T10:00Z"})
+        back = doc["pairs"]["VVI-BOG"]["2027-02-02"][0]
+        self.assertEqual((back["d"], back["a"], back["n"]), ("06:10", "01:05", 1))
+
+    def test_manual_quote_keeps_its_source_and_newest_observation(self):
+        manual = self.regional(source="momondo-manual", agent="manual-20261029T1313", observed_at="2026-10-25T08:00Z")
+        self.write(os.path.join(self.paths.quotes, "mom-1.jsonl"), [manual])
+        self.write(os.path.join(self.paths.quotes, "manual-2.jsonl"), [
+            {**manual, "observed_at": "2026-10-29T13:13Z"},
+            {**manual, "observed_at": "2026-10-20T07:00Z"},
+        ])
+        doc = tripdb.pair_dates(tripdb.rows_of(os.path.join(self.paths.quotes, "mom-1.jsonl"))
+                                + tripdb.rows_of(os.path.join(self.paths.quotes, "manual-2.jsonl")))
+        rows = doc["pairs"]["BOG-VVI"]["2027-01-28"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual((rows[0]["src"], rows[0]["at"]), ("momondo-manual", "2026-10-29T13:13Z"))
