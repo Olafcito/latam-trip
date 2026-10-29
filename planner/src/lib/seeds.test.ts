@@ -57,7 +57,7 @@ describe.skipIf(!has)('seeded trips as journeys', () => {
   it('counts the long-haul ticket and the seed flight prices in the totals', () => {
     const s = seeds[0]
     const j = seedToJourney(inout, s)!
-    const t = totals({ inout, map: { nodes: [], edges: [] }, bags: [], trip: {}, source: 'local' }, j, null)
+    const t = totals({ inout, map: { nodes: [], edges: [] }, bags: [], trip: {}, source: 'local', meta: null }, j, null)
     expect(t.tickets_dkk).toBe(s.inout!.price_dkk)
     expect(t.regional_flights_dkk).toBeCloseTo(s.totals!.in_between_dkk, 0)
   })

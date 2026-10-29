@@ -130,7 +130,7 @@ describe('price totals with a shared ticket', () => {
     expect(p.price_dkk).toBe(6700)
     expect(p.cabin).toBe(180)
     expect(p.checked).toBeNull() // one ticket has an unknown checked-bag fee
-    const data: AppData = { inout: io, map, bags: [], trip: {}, source: 'local' }
+    const data: AppData = { inout: io, map, bags: [], trip: {}, source: 'local', meta: null }
     const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
       { node: 'BOG', hop: null },
       { node: 'MDE', hop: { from: 'BOG', to: 'MDE', mode: 'bus', operator: null, hours: 9, price_dkk: 150, overnight: false, border: false, flight: null } },

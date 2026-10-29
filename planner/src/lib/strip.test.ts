@@ -49,7 +49,7 @@ const handMap: MapData = {
   edges: [],
 }
 
-const handData: AppData = { inout: handInout, map: handMap, bags: [], trip: {}, source: 'local' }
+const handData: AppData = { inout: handInout, map: handMap, bags: [], trip: {}, source: 'local', meta: null }
 
 const bus = (from: string, to: string): Hop => ({ from, to, mode: 'bus', operator: null, hours: 4, price_dkk: 120, overnight: false, border: false, flight: null })
 const fly = (from: string, to: string, depart: string, arrive: string): Hop => ({
