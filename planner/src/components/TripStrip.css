@@ -1,0 +1,127 @@
+/* The trip strip. Country colours arrive per stay as --c and read as tints: a 2px top edge at full
+   strength over a 22% fill. Amber is flight, mint is ground, blue is boat and the night moon. */
+
+@scope (.strip) {
+  :scope {
+    display: block;
+    overflow: visible;
+    font-family: var(--mono, 'IBM Plex Mono', ui-monospace, monospace);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .track {
+    stroke: var(--line, #1C3340);
+    stroke-width: 1;
+  }
+
+  /* stays */
+  .tint {
+    fill: var(--c);
+    opacity: 0.22;
+    transition: opacity var(--t-fast, 120ms) var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+  }
+  .edge {
+    fill: var(--c);
+  }
+  .gap {
+    fill: var(--ground, #0B1720);
+  }
+  .name {
+    fill: var(--text, #EAF0F2);
+    pointer-events: none;
+  }
+
+  /* names that do not fit inside, in lanes above and below the strip, haloed in the ground */
+  .lane text {
+    fill: var(--muted, #93A7B2);
+    paint-order: stroke;
+    stroke: var(--ground, #0B1720);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .lane .lead {
+    stroke: var(--c);
+    stroke-width: 1.5;
+  }
+
+  /* hops: an amber arc for a flight, an upright tick for the ground, dashed for a boat */
+  .arc {
+    fill: none;
+    stroke: var(--flight, #F2B544);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .tick {
+    stroke: var(--bus, #6FD3B8);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .boat .tick {
+    stroke: var(--boat, #8DB8F2);
+    stroke-dasharray: 2 1.5;
+    stroke-linecap: butt;
+  }
+  .unknown .arc,
+  .unknown .tick {
+    stroke: var(--faint, #5F7785);
+  }
+
+  .moon path {
+    fill: var(--boat, #8DB8F2);
+  }
+  .plane path {
+    fill: none;
+    stroke: var(--flight, #F2B544);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .knock {
+    fill: var(--ground, #0B1720);
+  }
+  .split {
+    stroke: var(--flight, #F2B544);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+  }
+  .unknown .split {
+    stroke: var(--faint, #5F7785);
+  }
+
+  /* full size: week dates under the strip */
+  .week line {
+    stroke: var(--line, #1C3340);
+    stroke-width: 1;
+  }
+  .week text {
+    fill: var(--muted, #93A7B2);
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  /* one quiet entrance: the hops and the long-haul ends settle onto the stays */
+  .hops,
+  .ends {
+    opacity: 1;
+    transition: opacity var(--t-slow, 240ms) var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+    @starting-style {
+      opacity: 0;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .stay:hover .tint {
+      opacity: 0.38;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tint,
+    .hops,
+    .ends {
+      transition: none;
+    }
+  }
+}
