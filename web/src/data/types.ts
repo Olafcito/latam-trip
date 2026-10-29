@@ -148,10 +148,29 @@ export interface Country {
   label_lon: number
 }
 
+/**
+ * A crawled regional one-way worth reading: per directed airport pair the cheapest, the fastest and the
+ * cheapest that lands by day, one row when a quote is several of these. Times are local at each airport.
+ */
+export interface AirportFlight {
+  from: string // IATA
+  to: string
+  dkk: number
+  hours: number
+  dep: string | null // YYYY-MM-DDTHH:MM at the origin
+  arr: string | null // YYYY-MM-DDTHH:MM at the destination
+  vias: string[]
+  carriers: string[]
+  shows: ('cheapest' | 'fastest' | 'daytime landing')[]
+  notes: string[] // self transfer, US transit, basic fare, long layover
+  link: string | null
+}
+
 export interface MapData {
   places: Place[]
   connections: Connection[]
   countries: Country[]
+  flights?: AirportFlight[]
 }
 
 /** The three route families the map draws and the toggles switch. */

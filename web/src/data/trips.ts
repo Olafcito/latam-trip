@@ -11,8 +11,40 @@ export interface TripLeg {
   mode: Mode
 }
 
+/** A flight in a long-haul way's timeline, connections inside the ticket included. Times are local. */
+export interface WayFlight {
+  kind: 'flight'
+  from: string
+  to: string
+  depart: string | null
+  arrive: string | null
+  hours: number | null
+  connections?: { airport: string; layover_h: number | null }[]
+  carriers?: string[]
+  flight_numbers?: string[]
+}
+
+/** Time on the ground between two flights of a way. */
+export interface WayStop {
+  kind: 'connection' | 'self_transfer' | 'day_stop' | 'night'
+  airport: string
+  arrive: string | null
+  depart: string | null
+  hours: number | null
+  nights?: number
+}
+
+export type WayItem = WayFlight | WayStop
+
+/** Fees kept apart from the ticket price. */
+export interface WayExtras {
+  cabin_bag_fees_dkk: number | null
+}
+
 /** A long-haul way (Copenhagen to Latin America or back) as written in data/inout.json. */
 export interface SeedWay {
+  id?: string
+  type?: string
   from: string
   to: string
   depart: string | null
@@ -22,7 +54,11 @@ export interface SeedWay {
   hub_nights: number
   us_transit: boolean
   airports: string[]
-  timeline: unknown[]
+  // the way's own tickets; a ticket shared with the other way is priced on the in/out instead
+  price_dkk?: number
+  extras?: WayExtras
+  shared_ticket?: string | null
+  timeline: WayItem[]
 }
 
 /** In and out of a trip that started from a ranked scenario (data/saved_trips.json). */
@@ -32,6 +68,7 @@ export interface SeedInout {
   entry: string
   exit: string
   price_dkk: number
+  extras?: WayExtras
   way_in: SeedWay
   way_home: SeedWay
 }
@@ -67,6 +104,8 @@ export interface Trip {
   name: string
   legs: TripLeg[]
   updated: number
+  /** Where the trip begins before any leg, e.g. the planner's way-in city. */
+  start?: string
   // set on trips that came from data/saved_trips.json
   seed?: boolean
   rank?: number
@@ -171,13 +210,24 @@ export function parseSeedFile(raw: unknown): Trip[] {
 
 /**
  * Add seeded trips that this browser has not imported before. A seed the user deleted stays
- * deleted, because its id is remembered in `imported`.
+ * deleted, because its id is remembered in `imported`. Seeds already in the list are refreshed.
  */
 export function mergeSeeds(s: TripState, seeds: Trip[], imported: string[]): { state: TripState; imported: string[] } {
+  const byId = new Map(seeds.map((t) => [t.id, t]))
+  // a seed already in the list takes the file's newer in/out, segments and totals, and keeps the user's name and legs
+  let changed = false
+  const trips = s.trips.map((t) => {
+    const f = t.seed ? byId.get(t.id) : undefined
+    if (!f) return t
+    const next = { ...t, rank: f.rank, inout: f.inout, segments: f.segments, totals: f.totals }
+    if (JSON.stringify(next) === JSON.stringify(t)) return t
+    changed = true
+    return next
+  })
   const have = new Set(s.trips.map((t) => t.id))
   const fresh = seeds.filter((t) => !have.has(t.id) && !imported.includes(t.id))
-  if (!fresh.length) return { state: s, imported }
-  return { state: { ...s, trips: [...s.trips, ...fresh] }, imported: [...imported, ...fresh.map((t) => t.id)] }
+  if (!fresh.length) return { state: changed ? { ...s, trips } : s, imported }
+  return { state: { ...s, trips: [...trips, ...fresh] }, imported: [...imported, ...fresh.map((t) => t.id)] }
 }
 
 export function readSeeded(): string[] {
@@ -246,15 +296,41 @@ export function legOption(model: Model, leg: TripLeg): { conn: Connection; opt: 
 
 /** Places in visiting order. A leg that does not start where the last one ended adds its start too. */
 export function tripStops(trip: Trip): string[] {
-  const out: string[] = []
-  for (const l of trip.legs) {
-    if (out.at(-1) !== l.from) out.push(l.from)
-    out.push(l.to)
+  const out: string[] = trip.start ? [trip.start] : []
+  for (const p of tripPieces(trip)) {
+    if (out.at(-1) !== p.from) out.push(p.from)
+    if (out.at(-1) !== p.to) out.push(p.to)
   }
   return out
 }
 
-export const tripEnd = (trip: Trip): string | null => trip.legs.at(-1)?.to ?? null
+/** What the map draws for a trip, in travel order: its legs, or an overland block of a seeded trip. */
+export type Piece = { kind: 'leg'; from: string; to: string; leg: TripLeg } | { kind: 'overland'; from: string; to: string; note: string }
+
+/**
+ * A seeded trip follows its segments: overland blocks as they are, flights as long as their leg
+ * is still in the trip. Legs the segments do not name come after, in their own order.
+ */
+export function tripPieces(trip: Trip): Piece[] {
+  const used = new Set<number>()
+  const out: Piece[] = []
+  for (const g of trip.segments ?? []) {
+    if (g.kind === 'overland') {
+      out.push({ kind: 'overland', from: g.from, to: g.to, note: g.note ?? '' })
+      continue
+    }
+    const i = trip.legs.findIndex((l, k) => !used.has(k) && l.from === g.from && l.to === g.to)
+    if (i < 0) continue
+    used.add(i)
+    out.push({ kind: 'leg', from: g.from, to: g.to, leg: trip.legs[i] })
+  }
+  trip.legs.forEach((l, k) => {
+    if (!used.has(k)) out.push({ kind: 'leg', from: l.from, to: l.to, leg: l })
+  })
+  return out
+}
+
+export const tripEnd = (trip: Trip): string | null => tripStops(trip).at(-1) ?? null
 
 /** Time and cheapest price over all legs. `unknown` counts legs with a missing number. */
 export function tripTotals(model: Model, trip: Trip) {

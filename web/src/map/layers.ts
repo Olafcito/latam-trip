@@ -22,16 +22,21 @@ export const LABEL_LAYERS = { focus: 'label-focus', dest: 'label-dest', town: 'l
 export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
 /** Source and layer for the airports highlighted from the Options pane. */
 export const DASH_HI = 'dash-hi'
+export const TRIP_OVERLAND = 'trip-overland'
+export const HIT_OVERLAND = 'trip-overland-hit'
 
-/** Overview routes are faint. Hovering a city previews its routes, and a selection shows only its own. */
+export const VIA_LAYER = 'route-via'
+
+/** Overview routes are faint. A flight in focus that only flies via layovers hides its direct arc for its via path. Hovering a city previews its routes, and a selection shows only its own. */
 export function routeOpacity(base: number): ExpressionSpecification {
-  return ['case', HL, 1, fs('calm'), 0.4, fs('show'), 0.95, fs('pv'), 0.85, base]
+  return ['case', fs('via'), 0, HL, 1, fs('calm'), 0.4, fs('show'), 0.95, fs('pv'), 0.85, base]
 }
 
-const routeWidth: ExpressionSpecification = [
+/** Overview routes are thin. In build mode the routes the cursor reaches are the only ones shown, so they draw near trip width. */
+const routeWidth = (reach: boolean): ExpressionSpecification => [
   'interpolate', ['linear'], ['zoom'],
-  3, ['case', HL, 2.2, 1.2],
-  8, ['case', HL, 2.5, 1.8],
+  3, ['case', HL, 2.2, ['all', fs('show'), reach], 2.4, 1.2],
+  8, ['case', HL, 2.5, ['all', fs('show'), reach], 3.2, 1.8],
 ]
 
 function routeLayer(family: Family, color: string, dash?: number[]): LineLayerSpecification {
@@ -43,7 +48,7 @@ function routeLayer(family: Family, color: string, dash?: number[]): LineLayerSp
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: {
       'line-color': color,
-      'line-width': routeWidth,
+      'line-width': routeWidth(false),
       'line-opacity': routeOpacity(0.25),
       'line-offset': ['*', ['get', 'side'], 1.25],
       ...(dash ? { 'line-dasharray': dash } : {}),
@@ -55,6 +60,15 @@ const near = fs('near')
 const sel = fs('sel')
 const hot = fs('hot')
 const lit: ExpressionSpecification = ['any', sel, hot, near]
+const DIM = 0.45
+const QUIET = 0.12
+/** Towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection; the rest dims beside one. */
+const placeFade = (dim: number): ExpressionSpecification => [
+  'interpolate', ['linear'], ['zoom'],
+  5.5, ['case', lit, 1, ['==', ['get', 'tier'], 'destination'], ['case', fs('dim'), dim, 1], 0],
+  6.5, ['case', lit, 1, fs('dim'), dim, 1],
+]
+const airFade = (dim: number): ExpressionSpecification => ['case', lit, 1, fs('dim'), dim, 1]
 const tier = (dest: number, town: number, stop: number): ExpressionSpecification =>
   ['match', ['get', 'tier'], 'destination', dest, 'town', town, stop]
 
@@ -63,6 +77,8 @@ const labelPaint = {
   'text-halo-color': C.ground,
   'text-halo-width': 1.4,
   'text-halo-blur': 0.4,
+  // a stop on the route in focus is named by the stop label instead
+  'text-opacity': ['case', fs('stop'), 0, 1] as ExpressionSpecification,
 }
 
 function label(id: string, fontStack: string[], size: number, extra: Partial<SymbolLayerSpecification> = {}): SymbolLayerSpecification {
@@ -110,6 +126,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
   map.addSource('routes', { type: 'geojson', data: model.routes, promoteId: 'fid', tolerance: 0.2 })
   map.addSource('places', { type: 'geojson', data: places, promoteId: 'id' })
   map.addSource('stops', { type: 'geojson', data: empty })
+  map.addSource('via', { type: 'geojson', data: empty })
   map.addSource('mover', { type: 'geojson', data: empty })
   map.addSource('trip', { type: 'geojson', data: empty })
   map.addSource('trip-stops', { type: 'geojson', data: empty })
@@ -136,6 +153,18 @@ export function addRouteLayers(map: MLMap, model: Model) {
   map.addLayer(routeLayer('ground', C.bus))
   map.addLayer(routeLayer('boat', C.boat, [2.5, 2]))
   map.addLayer(routeLayer('flight', C.flight, [0, 2.2]))
+  // the flight in focus, drawn through its layovers
+  map.addLayer({
+    id: VIA_LAYER,
+    type: 'line',
+    source: 'via',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: {
+      'line-color': C.flight,
+      'line-width': ['interpolate', ['linear'], ['zoom'], 3, 2.2, 8, 2.5],
+      'line-dasharray': [0, 2.2],
+    },
+  })
   map.addLayer({
     id: HIT_ROUTES,
     type: 'line',
@@ -150,6 +179,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     id: 'trip-casing',
     type: 'line',
     source: 'trip',
+    filter: ['!=', ['get', 'family'], 'overland'],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': C.ground, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 6.5, 8, 8.5], 'line-opacity': 0.85 },
   })
@@ -157,7 +187,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     id: 'trip-line',
     type: 'line',
     source: 'trip',
-    filter: ['!=', ['get', 'family'], 'flight'],
+    filter: ['!', ['in', ['get', 'family'], ['literal', ['flight', 'overland']]]],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: { 'line-color': ['match', ['get', 'family'], 'boat', C.boat, C.bus], 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4] },
   })
@@ -168,6 +198,21 @@ export function addRouteLayers(map: MLMap, model: Model) {
     filter: ['==', ['get', 'family'], 'flight'],
     layout: { 'line-join': 'round' },
     paint: { 'line-color': C.flight, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4], 'line-dasharray': [1.6, 1.1] },
+  })
+  // overland blocks of a seeded trip: your own route, so only a faint dashed line between the ends
+  map.addLayer({
+    id: TRIP_OVERLAND,
+    type: 'line',
+    source: 'trip',
+    filter: ['==', ['get', 'family'], 'overland'],
+    paint: { 'line-color': C.text, 'line-opacity': 0.55, 'line-width': 1.6, 'line-dasharray': [2, 2.4] },
+  })
+  map.addLayer({
+    id: HIT_OVERLAND,
+    type: 'line',
+    source: 'trip',
+    filter: ['==', ['get', 'family'], 'overland'],
+    paint: { 'line-color': '#000', 'line-opacity': 0, 'line-width': 14 },
   })
 
   map.addLayer({
@@ -183,12 +228,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
     paint: { 'circle-radius': 3, 'circle-color': ['get', 'core'] },
   })
 
-  const fadeIn = (from: number, to: number): ExpressionSpecification => [
-    'interpolate', ['linear'], ['zoom'],
-    from, ['case', lit, 1, ['==', ['get', 'tier'], 'destination'], ['case', fs('dim'), 0.45, 1], 0],
-    to, ['case', lit, 1, fs('dim'), 0.45, 1],
-  ]
-  // towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection.
+  const fadeIn = placeFade(DIM)
   // Places without an airport are small dots, so the airport diamonds stand out.
   const dot: CircleLayerSpecification = {
     id: 'place-dot',
@@ -202,10 +242,10 @@ export function addRouteLayers(map: MLMap, model: Model) {
         8, ['*', tier(5, 3.8, 3.2), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
       ],
       'circle-color': ['case', ['any', sel, hot], C.flight, near, '#FFFFFF', ['==', ['get', 'tier'], 'destination'], C.dot, C.muted],
-      'circle-opacity': fadeIn(5.5, 6.5),
+      'circle-opacity': fadeIn,
       'circle-stroke-color': C.ground,
       'circle-stroke-width': 2,
-      'circle-stroke-opacity': fadeIn(5.5, 6.5),
+      'circle-stroke-opacity': fadeIn,
     },
   }
   map.addLayer({
@@ -252,7 +292,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
       'icon-color': ['case', ['any', sel, hot], '#FFFFFF', ['get', 'hub'], C.flight, C.ground],
       'icon-halo-color': ['case', ['any', sel, hot], C.flight, ['get', 'hub'], C.ground, C.flight],
       'icon-halo-width': ['case', ['get', 'hub'], 1.5, 1.7],
-      'icon-opacity': ['case', lit, 1, fs('dim'), 0.45, 1],
+      'icon-opacity': airFade(DIM),
     },
   })
   map.addLayer({
@@ -346,12 +386,28 @@ function diamondSdf(r = 16, buffer = 8) {
 
 const inIds = (ids: string[]): ExpressionSpecification => ['in', ['get', 'id'], ['literal', ids]]
 
-/** Point the label layers at a new focus set (the selected city and its neighbours). The selected label is placed first. */
-export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = null) {
+/**
+ * Point the label layers at a new focus set (the selected city and its neighbours). The selected
+ * label is placed first, then `first` (the open trip's stops), so they win every collision. With
+ * `only`, every other label goes: the map shows just the focus set.
+ */
+export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = null, only = false, first: string[] = []) {
   map.setFilter(LABEL_LAYERS.focus, ids.length ? inIds(ids) : NONE)
-  map.setLayoutProperty(LABEL_LAYERS.focus, 'symbol-sort-key', ['case', ['==', ['get', 'id'], sel ?? ''], -1, ['get', 'popularity']])
-  map.setFilter(LABEL_LAYERS.dest, ['all', ['==', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
-  map.setFilter(LABEL_LAYERS.town, ['all', ['!=', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
+  map.setLayoutProperty(LABEL_LAYERS.focus, 'symbol-sort-key', ['case', ['==', ['get', 'id'], sel ?? ''], -2, inIds(first), -1, ['get', 'popularity']])
+  map.setFilter(LABEL_LAYERS.dest, only ? NONE : ['all', ['==', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
+  map.setFilter(LABEL_LAYERS.town, only ? NONE : ['all', ['!=', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
+}
+
+/**
+ * Build mode: places outside the focus set nearly vanish (the overview only dims them), and the
+ * routes the cursor reaches draw wide enough to follow.
+ */
+export function setQuiet(map: MLMap, quiet: boolean) {
+  const dim = quiet ? QUIET : DIM
+  map.setPaintProperty('place-dot', 'circle-opacity', placeFade(dim))
+  map.setPaintProperty('place-dot', 'circle-stroke-opacity', placeFade(dim))
+  map.setPaintProperty('place-air', 'icon-opacity', airFade(dim))
+  for (const id of Object.values(ROUTE_LAYERS)) map.setPaintProperty(id, 'line-width', routeWidth(quiet))
 }
 
 /** Routes of enabled families take pointer events. With a selection, only the selected city's routes do (null means all). */

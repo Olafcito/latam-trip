@@ -1,11 +1,11 @@
 import { useState, type Ref } from 'react'
-import { byCountry, countries, countryName, neighbours, otherEnd, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
+import { airportFlights, byCountry, countries, countryName, landing, neighbours, otherEnd, pairFlights, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
 import { tripEnd, type Trip } from '../data/trips'
-import { familyOf, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
+import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 
-export type PanelView = 'city' | 'more' | 'route' | 'trips'
+export type PanelView = 'city' | 'more' | 'route' | 'trips' | 'way'
 
 export interface View {
   sel: string | null
@@ -16,9 +16,13 @@ export interface View {
   back: 'city' | 'more' | null // where Esc and the back button go from route view
 }
 
+export type FlightDir = 'in' | 'out'
+
 export interface PanelProps {
   model: Model
   view: View
+  dir: FlightDir // which way the city's flights read: out of it or into it
+  onDir(dir: FlightDir): void
   families: Set<Family>
   collapsed: boolean
   trip: Trip | null // the open trip, which the route view adds legs to
@@ -93,46 +97,93 @@ function OptChip({ o, label }: { o: RouteOption; label?: boolean }) {
   )
 }
 
+interface ConnListProps {
+  p: PanelProps
+  list: Neighbour[]
+  from: string
+  dir?: FlightDir // which way the flight chips read: out of `from` (default) or into it
+  compact?: boolean
+}
+
 /** The connections of `from`, under a heading per country once more than one country is reachable. */
-function ConnList({ p, list, from, compact }: { p: PanelProps; list: Neighbour[]; from: string; compact?: boolean }) {
+function ConnList({ p, list, from, dir = 'out', compact }: ConnListProps) {
   const home = p.model.byId.get(from)?.country ?? ''
   const groups = byCountry(list, home)
-  if (groups.length < 2) return <ConnRows p={p} list={list} from={from} compact={compact} />
+  if (groups.length < 2) return <ConnRows p={p} list={list} from={from} dir={dir} compact={compact} />
   return (
     <div className={`cgroups${compact ? ' flush' : ''}`}>
       {groups.map((g) => (
         <section key={g.country}>
           <p className="cgroup mono">{g.country === home ? `Within ${countryName(p.model, g.country)}` : countryName(p.model, g.country)}</p>
-          <ConnRows p={p} list={g.list} from={from} compact={compact} />
+          <ConnRows p={p} list={g.list} from={from} dir={dir} compact={compact} />
         </section>
       ))}
     </div>
   )
 }
 
-function ConnRows({ p, list, from, compact }: { p: PanelProps; list: Neighbour[]; from: string; compact?: boolean }) {
+function ConnRows({ p, list, from, dir = 'out', compact }: ConnListProps) {
   return (
     <ul className={`clist${compact ? ' flush' : ''}`}>
-      {list.map((n, i) => (
-        <li key={n.conn.id} className="crow" style={{ animationDelay: `${0.12 + Math.min(i, 10) * 0.04}s` }}>
-          <button
-            onClick={() => p.onRoute(n.conn.id, from)}
-            onMouseEnter={() => p.onHoverRoute(n.conn.id, from)}
-            onMouseLeave={() => p.onHoverRoute(null)}
-            onFocus={() => p.onHoverRoute(n.conn.id, from)}
-            onBlur={() => p.onHoverRoute(null)}
-          >
-            <span className="cr-top">
-              <span className="cr-name">{n.other.short_name}</span>
-              <span className="cr-arrow"><Arrow /></span>
-            </span>
-            <span className="cr-opts">
-              {n.options.map((o, j) => <OptChip key={j} o={o} label />)}
-            </span>
-          </button>
-        </li>
-      ))}
+      {list.map((n, i) => <ConnRow key={n.conn.id} p={p} n={n} from={from} dir={dir} i={i} />)}
     </ul>
+  )
+}
+
+/** One connection: the name opens the route, a flight chip with crawled fares unfolds them under the row. */
+function ConnRow({ p, n, from, dir, i }: { p: PanelProps; n: Neighbour; from: string; dir: FlightDir; i: number }) {
+  const { model } = p
+  const [open, setOpen] = useState(false)
+  const here = model.byId.get(from)?.iata
+  const there = n.other.iata
+  const pair = here && there ? (dir === 'out' ? pairFlights(model, here, there) : pairFlights(model, there, here)) : []
+  // the route lights up the way it is read, so reading flights in runs it into the city
+  const hoverFrom = dir === 'in' ? n.other.id : from
+  return (
+    <li
+      className="crow"
+      style={{ animationDelay: `${0.12 + Math.min(i, 10) * 0.04}s` }}
+      onMouseEnter={() => p.onHoverRoute(n.conn.id, hoverFrom)}
+      onMouseLeave={() => p.onHoverRoute(null)}
+    >
+      <button className="cr-main" onClick={() => p.onRoute(n.conn.id, from)} onFocus={() => p.onHoverRoute(n.conn.id, hoverFrom)} onBlur={() => p.onHoverRoute(null)}>
+        <span className="cr-name">{n.other.short_name}</span>
+        <span className="cr-arrow"><Arrow /></span>
+      </button>
+      <span className="cr-opts">
+        {n.options.map((o, j) =>
+          o.mode === 'flight' && pair.length ? (
+            <button
+              key={j}
+              type="button"
+              className={`copt mono cr-fl${open ? ' on' : ''}`}
+              aria-expanded={open}
+              title={`${pair.length} crawled fare${pair.length === 1 ? '' : 's'} ${dir === 'out' ? 'to' : 'from'} ${n.other.short_name}`}
+              onClick={() => setOpen(!open)}
+            >
+              <ModeChip family={familyOf(o.mode)} />
+              <span className="copt-m">flight</span>
+              <b>{duration(o.duration_min)}</b> {fromPrice(pair[0].dkk)}
+              <Chevron up={open} />
+            </button>
+          ) : o.mode === 'flight' && dir === 'in' && here ? (
+            // the crawl did not search this way in, so there is no price to read
+            <span key={j} className="copt mono" title={`No crawled fares from ${n.other.short_name}`}>
+              <ModeChip family={familyOf(o.mode)} />
+              <span className="copt-m">flight</span>
+              <b>{duration(o.duration_min)}</b> {fromPrice(null)}
+            </span>
+          ) : (
+            <OptChip key={j} o={o} label />
+          ),
+        )}
+      </span>
+      {open && pair.length > 0 && (
+        <ul className="flist nested">
+          {pair.map((r, k) => <FlightRow key={`${r.dep}-${r.dkk}-${r.hours}`} model={model} r={r} i={k} />)}
+        </ul>
+      )}
+    </li>
   )
 }
 
@@ -150,9 +201,11 @@ function Thumb({ city, w, className }: { city: Place; w: number; className: stri
 }
 
 function CityView(p: PanelProps & { city: Place }) {
-  const { model, city } = p
+  const { model, city, dir } = p
   const list = neighbours(model, city.id, p.families)
   const kicker = [countryName(model, city.country), altitude(city.altitude_m)].filter(Boolean).join(' · ')
+  // the in or out switch only once the airport has crawled fares to read either way
+  const flown = !!city.iata && (airportFlights(model, city.iata, 'in').length > 0 || airportFlights(model, city.iata, 'out').length > 0)
   return (
     <div className="pview">
       <div className="phead stg">
@@ -181,9 +234,52 @@ function CityView(p: PanelProps & { city: Place }) {
           <button className="more" onClick={p.onMore}>More about {city.short_name} <span className="arr"><Arrow /></span></button>
         )}
       </div>
-      <div className="sechead"><p className="sub mono">Connections</p><p className="sub mono">{list.length}</p></div>
-      {list.length ? <ConnList p={p} list={list} from={city.id} /> : <p className="empty">No connections with the selected modes.</p>}
+      <div className="sechead">
+        <p className="sub mono">Connections</p>
+        <span className="sechead-r">
+          {flown && (
+            <span className="dirseg" role="group" aria-label="Read flights in or out">
+              <button type="button" aria-pressed={dir === 'in'} onClick={() => p.onDir('in')}>In</button>
+              <button type="button" aria-pressed={dir === 'out'} onClick={() => p.onDir('out')}>Out</button>
+            </span>
+          )}
+          <p className="sub mono">{list.length}</p>
+        </span>
+      </div>
+      {list.length ? <ConnList p={p} list={list} from={city.id} dir={dir} /> : <p className="empty">No connections with the selected modes.</p>}
     </div>
+  )
+}
+
+const LAND_TEXT = { night: 'night', day: 'by day', evening: 'evening' } as const
+const WARN_NOTES = new Set(['self transfer', 'US transit'])
+
+/** One crawled fare: when it flies and lands, the price, the routing and what makes the row worth reading. */
+function FlightRow({ model, r, i }: { model: Model; r: AirportFlight; i: number }) {
+  const name = (code: string) => model.byIata.get(code)?.short_name ?? code
+  const land = landing(r.arr)
+  const url = r.link ?? `https://www.momondo.dk/flight-search/${r.from}-${r.to}${r.dep ? '/' + r.dep.slice(0, 10) : ''}`
+  const plus = r.dep && r.arr && r.arr.slice(0, 10) !== r.dep.slice(0, 10) ? ` +${Math.round((Date.parse(r.arr.slice(0, 10)) - Date.parse(r.dep.slice(0, 10))) / 864e5)}` : ''
+  return (
+    <li className="frow" style={{ animationDelay: `${Math.min(i, 10) * 0.05}s` }}>
+      <a href={url} target="_blank" rel="noreferrer" title={`${r.from} to ${r.to}, times local at each airport`}>
+        <span className="fr-time mono">
+          {r.dep ? `${weekday(r.dep.slice(0, 10))} ${shortDate(r.dep.slice(0, 10))} ${r.dep.slice(11, 16)}` : '?'}
+          {' → '}
+          {r.arr ? r.arr.slice(11, 16) + plus : '?'}
+          {land && <span className={`land ${land}`}>{land === 'night' && <Moon />}{LAND_TEXT[land]}</span>}
+        </span>
+        <span className="fr-price mono">{kr(r.dkk)}</span>
+        <span className="fr-meta">
+          {duration(Math.round(r.hours * 60))} · {r.vias.length ? 'via ' + r.vias.map(name).join(', ') : 'nonstop'}
+          {r.carriers.length ? ` · ${r.carriers.join(', ')}` : ''}
+        </span>
+        <span className="fr-tags">
+          {r.shows.map((s) => <span key={s}>{s}</span>)}
+          {r.notes.map((n) => <span key={n} className={WARN_NOTES.has(n) ? 'warn' : 'note'}>{n}</span>)}
+        </span>
+      </a>
+    </li>
   )
 }
 

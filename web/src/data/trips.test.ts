@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mergeSeeds, parseSeedFile, addLeg, createTrip, deleteTrip, fromOldJourney, legIndex, openTrip, parseTrips, removeLeg, renameTrip, tripEnd, tripStops, EMPTY_TRIPS, type TripLeg } from './trips'
+import { mergeSeeds, parseSeedFile, tripPieces, addLeg, createTrip, deleteTrip, fromOldJourney, legIndex, openTrip, parseTrips, removeLeg, renameTrip, tripEnd, tripStops, EMPTY_TRIPS, type TripLeg } from './trips'
 
 const leg = (from: string, to: string, mode: TripLeg['mode'] = 'bus'): TripLeg => ({ cid: [from, to].sort().join('-'), from, to, mode })
 
@@ -96,5 +96,37 @@ describe('seeded trips', () => {
     const back = parseTrips(JSON.parse(JSON.stringify(s)))
     expect(back.trips[0].inout?.exit).toBe('BOG')
     expect(back.trips[0].rank).toBe(1)
+  })
+})
+
+describe('seeded trip pieces', () => {
+  const seeded = (legs: TripLeg[]) => ({
+    id: 's', name: 'S', updated: 0, legs,
+    segments: [
+      { kind: 'overland' as const, from: 'GUA', to: 'SJO', note: 'By bus' },
+      { kind: 'flight' as const, from: 'SJO', to: 'LPB' },
+      { kind: 'flight' as const, from: 'LPB', to: 'CBB' },
+      { kind: 'overland' as const, from: 'CBB', to: 'CBB', note: 'Stay' },
+    ],
+  })
+
+  it('follows the segments, overland blocks included, and stops in travel order', () => {
+    const t = seeded([leg('SJO', 'LPB', 'flight'), leg('LPB', 'CBB', 'flight')])
+    expect(tripPieces(t).map((p) => `${p.kind}:${p.from}>${p.to}`)).toEqual(['overland:GUA>SJO', 'leg:SJO>LPB', 'leg:LPB>CBB', 'overland:CBB>CBB'])
+    expect(tripStops(t)).toEqual(['GUA', 'SJO', 'LPB', 'CBB'])
+    expect(tripEnd(t)).toBe('CBB')
+  })
+
+  it('drops a removed flight and puts added legs after the segments', () => {
+    const t = seeded([leg('SJO', 'LPB', 'flight'), leg('CBB', 'VVI', 'bus')])
+    expect(tripPieces(t).map((p) => `${p.from}>${p.to}`)).toEqual(['GUA>SJO', 'SJO>LPB', 'CBB>CBB', 'CBB>VVI'])
+  })
+
+  it('refreshes a stored seed from the file but keeps its name and legs', () => {
+    const seeds = parseSeedFile({ trips: [{ id: 'seed-1', name: 'New', rank: 2, legs: [], inout: { entry: 'GUA', exit: 'SAL' } }] })
+    const mine = { trips: [{ id: 'seed-1', name: 'Mine', seed: true, rank: 1, legs: [leg('A', 'B')], updated: 5, inout: { entry: 'GUA', exit: 'BOG' } as never }], active: null }
+    const r = mergeSeeds(mine, seeds, ['seed-1'])
+    expect(r.state.trips[0]).toMatchObject({ name: 'Mine', rank: 2, legs: [leg('A', 'B')], inout: { exit: 'SAL' } })
+    expect(mergeSeeds(r.state, seeds, ['seed-1']).state).toBe(r.state)
   })
 })
