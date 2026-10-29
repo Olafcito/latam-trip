@@ -50,7 +50,7 @@ function Disc({ country }: { country: string }) {
 
 /** The date beside the rail. None when the leg above has it. */
 function Gutter({ date, est }: { date: string | null; est: boolean }) {
-  return <span className="st-gut" data-est={est}>{date && <b>{est ? '~' : ''}{day(date)}</b>}</span>
+  return <span className="st-gut" data-est={est}>{date && <b>{day(date)}</b>}</span>
 }
 
 /** Shut a popover. Shown on a phone, where the popover is a sheet and there is no outside to click. */
@@ -82,10 +82,10 @@ function Stop({ id, name, node, country, inDay, days, exact, dated, onLess, onMo
             {onLess || onMore ? (
               <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
                 <button type="button" aria-label={`One night less in ${name}`} disabled={!onLess} onClick={onLess ?? undefined}><Minus /></button>
-                <b>{est ? '~' : ''}{days}</b>
+                <b>{days}</b>
                 <button type="button" aria-label={`One night more in ${name}`} disabled={!onMore} onClick={onMore ?? undefined}><Plus /></button>
               </span>
-            ) : <b>{est ? '~' : ''}{days}</b>}
+            ) : <b>{days}</b>}
             <small>{days === 1 ? 'night' : 'nights'}</small>
           </span>
         )}
@@ -120,7 +120,7 @@ function Leg({ fam, tone, route, date, set, known, picker, ribbon, card, aria, c
         {picker ? (
           <span className="pop-wrap" {...when.wrap}>
             <button type="button" className="st-date st-when" data-set={set} data-known={known} data-clash={!!clash} aria-label={`${route}, leaves ${weekdayDay(date)}${known ? '' : ', estimated'}${clash ? ', before you get there' : ''}. Change the day`} {...when.trigger}>
-              <b>{known ? '' : '~'}{day(date)}</b>
+              <b>{day(date)}</b>
               <small>{wd(date)}</small>
             </button>
             {when.open && <div className="pop wide" role="dialog" aria-label={`When ${route} leaves`} {...when.panel}><Shut on={when.dismiss} />{picker}</div>}
