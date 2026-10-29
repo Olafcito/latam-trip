@@ -3894,6 +3894,183 @@
     ],
     "notes": "No hostel data found. Sygic guide quotes US$15 launch from Puerto Obaldia to Sapzurro."
    }
+  },
+  {
+   "kind": "node",
+   "id": "CUN",
+   "name": "Cancún",
+   "country": "MX",
+   "lat": 21.16,
+   "lon": -86.85,
+   "type": "hub",
+   "iata": "CUN",
+   "popularity": 2,
+   "why": "Caribbean gateway with cheap flights to Europe, Mexico, Central America and Colombia",
+   "source": "https://en.wikipedia.org/wiki/Canc%C3%BAn_International_Airport",
+   "profile": {
+    "checked_at": "2026-10-29",
+    "image": null,
+    "tagline": "Caribbean gateway: big beaches and the region's cheapest flights",
+    "summary": "Cancún splits into the high-rise hotel zone on the beach and a cheaper, more local downtown where the hostels and taquerías are. Most backpackers pass through on the way to Playa del Carmen, Isla Mujeres or Tulum.",
+    "things_to_do": [
+     "Playa Delfines and the hotel-zone beaches",
+     "Ferry to Isla Mujeres",
+     "Cenotes along the Ruta de los Cenotes",
+     "Mercado 28 and downtown taquerías",
+     "Whale shark trips (Jun to Sep)"
+    ],
+    "touristy": 5,
+    "hostels": [
+     {
+      "name": "Nomads Hotel & Rooftop Pool",
+      "dorm_dkk": 209,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026,
+      "rating": 8.7
+     },
+     {
+      "name": "Caleta Hostel Rooftop & Pool",
+      "dorm_dkk": 198,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026
+     },
+     {
+      "name": "The Boat House Cancun",
+      "dorm_dkk": 131,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026
+     }
+    ],
+    "hostel_price_note": "Booking.com prices for 5 to 7 Dec 2026 (cheapest bed, total for 2 nights halved).",
+    "sources": [
+     "https://en.wikipedia.org/wiki/Canc%C3%BAn",
+     "https://www.booking.com"
+    ]
+   }
+  },
+  {
+   "kind": "node",
+   "id": "MEX",
+   "name": "Mexico City",
+   "country": "MX",
+   "lat": 19.43,
+   "lon": -99.13,
+   "type": "hub",
+   "iata": "MEX",
+   "popularity": 2,
+   "why": "Capital and Mexico's biggest hub (MEX, plus NLU Felipe Ángeles 45 km north)",
+   "source": "https://en.wikipedia.org/wiki/Mexico_City_International_Airport",
+   "profile": {
+    "checked_at": "2026-10-29",
+    "image": null,
+    "tagline": "Huge, cultured capital of food, museums and neighbourhoods",
+    "summary": "One of the world's biggest cities, at about 2,240 m. Centro Histórico, leafy Roma and Condesa, world-class museums and street food, plus the Teotihuacan pyramids an hour away.",
+    "things_to_do": [
+     "Centro Histórico and the Zócalo",
+     "Museo Nacional de Antropología",
+     "Teotihuacan pyramids day trip",
+     "Tacos and markets in Roma and Condesa",
+     "Lucha libre at Arena México"
+    ],
+    "touristy": 3,
+    "hostels": [
+     {
+      "name": "Mexico City Hostel",
+      "dorm_dkk": 114,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026,
+      "rating": 9.1
+     },
+     {
+      "name": "Hostel Mundo Joven Catedral",
+      "dorm_dkk": 90,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026,
+      "rating": 8.3
+     },
+     {
+      "name": "CASA MX Alameda",
+      "dorm_dkk": 80,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026
+     }
+    ],
+    "hostel_price_note": "Booking.com prices for 5 to 7 Dec 2026 (cheapest bed, total for 2 nights halved).",
+    "sources": [
+     "https://en.wikipedia.org/wiki/Mexico_City",
+     "https://www.booking.com"
+    ]
+   }
+  },
+  {
+   "kind": "node",
+   "id": "PCM",
+   "name": "Playa del Carmen",
+   "country": "MX",
+   "lat": 20.63,
+   "lon": -87.08,
+   "type": "beach",
+   "popularity": 1,
+   "why": "Riviera Maya beach town, 1 h from Cancún airport; base for Cozumel and bull shark dives",
+   "source": "https://en.wikipedia.org/wiki/Playa_del_Carmen",
+   "profile": {
+    "checked_at": "2026-10-29",
+    "image": null,
+    "tagline": "Riviera Maya beach town, base for Cozumel reefs and bull shark dives",
+    "summary": "A lively, walkable beach town around Quinta Avenida, busy with tourists but full of hostels and dive shops. Ferries run to Cozumel, and cenotes and Tulum are day trips away.",
+    "things_to_do": [
+     "Bull shark dives (Nov to Feb)",
+     "Ferry to Cozumel for reef diving",
+     "Cenote swimming and diving",
+     "Quinta Avenida and Playa Mamitas",
+     "Day trip to the Tulum ruins"
+    ],
+    "touristy": 4,
+    "hostels": [
+     {
+      "name": "Sayab",
+      "dorm_dkk": 132,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026
+     },
+     {
+      "name": "Che Playa Hostel & Bar",
+      "dorm_dkk": 176,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026
+     },
+     {
+      "name": "Wabi Hostel",
+      "dorm_dkk": 118,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026,
+      "rating": 7.0
+     },
+     {
+      "name": "Tres Mundos Hostel",
+      "dorm_dkk": 107,
+      "private_dkk": null,
+      "source": "Booking.com connector, 5 to 7 Dec 2026, cheapest bed per night",
+      "source_year": 2026,
+      "rating": 7.7
+     }
+    ],
+    "hostel_price_note": "Booking.com prices for 5 to 7 Dec 2026 (cheapest bed, total for 2 nights halved).",
+    "sources": [
+     "https://en.wikipedia.org/wiki/Playa_del_Carmen",
+     "https://hostelz.com/best-hostels-playa-del-carmen",
+     "https://www.booking.com"
+    ]
+   }
   }
  ],
  "edges": [
@@ -7601,6 +7778,82 @@
    "source_year": 2026,
    "notes": "Transfer in Bucaramanga; price from article originally 2020. San Gil to Bucaramanga COP 12,000-20,000, 2.5-3.5 h.",
    "_src": "net-co.jsonl"
+  },
+  {
+   "kind": "edge",
+   "from": "CUN",
+   "to": "GDL",
+   "mode": "flight",
+   "operator": "Viva Aerobus, Volaris (nonstop)",
+   "duration_h": 2.9,
+   "duration_range": "2.9-3.0",
+   "price_dkk": 1269,
+   "price_range_local": "CUN>GDL 1,269 to 1,942 kr; GDL>CUN 1,053 to 2,055 kr (3 to 7 Dec)",
+   "frequency": "5 to 6 nonstops a day",
+   "overnight": false,
+   "border": false,
+   "both": true,
+   "source": "https://www.kiwi.com",
+   "source_year": 2026,
+   "notes": "Kiwi.com connector search 2026-10-29 for 3 to 7 Dec, cabin bag included. Cheapest CUN>GDL: Viva 22:05 > 23:59 (lands at midnight); daytime Viva 11:35 > 13:34 from 1,405 kr. GDL>CUN: Viva 17:34 > 21:15 from 1,053 kr. Clock times local (Cancún is 1 h ahead of Guadalajara). The crawl also holds a CUN>GDL quote from 737 kr.",
+   "_src": "net-mx-yucatan.jsonl"
+  },
+  {
+   "kind": "edge",
+   "from": "CUN",
+   "to": "MEX",
+   "mode": "flight",
+   "operator": "Viva Aerobus (nonstop; also Aeroméxico, Volaris)",
+   "duration_h": 2.4,
+   "duration_range": "2.3-2.4",
+   "price_dkk": 759,
+   "price_range_local": "CUN>Mexico City 759 to 837 kr; Mexico City>CUN 709 to 828 kr (3 to 7 Dec)",
+   "frequency": "many daily",
+   "overnight": false,
+   "border": false,
+   "both": true,
+   "source": "https://www.kiwi.com",
+   "source_year": 2026,
+   "notes": "Kiwi.com connector search 2026-10-29 for 3 to 7 Dec, cabin bag included. Cheapest fares use NLU (Felipe Ángeles, 45 km north of the centre): CUN 07:20 > NLU 08:42 from 766 kr. To MEX (city airport): CUN 06:15 > MEX 07:40 from 778 kr. Back: NLU 17:25 > CUN 20:35 from 711 kr; MEX 21:05 > CUN 00:10 from 797 kr. Mexico City is 1 h behind Cancún.",
+   "_src": "net-mx-yucatan.jsonl"
+  },
+  {
+   "kind": "edge",
+   "from": "CUN",
+   "to": "PCM",
+   "mode": "bus",
+   "operator": "ADO (from the airport terminals or downtown Cancún)",
+   "duration_h": 1.2,
+   "duration_range": "1-1.5",
+   "price_dkk": 80,
+   "price_range_local": "airport MXN 208 to 230; downtown MXN 65 to 85",
+   "frequency": "every 30 to 60 min, about 07:00 to 23:00",
+   "overnight": false,
+   "border": false,
+   "both": true,
+   "source": "https://letstraveltomexico.com/how-to-get-from-cancun-to-playa-del-carmen/",
+   "source_year": 2026,
+   "notes": "Colectivo vans from downtown Cancún about MXN 45 to 60, not from the airport. price_dkk = MXN 230 x 0.349.",
+   "_src": "net-mx-yucatan.jsonl"
+  },
+  {
+   "kind": "edge",
+   "from": "CUN",
+   "to": "PCM",
+   "mode": "train",
+   "operator": "Tren Maya",
+   "duration_h": 1.3,
+   "duration_range": "1.25-1.5",
+   "price_dkk": 45,
+   "price_range_local": "MXN 60 to 130 by class, plus about MXN 35 shuttle from the airport to the station",
+   "frequency": "about 4 to 6 trains a day",
+   "overnight": false,
+   "border": false,
+   "both": true,
+   "source": "https://letstraveltomexico.com/how-to-get-from-cancun-to-playa-del-carmen/",
+   "source_year": 2026,
+   "notes": "35 to 40 min on the train; about 1 h 15 min door to door from airport Terminal 3. price_dkk = MXN 130 x 0.349.",
+   "_src": "net-mx-yucatan.jsonl"
   },
   {
    "from": "SJO",
@@ -27206,12 +27459,10 @@
   "AMS",
   "BCN",
   "CDG",
-  "CUN",
   "FRA",
   "IST",
   "LGW",
   "LHR",
-  "MEX",
   "SDQ",
   "XPL",
   "ZRH"
