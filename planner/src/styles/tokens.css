@@ -32,9 +32,9 @@
   --t-med: 180ms;
   --t-slow: 240ms;
 
-  /* type: Bricolage for words, Plex Mono with tabular figures for every number */
-  --font-word: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
-  --font-num: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* type: Inter for words and numbers alike, numbers in tabular figures so columns line up */
+  --font-word: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-num: var(--font-word);
   --fs-display: 28px;
   --fs-title: 16px;
   --fs-body: 14px;

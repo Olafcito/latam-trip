@@ -19,7 +19,7 @@ const GEO = {
 const LANE_ABOVE = 10
 const LANE_BELOW = 57
 const DATE_LINE = 70
-/** IBM Plex Mono advances 0.6 em per character */
+/** Inter advances under 0.6 em per character, so 0.6 errs toward a name not fitting */
 const ADVANCE = 0.6
 const PAD = 5
 

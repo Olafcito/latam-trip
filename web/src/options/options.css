@@ -15,12 +15,12 @@
   --poor: #F28B82;
   --ease: cubic-bezier(.22, .9, .24, 1);
   display: flex; flex-direction: column; height: 100%; min-height: 0; background: var(--bg); color: var(--text);
-  font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 13px; line-height: 1.45;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.45;
 }
 .opts button { font: inherit; color: inherit; }
-.opts .mono { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.opts .mono { font-family: inherit; font-variant-numeric: tabular-nums; }
 .opts code {
-  font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 12px; color: var(--accent);
+  font-family: inherit; font-size: 12px; color: var(--accent);
   background: #142633; padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere;
 }
 
@@ -106,7 +106,7 @@ select.opt-input option { background: #0F1F29; color: var(--text); }
 .th-btn:hover { color: var(--text); }
 .tbl th.on { color: var(--accent); }
 .th-arrow { width: 10px; display: inline-block; font-size: 10px; line-height: 1; }
-.tbl td.num { text-align: right; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.tbl td.num { text-align: right; font-family: inherit; font-variant-numeric: tabular-nums; }
 .tbl td.wrap { white-space: normal; min-width: 260px; max-width: 360px; color: var(--muted); }
 .tbl .grp { border-left: 1px solid var(--line); }
 .tbl tbody tr:nth-child(even) td { background: #FFFFFF04; }
@@ -118,7 +118,7 @@ select.opt-input option { background: #0F1F29; color: var(--text); }
 
 .rate {
   display: inline-block; min-width: 38px; padding: 1px 7px; border-radius: 999px; text-align: center;
-  font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; font-weight: 600; color: #0B1720;
+  font-family: inherit; font-variant-numeric: tabular-nums; font-weight: 600; color: #0B1720;
 }
 .rate.good { background: var(--good); }
 .rate.fair { background: var(--fair); }
