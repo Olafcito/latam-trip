@@ -4,6 +4,63 @@
    "route": "CPH>MAD>CUN",
    "frm": "CPH",
    "to": "CUN",
+   "price": 3108,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 3108,
+   "eff": 6033,
+   "hours": 14.5,
+   "flights": 2,
+   "tickets": 2,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-03T20:25:00",
+   "stops": [
+    "5.8 h self-transfer in MAD"
+   ],
+   "carriers": [
+    "Air Europa"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:be731d99fea5",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 230.0,
+     "hours": 3.42,
+     "carriers": [],
+     "source": "momondo-manual",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:a4dd5b1a26e8",
+     "pattern": "P:MAD>CUN/*",
+     "frm": "MAD",
+     "to": "CUN",
+     "dep": "2026-12-03T15:20:00",
+     "arr": "2026-12-03T20:25:00",
+     "price": 2878.0,
+     "hours": 11.08,
+     "carriers": [
+      "Air Europa"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>CUN",
+   "frm": "CPH",
+   "to": "CUN",
    "price": 3064,
    "cabin": 180,
    "checked": 800,
@@ -119,59 +176,115 @@
    ]
   },
   {
-   "route": "CPH>MAD>CUN",
+   "route": "CPH>MAD>SAL",
    "frm": "CPH",
-   "to": "CUN",
-   "price": 3559,
+   "to": "SAL",
+   "price": 3311,
    "cabin": 0,
-   "checked": 800,
+   "checked": null,
    "stay_cost": 450,
-   "total": 4009,
-   "eff": 6484,
-   "hours": 14.5,
-   "flights": 2,
+   "total": 3761,
+   "eff": 7961,
+   "hours": 24.0,
+   "flights": 3,
    "tickets": 2,
-   "start": "2026-12-02T15:30:00",
-   "end": "2026-12-03T20:25:00",
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-04T21:45:00",
    "stops": [
     "1 night in MAD"
    ],
    "carriers": [
-    "Air Europa",
-    "Iberia"
+    "Avianca"
    ],
-   "flags": [],
+   "flags": [
+    "date_shift"
+   ],
    "products": [
     {
-     "qid": "Q:cb22fc41af90",
+     "qid": "Q:be731d99fea5",
      "pattern": "P:CPH>MAD/*",
      "frm": "CPH",
      "to": "MAD",
-     "dep": "2026-12-02T15:30:00",
-     "arr": "2026-12-02T18:55:00",
-     "price": 681.0,
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 230.0,
      "hours": 3.42,
-     "carriers": [
-      "Iberia"
-     ],
-     "source": "expedia",
+     "carriers": [],
+     "source": "momondo-manual",
      "flights": 1,
      "cabin": 0
     },
     {
-     "qid": "Q:a4dd5b1a26e8",
-     "pattern": "P:MAD>CUN/*",
+     "qid": "Q:783717cf7cce",
+     "pattern": "P:MAD>SAL/*",
      "frm": "MAD",
-     "to": "CUN",
-     "dep": "2026-12-03T15:20:00",
-     "arr": "2026-12-03T20:25:00",
-     "price": 2878.0,
-     "hours": 11.08,
+     "to": "SAL",
+     "dep": "2026-12-04T08:10:00",
+     "arr": "2026-12-04T21:45:00",
+     "price": 3081.0,
+     "hours": 20.58,
      "carriers": [
-      "Air Europa"
+      "Avianca"
      ],
-     "source": "expedia",
+     "source": "momondo",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SAL",
+   "frm": "CPH",
+   "to": "SAL",
+   "price": 4237,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 4687,
+   "eff": 7975,
+   "hours": 17.9,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-04T15:40:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Avianca"
+   ],
+   "flags": [
+    "date_shift"
+   ],
+   "products": [
+    {
+     "qid": "Q:be731d99fea5",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 230.0,
+     "hours": 3.42,
+     "carriers": [],
+     "source": "momondo-manual",
      "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:3d5502013516",
+     "pattern": "P:MAD>SAL/*",
+     "frm": "MAD",
+     "to": "SAL",
+     "dep": "2026-12-04T08:10:00",
+     "arr": "2026-12-04T15:40:00",
+     "price": 4007.0,
+     "hours": 14.5,
+     "carriers": [
+      "Avianca"
+     ],
+     "source": "momondo",
+     "flights": 2,
      "cabin": 0
     }
    ]
@@ -225,126 +338,6 @@
      "to": "SAL",
      "dep": "2026-12-03T08:10:00",
      "arr": "2026-12-03T21:45:00",
-     "price": 3081.0,
-     "hours": 20.58,
-     "carriers": [
-      "Avianca"
-     ],
-     "source": "momondo",
-     "flights": 2,
-     "cabin": 0
-    }
-   ]
-  },
-  {
-   "route": "CPH>MAD>SAL",
-   "frm": "CPH",
-   "to": "SAL",
-   "price": 4193,
-   "cabin": 180,
-   "checked": 786,
-   "stay_cost": 450,
-   "total": 4823,
-   "eff": 8111,
-   "hours": 17.9,
-   "flights": 3,
-   "tickets": 2,
-   "start": "2026-12-02T06:10:00",
-   "end": "2026-12-03T15:40:00",
-   "stops": [
-    "1 night in MAD"
-   ],
-   "carriers": [
-    "Avianca",
-    "Ryanair"
-   ],
-   "flags": [
-    "date_shift"
-   ],
-   "products": [
-    {
-     "qid": "Q:41ac6bebb121",
-     "pattern": "P:CPH>MAD/*",
-     "frm": "CPH",
-     "to": "MAD",
-     "dep": "2026-12-02T06:10:00",
-     "arr": "2026-12-02T09:35:00",
-     "price": 186.0,
-     "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 180
-    },
-    {
-     "qid": "Q:3d5502013516",
-     "pattern": "P:MAD>SAL/*",
-     "frm": "MAD",
-     "to": "SAL",
-     "dep": "2026-12-03T08:10:00",
-     "arr": "2026-12-03T15:40:00",
-     "price": 4007.0,
-     "hours": 14.5,
-     "carriers": [
-      "Avianca"
-     ],
-     "source": "momondo",
-     "flights": 2,
-     "cabin": 0
-    }
-   ]
-  },
-  {
-   "route": "CPH>MAD>SAL",
-   "frm": "CPH",
-   "to": "SAL",
-   "price": 3767,
-   "cabin": 0,
-   "checked": 786,
-   "stay_cost": 450,
-   "total": 4217,
-   "eff": 8117,
-   "hours": 24.0,
-   "flights": 3,
-   "tickets": 2,
-   "start": "2026-12-01T15:30:00",
-   "end": "2026-12-02T21:45:00",
-   "stops": [
-    "1 night in MAD"
-   ],
-   "carriers": [
-    "Avianca",
-    "Iberia"
-   ],
-   "flags": [
-    "basic_fare"
-   ],
-   "products": [
-    {
-     "qid": "Q:59b4ea41d8d9",
-     "pattern": "P:CPH>MAD/*",
-     "frm": "CPH",
-     "to": "MAD",
-     "dep": "2026-12-01T15:30:00",
-     "arr": "2026-12-01T18:55:00",
-     "price": 686.0,
-     "hours": 3.42,
-     "carriers": [
-      "Iberia"
-     ],
-     "source": "momondo",
-     "flights": 1,
-     "cabin": 0
-    },
-    {
-     "qid": "Q:783717cf7cce",
-     "pattern": "P:MAD>SAL/*",
-     "frm": "MAD",
-     "to": "SAL",
-     "dep": "2026-12-02T08:10:00",
-     "arr": "2026-12-02T21:45:00",
      "price": 3081.0,
      "hours": 20.58,
      "carriers": [
@@ -452,6 +445,81 @@
      "source": "expedia",
      "flights": 1,
      "cabin": 0
+    }
+   ]
+  },
+  {
+   "route": "CPH>MAD>SDQ>MDE",
+   "frm": "CPH",
+   "to": "MDE",
+   "price": 4142,
+   "cabin": 260,
+   "checked": null,
+   "stay_cost": 700,
+   "total": 5102,
+   "eff": 8428,
+   "hours": 15.2,
+   "flights": 3,
+   "tickets": 3,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-05T09:20:00",
+   "stops": [
+    "6.8 h self-transfer in MAD",
+    "2 nights in SDQ"
+   ],
+   "carriers": [
+    "Arajet",
+    "World2Fly"
+   ],
+   "flags": [
+    "self_transfer"
+   ],
+   "products": [
+    {
+     "qid": "Q:be731d99fea5",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 230.0,
+     "hours": 3.42,
+     "carriers": [],
+     "source": "momondo-manual",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:538359893bb5",
+     "pattern": "P:MAD>SDQ/*",
+     "frm": "MAD",
+     "to": "SDQ",
+     "dep": "2026-12-03T16:20:00",
+     "arr": "2026-12-03T20:35:00",
+     "price": 3032.0,
+     "hours": 9.25,
+     "carriers": [
+      "World2Fly"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:ad86bdcc28d2",
+     "pattern": "R:SDQ>MDE",
+     "frm": "SDQ",
+     "to": "MDE",
+     "dep": "2026-12-05T07:50:00",
+     "arr": "2026-12-05T09:20:00",
+     "price": 880.0,
+     "hours": 2.5,
+     "carriers": [
+      "Arajet"
+     ],
+     "source": "expedia",
+     "flights": 1,
+     "cabin": 260
     }
    ]
   },
@@ -729,84 +797,6 @@
      "source": "momondo",
      "flights": 3,
      "cabin": 0
-    }
-   ]
-  },
-  {
-   "route": "CPH>MAD>SDQ>MDE",
-   "frm": "CPH",
-   "to": "MDE",
-   "price": 4593,
-   "cabin": 260,
-   "checked": null,
-   "stay_cost": 800,
-   "total": 5653,
-   "eff": 8829,
-   "hours": 15.2,
-   "flights": 3,
-   "tickets": 3,
-   "start": "2026-12-03T15:30:00",
-   "end": "2026-12-05T09:20:00",
-   "stops": [
-    "1 night in MAD",
-    "1 night in SDQ"
-   ],
-   "carriers": [
-    "Arajet",
-    "Iberia",
-    "World2Fly"
-   ],
-   "flags": [
-    "date_shift"
-   ],
-   "products": [
-    {
-     "qid": "Q:10321c6b234e",
-     "pattern": "P:CPH>MAD/*",
-     "frm": "CPH",
-     "to": "MAD",
-     "dep": "2026-12-03T15:30:00",
-     "arr": "2026-12-03T18:55:00",
-     "price": 681.0,
-     "hours": 3.42,
-     "carriers": [
-      "Iberia"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 0
-    },
-    {
-     "qid": "Q:538359893bb5",
-     "pattern": "P:MAD>SDQ/*",
-     "frm": "MAD",
-     "to": "SDQ",
-     "dep": "2026-12-04T16:20:00",
-     "arr": "2026-12-04T20:35:00",
-     "price": 3032.0,
-     "hours": 9.25,
-     "carriers": [
-      "World2Fly"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 0
-    },
-    {
-     "qid": "Q:ad86bdcc28d2",
-     "pattern": "R:SDQ>MDE",
-     "frm": "SDQ",
-     "to": "MDE",
-     "dep": "2026-12-05T07:50:00",
-     "arr": "2026-12-05T09:20:00",
-     "price": 880.0,
-     "hours": 2.5,
-     "carriers": [
-      "Arajet"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 260
     }
    ]
   },
@@ -1156,42 +1146,41 @@
    "route": "CPH>MAD>GUA",
    "frm": "CPH",
    "to": "GUA",
-   "price": 6314,
-   "cabin": 180,
-   "checked": 800,
-   "stay_cost": 450,
-   "total": 6944,
-   "eff": 9942,
+   "price": 6358,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6358,
+   "eff": 9806,
    "hours": 18.0,
    "flights": 3,
    "tickets": 2,
-   "start": "2026-12-02T06:10:00",
+   "start": "2026-12-03T06:10:00",
    "end": "2026-12-03T22:44:00",
    "stops": [
-    "1 night in MAD"
+    "5.6 h self-transfer in MAD"
    ],
    "carriers": [
     "Air Europa",
-    "Copa",
-    "Ryanair"
+    "Copa"
    ],
-   "flags": [],
+   "flags": [
+    "self_transfer"
+   ],
    "products": [
     {
-     "qid": "Q:41ac6bebb121",
+     "qid": "Q:be731d99fea5",
      "pattern": "P:CPH>MAD/*",
      "frm": "CPH",
      "to": "MAD",
-     "dep": "2026-12-02T06:10:00",
-     "arr": "2026-12-02T09:35:00",
-     "price": 186.0,
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 230.0,
      "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
+     "carriers": [],
+     "source": "momondo-manual",
      "flights": 1,
-     "cabin": 180
+     "cabin": 0
     },
     {
      "qid": "Q:a37b7a62a305",
@@ -1416,6 +1405,63 @@
    ]
   },
   {
+   "route": "CPH>MAD>VVI",
+   "frm": "CPH",
+   "to": "VVI",
+   "price": 7220,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 7670,
+   "eff": 11495,
+   "hours": 23.5,
+   "flights": 3,
+   "tickets": 2,
+   "start": "2026-12-03T06:10:00",
+   "end": "2026-12-05T04:35:00",
+   "stops": [
+    "1 night in MAD"
+   ],
+   "carriers": [
+    "Iberia",
+    "LATAM"
+   ],
+   "flags": [],
+   "products": [
+    {
+     "qid": "Q:be731d99fea5",
+     "pattern": "P:CPH>MAD/*",
+     "frm": "CPH",
+     "to": "MAD",
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 230.0,
+     "hours": 3.42,
+     "carriers": [],
+     "source": "momondo-manual",
+     "flights": 1,
+     "cabin": 0
+    },
+    {
+     "qid": "Q:a833cf66e4c3",
+     "pattern": "P:MAD>VVI/*",
+     "frm": "MAD",
+     "to": "VVI",
+     "dep": "2026-12-04T13:30:00",
+     "arr": "2026-12-05T04:35:00",
+     "price": 6990.0,
+     "hours": 20.08,
+     "carriers": [
+      "Iberia",
+      "LATAM"
+     ],
+     "source": "expedia",
+     "flights": 2,
+     "cabin": 0
+    }
+   ]
+  },
+  {
    "route": "CPH>VVI",
    "frm": "CPH",
    "to": "VVI",
@@ -1452,66 +1498,6 @@
      ],
      "source": "expedia",
      "flights": 3,
-     "cabin": 0
-    }
-   ]
-  },
-  {
-   "route": "CPH>MAD>VVI",
-   "frm": "CPH",
-   "to": "VVI",
-   "price": 7225,
-   "cabin": 180,
-   "checked": 800,
-   "stay_cost": 450,
-   "total": 7855,
-   "eff": 11680,
-   "hours": 23.5,
-   "flights": 3,
-   "tickets": 2,
-   "start": "2026-12-03T06:10:00",
-   "end": "2026-12-05T04:35:00",
-   "stops": [
-    "1 night in MAD"
-   ],
-   "carriers": [
-    "Iberia",
-    "LATAM",
-    "Ryanair"
-   ],
-   "flags": [],
-   "products": [
-    {
-     "qid": "Q:df6700956cfa",
-     "pattern": "P:CPH>MAD/*",
-     "frm": "CPH",
-     "to": "MAD",
-     "dep": "2026-12-03T06:10:00",
-     "arr": "2026-12-03T09:35:00",
-     "price": 235.0,
-     "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
-     "flights": 1,
-     "cabin": 180
-    },
-    {
-     "qid": "Q:a833cf66e4c3",
-     "pattern": "P:MAD>VVI/*",
-     "frm": "MAD",
-     "to": "VVI",
-     "dep": "2026-12-04T13:30:00",
-     "arr": "2026-12-05T04:35:00",
-     "price": 6990.0,
-     "hours": 20.08,
-     "carriers": [
-      "Iberia",
-      "LATAM"
-     ],
-     "source": "expedia",
-     "flights": 2,
      "cabin": 0
     }
    ]
@@ -1660,42 +1646,41 @@
    "route": "CPH>MAD>LPB",
    "frm": "CPH",
    "to": "LPB",
-   "price": 6260,
-   "cabin": 180,
-   "checked": 800,
-   "stay_cost": 450,
-   "total": 6890,
-   "eff": 12353,
+   "price": 6304,
+   "cabin": 0,
+   "checked": null,
+   "stay_cost": 0,
+   "total": 6304,
+   "eff": 12217,
    "hours": 30.4,
    "flights": 4,
    "tickets": 2,
-   "start": "2026-12-02T06:10:00",
+   "start": "2026-12-03T06:10:00",
    "end": "2026-12-04T14:45:00",
    "stops": [
-    "1 night in MAD"
+    "7.2 h self-transfer in MAD"
    ],
    "carriers": [
     "Iberia",
-    "Ryanair",
     "avianca"
    ],
-   "flags": [],
+   "flags": [
+    "self_transfer"
+   ],
    "products": [
     {
-     "qid": "Q:41ac6bebb121",
+     "qid": "Q:be731d99fea5",
      "pattern": "P:CPH>MAD/*",
      "frm": "CPH",
      "to": "MAD",
-     "dep": "2026-12-02T06:10:00",
-     "arr": "2026-12-02T09:35:00",
-     "price": 186.0,
+     "dep": "2026-12-03T06:10:00",
+     "arr": "2026-12-03T09:35:00",
+     "price": 230.0,
      "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
+     "carriers": [],
+     "source": "momondo-manual",
      "flights": 1,
-     "cabin": 180
+     "cabin": 0
     },
     {
      "qid": "Q:f461cd89ea19",
@@ -1720,61 +1705,56 @@
    "route": "CPH>MAD>LPB",
    "frm": "CPH",
    "to": "LPB",
-   "price": 6309,
-   "cabin": 180,
-   "checked": 800,
-   "stay_cost": 0,
-   "total": 6489,
-   "eff": 12402,
-   "hours": 30.4,
+   "price": 7158,
+   "cabin": 250,
+   "checked": null,
+   "stay_cost": 450,
+   "total": 7858,
+   "eff": 12259,
+   "hours": 25.3,
    "flights": 4,
    "tickets": 2,
    "start": "2026-12-03T06:10:00",
-   "end": "2026-12-04T14:45:00",
+   "end": "2026-12-05T04:00:00",
    "stops": [
-    "7.2 h self-transfer in MAD"
+    "1 night in MAD"
    ],
    "carriers": [
-    "Iberia",
-    "Ryanair",
-    "avianca"
+    "LATAM"
    ],
    "flags": [
-    "self_transfer"
+    "date_shift"
    ],
    "products": [
     {
-     "qid": "Q:df6700956cfa",
+     "qid": "Q:be731d99fea5",
      "pattern": "P:CPH>MAD/*",
      "frm": "CPH",
      "to": "MAD",
      "dep": "2026-12-03T06:10:00",
      "arr": "2026-12-03T09:35:00",
-     "price": 235.0,
+     "price": 230.0,
      "hours": 3.42,
-     "carriers": [
-      "Ryanair"
-     ],
-     "source": "expedia",
+     "carriers": [],
+     "source": "momondo-manual",
      "flights": 1,
-     "cabin": 180
+     "cabin": 0
     },
     {
-     "qid": "Q:f461cd89ea19",
+     "qid": "Q:87338ab1aa9e",
      "pattern": "P:MAD>LPB/*",
      "frm": "MAD",
      "to": "LPB",
-     "dep": "2026-12-03T16:45:00",
-     "arr": "2026-12-04T14:45:00",
-     "price": 6074.0,
-     "hours": 27,
+     "dep": "2026-12-04T11:05:00",
+     "arr": "2026-12-05T04:00:00",
+     "price": 6928.0,
+     "hours": 21.92,
      "carriers": [
-      "Iberia",
-      "avianca"
+      "LATAM"
      ],
      "source": "expedia",
      "flights": 3,
-     "cabin": 0
+     "cabin": 250
     }
    ]
   },
