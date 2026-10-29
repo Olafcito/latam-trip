@@ -561,6 +561,21 @@
   .plan-pulse { flex: none; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%; background: var(--flight); animation: blink 1.6s ease-in-out infinite; }
   .plan-finish { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; font-size: 12px; color: var(--muted); }
   .plan-finish button { min-height: 26px; padding: 0 9px; border: 0; border-radius: 999px; background: var(--flight); color: var(--flight-ink) !important; font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--tint), var(--press); }
+  /* the places one leg from the cursor stop: a search and about six rows, the rest scrolls */
+  .reach { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+  .reach-q { width: 100%; min-height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; font-size: 12.5px; outline: none; transition: var(--tint); }
+  .reach-q::placeholder { color: var(--faint); }
+  .reach-q:focus-visible { border-color: var(--flight); outline: none; }
+  .reach-list { list-style: none; margin: 0 -4px; padding: 0; max-height: calc(6 * 32px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  .reach-row { width: 100%; min-height: 32px; display: grid; grid-template-columns: 17px minmax(0, 1fr) auto 50px 58px; align-items: center; gap: 8px; padding: 0 4px; border: 0; border-radius: 8px; background: transparent; color: var(--text); font: inherit; font-size: 12.5px; text-align: left; cursor: pointer; touch-action: manipulation; transition: var(--tint), var(--press); }
+  .reach-row:active { transform: scale(.98); }
+  .reach-row .flag { justify-self: start; }
+  .reach-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+  .reach-mode { display: inline-flex; }
+  .reach-h, .reach-p { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .reach-p { color: var(--text); }
+  .plan-next .reach-none { margin-top: 4px; color: var(--faint); }
+  @media (pointer: coarse) { .reach-q { min-height: 36px; font-size: 16px; } .reach-row { min-height: 36px; } .reach-list { max-height: calc(6 * 36px); } }
   .plan-costs summary { display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 6px; border-radius: 8px; list-style: none; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: var(--tint); }
   .plan-costs summary::-webkit-details-marker { display: none; }
   .plan-costs summary::after { content: ''; width: 6px; height: 6px; margin-left: 2px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(-45deg); transition: transform .2s var(--ease-out); }
@@ -585,6 +600,7 @@
     .plan-rm:hover { background: #FF6B5E26; color: var(--err); }
     .panel.plan.mini:hover { background: #14252EF0; box-shadow: 0 16px 36px -16px #000, inset 0 0 0 1px var(--faint); }
     .plan-finish button:hover { background: var(--flight-up); }
+    .reach-row:hover { background: #F2B5441F; }
     .plan-acts .x:hover { background: var(--surface-3); }
     .plan-costs summary:hover { background: var(--surface-2); color: var(--text); }
   }
@@ -638,7 +654,7 @@
 
 /* reduced motion in the panel: presses and hovers keep their colour, nothing moves */
 @media (prefers-reduced-motion: reduce) {
-  .panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button):active,
+  .panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button, .reach-row):active,
   .panel.plan.mini:active,
   .panel .back:hover svg, .panel .more:hover .arr, .panel .crow:hover .cr-arrow { transform: none; }
 }
