@@ -26,11 +26,12 @@ Per site and place: the 3 to 6 best-rated options that fit (rating 8.5+ preferre
 Append one line per offer to `ROOT/data/raw/stays-<agent>.jsonl`:
 `{"task_id": "...", "place": "<map id if given, else name>", "site": "hostelworld|booking", "name": "...", "kind": "hostel|hotel|guesthouse", "room": "dorm|private", "price_per_night": 123, "currency": "DKK", "total": 492, "nights": 4, "rating": 9.1, "reviews": 812, "check_in": "2026-12-10", "check_out": "2026-12-14", "url": "<listing or search URL>", "observed_at": "<ISO date>", "notes": "free cancellation / breakfast / prices shown as total"}`
 Never invent a number: leave it null.
+Then add them to the stays table: `python -I -X utf8 ROOT/plugin/scripts/tripdb.py --root ROOT add-stays ROOT/data/raw/stays-<agent>.jsonl` (prices in USD or EUR become DKK, rows it has already are skipped).
 
 ## Final reply (strict)
 ```
 RESULT
-agent: <name> | rows_written: <n> | file: data/raw/stays-<name>.jsonl
+agent: <name> | rows_written: <n> | file: data/raw/stays-<name>.jsonl | tripdb: <added> added, <refused> refused
 tasks:
 - <task_id> | done/blocked/failed | cheapest dorm DKK/night | cheapest private DKK/night | best rated (name, rating, price) | note
 problems: <one line or none>
