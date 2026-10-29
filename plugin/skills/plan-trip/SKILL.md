@@ -39,7 +39,7 @@ Every write goes through tripdb (`python -I -X utf8 plugin/scripts/tripdb.py --r
 - Dates are a rough guide, not a schedule. Store the assumed fly-on and bus-on dates because they link to prices, but never present days per place as fixed.
 
 ### 4. Save it, summarise, and keep the conversation open
-- Save the trip with `tripdb save-trip <file>` into the trips table the app reads: places, ground legs, flights, beds, prices with their checked dates (`observed_at`), and the reasoning per choice (`why` on the trip and on each stop). A new version of an existing trip keeps its id and gets the next `version`. Then run `tripdb build`, commit and push.
+- Save the trip with `tripdb save-trip <file>` into the trips table the app reads: places, ground legs, flights, beds, prices with their checked dates (`observed_at`), and the reasoning per choice (`why` on the trip and on each stop). The fields are listed under the trips table in `data/README.md`, and the way in and way home are copied in full. A new version of an existing trip keeps its id and gets the next `version`. tripdb sets `version` and `saved_at` itself, skips a save that changes nothing and prints the id and the version. Then run `tripdb build`, commit and push.
 - The trip opens in the planner at `/?trip=<id>` (dev server `cd planner && npm run dev`, http://localhost:5173/?trip=<id>).
 - Reply with a short summary:
   - the route in one line

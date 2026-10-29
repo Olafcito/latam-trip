@@ -42,10 +42,17 @@ Fields marked with `*` are required. Everything else may be null or missing.
 | experiences | `experiences.jsonl` | kind `experience`: `id*`, `name*`, `category*`, `tags`, `places*`, `area`, `country*`, `lat*`, `lon*`, `summary`, `season`, `dec_jan`, `price`, `price_dkk`, `duration`, `requirements`, `details`, `researched*`, `checked_at`, `sources` | same `id` | `tripdb add-experience FILE`, `tripdb update-experience ID` |
 | experience_images | `experience_images.jsonl` | kind `experience_image`: `id*`, `image*` | same `id` | `tripdb add-experience-image FILE [--replace]` |
 | stays | `stays.jsonl` | kind `stay_quote`: `place*`, `site*`, `name*`, `type`, `room*`, `dkk_per_night*`, `nights*`, `rating`, `reviews`, `check_in*`, `check_out*`, `url`, `observed_at`, `task_id`, `notes` | same place, site, name, room and dates | `tripdb add-stays FILE` (USD and EUR become DKK) |
+| trips | `trips.jsonl` | `id*`, `version*`, `name*`, `saved_at*`, `by*` (plan-trip, migration, planner), `why*`, `rank`, `option_id`, `way_in*` and `way_home*` (from, to, depart, arrive, price_dkk, tickets, timeline, airports, observed_at), `tickets` (id, price_dkk, observed_at), `places*` (node, hop, why, nights, arrive, depart, stay. A hop has from, to, mode, operator, hours, price_dkk, observed_at, flight) | every save adds a version. A save with the same content as the latest version is skipped | `tripdb save-trip FILE [--by plan-trip\|migration\|planner]` |
 | task_log | `task_log.jsonl` | `issue*`, `type`, `task`, `done_at*`, `summary`, `outputs` | every call adds a row | `tripdb log-task` (called by `tasks.py done`) |
 | agent_usage | `agent_usage.csv` | round, agent, model, tool, searches, tokens, tool_uses, seconds, rows | every call adds a row | `tripdb log-usage` |
 
 Where a table allows `--replace`, the later row wins in the build.
+
+## Trips
+
+A planned trip is a row of `trips.jsonl`. `tripdb save-trip FILE` takes one trip, a list of trips or JSONL. A trip without an `id` gets one made from its name. Each save of an existing id adds the next `version`, with `saved_at`, `by` and a `why` for the trip and for each stop. It prints the id and the version, and the planner opens the trip at `/?trip=<id>`. `tripdb check` makes sure the versions of a trip run 1, 2, 3 without a gap.
+
+`tripdb build` writes `data/web/trips.json` with the latest version of every trip and a short history of the earlier ones. The planner lists those trips next to the trips kept in the browser. A trip edited in the planner is saved in the browser only and never written back to the table.
 
 ## Documents (data/sources, JSON)
 
@@ -58,7 +65,6 @@ These are single JSON files that a person edits by hand. tripdb has no writer fo
 | `bag_fees.json` | Researched bag fees per airline and fare, with notes | by hand |
 | `known_prices.json` | Prices Simon saw outside the crawl, with where and when | by hand |
 | `scenarios.json` | The named trip scenarios | by hand |
-| `seed_spec.json` | The trips the planner seeds on first run | by hand |
 | `experience_categories.json` | Categories for experiences, their keywords and the place categories they match | by hand |
 | `lists.json` | Saved lists of places and experiences | `tripdb list-add`, `tripdb list-remove` |
 | `elevation.json` | Altitude cache per place | `tripdb build --fetch-elevation` |
@@ -85,7 +91,7 @@ The Momondo userscript saves what Simon finds by hand as `data/sources/inbox/man
 |---|---|
 | `places.json`, `connections.json`, `countries.json`, `flights.json`, `experiences.json`, `experience_categories.json`, `lists.json`, `task_log.json`, `meta.json` | `build_web_data.py` |
 | `dash_trips.json`, `dash_journeys.json`, `dash_flights.json` | `dashboard_data.py` |
-| `saved_trips.json` | `seed_trips.py` from `seed_spec.json` |
+| `trips.json` | tripdb from `trips.jsonl`: the latest version of every trip, with its history |
 | `inout.json`, `map.json` | copied from `data/built/` |
 | `trip.json`, `bag_rules.json` | copied from `data/sources/` |
 
