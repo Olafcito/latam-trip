@@ -29,6 +29,27 @@ A planned `tripdb` CLI will become the only way scripts write data. Until it exi
 - `data/`: sources, crawl database, built datasets and `data/web/` for the apps.
 - `docs/`: design briefs and the Claude task hand-over (`docs/claude-tasks.md`).
 
+## Frontend design
+
+Any work that changes how `web/` or `planner/` looks or moves goes through these project skills in `.claude/skills/`. The aim is an app that feels crafted, not vibe coded.
+
+1. **Start with `emil-design-eng`** for every frontend task. It sets the bar for polish, component design and motion decisions.
+2. **Design and refine with `impeccable`.** Use it to shape a screen, critique it, and run its anti-pattern and polish passes before calling the UI done.
+3. **Find components with the 21st.dev Magic MCP** (`21st-magic`, configured in `.mcp.json`) before hand-building a common component such as a picker, table, sheet or command menu. Adapt what it returns to the app's existing tokens and style, never paste it in as is.
+4. **Motion:** `animate` to build an animation, `review-animations` to critique one, `improve-animations` to audit the app, `find-animation-opportunities` for where motion is missing, `remove-animations` when it feels over-animated, `animation-performance` when it drops frames, `animation-vocabulary` to name an effect.
+5. **Phone use:** `mobile-native` for the fixes that make the web app feel installed (Simon uses it on his phone while travelling), `apple-design` for gestures, sheets and springs.
+6. **Before a frontend commit, run `web-design-guidelines`** (Vercel's Web Interface Guidelines) as the checklist for alignment, spacing, accessibility and interaction details, and `break-ui` to try the screen with worst-case data.
+7. On request only: `prototype` for several versions behind a picker, `pick-ui-library` to choose a library.
+
+Larger UX and visual design is done in Claude Design (the Claude app) and handed over. Implement that design as given, and use the skills above for the details it leaves open.
+
+`hyperframes` and its siblings are for making videos, slideshows and motion pieces from HTML. They are not used for the app.
+
+### Skills in .claude/
+
+- `.claude/skills` holds two kinds of skills. Skills from `plugin/skills` are generated copies: edit them in `plugin/` and run `python -I src/sync_claude_dir.py --root .`, never by hand in `.claude/`. Skills installed with `npx skills add` are listed in `skills-lock.json`. The sync leaves them alone, and `npx skills update -p` updates them.
+- `.mcp.json` reads the 21st.dev key from the `TWENTY_FIRST_API_KEY` environment variable. Never commit a key.
+
 ## Checks before a commit that touches an app
 
     cd web && npm run typecheck && npm test
