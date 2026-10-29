@@ -1,6 +1,8 @@
 # Brief: experiences, saved lists, trip builder and asking Claude
 
-This brief describes what the trip app needs to do next and the information it has to show. It says nothing about layout, visual style or components. Those are yours to design.
+This brief is for the design work in the Claude app. Please design these features for the existing trip app: the user flows, screens and states (laptop and phone). The build happens afterwards in Claude Code from your design, so make the hand-off clear: which screens exist, what each shows, how you get between them, and what happens in empty, loading, offline and error states.
+
+The brief describes what the app needs to do and the information it has to show. It says nothing about layout, visual style or components. Those are yours to decide. The current app's design is described in `DESIGN_HANDOFF.md` and `docs/route-map/MAP_DESIGN_HANDOFF.md` in the repo Olafcito/latam-trip; build on its look unless you have a better idea.
 
 ## Context
 
