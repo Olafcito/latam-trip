@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mergeSeeds, parseSeedFile, tripPieces, addLeg, createTrip, deleteTrip, fromOldJourney, legIndex, openTrip, parseTrips, removeLeg, renameTrip, tripEnd, tripStops, EMPTY_TRIPS, type TripLeg } from './trips'
+import { tripPieces, addLeg, createTrip, deleteTrip, fromOldJourney, legIndex, openTrip, parseTrips, removeLeg, renameTrip, tripEnd, tripStops, EMPTY_TRIPS, type TripLeg } from './trips'
 
 const leg = (from: string, to: string, mode: TripLeg['mode'] = 'bus'): TripLeg => ({ cid: [from, to].sort().join('-'), from, to, mode })
 
@@ -59,47 +59,27 @@ describe('stored trips', () => {
   })
 })
 
-describe('seeded trips', () => {
-  const file = {
-    trips: [
-      {
-        id: 'seed-1', name: 'Guatemala City in, Bogota home', rank: 1,
+describe('planned trip fields', () => {
+  it('keeps rank, in and out and segments through a save and reload', () => {
+    const s = {
+      trips: [{
+        id: 'seed-1', name: 'Guatemala City in, Bogota home', seed: true, rank: 1, updated: 0,
         legs: [{ cid: 'LPB-SJO', from: 'SJO', to: 'LPB', mode: 'flight' }, { cid: 'bad' }],
         inout: { option_id: 'GUA-BOG-ticket', type: 'ticket', entry: 'GUA', exit: 'BOG', price_dkk: 7637, way_in: {}, way_home: {} },
         segments: [{ kind: 'overland', from: 'GUA', to: 'SJO' }, { kind: 'flight', from: 'SJO', to: 'LPB', price_dkk: 2187 }],
-      },
-      { name: 'no id' },
-    ],
-  }
-
-  it('parses the seed file, keeping in/out and segments and dropping bad legs', () => {
-    const seeds = parseSeedFile(file)
-    expect(seeds).toHaveLength(1)
-    expect(seeds[0].seed).toBe(true)
-    expect(seeds[0].legs).toHaveLength(1)
-    expect(seeds[0].inout?.entry).toBe('GUA')
-    expect(seeds[0].segments).toHaveLength(2)
-    expect(parseSeedFile(null)).toEqual([])
-  })
-
-  it('adds a seed once, and never again after the user deleted it', () => {
-    const seeds = parseSeedFile(file)
-    let r = mergeSeeds(EMPTY_TRIPS, seeds, [])
-    expect(r.state.trips.map((t) => t.id)).toEqual(['seed-1'])
-    expect(r.imported).toEqual(['seed-1'])
-    r = mergeSeeds(deleteTrip(r.state, 'seed-1'), seeds, r.imported)
-    expect(r.state.trips).toEqual([])
-  })
-
-  it('keeps seed fields through a save and reload', () => {
-    const s = mergeSeeds(EMPTY_TRIPS, parseSeedFile(file), []).state
+      }],
+      active: null,
+    }
     const back = parseTrips(JSON.parse(JSON.stringify(s)))
+    expect(back.trips[0].seed).toBe(true)
+    expect(back.trips[0].legs).toHaveLength(1)
     expect(back.trips[0].inout?.exit).toBe('BOG')
     expect(back.trips[0].rank).toBe(1)
+    expect(back.trips[0].segments).toHaveLength(2)
   })
 })
 
-describe('seeded trip pieces', () => {
+describe('planned trip pieces', () => {
   const seeded = (legs: TripLeg[]) => ({
     id: 's', name: 'S', updated: 0, legs,
     segments: [
@@ -120,13 +100,5 @@ describe('seeded trip pieces', () => {
   it('drops a removed flight and puts added legs after the segments', () => {
     const t = seeded([leg('SJO', 'LPB', 'flight'), leg('CBB', 'VVI', 'bus')])
     expect(tripPieces(t).map((p) => `${p.from}>${p.to}`)).toEqual(['GUA>SJO', 'SJO>LPB', 'CBB>CBB', 'CBB>VVI'])
-  })
-
-  it('refreshes a stored seed from the file but keeps its name and legs', () => {
-    const seeds = parseSeedFile({ trips: [{ id: 'seed-1', name: 'New', rank: 2, legs: [], inout: { entry: 'GUA', exit: 'SAL' } }] })
-    const mine = { trips: [{ id: 'seed-1', name: 'Mine', seed: true, rank: 1, legs: [leg('A', 'B')], updated: 5, inout: { entry: 'GUA', exit: 'BOG' } as never }], active: null }
-    const r = mergeSeeds(mine, seeds, ['seed-1'])
-    expect(r.state.trips[0]).toMatchObject({ name: 'Mine', rank: 2, legs: [leg('A', 'B')], inout: { exit: 'SAL' } })
-    expect(mergeSeeds(r.state, seeds, ['seed-1']).state).toBe(r.state)
   })
 })

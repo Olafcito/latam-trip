@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { loadDash, loadMapData, loadSeedTrips, type DashData } from './data/load'
-import { mergeSeeds, parseSeedFile, readSeeded, readTrips, writeSeeded, writeTrips, type TripState } from './data/trips'
+import { loadDash, loadMapData, type DashData } from './data/load'
+import { readTrips, writeTrips, type TripState } from './data/trips'
 import type { MapData } from './data/types'
 import { RouteMap } from './map/RouteMap'
 import { OptionsPane } from './options/OptionsPane'
@@ -34,18 +34,6 @@ export function App() {
   useEffect(() => {
     try { localStorage.setItem(OPTIONS_KEY, optionsOpen ? '1' : '0') } catch { /* nothing to remember into */ }
   }, [optionsOpen])
-  // ranked scenarios from data/saved_trips.json join the saved trips once per browser
-  useEffect(() => {
-    loadSeedTrips().then((raw) => {
-      const seeds = parseSeedFile(raw)
-      if (!seeds.length) return
-      setTrips((s) => {
-        const { state, imported } = mergeSeeds(s, seeds, readSeeded())
-        writeSeeded(imported)
-        return state
-      })
-    })
-  }, [])
 
   if (error) {
     return (
