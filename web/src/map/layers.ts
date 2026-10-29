@@ -49,7 +49,7 @@ function routeLayer(family: Family, color: string, dash?: number[]): LineLayerSp
     paint: {
       'line-color': color,
       'line-width': routeWidth(false),
-      'line-opacity': routeOpacity(0.25),
+      'line-opacity': routeOpacity(0),
       'line-offset': ['*', ['get', 'side'], 1.25],
       ...(dash ? { 'line-dasharray': dash } : {}),
     },

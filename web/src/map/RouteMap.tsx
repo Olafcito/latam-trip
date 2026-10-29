@@ -542,10 +542,12 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     live.current.shown = shown
     for (const f of ALL_FAMILIES) {
       if (!map.getLayer(ROUTE_LAYERS[f])) continue
-      map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(sel || f === 'flight' ? 0 : 0.4))
+      // at rest no route is drawn: a hovered city previews its own, a clicked one shows them
+      map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(0))
       map.setLayoutProperty(ROUTE_LAYERS[f], 'visibility', families.has(f) ? 'visible' : 'none')
     }
-    setRouteHit(map, sel ? [...cids] : null, [...lit])
+    // only a drawn route can be hovered or clicked, so none can at rest
+    setRouteHit(map, [...cids], [...lit])
     // build mode shows the trip's own stops and what the cursor reaches, and nothing else
     const quiet = focus && !!sel
     const stops = quiet && trip ? tripStops(trip) : []
