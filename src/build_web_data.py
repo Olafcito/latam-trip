@@ -370,9 +370,21 @@ def build():
 
     countries = [{"code": c, "name": n, "label_lat": la, "label_lon": lo} for c, n, la, lo in COUNTRIES]
     os.makedirs(OUT, exist_ok=True)
+    def latest(vals):
+        vals = [v for v in vals if v]
+        return max(vals) if vals else None
+    db_path = os.path.join(ROOT, "data", "crawl.db")
+    flights_checked = sqlite3.connect(db_path).execute("SELECT max(observed_at) FROM quotes WHERE ok=1").fetchone()[0] \
+        if os.path.exists(db_path) else None
+    meta = {"built_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="minutes"),
+            "last_checked": {"flights": flights_checked,
+                             "stays": latest(q.get("observed_at") for v in stays.values() for q in v),
+                             "experiences": latest(e.get("checked_at") for e in experiences if e.get("researched")),
+                             "places": latest((n.get("profile") or {}).get("checked_at") for n in nodes.values()),
+                             "tasks": latest(t.get("done_at") for t in task_log)}}
     for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries),
                        ("experiences", experiences), ("experience_categories", exp_categories), ("lists", lists),
-                       ("task_log", task_log)):
+                       ("task_log", task_log), ("meta", meta)):
         json.dump(data, open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"places {len(places)}  connections {len(conns)}  options {sum(len(c['options']) for c in conns.values())}"
           f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  -> {OUT}")
