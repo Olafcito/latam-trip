@@ -7,7 +7,7 @@ description: How to search momondo.dk reliably from the built-in browser (one-wa
 
 The worker procedure is in `agents/momondo-worker.md`. This skill holds the tools it uses.
 
-- `scripts/momondo_crawler.js`: defines `parseDlg`, `crawl`, `lines`, `run` in the page. Install once per job into `localStorage.crawlsrc` (origin momondo.dk survives navigations). `run(nCards, legDates[], maxRows)` waits for "Færdig", opens the first nCards result dialogs, expands every leg, and returns `count=... done=...` plus one line per distinct itinerary:
+- `scripts/momondo_crawler.js`: defines `parseDlg`, `crawl`, `lines`, `run` in the page. Install once per job into `localStorage.crawlsrc` (origin momondo.dk survives navigations). `run(nCards, legDates[], maxRows)` waits until the search is done ("Færdig" or "Resultaterne er hentet", or the first card price and card count stop changing for 8 s, because the "NN% gennemført" bar can stall at 50% forever), opens the first nCards result dialogs, expands every leg, and returns `count=... done=...` plus one line per distinct itinerary:
   `rank;price;site;selfTransfer;fareBrand;cabinBag;checkedBag;changeable;otherOffers;protection ~ LEG ~ LEG ...`
   `LEG = depMM-DDTHH:MM,arrMM-DDTHH:MM,hours,stops,via,layoverHours,flights(+),overnight,airportChange`
 - `scripts/momondo_lines.py`: converts those lines to schema rows, flags (over_30h, self_transfer, airport_change, us_transit, basic_fare, mix_match, incomplete) and drops near-duplicates. Call with `--legs FROM-TO@DATE,...`.

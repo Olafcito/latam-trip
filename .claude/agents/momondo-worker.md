@@ -39,7 +39,7 @@ Momondo's one-way results include "Mix & Match" and "Egentransfer" chains (e.g. 
    `localStorage.setItem('crawlsrc','window.parseDlg='+parseDlg.toString()+';window.crawl='+crawl.toString()+';window.lines='+lines.toString()+';window.run='+run.toString())`
 3. Start the crawl in the background (one date per leg, in order):
    `eval(localStorage.getItem('crawlsrc')); window.__out=null; run(8,['2026-12-03','2026-12-07','2027-02-03'],6).then(v=>window.__out=v).catch(e=>window.__out='ERR '+e); location.href`
-   For a one-way pass the date once: `['2027-01-28']`. run() waits for "Færdig" (search finished) itself.
+   For a one-way pass the date once: `['2027-01-28']`. run() waits for the search to finish itself ("Færdig", "Resultaterne er hentet", or results that stop changing). done=false only means the progress bar never reached 100, the rows are still good.
 4. Wait 45 s, then poll `window.__out` (null = still running): wait 15 s and poll again, up to 3 minutes. The JS tool times out at 45 s, so never await the crawl.
 5. Save `__out` to `/tmp/<agent>-<task>-<view>.txt` and convert (append):
    `python3 -I PLUGIN/skills/momondo-search/scripts/momondo_lines.py <agent> <task_id> --legs CPH-PTY@2026-12-03,PTY-SAL@2026-12-07,VVI-CPH@2027-02-03 /tmp/<file>.txt >> ROOT/data/raw/<agent>.jsonl`

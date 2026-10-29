@@ -88,6 +88,39 @@ test('v5 layout, open jaw with self transfers: Afgang after the time line, airpo
   assert.equal(p.brand, 'Basic + Economy + Economy Zero + Light');
 });
 
+test('v6 layout: Fly N header with the date, total time on the summary line, offers after the legs', () => {
+  const p = crawler.parseDlg(fixture('dialog-v6-open-jaw-2026-10-29.txt'), ['2026-12-01', '2027-02-01']);
+  assert.equal(p.legs.length, 2);
+  const [out, home] = p.legs;
+  assert.equal(out.dep, '2026-12-02T06:10');
+  assert.equal(out.arr, '2026-12-03T10:50');
+  assert.equal(out.hours, 35.67);
+  assert.deepEqual(out.carriers, ['Ryanair', 'Iberojet', 'Volaris']);
+  assert.equal(home.dep, '2027-02-02T03:45');
+  assert.equal(home.hours, 28.75);
+  assert.equal(p.price, 7800);
+  assert.deepEqual(p.allPrices, [7800, 8453, 10878]);
+  assert.equal(p.site, 'Kiwi.com');
+  assert.equal(p.brand, 'Basic + Economy + Light');
+  assert.equal(p.prot, true);
+  assert.match(p.alt, /Mytrip 8453/);
+  assert.doesNotMatch(p.bagSeg, /Mytrip/);
+});
+
+test('an unknown line between the time line and the airports never becomes the flight', () => {
+  const txt = fixture('dialog-v5-oneway.txt').replace(/\r\n/g, '\n').replace('09:35 - 13:10(2 t. 35 min.)\n', '09:35 - 13:10(2 t. 35 min.)\nAfgang 14. jan.\nNy linje fra Momondo\n');
+  const [l] = crawler.parseDlg(txt, ['2027-01-14']).legs;
+  assert.deepEqual(l.flights, ['Avianca 314', 'Avianca 369']);
+  assert.deepEqual(l.carriers, ['Avianca']);
+  assert.equal(l._apt, false);
+});
+
+test('a leg line without a flight number is never a carrier', () => {
+  const txt = fixture('dialog-v5-oneway.txt').replace(/\r\n/g, '\n').replace('Avianca 369\n', '');
+  const [l] = crawler.parseDlg(txt, ['2027-01-14']).legs;
+  for (const c of l.carriers) assert.doesNotMatch(c, /\([A-Z]{3}\)| - /);
+});
+
 test('dialog in an unknown layout gives no legs and no price', () => {
   const p = crawler.parseDlg(fixture('dialog-broken.txt'), ['2026-12-03', '2027-02-03']);
   assert.equal(p.legs.length, 0);
