@@ -1,12 +1,12 @@
-import type { FlightItem, InOut, StopItem, Way } from '../data/types'
+import { Fragment, type ReactNode } from 'react'
+import type { Airport, InOut, Way } from '../data/types'
 import { clock, day, hours, kr, nextDayMark, timeUncertain } from '../lib/format'
-import { Clock, Home, Land, Moon, Plane, Sun, Transfer } from './icons'
+import { nights, wayTrack, wayTrackLabel, type TrackWait } from '../lib/waytrack'
+import { Home, Land, Moon, Sun, Transfer } from './icons'
+import { useEdgeFade } from './useEdgeFade'
 
-// One way as a picture: the two ends with their times, and a track scaled by hours where
-// flights are bars and every stop is a chip with an icon. Text is kept to codes and numbers.
-
-const MIN_FLY = 3 // flex-grow floor so a short flight stays visible
-const MIN_STOP = 1.5
+// One way as a picture: the two ends with their big times, and under them the way as a transit line
+// with every airport, its local times and the waits between flights.
 
 function Stamp({ s, from, big }: { s: string; from?: string; big?: boolean }) {
   if (!s) return <span className="wc-t">?</span>
@@ -21,90 +21,120 @@ function Stamp({ s, from, big }: { s: string; from?: string; big?: boolean }) {
   )
 }
 
-type Seg =
-  | { kind: 'fly'; hours: number; code: string | null; first: boolean }
-  | { kind: 'conn'; hours: number; code: string; night: boolean }
-  | { kind: 'stop'; item: StopItem }
-
-/** Flights split around their layovers, stops between tickets kept as they are. */
-function segments(w: Way): Seg[] {
-  const out: Seg[] = []
-  for (const it of w.timeline) {
-    if (it.kind !== 'flight') {
-      out.push({ kind: 'stop', item: it })
-      continue
-    }
-    const f = it as FlightItem
-    const lay = f.connections.reduce((a, c) => a + (c.layover_h ?? 0), 0)
-    const legs = f.connections.length + 1
-    const each = Math.max(0.5, (f.hours - lay) / legs)
-    f.connections.forEach((c, i) => {
-      out.push({ kind: 'fly', hours: each, code: c.airport, first: i === 0 })
-      out.push({ kind: 'conn', hours: c.layover_h ?? 1, code: c.airport, night: f.overnight_layover && i === f.connections.length - 1 })
-    })
-    out.push({ kind: 'fly', hours: each, code: null, first: f.connections.length === 0 })
-  }
-  return out
-}
-
-function StopChip({ item }: { item: StopItem }) {
-  const n = item.nights
-  if (item.kind === 'night')
-    return (
-      <span className="wc-chip night" style={{ flexGrow: Math.max(MIN_STOP, item.hours / 2) }} title={`${n} ${n === 1 ? 'night' : 'nights'} in ${item.airport}${item.stay_estimate_dkk ? `, stay about ${kr(item.stay_estimate_dkk)}` : ''}`}>
-        <Moon />
-        <b>{item.airport}</b>
-        <i>{n}n</i>
-      </span>
-    )
-  if (item.kind === 'day_stop')
-    return (
-      <span className="wc-chip day" style={{ flexGrow: Math.max(MIN_STOP, item.hours / 2) }} title={`Day stop in ${item.airport}, ${hours(item.hours)}`}>
-        <Sun />
-        <b>{item.airport}</b>
-        <i>{hours(item.hours)}</i>
-      </span>
-    )
-  if (item.kind === 'self_transfer')
-    return (
-      <span className="wc-chip xfer" style={{ flexGrow: Math.max(MIN_STOP, item.hours / 2) }} title={`Self-transfer in ${item.airport}, ${hours(item.hours)} between separate tickets`}>
-        <Transfer />
-        <b>{item.airport}</b>
-        <i>{hours(item.hours)}</i>
-      </span>
-    )
+/** A clock time under a node, with "+1" when it falls on a later day than the way leaves. */
+function Time({ t, start }: { t: string; start: string }) {
+  const nd = nextDayMark(start, t)
   return (
-    <span className="wc-chip conn" style={{ flexGrow: Math.max(MIN_STOP, item.hours / 2) }} title={`Connection in ${item.airport}, ${hours(item.hours)}`}>
-      <Clock />
-      <b>{item.airport}</b>
-      <i>{hours(item.hours)}</i>
+    <span className="wt-tm">
+      {clock(t)}
+      {nd && <sup className="nd">{nd}</sup>}
+      {timeUncertain(t) && <span className="warnmark" title="Time not known exactly">!</span>}
     </span>
   )
 }
 
-/** The way's track alone: flights as bars scaled by hours, every stop between them as a chip. */
-export function WayTrack({ way, compact = false }: { way: Way; compact?: boolean }) {
-  const segs = segments(way)
+type Side = 'fly' | 'wait' | undefined
+
+/** One airport point on the line: a ring, the line on either side of it, the code and times under it. */
+function Node({ code, l, r, end, top, title, children }: {
+  code: string
+  l?: Side
+  r?: Side
+  end?: boolean
+  top?: ReactNode
+  title?: string
+  children?: ReactNode
+}) {
   return (
-    <div className="wc-track" role="img" aria-label={`${way.flights} flights, ${hours(way.flying_hours)} in the air`}>
-      {segs.map((s, i) => {
-        if (s.kind === 'fly')
-          return (
-            <span key={i} className="wc-fly" style={{ flexGrow: Math.max(MIN_FLY, s.hours) }}>
-              <Plane s={12} />
-              {!compact && <i>{hours(s.hours)}</i>}
-            </span>
-          )
-        if (s.kind === 'conn')
-          return (
-            <span key={i} className={`wc-chip conn${s.night ? ' night' : ''}`} style={{ flexGrow: Math.max(MIN_STOP, s.hours / 2) }} title={`${s.night ? 'Overnight layover' : 'Layover'} in ${s.code}, ${hours(s.hours)}`}>
-              {s.night ? <Moon /> : <Clock />}
-              <b>{s.code}</b>
-              <i>{hours(s.hours)}</i>
-            </span>
-          )
-        return <StopChip key={i} item={s.item} />
-      })}
+    <span className="wt-n" data-l={l} data-r={r} data-end={end ? '' : undefined} title={title}>
+      <span className="wt-top">{top}</span>
+      <span className="wt-dot"><i className="wt-ring" /></span>
+      <b className="wt-c">{code}</b>
+      {children}
+    </span>
+  )
+}
+
+/** What a wait says above the line: a moon and the nights, or how long the change is. */
+function WaitLabel({ p }: { p: TrackWait }) {
+  if (p.type === 'night') return <span className="wt-w night"><Moon />{nights(p.nights)}</span>
+  if (p.type === 'day_stop') return <span className="wt-w day"><Sun s={12} />{hours(p.hours)}</span>
+  if (p.type === 'self_transfer') return <span className="wt-w xfer"><Transfer s={12} />{hours(p.hours)}</span>
+  if (p.overnight) return <span className="wt-w night"><Moon />{hours(p.hours)}</span>
+  return <span className="wt-w">{hours(p.hours)}</span>
+}
+
+function waitTitle(p: TrackWait): string {
+  const what =
+    p.type === 'night' ? `${nights(p.nights)} in ${p.code}${p.stay ? `, stay about ${kr(p.stay)}` : ''}`
+    : p.type === 'day_stop' ? `Day stop in ${p.code}, ${hours(p.hours)}`
+    : p.type === 'self_transfer' ? `Self-transfer in ${p.code}, ${hours(p.hours)} between separate tickets`
+    : `${p.overnight ? 'Overnight change' : 'Change'} in ${p.code}, ${hours(p.hours)}`
+  if (p.arrive && p.depart) return `${what}. Lands ${day(p.arrive)} ${clock(p.arrive)}, leaves ${day(p.depart)} ${clock(p.depart)}`
+  return p.type === 'layover' ? `${what}. The times of the change are not in the data` : what
+}
+
+/**
+ * The way as a transit line, after the ReUI stepper on 21st.dev: a ring at every airport, the flights
+ * as solid stretches in the way's colour, the waits dashed and dimmer, each node with its code and
+ * local time under it. Evenly spaced, not to scale. A narrow card folds each wait into one node with
+ * both times, and the line scrolls with fading edges if it still does not fit.
+ */
+export function WayTrack({ way, airports, compact = false }: { way: Way; airports?: Record<string, Airport>; compact?: boolean }) {
+  const ref = useEdgeFade<HTMLDivElement>()
+  const t = wayTrack(way)
+  const start = way.depart
+  const side = (i: number): Side => t.parts[i]?.kind
+  const date = (s: string | null) => (s ? <small className="wt-dt">{day(s)}</small> : null)
+  const items: ReactNode[] = [
+    <Node key="s" code={t.start.code} r={side(0)} end title={t.start.time ? `${t.start.code}, leaves ${day(t.start.time)} ${clock(t.start.time)}` : t.start.code}>
+      {t.start.time && <Time t={t.start.time} start={start} />}
+      {date(t.start.time)}
+    </Node>,
+  ]
+  t.parts.forEach((p, i) => {
+    if (p.kind === 'fly') {
+      items.push(
+        <span key={i} className="wt-s" data-k="fly">
+          <span className="wt-sl">{p.approx ? '~' : ''}{hours(p.hours)}</span>
+        </span>,
+      )
+      return
+    }
+    const l: Side = side(i - 1) === 'fly' ? 'fly' : 'wait'
+    const r: Side = side(i + 1) === 'fly' ? 'fly' : side(i + 1) ? 'wait' : undefined
+    const title = waitTitle(p)
+    const merged = (
+      <Node code={p.code} l={l} r={r} top={<WaitLabel p={p} />} title={title}>
+        {p.arrive && <Time t={p.arrive} start={start} />}
+        {p.depart && <Time t={p.depart} start={start} />}
+      </Node>
+    )
+    // a change inside one ticket has no times of its own, so it is always one node
+    if (!p.arrive || !p.depart) {
+      items.push(<Fragment key={i}>{merged}</Fragment>)
+      return
+    }
+    items.push(
+      <Fragment key={i}>
+        <span className="wt-wide">
+          <Node code={p.code} l={l} r="wait" title={title}><Time t={p.arrive} start={start} />{date(p.arrive)}</Node>
+          <span className="wt-s" data-k="wait"><span className="wt-sl"><WaitLabel p={p} /></span></span>
+          <Node code={p.code} l="wait" r={r} title={title}><Time t={p.depart} start={start} />{date(p.depart)}</Node>
+        </span>
+        <span className="wt-narrow">{merged}</span>
+      </Fragment>,
+    )
+  })
+  items.push(
+    <Node key="e" code={t.end.code} l={side(t.parts.length - 1)} end title={t.end.time ? `${t.end.code}, lands ${day(t.end.time)} ${clock(t.end.time)}` : t.end.code}>
+      {t.end.time && <Time t={t.end.time} start={start} />}
+      {date(t.end.time)}
+    </Node>,
+  )
+  return (
+    <div className={`wt-box${compact ? ' compact' : ''}`} role="img" aria-label={wayTrackLabel(way, airports)}>
+      <div ref={ref} className="wt">{items}</div>
     </div>
   )
 }
@@ -132,7 +162,7 @@ export function WayCard({ way, inout, dir, compact = false }: { way: Way; inout:
           <Stamp s={way.arrive} from={way.depart} big />
         </div>
       </div>
-      <WayTrack way={way} compact={compact} />
+      <WayTrack way={way} airports={a} compact={compact} />
       {!compact && (
         <footer className="wc-f">
           <span>{way.flights} {way.flights === 1 ? 'flight' : 'flights'}</span>

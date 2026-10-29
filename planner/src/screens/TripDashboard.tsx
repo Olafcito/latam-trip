@@ -107,7 +107,7 @@ function WayRow({ way, inout, dir }: { way: Way; inout: InOut; dir: 'in' | 'home
       </button>
       <DisclosurePanel {...d.panel}>
         <div className="cph-more">
-          <WayTrack way={way} compact />
+          <WayTrack way={way} airports={inout.airports} compact />
           <p>
             {way.flights} {way.flights === 1 ? 'flight' : 'flights'} · {hours(way.flying_hours)} in the air
             {carriers.length > 0 && ` · ${carriers.join(', ')}`}

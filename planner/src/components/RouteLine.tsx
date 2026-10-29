@@ -1,10 +1,11 @@
-import { Fragment, useLayoutEffect, useRef } from 'react'
+import { Fragment } from 'react'
 import type { Family } from '@map/data/types'
 import { Flag, hasFlag } from '@map/map/Flag'
 import { countryName } from '../lib/colors'
 import { day } from '../lib/format'
 import { flyOn, routeLabel, type RouteCountry, type RouteLeg, type TripRoute } from '../lib/route'
 import { Arrow, ModeChip, Plane } from './icons'
+import { useEdgeFade } from './useEdgeFade'
 
 // The flag route of a trip: home, the flight in, the countries in order with how you move between
 // them, the flight out and home. The same piece on the Trips list and, larger, on the trip hero.
@@ -12,31 +13,6 @@ import { Arrow, ModeChip, Plane } from './icons'
 // stages that matter (the landing and the way out) and edge fades when the route has to scroll.
 
 type Ring = 'in' | 'out' | 'both'
-
-/** Marks a scrolling route with data-prev and data-next so its edges fade, and lets the keyboard scroll it. */
-function useEdgeFade<T extends HTMLElement>() {
-  const ref = useRef<T>(null)
-  useLayoutEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const update = () => {
-      const over = el.scrollWidth - el.clientWidth > 1
-      el.toggleAttribute('data-prev', over && el.scrollLeft > 1)
-      el.toggleAttribute('data-next', over && el.scrollLeft < el.scrollWidth - el.clientWidth - 1)
-      if (over) el.tabIndex = 0
-      else el.removeAttribute('tabindex')
-    }
-    update()
-    const ro = new ResizeObserver(update)
-    ro.observe(el)
-    el.addEventListener('scroll', update, { passive: true })
-    return () => {
-      ro.disconnect()
-      el.removeEventListener('scroll', update)
-    }
-  }, [])
-  return ref
-}
 
 function Country({ c, ring }: { c: RouteCountry; ring?: Ring }) {
   const name = countryName(c.country)
