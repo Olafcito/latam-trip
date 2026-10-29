@@ -2944,6 +2944,14 @@
   },
   "hostels": [
    {
+    "name": "La Urraca Loca",
+    "dorm_dkk": 70,
+    "private_dkk": 181,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/276077/la-urraca-loca/"
+   },
+   {
     "name": "Rancho Tranquillo",
     "dorm_dkk": 53,
     "private_dkk": 116,
