@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { loadData } from './data/load'
-import { loadSeeds } from './data/routeMap'
-import { withSeedWays } from './lib/seeds'
+import { loadRepoTrips } from './data/routeMap'
+import { resolveDeepLink, rowToJourney, urlWithTrip, withTripWays } from './lib/repoTrips'
 import { useStore, type Screen } from './store'
 import { observed } from './lib/format'
 import { Warn } from './components/icons'
@@ -73,6 +73,31 @@ function Tabs({ screen, go }: { screen: Screen; go: (s: Screen) => void }) {
   )
 }
 
+// The deep link is read once, when the data and the table trips are in. Until then the address is left alone.
+let linkRead = false
+
+/** /?trip=<id> opens that trip, as a click in the Trips list does. An unknown id shows the list with a note. */
+function openDeepLink() {
+  linkRead = true
+  const s = useStore.getState()
+  const link = resolveDeepLink(window.location.search, s.saved, s.journey)
+  if (!link) return syncAddress()
+  if (link.kind === 'open') return s.openTrip(link.journey)
+  s.go('trips', 'home')
+  s.setNotice(`There is no trip with the id ${link.id}. These are the trips there are.`)
+}
+
+/** ?trip=<id> while a trip is open, nothing when none is. */
+function syncAddress() {
+  if (!linkRead) return
+  const s = useStore.getState()
+  const id = s.view === 'trip' && s.journey ? s.journey.id : null
+  const next = urlWithTrip(window.location.href, id)
+  if (next !== window.location.pathname + window.location.search + window.location.hash) {
+    window.history.replaceState(window.history.state, '', next)
+  }
+}
+
 export function App() {
   const data = useStore((s) => s.data)
   const setData = useStore((s) => s.setData)
@@ -80,19 +105,22 @@ export function App() {
   const go = useStore((s) => s.go)
   const [error, setError] = useState<string | null>(null)
 
-  const importSeeds = useStore((s) => s.importSeeds)
+  const setRepoTrips = useStore((s) => s.setRepoTrips)
   useInputMode()
 
   useEffect(() => {
-    // the ranked trips bring their own ways in and home, so they load with the data
-    Promise.all([loadData(), loadSeeds()]).then(
-      ([d, seeds]) => {
-        setData({ ...d, inout: withSeedWays(d.inout, seeds) })
-        importSeeds(seeds)
+    // the table trips bring their own ways in and home, so they load with the data
+    Promise.all([loadData(), loadRepoTrips()]).then(
+      ([d, rows]) => {
+        setData({ ...d, inout: withTripWays(d.inout, rows) })
+        setRepoTrips(rows.map(rowToJourney))
+        openDeepLink()
       },
       (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
     )
-  }, [setData, importSeeds])
+  }, [setData, setRepoTrips])
+
+  useEffect(() => useStore.subscribe(syncAddress), [])
 
   if (error) {
     return (

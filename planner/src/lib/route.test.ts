@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import type { Trip } from '@map/data/trips'
 import type { AppData, InOut, MapData, Way } from '../data/types'
 import type { Hop, Journey } from './journey'
 import { flightLegs, flyOn, routeLabel, tripRoute } from './route'
-import { withSeedCountries } from './seeds'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'GUA', depart: '2026-12-02T09:55', arrive: '2026-12-03T06:00',
@@ -102,21 +100,5 @@ describe('tripRoute', () => {
 
   it('is null when a way has left the data', () => {
     expect(tripRoute(data, journey({ wayHome: 'gone' }))).toBeNull()
-  })
-})
-
-describe('withSeedCountries', () => {
-  const seed = { id: 'seed-x', segments: [{ kind: 'overland', from: 'GUA', to: 'SJO', countries: ['GT', 'SV', 'CR'] }] } as unknown as Trip
-
-  it('gives an overland block of a seeded trip the countries it crosses', () => {
-    const j = journey()
-    j.places[1] = { node: 'SJO', hop: hop('GUA', 'SJO', { overland: 'Overland' }) }
-    expect(withSeedCountries(j, [seed]).places[1].hop?.countries).toEqual(['GT', 'SV', 'CR'])
-  })
-
-  it('leaves a journey alone when there is nothing to add', () => {
-    const j = journey()
-    expect(withSeedCountries(j, [seed])).toBe(j)
-    expect(withSeedCountries({ ...j, id: 'mine' }, [seed]).id).toBe('mine')
   })
 })

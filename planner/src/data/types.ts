@@ -185,6 +185,8 @@ export interface CrawledFlight {
   checked_bag?: string | null
   overnight_layover?: boolean
   source?: string
+  /** when the price was seen */
+  observed_at?: string | null
 }
 
 export interface MapEdge {
