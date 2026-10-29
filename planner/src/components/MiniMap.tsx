@@ -35,15 +35,15 @@ export function MiniMap({ data, ways, onOpen }: { data: InOut; ways: Way[]; onOp
 
   return (
     <button type="button" className="minimap" onClick={onOpen} title="Build this trip on the route map">
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="Map of the way in and the way home" style={{ background: '#eef2f5', borderRadius: 10 }}>
-      <path d={view.land} fill="#dfe3dc" stroke="#c9cec6" strokeWidth={0.5} />
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="Map of the way in and the way home" style={{ background: 'var(--ground)', borderRadius: 10 }}>
+      <path d={view.land} style={{ fill: 'var(--surface-2)', stroke: 'var(--line-2)' }} strokeWidth={0.5} />
       {view.arcs.map((a, i) => (
-        <path key={i} d={a.d} fill="none" stroke={a.dir === 'in' ? '#1f4fb8' : '#2e7d5b'} strokeWidth={2} strokeLinecap="round" strokeDasharray={a.dir === 'home' ? '5 4' : undefined} />
+        <path key={i} d={a.d} fill="none" style={{ stroke: a.dir === 'in' ? 'var(--in)' : 'var(--home)' }} strokeWidth={2} strokeLinecap="round" strokeDasharray={a.dir === 'home' ? '5 4' : undefined} />
       ))}
       {view.dots.map((d) => (
         <g key={d.c}>
-          <circle cx={d.x} cy={d.y} r={d.end ? 4 : 2.6} fill={d.end ? '#1e2328' : '#fff'} stroke="#1e2328" strokeWidth={1.4} />
-          {d.end && <text x={d.x + 6} y={d.y + 3.5} fontSize={10} fontWeight={600} fill="#1e2328">{d.c}</text>}
+          <circle cx={d.x} cy={d.y} r={d.end ? 4 : 2.6} style={{ fill: d.end ? 'var(--text)' : 'var(--ground)', stroke: 'var(--text)' }} strokeWidth={1.4} />
+          {d.end && <text x={d.x + 6} y={d.y + 3.5} fontSize={10} fontWeight={500} style={{ fill: 'var(--text)', fontFamily: 'var(--font-num)' }}>{d.c}</text>}
         </g>
       ))}
     </svg>

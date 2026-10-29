@@ -1,22 +1,52 @@
-/* Design tokens for the planner. The route map (.rmap) keeps its own scope with the same values. */
+/* Design tokens for the planner: the map's night, defined once.
+   The route map (.rmap) keeps its own scope with the same values, so these never reach into it. */
 :root {
-  --bg: #f4f2ee;
-  --card: #ffffff;
-  --ink: #1e2328;
-  --ink2: #40464d;
-  --muted: #6e747c;
-  --faint: #9a9ea4;
-  --line: #e6e2db;
-  --line2: #d8d4cc;
-  --soft: #f1efea;
-  --blue: #1f4fb8;
-  --green: #2e7d5b;
-  --orange: #d9822b;
-  --warn-bg: #fbebd7;
-  --warn: #8a4b0f;
-  --err-bg: #fbe0dc;
-  --err: #9b2b1d;
-  --night-bg: #ece8fa;
-  --night: #4b3c8c;
-  color-scheme: light;
+  color-scheme: dark;
+
+  /* ground and surfaces, one step of luminance apart */
+  --ground: #0B1720;
+  --surface: #0F1F29;
+  --surface-2: #14252E;
+  --surface-3: #1A2E39;
+  --line: #1C3340;
+  --line-2: #24404D;
+
+  /* text */
+  --text: #EAF0F2;
+  --muted: #93A7B2;
+  --faint: #5F7785;
+
+  /* meaning: modes, the two long-haul ways, errors */
+  --flight: #F2B544;
+  --flight-ink: #13202A;
+  --bus: #6FD3B8;
+  --boat: #8DB8F2;
+  --in: #58D68D;
+  --home: #FF8A4C;
+  --err: #FF6B5E;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --t-fast: 120ms;
+  --t-med: 180ms;
+  --t-slow: 240ms;
+
+  /* type: Bricolage for words, Plex Mono with tabular figures for every number */
+  --font-word: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --font-num: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --fs-display: 28px;
+  --fs-title: 16px;
+  --fs-body: 14px;
+  --fs-small: 12.5px;
+  --fs-num-lg: 24px;
+  --fs-num: 13px;
+  --fs-label: 11px;
+
+  /* the smallest hit area: 36px with a mouse, 44px under a finger */
+  --hit: 36px;
+  --radius: 10px;
+}
+@media (pointer: coarse) {
+  :root { --hit: 44px; }
 }
