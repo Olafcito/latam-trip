@@ -1,5 +1,5 @@
 {
- "about": "Over-categories for experiences. place_categories links each one to the place categories the map already shows (from taglines, summaries and things to do), so a place tagged Beach suggests Diving and Beaches. keywords is the regex used to sort an experience into a category when it was added from a place's things-to-do list. image_id points at an experience_image row.",
+ "about": "Over-categories for experiences. place_categories links each one to the place categories the map already shows (from taglines, summaries and things to do), so a place tagged Beach suggests Diving and Beaches. keywords is the regex used to sort an experience into a category when it was added from a place's things-to-do list. image_id points at an experience_image row. fallback_place: a map place whose photo stands in until the category has its own image.",
  "order": [
   "diving",
   "wildlife",
@@ -21,7 +21,8 @@
     "Beach"
    ],
    "image_id": "cat-diving",
-   "keywords": "dive|diving|scuba|snorkel|reef|shark"
+   "keywords": "dive|diving|scuba|snorkel|reef|shark",
+   "fallback_place": "SAPZ"
   },
   {
    "id": "wildlife",
@@ -30,7 +31,8 @@
     "Nature"
    ],
    "image_id": "cat-wildlife",
-   "keywords": "wildlife|sloth|monkey|macaw|bird|turtle|whale|dolphin|caiman|animal|frog|condor|flamingo|butterfl|insect|orchid|pampas"
+   "keywords": "wildlife|sloth|monkey|macaw|bird|turtle|whale|dolphin|caiman|animal|frog|condor|flamingo|butterfl|insect|orchid|pampas",
+   "fallback_place": "TAYR"
   },
   {
    "id": "hiking",
@@ -40,7 +42,8 @@
     "Altitude"
    ],
    "image_id": "cat-hiking",
-   "keywords": "hike|hiking|trek|volcano|summit|viewpoint|mirador|trail|walk|lighthouse|cerro|hill|climb"
+   "keywords": "hike|hiking|trek|volcano|summit|viewpoint|mirador|trail|walk|lighthouse|cerro|hill|climb",
+   "fallback_place": "LEON"
   },
   {
    "id": "beach",
@@ -49,7 +52,8 @@
     "Beach"
    ],
    "image_id": "cat-beach",
-   "keywords": "beach|island|\\bcays?\\b|swim|sunset|lagoon|lake|boat"
+   "keywords": "beach|island|\\bcays?\\b|swim|sunset|lagoon|lake|boat",
+   "fallback_place": "PALO"
   },
   {
    "id": "ruins",
@@ -59,7 +63,8 @@
     "Colonial"
    ],
    "image_id": "cat-ruins",
-   "keywords": "ruin|maya|inca|archaeolog|tikal|pyramid|temple|fort\\b|fortress|mission|history|\\bwar\\b"
+   "keywords": "ruin|maya|inca|archaeolog|tikal|pyramid|temple|fort\\b|fortress|mission|history|\\bwar\\b",
+   "fallback_place": "COPAN"
   },
   {
    "id": "culture",
@@ -69,7 +74,8 @@
     "Markets"
    ],
    "image_id": "cat-culture",
-   "keywords": "museum|market|church|cathedral|colonial|plaza|old town|walking tour|art|graffiti|mural|cemetery|mine|cholita|festival|witches|christmas|cultural|statue|square|town"
+   "keywords": "museum|market|church|cathedral|colonial|plaza|old town|walking tour|art|graffiti|mural|cemetery|mine|cholita|festival|witches|christmas|cultural|statue|square|town",
+   "fallback_place": "GTO"
   },
   {
    "id": "food",
@@ -78,7 +84,8 @@
     "Food"
    ],
    "image_id": "cat-food",
-   "keywords": "food|coffee|chocolate|choco|cooking|ceviche|\\brum\\b|brew|tequila|\\bmezcal\\b|tasting|cuisine|pupusa|lunch|cafe|picanteria|wine|distiller|trout|grilled|agave"
+   "keywords": "food|coffee|chocolate|choco|cooking|ceviche|\\brum\\b|brew|tequila|\\bmezcal\\b|tasting|cuisine|pupusa|lunch|cafe|picanteria|wine|distiller|trout|grilled|agave",
+   "fallback_place": "MINC"
   },
   {
    "id": "nightlife",
@@ -87,14 +94,16 @@
     "Nightlife"
    ],
    "image_id": "cat-nightlife",
-   "keywords": "nightlife|bars?\\b|party|parties|salsa|club|happy hour|reggae|dance|live music|karaoke"
+   "keywords": "nightlife|bars?\\b|party|parties|salsa|club|happy hour|reggae|dance|live music|karaoke",
+   "fallback_place": "CTG"
   },
   {
    "id": "training",
    "name": "Training",
    "place_categories": [],
    "image_id": "cat-training",
-   "keywords": "muay thai|boxing|kickbox|gym|yoga|crossfit|fitness|martial|jiu"
+   "keywords": "muay thai|boxing|kickbox|gym|yoga|crossfit|fitness|martial|jiu",
+   "fallback_place": null
   },
   {
    "id": "adventure",
@@ -103,14 +112,16 @@
     "Nature"
    ],
    "image_id": "cat-adventure",
-   "keywords": "zip.?line|canopy|\\braft|surf|kite|paraglid|bike|biking|death road|kayak|canyon|tubing|sandboard|cave|caving|horse|bungee|swing|moto|jeep|4x4|salt flat"
+   "keywords": "zip.?line|canopy|\\braft|surf|kite|paraglid|bike|biking|death road|kayak|canyon|tubing|sandboard|cave|caving|horse|bungee|swing|moto|jeep|4x4|salt flat",
+   "fallback_place": "UYU"
   },
   {
    "id": "courses",
    "name": "Courses",
    "place_categories": [],
    "image_id": "cat-courses",
-   "keywords": "course|school|lesson|class|learn"
+   "keywords": "course|school|lesson|class|learn",
+   "fallback_place": null
   }
  ]
 }
