@@ -1,28 +1,131 @@
-import { Fragment, type CSSProperties } from 'react'
+import { Fragment } from 'react'
 import type { Family } from '@map/data/types'
 import { TRIP_COLORS } from '@map/data/trips'
-import type { AppData } from '../data/types'
+import { Flag } from '@map/map/Flag'
+import type { AppData, InOut, MapNode, Way } from '../data/types'
 import { useStore } from '../store'
-import { clock, hours, kr, weekdayDay } from '../lib/format'
-import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
+import { clock, day, hours, kr, weekdayDay } from '../lib/format'
+import { nodeForAirport, nodeName, schedule, totals, type Hop, type Journey, type ScheduledPlace } from '../lib/journey'
 import { countryColor, countryName } from '../lib/colors'
-import { WayCard } from '../components/WayCard'
+import { WayTrack } from '../components/WayCard'
 import { TotalsPanel } from '../components/TotalsPanel'
 import { MiniMap } from '../components/MiniMap'
 import { hoverProps } from '../components/PlaceCard'
-import { Download, Land, ModeChip, Moon, Pin, Warn } from '../components/icons'
+import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosure'
+import { Download, Home, Land, ModeChip, Moon, Pin, Transfer, Warn } from '../components/icons'
 
-// The dashboard of one trip: everything about it on one page, the route as a timeline between
-// its two fixed flights, the ways as pictures, the costs, and the days per country.
+// The dashboard of one trip. Calm by default: the route as flags, names and days, the legs as an
+// icon, a duration and a price. Everything else opens on a click.
 
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
+const MODE_NAME: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Ground' }
 
 function Fact({ v, k, big }: { v: string; k: string; big?: boolean }) {
   return (
-    <span className={big ? 'big' : ''}>
+    <div className={`fact${big ? ' big' : ''}`}>
       <b>{v}</b>
       <small>{k}</small>
-    </span>
+    </div>
+  )
+}
+
+/** A stop: number, flag, city and days. Opens to its country, dates and description. */
+function StopRow({ i, name, node, country, sp }: { i: number; name: string; node: MapNode | undefined; country: string; sp: ScheduledPlace }) {
+  const d = useDisclosure()
+  const dates = [sp.arrive && weekdayDay(sp.arrive), sp.depart && weekdayDay(sp.depart)].filter(Boolean).join(' to ')
+  return (
+    <li className="tl-stop">
+      <button className="disc-btn tl-row" {...d.trigger}>
+        <span className="tl-n" style={{ background: TRIP_COLORS[0] }}>{i + 1}</span>
+        <Flag code={country} size={13} title={countryName(country)} />
+        <b className="tl-name" {...hoverProps(node)}>{name}</b>
+        <span className="tl-days" title="Days shared evenly between the dated flights around this stop">
+          <b>{sp.days}</b> {sp.days === 1 ? 'day' : 'days'}
+        </span>
+        <Chevron open={d.open} />
+      </button>
+      <DisclosurePanel {...d.panel}>
+        <div className="tl-more">
+          <span>{countryName(country)}{dates ? ` · ${dates}` : ''}</span>
+          {node?.profile?.tagline && <p>{node.profile.tagline}</p>}
+        </div>
+      </DisclosurePanel>
+    </li>
+  )
+}
+
+/** A leg between stops: mode, duration and price. Opens to carrier, times and via. */
+function HopRow({ h }: { h: Hop }) {
+  const d = useDisclosure()
+  const fam = family(h.mode)
+  const f = h.flight
+  const details = [
+    h.overland ?? (h.operator || null),
+    f ? `${weekdayDay(f.depart)} ${clock(f.depart)} to ${clock(f.arrive)}` : null,
+    f?.via.length ? `Via ${f.via.join(', ')}` : null,
+    h.overnight ? 'Overnight' : null,
+    h.border ? 'Crosses a border' : null,
+  ].filter((x): x is string => !!x)
+  const unpriced = h.overland && h.hours == null && h.price_dkk == null
+  const body = (
+    <>
+      <span className="tl-mode" role="img" aria-label={MODE_NAME[fam]} title={MODE_NAME[fam]}><ModeChip family={fam} /></span>
+      {unpriced ? <span className="tl-hopt">Overland</span> : (
+        <span className="tl-hopt">
+          <span>{hours(h.hours)}</span>
+          <span className="tl-price">{kr(h.price_dkk)}</span>
+        </span>
+      )}
+      {h.overnight && <span className="tl-ico" title="Overnight"><Moon /></span>}
+    </>
+  )
+  if (!details.length) return <li className={`tl-hop ${fam}`}><div className="tl-row">{body}</div></li>
+  return (
+    <li className={`tl-hop ${fam}`}>
+      <button className="disc-btn tl-row" {...d.trigger}>
+        {body}
+        <Chevron open={d.open} />
+      </button>
+      <DisclosurePanel {...d.panel}>
+        <ul className="tl-more">{details.map((x) => <li key={x}>{x}</li>)}</ul>
+      </DisclosurePanel>
+    </li>
+  )
+}
+
+/** One long-haul way on one line: direction, from and to, departure and duration. Opens to its track. */
+function WayRow({ way, inout, dir }: { way: Way; inout: InOut; dir: 'in' | 'home' }) {
+  const d = useDisclosure()
+  const far = dir === 'in' ? way.to : way.from
+  const city = inout.airports[far]?.name ?? far
+  const [from, to] = dir === 'in' ? ['Copenhagen', city] : [city, 'Copenhagen']
+  const xfer = way.timeline.flatMap((t) => (t.kind === 'self_transfer' ? [t.airport] : []))
+  const carriers = [...new Set(way.timeline.flatMap((t) => (t.kind === 'flight' ? t.carriers : [])))]
+  const own = way.shared_ticket ? null : way.price_dkk
+  return (
+    <div className={`cph ${dir}`}>
+      <button className="disc-btn cph-row" {...d.trigger}>
+        <span className="cph-dir" title={dir === 'in' ? 'Way in' : 'Way home'}>{dir === 'in' ? <Land s={15} /> : <Home s={15} />}</span>
+        <span className="cph-route">{from} to {to}</span>
+        <span className="cph-meta">
+          {xfer.length > 0 && <span className="cph-warn" title={`Self-transfer in ${xfer.join(', ')}`}><Transfer /></span>}
+          {way.us_transit && <span className="cph-warn" title="Passes through the United States, ESTA needed">US</span>}
+          <span>{day(way.depart)} {clock(way.depart)}</span>
+          <span className="cph-dur">{hours(way.total_hours)}</span>
+          <Chevron open={d.open} />
+        </span>
+      </button>
+      <DisclosurePanel {...d.panel}>
+        <div className="cph-more">
+          <WayTrack way={way} compact />
+          <p>
+            {way.flights} {way.flights === 1 ? 'flight' : 'flights'} · {hours(way.flying_hours)} in the air
+            {carriers.length > 0 && ` · ${carriers.join(', ')}`}
+            {' · '}{own != null ? kr(own) : 'On the return ticket'}
+          </p>
+        </div>
+      </DisclosurePanel>
+    </div>
   )
 }
 
@@ -65,8 +168,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const t = totals(data, journey, sched)
   const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
   const countries = Object.entries(t.days_per_country).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1])
-  const daysAll = countries.reduce((a, [, n]) => a + n, 0)
   const countryOf = (id: string) => node(id)?.country ?? inout.airports[id]?.country ?? ''
+  const stops = journey.places.length
 
   return (
     <div className="dash">
@@ -82,13 +185,12 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
       </div>
 
       <div className="card dash-hero">
-        <Fact v={kr(allIn)} k="all in" big />
-        <Fact v={`${weekdayDay(wi.arrive)} ${clock(wi.arrive)}`} k={`lands ${nm(nodeForAirport(inout, wi.to))}`} />
-        <Fact v={`${weekdayDay(wh.depart)} ${clock(wh.depart)}`} k={`flies home from ${nm(exitNode)}`} />
-        <Fact v={String(sched.totalDays)} k="days there" />
-        <Fact v={String(journey.places.length)} k={journey.places.length === 1 ? 'stop' : 'stops'} />
-        <Fact v={String(t.flights)} k="flights" />
-        <Fact v={hours(t.air_hours)} k="in the air" />
+        <div className="facts">
+          <Fact v={kr(allIn)} k="Total" big />
+          <Fact v={`${day(wi.arrive)} to ${day(wh.depart)}`} k="Dates" />
+          <Fact v={String(sched.totalDays)} k="Days there" />
+          <Fact v={String(stops)} k={stops === 1 ? 'Stop' : 'Stops'} />
+        </div>
       </div>
 
       {sched.warnings.length > 0 && (
@@ -103,54 +205,19 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
           <ol className="tl">
             <li className="tl-way in">
               <span className="io-dot in" />
-              <div>
-                <b>Lands {nm(nodeForAirport(inout, wi.to))}</b>
-                <small>{weekdayDay(wi.arrive)} {clock(wi.arrive)} · {hours(wi.total_hours)} from Copenhagen · {wi.airports.join(' › ')}</small>
-              </div>
+              <b>Lands {nm(nodeForAirport(inout, wi.to))}</b>
+              <small>{weekdayDay(wi.arrive)} {clock(wi.arrive)}</small>
             </li>
-            {journey.places.map((p, i) => {
-              const n = node(p.node)
-              const h = p.hop
-              const sp = sched.places[i]
-              const c = countryOf(p.node)
-              return (
-                <Fragment key={i}>
-                  {h && (
-                    <li className={`tl-hop ${family(h.mode)}`}>
-                      <ModeChip family={family(h.mode)} />
-                      <span className="tl-hopt">
-                        {h.overland ? h.overland : <>{h.operator ? `${h.operator} · ` : ''}{hours(h.hours)} · {kr(h.price_dkk)}</>}
-                        {h.flight ? ` · ${weekdayDay(h.flight.depart)} ${clock(h.flight.depart)} to ${clock(h.flight.arrive)}` : ''}
-                        {h.flight?.via.length ? ` · via ${h.flight.via.join(', ')}` : ''}
-                      </span>
-                      {h.overnight && <Moon />}
-                      {h.border && <span className="plan-border" title="Crosses a border">border</span>}
-                    </li>
-                  )}
-                  <li className="tl-stop" style={{ '--c': countryColor(c) } as CSSProperties}>
-                    <span className="tl-n" style={{ background: TRIP_COLORS[0] }}>{i + 1}</span>
-                    <div className="tl-who">
-                      <b {...hoverProps(n)}>{nm(p.node)}</b>
-                      <small><i style={{ background: countryColor(c) }} />{countryName(c)}{n?.profile?.tagline ? ` · ${n.profile.tagline}` : ''}</small>
-                    </div>
-                    <div className="tl-days" title="Days shared evenly between the dated flights around this stop">
-                      <b>{sp.days}</b><small>{sp.days === 1 ? 'day' : 'days'}</small>
-                    </div>
-                    <div className="tl-dates">
-                      {sp.arrive && <span title="A dated flight brings you here">{weekdayDay(sp.arrive)}</span>}
-                      {sp.depart && <span title="A dated flight takes you on">to {weekdayDay(sp.depart)}</span>}
-                    </div>
-                  </li>
-                </Fragment>
-              )
-            })}
+            {journey.places.map((p, i) => (
+              <Fragment key={i}>
+                {p.hop && <HopRow h={p.hop} />}
+                <StopRow i={i} name={nm(p.node)} node={node(p.node)} country={countryOf(p.node)} sp={sched.places[i]} />
+              </Fragment>
+            ))}
             <li className="tl-way home">
               <span className="io-dot home" />
-              <div>
-                <b>Flies home from {nm(exitNode)}</b>
-                <small>{weekdayDay(wh.depart)} {clock(wh.depart)} · {hours(wh.total_hours)} · {wh.airports.join(' › ')}</small>
-              </div>
-              <Land />
+              <b>Flies home from {nm(exitNode)}</b>
+              <small>{weekdayDay(wh.depart)} {clock(wh.depart)}</small>
             </li>
           </ol>
         </section>
@@ -159,13 +226,13 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
           <section className="card pad" aria-label="Flights in and home">
             <h3 className="h3">Copenhagen and back</h3>
             <div className="ways">
-              <WayCard way={wi} inout={inout} dir="in" compact />
-              <WayCard way={wh} inout={inout} dir="home" compact />
+              <WayRow way={wi} inout={inout} dir="in" />
+              <WayRow way={wh} inout={inout} dir="home" />
             </div>
           </section>
           <section className="card pad" aria-label="Costs">
             <h3 className="h3">Costs</h3>
-            <TotalsPanel t={t} compact />
+            <TotalsPanel t={t} total={allIn} />
           </section>
           {countries.length > 0 && (
             <section className="card pad" aria-label="Days per country">
@@ -174,7 +241,14 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
                 {countries.map(([c, n]) => <i key={c} style={{ flexGrow: n, background: countryColor(c) }} title={`${countryName(c)}, ${n} ${n === 1 ? 'day' : 'days'}`} />)}
               </div>
               <ul className="dash-legend">
-                {countries.map(([c, n]) => <li key={c}><i style={{ background: countryColor(c) }} />{countryName(c)}<b>{n}</b><small>{daysAll ? Math.round((n / daysAll) * 100) : 0}%</small></li>)}
+                {countries.map(([c, n]) => (
+                  <li key={c}>
+                    <i style={{ background: countryColor(c) }} />
+                    <Flag code={c} size={11} />
+                    {countryName(c)}
+                    <b>{n}</b>
+                  </li>
+                ))}
               </ul>
             </section>
           )}
