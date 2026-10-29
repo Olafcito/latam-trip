@@ -1,5 +1,5 @@
 // Icons the planner adds to the map's set: one stroke, round caps, currentColor.
-export { Plane, Moon, Arrow, Plus, Minus, Close, ModeChip } from '@map/map/icons'
+export { Plane, Bus, Boat, Moon, Arrow, Plus, Minus, Close, ModeChip } from '@map/map/icons'
 
 const base = { fill: 'none', stroke: 'currentColor', strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true } as const
 
@@ -96,5 +96,12 @@ export const Grip = ({ s = 14 }: { s?: number }) => (
 export const External = ({ s = 12 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
     <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+  </svg>
+)
+
+/** A month back or on, in the calendar. */
+export const Caret = ({ s = 14, dir }: { s?: number; dir: 'l' | 'r' }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d={dir === 'l' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} />
   </svg>
 )
