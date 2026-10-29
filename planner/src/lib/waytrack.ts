@@ -1,15 +1,15 @@
 import type { Airport, FlightItem, StopKind, Way } from '../data/types'
 import { clock, day, dayDiff, hours } from './format'
-import { toUtcMs } from './time'
 
 // A long-haul way as a transit line: the flights as stretches, every wait between them as a stop.
 // Times are local at each airport, as in the data. A ticket with changes only knows its first
-// take-off and last landing, so its flights are shared out by the distance each one covers and the
-// times at the changes are worked out from that, marked as estimates. wayAxis lays the parts out to
+// take-off, its last landing and how long each change is, so its flights are shared out by the
+// distance each one covers to place the changes on the line, and no clock time is made up for them.
+// wayAxis lays the parts out to
 // scale, by the hours each one takes from the first take-off, with a floor so a short hop still has
 // room for its labels.
 
-/** A stretch in the air. approx when it is a share of one ticket's flight split around its changes. */
+/** A stretch in the air. approx when it is a share of one ticket's flight split around its changes, so its length is only drawn. */
 export interface TrackFly {
   kind: 'fly'
   hours: number
@@ -26,11 +26,9 @@ export interface TrackWait {
   nights: number
   /** a layover inside one ticket that runs over night */
   overnight: boolean
-  /** local times: from the data for a stop between tickets, worked out for a change inside one */
+  /** local times from the data, for a stop between tickets. A change inside one ticket has none */
   arrive: string | null
   depart: string | null
-  /** the times are worked out, not in the data */
-  est: boolean
   stay: number | null
 }
 
@@ -46,11 +44,6 @@ function km(a: Airport, b: Airport): number {
   const r = Math.PI / 180
   const h = Math.sin(((b.lat - a.lat) * r) / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(((b.lon - a.lon) * r) / 2) ** 2
   return 12742 * Math.asin(Math.sqrt(h))
-}
-
-/** a local "2026-12-02T06:10" at one offset, moved on by some hours and read at another offset */
-function localAt(local: string, from: number, h: number, to: number): string {
-  return new Date(toUtcMs(local, from) + (h + to) * 3600000).toISOString().slice(0, 16)
 }
 
 /**
@@ -74,7 +67,7 @@ export function wayTrack(w: Way, airports: Record<string, Airport> = {}): WayTra
     if (it.kind !== 'flight') {
       parts.push({
         kind: 'wait', code: it.airport, type: it.kind, hours: it.hours, nights: it.nights, overnight: it.kind === 'night',
-        arrive: it.arrive || null, depart: it.depart || null, est: false, stay: it.stay_estimate_dkk,
+        arrive: it.arrive || null, depart: it.depart || null, stay: it.stay_estimate_dkk,
       })
       continue
     }
@@ -83,18 +76,11 @@ export function wayTrack(w: Way, airports: Record<string, Airport> = {}): WayTra
     const lay = f.connections.reduce((a, c) => a + (c.layover_h ?? 0), 0)
     const path = [f.from, ...f.connections.map((c) => c.airport), f.to]
     const each = legs === 1 ? [f.hours] : shares(path, Math.max(0.5 * legs, f.hours - lay), airports)
-    // walk the ticket from its take-off to read the local time at each change
-    const off = (c: string) => airports[c]?.utc_offset
-    let at = f.depart && off(f.from) != null ? { t: f.depart, o: off(f.from)! } : null
     f.connections.forEach((c, i) => {
       parts.push({ kind: 'fly', hours: each[i], approx: true })
-      const o = off(c.airport)
-      const arrive = at && o != null ? localAt(at.t, at.o, each[i], o) : null
-      const depart = arrive && c.layover_h != null ? localAt(arrive, o!, c.layover_h, o!) : null
-      at = depart ? { t: depart, o: o! } : null
       parts.push({
         kind: 'wait', code: c.airport, type: 'layover', hours: c.layover_h, nights: 0,
-        overnight: f.overnight_layover && i === f.connections.length - 1, arrive, depart, est: true, stay: null,
+        overnight: f.overnight_layover && i === f.connections.length - 1, arrive: null, depart: null, stay: null,
       })
     })
     parts.push({ kind: 'fly', hours: each[legs - 1], approx: legs > 1 })
