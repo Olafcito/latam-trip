@@ -1,0 +1,12 @@
+{
+  "leg_dates": ["2026-12-03", "2027-02-03"],
+  "price": 10029,
+  "allPrices": [10029, 10412, 10980],
+  "site": "Expedia",
+  "brand": "Light",
+  "selfNote": false,
+  "legs": [
+    {"dep": "2026-12-03T06:00", "arr": "2026-12-03T19:40", "hours": 20.67, "stops": 2, "via": ["AMS", "PTY"], "layover_h": [3.83, 2.08], "carriers": ["KLM", "Copa Airlines"], "flights": ["KLM 1266", "KLM 757", "Copa Airlines 391"], "overnight_layover": false},
+    {"dep": "2027-02-03T11:55", "arr": "2027-02-04T14:10", "hours": 21.25, "stops": 2, "via": ["PTY", "AMS"], "layover_h": [3.42, 1.5], "carriers": ["Copa Airlines", "KLM"], "flights": ["Copa Airlines 220", "KLM 758", "KLM 1271"], "overnight_layover": false}
+  ]
+}
