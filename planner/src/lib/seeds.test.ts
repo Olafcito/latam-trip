@@ -37,6 +37,9 @@ describe.skipIf(!has)('seeded trips as journeys', () => {
     expect(j.places[1].hop?.overland).toBeTruthy()
     expect(j.places[2].hop).toMatchObject({ mode: 'flight', flight: { depart: expect.stringMatching(/^2026-12/) } })
     expect(j.places[6].hop?.overland).toBeTruthy()
+    // the overland block keeps the countries it passes through, for the flag route
+    expect(j.places[1].hop?.countries?.[0]).toBe('NI')
+    expect(j.places[1].hop?.countries?.at(-1)).toBe('CR')
   })
 
   it('shares the days between the landing, the dated flights and the flight home', () => {

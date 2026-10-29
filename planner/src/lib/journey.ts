@@ -16,6 +16,8 @@ export interface Hop {
   flight: CrawledFlight | null
   /** an overland block of a seeded trip: your own route, drawn as one dashed line; the note says how */
   overland?: string
+  /** the countries an overland block passes through, in order, ends included */
+  countries?: string[]
 }
 
 export interface Place {
