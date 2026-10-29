@@ -23446,6 +23446,23 @@
   },
   {
    "from": "GUA",
+   "to": "GDL",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": null,
+   "oneway_min_hours": null,
+   "fastest_hours": null,
+   "fastest_price_dkk": null,
+   "nonstop": false,
+   "vias": [],
+   "carriers": [],
+   "dates": [],
+   "return_min_dkk": 2224.0,
+   "quotes": 3,
+   "flights": []
+  },
+  {
+   "from": "GUA",
    "to": "SAP",
    "mode": "flight",
    "source": "crawl",

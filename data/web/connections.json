@@ -2360,7 +2360,10 @@
       "min": 1111,
       "observed_at": "2026-10-28T11:11:24Z"
      },
-     "return_dkk": null,
+     "return_dkk": {
+      "min": 2224,
+      "observed_at": "2026-10-29T18:16Z"
+     },
      "dates_searched": [
       "2026-12-05",
       "2026-12-10"
@@ -2413,7 +2416,122 @@
        "link": "https://www.momondo.dk/flight-search/GDL-GUA/2026-12-10"
       }
      ],
-     "round_trips": [],
+     "round_trips": [
+      {
+       "from": "GUA",
+       "to": "GDL",
+       "dkk": 2224,
+       "out": {
+        "date": "2026-12-02",
+        "dep": "08:55",
+        "arr": "16:00",
+        "arr_days": 0,
+        "duration_min": 425,
+        "vias": [
+         "MEX"
+        ],
+        "carriers": [
+         "Volaris"
+        ],
+        "flights": [
+         "Y4901",
+         "Y4150"
+        ]
+       },
+       "home": {
+        "date": "2026-12-08",
+        "dep": "08:24",
+        "arr": "13:37",
+        "arr_days": 0,
+        "duration_min": 313,
+        "vias": [
+         "MEX"
+        ],
+        "carriers": [
+         "Aeromexico"
+        ],
+        "flights": [
+         "AM211",
+         "AM676"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://kiwi.com/u/675nyt"
+      },
+      {
+       "from": "GUA",
+       "to": "GDL",
+       "dkk": 2239,
+       "out": {
+        "date": "2026-12-04",
+        "dep": "14:52",
+        "arr": "17:38",
+        "arr_days": 0,
+        "duration_min": 166,
+        "vias": [],
+        "carriers": [
+         "Volaris"
+        ],
+        "flights": [
+         "Y43917"
+        ]
+       },
+       "home": {
+        "date": "2026-12-09",
+        "dep": "08:24",
+        "arr": "13:37",
+        "arr_days": 0,
+        "duration_min": 313,
+        "vias": [
+         "MEX"
+        ],
+        "carriers": [
+         "Aeromexico"
+        ],
+        "flights": [
+         "AM211",
+         "AM676"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://kiwi.com/u/33kpru5"
+      },
+      {
+       "from": "GUA",
+       "to": "GDL",
+       "dkk": 2785,
+       "out": {
+        "date": "2026-12-04",
+        "dep": "14:52",
+        "arr": "17:38",
+        "arr_days": 0,
+        "duration_min": 166,
+        "vias": [],
+        "carriers": [
+         "Volaris"
+        ],
+        "flights": [
+         "Y43917"
+        ]
+       },
+       "home": {
+        "date": "2026-12-11",
+        "dep": "11:58",
+        "arr": "14:07",
+        "arr_days": 0,
+        "duration_min": 129,
+        "vias": [],
+        "carriers": [
+         "Volaris"
+        ],
+        "flights": [
+         "Y43916"
+        ]
+       },
+       "self_transfer": false,
+       "link": "https://kiwi.com/u/r4trs9t"
+      }
+     ],
      "cheapest": {
       "dkk": 1111,
       "duration_min": 361,
@@ -2442,7 +2560,7 @@
       "long_layover",
       "self_transfer_unverified"
      ],
-     "quotes": 5
+     "quotes": 8
     },
     "source": "crawl",
     "observed_at": "2026-10-28T17:56:56Z",
