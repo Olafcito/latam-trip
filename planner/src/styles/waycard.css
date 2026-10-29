@@ -41,10 +41,11 @@
   position: absolute; top: 0; bottom: 0;
   display: flex; align-items: center; justify-content: center;
   container-type: inline-size;
-  overflow: hidden; white-space: nowrap;
+  padding-inline: 3px; overflow: hidden; white-space: nowrap;
   font-size: 11.5px; font-weight: 500; color: var(--muted);
 }
-@container (max-width: 34px) { .wx-lab > * { visibility: hidden; } }
+/* a label as wide as "1h 20m" or more stays, a narrower gap hides it so two never run together */
+@container (max-width: 50px) { .wx-lab > * { visibility: hidden; } }
 .wx-w { display: inline-flex; align-items: center; gap: 3px; }
 .wx-w svg { flex: none; }
 .wx-w.night { color: var(--boat); }
@@ -77,8 +78,8 @@
 .wx-pt.end { background: var(--text); box-shadow: 0 0 0 2px var(--surface); }
 
 .wx-under { min-height: 30px; margin-top: 3px; font-size: 12.5px; line-height: 1.25; }
-/* the full card shows a third line under the ends, the date */
-.wx:not(.compact) .wx-under { min-height: 46px; }
+/* a third line: the date under the ends on the full card, or a narrow change's code over its two times */
+.wx:not(.compact) .wx-under, .wx-under:has(.wx-wait) { min-height: 46px; }
 .wx-under b { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: var(--muted); }
 .wx-tm { font-weight: 500; color: var(--text); white-space: nowrap; }
 .wx-tm .nd { margin-left: 1px; }
