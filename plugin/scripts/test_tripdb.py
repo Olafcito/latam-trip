@@ -312,3 +312,11 @@ class PairDatesTest(Base):
         rows = doc["pairs"]["BOG-VVI"]["2027-01-28"]
         self.assertEqual(len(rows), 1)
         self.assertEqual((rows[0]["src"], rows[0]["at"]), ("momondo-manual", "2026-10-29T13:13Z"))
+
+    def test_a_row_read_without_its_airlines_folds_into_its_named_twin(self):
+        named = self.regional(price_dkk=404, price=404, observed_at="2026-10-28T10:00Z")
+        bare = self.regional(price_dkk=404, price=404, observed_at="2026-10-28T19:00Z", out={"carriers": []})
+        other = self.regional(price_dkk=404, price=404, out={"carriers": [], "dep": "2027-01-28T22:25"})
+        rows = tripdb.pair_dates([named, bare, other])["pairs"]["BOG-VVI"]["2027-01-28"]
+        self.assertEqual([(r["d"], r["c"], r["at"]) for r in rows],
+                         [("06:10", ["Avianca"], "2026-10-28T19:00Z"), ("22:25", [], "2026-10-20T10:00Z")])
