@@ -46,13 +46,3 @@ export async function loadDash(base = BASE): Promise<DashData> {
   ])
   return { trips, journeys, flights }
 }
-
-/** The ranked trips to start from (data/web/saved_trips.json). Missing file: no seeds. */
-export async function loadSeedTrips(base = BASE): Promise<unknown> {
-  try {
-    const res = await fetch(`${base}/web/saved_trips.json`)
-    return res.ok ? await res.json() : null
-  } catch {
-    return null
-  }
-}

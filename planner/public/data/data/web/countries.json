@@ -1,0 +1,122 @@
+[
+ {
+  "code": "MX",
+  "name": "Mexico",
+  "label_lat": 22.5,
+  "label_lon": -101.5
+ },
+ {
+  "code": "GT",
+  "name": "Guatemala",
+  "label_lat": 15.6,
+  "label_lon": -90.3
+ },
+ {
+  "code": "BZ",
+  "name": "Belize",
+  "label_lat": 17.2,
+  "label_lon": -88.7
+ },
+ {
+  "code": "SV",
+  "name": "El Salvador",
+  "label_lat": 13.75,
+  "label_lon": -88.9
+ },
+ {
+  "code": "HN",
+  "name": "Honduras",
+  "label_lat": 14.75,
+  "label_lon": -86.6
+ },
+ {
+  "code": "NI",
+  "name": "Nicaragua",
+  "label_lat": 12.9,
+  "label_lon": -85.2
+ },
+ {
+  "code": "CR",
+  "name": "Costa Rica",
+  "label_lat": 10.0,
+  "label_lon": -84.0
+ },
+ {
+  "code": "PA",
+  "name": "Panama",
+  "label_lat": 8.4,
+  "label_lon": -80.4
+ },
+ {
+  "code": "CO",
+  "name": "Colombia",
+  "label_lat": 3.5,
+  "label_lon": -73.0
+ },
+ {
+  "code": "VE",
+  "name": "Venezuela",
+  "label_lat": 7.3,
+  "label_lon": -66.0
+ },
+ {
+  "code": "EC",
+  "name": "Ecuador",
+  "label_lat": -1.5,
+  "label_lon": -78.3
+ },
+ {
+  "code": "PE",
+  "name": "Peru",
+  "label_lat": -9.5,
+  "label_lon": -75.0
+ },
+ {
+  "code": "BR",
+  "name": "Brazil",
+  "label_lat": -10.0,
+  "label_lon": -55.0
+ },
+ {
+  "code": "BO",
+  "name": "Bolivia",
+  "label_lat": -16.5,
+  "label_lon": -64.5
+ },
+ {
+  "code": "CL",
+  "name": "Chile",
+  "label_lat": -23.5,
+  "label_lon": -69.3
+ },
+ {
+  "code": "PY",
+  "name": "Paraguay",
+  "label_lat": -23.0,
+  "label_lon": -58.4
+ },
+ {
+  "code": "AR",
+  "name": "Argentina",
+  "label_lat": -27.0,
+  "label_lon": -64.0
+ },
+ {
+  "code": "CU",
+  "name": "Cuba",
+  "label_lat": 21.8,
+  "label_lon": -79.3
+ },
+ {
+  "code": "DO",
+  "name": "Dominican Rep.",
+  "label_lat": 18.9,
+  "label_lon": -70.5
+ },
+ {
+  "code": "US",
+  "name": "United States",
+  "label_lat": 29.5,
+  "label_lon": -98.0
+ }
+]
