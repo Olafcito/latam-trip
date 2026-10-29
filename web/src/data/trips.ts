@@ -61,7 +61,7 @@ export interface SeedWay {
   timeline: WayItem[]
 }
 
-/** In and out of a trip that started from a ranked scenario (data/saved_trips.json). */
+/** In and out of a planned trip (the planner's trips table). */
 export interface SeedInout {
   option_id: string
   type: string
@@ -106,7 +106,7 @@ export interface Trip {
   updated: number
   /** Where the trip begins before any leg, e.g. the planner's way-in city. */
   start?: string
-  // set on trips that came from data/saved_trips.json
+  // set on planned trips, which the planner hands to the map
   seed?: boolean
   rank?: number
   inout?: SeedInout
@@ -120,7 +120,6 @@ export interface TripState {
 }
 
 const TRIPS_KEY = 'latam-trip.trips'
-const SEEDED_KEY = 'latam-trip.seeded'
 const OLD_JOURNEY_KEY = 'latam-trip.journey'
 
 export const EMPTY_TRIPS: TripState = { trips: [], active: null }
@@ -199,53 +198,6 @@ export function writeTrips(state: TripState) {
 }
 
 const newId = () => Math.random().toString(36).slice(2, 10)
-
-// ---- seeded trips (data/saved_trips.json) ----------------------------------------------------
-
-/** Turn the trips of data/saved_trips.json into Trip objects. */
-export function parseSeedFile(raw: unknown): Trip[] {
-  const list = raw && typeof raw === 'object' && Array.isArray((raw as { trips?: unknown }).trips) ? (raw as { trips: unknown[] }).trips : []
-  return parseTrips({ trips: list.map((t) => ({ ...(t as object), seed: true, updated: 0 })) }).trips
-}
-
-/**
- * Add seeded trips that this browser has not imported before. A seed the user deleted stays
- * deleted, because its id is remembered in `imported`. Seeds already in the list are refreshed.
- */
-export function mergeSeeds(s: TripState, seeds: Trip[], imported: string[]): { state: TripState; imported: string[] } {
-  const byId = new Map(seeds.map((t) => [t.id, t]))
-  // a seed already in the list takes the file's newer in/out, segments and totals, and keeps the user's name and legs
-  let changed = false
-  const trips = s.trips.map((t) => {
-    const f = t.seed ? byId.get(t.id) : undefined
-    if (!f) return t
-    const next = { ...t, rank: f.rank, inout: f.inout, segments: f.segments, totals: f.totals }
-    if (JSON.stringify(next) === JSON.stringify(t)) return t
-    changed = true
-    return next
-  })
-  const have = new Set(s.trips.map((t) => t.id))
-  const fresh = seeds.filter((t) => !have.has(t.id) && !imported.includes(t.id))
-  if (!fresh.length) return { state: changed ? { ...s, trips } : s, imported }
-  return { state: { ...s, trips: [...trips, ...fresh] }, imported: [...imported, ...fresh.map((t) => t.id)] }
-}
-
-export function readSeeded(): string[] {
-  try {
-    const v: unknown = JSON.parse(localStorage.getItem(SEEDED_KEY) ?? '[]')
-    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []
-  } catch {
-    return []
-  }
-}
-
-export function writeSeeded(ids: string[]) {
-  try {
-    localStorage.setItem(SEEDED_KEY, JSON.stringify(ids))
-  } catch {
-    // storage blocked: seeds are offered again next time
-  }
-}
 
 // ---- edits: pure, so the app can hand them to setState ------------------------------------
 

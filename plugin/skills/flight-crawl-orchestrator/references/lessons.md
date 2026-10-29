@@ -75,7 +75,7 @@
 - One-way Europe to Bolivia (exp-32c): CPH-VVI about 8,100, MAD-VVI 6,900, MAD-LPB 6,100; CPH-LPB and CPH-CBB all over 30 h. Open jaws into Bolivia are cheaper per trip.
 - Colombia to Honduras one-ways were 1,400 to 1,900 cheaper on 8 Jan than on 5 Jan (gf-32a): sweep regional dates, the spread is large.
 - Lima: JetSMART and LATAM fly MDE/BOG-LIM nonstop (about 3 h); BoA LIM-VVI nonstop 01:00-04:30; no LIM-CBB flights.
-- The derived tables (chains, inout, itineraries, map, seeds) and docs are refreshed only when the pipeline is run: run it after EVERY round, then sync the repo.
+- The derived tables (chains, inout, itineraries, map, trips.json) and docs are refreshed only when the pipeline is run: run it after EVERY round, then sync the repo.
 - preview_start navigated the 'seed' tab again (mom-32b): workers must never call preview_start while the pane is open; check tabs_context first.
 - Hand-pasting generated tables into the Docs doc made them fall behind and cost ~30k characters per refresh. Since 28 Oct the tables live in a Dashboard artifact fed by two uploaded JSON files (SKILL.md step 3); refreshing is 2 uploads + 2 dataset updates.
 - Whole-trip rating now weighs travel hours as much as cost (Simon, 28 Oct): 2 x (0.35 cost + 0.35 hours + 0.15 way home + 0.15 hassle); cost 5 at 7,000, -1 per 2,000; hours 5 at 34 h, -1 per 8 h (1 h ~ 250 kr). Regional hops are chosen by eff cost + 100 kr per hour, hops over 15 h skipped.
