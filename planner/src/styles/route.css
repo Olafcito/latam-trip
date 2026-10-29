@@ -1,0 +1,193 @@
+/* The flag route of a trip (Trips list and trip hero), the fly-on chips and the trip hero.
+   After the ReUI stepper on 21st.dev: dot connectors drawn with a mask, a ring with a gap around the
+   stages that matter, a fade on the last connector and fades on the edges when the route scrolls. */
+@scope (:root) to (.rmap) {
+
+/* ---- the route --------------------------------------------------------------------------- */
+.rt {
+  /* flag height, mode chip, one flag row, the shortest and longest connector, the caption size */
+  --fh: 14px;
+  --chip: 20px;
+  --row: 26px;
+  --lmin: 18px;
+  --lmax: 64px;
+  --lend: 40px;
+  --cap: 11.5px;
+  display: flex; align-items: flex-start;
+  min-width: 0; max-width: 100%;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  /* room for the ring, which sits outside the flag */
+  padding: 3px 4px;
+  border-radius: 6px;
+}
+.rt::-webkit-scrollbar { display: none; }
+.rt:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.rt[data-size='hero'] {
+  --fh: 22px;
+  --chip: 26px;
+  --row: 36px;
+  --lmin: 24px;
+  --lmax: 96px;
+  --lend: 64px;
+  --cap: 13px;
+}
+/* the ReUI edge fade: only the side with more route behind it */
+.rt[data-prev] { mask-image: linear-gradient(90deg, transparent, #000 28px); }
+.rt[data-next] { mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+.rt[data-prev][data-next] { mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+
+/* the way in and the way out: home, the long flight and the first or last country, the city under it */
+.rt-end {
+  flex: 0 0 auto;
+  display: grid; grid-template-columns: auto minmax(var(--lend), 1fr) auto; grid-template-rows: var(--row) auto;
+  align-items: center;
+  max-width: 100%;
+}
+.rt-cap {
+  grid-column: 1 / -1;
+  padding-top: 3px;
+  font-size: var(--cap); font-weight: 600; line-height: 1.2; letter-spacing: -0.005em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rt-end.in .rt-cap { justify-self: end; text-align: right; color: var(--in); }
+.rt-end.out .rt-cap { justify-self: start; color: var(--home); }
+
+/* a country: its flag, with a ring around the landing and the way out */
+.rt-c { flex: none; display: grid; place-items: center; height: var(--row); padding: 0 1px; }
+.rt-c .flag, .rt-nf {
+  display: block;
+  width: calc(var(--fh) * 1.5); height: var(--fh);
+  border-radius: 3px;
+  outline: 1px solid color-mix(in srgb, var(--text) 14%, transparent); outline-offset: -1px;
+}
+.rt[data-size='hero'] .rt-c .flag, .rt[data-size='hero'] .rt-nf { border-radius: 4px; }
+.rt-nf {
+  display: grid; place-items: center;
+  background: var(--surface-3);
+  font-size: calc(var(--fh) * 0.5); font-weight: 600; color: var(--muted);
+}
+.rt-c[data-ring] .flag, .rt-c[data-ring] .rt-nf { outline-width: 1.5px; outline-offset: 2px; }
+.rt-c[data-ring='in'] .flag, .rt-c[data-ring='both'] .flag, .rt-c[data-ring='in'] .rt-nf, .rt-c[data-ring='both'] .rt-nf { outline-color: var(--in); }
+.rt-c[data-ring='out'] .flag, .rt-c[data-ring='out'] .rt-nf { outline-color: var(--home); }
+.rt-c[data-ring] { padding: 0 4px; }
+/* home sits back, it is where every trip starts and ends */
+.rt-c.home .flag { opacity: 0.6; }
+
+/* a connector: the line for the mode, its chip on the first stretch of a hop */
+.rt-l {
+  position: relative;
+  flex: 1 1 var(--lmin); min-width: var(--lmin); max-width: var(--lmax);
+  height: var(--row);
+  display: grid; place-items: center;
+}
+.rt-end > .rt-l { max-width: none; }
+.rt-l::before {
+  content: ''; position: absolute; left: 3px; right: 3px; top: 50%;
+  height: 2px; margin-top: -1px; border-radius: 1px;
+  background: var(--bus);
+}
+.rt-l[data-f='boat']::before { background: repeating-linear-gradient(90deg, var(--boat) 0 6px, transparent 6px 10px); }
+.rt-l[data-f='flight']::before {
+  height: 3px; margin-top: -1.5px;
+  background: var(--flight);
+  -webkit-mask: radial-gradient(circle closest-side, #000 90%, transparent) 0 0 / 6px 3px space no-repeat;
+  mask: radial-gradient(circle closest-side, #000 90%, transparent) 0 0 / 6px 3px space no-repeat;
+}
+.rt-l[data-tone='in']::before { background: linear-gradient(90deg, color-mix(in srgb, var(--in) 20%, transparent), var(--in)); }
+.rt-l[data-tone='home']::before { background: linear-gradient(90deg, var(--home), color-mix(in srgb, var(--home) 20%, transparent)); }
+
+.rt .mchip {
+  position: relative;
+  width: var(--chip); height: var(--chip);
+  display: grid; place-items: center;
+  border-radius: 50%;
+}
+.rt .mchip svg { width: calc(var(--chip) * 0.55); height: calc(var(--chip) * 0.55); }
+.rt .mchip.ground { background: var(--bus); color: #06281F; }
+.rt .mchip.boat { background: var(--boat); color: #0A2147; }
+.rt .mchip.flight { background: var(--flight); color: #2A1C00; }
+.rt-l[data-tone='in'] .mchip { background: var(--in); color: #052814; }
+.rt-l[data-tone='home'] .mchip { background: var(--home); color: #2E1300; }
+
+/* a narrow cell draws a smaller route */
+@container (max-width: 400px) {
+  .rt[data-size='row'] { --fh: 12px; --chip: 18px; --row: 22px; --lmin: 12px; --lend: 30px; --cap: 11px; }
+}
+@container (max-width: 520px) {
+  .rt[data-size='hero'] { --fh: 18px; --chip: 22px; --row: 30px; --lmin: 16px; --lend: 40px; --cap: 12px; }
+}
+
+/* ---- fly-on chips ------------------------------------------------------------------------ */
+.fly { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.fly-chip {
+  --k: var(--flight);
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: var(--hit);
+  padding: 4px 12px 4px 5px;
+  border: 1px solid var(--line-2); border-radius: 999px;
+  background: var(--surface-2);
+  font-family: var(--font-num); font-size: 13px; font-variant-numeric: tabular-nums;
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.fly-chip[data-kind='in'] { --k: var(--in); }
+.fly-chip[data-kind='home'] { --k: var(--home); }
+.fly-chip:active { transform: scale(0.97); }
+.fly-chip:focus-visible { outline: 2px solid var(--k); outline-offset: 2px; }
+.fly-chip[aria-pressed='true'] { background: color-mix(in srgb, var(--k) 14%, var(--surface-2)); border-color: var(--k); }
+.fly-ico {
+  flex: none; width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--k) 18%, transparent);
+  color: var(--k);
+}
+.fly-d { font-weight: 600; white-space: nowrap; }
+.fly-r { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.fly-r svg { flex: none; color: var(--faint); }
+@media (hover: hover) and (pointer: fine) {
+  .fly-chip:hover { background: var(--surface-3); border-color: color-mix(in srgb, var(--k) 45%, var(--line-2)); }
+  .fly-chip[aria-pressed='true']:hover { background: color-mix(in srgb, var(--k) 18%, var(--surface-2)); }
+}
+
+/* ---- the trip hero: the route, the price, the days to fly on ---------------------------------- */
+.th {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'route price' 'legs legs';
+  align-items: center;
+  gap: 18px 32px;
+  padding: 20px 22px 18px;
+}
+.th-route { grid-area: route; min-width: 0; container-type: inline-size; }
+.th-price { grid-area: price; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.th-big {
+  font-family: var(--font-num); font-variant-numeric: tabular-nums;
+  font-size: 32px; font-weight: 650; letter-spacing: -0.025em; line-height: 1.05;
+  color: var(--text); white-space: nowrap;
+}
+.th-kr { font-size: 16px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+.th-q { margin-left: 4px; font-size: 16px; font-weight: 500; color: var(--faint); cursor: help; }
+.th-sub { font-size: 12px; color: var(--faint); }
+.th-legs {
+  grid-area: legs;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.th-lab { font-size: var(--fs-label); font-weight: 500; color: var(--faint); white-space: nowrap; }
+@container (max-width: 620px) {
+  .th {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'price' 'route' 'legs';
+    gap: 14px;
+    padding: 16px 14px 14px;
+  }
+  .th-price { flex-direction: row; align-items: baseline; gap: 8px; }
+  .th-big { font-size: 28px; }
+  .th-legs { flex-direction: column; align-items: stretch; gap: 8px; padding-top: 12px; }
+}
+}
