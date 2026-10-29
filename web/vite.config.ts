@@ -5,7 +5,7 @@ import { createReadStream, existsSync, statSync } from 'node:fs'
 import { resolve, normalize } from 'node:path'
 
 // In dev the app reads ../data/web/*.json straight from the repo, so a rerun of
-// src/build_web_data.py shows up on reload. A production build reads VITE_DATA_BASE instead.
+// tripdb build shows up on reload. A production build reads VITE_DATA_BASE instead.
 const DATA_DIR = resolve(import.meta.dirname, '../data')
 
 function serveRepoData(): Plugin {

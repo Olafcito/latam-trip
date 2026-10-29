@@ -1,18 +1,18 @@
 """Ingest worker JSONL into SQLite, score every quote, print a ranked report.
 
 Usage: python3 -I ingest.py [--root DIR] [--top N]
-  DIR (default: current directory) holds trip.json and data/raw/*.jsonl.
-Writes DIR/data/crawl.db (table quotes) and DIR/data/quotes.csv (the long table).
+  DIR (default: current directory) holds data/sources/trip.json and data/sources/quotes/*.jsonl.
+Writes DIR/data/built/trip.db (table quotes). tripdb build runs it and then loads the other tables.
 Scoring (effective cost, DKK-equivalent) is read from trip.json "scoring"; see references/scoring.md.
 """
-import csv, glob, json, os, sqlite3, sys, hashlib
+import glob, json, os, sqlite3, sys, hashlib
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
 TOP = int(args[args.index("--top") + 1]) if "--top" in args else 30
 CFG = {}
-if os.path.exists(os.path.join(ROOT, "trip.json")):
-    CFG = json.load(open(os.path.join(ROOT, "trip.json")))
+if os.path.exists(os.path.join(ROOT, "data", "sources", "trip.json")):
+    CFG = json.load(open(os.path.join(ROOT, "data", "sources", "trip.json")))
 W = dict(tight_connection=700, tight_connection_h=1.0, per_hour=150, soft_hours=23, extra_per_hour=150, overnight=800, self_transfer=1500,
          us_transit=500, airport_change=1000, no_changes=300, missing_side_hours=24)
 W.update(CFG.get("scoring", {}))
@@ -98,7 +98,8 @@ def eff_cost(q):
 
 
 def main():
-    con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+    os.makedirs(os.path.join(ROOT, "data", "built"), exist_ok=True)
+    con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
     con.execute("DROP TABLE IF EXISTS quotes")
     con.execute("""CREATE TABLE quotes (quote_id TEXT PRIMARY KEY, agent TEXT, task_id TEXT, source TEXT,
         observed_at TEXT, structure TEXT, pattern_id TEXT, variant TEXT, out_date TEXT, home_date TEXT, n_legs INT,
@@ -106,7 +107,7 @@ def main():
         checked_bag TEXT, out_hours REAL, home_hours REAL, mid_hours REAL, max_leg_hours REAL, out_via TEXT, home_via TEXT,
         out_carriers TEXT, home_carriers TEXT, flags TEXT, ok INT, eff_cost REAL, link TEXT, raw TEXT)""")
     n = 0
-    for f in sorted(glob.glob(os.path.join(ROOT, "data", "raw", "*.jsonl"))):
+    for f in sorted(glob.glob(os.path.join(ROOT, "data", "sources", "quotes", "*.jsonl"))):
         for line in open(f):
             line = line.strip()
             if not line:
@@ -144,13 +145,7 @@ def main():
                 ",".join(flags), ok, eff_cost(q), q.get("link"), line))
             n += 1
     con.commit()
-    cols = [c[1] for c in con.execute("PRAGMA table_info(quotes)")]
-    rows = con.execute("SELECT * FROM quotes").fetchall()
-    with open(os.path.join(ROOT, "data", "quotes.csv"), "w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(cols[:-1])
-        for r in rows:
-            w.writerow(r[:-1])
+    rows = con.execute("SELECT quote_id FROM quotes").fetchall()
     print(f"ingested lines: {n}, unique quotes: {len(rows)}, acceptable (ok=1): "
           f"{con.execute('SELECT COUNT(*) FROM quotes WHERE ok=1').fetchone()[0]}")
     print("\nBest acceptable per pattern (main tickets):")

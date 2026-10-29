@@ -7,8 +7,8 @@ import { journeyToTrip, placesFromLegs } from './mapTrips'
 import { schedule, totals } from './journey'
 import { seedToJourney, seedWayId, withSeedWays } from './seeds'
 
-// The ranked trips of the repo (data/saved_trips.json) as planner journeys. Skipped when the file is missing.
-const file = resolve(import.meta.dirname, '../../../data/saved_trips.json')
+// The ranked trips of the repo (data/web/saved_trips.json) as planner journeys. Skipped when the file is missing.
+const file = resolve(import.meta.dirname, '../../../data/web/saved_trips.json')
 const has = existsSync(file)
 
 const empty: InOut = {

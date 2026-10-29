@@ -1,5 +1,5 @@
 {
- "generated_from": "inout.json + crawl.db",
+ "generated_from": "inout.json + trip.db",
  "itineraries": [
   {
    "option": "SJO-SJO-ticket",

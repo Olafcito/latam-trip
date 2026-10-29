@@ -1,8 +1,8 @@
-"""Turn the chosen trips (data/seed_spec.json) into data/saved_trips.json for the planner.
+"""Turn the chosen trips (data/sources/seed_spec.json) into data/web/saved_trips.json for the planner.
 
 Usage: python3 -I seed_trips.py [--root DIR] [--connections FILE]
 
-Each trip = an in/out option from data/inout.json (long-haul ways with full timelines, by option id) + segments in
+Each trip = an in/out option from data/built/inout.json (long-haul ways with full timelines, by option id) + segments in
 travel order: `overland` blocks (your own route, not priced) and `flight` segments resolved from the crawl table
 (pinned quote_id, else the cheapest acceptable quote of the same route). Flights also carry `cid`, the planner's
 connection id (alphabetical "A-B", see data/web/connections.json), and the trip carries `legs` in the planner's
@@ -13,10 +13,10 @@ import datetime as dt, json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
 CONN = args[args.index("--connections") + 1] if "--connections" in args else os.path.join(ROOT, "data", "web", "connections.json")
-spec = json.load(open(os.path.join(ROOT, "data", "seed_spec.json")))
-IO = json.load(open(os.path.join(ROOT, "data", "inout.json")))
-BAGS = json.load(open(os.path.join(ROOT, "data", "bag_rules.json")))
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+spec = json.load(open(os.path.join(ROOT, "data", "sources", "seed_spec.json")))
+IO = json.load(open(os.path.join(ROOT, "data", "built", "inout.json")))
+BAGS = json.load(open(os.path.join(ROOT, "data", "sources", "bag_rules.json")))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 conn_ids = set()
 if os.path.exists(CONN):
     conn_ids = {c["id"] for c in json.load(open(CONN))}
@@ -80,6 +80,6 @@ for t in spec["trips"]:
                    "us_transit": IO["ways"][o["way_in"]]["us_transit"] or IO["ways"][o["way_home"]]["us_transit"]}})
 
 json.dump({"version": 1, "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "note": spec["note"], "trips": trips}, open(os.path.join(ROOT, "data", "saved_trips.json"), "w"), indent=1, ensure_ascii=False)
+           "note": spec["note"], "trips": trips}, open(os.path.join(ROOT, "data", "web", "saved_trips.json"), "w"), indent=1, ensure_ascii=False)
 for t in trips:
     print(t["rank"], t["name"], t["totals"], [f"{s['from']}>{s['to']}" + ("" if s["kind"] == "overland" else f" {s.get('price_dkk')} cid={s.get('cid')}") for s in t["segments"]])

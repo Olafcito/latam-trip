@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .DS_Store
+data/sources/.tripdb.lock
+data/sources/.task-*.json
+*.tmp

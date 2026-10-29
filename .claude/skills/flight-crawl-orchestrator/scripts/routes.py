@@ -11,13 +11,13 @@ Bolivia's internal flights (trip.json "route_internal") are added when Bolivia i
 import itertools, json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-OUT = args[args.index("--json") + 1] if "--json" in args else os.path.join(ROOT, "data", "routes.json")
-cfg = json.load(open(os.path.join(ROOT, "trip.json")))
+OUT = args[args.index("--json") + 1] if "--json" in args else os.path.join(ROOT, "data", "built", "routes.json")
+cfg = json.load(open(os.path.join(ROOT, "data", "sources", "trip.json")))
 REG = cfg["route_regions"]; REQ = cfg["route_required"]; OPT = cfg.get("route_optional", [])
 INTERNAL = cfg.get("route_internal", {})
 HOME = set(cfg.get("home_airports", ["CPH"])) | set(cfg.get("alt_origins", []))
 PREF_IN = cfg.get("route_entry_preferred", {})
-con = sqlite3.connect(os.path.join(ROOT, "data", "crawl.db"))
+con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
 reg_of = {a: r for r, aps in REG.items() for a in aps}
 
 hops = {}   # (a, b) -> best acceptable one-way
@@ -68,7 +68,7 @@ for pid, eff, price, oh, hh, oc, hc, od, hd, raw in con.execute(
                           out_carriers=oc, home_carriers=hc, out_date=od, home_date=hd, tickets=q.get("tickets") or 1,
                           fare=q.get("fare_brand"), checked_bag=q.get("checked_bag"))
 
-CHAINS = os.path.join(ROOT, "data", "chains.json")   # self-built ways in and home (chains.py)
+CHAINS = os.path.join(ROOT, "data", "built", "chains.json")   # self-built ways in and home (chains.py)
 if os.path.exists(CHAINS):
     ch = json.load(open(CHAINS))
     for o in ch["out"]:

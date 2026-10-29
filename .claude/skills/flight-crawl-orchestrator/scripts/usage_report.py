@@ -1,9 +1,9 @@
-"""Summarise worker token usage from data/agent_usage.csv (round, agent, model, tool, searches, tokens, tool_uses, seconds, rows).
+"""Summarise worker token usage from data/sources/agent_usage.csv (round, agent, model, tool, searches, tokens, tool_uses, seconds, rows).
 Usage: python3 -I usage_report.py [--root DIR]"""
 import csv, os, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
-rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "agent_usage.csv"))))
+rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "sources", "agent_usage.csv"))))
 tot = {}
 print(f"{'round':<6}{'agent':<12}{'model':<8}{'tool':<16}{'srch':>5}{'tokens':>9}{'tok/srch':>9}{'rows':>6}")
 for r in rows:

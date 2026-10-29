@@ -19,10 +19,10 @@ async function getJson<T>(base: string, path: string, timeoutMs: number): Promis
 
 async function loadFrom(base: string, timeoutMs: number) {
   const [inout, map, bags, trip, meta] = await Promise.all([
-    getJson<InOut>(base, 'data/inout.json', timeoutMs),
-    getJson<MapData>(base, 'data/network/map.json', timeoutMs),
-    getJson<BagRule[]>(base, 'data/bag_rules.json', timeoutMs).catch(() => [] as BagRule[]),
-    getJson<TripParams>(base, 'trip.json', timeoutMs).catch(() => ({}) as TripParams),
+    getJson<InOut>(base, 'data/web/inout.json', timeoutMs),
+    getJson<MapData>(base, 'data/web/map.json', timeoutMs),
+    getJson<BagRule[]>(base, 'data/web/bag_rules.json', timeoutMs).catch(() => [] as BagRule[]),
+    getJson<TripParams>(base, 'data/web/trip.json', timeoutMs).catch(() => ({}) as TripParams),
     // when the data was last checked. Optional: without it the freshness corner shows ?
     getJson<Meta>(base, 'data/web/meta.json', timeoutMs).then(
       (m) => (m && typeof m.last_checked === 'object' && m.last_checked !== null ? m : null),

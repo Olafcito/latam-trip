@@ -84,8 +84,8 @@ const crowdedData: AppData = {
 
 // ---- the ranked trips of the repo, with the real airports when the build is there
 
-const seedFile = resolve(import.meta.dirname, '../../../data/saved_trips.json')
-const inoutFile = resolve(import.meta.dirname, '../../../data/inout.json')
+const seedFile = resolve(import.meta.dirname, '../../../data/web/saved_trips.json')
+const inoutFile = resolve(import.meta.dirname, '../../../data/web/inout.json')
 const hasSeeds = existsSync(seedFile)
 const seeds = hasSeeds ? parseSeedFile(JSON.parse(readFileSync(seedFile, 'utf8'))) : []
 const airports: InOut['airports'] = existsSync(inoutFile) ? (JSON.parse(readFileSync(inoutFile, 'utf8')) as InOut).airports : {}

@@ -5,7 +5,7 @@ import type { InOut } from '../data/types'
 import { mixWays, priceOfWays } from './options'
 
 // Checks the logic against the synced copy of the real data (npm run sync-data). Skipped when it is missing.
-const file = resolve(import.meta.dirname, '../../public/data/data/inout.json')
+const file = resolve(import.meta.dirname, '../../public/data/data/web/inout.json')
 const has = existsSync(file)
 
 describe.skipIf(!has)('real inout.json', () => {
