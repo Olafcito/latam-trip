@@ -1,8 +1,8 @@
 {
- "built_at": "2026-10-29T17:10+00:00",
+ "built_at": "2026-10-29T17:17+00:00",
  "last_checked": {
   "flights": "2026-10-29T15:36Z",
-  "stays": null,
+  "stays": "2026-10-29T12:00:00Z",
   "experiences": "2026-10-29",
   "places": "2026-10-29",
   "tasks": null
