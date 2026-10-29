@@ -181,9 +181,9 @@
 .stg > *:nth-child(n+8) { animation-delay: .24s }
 
 /* every press shrinks a touch, every focus gets the amber ring */
-.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button, .plan-saved button),
+.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button),
 .panel.plan.mini { touch-action: manipulation; }
-.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button, .plan-saved button):active:not(:disabled),
+.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button):active:not(:disabled),
 .panel.plan.mini:active { transform: scale(.97); }
 .panel :focus-visible, .panel.plan.mini:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 
@@ -573,10 +573,6 @@
   .plan-acts .pbtn.ghost { white-space: nowrap; padding: 0 12px; }
   .plan-acts .pbtn:disabled { opacity: .55; cursor: default; transform: none; }
   .plan-acts .x { background: var(--surface-2); }
-  .plan-saved { list-style: none; margin: 0; padding: 0 14px 14px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
-  .plan-saved button { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 12px; border: 0; border-radius: 12px; background: var(--surface-2); text-align: left; cursor: pointer; transition: var(--tint), var(--press); }
-  .plan-saved b { font-size: 13.5px; font-weight: 700; }
-  .plan-saved small { font-size: 12px; color: var(--muted); }
 
   @media (hover: hover) and (pointer: fine) {
     .plan-title:hover { background: var(--surface-2); }
@@ -588,7 +584,6 @@
     .panel.plan.mini:hover { background: #14252EF0; box-shadow: 0 16px 36px -16px #000, inset 0 0 0 1px var(--faint); }
     .plan-finish button:hover { background: var(--flight-up); }
     .plan-acts .x:hover { background: var(--surface-3); }
-    .plan-saved button:hover { background: var(--surface-3); transform: translateX(2px); }
   }
   /* no see-through card for people who asked for solid surfaces */
   @media (prefers-reduced-transparency: reduce) {
@@ -622,6 +617,8 @@
   :scope.has-side .ctl-tr { right: 10px; }
   :scope.has-side .ctl-bottom { right: 10px; bottom: calc(42% + 10px); }
   :scope.has-side.has-panel .ctl-bottom { bottom: calc(52% + 10px); }
+  /* with a trip open the map above the pane is small: the hint and the legend give it back */
+  :scope.has-side:not(.side-mini) :is(.hint, .legend) { display: none; }
   .panel.plan { left: 0; right: 0; width: auto; max-height: 42%; animation-name: sheetIn; }
   .panel.plan.mini { left: auto; right: 10px; top: 10px; width: min(var(--side), calc(100% - 20px)); animation-name: chipIn; }
   :scope.side-mini .ctl-tr { right: calc(var(--side) + 20px); }
@@ -637,9 +634,9 @@
 
 /* reduced motion in the panel: presses and hovers keep their colour, nothing moves */
 @media (prefers-reduced-motion: reduce) {
-  .panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button, .plan-saved button):active,
+  .panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button):active,
   .panel.plan.mini:active,
-  .panel .back:hover svg, .panel .more:hover .arr, .panel .crow:hover .cr-arrow, .panel .plan-saved button:hover { transform: none; }
+  .panel .back:hover svg, .panel .more:hover .arr, .panel .crow:hover .cr-arrow { transform: none; }
 }
 
   .tcard .tc-io { margin: 4px 0 2px; font-size: 11px; line-height: 1.45; color: var(--muted); }
