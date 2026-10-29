@@ -5,12 +5,12 @@ import type { AppData, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, hours, weekdayDay } from '../../lib/format'
-import { legDay, nodeForAirport, nodeName, type Journey, type Schedule, type Warning } from '../../lib/journey'
+import { legDay, nightTrade, nodeForAirport, nodeName, type Journey, type Schedule, type Warning } from '../../lib/journey'
 import { iataOf, pricesOn, type PairDates } from '../../lib/prices'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
 import { hopLink, wayLinks } from '../../lib/links'
-import { addDays, dateRange } from '../../lib/time'
+import { dateRange } from '../../lib/time'
 import { hoverProps } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
@@ -59,13 +59,14 @@ function Shut({ on }: { on: () => void }) {
 }
 
 /** A stop: flag on the rail, the city and the nights there, which you can change. Copenhagen has no nights. */
-function Stop({ id, name, node, country, inDay, days, exact, dated, onNights, home }: {
+function Stop({ id, name, node, country, inDay, days, exact, dated, onLess, onMore, home }: {
   id?: string
   name: string; node: MapNode | undefined; country: string; inDay: string | null; days: number; exact: boolean
   /** the date beside the rail: shown, shown and known, or left to the leg above */
   dated: 'est' | 'known' | null
-  /** set the nights here, or null when the flight home decides them */
-  onNights: ((n: number) => void) | null
+  /** a night less or more here, traded with the stop beside, or null when no stop beside can trade */
+  onLess: (() => void) | null
+  onMore: (() => void) | null
   /** Copenhagen, where the trip starts and ends */
   home?: 'start' | 'end'
 }) {
@@ -78,11 +79,11 @@ function Stop({ id, name, node, country, inDay, days, exact, dated, onNights, ho
         <span className="st-nm"><b {...hoverProps(node)}>{name}</b></span>
         {!home && (
           <span className="st-nights" data-est={est}>
-            {onNights ? (
+            {onLess || onMore ? (
               <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
-                <button type="button" aria-label={`One night less in ${name}`} disabled={days <= 0} onClick={() => onNights(days - 1)}><Minus /></button>
+                <button type="button" aria-label={`One night less in ${name}`} disabled={!onLess} onClick={onLess ?? undefined}><Minus /></button>
                 <b>{est ? '~' : ''}{days}</b>
-                <button type="button" aria-label={`One night more in ${name}`} onClick={() => onNights(days + 1)}><Plus /></button>
+                <button type="button" aria-label={`One night more in ${name}`} disabled={!onMore} onClick={onMore ?? undefined}><Plus /></button>
               </span>
             ) : <b>{est ? '~' : ''}{days}</b>}
             <small>{days === 1 ? 'night' : 'nights'}</small>
@@ -179,6 +180,10 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const { inout, map } = data
   const pd = usePairDates()
   const setHopDate = useStore((s) => s.setHopDate)
+  const trade = (i: number, more: boolean) => {
+    const t = nightTrade(journey, sched, i, more)
+    return t ? () => t.forEach((c) => setHopDate(c.hop, c.date)) : null
+  }
   const nm = (id: string) => nodeName(map, inout, id)
   const node = (id: string) => map.nodes.find((n) => n.id === id)
   const countryOf = (id: string) => node(id)?.country ?? inout.airports[id]?.country ?? ''
@@ -190,7 +195,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const wayAria = (w: Way, a: string, b: string) => `Flight ${a} to ${b}, leaves ${weekdayDay(w.depart)} ${clock(w.depart)}, ${hours(w.total_hours)}. Details`
 
   const items: ReactNode[] = [
-    <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} inDay={null} days={0} exact dated={null} onNights={null} home="start" />,
+    <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} inDay={null} days={0} exact dated={null} onLess={null} onMore={null} home="start" />,
     <Leg
       key="in" fam="flight" tone="in" route={`${cph.name} to ${nm(firstNode)}`}
       date={wayIn.depart.slice(0, 10)} set known picker={null} fromName={cph.name}
@@ -238,7 +243,6 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       )
     }
     const sp = sched.places[i]
-    const next = ps[i + 1]
     items.push(
       <Stop
         key={`s${i}`}
@@ -250,7 +254,8 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         days={sp.days}
         exact={sp.exact}
         dated={legDate === sp.inDay ? null : sp.exact ? 'known' : 'est'}
-        onNights={next?.hop ? (n) => setHopDate(i + 1, addDays(sp.inDay, Math.max(0, n))) : null}
+        onLess={trade(i, false)}
+        onMore={trade(i, true)}
       />,
     )
     legDate = ''
@@ -267,7 +272,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       key="cph1" name={cph.name} node={undefined} country={cph.country}
       inDay={wayHome.arrive ? wayHome.arrive.slice(0, 10) : null} days={0} exact
       dated={wayHome.arrive && wayHome.arrive.slice(0, 10) !== homeDay ? 'known' : null}
-      onNights={null} home="end"
+      onLess={null} onMore={null} home="end"
     />,
   )
 
