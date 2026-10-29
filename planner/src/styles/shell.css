@@ -1,0 +1,87 @@
+/* Shell: the page, the header and its tabs, the Map tab frame and the floating place card. */
+@scope (:root) to (.rmap) {
+.app { min-height: 100dvh; display: flex; flex-direction: column; }
+.main {
+  flex: 1; width: 100%; max-width: 1440px; margin: 0 auto;
+  padding: 20px max(20px, env(safe-area-inset-right, 0px)) 40px max(20px, env(safe-area-inset-left, 0px));
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+.main:focus { outline: none; }
+/* the skip link sits off screen until the keyboard reaches it */
+.skip { position: absolute; left: 12px; top: 8px; z-index: 100; padding: 8px 12px; border-radius: 8px; background: var(--flight); color: var(--flight-ink); font-weight: 600; text-decoration: none; transform: translateY(-200%); }
+.skip:focus-visible { transform: none; }
+
+/* the header: one quiet band, wordmark and dates, text tabs, the freshness corner on the right */
+.top { background: var(--surface); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+.top-in {
+  max-width: 1440px; margin: 0 auto; min-height: 52px;
+  padding: 0 max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px));
+  display: flex; align-items: stretch; gap: 28px;
+}
+.brand { display: flex; align-items: baseline; align-self: center; gap: 10px; min-width: 0; }
+.brand-mark { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+.brand-dates { font-family: var(--font-num); font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.brand-src { font-family: var(--font-num); font-size: var(--fs-label); color: var(--faint); white-space: nowrap; }
+.tabs { position: relative; display: flex; align-items: stretch; gap: 4px; }
+.tab {
+  padding: 0 12px; border: 0; background: none;
+  font-size: 14px; font-weight: 600; color: var(--muted);
+  cursor: pointer;
+  transition: color var(--t-fast) ease;
+}
+.tab.on { color: var(--text); }
+.tab:disabled { opacity: 0.45; cursor: default; }
+.tab:focus-visible { outline-offset: -4px; border-radius: 6px; }
+@media (hover: hover) and (pointer: fine) {
+  .tab:hover:not(:disabled) { color: var(--text); }
+}
+/* the amber underline: one element, it only moves by transform (placed by App.tsx) */
+.tabs-ind {
+  position: absolute; left: 0; bottom: -1px;
+  width: 100px; height: 2px;
+  background: var(--flight);
+  transform-origin: 0 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--t-med) var(--ease-out);
+}
+.fresh-slot { margin-left: auto; display: flex; align-items: center; }
+@media (max-width: 900px) {
+  .brand-src { display: none; }
+}
+@media (max-width: 560px) {
+  .top-in { gap: 16px; }
+  .brand { flex-direction: column; align-items: flex-start; gap: 3px; }
+  .brand-dates { font-size: 11px; }
+  .tab { padding: 0 10px; }
+}
+
+/* loading and the load error */
+.load-err { align-self: center; width: min(100%, 520px); margin-top: 60px; padding: 20px; display: flex; flex-direction: column; gap: 6px; }
+.load-err p { margin: 0; }
+.load-err-t { display: flex; align-items: center; gap: 8px; font-size: var(--fs-title); font-weight: 600; color: var(--err); }
+.load-err .mono { color: var(--muted); overflow-wrap: anywhere; }
+
+/* Map tab: the route map fills the window under the header */
+.app.wide { height: 100dvh; }
+.app.wide .main { max-width: none; min-height: 0; padding-bottom: 18px; }
+.mapscreen { flex: 1; min-height: 480px; border-radius: 14px; overflow: hidden; background: var(--ground); }
+.mapscreen > .loading { color: var(--muted); }
+.mapwrap { width: 100%; height: 100%; }
+
+/* place card: floats over the map, so it may cast a shadow */
+.pcard { position: fixed; z-index: 50; width: 320px; background: var(--surface); color: var(--text); border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line-2), 0 16px 40px -12px #000000A0; pointer-events: none; animation: fade var(--t-med) var(--ease-out); }
+.pcard .img { aspect-ratio: 16 / 9; background: var(--surface-2) center / cover no-repeat; }
+.pcard .credit { font-size: 10px; color: var(--faint); padding: 3px 10px 0; }
+.pcard .body { padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+.pcard .tag { font-family: var(--font-word); font-weight: 600; font-size: 13.5px; color: var(--text); white-space: normal; }
+.pcard .sum { font-size: 12px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.chip { font-family: var(--font-num); font-size: 11px; color: var(--muted); }
+.dots { display: inline-flex; gap: 3px; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-2); }
+.dots i.f { background: var(--flight); }
+.hostel { display: flex; justify-content: space-between; font-size: 11.5px; }
+.hostel.sus { color: var(--faint); }
+}

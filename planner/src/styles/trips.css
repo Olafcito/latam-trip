@@ -1,0 +1,38 @@
+/* Trips home: the list of trips, compare, export and import. */
+@scope (:root) to (.rmap) {
+/* ---- Trips landing: a new trip, then the trips you have ---------------------------------- */
+.landing { display: flex; flex-direction: column; gap: 20px; }
+.tripgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); gap: 14px; }
+.newtrip { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; min-height: 196px; border: 1px dashed var(--line-2); background: transparent; box-shadow: none; text-align: left; cursor: pointer; transition: border-color var(--t-fast) ease, background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out); }
+.newtrip:active { transform: scale(0.97); }
+.newtrip .plus { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--flight); color: var(--flight-ink); }
+.newtrip .t { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.newtrip .s { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.tripcard { display: flex; flex-direction: column; gap: 10px; padding: 18px 18px 14px; transition: background-color var(--t-fast) ease; }
+.tripcard.cur { box-shadow: inset 0 0 0 1px var(--line-2), inset 0 2px 0 var(--flight); }
+@media (hover: hover) and (pointer: fine) {
+  .newtrip:hover { border-color: var(--faint); background: var(--surface); }
+  .tripcard:hover { background: var(--surface-2); }
+  .tripcard-open:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
+}
+.tripcard header { display: flex; align-items: center; gap: 8px; }
+.tripcard h3 { margin: 0; flex: 1; min-width: 0; font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank { font-family: var(--font-num); font-size: 12px; font-weight: 500; color: var(--faint); }
+.tripcard .route { margin: 0; font-size: var(--fs-small); color: var(--muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.facts { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 1px; border-radius: 8px; overflow: hidden; background: var(--line); box-shadow: 0 0 0 1px var(--line); }
+.facts span { display: flex; flex-direction: column; gap: 1px; padding: 8px 8px; background: var(--surface); min-width: 0; }
+.facts b { font-family: var(--font-num); font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+.facts small { font-family: var(--font-num); font-size: 10.5px; text-transform: lowercase; color: var(--faint); }
+.dim { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.warnchip { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-num); font-size: 11.5px; color: var(--flight); }
+.tripcard footer { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 4px; }
+.iolinks { gap: 14px; }
+.tripcard-open { padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tripcard-open:disabled { cursor: default; text-decoration: none; }
+
+/* compare */
+.cmp { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cmp th, .cmp td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp th { font-family: var(--font-num); font-size: var(--fs-label); color: var(--faint); font-weight: 500; text-transform: lowercase; }
+.cmp td.v { text-align: right; font-family: var(--font-num); }
+}
