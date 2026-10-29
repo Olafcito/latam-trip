@@ -146,7 +146,8 @@ EXPERIENCE = {"kind": "!const:experience", "id": "!slug", "name": "!str", "categ
 EXPERIENCE_IMAGE = {"kind": "!const:experience_image", "id": "!slug", "image": "!dict"}
 STAY = {"kind": "!const:stay_quote", "place": "!pid", "site": "!str", "name": "!str", "type": "str|null", "room": "!str",
         "dkk_per_night": "!int", "nights": "!int", "rating": "num|null", "reviews": "int|null", "check_in": "!date",
-        "check_out": "!date", "url": "str|null", "observed_at": "time|null", "task_id": "str|null", "notes": "str|null"}
+        "check_out": "!date", "url": "str|null", "property_id": "str|null", "observed_at": "time|null", "task_id": "str|null",
+        "notes": "str|null"}
 TASK = {"issue": "!int", "type": "str|null", "task": "dict|null", "done_at": "!time", "summary": "str", "outputs": "list"}
 
 # table: file, schema per kind, what makes a row the same row
@@ -574,6 +575,16 @@ def cmd_add_experience_image(paths, file, replace=False):
                      origin=False, extra_check=check)
 
 
+def _num(v):
+    """A positive number, not a bool."""
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0
+
+
+def _str_id(v):
+    """Booking.com property ids come as numbers or strings, stored as a string."""
+    return None if v is None else str(v)
+
+
 def cmd_add_stays(paths, file, usd=6.45, eur=7.46):
     """Stay-price-worker rows (price_per_night in DKK, USD or EUR) as stay quotes in DKK per night."""
     rate = {"DKK": 1.0, "USD": usd, "EUR": eur}
@@ -588,15 +599,17 @@ def cmd_add_stays(paths, file, usd=6.45, eur=7.46):
             cur = (r.get("currency") or "DKK").upper()
             if cur not in rate:
                 bad.append((n, f"currency {cur} is not DKK, USD or EUR")); continue
-            if not isinstance(r.get("price_per_night"), (int, float)) or isinstance(r.get("price_per_night"), bool) or r["price_per_night"] <= 0:
-                bad.append((n, f"price_per_night is {r.get('price_per_night')!r}")); continue
             ci, co = r.get("check_in"), r.get("check_out")
+            nights = (dt.date.fromisoformat(co) - dt.date.fromisoformat(ci)).days if _is(ci, "date") and _is(co, "date") else None
+            # Booking.com gives the total for the stay, so a row with only a total is priced per night here
+            if r.get("price_per_night") is None and _num(r.get("total")) and nights and nights > 0:
+                r = {**r, "price_per_night": r["total"] / nights}
+            if not _num(r.get("price_per_night")):
+                bad.append((n, f"price_per_night is {r.get('price_per_night')!r}")); continue
             row = {"kind": "stay_quote", "place": r.get("place"), "site": r.get("site"), "name": r.get("name"),
-                   "type": r.get("kind"), "room": r.get("room"), "dkk_per_night": round(r["price_per_night"] * rate[cur]),
-                   "nights": (dt.date.fromisoformat(co) - dt.date.fromisoformat(ci)).days
-                   if _is(ci, "date") and _is(co, "date") else None,
+                   "type": r.get("kind"), "room": r.get("room"), "dkk_per_night": round(r["price_per_night"] * rate[cur]), "nights": nights,
                    "rating": r.get("rating"), "reviews": r.get("reviews"), "check_in": ci, "check_out": co,
-                   "url": r.get("url"), "observed_at": r.get("observed_at") or now_utc(), "task_id": r.get("task_id"),
+                   "url": r.get("url"), "property_id": _str_id(r.get("property_id")), "observed_at": r.get("observed_at") or now_utc(), "task_id": r.get("task_id"),
                    "notes": r.get("notes")}
             errs = row_errors("stays", row)
             if errs:

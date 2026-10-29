@@ -232,6 +232,17 @@ class StaysAndExperiencesTest(Base):
         s = self.rows(self.paths.src("stays.jsonl"))[0]
         self.assertEqual((s["dkk_per_night"], s["nights"], s["type"]), (129, 2, "hostel"))
 
+    def test_add_stays_booking_total_and_property_id(self):
+        row = {"place": "SJO", "site": "booking", "name": "Casa Lima", "kind": "guesthouse", "room": "private",
+               "total": 1203, "currency": "DKK", "check_in": "2026-12-04", "check_out": "2026-12-07",
+               "property_id": "7731542", "url": "https://www.booking.com/hotel/cr/casa-lima.html"}
+        f = self.write(os.path.join(self.root, "b.jsonl"), [row])
+        rc, out = self.run_quiet(tripdb.cmd_add_stays, f)
+        self.assertIn("added 1, duplicates 0, refused 0", out)
+        s = self.rows(self.paths.src("stays.jsonl"))[0]
+        self.assertEqual((s["dkk_per_night"], s["nights"], s["property_id"], s["url"]),
+                         (401, 3, "7731542", "https://www.booking.com/hotel/cr/casa-lima.html"))
+
     def test_experience_add_update_and_refusals(self):
         exp = {"kind": "experience", "id": "arenal-hike", "name": "Arenal hike", "category": "nature", "tags": [],
                "places": ["SJO"], "area": None, "country": "CR", "lat": 10.46, "lon": -84.7, "researched": False,
