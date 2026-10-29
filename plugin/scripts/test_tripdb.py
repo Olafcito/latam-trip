@@ -345,6 +345,17 @@ class SaveTripTest(Base):
         self.assertEqual([(h["version"], h["why"]) for h in cr["history"]], [(1, "First idea")])
         self.assertEqual(doc["trips"][0]["history"], [])
 
+    def test_delete_trip_removes_every_version_and_only_that_trip(self):
+        self.save(trip(why="First idea"))
+        self.save(trip(why="Second idea"))
+        self.save(trip(id="other", name="Other"))
+        rc, out = self.run_quiet(tripdb.cmd_delete_trip, ["costa-rica", "nope"])
+        self.assertEqual(rc, 1)
+        self.assertIn("deleted costa-rica (2 versions)", out)
+        self.assertIn("unknown trip nope", out)
+        self.assertEqual([r["id"] for r in self.stored()], ["other"])
+        self.assertEqual(tripdb.run_check(self.paths, quiet=True)[0], [])
+
 
 if __name__ == "__main__":
     unittest.main()

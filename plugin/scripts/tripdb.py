@@ -16,6 +16,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   list-add LIST TYPE ID [--note TEXT] [--name NAME]  save a place or experience in a list (lists.json)
   list-remove LIST TYPE ID             take it out again
   save-trip FILE [--by plan-trip|migration|planner]  a trip into trips.jsonl as its next version (prints id and version)
+  delete-trip ID [ID ...]              remove every version of those trips from trips.jsonl
   log-task --issue N --type TYPE --summary TEXT [--outputs a,b] [--task FILE] [--done-at TIME]
   log-usage --round R --agent A --model M --tool T --searches N --tokens N --tool-uses N --seconds N --rows N
   ingest-inbox                         validate data/sources/inbox/*.jsonl (Momondo userscript), add the good rows
@@ -861,6 +862,29 @@ def cmd_save_trip(paths, file, by="plan-trip"):
     return 1 if bad else 0
 
 
+def cmd_delete_trip(paths, ids):
+    """Remove every version of each trip id from trips.jsonl. Git keeps the old rows."""
+    dest = paths.src(TABLES["trips"][0])
+    with Lock(paths):
+        lines = read_jsonl(dest)
+        found = {}
+        keep = []
+        for _, r, err in lines:
+            if err is None and isinstance(r, dict) and r.get("id") in ids:
+                found[r["id"]] = found.get(r["id"], 0) + 1
+            elif err is None:
+                keep.append(r)
+        if found:
+            write_atomic(dest, "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in keep))
+    for tid in ids:
+        if tid in found:
+            print(f"deleted {tid} ({found[tid]} version{'s' if found[tid] != 1 else ''})")
+        else:
+            print(f"unknown trip {tid}")
+    print(f"trips: deleted {len(found)}, kept {len({r.get('id') for r in keep})} -> {os.path.relpath(dest, paths.root)}")
+    return 0 if len(found) == len(set(ids)) else 1
+
+
 def export_trips(paths):
     """data/web/trips.json: the latest version of every trip, with a short list of its earlier versions."""
     latest, every = latest_trips(rows_of(paths.src(TABLES["trips"][0])))
@@ -1189,6 +1213,10 @@ def main(argv=None):
         if cmd == "save-trip":
             by = _opt(a, "--by", "plan-trip")
             return cmd_save_trip(paths, a[0], by)
+        if cmd == "delete-trip":
+            if not a:
+                raise Refused("delete-trip needs at least one trip id")
+            return cmd_delete_trip(paths, a)
         if cmd == "log-task":
             issue = _opt(a, "--issue")
             if not issue or not issue.isdigit():
