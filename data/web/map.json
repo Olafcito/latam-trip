@@ -2621,12 +2621,37 @@
     "touristy": 3,
     "hostels": [
      {
+      "name": "Cool Spot Grace Place (Grace's)",
+      "rank": 1,
+      "recommended": true,
+      "dorm_dkk": null,
+      "private_dkk": 110,
+      "rating": null,
+      "source": "https://littlecornisland.net/accommodations/",
+      "source_year": 2026,
+      "note": "Recommended. Beachfront cabins on the east side, mostly shared bathrooms. From US$17. Booking.com or phone +505 8617 0239."
+     },
+     {
+      "name": "Carlito's Place (Carlito's Sunrise Paradise)",
+      "rank": 1,
+      "recommended": true,
+      "dorm_dkk": null,
+      "private_dkk": 129,
+      "rating": null,
+      "source": "https://carlitosplacelittlecorn.com",
+      "source_year": 2026,
+      "note": "Recommended. Beach cabins on the east side, restaurant. From US$20. Own website or phone +505 8404 8104."
+     },
+     {
       "name": "Three Brother's Hostel",
-      "dorm_dkk": 54,
-      "private_dkk": 40,
+      "rank": 3,
+      "recommended": true,
+      "dorm_dkk": 52,
+      "private_dkk": 65,
       "rating": 7.6,
-      "source": "https://www.hostelworld.com/hostels/north-america/nicaragua/little-corn-island/",
-      "source_year": 2026
+      "source": "https://www.hostelworld.com/hostels/p/315207/three-brother-s-hostel/",
+      "source_year": 2026,
+      "note": "Third choice. Village just north of the pier, two communal kitchens. Dorm from US$8, room from US$10. Booking.com, Hostelworld or phone +505 8409 9938."
      }
     ],
     "sources": [
