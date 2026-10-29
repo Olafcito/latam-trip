@@ -5,6 +5,7 @@ import { withSeedWays } from './lib/seeds'
 import { useStore, type Screen } from './store'
 import { observed } from './lib/format'
 import { Warn } from './components/icons'
+import { Freshness } from './components/Freshness'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
 
@@ -126,7 +127,7 @@ export function App() {
             <span className="brand-src">{fact}</span>
           </div>
           <Tabs screen={screen} go={go} />
-          <div className="fresh-slot" />
+          <div className="fresh-slot"><Freshness meta={data.meta} /></div>
         </div>
       </header>
       <main className="main" id="main" tabIndex={-1}>

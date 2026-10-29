@@ -61,6 +61,21 @@ export function ageWords(ageDays: number | null): string {
   return ageDays === 1 ? '1 day ago' : `${ageDays} days ago`
 }
 
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+/** When a type was checked, for the popover: '29 Oct' for a bare date, '28 Oct 21:37' in the
+ *  viewer's clock for a full time, '?' when unknown. */
+export function checkedLabel(at: string | null): string {
+  if (at == null) return '?'
+  const m = BARE_DATE.exec(at)
+  if (m) return `${+m[3]} ${MON[+m[2] - 1] ?? '?'}`
+  const d = new Date(at)
+  if (Number.isNaN(d.getTime())) return '?'
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  return `${d.getDate()} ${MON[d.getMonth()]} ${hh}:${mm}`
+}
+
 /** The type the header corner names. Flights, unless flights is fresh while another type is stale:
  *  then the stalest one, so amber text always names what is old. */
 export function leadOf(list: Fresh[]): Fresh | null {

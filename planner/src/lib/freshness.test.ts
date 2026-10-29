@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { Meta } from '../data/types'
 import { loadData } from '../data/load'
-import { STALE_DAYS, ageLabel, ageWords, freshness, isStale, leadOf } from './freshness'
+import { STALE_DAYS, ageLabel, ageWords, checkedLabel, freshness, isStale, leadOf } from './freshness'
 
 // noon local time on 29 Oct 2026, so a calendar day is a calendar day in any time zone
 const NOW = new Date(2026, 9, 29, 12, 0).getTime()
@@ -60,6 +60,13 @@ describe('freshness', () => {
     expect(ageWords(1)).toBe('1 day ago')
     expect(ageWords(4)).toBe('4 days ago')
     expect(ageWords(null)).toBe('at an unknown time')
+  })
+
+  it('the checked date reads as a day, with the local clock when there is one', () => {
+    expect(checkedLabel('2026-10-29')).toBe('29 Oct')
+    expect(checkedLabel('2026-10-28T20:37:33')).toBe('28 Oct 20:37')
+    expect(checkedLabel(null)).toBe('?')
+    expect(checkedLabel('soon')).toBe('?')
   })
 
   it('the corner leads with flights unless another type is stale and flights is not', () => {
