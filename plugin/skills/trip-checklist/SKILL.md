@@ -25,7 +25,7 @@ The app writes tasks; you do them. Contract and task types: `docs/claude-tasks.m
    - `question`: answer in the issue comment.
    - `refresh`: list what is in scope and older than `older_than_days` (flights: `observed_at` in `data/crawl.db` for the top 10 trips in `data/web/dash_trips.json`, their long-haul tickets and regional pairs, and every `flight_prices` itinerary in `task_log.jsonl`; stays: the latest `check_in`/`check_out` per place in `stays.jsonl`; experiences: `checked_at` of researched rows). Re-run those as the tasks above would, in as few worker batches as possible. Tell Simon the size first if it is more than 4 worker jobs.
 3. Write a short result (markdown table: what was found, prices, local times, sources) to a file and run `python3 -I src/tasks.py done N <file> --outputs <files changed>`. That comments, closes the issue and logs it in `data/network/task_log.jsonl`.
-4. Rebuild and publish: `python3 -I src/build_map.py`; on the app branch `python3 -I src/build_web_data.py`; commit and push data and code on both branches (see the repo README for the sync order).
+4. Rebuild and publish on `main` (the only branch): `python3 -I src/build_map.py`, then `python3 -I src/build_web_data.py`; commit and push. If you changed anything in `plugin/`, run `python3 -I src/sync_claude_dir.py` too.
 5. Tell Simon in a few lines what was done, with the key prices, and anything blocked.
 
 ## Experience row (data/network/experiences.jsonl, one JSON per line)
