@@ -90,7 +90,6 @@
 .cph-dur { color: var(--text); font-weight: 500; }
 .cph-warn { display: inline-flex; font-size: 11px; font-weight: 600; color: var(--flight); cursor: help; }
 .cph-more { display: flex; flex-direction: column; gap: 8px; padding: 2px 12px 12px; }
-.cph-more .wc-track { height: 24px; }
 .cph-more p { margin: 0; font-size: 12px; color: var(--muted); }
 @media (hover: hover) and (pointer: fine) {
   .cph:has(> .cph-row:hover) { background: var(--surface-2); }
