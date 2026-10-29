@@ -5,11 +5,12 @@ import type { AppData } from '../data/types'
 import { useStore } from '../store'
 import { hours, kr, weekdayDay } from '../lib/format'
 import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
-import { countryColor, countryName } from '../lib/colors'
+import { countryName } from '../lib/colors'
+import { Flag } from '@map/map/Flag'
 import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
 import { hopFromArc } from '../lib/journey'
 import { hoverProps } from './PlaceCard'
-import { Calendar, Close, Download, Grip, Land, ModeChip, Moon } from './icons'
+import { Calendar, Close, Download, Grip, Land, ModeChip, Moon, Plane } from './icons'
 
 // The open trip, on the right of the map: its two fixed flights and the stops between them.
 // A stop is the cursor: the map lights what it reaches, and a tap on a lit city adds the next
@@ -127,10 +128,10 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
       <span className="plan-pulse" />
       <div>
         <b>Next from {nm(here.node)}</b>
-        <small>{atEnd && endsAtExit ? 'Tap a lit city to go on from here. The route must come back for the flight home.' : atEnd ? 'Tap a lit city on the map to add the next stop.' : 'Tap a lit city to add a stop right after this one.'}</small>
+        <small>{atEnd && endsAtExit ? 'Tap a lit city to go on. The route comes back here to fly home.' : 'Tap a lit city on the map.'}</small>
         {canFinish && (
           <span className="plan-finish">
-            <span>Or route to {nm(exitNode)}:</span>
+            <span>To {nm(exitNode)}</span>
             <button onClick={() => finish('hours')}>fastest</button>
             <button onClick={() => finish('price')}>cheapest</button>
           </span>
@@ -168,12 +169,10 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
 
       <div className="plan-body">
         <ol className="plan-list">
-          <li className="plan-way in">
-            <span className="io-dot in" />
-            <div>
-              <b>Lands {nm(nodeForAirport(inout, wi.to))}</b>
-              <small>{weekdayDay(wi.arrive)} {wi.arrive.slice(11, 16)} · {hours(wi.total_hours)} from Copenhagen</small>
-            </div>
+          <li className="plan-way in" title={`Lands ${nm(nodeForAirport(inout, wi.to))}, ${hours(wi.total_hours)} from Copenhagen`}>
+            <span className="io-ic in"><Land /></span>
+            <b>{weekdayDay(wi.arrive)}</b>
+            <small>{wi.arrive.slice(11, 16)}</small>
             <button className="plan-link" onClick={() => go('trips', 'pick')}>Change</button>
           </li>
           {journey.places.flatMap((p, i) => {
@@ -190,14 +189,16 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
                 onDrop={(e) => { e.preventDefault(); drop(i) }}
               >
                 {h && (
-                  <div className={`plan-hop ${family(h.mode)}`}>
+                  <div
+                    className={`plan-hop ${family(h.mode)}`}
+                    title={[h.overland, h.operator, h.flight?.via.length ? `via ${h.flight.via.join(', ')}` : null, h.overnight ? 'overnight' : null].filter(Boolean).join(' · ') || undefined}
+                  >
                     <ModeChip family={family(h.mode)} />
                     <span className="plan-hopt">
-                      {h.overland ? h.overland : `${hours(h.hours)} · ${kr(h.price_dkk)}`}
-                      {h.flight?.via.length ? ` · via ${h.flight.via.join(', ')}` : ''}
+                      {h.hours != null && <span>{hours(h.hours)}</span>}
+                      {h.price_dkk != null && <span>{kr(h.price_dkk)}</span>}
                     </span>
                     {h.overnight && <Moon />}
-                    {h.border && <span className="plan-border" title="Crosses a border">border</span>}
                   </div>
                 )}
                 <div
@@ -224,10 +225,8 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
                     <span className="plan-grip fixed" title="The trip starts where the flight lands" />
                   )}
                   <span className="plan-n" style={{ background: cur ? '#C98A12' : TRIP_COLORS[0] }}>{i + 1}</span>
-                  <div className="plan-who">
-                    <b {...hoverProps(n)}>{nm(p.node)}</b>
-                    <small><i style={{ background: countryColor(c) }} />{countryName(c)}</small>
-                  </div>
+                  <Flag code={c} size={12} title={countryName(c)} />
+                  <b className="plan-who" {...hoverProps(n)}>{nm(p.node)}</b>
                   {sched.places[i]?.arrive && <span className="plan-when" title="A dated flight brings you here">{weekdayDay(sched.places[i].arrive!)}</span>}
                   {i > 0 && (
                     <button className="plan-rm" onClick={(e) => { e.stopPropagation(); removeStop(i) }} aria-label={`Remove ${nm(p.node)}`} title="Remove this stop"><Close /></button>
@@ -237,24 +236,25 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
             )
             return cur ? [row, next] : [row]
           })}
-          <li className="plan-way home">
-            <span className="io-dot home" />
-            <div>
-              <b>Flies home from {nm(exitNode)}</b>
-              <small>{weekdayDay(wh.depart)} {wh.depart.slice(11, 16)} · {hours(wh.total_hours)}</small>
-            </div>
-            <Land />
+          <li className="plan-way home" title={`Flies home from ${nm(exitNode)}, ${hours(wh.total_hours)} to Copenhagen`}>
+            <span className="io-ic home"><Plane s={13} /></span>
+            <b>{weekdayDay(wh.depart)}</b>
+            <small>{wh.depart.slice(11, 16)}</small>
+            {!endsAtExit && <span className="plan-exit"><Flag code={node(exitNode)?.country ?? inout.airports[exitNode]?.country ?? ''} size={11} />{nm(exitNode)}</span>}
           </li>
         </ol>
 
-        <dl className="plan-tot">
-          <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
-          <dt>Regional flights</dt><dd>{kr(t.regional_flights_dkk)}</dd>
-          <dt>Ground transport</dt><dd>{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}> +?</span> : null}</dd>
-          <dt>Cabin bags</dt><dd><Money v={t.cabin_bag_dkk} /></dd>
-          <dt>Hub nights, stay est.</dt><dd>{t.hub_nights} · <Money v={t.hub_stay_dkk} /></dd>
-          <dt>Flights, hours in the air</dt><dd>{t.flights} · {hours(t.air_hours)}</dd>
-        </dl>
+        <details className="plan-costs">
+          <summary>Costs</summary>
+          <dl className="plan-tot">
+            <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
+            <dt>Regional flights</dt><dd>{kr(t.regional_flights_dkk)}</dd>
+            <dt>Ground transport</dt><dd>{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}> +?</span> : null}</dd>
+            <dt>Cabin bags</dt><dd><Money v={t.cabin_bag_dkk} /></dd>
+            <dt>Hub nights, stay est.</dt><dd>{t.hub_nights} · <Money v={t.hub_stay_dkk} /></dd>
+            <dt>Flights, hours in the air</dt><dd>{t.flights} · {hours(t.air_hours)}</dd>
+          </dl>
+        </details>
       </div>
 
       <div className="plan-acts">
