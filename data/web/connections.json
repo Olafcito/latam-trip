@@ -15329,7 +15329,7 @@
     "operators": [
      "Aeromexico"
     ],
-    "duration_min": 317,
+    "duration_min": 286,
     "price_dkk": {
      "min": 1939,
      "typical": 1939
@@ -15368,7 +15368,9 @@
      "return_dkk": null,
      "dates_searched": [
       "2026-12-05",
+      "2026-12-09",
       "2026-12-10",
+      "2026-12-11",
       "2027-01-20"
      ],
      "by_date": [
@@ -15396,6 +15398,29 @@
        "link": null
       },
       {
+       "date": "2026-12-09",
+       "from": "GDL",
+       "to": "SAL",
+       "dkk": 2735,
+       "dep": "07:21",
+       "arr": "14:02",
+       "arr_days": 0,
+       "duration_min": 401,
+       "vias": [
+        "MEX"
+       ],
+       "carriers": [
+        "Aeromexico"
+       ],
+       "flights": [
+        "AM207",
+        "AM628"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-09",
+       "link": "https://kiwi.com/u/dy5sygw"
+      },
+      {
        "date": "2026-12-10",
        "from": "GDL",
        "to": "SAL",
@@ -15417,6 +15442,29 @@
        "self_transfer": false,
        "searched": "2026-12-10",
        "link": "https://www.momondo.dk/flight-search/GDL-SAL/2026-12-10"
+      },
+      {
+       "date": "2026-12-11",
+       "from": "GDL",
+       "to": "SAL",
+       "dkk": 2727,
+       "dep": "09:16",
+       "arr": "14:02",
+       "arr_days": 0,
+       "duration_min": 286,
+       "vias": [
+        "MEX"
+       ],
+       "carriers": [
+        "Aeromexico"
+       ],
+       "flights": [
+        "AM215",
+        "AM628"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-11",
+       "link": "https://kiwi.com/u/x5zdm2t"
       },
       {
        "date": "2027-01-20",
@@ -15469,7 +15517,7 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 10
+     "quotes": 12
     },
     "source": "crawl",
     "observed_at": "2026-10-28T15:32Z",
