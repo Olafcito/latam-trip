@@ -1,89 +1,211 @@
-/* Pick in and home: the matrix, the filters and the options table. */
+/* Pick in and home: the filters, the matrix of pairs, the options table and the one-way mix.
+   Night timetable: everything sits on the ground with hairlines, the expanded option steps up to
+   the surface, and amber carries the ratings. */
 @scope (:root) to (.rmap) {
-/* filters */
-.filters { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; padding: 14px 16px; }
+.pick { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 
-/* options table */
-table.opts { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--fs-small); }
-.opts th { position: sticky; top: 0; z-index: 1; background: var(--surface); text-align: left; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: lowercase; color: var(--faint); padding: 9px 7px; border-bottom: 1px solid var(--line-2); white-space: nowrap; cursor: pointer; user-select: none; }
-.opts th.num, .opts td.num { text-align: right; }
-.opts td.num { font-family: var(--font-num); }
-.opts th .sort { color: var(--flight); }
-.opts td { padding: 8px 7px; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: middle; }
-.opts tbody tr.main { cursor: pointer; transition: background-color var(--t-fast) ease; }
-.opts tbody tr.main.open { background: var(--surface-3); }
-@media (hover: hover) and (pointer: fine) {
-  .opts tbody tr.main:hover { background: var(--surface-2); }
+/* ---- head ----------------------------------------------------------------------------------- */
+.pick-head { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.pick-back { margin-left: -4px; }
+.pick-title { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; width: 100%; }
+.pick-title .h2 { flex: 1 1 20ch; font-size: var(--fs-display); line-height: 1.15; letter-spacing: -0.02em; }
+
+/* ---- section heads: a word title, a mono count, a short note -------------------------------- */
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 10px; }
+.sec-title { margin: 0; font-family: var(--font-word); font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
+.count { font-family: var(--font-num); font-size: var(--fs-num); font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sec-note { font-size: var(--fs-small); color: var(--muted); }
+.sec-head .btn { align-self: center; }
+
+/* ---- filters: one hairline strip of the shared fields --------------------------------------- */
+.filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 18px; padding: 12px 0 14px; border-block: 1px solid var(--line); }
+.filters-act { display: flex; align-items: center; gap: 10px; min-height: var(--hit); }
+.filters .fld input::placeholder { color: var(--faint); }
+
+/* ---- the ramp: ground to amber. Used by the tiles and by the legend. ------------------------ */
+.s0 { --ramp: #14252E; background: var(--ramp); }
+.s1 { --ramp: #F2B54426; background: var(--ramp); }
+.s2 { --ramp: #F2B5444D; background: var(--ramp); }
+.s3 { --ramp: #F2B54499; background: var(--ramp); }
+.s4 { --ramp: #F2B544; background: var(--ramp); }
+.ramp { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ramp small { font-size: inherit; }
+.ramp small:nth-of-type(2) { margin-right: 2px; }
+.ramp small:last-of-type { margin-left: 2px; }
+.ramp .ramp-k { margin-right: 4px; color: var(--faint); text-transform: lowercase; }
+.ramp i { width: 18px; height: 12px; border-radius: 3px; }
+
+/* ---- the matrix ----------------------------------------------------------------------------- */
+.mx { min-width: 0; }
+.mx-box { overflow-x: auto; overscroll-behavior-x: contain; }
+table.matrix { border-collapse: separate; border-spacing: 0; font-size: 12px; }
+.matrix th { background: var(--ground); font-weight: 500; color: var(--muted); white-space: nowrap; transition: background-color var(--t-fast) ease, color var(--t-fast) ease; }
+.matrix thead th { position: sticky; top: 0; z-index: 3; }
+.matrix thead tr:first-child th { height: 24px; }
+.matrix thead tr + tr th { top: 24px; }
+.matrix th.corner { left: 0; z-index: 4; width: 164px; min-width: 164px; }
+.matrix th.corner span { position: absolute; font-family: var(--font-num); font-size: 10.5px; font-weight: 500; text-transform: lowercase; color: var(--faint); }
+.matrix th.corner .in { left: 4px; bottom: 5px; }
+.matrix th.corner .out { right: 8px; top: 5px; }
+.matrix th.grp { padding: 0 4px; text-align: left; vertical-align: bottom; font-family: var(--font-num); font-size: 10.5px; text-transform: lowercase; color: var(--faint); box-shadow: inset 0 -1px 0 var(--line); }
+.matrix th.col { padding: 6px 0 5px; text-align: center; font-family: var(--font-num); font-size: 11px; border-radius: 5px; }
+.matrix th.col.hl { background: var(--surface-2); color: var(--text); }
+.matrix tr.grp th { padding: 12px 4px 4px; text-align: left; font-family: var(--font-num); font-size: 10.5px; text-transform: lowercase; color: var(--faint); }
+.matrix tr.grp th span { position: sticky; left: 4px; }
+.matrix th.rowh { position: sticky; left: 0; z-index: 2; padding: 0 12px 0 4px; text-align: left; border-radius: 5px; }
+.matrix th.rowh b { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.matrix th.rowh .code { margin-left: 6px; font-family: var(--font-num); font-size: 10.5px; color: var(--faint); }
+.matrix tr.hl th.rowh { background: var(--surface-2); }
+.matrix tr.hl th.rowh .code { color: var(--muted); }
+
+/* tiles: 1px of padding on each side makes the 2px gutter, the colour sits on the button */
+.matrix td { padding: 1px; }
+.matrix td.none { height: 42px; background: var(--surface); background-clip: content-box; border-radius: 6px; }
+.matrix td.t { background: none; }
+.matrix td.t button {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; min-width: 46px; height: 40px;
+  padding: 0 4px;
+  border: 0; border-radius: 5px;
+  background: var(--ramp);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease;
 }
+.matrix td.t:is(.s3, .s4) button { color: var(--flight-ink); }
+.matrix td.t button b { font-family: var(--font-num); font-size: var(--fs-num); font-weight: 500; line-height: 1.1; }
+.matrix td.t button small { font-family: var(--font-num); font-size: 10px; line-height: 1.2; opacity: 0.8; }
+.matrix td.t button:active { transform: scale(0.97); }
+.matrix td.t.same button { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 35%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+  .matrix td.t button:hover { box-shadow: inset 0 0 0 1px var(--text); }
+}
+/* chosen: a 2px ring of text with a sliver of ground between it and the tile */
+.matrix td.t.on button { z-index: 1; box-shadow: 0 0 0 1px var(--ground), 0 0 0 3px var(--text); }
+/* keyboard focus sits inside the tile, so it never hides behind the ring or the neighbours */
+.matrix td.t button:focus-visible { z-index: 1; outline: 2px solid var(--text); outline-offset: -4px; }
+
+/* ---- options table: the shared hairline grid ------------------------------------------------ */
+.opts-wrap { container-type: inline-size; }
+table.grid.opts { font-size: var(--fs-small); }
+.opts :is(th, td) { padding-inline: 8px; }
+.opts td { white-space: nowrap; }
+.opts th .sort {
+  position: relative;
+  padding: 0; border: 0; background: none;
+  font: inherit; color: inherit; text-transform: inherit;
+  cursor: pointer;
+  transition: color var(--t-fast) ease;
+}
+.opts th .sort::after { content: ''; position: absolute; left: 50%; top: 50%; width: max(100%, var(--hit)); height: var(--hit); transform: translate(-50%, -50%); }
+.opts th[aria-sort] { color: var(--flight); }
+.opts tbody tr.orow { cursor: pointer; transition: background-color var(--t-fast) ease; }
+.opts tbody tr.orow:active { background: var(--surface-2); }
+.opts tbody tr.orow.open { background: var(--surface); }
+.opts tbody tr.orow.open td { border-bottom-color: transparent; }
+.opts tbody tr.orow:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+.opts td.price { font-weight: 600; color: var(--text); }
 .opts td.city b { font-weight: 600; }
-.opts td .code { margin-left: 5px; font-family: var(--font-num); font-size: 11px; color: var(--faint); }
-.pill.ticket { color: var(--boat); }
+.opts td .code { margin-left: 6px; font-family: var(--font-num); font-size: 11px; color: var(--faint); }
+@media (hover: hover) and (pointer: fine) {
+  .opts th .sort:hover { color: var(--text); }
+  .opts th[aria-sort] .sort:hover { color: var(--flight); }
+}
+.pill.ticket { color: var(--text); }
 .pill.madrid { color: var(--flight); }
 .pill.oneways { color: var(--bus); }
 .rate { display: inline-flex; align-items: center; gap: 8px; }
-.rate .bar { width: 34px; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.rate .bar { width: 34px; height: 4px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
 .rate .bar i { display: block; height: 100%; background: var(--flight); }
-.rate b { font-family: var(--font-num); font-weight: 500; min-width: 26px; text-align: right; }
-.expand td { background: var(--surface); padding: 0; white-space: normal; }
-.expand-in { position: sticky; left: 0; width: min(100%, calc(100vw - 60px)); max-width: 1400px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; animation: fade var(--t-med) var(--ease-out); }
-.expand-in > .ways { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.expand-in > .side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-@media (max-width: 1100px) { .expand-in { grid-template-columns: 1fr; } }
-.count { font-family: var(--font-num); font-size: 12px; color: var(--muted); }
-
-/* ---- Pick in and out: the matrix, then the options ----------------------------------------- */
-.pick { display: flex; flex-direction: column; gap: 14px; }
-.pick-head { gap: 14px; }
-.pick-head .h2 { flex: 1; font-size: 18px; }
-.matrix-card { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
-.matrix-legend { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
-.ramp { display: inline-flex; align-items: center; gap: 6px; }
-.ramp i { width: 16px; height: 10px; border-radius: 2px; }
-.ramp small { font-family: var(--font-num); font-size: 11px; }
-/* the heat ramp runs from the ground to amber */
-.s0 { background: var(--surface-2); }
-.s1 { background: color-mix(in srgb, var(--flight) 16%, var(--surface-2)); }
-.s2 { background: color-mix(in srgb, var(--flight) 34%, var(--surface-2)); }
-.s3 { background: color-mix(in srgb, var(--flight) 62%, var(--surface-2)); }
-.s4 { background: var(--flight); }
-.matrix-wrap { overflow-x: auto; overscroll-behavior-x: contain; }
-table.matrix { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
-.matrix th { font-weight: 600; color: var(--muted); font-size: 11px; white-space: nowrap; }
-.matrix th.corner { position: relative; width: 150px; height: 34px; }
-.matrix th.corner .in { position: absolute; left: 6px; bottom: 3px; font-family: var(--font-num); font-size: 10.5px; font-weight: 500; text-transform: lowercase; color: var(--faint); }
-.matrix th.corner .out { position: absolute; right: 6px; top: 3px; font-family: var(--font-num); font-size: 10.5px; font-weight: 500; text-transform: lowercase; color: var(--faint); }
-.matrix th.grp { padding: 6px 2px 2px; text-align: left; font-family: var(--font-num); font-size: 10.5px; font-weight: 500; text-transform: lowercase; color: var(--faint); }
-.matrix th.col { padding: 4px 0 6px; min-width: 46px; text-align: center; font-family: var(--font-num); font-weight: 500; border-radius: 6px; transition: background-color var(--t-fast) ease, color var(--t-fast) ease; }
-.matrix th.col.hl { background: var(--surface-3); color: var(--text); }
-.matrix tr.grp th { padding-top: 8px; }
-.matrix th.rowh { padding: 0 10px 0 4px; text-align: left; border-radius: 6px; }
-.matrix th.rowh b { font-weight: 600; color: var(--text); }
-.matrix th.rowh .code { margin-left: 5px; font-family: var(--font-num); font-size: 10.5px; color: var(--faint); }
-.matrix tr.hl th.rowh { background: var(--surface-3); }
-.matrix td.t.hl:not(.on) { box-shadow: inset 0 0 0 1.5px var(--faint); }
-.matrix td { padding: 0; }
-.matrix td.none { background: var(--surface); border-radius: 6px; height: 40px; }
-.matrix td.t { border-radius: 6px; }
-.matrix td.t button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; width: 100%; height: 40px; min-width: 46px; padding: 0; border: 0; border-radius: 6px; background: inherit; color: var(--text); cursor: pointer; transition: transform var(--t-fast) var(--ease-out); }
-.matrix td.t.s3 button, .matrix td.t.s4 button { color: var(--flight-ink); }
-.matrix td.t button b { font-family: var(--font-num); font-size: 13px; font-weight: 500; line-height: 1.1; }
-.matrix td.t button small { font-family: var(--font-num); font-size: 10px; opacity: 0.85; }
-.matrix td.t button:active { transform: scale(0.97); }
-@media (hover: hover) and (pointer: fine) {
-  .matrix td.t button:hover { transform: scale(1.06); }
-}
-.matrix td.t.on { box-shadow: 0 0 0 2px var(--text); }
-.matrix td.t.on button { font-weight: 700; }
-.matrix td.t.same button { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 40%, transparent); }
-.list-head { gap: 10px; padding-bottom: 8px; }
-.list-head .h3 { margin: 0; }
-.opts td.ico { white-space: nowrap; }
+.rate b { min-width: 26px; text-align: right; font-family: var(--font-num); font-weight: 500; }
 .ico { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
 .ico svg { color: var(--faint); }
 .stamp { display: inline-flex; align-items: baseline; gap: 4px; white-space: nowrap; }
 .stamp b { font-family: var(--font-num); font-weight: 500; }
 .stamp small { font-family: var(--font-num); font-size: 11px; color: var(--muted); }
+
+/* the expanded option steps up to the surface and stays in view while the table scrolls sideways */
+.opts tr.expand td { padding: 0; background: var(--surface); white-space: normal; border-bottom: 1px solid var(--line-2); }
+.expand-in {
+  position: sticky; left: 0;
+  width: min(100%, 100cqi); max-width: 1400px;
+  padding: 16px;
+  display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px;
+  animation: fade var(--t-med) var(--ease-out);
+}
+.expand-in > .ways, .expand-in > .side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .ways .h3 { margin: 0 0 4px; }
-.side .tot { padding: 14px; border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.side .tot { padding: 12px 14px; border-radius: 8px; background: var(--surface-2); }
 .side .tot .v.big { font-size: 20px; }
+.prov { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 1100px) { .expand-in { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- mix one-ways: two hairline lists, then the pair ---------------------------------------- */
+.mix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 28px; }
+.mix-col { min-width: 0; }
+.waylist { max-height: min(62dvh, 640px); overflow-y: auto; border-top: 1px solid var(--line-2); }
+.wayrow {
+  display: grid; grid-template-columns: minmax(0, 1fr) 7.5em 6.5em 4.5em 3em; gap: 2px 12px; align-items: center;
+  width: 100%; min-height: var(--hit);
+  padding: 8px;
+  border: 0; border-bottom: 1px solid var(--line);
+  background: none; color: var(--text);
+  font-size: var(--fs-small); text-align: left;
+  cursor: pointer;
+  transition: background-color var(--t-fast) ease;
+}
+.wayrow.head { position: sticky; top: 0; z-index: 1; min-height: 0; background: var(--ground); border-bottom-color: var(--line-2); font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: lowercase; color: var(--faint); cursor: default; }
+.wayrow.head > :nth-child(n + 3), .wayrow .n { text-align: right; }
+.wayrow .n { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.wayrow .wr-name { min-width: 0; }
+.wayrow .wr-name b { font-weight: 600; transition: color var(--t-fast) ease; }
+button.wayrow:active { background: var(--surface-2); }
+.wayrow.on { background: var(--surface-3); }
+.wayrow.on .wr-name b { color: var(--flight); }
+@media (hover: hover) and (pointer: fine) {
+  button.wayrow:not(.on):hover { background: var(--surface-2); }
+}
+.wayrow:focus-visible { outline-offset: -2px; }
+.mix-pair { border-radius: var(--radius); background: var(--surface); animation: fade var(--t-med) var(--ease-out); }
+.mixbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; padding: 16px; border-bottom: 1px solid var(--line); }
+.mixbar .big { font-family: var(--font-num); font-size: var(--fs-num-lg); font-weight: 500; line-height: 1.2; }
+.mb-facts { color: var(--muted); }
+.mix-pair .expand-in { position: static; width: auto; animation: none; }
+.mix-empty { padding: 18px 0; border-top: 1px solid var(--line); color: var(--muted); }
+@media (max-width: 900px) { .mix { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- a keyboard press changes state at once ------------------------------------------------- */
+:root[data-input='key'] :is(.matrix th, .matrix td.t button, .opts tr.orow, .wayrow, .wayrow b) { transition: none; }
+:root[data-input='key'] :is(.expand-in, .mix-pair) { animation: none; }
+
+/* ---- touch: every target 44px --------------------------------------------------------------- */
+@media (pointer: coarse), (max-width: 640px) {
+  .matrix td.t button { height: 44px; min-width: 48px; }
+  .matrix td.none { height: 46px; }
+  .opts tbody tr.orow td { height: 44px; }
+  .wayrow { min-height: 44px; }
+}
+
+/* ---- phone: the matrix scrolls in its own box, heads stay put, the page never goes sideways -- */
+@media (max-width: 640px) {
+  .pick { gap: 18px; }
+  .pick-title .h2 { font-size: 22px; }
+  .filters { gap: 10px 14px; }
+  .filters .fld input[type='number'] { width: 96px; min-width: 96px; }
+  .mx-box {
+    max-height: min(70dvh, 620px);
+    overflow: auto;
+    border: 1px solid var(--line); border-radius: var(--radius);
+  }
+  .matrix th.corner { width: 116px; min-width: 116px; }
+  .matrix th.rowh { width: 116px; min-width: 116px; max-width: 116px; padding: 2px 8px 2px 6px; white-space: normal; line-height: 1.2; }
+  .matrix th.rowh b { overflow-wrap: anywhere; }
+  .matrix th.rowh .code { margin-left: 4px; }
+  .wayrow { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+  .wayrow > :first-child { grid-column: 1 / -1; }
+  .mixbar .btn.primary { width: 100%; }
+  .expand-in { padding: 14px 12px; }
+  .opts td .code { margin-left: 4px; }
+}
 }
