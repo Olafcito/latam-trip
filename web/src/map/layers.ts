@@ -32,11 +32,11 @@ export function routeOpacity(base: number): ExpressionSpecification {
   return ['case', fs('via'), 0, HL, 1, fs('calm'), 0.4, fs('show'), 0.95, fs('pv'), 0.85, base]
 }
 
-/** Overview routes are thin. In build mode the routes the cursor reaches are the only ones shown, so they draw near trip width. */
+/** Overview routes are thin. A clicked city's routes draw heavier, and in build mode the cursor's draw near trip width. */
 const routeWidth = (reach: boolean): ExpressionSpecification => [
   'interpolate', ['linear'], ['zoom'],
-  3, ['case', HL, 2.2, ['all', fs('show'), reach], 2.4, 1.2],
-  8, ['case', HL, 2.5, ['all', fs('show'), reach], 3.2, 1.8],
+  3, ['case', HL, 2.2, fs('show'), reach ? 2.4 : 1.8, 1.2],
+  8, ['case', HL, 2.5, fs('show'), reach ? 3.2 : 2.6, 1.8],
 ]
 
 function routeLayer(family: Family, color: string, dash?: number[]): LineLayerSpecification {

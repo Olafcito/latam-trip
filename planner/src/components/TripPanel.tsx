@@ -265,36 +265,13 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
   )
 }
 
-/** What sits beside the map: the open trip, or the way to one when none is open. */
+/** What sits beside the map: the open trip. With none open the map is left to look around in. */
 export function MapSide() {
   const data = useStore((s) => s.data)
   const journey = useStore((s) => s.journey)
   const mapOpen = useStore((s) => s.mapOpen)
-  const saved = useStore((s) => s.saved)
-  const openSaved = useStore((s) => s.openSaved)
-  const go = useStore((s) => s.go)
   const paneMini = useStore((s) => s.paneMini)
   const setPaneMini = useStore((s) => s.setPaneMini)
-  if (!data) return null
-  if (journey && mapOpen) return <TripPanel data={data} journey={journey} mini={paneMini} onExpand={() => setPaneMini(false)} />
-  const list = [...saved].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
-  return (
-    <aside className="panel plan idle" aria-label="Trips">
-      <div className="plan-h"><h2>No trip open</h2></div>
-      <p className="plan-empty">A trip starts with the flights in and home. Then its route is built here, one city at a time.</p>
-      <div className="plan-acts"><button className="pbtn primary" onClick={() => go('trips', 'pick')}>New trip</button></div>
-      {list.length > 0 && (
-        <ul className="plan-saved">
-          {list.map((j) => (
-            <li key={j.id}>
-              <button onClick={() => openSaved(j)}>
-                <b>{j.name}</b>
-                <small>{j.places.length} {j.places.length === 1 ? 'place' : 'places'}{j.rank != null ? ` · #${j.rank}` : ''}</small>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </aside>
-  )
+  if (!data || !journey || !mapOpen) return null
+  return <TripPanel data={data} journey={journey} mini={paneMini} onExpand={() => setPaneMini(false)} />
 }

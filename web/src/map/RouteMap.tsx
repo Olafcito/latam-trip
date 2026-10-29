@@ -448,7 +448,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       next.hot = h.id
       // in build mode the cursor's routes are the only ones shown, so hovering does not preview others
       if (!v.sel && !live.current.focusId) {
-        for (const c of model.byPlace.get(h.id) ?? []) for (const f of fams) if (model.routeLines.has(`${c.id}|${f}`)) next.pv.push(`${c.id}|${f}`)
+        for (const c of model.byPlace.get(h.id) ?? []) for (const f of fams) if (f !== 'flight' && model.routeLines.has(`${c.id}|${f}`)) next.pv.push(`${c.id}|${f}`)
       }
     } else if (h?.kind === 'route') {
       next.hot = h.to
@@ -518,7 +518,9 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   useEffect(() => {
     if (!map) return
     const sel = view.sel ?? focusId
-    const near = new Set(sel ? neighbours(model, sel, families).map((n) => n.other.id) : [])
+    // flights fan out from everywhere, so they show only for a city that was clicked
+    const lit = view.sel ? families : new Set([...families].filter((f) => f !== 'flight'))
+    const near = new Set(sel ? neighbours(model, sel, lit).map((n) => n.other.id) : [])
     for (const p of model.places) {
       map.setFeatureState({ source: 'places', id: p.id }, { sel: p.id === sel, near: near.has(p.id), dim: !!sel && p.id !== sel && !near.has(p.id) })
     }
@@ -526,7 +528,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const cids = new Set<string>()
     for (const f of model.routes.features) {
       const { fid, cid, family, a, b } = f.properties
-      const show = !!sel && (a === sel || b === sel) && families.has(family)
+      const show = !!sel && (a === sel || b === sel) && lit.has(family)
       if (show) {
         shown.push(fid)
         cids.add(cid)
@@ -536,10 +538,10 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     live.current.shown = shown
     for (const f of ALL_FAMILIES) {
       if (!map.getLayer(ROUTE_LAYERS[f])) continue
-      map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(sel ? 0 : 0.25))
+      map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(sel || f === 'flight' ? 0 : 0.4))
       map.setLayoutProperty(ROUTE_LAYERS[f], 'visibility', families.has(f) ? 'visible' : 'none')
     }
-    setRouteHit(map, sel ? [...cids] : null, [...families])
+    setRouteHit(map, sel ? [...cids] : null, [...lit])
     // build mode shows the trip's own stops and what the cursor reaches, and nothing else
     const quiet = focus && !!sel
     const stops = quiet && trip ? tripStops(trip) : []
@@ -547,8 +549,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     setQuiet(map, quiet)
     // the open trip steps back while a city's own routes are shown
     const dimTrip = !!view.sel
-    for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', (dimTrip ? 0.55 : 1) * (id === 'trip-casing' ? 0.85 : 1))
-    map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', dimTrip ? 0.3 : 0.55)
+    for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', (dimTrip ? 0.2 : 1) * (id === 'trip-casing' ? 0.85 : 1))
+    map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', dimTrip ? 0.12 : 0.55)
   }, [map, model, view.sel, focusId, families, focus, trip])
 
   // the open trip: one line per leg or overland block, in travel order, and a numbered dot per stop
