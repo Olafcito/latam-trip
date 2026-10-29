@@ -86,3 +86,5 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 35,mom-35b,sonnet,momondo,5,174912,165,1219,38
 36,mom-36a,sonnet,momondo,5,216197,184,1367,68
 37,mom-37a,sonnet,momondo,5,163433,152,1051,26
+38,gf-38d,sonnet,google_flights,8,141141,35,489,26
+38,mom-38a,sonnet,momondo,1,124202,21,210,0
