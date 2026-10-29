@@ -38,9 +38,9 @@ export interface RouteMapProps {
    * so the next leg is one click away.
    */
   focus?: boolean
-  /** Build mode: the stop the next leg starts from. Null means the trip's end. */
-  focusAt?: string | null
-  /** Build mode: a tap on one of the trip's stops hands it to the host, which moves its cursor there. */
+  /** Build mode: the stop the next leg starts from. Null means the trip's end, false means none: the trip is only shown. */
+  focusAt?: string | null | false
+  /** Build mode: a tap on one of the trip's stops hands it to the host, which moves its cursor there or, on the cursor stop, stops building. */
   onStop?(id: string): void
   /** Build mode: the host places a new leg itself (after its cursor) instead of the trip appending it. */
   onLeg?(leg: TripLeg): void
@@ -261,7 +261,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   const trip = activeTrip(trips)
   /** In build mode the host's cursor (or the trip's end) stands in for a selection while nothing is selected. */
-  const focusId = focus && trip && !view.sel ? focusAt ?? tripEnd(trip) : null
+  const focusId = focus && trip && !view.sel && focusAt !== false ? focusAt ?? tripEnd(trip) : null
   live.current.focusId = focusId
   live.current.stops = trip ? tripStops(trip) : []
 
@@ -691,8 +691,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
         return
       }
       if (hit.kind === 'overland') return
-      // in build mode a tap on one of the trip's stops moves the cursor there
-      if (hit.kind === 'place' && live.current.focus && act.current.onStop && hit.id !== sel && hit.id !== live.current.focusId && live.current.stops.includes(hit.id)) {
+      // in build mode a tap on one of the trip's stops moves the cursor there, a tap on the cursor stop stops building
+      if (hit.kind === 'place' && live.current.focus && act.current.onStop && hit.id !== sel && live.current.stops.includes(hit.id)) {
         act.current.onStop(hit.id)
         if (sel) act.current.deselect()
         return

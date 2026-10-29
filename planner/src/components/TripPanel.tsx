@@ -17,7 +17,7 @@ import { hopLink } from '../lib/links'
 
 // The open trip, on the right of the map: its two fixed flights and the stops between them.
 // A stop is the cursor: the map lights what it reaches, and a tap on a lit city adds the next
-// stop right after it. Stops can be dragged into another order or removed. A tap on the map
+// stop right after it. A tap on that stop again stops building and leaves the itinerary. Stops can be dragged into another order or removed. A tap on the map
 // beside the pane folds it to a small card in the corner, a tap on the card unfolds it.
 
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
@@ -42,6 +42,8 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const go = useStore((s) => s.go)
   const cursor = useStore((s) => s.cursor)
   const setCursor = useStore((s) => s.setCursor)
+  const toggleCursor = useStore((s) => s.toggleCursor)
+  const idle = useStore((s) => s.idle)
   const removeStop = useStore((s) => s.removeStop)
   const moveStop = useStore((s) => s.moveStop)
   const insertLeg = useStore((s) => s.insertLeg)
@@ -128,7 +130,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
           <span><b>{journey.places.length}</b><small>{journey.places.length === 1 ? 'stop' : 'stops'}</small></span>
           <span><b>{sched.totalDays}</b><small>days</small></span>
         </span>
-        <span className="mini-next"><span className="plan-pulse" />Next from {nm(here.node)}</span>
+        {!idle && <span className="mini-next"><span className="plan-pulse" />Next from {nm(here.node)}</span>}
       </button>
     )
   }
@@ -189,7 +191,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
           {journey.places.flatMap((p, i) => {
             const n = node(p.node)
             const h = p.hop
-            const cur = i === at
+            const cur = !idle && i === at
             const c = n?.country ?? inout.airports[p.node]?.country ?? ''
             const row = (
               <li
@@ -225,9 +227,10 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                   role="button"
                   tabIndex={0}
                   aria-pressed={cur}
-                  aria-label={`Build from ${nm(p.node)}`}
-                  onClick={() => setCursor(i)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCursor(i) } }}
+                  aria-label={cur ? `Stop building from ${nm(p.node)}` : `Build from ${nm(p.node)}`}
+                  title={cur ? 'Tap again to see the whole trip' : undefined}
+                  onClick={() => toggleCursor(i)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCursor(i) } }}
                 >
                   {i > 0 ? (
                     <span
