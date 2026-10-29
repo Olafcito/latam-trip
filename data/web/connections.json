@@ -19773,6 +19773,96 @@
   ]
  },
  {
+  "id": "GDL-MEX",
+  "a": "GDL",
+  "b": "MEX",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Aeromexico",
+     "Viva",
+     "Volaris"
+    ],
+    "duration_min": 75,
+    "price_dkk": {
+     "min": 484,
+     "typical": 551
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [],
+     "carriers": [
+      "Aeromexico",
+      "Viva",
+      "Volaris"
+     ],
+     "oneway_dkk": {
+      "min": 484,
+      "observed_at": "2026-10-29T14:48:09Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-04"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-04",
+       "from": "MEX",
+       "to": "GDL",
+       "dkk": 484,
+       "dep": "22:35",
+       "arr": "23:50",
+       "arr_days": 0,
+       "duration_min": 75,
+       "vias": [],
+       "carriers": [
+        "Viva"
+       ],
+       "flights": [],
+       "self_transfer": false,
+       "searched": "2026-12-04",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 484,
+      "duration_min": 75,
+      "vias": [],
+      "carriers": [
+       "Viva"
+      ],
+      "date": "2026-12-04",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 484,
+      "duration_min": 75,
+      "vias": [],
+      "carriers": [
+       "Viva"
+      ],
+      "date": "2026-12-04"
+     },
+     "flags": [
+      "basic_fare"
+     ],
+     "quotes": 5
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-29T14:48:09Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
   "id": "CTG-GUA",
   "a": "CTG",
   "b": "GUA",

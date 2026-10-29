@@ -271,6 +271,27 @@
   ]
  },
  {
+  "from": "MEX",
+  "to": "GDL",
+  "dkk": 484,
+  "hours": 1.25,
+  "dep": "2026-12-04T22:35",
+  "arr": "2026-12-04T23:50",
+  "vias": [],
+  "carriers": [
+   "Viva"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "MDE",
   "to": "CTG",
   "dkk": 485,
