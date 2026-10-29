@@ -18,8 +18,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0115",
-   "way_home": "H0116",
+   "way_in": "I0117",
+   "way_home": "H0118",
    "rating": {
     "total": 9.9,
     "cost": 4.9,
@@ -47,8 +47,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0569",
-   "way_home": "H0570",
+   "way_in": "I0571",
+   "way_home": "H0572",
    "rating": {
     "total": 9.8,
     "cost": 4.8,
@@ -76,8 +76,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0527",
-   "way_home": "H0528",
+   "way_in": "I0529",
+   "way_home": "H0530",
    "rating": {
     "total": 9.6,
     "cost": 4.9,
@@ -105,8 +105,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0249",
-   "way_home": "H0250",
+   "way_in": "I0251",
+   "way_home": "H0252",
    "rating": {
     "total": 9.0,
     "cost": 5.0,
@@ -134,8 +134,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0245",
-   "way_home": "H0246",
+   "way_in": "I0247",
+   "way_home": "H0248",
    "rating": {
     "total": 8.9,
     "cost": 5.0,
@@ -163,8 +163,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0247",
-   "way_home": "H0248",
+   "way_in": "I0249",
+   "way_home": "H0250",
    "rating": {
     "total": 8.9,
     "cost": 5.0,
@@ -192,8 +192,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0147",
-   "way_home": "H0148",
+   "way_in": "I0149",
+   "way_home": "H0150",
    "rating": {
     "total": 8.8,
     "cost": 5.0,
@@ -221,8 +221,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0597",
-   "way_home": "H0598",
+   "way_in": "I0599",
+   "way_home": "H0600",
    "rating": {
     "total": 8.7,
     "cost": 4.9,
@@ -289,8 +289,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0115",
-   "way_home": "H0116",
+   "way_in": "I0117",
+   "way_home": "H0118",
    "rating": {
     "total": 8.7,
     "cost": 3.7,
@@ -357,8 +357,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0569",
-   "way_home": "H0570",
+   "way_in": "I0571",
+   "way_home": "H0572",
    "rating": {
     "total": 8.7,
     "cost": 3.5,
@@ -425,8 +425,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0527",
-   "way_home": "H0528",
+   "way_in": "I0529",
+   "way_home": "H0530",
    "rating": {
     "total": 8.4,
     "cost": 3.6,
@@ -454,8 +454,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0072",
+   "way_in": "I0017",
+   "way_home": "H0074",
    "rating": {
     "total": 8.3,
     "cost": 2.6,
@@ -475,16 +475,16 @@
     "CA"
    ],
    "scenario": "B",
-   "total_dkk": 9683,
+   "total_dkk": 9547,
    "total_hours": 37.5,
-   "long_haul_dkk": 9683,
+   "long_haul_dkk": 9547,
    "in_between_dkk": 0,
    "hub_nights": 1,
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
    "way_in": "I0005",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 8.2,
     "cost": 3.7,
@@ -513,7 +513,7 @@
    "hops": [],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 8.2,
     "cost": 2.7,
@@ -541,8 +541,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0239",
-   "way_home": "H0240",
+   "way_in": "I0241",
+   "way_home": "H0242",
    "rating": {
     "total": 8.0,
     "cost": 4.9,
@@ -570,8 +570,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0079",
+   "way_in": "I0017",
+   "way_home": "H0081",
    "rating": {
     "total": 8.0,
     "cost": 2.2,
@@ -599,8 +599,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0107",
-   "way_home": "H0108",
+   "way_in": "I0109",
+   "way_home": "H0110",
    "rating": {
     "total": 7.9,
     "cost": 4.9,
@@ -628,8 +628,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0233",
-   "way_home": "H0234",
+   "way_in": "I0235",
+   "way_home": "H0236",
    "rating": {
     "total": 7.9,
     "cost": 4.9,
@@ -657,8 +657,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0517",
-   "way_home": "H0518",
+   "way_in": "I0519",
+   "way_home": "H0520",
    "rating": {
     "total": 7.9,
     "cost": 4.9,
@@ -725,8 +725,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0249",
-   "way_home": "H0250",
+   "way_in": "I0251",
+   "way_home": "H0252",
    "rating": {
     "total": 7.9,
     "cost": 4.0,
@@ -754,8 +754,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0076",
+   "way_in": "I0017",
+   "way_home": "H0078",
    "rating": {
     "total": 7.9,
     "cost": 2.6,
@@ -822,8 +822,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0147",
-   "way_home": "H0148",
+   "way_in": "I0149",
+   "way_home": "H0150",
    "rating": {
     "total": 7.8,
     "cost": 4.0,
@@ -890,8 +890,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0245",
-   "way_home": "H0246",
+   "way_in": "I0247",
+   "way_home": "H0248",
    "rating": {
     "total": 7.8,
     "cost": 4.0,
@@ -958,8 +958,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0247",
-   "way_home": "H0248",
+   "way_in": "I0249",
+   "way_home": "H0250",
    "rating": {
     "total": 7.8,
     "cost": 3.9,
@@ -987,8 +987,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0077",
+   "way_in": "I0017",
+   "way_home": "H0079",
    "rating": {
     "total": 7.7,
     "cost": 2.4,
@@ -1016,8 +1016,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0099",
-   "way_home": "H0100",
+   "way_in": "I0101",
+   "way_home": "H0102",
    "rating": {
     "total": 7.6,
     "cost": 4.8,
@@ -1045,8 +1045,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0535",
-   "way_home": "H0536",
+   "way_in": "I0537",
+   "way_home": "H0538",
    "rating": {
     "total": 7.6,
     "cost": 3.6,
@@ -1097,7 +1097,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 7.6,
     "cost": 2.9,
@@ -1125,8 +1125,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0072",
+   "way_in": "I0030",
+   "way_home": "H0074",
    "rating": {
     "total": 7.6,
     "cost": 2.3,
@@ -1134,6 +1134,35 @@
     "way_home": 5,
     "hassle": 4.0,
     "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
+   "option": "SAL-LIR-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "LIR",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 9647,
+   "total_hours": 42.2,
+   "long_haul_dkk": 9647,
+   "in_between_dkk": 0,
+   "hub_nights": 1,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0005",
+   "way_home": "H0078",
+   "rating": {
+    "total": 7.5,
+    "cost": 3.7,
+    "hours": 4.0,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 1,
     "hops": 5
    }
   },
@@ -1193,8 +1222,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0597",
-   "way_home": "H0598",
+   "way_in": "I0599",
+   "way_home": "H0600",
    "rating": {
     "total": 7.5,
     "cost": 3.6,
@@ -1202,6 +1231,35 @@
     "way_home": 4,
     "hassle": 4.0,
     "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
+   "option": "SAL-GUA-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "GUA",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 10280,
+   "total_hours": 42.8,
+   "long_haul_dkk": 10280,
+   "in_between_dkk": 0,
+   "hub_nights": 1,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0005",
+   "way_home": "H0081",
+   "rating": {
+    "total": 7.5,
+    "cost": 3.4,
+    "hours": 3.9,
+    "way_home": 5,
+    "hassle": 3.0,
+    "way_in": 1,
     "hops": 5
    }
   },
@@ -1223,7 +1281,7 @@
    "hops": [],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 7.5,
     "cost": 2.7,
@@ -1252,7 +1310,7 @@
    "hops": [],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 7.5,
     "cost": 2.4,
@@ -1280,8 +1338,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0555",
-   "way_home": "H0556",
+   "way_in": "I0557",
+   "way_home": "H0558",
    "rating": {
     "total": 7.5,
     "cost": 2.0,
@@ -1289,64 +1347,6 @@
     "way_home": 5,
     "hassle": 4.5,
     "way_in": 4,
-    "hops": 5
-   }
-  },
-  {
-   "option": "SAL-LIR-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "LIR",
-   "order": [
-    "CA"
-   ],
-   "scenario": "B",
-   "total_dkk": 9783,
-   "total_hours": 42.2,
-   "long_haul_dkk": 9783,
-   "in_between_dkk": 0,
-   "hub_nights": 1,
-   "night_arrivals": 0,
-   "hops": [],
-   "bolivia_internal_dkk": 0,
-   "way_in": "I0005",
-   "way_home": "H0076",
-   "rating": {
-    "total": 7.4,
-    "cost": 3.6,
-    "hours": 4.0,
-    "way_home": 4,
-    "hassle": 3.0,
-    "way_in": 1,
-    "hops": 5
-   }
-  },
-  {
-   "option": "SAL-GUA-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "GUA",
-   "order": [
-    "CA"
-   ],
-   "scenario": "B",
-   "total_dkk": 10416,
-   "total_hours": 42.8,
-   "long_haul_dkk": 10416,
-   "in_between_dkk": 0,
-   "hub_nights": 1,
-   "night_arrivals": 0,
-   "hops": [],
-   "bolivia_internal_dkk": 0,
-   "way_in": "I0005",
-   "way_home": "H0079",
-   "rating": {
-    "total": 7.4,
-    "cost": 3.3,
-    "hours": 3.9,
-    "way_home": 5,
-    "hassle": 3.0,
-    "way_in": 1,
     "hops": 5
    }
   },
@@ -1390,7 +1390,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 7.4,
     "cost": 2.6,
@@ -1457,8 +1457,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0072",
+   "way_in": "I0017",
+   "way_home": "H0074",
    "rating": {
     "total": 7.4,
     "cost": 1.4,
@@ -1486,8 +1486,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0103",
-   "way_home": "H0104",
+   "way_in": "I0105",
+   "way_home": "H0106",
    "rating": {
     "total": 7.2,
     "cost": 4.8,
@@ -1495,6 +1495,35 @@
     "way_home": 2,
     "hassle": 4.0,
     "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
+   "option": "SAL-SAL-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SAL",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 9853,
+   "total_hours": 44.6,
+   "long_haul_dkk": 9853,
+   "in_between_dkk": 0,
+   "hub_nights": 1,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0005",
+   "way_home": "H0079",
+   "rating": {
+    "total": 7.2,
+    "cost": 3.6,
+    "hours": 3.7,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 1,
     "hops": 5
    }
   },
@@ -1516,7 +1545,7 @@
    "hops": [],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 7.2,
     "cost": 2.6,
@@ -1528,29 +1557,68 @@
    }
   },
   {
-   "option": "SAL-SAL-oneways",
+   "option": "SAL-SJO-oneways",
    "type": "oneways",
    "entry": "SAL",
-   "exit": "SAL",
+   "exit": "SJO",
    "order": [
+    "CA",
+    "CO",
     "CA"
    ],
    "scenario": "B",
-   "total_dkk": 9989,
-   "total_hours": 44.6,
-   "long_haul_dkk": 9989,
-   "in_between_dkk": 0,
+   "total_dkk": 12045,
+   "total_hours": 41.4,
+   "long_haul_dkk": 9547,
+   "in_between_dkk": 2498,
    "hub_nights": 1,
    "night_arrivals": 0,
-   "hops": [],
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0005",
-   "way_home": "H0077",
+   "way_home": "H0074",
    "rating": {
-    "total": 7.1,
-    "cost": 3.5,
-    "hours": 3.7,
-    "way_home": 4,
+    "total": 7.0,
+    "cost": 2.5,
+    "hours": 4.1,
+    "way_home": 5,
     "hassle": 3.0,
     "way_in": 1,
     "hops": 5
@@ -1613,7 +1681,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 7.0,
     "cost": 1.5,
@@ -1664,7 +1732,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 6.9,
     "cost": 2.6,
@@ -1672,74 +1740,6 @@
     "way_home": 5,
     "hassle": 4.0,
     "way_in": 3,
-    "hops": 5
-   }
-  },
-  {
-   "option": "SAL-SJO-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "SJO",
-   "order": [
-    "CA",
-    "CO",
-    "CA"
-   ],
-   "scenario": "B",
-   "total_dkk": 12181,
-   "total_hours": 41.4,
-   "long_haul_dkk": 9683,
-   "in_between_dkk": 2498,
-   "hub_nights": 1,
-   "night_arrivals": 0,
-   "hops": [
-    {
-     "from": "SJO",
-     "to": "MDE",
-     "quote_id": "Q:f83cd694885f",
-     "price_dkk": 945.0,
-     "cabin_bag_fee_dkk": 160,
-     "eff": 1605.0,
-     "depart": "2027-01-10T07:10",
-     "arrive": "2027-01-10T10:10",
-     "hours": 2.0,
-     "carriers": [
-      "Wingo"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2027-01-10"
-    },
-    {
-     "from": "MDE",
-     "to": "SJO",
-     "quote_id": "Q:f216eba50836",
-     "price_dkk": 1393.0,
-     "cabin_bag_fee_dkk": 0,
-     "eff": 1873.0,
-     "depart": "2026-12-10T20:10",
-     "arrive": "2026-12-10T21:05",
-     "hours": 1.92,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2026-12-10"
-    }
-   ],
-   "bolivia_internal_dkk": 0,
-   "way_in": "I0005",
-   "way_home": "H0072",
-   "rating": {
-    "total": 6.9,
-    "cost": 2.4,
-    "hours": 4.1,
-    "way_home": 5,
-    "hassle": 3.0,
-    "way_in": 1,
     "hops": 5
    }
   },
@@ -1760,8 +1760,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0082",
+   "way_in": "I0017",
+   "way_home": "H0084",
    "rating": {
     "total": 6.9,
     "cost": 1.9,
@@ -1828,8 +1828,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0239",
-   "way_home": "H0240",
+   "way_in": "I0241",
+   "way_home": "H0242",
    "rating": {
     "total": 6.8,
     "cost": 3.7,
@@ -1880,7 +1880,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 6.8,
     "cost": 2.9,
@@ -1908,8 +1908,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0076",
+   "way_in": "I0030",
+   "way_home": "H0078",
    "rating": {
     "total": 6.8,
     "cost": 2.2,
@@ -1937,8 +1937,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0072",
+   "way_in": "I0045",
+   "way_home": "H0074",
    "rating": {
     "total": 6.8,
     "cost": 2.2,
@@ -1966,8 +1966,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0080",
+   "way_in": "I0017",
+   "way_home": "H0082",
    "rating": {
     "total": 6.8,
     "cost": 2.1,
@@ -1995,8 +1995,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0079",
+   "way_in": "I0030",
+   "way_home": "H0081",
    "rating": {
     "total": 6.8,
     "cost": 1.9,
@@ -2063,8 +2063,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0079",
+   "way_in": "I0017",
+   "way_home": "H0081",
    "rating": {
     "total": 6.8,
     "cost": 1.0,
@@ -2131,8 +2131,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0107",
-   "way_home": "H0108",
+   "way_in": "I0109",
+   "way_home": "H0110",
    "rating": {
     "total": 6.7,
     "cost": 3.7,
@@ -2199,8 +2199,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0233",
-   "way_home": "H0234",
+   "way_in": "I0235",
+   "way_home": "H0236",
    "rating": {
     "total": 6.7,
     "cost": 3.6,
@@ -2267,8 +2267,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0517",
-   "way_home": "H0518",
+   "way_in": "I0519",
+   "way_home": "H0520",
    "rating": {
     "total": 6.7,
     "cost": 3.6,
@@ -2335,8 +2335,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0076",
+   "way_in": "I0017",
+   "way_home": "H0078",
    "rating": {
     "total": 6.7,
     "cost": 1.3,
@@ -2386,8 +2386,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0379",
-   "way_home": "H0380",
+   "way_in": "I0381",
+   "way_home": "H0382",
    "rating": {
     "total": 6.6,
     "cost": 3.8,
@@ -2438,7 +2438,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 6.6,
     "cost": 2.8,
@@ -2489,7 +2489,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 6.6,
     "cost": 2.6,
@@ -2540,7 +2540,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 6.6,
     "cost": 2.2,
@@ -2590,8 +2590,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0483",
-   "way_home": "H0484",
+   "way_in": "I0485",
+   "way_home": "H0486",
    "rating": {
     "total": 6.6,
     "cost": 2.1,
@@ -2641,8 +2641,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0581",
-   "way_home": "H0582",
+   "way_in": "I0583",
+   "way_home": "H0584",
    "rating": {
     "total": 6.6,
     "cost": 2.0,
@@ -2670,8 +2670,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0077",
+   "way_in": "I0030",
+   "way_home": "H0079",
    "rating": {
     "total": 6.5,
     "cost": 2.1,
@@ -2738,8 +2738,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0555",
-   "way_home": "H0556",
+   "way_in": "I0557",
+   "way_home": "H0558",
    "rating": {
     "total": 6.5,
     "cost": 1.0,
@@ -2806,8 +2806,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0099",
-   "way_home": "H0100",
+   "way_in": "I0101",
+   "way_home": "H0102",
    "rating": {
     "total": 6.4,
     "cost": 3.6,
@@ -2815,6 +2815,35 @@
     "way_home": 2,
     "hassle": 4.0,
     "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
+   "option": "SAL-SAP-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SAP",
+   "order": [
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 10962,
+   "total_hours": 45.7,
+   "long_haul_dkk": 10962,
+   "in_between_dkk": 0,
+   "hub_nights": 1,
+   "night_arrivals": 0,
+   "hops": [],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0005",
+   "way_home": "H0084",
+   "rating": {
+    "total": 6.4,
+    "cost": 3.0,
+    "hours": 3.5,
+    "way_home": 3,
+    "hassle": 3.0,
+    "way_in": 1,
     "hops": 5
    }
   },
@@ -2874,8 +2903,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0535",
-   "way_home": "H0536",
+   "way_in": "I0537",
+   "way_home": "H0538",
    "rating": {
     "total": 6.4,
     "cost": 2.3,
@@ -2904,7 +2933,7 @@
    "hops": [],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 6.4,
     "cost": 2.0,
@@ -2971,8 +3000,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0077",
+   "way_in": "I0017",
+   "way_home": "H0079",
    "rating": {
     "total": 6.4,
     "cost": 1.2,
@@ -3039,8 +3068,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0072",
+   "way_in": "I0030",
+   "way_home": "H0074",
    "rating": {
     "total": 6.4,
     "cost": 1.0,
@@ -3060,38 +3089,9 @@
     "CA"
    ],
    "scenario": "B",
-   "total_dkk": 10691,
+   "total_dkk": 10555,
    "total_hours": 48.3,
-   "long_haul_dkk": 10691,
-   "in_between_dkk": 0,
-   "hub_nights": 1,
-   "night_arrivals": 0,
-   "hops": [],
-   "bolivia_internal_dkk": 0,
-   "way_in": "I0005",
-   "way_home": "H0080",
-   "rating": {
-    "total": 6.3,
-    "cost": 3.2,
-    "hours": 3.2,
-    "way_home": 3,
-    "hassle": 3.0,
-    "way_in": 1,
-    "hops": 5
-   }
-  },
-  {
-   "option": "SAL-SAP-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "SAP",
-   "order": [
-    "CA"
-   ],
-   "scenario": "B",
-   "total_dkk": 11098,
-   "total_hours": 45.7,
-   "long_haul_dkk": 11098,
+   "long_haul_dkk": 10555,
    "in_between_dkk": 0,
    "hub_nights": 1,
    "night_arrivals": 0,
@@ -3101,8 +3101,8 @@
    "way_home": "H0082",
    "rating": {
     "total": 6.3,
-    "cost": 3.0,
-    "hours": 3.5,
+    "cost": 3.2,
+    "hours": 3.2,
     "way_home": 3,
     "hassle": 3.0,
     "way_in": 1,
@@ -3149,7 +3149,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 6.3,
     "cost": 2.5,
@@ -3178,7 +3178,7 @@
    "hops": [],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 6.3,
     "cost": 2.2,
@@ -3186,6 +3186,74 @@
     "way_home": 3,
     "hassle": 4.5,
     "way_in": 4,
+    "hops": 5
+   }
+  },
+  {
+   "option": "SAL-GUA-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "GUA",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 12778,
+   "total_hours": 46.7,
+   "long_haul_dkk": 10280,
+   "in_between_dkk": 2498,
+   "hub_nights": 1,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0005",
+   "way_home": "H0081",
+   "rating": {
+    "total": 6.3,
+    "cost": 2.1,
+    "hours": 3.4,
+    "way_home": 5,
+    "hassle": 3.0,
+    "way_in": 1,
     "hops": 5
    }
   },
@@ -3246,7 +3314,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 6.3,
     "cost": 1.4,
@@ -3314,7 +3382,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 6.3,
     "cost": 1.1,
@@ -3364,8 +3432,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0631",
-   "way_home": "H0632",
+   "way_in": "I0633",
+   "way_home": "H0634",
    "rating": {
     "total": 6.2,
     "cost": 2.6,
@@ -3387,9 +3455,9 @@
     "CA"
    ],
    "scenario": "B",
-   "total_dkk": 12281,
+   "total_dkk": 12145,
    "total_hours": 46.1,
-   "long_haul_dkk": 9783,
+   "long_haul_dkk": 9647,
    "in_between_dkk": 2498,
    "hub_nights": 1,
    "night_arrivals": 0,
@@ -3433,80 +3501,12 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0005",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 6.2,
     "cost": 2.4,
     "hours": 3.5,
     "way_home": 4,
-    "hassle": 3.0,
-    "way_in": 1,
-    "hops": 5
-   }
-  },
-  {
-   "option": "SAL-GUA-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "GUA",
-   "order": [
-    "CA",
-    "CO",
-    "CA"
-   ],
-   "scenario": "B",
-   "total_dkk": 12914,
-   "total_hours": 46.7,
-   "long_haul_dkk": 10416,
-   "in_between_dkk": 2498,
-   "hub_nights": 1,
-   "night_arrivals": 0,
-   "hops": [
-    {
-     "from": "SJO",
-     "to": "MDE",
-     "quote_id": "Q:f83cd694885f",
-     "price_dkk": 945.0,
-     "cabin_bag_fee_dkk": 160,
-     "eff": 1605.0,
-     "depart": "2027-01-10T07:10",
-     "arrive": "2027-01-10T10:10",
-     "hours": 2.0,
-     "carriers": [
-      "Wingo"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2027-01-10"
-    },
-    {
-     "from": "MDE",
-     "to": "SJO",
-     "quote_id": "Q:f216eba50836",
-     "price_dkk": 1393.0,
-     "cabin_bag_fee_dkk": 0,
-     "eff": 1873.0,
-     "depart": "2026-12-10T20:10",
-     "arrive": "2026-12-10T21:05",
-     "hours": 1.92,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2026-12-10"
-    }
-   ],
-   "bolivia_internal_dkk": 0,
-   "way_in": "I0005",
-   "way_home": "H0079",
-   "rating": {
-    "total": 6.2,
-    "cost": 2.0,
-    "hours": 3.4,
-    "way_home": 5,
     "hassle": 3.0,
     "way_in": 1,
     "hops": 5
@@ -3590,7 +3590,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 6.2,
     "cost": 1.7,
@@ -3618,8 +3618,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0076",
+   "way_in": "I0045",
+   "way_home": "H0078",
    "rating": {
     "total": 6.1,
     "cost": 2.2,
@@ -3647,8 +3647,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0079",
+   "way_in": "I0045",
+   "way_home": "H0081",
    "rating": {
     "total": 6.1,
     "cost": 1.9,
@@ -3719,8 +3719,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0569",
-   "way_home": "H0570",
+   "way_in": "I0571",
+   "way_home": "H0572",
    "rating": {
     "total": 6.1,
     "cost": 1.9,
@@ -3770,8 +3770,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0056",
+   "way_in": "I0017",
+   "way_home": "H0058",
    "rating": {
     "total": 6.1,
     "cost": 1.7,
@@ -3838,8 +3838,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0103",
-   "way_home": "H0104",
+   "way_in": "I0105",
+   "way_home": "H0106",
    "rating": {
     "total": 6.0,
     "cost": 3.6,
@@ -3847,6 +3847,74 @@
     "way_home": 2,
     "hassle": 4.0,
     "way_in": 3,
+    "hops": 5
+   }
+  },
+  {
+   "option": "SAL-SAL-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SAL",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 12351,
+   "total_hours": 48.5,
+   "long_haul_dkk": 9853,
+   "in_between_dkk": 2498,
+   "hub_nights": 1,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0005",
+   "way_home": "H0079",
+   "rating": {
+    "total": 6.0,
+    "cost": 2.3,
+    "hours": 3.2,
+    "way_home": 4,
+    "hassle": 3.0,
+    "way_in": 1,
     "hops": 5
    }
   },
@@ -3910,8 +3978,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0115",
-   "way_home": "H0116",
+   "way_in": "I0117",
+   "way_home": "H0118",
    "rating": {
     "total": 6.0,
     "cost": 2.0,
@@ -4000,7 +4068,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 6.0,
     "cost": 1.4,
@@ -4068,7 +4136,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 6.0,
     "cost": 1.3,
@@ -4076,74 +4144,6 @@
     "way_home": 4,
     "hassle": 4.5,
     "way_in": 4,
-    "hops": 5
-   }
-  },
-  {
-   "option": "SAL-SAL-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "SAL",
-   "order": [
-    "CA",
-    "CO",
-    "CA"
-   ],
-   "scenario": "B",
-   "total_dkk": 12487,
-   "total_hours": 48.5,
-   "long_haul_dkk": 9989,
-   "in_between_dkk": 2498,
-   "hub_nights": 1,
-   "night_arrivals": 0,
-   "hops": [
-    {
-     "from": "SJO",
-     "to": "MDE",
-     "quote_id": "Q:f83cd694885f",
-     "price_dkk": 945.0,
-     "cabin_bag_fee_dkk": 160,
-     "eff": 1605.0,
-     "depart": "2027-01-10T07:10",
-     "arrive": "2027-01-10T10:10",
-     "hours": 2.0,
-     "carriers": [
-      "Wingo"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2027-01-10"
-    },
-    {
-     "from": "MDE",
-     "to": "SJO",
-     "quote_id": "Q:f216eba50836",
-     "price_dkk": 1393.0,
-     "cabin_bag_fee_dkk": 0,
-     "eff": 1873.0,
-     "depart": "2026-12-10T20:10",
-     "arrive": "2026-12-10T21:05",
-     "hours": 1.92,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2026-12-10"
-    }
-   ],
-   "bolivia_internal_dkk": 0,
-   "way_in": "I0005",
-   "way_home": "H0077",
-   "rating": {
-    "total": 5.9,
-    "cost": 2.3,
-    "hours": 3.2,
-    "way_home": 4,
-    "hassle": 3.0,
-    "way_in": 1,
     "hops": 5
    }
   },
@@ -4186,8 +4186,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0471",
-   "way_home": "H0472",
+   "way_in": "I0473",
+   "way_home": "H0474",
    "rating": {
     "total": 5.9,
     "cost": 2.1,
@@ -4237,8 +4237,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0068",
+   "way_in": "I0017",
+   "way_home": "H0070",
    "rating": {
     "total": 5.9,
     "cost": 1.5,
@@ -4307,8 +4307,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0483",
-   "way_home": "H0484",
+   "way_in": "I0485",
+   "way_home": "H0486",
    "rating": {
     "total": 5.9,
     "cost": 1.3,
@@ -4377,8 +4377,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0581",
-   "way_home": "H0582",
+   "way_in": "I0583",
+   "way_home": "H0584",
    "rating": {
     "total": 5.9,
     "cost": 1.2,
@@ -4445,8 +4445,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0079",
+   "way_in": "I0030",
+   "way_home": "H0081",
    "rating": {
     "total": 5.9,
     "cost": 1.0,
@@ -4513,8 +4513,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0082",
+   "way_in": "I0017",
+   "way_home": "H0084",
    "rating": {
     "total": 5.9,
     "cost": 1.0,
@@ -4565,7 +4565,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 5.8,
     "cost": 2.2,
@@ -4593,8 +4593,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0077",
+   "way_in": "I0045",
+   "way_home": "H0079",
    "rating": {
     "total": 5.8,
     "cost": 2.1,
@@ -4622,8 +4622,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0082",
+   "way_in": "I0030",
+   "way_home": "H0084",
    "rating": {
     "total": 5.8,
     "cost": 1.6,
@@ -4674,7 +4674,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 5.7,
     "cost": 2.4,
@@ -4745,8 +4745,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0527",
-   "way_home": "H0528",
+   "way_in": "I0529",
+   "way_home": "H0530",
    "rating": {
     "total": 5.7,
     "cost": 2.0,
@@ -4797,7 +4797,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 5.7,
     "cost": 1.9,
@@ -4825,8 +4825,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0080",
+   "way_in": "I0030",
+   "way_home": "H0082",
    "rating": {
     "total": 5.7,
     "cost": 1.8,
@@ -4893,8 +4893,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0013",
-   "way_home": "H0080",
+   "way_in": "I0017",
+   "way_home": "H0082",
    "rating": {
     "total": 5.7,
     "cost": 1.0,
@@ -4965,8 +4965,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0072",
+   "way_in": "I0017",
+   "way_home": "H0074",
    "rating": {
     "total": 5.7,
     "cost": 1.0,
@@ -5054,8 +5054,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0072",
+   "way_in": "I0017",
+   "way_home": "H0074",
    "rating": {
     "total": 5.7,
     "cost": 1.0,
@@ -5076,9 +5076,9 @@
     "BO"
    ],
    "scenario": "A",
-   "total_dkk": 11404,
+   "total_dkk": 11268,
    "total_hours": 51.7,
-   "long_haul_dkk": 8045,
+   "long_haul_dkk": 7909,
    "in_between_dkk": 3359,
    "hub_nights": 2,
    "night_arrivals": 1,
@@ -5106,10 +5106,10 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 5.6,
-    "cost": 2.8,
+    "cost": 2.9,
     "hours": 2.8,
     "way_home": 3,
     "hassle": 2.5,
@@ -5173,8 +5173,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0076",
+   "way_in": "I0030",
+   "way_home": "H0078",
    "rating": {
     "total": 5.6,
     "cost": 1.0,
@@ -5241,8 +5241,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0072",
+   "way_in": "I0045",
+   "way_home": "H0074",
    "rating": {
     "total": 5.6,
     "cost": 1.0,
@@ -5292,8 +5292,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0493",
-   "way_home": "H0494",
+   "way_in": "I0495",
+   "way_home": "H0496",
    "rating": {
     "total": 5.6,
     "cost": 1.0,
@@ -5344,7 +5344,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 5.5,
     "cost": 2.1,
@@ -5394,8 +5394,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0659",
-   "way_home": "H0660",
+   "way_in": "I0661",
+   "way_home": "H0662",
    "rating": {
     "total": 5.5,
     "cost": 2.0,
@@ -5446,7 +5446,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 5.5,
     "cost": 1.9,
@@ -5515,8 +5515,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0631",
-   "way_home": "H0632",
+   "way_in": "I0633",
+   "way_home": "H0634",
    "rating": {
     "total": 5.5,
     "cost": 1.8,
@@ -5605,7 +5605,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 5.5,
     "cost": 1.6,
@@ -5694,7 +5694,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 5.5,
     "cost": 1.3,
@@ -5715,9 +5715,9 @@
     "BO"
    ],
    "scenario": "A",
-   "total_dkk": 11909,
+   "total_dkk": 11773,
    "total_hours": 52.0,
-   "long_haul_dkk": 8550,
+   "long_haul_dkk": 8414,
    "in_between_dkk": 3359,
    "hub_nights": 2,
    "night_arrivals": 1,
@@ -5745,10 +5745,10 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 5.4,
-    "cost": 2.5,
+    "cost": 2.6,
     "hours": 2.8,
     "way_home": 3,
     "hassle": 2.5,
@@ -5795,8 +5795,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0643",
-   "way_home": "H0644",
+   "way_in": "I0645",
+   "way_home": "H0646",
    "rating": {
     "total": 5.4,
     "cost": 2.5,
@@ -5847,7 +5847,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 5.4,
     "cost": 1.6,
@@ -5897,8 +5897,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0751",
-   "way_home": "H0752",
+   "way_in": "I0753",
+   "way_home": "H0754",
    "rating": {
     "total": 5.4,
     "cost": 1.3,
@@ -5967,8 +5967,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0056",
+   "way_in": "I0017",
+   "way_home": "H0058",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -6035,8 +6035,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0077",
+   "way_in": "I0030",
+   "way_home": "H0079",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -6104,7 +6104,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -6173,8 +6173,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0068",
+   "way_in": "I0017",
+   "way_home": "H0070",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -6262,8 +6262,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0569",
-   "way_home": "H0570",
+   "way_in": "I0571",
+   "way_home": "H0572",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -6332,8 +6332,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0493",
-   "way_home": "H0494",
+   "way_in": "I0495",
+   "way_home": "H0496",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -6423,8 +6423,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0072",
+   "way_in": "I0017",
+   "way_home": "H0074",
    "rating": {
     "total": 5.4,
     "cost": 1.0,
@@ -6495,8 +6495,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0249",
-   "way_home": "H0250",
+   "way_in": "I0251",
+   "way_home": "H0252",
    "rating": {
     "total": 5.3,
     "cost": 2.3,
@@ -6585,7 +6585,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 5.3,
     "cost": 1.0,
@@ -6656,8 +6656,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0079",
+   "way_in": "I0017",
+   "way_home": "H0081",
    "rating": {
     "total": 5.3,
     "cost": 1.0,
@@ -6745,8 +6745,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0379",
-   "way_home": "H0380",
+   "way_in": "I0381",
+   "way_home": "H0382",
    "rating": {
     "total": 5.2,
     "cost": 2.6,
@@ -6817,8 +6817,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0245",
-   "way_home": "H0246",
+   "way_in": "I0247",
+   "way_home": "H0248",
    "rating": {
     "total": 5.2,
     "cost": 2.3,
@@ -6889,8 +6889,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0247",
-   "way_home": "H0248",
+   "way_in": "I0249",
+   "way_home": "H0250",
    "rating": {
     "total": 5.2,
     "cost": 2.3,
@@ -6899,6 +6899,74 @@
     "hassle": 3.0,
     "way_in": 3,
     "hops": 3
+   }
+  },
+  {
+   "option": "SAL-SAP-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SAP",
+   "order": [
+    "CA",
+    "CO",
+    "CA"
+   ],
+   "scenario": "B",
+   "total_dkk": 13460,
+   "total_hours": 49.6,
+   "long_haul_dkk": 10962,
+   "in_between_dkk": 2498,
+   "hub_nights": 1,
+   "night_arrivals": 0,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "SJO",
+     "quote_id": "Q:f216eba50836",
+     "price_dkk": 1393.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 1873.0,
+     "depart": "2026-12-10T20:10",
+     "arrive": "2026-12-10T21:05",
+     "hours": 1.92,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2026-12-10"
+    }
+   ],
+   "bolivia_internal_dkk": 0,
+   "way_in": "I0005",
+   "way_home": "H0084",
+   "rating": {
+    "total": 5.2,
+    "cost": 1.8,
+    "hours": 3.0,
+    "way_home": 3,
+    "hassle": 3.0,
+    "way_in": 1,
+    "hops": 5
    }
   },
   {
@@ -6979,7 +7047,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 5.2,
     "cost": 1.5,
@@ -7048,8 +7116,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0471",
-   "way_home": "H0472",
+   "way_in": "I0473",
+   "way_home": "H0474",
    "rating": {
     "total": 5.2,
     "cost": 1.4,
@@ -7138,7 +7206,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 5.2,
     "cost": 1.3,
@@ -7228,8 +7296,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0115",
-   "way_home": "H0116",
+   "way_in": "I0117",
+   "way_home": "H0118",
    "rating": {
     "total": 5.2,
     "cost": 1.3,
@@ -7319,8 +7387,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0569",
-   "way_home": "H0570",
+   "way_in": "I0571",
+   "way_home": "H0572",
    "rating": {
     "total": 5.2,
     "cost": 1.1,
@@ -7387,8 +7455,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0079",
+   "way_in": "I0045",
+   "way_home": "H0081",
    "rating": {
     "total": 5.2,
     "cost": 1.0,
@@ -7476,8 +7544,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0115",
-   "way_home": "H0116",
+   "way_in": "I0117",
+   "way_home": "H0118",
    "rating": {
     "total": 5.2,
     "cost": 1.0,
@@ -7549,7 +7617,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 5.2,
     "cost": 1.0,
@@ -7637,8 +7705,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0079",
+   "way_in": "I0017",
+   "way_home": "H0081",
    "rating": {
     "total": 5.2,
     "cost": 1.0,
@@ -7709,8 +7777,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0147",
-   "way_home": "H0148",
+   "way_in": "I0149",
+   "way_home": "H0150",
    "rating": {
     "total": 5.1,
     "cost": 2.4,
@@ -7722,19 +7790,19 @@
    }
   },
   {
-   "option": "SAL-SAP-oneways",
+   "option": "SAL-MGA-oneways",
    "type": "oneways",
    "entry": "SAL",
-   "exit": "SAP",
+   "exit": "MGA",
    "order": [
     "CA",
     "CO",
     "CA"
    ],
    "scenario": "B",
-   "total_dkk": 13596,
-   "total_hours": 49.6,
-   "long_haul_dkk": 11098,
+   "total_dkk": 13053,
+   "total_hours": 52.2,
+   "long_haul_dkk": 10555,
    "in_between_dkk": 2498,
    "hub_nights": 1,
    "night_arrivals": 0,
@@ -7781,8 +7849,8 @@
    "way_home": "H0082",
    "rating": {
     "total": 5.1,
-    "cost": 1.7,
-    "hours": 3.0,
+    "cost": 2.0,
+    "hours": 2.7,
     "way_home": 3,
     "hassle": 3.0,
     "way_in": 1,
@@ -7846,7 +7914,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0022",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 5.1,
     "cost": 1.0,
@@ -7935,7 +8003,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 5.1,
     "cost": 1.0,
@@ -8007,7 +8075,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 5.0,
     "cost": 2.1,
@@ -8016,74 +8084,6 @@
     "hassle": 3.5,
     "way_in": 3,
     "hops": 4
-   }
-  },
-  {
-   "option": "SAL-MGA-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "MGA",
-   "order": [
-    "CA",
-    "CO",
-    "CA"
-   ],
-   "scenario": "B",
-   "total_dkk": 13189,
-   "total_hours": 52.2,
-   "long_haul_dkk": 10691,
-   "in_between_dkk": 2498,
-   "hub_nights": 1,
-   "night_arrivals": 0,
-   "hops": [
-    {
-     "from": "SJO",
-     "to": "MDE",
-     "quote_id": "Q:f83cd694885f",
-     "price_dkk": 945.0,
-     "cabin_bag_fee_dkk": 160,
-     "eff": 1605.0,
-     "depart": "2027-01-10T07:10",
-     "arrive": "2027-01-10T10:10",
-     "hours": 2.0,
-     "carriers": [
-      "Wingo"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2027-01-10"
-    },
-    {
-     "from": "MDE",
-     "to": "SJO",
-     "quote_id": "Q:f216eba50836",
-     "price_dkk": 1393.0,
-     "cabin_bag_fee_dkk": 0,
-     "eff": 1873.0,
-     "depart": "2026-12-10T20:10",
-     "arrive": "2026-12-10T21:05",
-     "hours": 1.92,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2026-12-10"
-    }
-   ],
-   "bolivia_internal_dkk": 0,
-   "way_in": "I0005",
-   "way_home": "H0080",
-   "rating": {
-    "total": 5.0,
-    "cost": 1.9,
-    "hours": 2.7,
-    "way_home": 3,
-    "hassle": 3.0,
-    "way_in": 1,
-    "hops": 5
    }
   },
   {
@@ -8103,8 +8103,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0082",
+   "way_in": "I0045",
+   "way_home": "H0084",
    "rating": {
     "total": 5.0,
     "cost": 1.5,
@@ -8154,8 +8154,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0056",
+   "way_in": "I0030",
+   "way_home": "H0058",
    "rating": {
     "total": 5.0,
     "cost": 1.4,
@@ -8244,7 +8244,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 5.0,
     "cost": 1.2,
@@ -8313,8 +8313,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0751",
-   "way_home": "H0752",
+   "way_in": "I0753",
+   "way_home": "H0754",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -8402,8 +8402,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0527",
-   "way_home": "H0528",
+   "way_in": "I0529",
+   "way_home": "H0530",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -8470,8 +8470,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0082",
+   "way_in": "I0030",
+   "way_home": "H0084",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -8542,8 +8542,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0076",
+   "way_in": "I0017",
+   "way_home": "H0078",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -8614,8 +8614,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0555",
-   "way_home": "H0556",
+   "way_in": "I0557",
+   "way_home": "H0558",
    "rating": {
     "total": 5.0,
     "cost": 1.0,
@@ -8637,9 +8637,9 @@
     "BO"
    ],
    "scenario": "A",
-   "total_dkk": 12921,
+   "total_dkk": 12785,
    "total_hours": 53.7,
-   "long_haul_dkk": 8045,
+   "long_haul_dkk": 7909,
    "in_between_dkk": 4876,
    "hub_nights": 2,
    "night_arrivals": 1,
@@ -8685,10 +8685,10 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 4.9,
-    "cost": 2.0,
+    "cost": 2.1,
     "hours": 2.5,
     "way_home": 3,
     "hassle": 2.5,
@@ -8756,8 +8756,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0597",
-   "way_home": "H0598",
+   "way_in": "I0599",
+   "way_home": "H0600",
    "rating": {
     "total": 4.9,
     "cost": 2.0,
@@ -8785,8 +8785,8 @@
    "night_arrivals": 0,
    "hops": [],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0080",
+   "way_in": "I0045",
+   "way_home": "H0082",
    "rating": {
     "total": 4.9,
     "cost": 1.7,
@@ -8876,8 +8876,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0527",
-   "way_home": "H0528",
+   "way_in": "I0529",
+   "way_home": "H0530",
    "rating": {
     "total": 4.9,
     "cost": 1.2,
@@ -8947,7 +8947,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 4.9,
     "cost": 1.1,
@@ -9014,8 +9014,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0076",
+   "way_in": "I0045",
+   "way_home": "H0078",
    "rating": {
     "total": 4.9,
     "cost": 1.0,
@@ -9086,8 +9086,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0309",
-   "way_home": "H0310",
+   "way_in": "I0311",
+   "way_home": "H0312",
    "rating": {
     "total": 4.9,
     "cost": 1.0,
@@ -9178,7 +9178,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.9,
     "cost": 1.0,
@@ -9268,8 +9268,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0079",
+   "way_in": "I0017",
+   "way_home": "H0081",
    "rating": {
     "total": 4.9,
     "cost": 1.0,
@@ -9357,8 +9357,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0076",
+   "way_in": "I0017",
+   "way_home": "H0078",
    "rating": {
     "total": 4.9,
     "cost": 1.0,
@@ -9446,8 +9446,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0555",
-   "way_home": "H0556",
+   "way_in": "I0557",
+   "way_home": "H0558",
    "rating": {
     "total": 4.9,
     "cost": 1.0,
@@ -9519,7 +9519,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 4.8,
     "cost": 1.8,
@@ -9591,7 +9591,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 4.8,
     "cost": 1.7,
@@ -9660,8 +9660,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0659",
-   "way_home": "H0660",
+   "way_in": "I0661",
+   "way_home": "H0662",
    "rating": {
     "total": 4.8,
     "cost": 1.2,
@@ -9711,8 +9711,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0068",
+   "way_in": "I0030",
+   "way_home": "H0070",
    "rating": {
     "total": 4.8,
     "cost": 1.2,
@@ -9782,7 +9782,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 4.8,
     "cost": 1.0,
@@ -9849,8 +9849,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0028",
-   "way_home": "H0080",
+   "way_in": "I0030",
+   "way_home": "H0082",
    "rating": {
     "total": 4.8,
     "cost": 1.0,
@@ -9921,8 +9921,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0077",
+   "way_in": "I0017",
+   "way_home": "H0079",
    "rating": {
     "total": 4.8,
     "cost": 1.0,
@@ -9993,8 +9993,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0072",
+   "way_in": "I0030",
+   "way_home": "H0074",
    "rating": {
     "total": 4.8,
     "cost": 1.0,
@@ -10082,8 +10082,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0072",
+   "way_in": "I0030",
+   "way_home": "H0074",
    "rating": {
     "total": 4.8,
     "cost": 1.0,
@@ -10105,9 +10105,9 @@
     "BO"
    ],
    "scenario": "A",
-   "total_dkk": 13426,
+   "total_dkk": 13290,
    "total_hours": 54.0,
-   "long_haul_dkk": 8550,
+   "long_haul_dkk": 8414,
    "in_between_dkk": 4876,
    "hub_nights": 2,
    "night_arrivals": 1,
@@ -10153,10 +10153,10 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 4.7,
-    "cost": 1.8,
+    "cost": 1.9,
     "hours": 2.5,
     "way_home": 3,
     "hassle": 2.5,
@@ -10222,8 +10222,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0643",
-   "way_home": "H0644",
+   "way_in": "I0645",
+   "way_home": "H0646",
    "rating": {
     "total": 4.7,
     "cost": 1.7,
@@ -10290,8 +10290,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0077",
+   "way_in": "I0045",
+   "way_home": "H0079",
    "rating": {
     "total": 4.7,
     "cost": 1.0,
@@ -10363,7 +10363,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 4.7,
     "cost": 1.0,
@@ -10453,8 +10453,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0076",
+   "way_in": "I0017",
+   "way_home": "H0078",
    "rating": {
     "total": 4.7,
     "cost": 1.0,
@@ -10542,8 +10542,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0077",
+   "way_in": "I0017",
+   "way_home": "H0079",
    "rating": {
     "total": 4.7,
     "cost": 1.0,
@@ -10632,7 +10632,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 4.7,
     "cost": 1.0,
@@ -10704,7 +10704,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 4.6,
     "cost": 1.5,
@@ -10794,8 +10794,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0555",
-   "way_home": "H0556",
+   "way_in": "I0557",
+   "way_home": "H0558",
    "rating": {
     "total": 4.6,
     "cost": 1.0,
@@ -10845,8 +10845,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0453",
-   "way_home": "H0454",
+   "way_in": "I0455",
+   "way_home": "H0456",
    "rating": {
     "total": 4.5,
     "cost": 1.3,
@@ -10868,9 +10868,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 15463,
+   "total_dkk": 15327,
    "total_hours": 55.0,
-   "long_haul_dkk": 9683,
+   "long_haul_dkk": 9547,
    "in_between_dkk": 5780,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -10918,7 +10918,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.5,
     "cost": 1.0,
@@ -10987,8 +10987,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0056",
+   "way_in": "I0030",
+   "way_home": "H0058",
    "rating": {
     "total": 4.5,
     "cost": 1.0,
@@ -11057,8 +11057,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0068",
+   "way_in": "I0030",
+   "way_home": "H0070",
    "rating": {
     "total": 4.5,
     "cost": 1.0,
@@ -11148,8 +11148,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0309",
-   "way_home": "H0310",
+   "way_in": "I0311",
+   "way_home": "H0312",
    "rating": {
     "total": 4.5,
     "cost": 1.0,
@@ -11221,7 +11221,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 4.5,
     "cost": 1.0,
@@ -11311,8 +11311,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0077",
+   "way_in": "I0017",
+   "way_home": "H0079",
    "rating": {
     "total": 4.5,
     "cost": 1.0,
@@ -11402,8 +11402,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0072",
+   "way_in": "I0030",
+   "way_home": "H0074",
    "rating": {
     "total": 4.5,
     "cost": 1.0,
@@ -11453,8 +11453,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0821",
-   "way_home": "H0822",
+   "way_in": "I0823",
+   "way_home": "H0824",
    "rating": {
     "total": 4.4,
     "cost": 2.2,
@@ -11544,8 +11544,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0249",
-   "way_home": "H0250",
+   "way_in": "I0251",
+   "way_home": "H0252",
    "rating": {
     "total": 4.4,
     "cost": 1.6,
@@ -11634,7 +11634,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -11723,7 +11723,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -11773,8 +11773,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0445",
-   "way_home": "H0446",
+   "way_in": "I0447",
+   "way_home": "H0448",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -11797,9 +11797,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 18611,
+   "total_dkk": 18475,
    "total_hours": 54.1,
-   "long_haul_dkk": 9683,
+   "long_haul_dkk": 9547,
    "in_between_dkk": 8928,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -11863,7 +11863,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -11934,8 +11934,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0079",
+   "way_in": "I0030",
+   "way_home": "H0081",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -12006,8 +12006,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0082",
+   "way_in": "I0017",
+   "way_home": "H0084",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -12098,7 +12098,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -12187,7 +12187,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 4.4,
     "cost": 1.0,
@@ -12277,8 +12277,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0147",
-   "way_home": "H0148",
+   "way_in": "I0149",
+   "way_home": "H0150",
    "rating": {
     "total": 4.3,
     "cost": 1.6,
@@ -12368,8 +12368,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0245",
-   "way_home": "H0246",
+   "way_in": "I0247",
+   "way_home": "H0248",
    "rating": {
     "total": 4.3,
     "cost": 1.6,
@@ -12459,8 +12459,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0247",
-   "way_home": "H0248",
+   "way_in": "I0249",
+   "way_home": "H0250",
    "rating": {
     "total": 4.3,
     "cost": 1.5,
@@ -12549,7 +12549,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0026",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 4.3,
     "cost": 1.2,
@@ -12637,8 +12637,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0249",
-   "way_home": "H0250",
+   "way_in": "I0251",
+   "way_home": "H0252",
    "rating": {
     "total": 4.3,
     "cost": 1.0,
@@ -12705,8 +12705,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0082",
+   "way_in": "I0045",
+   "way_home": "H0084",
    "rating": {
     "total": 4.3,
     "cost": 1.0,
@@ -12799,7 +12799,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.3,
     "cost": 1.0,
@@ -12871,7 +12871,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 4.3,
     "cost": 1.0,
@@ -12959,8 +12959,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0079",
+   "way_in": "I0030",
+   "way_home": "H0081",
    "rating": {
     "total": 4.3,
     "cost": 1.0,
@@ -13048,8 +13048,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0082",
+   "way_in": "I0017",
+   "way_home": "H0084",
    "rating": {
     "total": 4.3,
     "cost": 1.0,
@@ -13099,8 +13099,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0459",
-   "way_home": "H0460",
+   "way_in": "I0461",
+   "way_home": "H0462",
    "rating": {
     "total": 4.2,
     "cost": 1.4,
@@ -13150,8 +13150,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0056",
+   "way_in": "I0045",
+   "way_home": "H0058",
    "rating": {
     "total": 4.2,
     "cost": 1.4,
@@ -13240,7 +13240,7 @@
    ],
    "bolivia_internal_dkk": 0,
    "way_in": "I0018",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13328,8 +13328,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0245",
-   "way_home": "H0246",
+   "way_in": "I0247",
+   "way_home": "H0248",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13417,8 +13417,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0247",
-   "way_home": "H0248",
+   "way_in": "I0249",
+   "way_home": "H0250",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13487,8 +13487,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0445",
-   "way_home": "H0446",
+   "way_in": "I0447",
+   "way_home": "H0448",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13581,7 +13581,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13652,8 +13652,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0080",
+   "way_in": "I0017",
+   "way_home": "H0082",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13744,7 +13744,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13854,7 +13854,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -13964,7 +13964,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -14053,7 +14053,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 4.2,
     "cost": 1.0,
@@ -14124,8 +14124,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0107",
-   "way_home": "H0108",
+   "way_in": "I0109",
+   "way_home": "H0110",
    "rating": {
     "total": 4.1,
     "cost": 2.0,
@@ -14196,8 +14196,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0239",
-   "way_home": "H0240",
+   "way_in": "I0241",
+   "way_home": "H0242",
    "rating": {
     "total": 4.1,
     "cost": 2.0,
@@ -14268,8 +14268,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0233",
-   "way_home": "H0234",
+   "way_in": "I0235",
+   "way_home": "H0236",
    "rating": {
     "total": 4.1,
     "cost": 2.0,
@@ -14340,8 +14340,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0517",
-   "way_home": "H0518",
+   "way_in": "I0519",
+   "way_home": "H0520",
    "rating": {
     "total": 4.1,
     "cost": 2.0,
@@ -14432,7 +14432,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 4.1,
     "cost": 1.3,
@@ -14520,8 +14520,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0147",
-   "way_home": "H0148",
+   "way_in": "I0149",
+   "way_home": "H0150",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -14590,8 +14590,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0453",
-   "way_home": "H0454",
+   "way_in": "I0455",
+   "way_home": "H0456",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -14658,8 +14658,8 @@
     }
    ],
    "bolivia_internal_dkk": 0,
-   "way_in": "I0043",
-   "way_home": "H0080",
+   "way_in": "I0045",
+   "way_home": "H0082",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -14747,8 +14747,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0597",
-   "way_home": "H0598",
+   "way_in": "I0599",
+   "way_home": "H0600",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -14771,9 +14771,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 16980,
+   "total_dkk": 16844,
    "total_hours": 57.0,
-   "long_haul_dkk": 9683,
+   "long_haul_dkk": 9547,
    "in_between_dkk": 7297,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -14839,7 +14839,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -14910,8 +14910,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0076",
+   "way_in": "I0030",
+   "way_home": "H0078",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -14982,8 +14982,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0072",
+   "way_in": "I0045",
+   "way_home": "H0074",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -15073,8 +15073,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0082",
+   "way_in": "I0017",
+   "way_home": "H0084",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -15162,8 +15162,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0072",
+   "way_in": "I0045",
+   "way_home": "H0074",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -15251,8 +15251,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0080",
+   "way_in": "I0017",
+   "way_home": "H0082",
    "rating": {
     "total": 4.1,
     "cost": 1.0,
@@ -15342,8 +15342,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0597",
-   "way_home": "H0598",
+   "way_in": "I0599",
+   "way_home": "H0600",
    "rating": {
     "total": 4.0,
     "cost": 1.2,
@@ -15393,8 +15393,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0068",
+   "way_in": "I0045",
+   "way_home": "H0070",
    "rating": {
     "total": 4.0,
     "cost": 1.1,
@@ -15465,8 +15465,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0535",
-   "way_home": "H0536",
+   "way_in": "I0537",
+   "way_home": "H0538",
    "rating": {
     "total": 4.0,
     "cost": 1.0,
@@ -15488,9 +15488,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 16196,
+   "total_dkk": 16060,
    "total_hours": 60.3,
-   "long_haul_dkk": 10416,
+   "long_haul_dkk": 10280,
    "in_between_dkk": 5780,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -15538,7 +15538,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 4.0,
     "cost": 1.0,
@@ -15628,8 +15628,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0079",
+   "way_in": "I0030",
+   "way_home": "H0081",
    "rating": {
     "total": 4.0,
     "cost": 1.0,
@@ -15717,8 +15717,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0076",
+   "way_in": "I0030",
+   "way_home": "H0078",
    "rating": {
     "total": 4.0,
     "cost": 1.0,
@@ -15809,7 +15809,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 3.9,
     "cost": 1.1,
@@ -15900,7 +15900,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0056",
+   "way_home": "H0058",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -15991,7 +15991,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0068",
+   "way_home": "H0070",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16103,7 +16103,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16174,8 +16174,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0077",
+   "way_in": "I0030",
+   "way_home": "H0079",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16247,7 +16247,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16335,8 +16335,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0535",
-   "way_home": "H0536",
+   "way_in": "I0537",
+   "way_home": "H0538",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16448,7 +16448,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0072",
+   "way_home": "H0074",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16539,7 +16539,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16562,9 +16562,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 19344,
+   "total_dkk": 19208,
    "total_hours": 59.4,
-   "long_haul_dkk": 10416,
+   "long_haul_dkk": 10280,
    "in_between_dkk": 8928,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -16628,7 +16628,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16718,8 +16718,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0013",
-   "way_home": "H0080",
+   "way_in": "I0017",
+   "way_home": "H0082",
    "rating": {
     "total": 3.9,
     "cost": 1.0,
@@ -16790,8 +16790,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0099",
-   "way_home": "H0100",
+   "way_in": "I0101",
+   "way_home": "H0102",
    "rating": {
     "total": 3.8,
     "cost": 1.9,
@@ -16813,9 +16813,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 15563,
+   "total_dkk": 15427,
    "total_hours": 59.7,
-   "long_haul_dkk": 9783,
+   "long_haul_dkk": 9647,
    "in_between_dkk": 5780,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -16863,7 +16863,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -16932,8 +16932,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0459",
-   "way_home": "H0460",
+   "way_in": "I0461",
+   "way_home": "H0462",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17002,8 +17002,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0056",
+   "way_in": "I0045",
+   "way_home": "H0058",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17072,8 +17072,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0068",
+   "way_in": "I0045",
+   "way_home": "H0070",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17166,7 +17166,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17259,7 +17259,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17349,8 +17349,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0076",
+   "way_in": "I0030",
+   "way_home": "H0078",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17440,8 +17440,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0072",
+   "way_in": "I0045",
+   "way_home": "H0074",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17529,8 +17529,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0077",
+   "way_in": "I0030",
+   "way_home": "H0079",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17619,7 +17619,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 3.8,
     "cost": 1.0,
@@ -17688,8 +17688,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0821",
-   "way_home": "H0822",
+   "way_in": "I0823",
+   "way_home": "H0824",
    "rating": {
     "total": 3.7,
     "cost": 1.5,
@@ -17779,8 +17779,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0535",
-   "way_home": "H0536",
+   "way_in": "I0537",
+   "way_home": "H0538",
    "rating": {
     "total": 3.7,
     "cost": 1.0,
@@ -17803,9 +17803,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 17713,
+   "total_dkk": 17577,
    "total_hours": 62.3,
-   "long_haul_dkk": 10416,
+   "long_haul_dkk": 10280,
    "in_between_dkk": 7297,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -17871,7 +17871,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.7,
     "cost": 1.0,
@@ -17894,9 +17894,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 18711,
+   "total_dkk": 18575,
    "total_hours": 58.8,
-   "long_haul_dkk": 9783,
+   "long_haul_dkk": 9647,
    "in_between_dkk": 8928,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -17960,7 +17960,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.7,
     "cost": 1.0,
@@ -18031,8 +18031,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0079",
+   "way_in": "I0045",
+   "way_home": "H0081",
    "rating": {
     "total": 3.7,
     "cost": 1.0,
@@ -18142,7 +18142,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.7,
     "cost": 1.0,
@@ -18252,7 +18252,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.7,
     "cost": 1.0,
@@ -18323,8 +18323,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0103",
-   "way_home": "H0104",
+   "way_in": "I0105",
+   "way_home": "H0106",
    "rating": {
     "total": 3.6,
     "cost": 1.9,
@@ -18396,7 +18396,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 3.6,
     "cost": 1.0,
@@ -18486,8 +18486,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0077",
+   "way_in": "I0030",
+   "way_home": "H0079",
    "rating": {
     "total": 3.6,
     "cost": 1.0,
@@ -18578,7 +18578,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 3.6,
     "cost": 1.0,
@@ -18667,7 +18667,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 3.6,
     "cost": 1.0,
@@ -18755,8 +18755,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0079",
+   "way_in": "I0045",
+   "way_home": "H0081",
    "rating": {
     "total": 3.6,
     "cost": 1.0,
@@ -18778,9 +18778,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 15769,
+   "total_dkk": 15633,
    "total_hours": 62.1,
-   "long_haul_dkk": 9989,
+   "long_haul_dkk": 9853,
    "in_between_dkk": 5780,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -18828,7 +18828,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -18921,7 +18921,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19014,7 +19014,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19037,9 +19037,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 18917,
+   "total_dkk": 18781,
    "total_hours": 61.2,
-   "long_haul_dkk": 9989,
+   "long_haul_dkk": 9853,
    "in_between_dkk": 8928,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -19103,7 +19103,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19215,7 +19215,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19286,8 +19286,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0082",
+   "way_in": "I0030",
+   "way_home": "H0084",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19399,7 +19399,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0079",
+   "way_home": "H0081",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19509,7 +19509,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19599,8 +19599,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0079",
+   "way_in": "I0045",
+   "way_home": "H0081",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19710,7 +19710,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.5,
     "cost": 1.0,
@@ -19800,8 +19800,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0107",
-   "way_home": "H0108",
+   "way_in": "I0109",
+   "way_home": "H0110",
    "rating": {
     "total": 3.4,
     "cost": 1.3,
@@ -19891,8 +19891,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0239",
-   "way_home": "H0240",
+   "way_in": "I0241",
+   "way_home": "H0242",
    "rating": {
     "total": 3.4,
     "cost": 1.3,
@@ -19982,8 +19982,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0233",
-   "way_home": "H0234",
+   "way_in": "I0235",
+   "way_home": "H0236",
    "rating": {
     "total": 3.4,
     "cost": 1.2,
@@ -20006,9 +20006,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 17080,
+   "total_dkk": 16944,
    "total_hours": 61.7,
-   "long_haul_dkk": 9783,
+   "long_haul_dkk": 9647,
    "in_between_dkk": 7297,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -20074,7 +20074,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.4,
     "cost": 1.0,
@@ -20145,8 +20145,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0076",
+   "way_in": "I0045",
+   "way_home": "H0078",
    "rating": {
     "total": 3.4,
     "cost": 1.0,
@@ -20234,8 +20234,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0082",
+   "way_in": "I0030",
+   "way_home": "H0084",
    "rating": {
     "total": 3.4,
     "cost": 1.0,
@@ -20325,8 +20325,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0517",
-   "way_home": "H0518",
+   "way_in": "I0519",
+   "way_home": "H0520",
    "rating": {
     "total": 3.3,
     "cost": 1.2,
@@ -20414,8 +20414,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0107",
-   "way_home": "H0108",
+   "way_in": "I0109",
+   "way_home": "H0110",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -20503,8 +20503,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0239",
-   "way_home": "H0240",
+   "way_in": "I0241",
+   "way_home": "H0242",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -20592,8 +20592,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0233",
-   "way_home": "H0234",
+   "way_in": "I0235",
+   "way_home": "H0236",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -20681,8 +20681,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0517",
-   "way_home": "H0518",
+   "way_in": "I0519",
+   "way_home": "H0520",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -20775,7 +20775,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -20868,7 +20868,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -20939,8 +20939,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0077",
+   "way_in": "I0045",
+   "way_home": "H0079",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -21011,8 +21011,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0080",
+   "way_in": "I0030",
+   "way_home": "H0082",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -21103,7 +21103,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0022",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -21213,7 +21213,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -21323,7 +21323,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -21411,8 +21411,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0076",
+   "way_in": "I0045",
+   "way_home": "H0078",
    "rating": {
     "total": 3.3,
     "cost": 1.0,
@@ -21504,8 +21504,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0379",
-   "way_home": "H0380",
+   "way_in": "I0381",
+   "way_home": "H0382",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -21528,9 +21528,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 17286,
+   "total_dkk": 17150,
    "total_hours": 64.1,
-   "long_haul_dkk": 9989,
+   "long_haul_dkk": 9853,
    "in_between_dkk": 7297,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -21596,7 +21596,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -21708,7 +21708,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -21820,7 +21820,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -21932,7 +21932,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0076",
+   "way_home": "H0078",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -22044,7 +22044,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0077",
+   "way_home": "H0079",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -22134,8 +22134,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0076",
+   "way_in": "I0045",
+   "way_home": "H0078",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -22225,8 +22225,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0077",
+   "way_in": "I0045",
+   "way_home": "H0079",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -22316,8 +22316,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0082",
+   "way_in": "I0030",
+   "way_home": "H0084",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -22405,8 +22405,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0077",
+   "way_in": "I0045",
+   "way_home": "H0079",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -22494,8 +22494,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0080",
+   "way_in": "I0030",
+   "way_home": "H0082",
    "rating": {
     "total": 3.2,
     "cost": 1.0,
@@ -22517,9 +22517,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 16878,
+   "total_dkk": 16742,
    "total_hours": 63.2,
-   "long_haul_dkk": 11098,
+   "long_haul_dkk": 10962,
    "in_between_dkk": 5780,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -22567,7 +22567,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 3.1,
     "cost": 1.0,
@@ -22590,9 +22590,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 20026,
+   "total_dkk": 19890,
    "total_hours": 62.3,
-   "long_haul_dkk": 11098,
+   "long_haul_dkk": 10962,
    "in_between_dkk": 8928,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -22656,7 +22656,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 3.1,
     "cost": 1.0,
@@ -22744,8 +22744,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0099",
-   "way_home": "H0100",
+   "way_in": "I0101",
+   "way_home": "H0102",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -22856,8 +22856,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0379",
-   "way_home": "H0380",
+   "way_in": "I0381",
+   "way_home": "H0382",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -22950,7 +22950,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23059,8 +23059,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0379",
-   "way_home": "H0380",
+   "way_in": "I0381",
+   "way_home": "H0382",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23153,7 +23153,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23246,7 +23246,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23339,7 +23339,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23410,8 +23410,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0080",
+   "way_in": "I0045",
+   "way_home": "H0082",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23482,8 +23482,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0082",
+   "way_in": "I0045",
+   "way_home": "H0084",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23573,8 +23573,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0028",
-   "way_home": "H0080",
+   "way_in": "I0030",
+   "way_home": "H0082",
    "rating": {
     "total": 3.0,
     "cost": 1.0,
@@ -23664,8 +23664,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0103",
-   "way_home": "H0104",
+   "way_in": "I0105",
+   "way_home": "H0106",
    "rating": {
     "total": 2.9,
     "cost": 1.2,
@@ -23755,8 +23755,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0099",
-   "way_home": "H0100",
+   "way_in": "I0101",
+   "way_home": "H0102",
    "rating": {
     "total": 2.9,
     "cost": 1.2,
@@ -23778,9 +23778,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 16471,
+   "total_dkk": 16335,
    "total_hours": 65.8,
-   "long_haul_dkk": 10691,
+   "long_haul_dkk": 10555,
    "in_between_dkk": 5780,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -23828,7 +23828,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -23940,7 +23940,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24052,7 +24052,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24164,7 +24164,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24276,7 +24276,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24366,8 +24366,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0080",
+   "way_in": "I0045",
+   "way_home": "H0082",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24477,7 +24477,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24567,8 +24567,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0082",
+   "way_in": "I0045",
+   "way_home": "H0084",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24678,7 +24678,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0026",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24788,7 +24788,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24898,7 +24898,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0018",
-   "way_home": "H0082",
+   "way_home": "H0084",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -24986,8 +24986,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0080",
+   "way_in": "I0045",
+   "way_home": "H0082",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -25075,8 +25075,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0043",
-   "way_home": "H0082",
+   "way_in": "I0045",
+   "way_home": "H0084",
    "rating": {
     "total": 2.9,
     "cost": 1.0,
@@ -25164,8 +25164,8 @@
     }
    ],
    "bolivia_internal_dkk": 659.0,
-   "way_in": "I0103",
-   "way_home": "H0104",
+   "way_in": "I0105",
+   "way_home": "H0106",
    "rating": {
     "total": 2.8,
     "cost": 1.0,
@@ -25188,100 +25188,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 17988,
+   "total_dkk": 17852,
    "total_hours": 67.8,
-   "long_haul_dkk": 10691,
-   "in_between_dkk": 7297,
-   "hub_nights": 1,
-   "night_arrivals": 1,
-   "hops": [
-    {
-     "from": "SJO",
-     "to": "MDE",
-     "quote_id": "Q:f83cd694885f",
-     "price_dkk": 945.0,
-     "cabin_bag_fee_dkk": 160,
-     "eff": 1605.0,
-     "depart": "2027-01-10T07:10",
-     "arrive": "2027-01-10T10:10",
-     "hours": 2.0,
-     "carriers": [
-      "Wingo"
-     ],
-     "via": [],
-     "night_hours": false,
-     "night_arrival": false,
-     "date_seen": "2027-01-10"
-    },
-    {
-     "from": "MDE",
-     "to": "VVI",
-     "quote_id": "Q:adade772f77a",
-     "price_dkk": 2812.0,
-     "cabin_bag_fee_dkk": 0,
-     "eff": 4729.0,
-     "depart": "2027-01-28T18:00",
-     "arrive": "2027-01-29T02:40",
-     "hours": 7.67,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [
-      "BOG"
-     ],
-     "night_hours": true,
-     "night_arrival": true,
-     "date_seen": "2027-01-28"
-    },
-    {
-     "from": "VVI",
-     "to": "SJO",
-     "quote_id": "Q:bc519ee046d2",
-     "price_dkk": 2420.88,
-     "cabin_bag_fee_dkk": 0,
-     "eff": 4371.0,
-     "depart": "2027-01-30T01:14",
-     "arrive": "2027-01-30T07:02",
-     "hours": 7.8,
-     "carriers": [
-      "Copa"
-     ],
-     "via": [
-      "PTY"
-     ],
-     "night_hours": true,
-     "night_arrival": false,
-     "date_seen": "2027-01-30"
-    }
-   ],
-   "bolivia_internal_dkk": 659.0,
-   "way_in": "I0005",
-   "way_home": "H0080",
-   "rating": {
-    "total": 2.8,
-    "cost": 1.0,
-    "hours": 1.0,
-    "way_home": 3,
-    "hassle": 1.5,
-    "way_in": 1,
-    "hops": 2
-   }
-  },
-  {
-   "option": "SAL-SAP-oneways",
-   "type": "oneways",
-   "entry": "SAL",
-   "exit": "SAP",
-   "order": [
-    "CA",
-    "CO",
-    "BO",
-    "CA"
-   ],
-   "scenario": "A",
-   "total_dkk": 18395,
-   "total_hours": 65.2,
-   "long_haul_dkk": 11098,
+   "long_haul_dkk": 10555,
    "in_between_dkk": 7297,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -25351,6 +25260,97 @@
    "rating": {
     "total": 2.8,
     "cost": 1.0,
+    "hours": 1.0,
+    "way_home": 3,
+    "hassle": 1.5,
+    "way_in": 1,
+    "hops": 2
+   }
+  },
+  {
+   "option": "SAL-SAP-oneways",
+   "type": "oneways",
+   "entry": "SAL",
+   "exit": "SAP",
+   "order": [
+    "CA",
+    "CO",
+    "BO",
+    "CA"
+   ],
+   "scenario": "A",
+   "total_dkk": 18259,
+   "total_hours": 65.2,
+   "long_haul_dkk": 10962,
+   "in_between_dkk": 7297,
+   "hub_nights": 1,
+   "night_arrivals": 1,
+   "hops": [
+    {
+     "from": "SJO",
+     "to": "MDE",
+     "quote_id": "Q:f83cd694885f",
+     "price_dkk": 945.0,
+     "cabin_bag_fee_dkk": 160,
+     "eff": 1605.0,
+     "depart": "2027-01-10T07:10",
+     "arrive": "2027-01-10T10:10",
+     "hours": 2.0,
+     "carriers": [
+      "Wingo"
+     ],
+     "via": [],
+     "night_hours": false,
+     "night_arrival": false,
+     "date_seen": "2027-01-10"
+    },
+    {
+     "from": "MDE",
+     "to": "VVI",
+     "quote_id": "Q:adade772f77a",
+     "price_dkk": 2812.0,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4729.0,
+     "depart": "2027-01-28T18:00",
+     "arrive": "2027-01-29T02:40",
+     "hours": 7.67,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "night_hours": true,
+     "night_arrival": true,
+     "date_seen": "2027-01-28"
+    },
+    {
+     "from": "VVI",
+     "to": "SJO",
+     "quote_id": "Q:bc519ee046d2",
+     "price_dkk": 2420.88,
+     "cabin_bag_fee_dkk": 0,
+     "eff": 4371.0,
+     "depart": "2027-01-30T01:14",
+     "arrive": "2027-01-30T07:02",
+     "hours": 7.8,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "night_hours": true,
+     "night_arrival": false,
+     "date_seen": "2027-01-30"
+    }
+   ],
+   "bolivia_internal_dkk": 659.0,
+   "way_in": "I0005",
+   "way_home": "H0084",
+   "rating": {
+    "total": 2.8,
+    "cost": 1.0,
     "hours": 1.1,
     "way_home": 3,
     "hassle": 1.5,
@@ -25370,9 +25370,9 @@
     "CA"
    ],
    "scenario": "A",
-   "total_dkk": 19619,
+   "total_dkk": 19483,
    "total_hours": 64.9,
-   "long_haul_dkk": 10691,
+   "long_haul_dkk": 10555,
    "in_between_dkk": 8928,
    "hub_nights": 1,
    "night_arrivals": 1,
@@ -25436,7 +25436,7 @@
    ],
    "bolivia_internal_dkk": 659.0,
    "way_in": "I0005",
-   "way_home": "H0080",
+   "way_home": "H0082",
    "rating": {
     "total": 2.8,
     "cost": 1.0,
