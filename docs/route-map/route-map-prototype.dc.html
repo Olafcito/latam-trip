@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Route map module</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A141C}
+a{color:#7A4F00}a:hover{color:#4F3300}
+.rmap,.rmap *{box-sizing:border-box}
+.rmap{position:relative;width:100%;height:100vh;min-height:520px;overflow:hidden;background:#0B1720;color:#EAF0F2;font-family:'Bricolage Grotesque',system-ui,sans-serif;outline:none;touch-action:none;user-select:none;border-radius:20px;box-shadow:inset 0 0 0 1px #1B2C37}
+.rmap:focus-visible{box-shadow:inset 0 0 0 2px #F2B544}
+.rmap.grab{cursor:grab}
+.rmap.grabbing,.rmap.grabbing *{cursor:grabbing !important}
+.rmap button{font:inherit;color:inherit}
+.mono{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.rmap::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(130% 100% at 55% 45%,transparent 60%,#060D12 100%);opacity:.8;z-index:1}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes drawFrom{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes chipIn{from{opacity:0;transform:translateY(-8px) scale(.92)}to{opacity:1;transform:none}}
+
+/* world layer: 1 unit = 1 px before the camera transform */
+.world{position:absolute;left:0;top:0;width:780px;height:830px;transform-origin:0 0;transition:transform 1s cubic-bezier(.22,.9,.24,1);will-change:transform}
+.live .world,.live .inv{transition:none !important}
+.land{position:absolute;left:0;top:0;width:3120px;height:3320px;max-width:none;transform:scale(.25);transform-origin:0 0;opacity:0;animation:landIn 1.8s cubic-bezier(.2,.8,.2,1) .1s forwards;pointer-events:none;-webkit-user-drag:none}
+@keyframes landIn{from{opacity:0;filter:blur(8px)}to{opacity:1;filter:blur(0)}}
+.inv{position:absolute;width:0;height:0;transition:transform 1s cubic-bezier(.22,.9,.24,1)}
+.country{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:#6C8593;opacity:0;animation:fadeIn 1.2s .8s forwards;pointer-events:none}
+.minor{position:absolute;left:0;top:0;display:flex;align-items:center;gap:6px;transform:translate(-3px,-50%);opacity:0;transition:opacity .4s ease;pointer-events:none}
+.minor i{width:5px;height:5px;border-radius:50%;background:#6C8593;flex:none}
+.minor span{font-size:11px;color:#8FA4AF;white-space:nowrap;opacity:0;transition:opacity .4s ease;text-shadow:0 0 6px #0B1720,0 1px 0 #0B1720}
+.z1 .minor{opacity:1}
+.z2 .minor span{opacity:1}
+
+/* edges: bus solid, flight dotted arc */
+.edge{position:absolute;left:0;top:0;width:780px;height:830px;overflow:visible;pointer-events:none;transition:opacity .45s ease}
+.edge path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round;transition:d .7s cubic-bezier(.22,.9,.24,1),stroke-width .3s ease,opacity .3s ease}
+.edge.hide{opacity:0}
+.edge.hide .hit{pointer-events:none}
+.edge.faint{opacity:.28}
+.edge.calm{opacity:.45}
+.rail.off{display:none}
+.rail .vis{stroke-width:1.8;stroke-dasharray:1 1;stroke-dashoffset:0}
+.rail .alt{stroke-width:2.2;display:none}
+.edge.show .vis{animation:drawFrom 1s cubic-bezier(.6,0,.2,1) both}
+.rail.bus .vis{stroke:#6FD3B8}
+.rail.flight .vis{display:none}
+.rail.flight .alt{display:block;stroke:#F2B544;stroke-dasharray:0.1 5;animation:dots 2.4s linear infinite}
+@keyframes dots{to{stroke-dashoffset:-10.2}}
+.edge.show .rail.flight .alt{animation:fadeIn .9s ease both,dots 2.4s linear infinite;opacity:0}
+.edge .flow{stroke-width:3;stroke-dasharray:1.4 4.6;opacity:0;animation:flow 1.1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-12}}
+.rail.flight .flow{stroke:#FFE3A6}
+.rail.bus .flow{stroke:#CFF7EA}
+.edge .dot{opacity:0;transition:opacity .3s ease}
+.rail.flight .dot{fill:#FFF4D6}.rail.bus .dot{fill:#E6FFF7}
+.edge .hit{stroke:transparent;stroke-width:18;pointer-events:stroke;cursor:pointer;transition:none}
+.edge.hl{opacity:1}
+.edge.hl .vis{stroke-width:3}
+.edge.hl .alt{stroke-width:3.4}
+.edge.hl .flow,.edge.hl .dot{opacity:1}
+
+/* stops on a highlighted route */
+.stopm{z-index:3}
+.stopm-in{position:absolute;left:0;top:0;transform:translate(-50%,-50%);animation:stopIn .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes stopIn{from{opacity:0;transform:translate(-50%,-50%) scale(.2)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.sm-dot{display:block;width:10px;height:10px;border-radius:50%;background:#0B1720;border:2px solid #6FD3B8}
+.stopm.flight .sm-dot{border-color:#F2B544}
+.stopm.change .sm-dot{background:#6FD3B8}
+.stopm.layover .sm-dot{background:#F2B544}
+.stopm.border .sm-dot{border-radius:2px;transform:rotate(45deg);background:#F2B544;border-color:#0B1720}
+.sm-lbl{position:absolute;left:14px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;font-weight:600;color:#EAF0F2;background:#0B1720E6;padding:2px 7px;border-radius:6px;box-shadow:inset 0 0 0 1px #2A4250}
+.sm-lbl em{font-style:normal;color:#F2B544;margin-left:5px;font-weight:500}
+
+/* nodes */
+.node{position:absolute;left:-20px;top:-20px;width:40px;height:40px;padding:0;border:0;background:none;cursor:pointer;z-index:2}
+.node-in{position:absolute;inset:0;display:grid;place-items:center;transition:opacity .5s ease}
+.pin{position:relative;width:12px;height:12px;transform:scale(0);animation:pop .8s cubic-bezier(.3,1.7,.5,1) forwards}
+@keyframes pop{to{transform:scale(1)}}
+.core{position:absolute;inset:0;border-radius:50%;background:#F7F3E8;box-shadow:0 0 0 3px #0B1720;transition:transform .35s cubic-bezier(.3,1.6,.5,1),background .3s ease}
+.ring{position:absolute;inset:-6px;border-radius:50%;border:2px solid #F2B544;opacity:0}
+.node.sel .ring{animation:ping 1.4s ease-out infinite}
+@keyframes ping{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.3);opacity:0}}
+.node:hover .core{transform:scale(1.5)}
+.node:focus-visible{outline:none}
+.node:focus-visible .core{box-shadow:0 0 0 3px #0B1720,0 0 0 5px #F2B544}
+.node.sel .core{background:#F2B544;transform:scale(1.6)}
+.node.near .core{background:#FFFFFF;transform:scale(1.25)}
+.node.hot .core{background:#F2B544;transform:scale(1.7)}
+.node.dim .node-in{opacity:.5}
+.lbl{position:absolute;top:50%;white-space:nowrap;font-size:13px;font-weight:600;color:#C6D3D9;transform:translateY(-50%);text-shadow:0 1px 0 #0B1720,0 0 10px #0B1720,0 0 4px #0B1720;pointer-events:none;transition:color .3s ease;opacity:0;animation:fadeIn .8s forwards}
+.lbl-r{left:32px}.lbl-l{right:32px}
+.node.near .lbl{color:#FFFFFF}
+.node.sel .lbl{color:#F2B544;font-weight:800}
+
+/* controls (inside the map) */
+.ctl{position:absolute;z-index:6}
+.ctl-tr{top:14px;right:14px;display:flex;flex-direction:column;align-items:flex-end;gap:8px;animation:chipIn .6s .8s cubic-bezier(.2,1.3,.4,1) both}
+.seg{display:flex;padding:4px;gap:4px;border-radius:999px;background:#0F1F29EB;box-shadow:inset 0 0 0 1px #24404D,0 10px 30px -12px #000}
+.mbtn{min-height:36px;display:flex;align-items:center;gap:8px;padding:0 14px 0 12px;border:0;border-radius:999px;background:transparent;color:#93A7B2;font-size:13px;font-weight:700;cursor:pointer;transition:background .25s ease,color .25s ease}
+.mbtn:hover{color:#EAF0F2}
+.mbtn.on{background:#EAF0F2;color:#0F1D26}
+.mbtn .mdot{opacity:.4;transition:opacity .25s ease,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.mbtn.on .mdot{opacity:1;transform:scale(1.25)}
+.mdot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+.mdot.flight{background:#F2B544}.mdot.bus{background:#6FD3B8}
+.zbtns{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:#0F1F29EB;box-shadow:inset 0 0 0 1px #24404D,0 10px 30px -12px #000}
+.zbtn{width:44px;height:44px;display:grid;place-items:center;border:0;background:transparent;color:#C6D3D9;cursor:pointer;transition:background .2s ease,color .2s ease}
+.zbtn:hover{background:#17303D;color:#FFFFFF}
+.zbtn + .zbtn{box-shadow:inset 0 1px 0 #24404D}
+.legend{right:14px;bottom:14px;display:flex;align-items:center;gap:14px;padding:8px 14px;border-radius:999px;background:#0F1F29E6;box-shadow:inset 0 0 0 1px #24404D;font-size:12px;color:#C6D3D9;animation:chipIn .6s 1s cubic-bezier(.2,1.3,.4,1) both;pointer-events:none}
+.legend span{display:flex;align-items:center;gap:6px}
+.hint{left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;background:#0F1F29E6;box-shadow:inset 0 0 0 1px #24404D;font-size:12px;color:#C6D3D9;white-space:nowrap;animation:hintIn .7s 1.4s cubic-bezier(.2,1.2,.4,1) both;pointer-events:none}
+@keyframes hintIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.hint kbd{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:1px 6px;border-radius:4px;background:#1A3240;color:#EAF0F2}
+.hint-dot{width:8px;height:8px;border-radius:50%;background:#F2B544;animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+
+/* hover tooltip: placed beside the route, never on it */
+.tip{position:absolute;z-index:7;width:280px;background:#F3EFE6;color:#13202A;border-radius:14px;padding:12px 14px;box-shadow:0 18px 40px -16px #000;display:flex;flex-direction:column;gap:8px;pointer-events:none;animation:tipIn .25s cubic-bezier(.2,1.3,.4,1) both;transition:left .25s ease,top .25s ease}
+@keyframes tipIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.tip-t{margin:0;font-size:14px;font-weight:800;line-height:1.2}
+.tip-s{margin:0;font-size:13px;line-height:1.35;color:#2E3B45}
+.tip-rows{display:flex;flex-direction:column;gap:8px}
+.tip-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:8px;row-gap:2px;align-items:center;font-size:13px}
+.tip-mode{font-weight:700;display:flex;align-items:center;gap:6px}
+.tip-mode svg{color:#5A6873}
+.tip-nums{text-align:right;font-size:12px;line-height:1.25}
+.tip-nums b{font-weight:600}
+.tip-via{grid-column:2 / -1;font-size:11px;color:#4A5863;line-height:1.35}
+.tip-foot{margin:0;font-size:11px;letter-spacing:.04em;color:#5A6873}
+
+/* inspector panel (inside the map) */
+.panel{position:absolute;z-index:8;left:14px;top:14px;max-height:calc(100% - 28px);width:340px;max-width:calc(100% - 28px);display:flex;flex-direction:column;background:#F3EFE6;color:#13202A;border-radius:18px;box-shadow:0 24px 60px -24px #000;overflow:hidden;animation:panelIn .55s cubic-bezier(.2,1.1,.3,1) both;transition:width .5s cubic-bezier(.22,.9,.24,1);cursor:auto;user-select:text}
+.panel.wide{width:420px}
+@keyframes panelIn{from{opacity:0;transform:translateX(-24px) scale(.97);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+.pview{display:flex;flex-direction:column;min-height:0;overflow-y:auto;scrollbar-width:thin;animation:viewIn .45s cubic-bezier(.2,.9,.2,1) both}
+@keyframes viewIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.stg > *{animation:rise .5s cubic-bezier(.2,.9,.2,1) both}
+.stg > *:nth-child(1){animation-delay:.08s}
+.stg > *:nth-child(2){animation-delay:.14s}
+.stg > *:nth-child(3){animation-delay:.2s}
+.stg > *:nth-child(4){animation-delay:.26s}
+.stg > *:nth-child(5){animation-delay:.32s}
+.stg > *:nth-child(6){animation-delay:.38s}
+.stg > *:nth-child(7){animation-delay:.44s}
+.stg > *:nth-child(8){animation-delay:.5s}
+.phead{display:flex;gap:14px;padding:14px 14px 0;align-items:flex-start}
+.thumb{flex:none;width:72px;height:72px;border-radius:12px;overflow:hidden;position:relative;background:#D8D0C0}
+.thumb svg,.hero svg{position:absolute;inset:0;width:100%;height:100%;animation:kenburns 6s cubic-bezier(.2,.7,.3,1) both;transform-origin:60% 60%}
+@keyframes kenburns{from{transform:scale(1.25)}to{transform:scale(1)}}
+.sun{transform-box:fill-box;transform-origin:center;animation:sunUp 1.6s .3s cubic-bezier(.2,.9,.2,1) both}
+@keyframes sunUp{from{transform:translateY(40px)}to{transform:none}}
+.smoke{animation:smoke 5s ease-in-out infinite;transform-box:fill-box}
+@keyframes smoke{0%,100%{transform:translate(0,0);opacity:.95}50%{transform:translate(8px,-5px);opacity:.6}}
+.shim{animation:shim 2.6s ease-in-out infinite}
+@keyframes shim{50%{opacity:.25;transform:translateX(6px)}}
+.ptext{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.kicker{margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#5A6873}
+.pname{margin:0;font-size:26px;line-height:1;font-weight:800;letter-spacing:-.02em}
+.why{margin:2px 0 0;font-size:14px;font-weight:700;line-height:1.3;color:#2E3B45;text-wrap:pretty}
+.x{flex:none;width:44px;height:44px;margin:-6px -6px 0 0;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;cursor:pointer;transition:background .2s ease,transform .3s ease}
+.x:hover{transform:rotate(90deg);background:#E3DDD0}
+.back{flex:none;min-height:40px;display:flex;align-items:center;gap:6px;padding:0 12px 0 6px;margin:-4px 0 0 -6px;border:0;border-radius:10px;background:transparent;font-size:14px;font-weight:700;color:#4A5863;cursor:pointer;transition:background .2s ease}
+.back:hover{background:#E4DED1;color:#13202A}
+.back:hover svg{transform:translateX(-3px)}
+.back svg{transition:transform .25s ease}
+.pmid{padding:12px 14px 0;display:flex;flex-direction:column;gap:10px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:#E4DED1;color:#2E3B45}
+.more{align-self:flex-start;min-height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;margin-left:-12px;border:0;border-radius:10px;background:transparent;font-size:14px;font-weight:700;color:#7A4F00;cursor:pointer;transition:background .2s ease}
+.more:hover{background:#E7E1D4}
+.more:hover .arr{transform:translateX(4px)}
+.arr{display:inline-flex;transition:transform .25s ease}
+.sechead{display:flex;justify-content:space-between;align-items:baseline;padding:12px 14px 6px;border-top:1px solid #DCD5C7;margin-top:4px}
+.sub{margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#5A6873}
+.clist{list-style:none;margin:0;padding:0 6px 8px}
+.crow{animation:rise .45s cubic-bezier(.2,.9,.2,1) both}
+.crow button{width:100%;min-height:56px;display:flex;flex-direction:column;align-items:stretch;gap:5px;padding:8px 10px;border:0;border-radius:12px;background:transparent;text-align:left;cursor:pointer;transition:background .2s ease}
+.crow button:hover,.crow.hl button{background:#E4DED1}
+.cr-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cr-name{font-size:15px;font-weight:700}
+.cr-arrow{color:#7A4F00;display:inline-flex;transition:transform .25s ease}
+.crow button:hover .cr-arrow{transform:translateX(3px)}
+.cr-opts{display:flex;flex-wrap:wrap;gap:6px}
+.copt{display:inline-flex;align-items:center;gap:6px;padding:3px 9px 3px 4px;border-radius:999px;background:#E8E2D6;font-size:12px;color:#2E3B45;white-space:nowrap}
+.copt b{font-weight:600;color:#13202A}
+.mchip{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:none}
+.mchip.flight{background:#F2B544;color:#2A1C00}
+.mchip.bus{background:#6FD3B8;color:#06281F}
+.mchip.lg{width:30px;height:30px}
+.pbody{padding:14px;display:flex;flex-direction:column;gap:16px}
+.hero{position:relative;aspect-ratio:16 / 9;border-radius:14px;overflow:hidden;background:#D8D0C0}
+.credit{margin:5px 0 0;font-size:10px;color:#5A6873}
+.p-why{margin:0;font-size:17px;font-weight:800;line-height:1.3}
+.p-sum{margin:0;font-size:14px;line-height:1.55;color:#2E3B45;text-wrap:pretty}
+.sec-k{margin:0 0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#5A6873}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:#DCD5C7;border-radius:12px;overflow:hidden}
+.fact{background:#F3EFE6;padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.fact span:first-child{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#5A6873}
+.fact span:last-child{font-size:15px;font-weight:700}
+.meter{display:flex;gap:5px;align-items:center;height:22px}
+.meter i{width:9px;height:9px;border-radius:50%;background:#D3CBBC}
+.meter i.f{background:#C98A12}
+.hostels{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px;background:#DCD5C7;border-radius:12px;overflow:hidden}
+.hostels li{background:#F3EFE6;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;font-weight:600}
+.hostels li span:last-child{font-size:12px;font-weight:500;color:#4A5863;text-align:right}
+.hostels li.sus span:last-child{color:#9A9488;text-decoration:line-through}
+.rhead{padding:14px 14px 0;display:flex;flex-direction:column;gap:6px}
+.rtitle{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.1;display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.rtitle svg{color:#C98A12}
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.ocard{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px;border-radius:14px;border:1.5px solid #DCD5C7;background:transparent;text-align:left;cursor:pointer;transition:border-color .25s ease,background .25s ease,transform .25s ease}
+.ocard:hover{border-color:#B9AF9C;transform:translateY(-2px)}
+.ocard.cur{border-color:#13202A;background:#FFFFFF}
+.oc-mode{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.oc-dur{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1}
+.oc-cost{font-size:13px;color:#7A4F00;font-weight:600}
+.oc-via{font-size:12px;color:#4A5863;line-height:1.35}
+.oc-flags{display:flex;gap:8px;color:#5A6873}
+.oc-flags span{display:flex;align-items:center;gap:4px;font-size:11px}
+.tl{list-style:none;margin:0;padding:0 0 0 4px;position:relative;display:flex;flex-direction:column;gap:12px}
+.tl::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:#D3CBBC;transform-origin:top;animation:grow .9s .2s cubic-bezier(.6,0,.2,1) both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.tl li{position:relative;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;animation:rise .5s cubic-bezier(.2,.9,.2,1) both}
+.tl-dot{flex:none;width:12px;height:12px;border-radius:50%;background:#F3EFE6;border:2px solid #3FA98C;position:relative;z-index:1}
+.tl li.end .tl-dot{background:#C98A12;border-color:#C98A12}
+.tl li.change .tl-dot{background:#3FA98C}
+.tl li.layover .tl-dot{border-color:#C98A12;background:#C98A12}
+.tl li.border .tl-dot{border-radius:2px;transform:rotate(45deg);background:#C98A12;border-color:#F3EFE6}
+.tl-kind{margin-left:auto;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#5A6873}
+.note{margin:0;font-size:13px;line-height:1.5;color:#2E3B45;background:#E8E2D6;padding:12px 14px;border-radius:12px}
+.ops{margin:0;font-size:13px;color:#4A5863}
+.ops b{color:#13202A}
+.pactions{display:flex;gap:8px;flex-wrap:wrap}
+.pbtn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 16px;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;transition:transform .2s ease,background .2s ease}
+.pbtn.primary{flex:1;background:#13202A;color:#F3EFE6;border:0}
+.pbtn.primary:hover{background:#24394A;color:#FFFFFF;transform:translateY(-1px)}
+.pbtn.ghost{background:transparent;border:1.5px solid #CFC7B8;color:#13202A}
+.pbtn.ghost:hover{background:#E7E1D4}
+@media (prefers-reduced-motion: reduce){
+  .rmap *,.rmap *::before,.rmap *::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
+</helmet>
+<div class="rmap {{rootCls}}" tabindex="0" role="region" aria-label="Route map" ref="{{rootRef}}" onPointerDown="{{panDown}}" onPointerMove="{{panMove}}" onPointerUp="{{panUp}}" onPointerCancel="{{panUp}}" onKeyDown="{{keyDown}}" onKeyUp="{{keyUp}}" onMouseLeave="{{leaveMap}}">
+
+  <div class="world {{zoomCls}}" style="transform: {{camT}}">
+    <img class="land" src="/_blob/d7872198204d66bdd14a4366476fa6a7" alt="" draggable="false">
+
+    <sc-for list="{{countries}}" as="k" hint-placeholder-count="12">
+      <div class="inv" style="left: {{k.x}}px; top: {{k.y}}px; transform: {{inv}}"><span class="country">{{k.name}}</span></div>
+    </sc-for>
+    <sc-for list="{{minors}}" as="m" hint-placeholder-count="30">
+      <div class="inv" style="left: {{m.x}}px; top: {{m.y}}px; transform: {{inv}}"><div class="minor"><i></i><span>{{m.name}}</span></div></div>
+    </sc-for>
+
+    <sc-for list="{{edges}}" as="e" hint-placeholder-count="24">
+      <svg class="edge {{e.cls}}" viewBox="0 0 780 830" aria-hidden="true">
+        <g class="rail {{e.r1.mode}}">
+          <path class="vis" d="{{e.r1.d}}" pathLength="1" style="d: {{e.r1.css}}; animation-delay: {{e.delay}}"></path>
+          <path class="alt" d="{{e.r1.d}}" style="d: {{e.r1.css}}; animation-delay: {{e.delay}}"></path>
+          <path class="flow" d="{{e.r1.d}}" pathLength="100" style="d: {{e.r1.css}}"></path>
+          <circle class="dot" r="{{e.dotR}}" cx="0" cy="0"><animateMotion dur="{{e.r1.dur}}" repeatCount="indefinite" path="{{e.r1.d}}"></animateMotion></circle>
+        </g>
+        <g class="rail {{e.r2.mode}} {{e.r2.on}}">
+          <path class="vis" d="{{e.r2.d}}" pathLength="1" style="d: {{e.r2.css}}; animation-delay: {{e.delay2}}"></path>
+          <path class="alt" d="{{e.r2.d}}" style="d: {{e.r2.css}}; animation-delay: {{e.delay2}}"></path>
+          <path class="flow" d="{{e.r2.d}}" pathLength="100" style="d: {{e.r2.css}}"></path>
+          <circle class="dot" r="{{e.dotR}}" cx="0" cy="0"><animateMotion dur="{{e.r2.dur}}" repeatCount="indefinite" path="{{e.r2.d}}"></animateMotion></circle>
+        </g>
+        <path class="hit" d="{{e.hitD}}" onClick="{{e.open}}" onMouseEnter="{{e.enter}}" onMouseLeave="{{e.leave}}"></path>
+      </svg>
+    </sc-for>
+
+    <sc-for list="{{stops}}" as="p" hint-placeholder-count="0">
+      <div class="inv stopm {{p.cls}}" style="left: {{p.x}}px; top: {{p.y}}px; transform: {{inv}}">
+        <div class="stopm-in" style="animation-delay: {{p.delay}}"><span class="sm-dot"></span><span class="sm-lbl">{{p.label}}<em>{{p.kind}}</em></span></div>
+      </div>
+    </sc-for>
+
+    <sc-for list="{{nodes}}" as="c" hint-placeholder-count="14">
+      <div class="inv" style="left: {{c.x}}px; top: {{c.y}}px; transform: {{inv}}">
+        <button class="node {{c.cls}}" onClick="{{c.pick}}" onMouseEnter="{{c.enter}}" onMouseLeave="{{c.leave}}" aria-label="{{c.aria}}">
+          <span class="node-in">
+            <span class="pin" style="animation-delay: {{c.delay}}"><span class="ring"></span><span class="core"></span></span>
+            <span class="lbl lbl-{{c.side}}" style="animation-delay: {{c.lblDelay}}">{{c.name}}</span>
+          </span>
+        </button>
+      </div>
+    </sc-for>
+  </div>
+
+  <div class="ctl ctl-tr">
+    <div class="seg" role="group" aria-label="Travel modes">
+      <sc-for list="{{modeToggles}}" as="m" hint-placeholder-count="2">
+        <button class="mbtn {{m.cls}}" aria-pressed="{{m.pressed}}" onClick="{{m.toggle}}"><span class="mdot {{m.mode}}"></span>{{m.label}}</button>
+      </sc-for>
+    </div>
+    <div class="zbtns">
+      <button class="zbtn" aria-label="Zoom in" onClick="{{zoomIn}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <button class="zbtn" aria-label="Zoom out" onClick="{{zoomOut}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+      <button class="zbtn" aria-label="Show whole map" onClick="{{reset}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+    </div>
+  </div>
+
+  <div class="ctl legend" aria-hidden="true">
+    <span><svg width="26" height="8" viewBox="0 0 26 8"><path d="M2 4 L24 4" stroke="#6FD3B8" stroke-width="2.4" stroke-linecap="round"></path></svg>Bus</span>
+    <span><svg width="26" height="8" viewBox="0 0 26 8"><path d="M2 4 L24 4" stroke="#F2B544" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="0.1 4.5"></path></svg>Flight</span>
+    <span><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#0B1720" stroke="#6FD3B8" stroke-width="2"></circle></svg>Stop</span>
+    <span><svg width="10" height="10" viewBox="0 0 10 10"><rect x="2" y="2" width="6" height="6" fill="#F2B544" transform="rotate(45 5 5)"></rect></svg>Border</span>
+  </div>
+
+  <sc-if value="{{showHint}}" hint-placeholder-val="{{ true }}">
+    <div class="ctl hint"><span class="hint-dot"></span>Click a city · scroll to zoom · drag or hold <kbd>space</kbd> to pan</div>
+  </sc-if>
+
+  <sc-for list="{{tips}}" as="t" hint-placeholder-count="0">
+    <div class="tip" style="left: {{t.left}}px; top: {{t.top}}px" role="tooltip">
+      <p class="tip-t">{{t.title}}</p>
+      <sc-if value="{{t.isCity}}" hint-placeholder-val="{{ false }}"><p class="tip-s">{{t.sub}}</p></sc-if>
+      <sc-if value="{{t.isRoute}}" hint-placeholder-val="{{ false }}">
+        <div class="tip-rows">
+          <sc-for list="{{t.rows}}" as="o" hint-placeholder-count="2">
+            <div class="tip-row">
+              <span class="mdot {{o.mode}}"></span>
+              <span class="tip-mode">{{o.label}}
+                <sc-if value="{{o.overnight}}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Overnight"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg></sc-if>
+              </span>
+              <span class="tip-nums mono"><b>{{o.dur}}</b><br>{{o.cost}}</span>
+              <span class="tip-via">{{o.via}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <p class="tip-foot mono">{{t.foot}}</p>
+    </div>
+  </sc-for>
+
+  <sc-if value="{{hasPanel}}" hint-placeholder-val="{{ false }}">
+    <section class="panel {{panelCls}}" aria-label="Details">
+
+      <sc-for list="{{pCity}}" as="c" hint-placeholder-count="0">
+        <div class="pview">
+          <div class="phead stg">
+            <div class="thumb">
+              <sc-if value="{{c.isVolcano}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 124" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="124" fill="{{c.p.sky}}"></rect><circle class="sun" cx="228" cy="42" r="18" fill="{{c.p.sun}}"></circle><g class="smoke"><circle cx="152" cy="28" r="8" fill="{{c.p.haze}}"></circle><circle cx="164" cy="20" r="6.5" fill="{{c.p.haze}}"></circle></g><polygon points="-10,124 62,74 130,124" fill="{{c.p.far}}"></polygon><polygon points="44,124 142,38 160,38 262,124" fill="{{c.p.mid}}"></polygon><rect y="104" width="300" height="20" fill="{{c.p.near}}"></rect></svg></sc-if>
+              <sc-if value="{{c.isCoast}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 124" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="124" fill="{{c.p.sky}}"></rect><circle class="sun" cx="110" cy="70" r="22" fill="{{c.p.sun}}"></circle><rect x="150" y="54" width="18" height="34" fill="{{c.p.near}}"></rect><rect x="172" y="40" width="14" height="48" fill="{{c.p.near}}"></rect><rect x="190" y="62" width="22" height="26" fill="{{c.p.near}}"></rect><rect y="88" width="300" height="36" fill="{{c.p.sea}}"></rect><rect class="shim" x="90" y="98" width="44" height="2" fill="{{c.p.sun}}"></rect></svg></sc-if>
+              <sc-if value="{{c.isAndes}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 124" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="124" fill="{{c.p.sky}}"></rect><circle class="sun" cx="110" cy="38" r="16" fill="{{c.p.sun}}"></circle><polygon points="0,92 46,58 86,80 140,30 188,74 236,44 300,80 300,124 0,124" fill="{{c.p.far}}"></polygon><polygon points="128,41 140,30 152,41 146,39 140,44 134,39" fill="{{c.p.snow}}"></polygon><polygon points="0,110 60,78 108,104 170,66 232,100 300,82 300,124 0,124" fill="{{c.p.mid}}"></polygon></svg></sc-if>
+              <sc-if value="{{c.isCity}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 124" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="124" fill="{{c.p.sky}}"></rect><circle class="sun" cx="190" cy="36" r="15" fill="{{c.p.sun}}"></circle><polygon points="0,70 70,36 140,62 210,40 300,72 300,124 0,124" fill="{{c.p.far}}"></polygon><rect x="104" y="80" width="16" height="44" fill="{{c.p.near}}"></rect><rect x="124" y="70" width="12" height="54" fill="{{c.p.near}}"></rect><rect x="140" y="88" width="24" height="36" fill="{{c.p.near}}"></rect><rect x="168" y="76" width="14" height="48" fill="{{c.p.near}}"></rect><rect x="186" y="92" width="20" height="32" fill="{{c.p.near}}"></rect></svg></sc-if>
+              <sc-if value="{{c.isSalt}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 124" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="64" fill="{{c.p.sky}}"></rect><rect y="64" width="300" height="60" fill="{{c.p.mirror}}"></rect><circle class="sun" cx="150" cy="30" r="12" fill="{{c.p.sun}}"></circle><circle cx="150" cy="98" r="12" fill="{{c.p.sun}}" opacity=".6"></circle><polygon points="80,64 120,54 150,60 186,50 220,64" fill="{{c.p.far}}"></polygon><polygon points="80,64 120,74 150,68 186,78 220,64" fill="{{c.p.far}}" opacity=".45"></polygon></svg></sc-if>
+            </div>
+            <div class="ptext">
+              <p class="kicker mono">{{c.country}} · {{c.alt}}</p>
+              <h2 class="pname">{{c.name}}</h2>
+              <p class="why">{{c.why}}</p>
+            </div>
+            <button class="x" aria-label="Close" onClick="{{reset}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+          </div>
+          <div class="pmid stg">
+            <div class="tags"><sc-for list="{{c.tagList}}" as="t" hint-placeholder-count="3"><span class="tag">{{t.label}}</span></sc-for></div>
+            <button class="more" onClick="{{c.openMore}}">More about {{c.name}} <span class="arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></button>
+          </div>
+          <div class="sechead"><p class="sub mono">Connections</p><p class="sub mono">{{c.connCount}}</p></div>
+          <ul class="clist">
+            <sc-for list="{{c.routes}}" as="r" hint-placeholder-count="3">
+              <li class="crow {{r.cls}}" style="animation-delay: {{r.delay}}">
+                <button onClick="{{r.open}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}">
+                  <span class="cr-top"><span class="cr-name">{{r.name}}</span><span class="cr-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></span>
+                  <span class="cr-opts">
+                    <sc-for list="{{r.opts}}" as="o" hint-placeholder-count="2">
+                      <span class="copt mono"><span class="mchip {{o.mode}}">
+                        <sc-if value="{{o.isFlight}}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></sc-if>
+                        <sc-if value="{{o.isBus}}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="3"></rect><path d="M4 10h16M8 20v-3M16 20v-3"></path></svg></sc-if>
+                      </span><b>{{o.dur}}</b> {{o.price}}</span>
+                    </sc-for>
+                  </span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </sc-for>
+
+      <sc-for list="{{pMore}}" as="c" hint-placeholder-count="0">
+        <div class="pview">
+          <div class="pbody stg">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <button class="back" onClick="{{c.backToCity}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>{{c.name}}</button>
+              <button class="x" aria-label="Close" onClick="{{reset}}" style="margin: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+            </div>
+            <div>
+              <div class="hero">
+                <sc-if value="{{c.isVolcano}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 169" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="169" fill="{{c.p.sky}}"></rect><circle class="sun" cx="228" cy="52" r="20" fill="{{c.p.sun}}"></circle><g class="smoke"><circle cx="152" cy="40" r="9" fill="{{c.p.haze}}"></circle><circle cx="165" cy="31" r="7" fill="{{c.p.haze}}"></circle><circle cx="178" cy="25" r="5" fill="{{c.p.haze}}"></circle></g><polygon points="-10,169 62,110 130,169" fill="{{c.p.far}}"></polygon><polygon points="190,169 250,124 320,169" fill="{{c.p.far}}"></polygon><polygon points="40,169 142,50 160,50 266,169" fill="{{c.p.mid}}"></polygon><rect y="146" width="300" height="23" fill="{{c.p.near}}"></rect><rect class="shim" x="40" y="154" width="60" height="2" fill="{{c.p.haze}}"></rect></svg></sc-if>
+                <sc-if value="{{c.isCoast}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 169" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="169" fill="{{c.p.sky}}"></rect><circle class="sun" cx="78" cy="96" r="26" fill="{{c.p.sun}}"></circle><rect x="150" y="74" width="18" height="46" fill="{{c.p.near}}"></rect><rect x="172" y="56" width="14" height="64" fill="{{c.p.near}}"></rect><rect x="190" y="84" width="22" height="36" fill="{{c.p.near}}"></rect><rect x="216" y="44" width="12" height="76" fill="{{c.p.near}}"></rect><rect x="232" y="68" width="20" height="52" fill="{{c.p.near}}"></rect><rect x="256" y="90" width="30" height="30" fill="{{c.p.near}}"></rect><rect y="120" width="300" height="49" fill="{{c.p.sea}}"></rect><rect class="shim" x="56" y="132" width="44" height="2" fill="{{c.p.sun}}"></rect></svg></sc-if>
+                <sc-if value="{{c.isAndes}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 169" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="169" fill="{{c.p.sky}}"></rect><circle class="sun" cx="60" cy="48" r="18" fill="{{c.p.sun}}"></circle><polygon points="0,120 46,80 86,104 140,40 188,98 236,60 300,104 300,169 0,169" fill="{{c.p.far}}"></polygon><polygon points="126,56 140,40 154,56 147,53 140,59 133,53" fill="{{c.p.snow}}"></polygon><polygon points="0,146 60,104 108,136 170,90 232,130 300,108 300,169 0,169" fill="{{c.p.mid}}"></polygon><polygon points="0,169 0,156 120,150 300,158 300,169" fill="{{c.p.near}}"></polygon></svg></sc-if>
+                <sc-if value="{{c.isCity}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 169" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="169" fill="{{c.p.sky}}"></rect><circle class="sun" cx="236" cy="46" r="17" fill="{{c.p.sun}}"></circle><polygon points="0,96 70,50 140,84 210,54 300,96 300,169 0,169" fill="{{c.p.far}}"></polygon><polygon points="0,124 80,96 160,118 240,92 300,116 300,169 0,169" fill="{{c.p.mid}}"></polygon><rect x="40" y="102" width="12" height="67" fill="{{c.p.near}}"></rect><rect x="56" y="126" width="24" height="43" fill="{{c.p.near}}"></rect><rect x="84" y="94" width="14" height="75" fill="{{c.p.near}}"></rect><rect x="102" y="118" width="20" height="51" fill="{{c.p.near}}"></rect><rect x="170" y="120" width="18" height="49" fill="{{c.p.near}}"></rect><rect x="192" y="106" width="12" height="63" fill="{{c.p.near}}"></rect><rect x="208" y="128" width="30" height="41" fill="{{c.p.near}}"></rect></svg></sc-if>
+                <sc-if value="{{c.isSalt}}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 300 169" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="86" fill="{{c.p.sky}}"></rect><rect y="86" width="300" height="83" fill="{{c.p.mirror}}"></rect><circle class="sun" cx="196" cy="40" r="14" fill="{{c.p.sun}}"></circle><circle cx="196" cy="132" r="14" fill="{{c.p.sun}}" opacity=".6"></circle><polygon points="0,86 30,74 60,80 96,68 130,86" fill="{{c.p.far}}"></polygon><polygon points="0,86 30,98 60,92 96,104 130,86" fill="{{c.p.far}}" opacity=".45"></polygon><polygon points="210,86 250,72 300,82 300,86" fill="{{c.p.far}}"></polygon></svg></sc-if>
+              </div>
+              <p class="credit mono">Photo: [CREDIT] · [LICENCE], Wikimedia Commons</p>
+            </div>
+            <div>
+              <p class="kicker mono">{{c.country}}</p>
+              <h2 class="pname" style="margin-top: 4px">{{c.name}}</h2>
+            </div>
+            <p class="p-why">{{c.why}}</p>
+            <p class="p-sum">{{c.desc}}</p>
+            <div class="facts">
+              <div class="fact"><span class="mono">Altitude</span><span class="mono">{{c.alt}}</span></div>
+              <div class="fact"><span class="mono">Touristy</span><span class="meter" role="img" aria-label="{{c.touristyLabel}}"><sc-for list="{{c.touristyDots}}" as="d" hint-placeholder-count="5"><i class="{{d.cls}}"></i></sc-for></span></div>
+            </div>
+            <div>
+              <p class="sec-k mono">Things to do</p>
+              <div class="tags"><sc-for list="{{c.todoList}}" as="t" hint-placeholder-count="3"><span class="tag">{{t.label}}</span></sc-for></div>
+            </div>
+            <div>
+              <p class="sec-k mono">Hostels · per night</p>
+              <ul class="hostels">
+                <li><span>[HOSTEL NAME]</span><span class="mono">Dorm [DKK] · Private [DKK]</span></li>
+                <li><span>[HOSTEL NAME]</span><span class="mono">Dorm [DKK] · Private [DKK]</span></li>
+                <li class="sus"><span>[HOSTEL NAME]</span><span class="mono">Dorm [DKK] · Private [DKK]</span></li>
+              </ul>
+            </div>
+            <div>
+              <p class="sec-k mono">From here · {{c.connCount}}</p>
+              <ul class="clist" style="padding: 0; margin: 0 -10px">
+                <sc-for list="{{c.routes}}" as="r" hint-placeholder-count="3">
+                  <li class="crow {{r.cls}}">
+                    <button onClick="{{r.open}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}">
+                      <span class="cr-top"><span class="cr-name">{{r.name}}</span><span class="cr-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></span>
+                      <span class="cr-opts"><sc-for list="{{r.opts}}" as="o" hint-placeholder-count="2"><span class="copt mono"><span class="mdot {{o.mode}}" style="margin-left: 5px"></span>{{o.label}} <b>{{o.dur}}</b> {{o.price}}</span></sc-for></span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+
+      <sc-for list="{{pRoute}}" as="r" hint-placeholder-count="0">
+        <div class="pview">
+          <div class="pbody stg">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <sc-if value="{{r.hasBack}}" hint-placeholder-val="{{ true }}">
+                <button class="back" onClick="{{r.back}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>{{r.aName}}</button>
+              </sc-if>
+              <p class="kicker mono" style="margin-left: auto; margin-right: 8px">{{r.kicker}}</p>
+              <button class="x" aria-label="Close" onClick="{{reset}}" style="margin: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+            </div>
+            <h2 class="rtitle"><span>{{r.aName}}</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span>{{r.bName}}</span></h2>
+            <div class="compare">
+              <sc-for list="{{r.optList}}" as="o" hint-placeholder-count="2">
+                <button class="ocard {{o.cls}}" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}">
+                  <span class="oc-mode"><span class="mchip {{o.mode}}">
+                    <sc-if value="{{o.isFlight}}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></sc-if>
+                    <sc-if value="{{o.isBus}}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="3"></rect><path d="M4 10h16M8 20v-3M16 20v-3"></path></svg></sc-if>
+                  </span>{{o.label}}</span>
+                  <span class="oc-dur mono">{{o.dur}}</span>
+                  <span class="oc-cost mono">{{o.cost}}</span>
+                  <span class="oc-via">{{o.via}}</span>
+                  <sc-if value="{{o.hasFlags}}" hint-placeholder-val="{{ false }}">
+                    <span class="oc-flags">
+                      <sc-if value="{{o.overnight}}" hint-placeholder-val="{{ false }}"><span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg>Overnight</span></sc-if>
+                      <sc-if value="{{o.border}}" hint-placeholder-val="{{ false }}"><span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"></path></svg>Border</span></sc-if>
+                    </span>
+                  </sc-if>
+                </button>
+              </sc-for>
+            </div>
+            <sc-for list="{{r.optList}}" as="o" hint-placeholder-count="1">
+              <sc-if value="{{o.isCur}}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column; gap: 14px">
+                  <p class="sec-k mono" style="margin: 0">{{o.label}} · stops on the way</p>
+                  <ol class="tl">
+                    <sc-for list="{{o.stepList}}" as="s" hint-placeholder-count="3">
+                      <li class="{{s.cls}}" style="animation-delay: {{s.delay}}"><span class="tl-dot"></span><span>{{s.label}}</span><span class="tl-kind mono">{{s.kind}}</span></li>
+                    </sc-for>
+                  </ol>
+                  <p class="ops"><b>Operators</b> · {{o.ops}}</p>
+                  <p class="note">{{o.note}}</p>
+                </div>
+              </sc-if>
+            </sc-for>
+            <div class="pactions">
+              <a class="pbtn primary" href="#">Search live prices</a>
+              <button class="pbtn ghost" onClick="{{r.goTo}}">Go to {{r.bName}}</button>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"maxFitZoom":{"editor":"range","default":3.2,"min":1.5,"max":5,"step":0.1,"section":"Map"},"$preview":{"width":1280,"height":800}}'>
+const PAL = {
+  antigua:   { sky: '#F6C9A0', sun: '#FFF1D6', haze: '#FBE7D3', far: '#9C7C8F', mid: '#5E4B6B', near: '#2F3348' },
+  leon:      { sky: '#F4B07A', sun: '#FFE7C2', haze: '#F9D7BA', far: '#B4725B', mid: '#6E3D3A', near: '#2A2430' },
+  granada:   { sky: '#BFE0E6', sun: '#FFF6DF', haze: '#EAF4F2', far: '#88A7A0', mid: '#4D6E6A', near: '#2C5C70' },
+  sanjose:   { sky: '#CFE7D3', sun: '#FFF7E0', far: '#8FB79A', mid: '#4F8466', near: '#26493A', snow: '#8FB79A' },
+  panama:    { sky: '#F9D8A6', sun: '#FF9E6B', haze: '#FFE3BF', far: '#3A4C5E', sea: '#2F6F8A', near: '#1F3346' },
+  cartagena: { sky: '#FFD3B0', sun: '#F26B5B', haze: '#FFE7D6', far: '#B0563F', sea: '#1F7A8C', near: '#3B2A3F' },
+  medellin:  { sky: '#CDEBC8', sun: '#FFF5D0', far: '#7FB58A', mid: '#3F7A57', near: '#22412F' },
+  bogota:    { sky: '#C9D4E0', sun: '#F7F3E6', far: '#8296A8', mid: '#4D6275', near: '#263443' },
+  quito:     { sky: '#CFE0F2', sun: '#FFF6DA', far: '#8DA2BF', mid: '#536A8C', near: '#2C3B57', snow: '#F7FAFF' },
+  lima:      { sky: '#D9DDE0', sun: '#F4F1EA', haze: '#EEF0F1', far: '#7D8A93', sea: '#4F7487', near: '#5A6670' },
+  cusco:     { sky: '#F3D1A6', sun: '#FFF3D6', far: '#B48A6A', mid: '#7A5240', near: '#3E2A24', snow: '#FFF8EE' },
+  lapaz:     { sky: '#B8D4F0', sun: '#FFF5D8', far: '#9AA7C7', mid: '#6A6F95', near: '#3A3A5C', snow: '#FFFFFF' },
+  cochabamba:{ sky: '#F7DDB5', sun: '#FFF4DA', far: '#C59C76', mid: '#8A6448', near: '#46342A' },
+  uyuni:     { sky: '#A9D3F2', sun: '#FFFFFF', far: '#8E8AA8', mirror: '#DDEFFB' }
+};
+
+const CITIES = [
+  { id: 'antigua', name: 'Antigua', country: 'Guatemala', lat: 14.56, lon: -90.73, alt: '1.530 m', side: 'l', motif: 'volcano', touristy: 5,
+    why: 'Volcano views over colonial cobbles', desc: 'Cobblestone colonial town ringed by three volcanoes: Agua, Fuego and Acatenango.',
+    tags: ['Colonial', 'Volcanoes', 'Spanish school'], todo: ['Acatenango overnight hike', 'Cerro de la Cruz', 'Spanish classes'] },
+  { id: 'leon', name: 'León', country: 'Nicaragua', lat: 12.43, lon: -86.88, alt: '110 m', side: 'l', motif: 'volcano', touristy: 3,
+    why: 'Hot, rebellious and volcanic', desc: 'Lively university city and the base for boarding down Cerro Negro.',
+    tags: ['Volcanoes', 'Nightlife', 'Murals'], todo: ['Volcano boarding on Cerro Negro', 'Cathedral rooftop', 'Las Peñitas beach'] },
+  { id: 'granada', name: 'Granada', country: 'Nicaragua', lat: 11.93, lon: -85.96, alt: '60 m', side: 'r', motif: 'volcano', touristy: 4,
+    why: 'Colonial colour on Lake Nicaragua', desc: 'Colourful colonial streets on the shore of Lake Nicaragua, under Mombacho volcano.',
+    tags: ['Colonial', 'Lake', 'Cloud forest'], todo: ['Las Isletas boat trip', 'Mombacho cloud forest', 'Laguna de Apoyo'] },
+  { id: 'sanjose', name: 'San José', country: 'Costa Rica', lat: 9.93, lon: -84.08, alt: '1.170 m', side: 'r', motif: 'andes', touristy: 2,
+    why: 'The hub of Costa Rica', desc: 'Costa Rica’s transport hub in the Central Valley, between the coasts and the cloud forest.',
+    tags: ['Transit hub', 'Markets', 'Cloud forest'], todo: ['Mercado Central', 'Poás volcano day trip', 'Barrio Escalante food'] },
+  { id: 'panama', name: 'Panama City', country: 'Panama', lat: 8.98, lon: -79.52, alt: 'Sea level', side: 'r', motif: 'coast', touristy: 3,
+    why: 'Skyline, canal and islands', desc: 'Skyline, Casco Viejo and the Canal. Gateway to the San Blas islands.',
+    tags: ['Transit hub', 'Islands', 'City'], todo: ['Miraflores canal locks', 'Casco Viejo', 'San Blas islands'] },
+  { id: 'cartagena', name: 'Cartagena', country: 'Colombia', lat: 10.39, lon: -75.51, alt: 'Sea level', side: 'r', motif: 'coast', touristy: 5,
+    why: 'Walled city on the Caribbean', desc: 'Walled Caribbean old town with bright balconies and hot nights.',
+    tags: ['Colonial', 'Beach', 'Nightlife'], todo: ['Walled city walk', 'Getsemaní street art', 'Rosario islands'] },
+  { id: 'medellin', name: 'Medellín', country: 'Colombia', lat: 6.24, lon: -75.58, alt: '1.495 m', side: 'l', motif: 'city', touristy: 4,
+    why: 'Eternal spring in the valley', desc: 'City of eternal spring in the Aburrá valley, stitched together by cable cars.',
+    tags: ['City', 'Nightlife', 'Day trips'], todo: ['Comuna 13', 'Metrocable to Arví', 'Guatapé day trip'] },
+  { id: 'bogota', name: 'Bogotá', country: 'Colombia', lat: 4.71, lon: -74.07, alt: '2.640 m', side: 'r', motif: 'city', touristy: 3,
+    why: 'Big, high and full of culture', desc: 'High-altitude capital with a dense museum, street art and food scene.',
+    tags: ['Transit hub', 'Museums', 'Altitude'], todo: ['Monserrate', 'Gold Museum', 'La Candelaria graffiti tour'] },
+  { id: 'quito', name: 'Quito', country: 'Ecuador', lat: -0.18, lon: -78.47, alt: '2.850 m', side: 'l', motif: 'andes', touristy: 3,
+    why: 'Old town on the equator', desc: 'Andean capital on the equator with one of the best-kept old towns in the Americas.',
+    tags: ['Colonial', 'Altitude', 'Volcanoes'], todo: ['Old town churches', 'TelefériQo', 'Cotopaxi day trip'] },
+  { id: 'lima', name: 'Lima', country: 'Peru', lat: -12.05, lon: -77.04, alt: 'Coast', side: 'l', motif: 'coast', touristy: 3,
+    why: 'Food capital on the cliffs', desc: 'Clifftop capital on the Pacific and the food capital of the continent.',
+    tags: ['Food', 'City', 'Transit hub'], todo: ['Ceviche in Miraflores', 'Barranco', 'Clifftop paragliding'] },
+  { id: 'cusco', name: 'Cusco', country: 'Peru', lat: -13.53, lon: -71.97, alt: '3.400 m', side: 'r', motif: 'andes', touristy: 5,
+    why: 'Inca capital, gateway to Machu Picchu', desc: 'Former Inca capital and the jumping-off point for the Sacred Valley.',
+    tags: ['Ruins', 'Hiking', 'Altitude'], todo: ['Machu Picchu', 'Sacred Valley', 'Rainbow Mountain'] },
+  { id: 'lapaz', name: 'La Paz', country: 'Bolivia', lat: -16.50, lon: -68.15, alt: '3.640 m', side: 'l', motif: 'andes', touristy: 3,
+    why: 'A city in a canyon at 3.640 m', desc: 'A city poured into a canyon, with cable-car lines as its metro.',
+    tags: ['Altitude', 'Markets', 'Adventure'], todo: ['Mi Teleférico cable cars', 'Death Road by bike', 'Valle de la Luna'] },
+  { id: 'cochabamba', name: 'Cochabamba', country: 'Bolivia', lat: -17.39, lon: -66.16, alt: '2.560 m', side: 'r', motif: 'city', touristy: 1,
+    why: 'Food and sunshine in the valley', desc: 'Mild valley city known for its food, its huge market and Cristo de la Concordia.',
+    tags: ['Food', 'Markets', 'Local life'], todo: ['La Cancha market', 'Cristo de la Concordia', 'Torotoro day trip'] },
+  { id: 'uyuni', name: 'Uyuni', country: 'Bolivia', lat: -20.46, lon: -66.83, alt: '3.656 m', side: 'r', motif: 'salt', touristy: 4,
+    why: 'Edge of the salt flat', desc: 'Gateway town to the Salar de Uyuni, the largest salt flat on earth.',
+    tags: ['Nature', 'Tours', 'Altitude'], todo: ['3-day salt flat tour', 'Train cemetery', 'Sunset on the salt'] }
+];
+
+// every other place: stops on routes plus context towns shown when zoomed in
+const PLACES = [
+  ['Guatemala City', 14.63, -90.51], ['Flores', 16.93, -89.89], ['Panajachel', 14.74, -91.16], ['San Salvador', 13.69, -89.22],
+  ['Tegucigalpa', 14.07, -87.19], ['Copán Ruinas', 14.84, -89.15], ['El Amatillo', 13.6, -87.76], ['Choluteca', 13.3, -87.19],
+  ['Guasaule', 12.94, -86.98], ['Managua', 12.13, -86.25], ['Rivas', 11.44, -85.83], ['San Juan del Sur', 11.25, -85.87],
+  ['Ometepe', 11.5, -85.58], ['Peñas Blancas', 11.21, -85.61], ['Liberia', 10.63, -85.44], ['La Fortuna', 10.47, -84.64],
+  ['Puerto Viejo', 9.66, -82.75], ['Paso Canoas', 8.53, -82.84], ['Bocas del Toro', 9.34, -82.24], ['David', 8.43, -82.43],
+  ['Santiago de Veraguas', 8.1, -80.98], ['Santa Marta', 11.24, -74.2], ['Palomino', 11.25, -73.56], ['Sincelejo', 9.3, -75.4],
+  ['Montería', 8.75, -75.88], ['Aguachica', 8.31, -73.62], ['Bucaramanga', 7.12, -73.12], ['San Gil', 6.56, -73.13],
+  ['Villa de Leyva', 5.63, -73.52], ['Puerto Triunfo', 5.87, -74.64], ['Honda', 5.2, -74.74], ['Salento', 4.64, -75.57],
+  ['Cali', 3.45, -76.53], ['Popayán', 2.44, -76.61], ['Pasto', 1.21, -77.28], ['Rumichaca', 0.81, -77.66],
+  ['Baños', -1.4, -78.42], ['Guayaquil', -2.19, -79.89], ['Montañita', -1.83, -80.75], ['Cuenca', -2.9, -79.0],
+  ['Huaquillas', -3.48, -80.24], ['Máncora', -4.1, -81.05], ['Trujillo', -8.11, -79.03], ['Huaraz', -9.53, -77.53],
+  ['Nazca', -14.83, -74.94], ['Puquio', -14.7, -74.13], ['Abancay', -13.63, -72.88], ['Arequipa', -16.4, -71.54],
+  ['Puno', -15.84, -70.02], ['Kasani', -16.25, -69.06], ['Copacabana', -16.17, -69.09], ['El Alto', -16.5, -68.19],
+  ['Caracollo', -17.64, -67.22], ['Oruro', -17.97, -67.11], ['Sucre', -19.05, -65.26], ['Potosí', -19.58, -65.75],
+  ['Santa Cruz', -17.78, -63.18], ['Caracas', 10.48, -66.9], ['Leticia', -4.2, -69.94], ['Iquitos', -3.75, -73.25]
+];
+
+const COUNTRIES = [
+  ['Mexico', 18.6, -96.2], ['Guatemala', 15.9, -90.4], ['Belize', 17.3, -88.6], ['Honduras', 14.95, -86.4], ['El Salvador', 13.3, -89.3],
+  ['Nicaragua', 13.2, -85.0], ['Costa Rica', 9.4, -83.9], ['Panama', 7.9, -80.6], ['Colombia', 2.6, -72.6], ['Venezuela', 7.2, -66.0],
+  ['Ecuador', -1.9, -78.0], ['Peru', -8.6, -75.6], ['Brazil', -9.0, -57.0], ['Bolivia', -15.0, -64.3], ['Chile', -22.8, -69.4],
+  ['Paraguay', -22.8, -58.6], ['Argentina', -26.0, -64.0], ['Cuba', 21.9, -79.6]
+];
+
+const S = (name, type) => ({ name, type: type || 'stop' });
+const fl = (dur, cost, ops, note, stops) => ({ mode: 'flight', dur, cost, ops, stops: stops || [], note: note || 'Direct, several departures a day.' });
+const bus = (dur, cost, ops, stops, note, overnight) => ({ mode: 'bus', dur, cost, ops, stops, note, overnight: !!overnight });
+
+const EDGES = [
+  { id: 'e1', a: 'antigua', b: 'leon', opts: [
+    bus('11h', '$45-60', 'Tourist shuttles', [S('El Amatillo', 'border'), S('Choluteca'), S('Guasaule', 'border')], 'A long day with two border crossings. Keep small US dollar notes for the fees.'),
+    fl('2h30', '$180-300', 'Avianca', 'One stop. Managua airport is about 1h30 from León.', [S('San Salvador', 'layover')]) ] },
+  { id: 'e2', a: 'leon', b: 'granada', opts: [
+    bus('2h30', '$3-15', 'Minibuses, shuttles', [S('Managua', 'change')], 'Minibus via Managua is cheapest; door-to-door shuttles skip the change.') ] },
+  { id: 'e3', a: 'granada', b: 'sanjose', opts: [
+    bus('9h', '$30-45', 'Tica Bus, Transnica', [S('Rivas'), S('Peñas Blancas', 'border'), S('Liberia')], 'Border queues decide the day. Morning departures are the safer bet.'),
+    fl('1h05', '$150-250', 'Avianca', 'Granada is about 45 minutes from Managua airport.') ] },
+  { id: 'e4', a: 'sanjose', b: 'panama', opts: [
+    bus('16h', '$45-60', 'Tica Bus, Expreso Panamá', [S('Paso Canoas', 'border'), S('David'), S('Santiago de Veraguas')], 'Some buses ask to see an onward ticket at the border.', true),
+    fl('1h15', '$120-200', 'Copa Airlines') ] },
+  { id: 'e5', a: 'panama', b: 'cartagena', opts: [ fl('1h20', '$150-250', 'Copa Airlines, Wingo', 'No road crosses the Darién Gap.') ] },
+  { id: 'e6', a: 'cartagena', b: 'medellin', opts: [
+    bus('13h', '$30-45', 'Expreso Brasilia', [S('Sincelejo'), S('Montería')], 'Overnight buses are cold. Bring a layer.', true),
+    fl('1h05', '$40-90', 'Avianca, LATAM, JetSMART', 'Often cheaper than the bus if booked early.') ] },
+  { id: 'e7', a: 'medellin', b: 'bogota', opts: [
+    bus('9h', '$20-30', 'Bolivariano, Expreso Brasilia', [S('Puerto Triunfo'), S('Honda')], 'Winding mountain road with big views.'),
+    fl('55m', '$40-80', 'Avianca, LATAM', 'Rionegro airport is 45 minutes outside Medellín.') ] },
+  { id: 'e8', a: 'bogota', b: 'quito', opts: [
+    bus('26h', '$60-90', 'Buses via Cali and Pasto', [S('Cali', 'change'), S('Pasto'), S('Rumichaca', 'border')], 'Usually split over two days with a night in Pasto or Ipiales.', true),
+    fl('1h35', '$120-220', 'Avianca, LATAM', 'Quito sits at 2.850 m. Take the first day slow.') ] },
+  { id: 'e9', a: 'quito', b: 'lima', opts: [
+    bus('30h', '$60-90', 'Cruz del Sur, Ormeño', [S('Guayaquil', 'change'), S('Huaquillas', 'border'), S('Máncora'), S('Trujillo')], 'Long. Most people break it up on the north Peru coast.', true),
+    fl('2h', '$120-200', 'LATAM, Avianca', 'Drop from altitude to sea level.') ] },
+  { id: 'e10', a: 'bogota', b: 'lima', opts: [ fl('3h05', '$150-260', 'Avianca, LATAM') ] },
+  { id: 'e11', a: 'lima', b: 'cusco', opts: [
+    bus('21h', '$35-60', 'Cruz del Sur', [S('Nazca'), S('Puquio'), S('Abancay')], 'Slower climb, which some people find easier on the altitude.', true),
+    fl('1h25', '$60-130', 'LATAM, Sky, JetSMART', 'From sea level to 3.400 m in under two hours.') ] },
+  { id: 'e12', a: 'cusco', b: 'lapaz', opts: [
+    bus('12h', '$25-40', 'Bolivia Hop, direct buses', [S('Puno', 'change'), S('Kasani', 'border'), S('Copacabana')], 'Worth breaking up with a night in Copacabana on Lake Titicaca.'),
+    fl('1h05', '$150-250', 'BoA', 'Skips the lake entirely.') ] },
+  { id: 'e13', a: 'lapaz', b: 'cochabamba', opts: [
+    bus('7h', '$6-12', 'Buses from the main terminal', [S('El Alto'), S('Caracollo')], 'Frequent departures through the day.'),
+    fl('45m', '$50-90', 'BoA', 'Short hop down to a warmer valley.') ] },
+  { id: 'e14', a: 'lapaz', b: 'uyuni', opts: [
+    bus('10h', '$20-35', 'Todo Turismo, local buses', [S('Oruro')], 'Arrives early, in time for salt flat tours.', true),
+    fl('55m', '$90-150', 'BoA', 'Saves a night on the road.') ] },
+  { id: 'e15', a: 'panama', b: 'bogota', opts: [ fl('1h40', '$120-220', 'Copa Airlines, Avianca') ] },
+  { id: 'e16', a: 'bogota', b: 'cartagena', opts: [
+    bus('20h', '$40-60', 'Expreso Brasilia, Copetran', [S('Bucaramanga', 'change'), S('Aguachica')], 'Flights are often similar in price.', true),
+    fl('1h30', '$40-100', 'Avianca, LATAM, JetSMART') ] },
+  { id: 'e17', a: 'bogota', b: 'sanjose', opts: [ fl('2h15', '$180-280', 'Avianca') ] },
+  { id: 'e18', a: 'bogota', b: 'antigua', opts: [ fl('3h', '$200-320', 'Avianca', 'Lands in Guatemala City, about an hour from Antigua.') ] },
+  { id: 'e19', a: 'bogota', b: 'granada', opts: [ fl('5h10', '$200-320', 'Avianca, Copa', 'Managua airport, about 45 minutes from Granada.', [S('Panama City', 'layover')]) ] },
+  { id: 'e20', a: 'bogota', b: 'lapaz', opts: [ fl('6h10', '$250-400', 'Avianca, LATAM', 'Lands at 4.000 m in El Alto. Take it slow on arrival.', [S('Lima', 'layover')]) ] },
+  { id: 'e21', a: 'cochabamba', b: 'uyuni', opts: [ bus('12h', '$15-25', 'Buses via Oruro', [S('Oruro', 'change')], 'Change in Oruro.', true) ] },
+  { id: 'e22', a: 'antigua', b: 'sanjose', opts: [ fl('1h30', '$180-280', 'Avianca, Copa') ] },
+  { id: 'e23', a: 'panama', b: 'medellin', opts: [ fl('1h20', '$120-200', 'Copa Airlines') ] },
+  { id: 'e24', a: 'lima', b: 'lapaz', opts: [ fl('1h45', '$150-260', 'LATAM, BoA') ] }
+];
+
+const MODE_LABEL = { flight: 'Flight', bus: 'Bus' };
+const MODES = ['bus', 'flight'];
+const KIND = { stop: '', change: 'change', border: 'border', layover: 'layover' };
+const USD_DKK = 6.9;
+const W2 = (lat, lon) => ({ x: (lon + 108) * 10, y: (26 - lat) * 10 });
+const ROI = { x0: 130, x1: 530, y0: 40, y1: 510 };
+
+const dk = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const kr = (s) => {
+  const nums = (s.match(/\d+/g) || []).map((n) => Math.round(parseInt(n, 10) * USD_DKK / 10) * 10);
+  return nums.length > 1 ? dk(nums[0]) + '-' + dk(nums[1]) + ' kr' : dk(nums[0] || 0) + ' kr';
+};
+const krFrom = (s) => 'fra ' + dk(Math.round(parseInt((s.match(/\d+/) || ['0'])[0], 10) * USD_DKK / 10) * 10) + ' kr';
+const parseDur = (s) => {
+  const h = s.match(/(\d+)h(\d+)?/);
+  if (h) return parseInt(h[1], 10) * 60 + (h[2] ? parseInt(h[2], 10) : 0);
+  const m = s.match(/(\d+)m/);
+  return m ? parseInt(m[1], 10) : 9999;
+};
+const viaText = (o) => (!o.stops.length ? (o.mode === 'flight' ? 'Direct' : 'No stops')
+  : 'via ' + o.stops.map((x) => x.name + (x.type === 'border' ? ' (border)' : '')).join(', '));
+
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    this.state = { sel: null, panel: null, route: null, opt: 0, hover: null, hoverEdge: null,
+      modes: { flight: true, bus: true }, view: null, live: false, dragging: false, space: false, W: 1280, H: 800 };
+    this.drag = null;
+    this.suppress = false;
+    this.cam = null;
+    this.measure = () => {
+      if (!this.el) return;
+      const r = this.el.getBoundingClientRect();
+      if (r.width > 0 && (Math.abs(r.width - this.state.W) > 1 || Math.abs(r.height - this.state.H) > 1)) this.setState({ W: r.width, H: r.height });
+    };
+    this.onWheel = (ev) => {
+      if (!this.cam || (ev.target && ev.target.closest && ev.target.closest('.panel'))) return;
+      ev.preventDefault();
+      const c = this.cam;
+      const r = this.el.getBoundingClientRect();
+      const mx = ev.clientX - r.left - r.width / 2, my = ev.clientY - r.top - r.height / 2;
+      const nk = Math.min(c.kMax, Math.max(c.kMin, c.k * Math.exp(-ev.deltaY * (ev.ctrlKey ? 0.01 : 0.0018))));
+      const wx = c.cx + mx / c.k, wy = c.cy + my / c.k;
+      this.setState({ view: { k: nk, cx: wx - mx / nk, cy: wy - my / nk }, live: true, hover: null, hoverEdge: null });
+      clearTimeout(this.liveT);
+      this.liveT = setTimeout(() => this.setState({ live: false }), 160);
+    };
+    this.rootRef = (el) => {
+      if (!el || el === this.el) return;
+      if (this.el) this.el.removeEventListener('wheel', this.onWheel);
+      this.el = el;
+      el.addEventListener('wheel', this.onWheel, { passive: false });
+      try { this.ro = new ResizeObserver(this.measure); this.ro.observe(el); } catch (err) {}
+      setTimeout(this.measure, 0);
+    };
+  }
+
+  componentWillUnmount() {
+    if (this.el) this.el.removeEventListener('wheel', this.onWheel);
+    if (this.ro) this.ro.disconnect();
+    clearTimeout(this.liveT);
+  }
+
+  renderVals() {
+    const st = this.state || {};
+    const modes = st.modes || { flight: true, bus: true };
+    const W = st.W || 1280, H = st.H || 800;
+    const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+    const byId = {};
+    CITIES.forEach((c) => { byId[c.id] = c; });
+    const placeXY = {};
+    PLACES.forEach((p) => { placeXY[p[0]] = W2(p[1], p[2]); });
+    CITIES.forEach((c) => { placeXY[c.name] = W2(c.lat, c.lon); });
+    const cxy = (id) => placeXY[byId[id].name];
+    const visOpts = (e) => e.opts.filter((o) => modes[o.mode]);
+    const touches = (e, id) => e.a === id || e.b === id;
+    const other = (e, id) => (e.a === id ? e.b : e.a);
+    const fastest = (opts) => opts.slice().sort((a, b) => parseDur(a.dur) - parseDur(b.dur))[0];
+    const modeFlags = (mode) => ({ mode, isFlight: mode === 'flight', isBus: mode === 'bus' });
+    const guard = (fn) => () => { if (this.suppress || st.space) return; fn(); };
+    const edgeById = (id) => EDGES.find((x) => x.id === id);
+
+    // panel
+    const hasPanel = !!(st.sel || (st.panel === 'route' && st.route));
+    const panelW = !hasPanel ? 0 : Math.min(W - 28, st.panel === 'more' || st.panel === 'route' ? 420 : 340);
+    const narrow = W < 720;
+
+    // camera: k = px per world unit, (cx, cy) = world point at the frame centre
+    const kHome = Math.min((W - 48) / (ROI.x1 - ROI.x0), (H - 48) / (ROI.y1 - ROI.y0));
+    const kMin = kHome * 0.85, kMax = kHome * 8;
+    const home = { k: kHome, cx: (ROI.x0 + ROI.x1) / 2, cy: (ROI.y0 + ROI.y1) / 2 };
+    const fit = (pts) => {
+      const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
+      const bx0 = Math.min.apply(null, xs), bx1 = Math.max.apply(null, xs), by0 = Math.min.apply(null, ys), by1 = Math.max.apply(null, ys);
+      const L = narrow ? 24 : (panelW ? 14 + panelW + 40 : 40), R = W - 90, T = 70, B = H - 60;
+      const k = clamp(Math.min((R - L) / Math.max(bx1 - bx0, 8), (B - T) / Math.max(by1 - by0, 8)), kHome, kHome * (this.props.maxFitZoom ?? 3.2));
+      const sx = (L + R) / 2, sy = (T + B) / 2;
+      return { k, cx: (bx0 + bx1) / 2 - (sx - W / 2) / k, cy: (by0 + by1) / 2 - (sy - H / 2) / k };
+    };
+    const selEdges = st.sel ? EDGES.filter((e) => touches(e, st.sel) && visOpts(e).length) : [];
+    const neighbors = new Set(selEdges.map((e) => other(e, st.sel)));
+    const routeE = st.panel === 'route' && st.route ? edgeById(st.route) : null;
+    const stopPts = (e) => [].concat.apply([], e.opts.map((o) => o.stops.map((x) => placeXY[x.name]).filter(Boolean)));
+    let auto = home;
+    if (routeE) auto = fit([cxy(routeE.a), cxy(routeE.b)].concat(stopPts(routeE)));
+    else if (st.sel) auto = fit([cxy(st.sel)].concat(Array.from(neighbors).map(cxy)));
+    let v = st.view || auto;
+    const k = clamp(v.k, kMin, kMax);
+    const cx = clamp(v.cx, 40, 740), cy = clamp(v.cy, 0, 760);
+    this.cam = { k, cx, cy, kMin, kMax };
+    const tx = W / 2 - cx * k, ty = H / 2 - cy * k;
+    const camT = 'translate(' + tx.toFixed(2) + 'px, ' + ty.toFixed(2) + 'px) scale(' + k.toFixed(4) + ')';
+    const inv = 'scale(' + (1 / k).toFixed(5) + ')';
+    const scr = (p) => ({ x: p.x * k + tx, y: p.y * k + ty });
+
+    const setView = (nv) => this.setState({ view: nv });
+    const zoomBy = (f) => () => { const c = this.cam; setView({ k: clamp(c.k * f, kMin, kMax), cx: c.cx, cy: c.cy }); };
+    const reset = () => this.setState({ sel: null, panel: null, route: null, hover: null, hoverEdge: null, view: null });
+
+    const panDown = (ev) => {
+      if (ev.button !== undefined && ev.button !== 0) return;
+      if (ev.target && ev.target.closest && ev.target.closest('.panel, .ctl')) return;
+      try { this.el && this.el.focus({ preventScroll: true }); } catch (err) {}
+      this.drag = { x: ev.clientX, y: ev.clientY, cam: Object.assign({}, this.cam), moved: false, id: ev.pointerId, el: ev.currentTarget, space: st.space };
+    };
+    const panMove = (ev) => {
+      const d = this.drag;
+      if (!d) return;
+      const dx = ev.clientX - d.x, dy = ev.clientY - d.y;
+      if (!d.moved) {
+        if (!d.space && Math.hypot(dx, dy) < 5) return;
+        d.moved = true;
+        try { d.el.setPointerCapture(d.id); } catch (err) {}
+      }
+      this.setState({ dragging: true, live: true, hover: null, hoverEdge: null, view: { k: d.cam.k, cx: d.cam.cx - dx / d.cam.k, cy: d.cam.cy - dy / d.cam.k } });
+    };
+    const panUp = () => {
+      const d = this.drag;
+      this.drag = null;
+      if (d && d.moved) {
+        this.suppress = true;
+        setTimeout(() => { this.suppress = false; }, 0);
+        this.setState({ dragging: false, live: false });
+      }
+    };
+    const isSpace = (ev) => (ev.key === ' ' || ev.code === 'Space') && !(ev.target && ev.target.closest && ev.target.closest('.panel'));
+    const keyDown = (ev) => { if (isSpace(ev)) { ev.preventDefault(); if (!st.space) this.setState({ space: true, hover: null, hoverEdge: null }); } };
+    const keyUp = (ev) => { if (isSpace(ev)) { ev.preventDefault(); this.setState({ space: false }); } };
+
+    const selectCity = (id) => this.setState({ sel: id, panel: 'city', route: null, hover: null, hoverEdge: null, view: null });
+    const openRoute = (id) => guard(() => this.setState({ panel: 'route', route: id, opt: 0, hoverEdge: null, hover: null, view: null }));
+    const enterEdge = (id) => () => { if (!st.dragging && !st.space && st.hoverEdge !== id) this.setState({ hoverEdge: id }); };
+    const leaveEdge = () => { if (st.hoverEdge) this.setState({ hoverEdge: null }); };
+    const toggleMode = (m) => () => this.setState({ modes: Object.assign({}, modes, { [m]: !modes[m] }) });
+
+    // which route is highlighted (stops revealed)
+    let hl = st.hoverEdge;
+    if (!hl && st.sel && st.hover && neighbors.has(st.hover)) { const e = selEdges.find((x) => touches(x, st.hover)); if (e) hl = e.id; }
+    if (!hl && routeE) hl = routeE.id;
+    const preview = !st.sel && !routeE && st.hover ? st.hover : null;
+
+    // edge geometry
+    const pathStr = (pts) => 'M' + pts.map((p) => p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' L');
+    const arc = (P, Q, bend) => {
+      const dx = Q.x - P.x, dy = Q.y - P.y, len = Math.hypot(dx, dy) || 1;
+      return ' Q' + ((P.x + Q.x) / 2 - dy / len * bend * len).toFixed(1) + ' ' + ((P.y + Q.y) / 2 + dx / len * bend * len).toFixed(1) + ' ' + Q.x.toFixed(1) + ' ' + Q.y.toFixed(1);
+    };
+    const railPath = (e, o, isHl, off) => {
+      const A = cxy(e.a), B = cxy(e.b);
+      const dx = B.x - A.x, dy = B.y - A.y, len = Math.hypot(dx, dy) || 1;
+      const nx = -dy / len * off, ny = dx / len * off;
+      const sh = (p) => ({ x: p.x + nx, y: p.y + ny });
+      if (o.mode === 'flight') {
+        const lay = isHl ? o.stops.map((x) => placeXY[x.name]).filter(Boolean) : [];
+        const pts = [A].concat(lay, [B]).map(sh);
+        let d = 'M' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+        for (let i = 1; i < pts.length; i++) d += arc(pts[i - 1], pts[i], 0.18);
+        return d;
+      }
+      const n = o.stops.length;
+      const pts = isHl
+        ? [A].concat(o.stops.map((x, i) => placeXY[x.name] || { x: A.x + dx * (i + 1) / (n + 1), y: A.y + dy * (i + 1) / (n + 1) }), [B])
+        : Array.from({ length: n + 2 }, (_, i) => ({ x: A.x + dx * i / (n + 1), y: A.y + dy * i / (n + 1) })).map(sh);
+      return pathStr(pts);
+    };
+
+    let shownIdx = 0;
+    const off = 2.4 / k;
+    const edges = EDGES.map((e, i) => {
+      const vo = visOpts(e);
+      const isHl = hl === e.id;
+      let show = false, faint = false;
+      if (st.sel) show = touches(e, st.sel) && vo.length > 0;
+      else if (preview) { show = touches(e, preview) && vo.length > 0; faint = !show && vo.length > 0; }
+      else faint = vo.length > 0;
+      if (routeE && routeE.id === e.id) { show = true; faint = false; }
+      const ropts = (routeE && routeE.id === e.id) ? e.opts : vo;
+      const ms = MODES.filter((m) => ropts.some((o) => o.mode === m));
+      const o1 = ropts.find((o) => o.mode === (ms[0] || 'bus')) || e.opts[0];
+      const o2 = ms[1] ? ropts.find((o) => o.mode === ms[1]) : null;
+      const twin = !!o2;
+      const d1 = railPath(e, o1, isHl, twin ? off : 0);
+      const d2 = o2 ? railPath(e, o2, isHl, -off) : d1;
+      const idx = show ? shownIdx++ : 0;
+      const d0 = st.sel || preview ? 0.05 + idx * 0.05 : 0.4 + i * 0.04;
+      let cls = show ? 'show' : (faint ? 'faint' : 'hide');
+      if (isHl) cls += ' hl';
+      else if (hl && show) cls += ' calm';
+      const len = Math.hypot(cxy(e.a).x - cxy(e.b).x, cxy(e.a).y - cxy(e.b).y);
+      return {
+        cls, hitD: d1,
+        r1: { mode: o1.mode, d: d1, css: "path('" + d1 + "')", dur: (1.4 + len / 90).toFixed(2) + 's' },
+        r2: { mode: o2 ? o2.mode : o1.mode, on: o2 ? '' : 'off', d: d2, css: "path('" + d2 + "')", dur: (1.4 + len / 70).toFixed(2) + 's' },
+        delay: d0.toFixed(2) + 's', delay2: (d0 + 0.1).toFixed(2) + 's',
+        dotR: (3 / k).toFixed(3),
+        open: (st.sel && touches(e, st.sel)) || routeE || !st.sel ? openRoute(e.id) : openRoute(e.id),
+        enter: enterEdge(e.id), leave: leaveEdge
+      };
+    });
+
+    // stops along the highlighted route
+    const stops = [];
+    const hlE = hl ? edgeById(hl) : null;
+    if (hlE) {
+      const opts = routeE && routeE.id === hlE.id ? [hlE.opts[clamp(st.opt || 0, 0, hlE.opts.length - 1)]] : visOpts(hlE);
+      let n = 0;
+      opts.forEach((o) => o.stops.forEach((x) => {
+        const p = placeXY[x.name];
+        if (p) stops.push({ x: p.x.toFixed(1), y: p.y.toFixed(1), cls: o.mode + ' ' + x.type, label: x.name, kind: KIND[x.type], delay: (0.15 + n++ * 0.09).toFixed(2) + 's' });
+      }));
+    }
+
+    // tooltip: placed beside the bounding box of everything it describes
+    const TW = 280;
+    const placeTip = (worldPts, h) => {
+      const ps = worldPts.map(scr);
+      const x0 = Math.min.apply(null, ps.map((p) => p.x)) - 26, x1 = Math.max.apply(null, ps.map((p) => p.x)) + 26;
+      const y0 = Math.min.apply(null, ps.map((p) => p.y)) - 22, y1 = Math.max.apply(null, ps.map((p) => p.y)) + 22;
+      const mcx = (x0 + x1) / 2, mcy = (y0 + y1) / 2;
+      const minX = (hasPanel && !narrow ? 14 + panelW + 12 : 12), maxX = W - 12, minY = 12, maxY = H - 12;
+      const fits = (l, t) => l >= minX && l + TW <= maxX && t >= minY && t + h <= maxY;
+      const cands = [
+        [x1 + 14, clamp(mcy - h / 2, minY, maxY - h)],
+        [x0 - 14 - TW, clamp(mcy - h / 2, minY, maxY - h)],
+        [clamp(mcx - TW / 2, minX, maxX - TW), y1 + 14],
+        [clamp(mcx - TW / 2, minX, maxX - TW), y0 - 14 - h]
+      ];
+      const ok = cands.find((c) => fits(c[0], c[1]) && !(c[0] < x1 && c[0] + TW > x0 && c[1] < y1 && c[1] + h > y0));
+      const pick = ok || [maxX - TW, maxY - h];
+      return { left: Math.round(pick[0]), top: Math.round(pick[1]) };
+    };
+    const routeRows = (e) => visOpts(e).slice().sort((a, b) => MODES.indexOf(a.mode) - MODES.indexOf(b.mode)).map((o) => ({
+      mode: o.mode, label: MODE_LABEL[o.mode], dur: o.dur, cost: kr(o.cost), via: viaText(o), overnight: !!o.overnight
+    }));
+    const tips = [];
+    if (!st.dragging && !st.space && !st.live) {
+      const routeTip = (e, aId) => {
+        const bId = other(e, aId);
+        const rows = routeRows(e);
+        if (!rows.length) return;
+        const pts = [cxy(e.a), cxy(e.b)].concat(stopPts(e));
+        tips.push(Object.assign(placeTip(pts, 64 + rows.length * 56), { isRoute: true, isCity: false, title: byId[aId].name + ' to ' + byId[bId].name, rows, foot: 'Click for the full route' }));
+      };
+      if (st.sel && st.hover && neighbors.has(st.hover)) routeTip(selEdges.find((x) => touches(x, st.hover)), st.sel);
+      else if (st.hoverEdge && !(routeE && routeE.id === st.hoverEdge)) { const e = edgeById(st.hoverEdge); if (e) routeTip(e, st.sel && touches(e, st.sel) ? st.sel : e.a); }
+      else if (st.hover && st.hover !== st.sel) {
+        const c = byId[st.hover];
+        const mine = EDGES.filter((e) => touches(e, c.id) && visOpts(e).length);
+        const pts = [cxy(c.id)].concat(st.sel ? [] : mine.map((e) => cxy(other(e, c.id))));
+        tips.push(Object.assign(placeTip(pts, 104), { isRoute: false, isCity: true, title: c.name + ', ' + c.country, sub: c.why, rows: [], foot: mine.length + ' connections · click to explore' }));
+      }
+    }
+
+    const order = CITIES.map((c, i) => ({ i, lat: c.lat })).sort((a, b) => b.lat - a.lat).map((o) => o.i);
+    const rank = {};
+    order.forEach((ci, r) => { rank[ci] = r; });
+
+    const nodes = CITIES.map((c, i) => {
+      const p = cxy(c.id);
+      let cls = '';
+      if (st.sel === c.id || (routeE && touches(routeE, c.id))) cls = 'sel';
+      else if (st.sel && st.hover === c.id && neighbors.has(c.id)) cls = 'near hot';
+      else if (st.sel && neighbors.has(c.id)) cls = 'near';
+      else if (st.sel || routeE) cls = 'dim';
+      else if (preview && EDGES.some((e) => touches(e, preview) && touches(e, c.id) && visOpts(e).length)) cls = 'near';
+      const nEdge = st.sel && neighbors.has(c.id) ? selEdges.find((x) => touches(x, c.id)) : null;
+      return {
+        name: c.name, side: c.side, x: p.x.toFixed(1), y: p.y.toFixed(1), cls,
+        aria: nEdge ? c.name + ', route from ' + byId[st.sel].name : c.name + ', ' + c.country,
+        delay: (0.35 + rank[i] * 0.06).toFixed(2) + 's', lblDelay: (0.7 + rank[i] * 0.06).toFixed(2) + 's',
+        pick: guard(() => {
+          if (st.sel === c.id) reset();
+          else if (nEdge) this.setState({ panel: 'route', route: nEdge.id, opt: 0, hover: null, hoverEdge: null, view: null });
+          else selectCity(c.id);
+        }),
+        enter: () => { if (!st.dragging && !st.space && st.hover !== c.id) this.setState({ hover: c.id }); },
+        leave: () => { if (st.hover) this.setState({ hover: null }); }
+      };
+    });
+
+    const routeOpts = (e) => visOpts(e).slice().sort((a, b) => MODES.indexOf(a.mode) - MODES.indexOf(b.mode))
+      .map((o) => Object.assign(modeFlags(o.mode), { label: MODE_LABEL[o.mode], dur: o.dur, price: krFrom(o.cost) }));
+    const cityView = (c) => {
+      const mine = EDGES.filter((e) => touches(e, c.id) && visOpts(e).length)
+        .sort((a, b) => parseDur(fastest(visOpts(a)).dur) - parseDur(fastest(visOpts(b)).dur));
+      const routes = mine.map((e, j) => ({
+        name: byId[other(e, c.id)].name, opts: routeOpts(e),
+        cls: hl === e.id ? 'hl' : '', delay: (0.2 + j * 0.035).toFixed(2) + 's',
+        open: openRoute(e.id), enter: enterEdge(e.id), leave: leaveEdge
+      }));
+      return {
+        name: c.name, country: c.country, alt: c.alt, why: c.why, desc: c.desc,
+        p: Object.assign({ sky: '#CFE0F2', sun: '#FFF6DA', haze: '#F4EEE6', far: '#8DA2BF', mid: '#536A8C', near: '#2C3B57', sea: '#2F6F8A', snow: '#F7FAFF', mirror: '#DDEFFB' }, PAL[c.id] || {}),
+        isVolcano: c.motif === 'volcano', isCoast: c.motif === 'coast', isAndes: c.motif === 'andes', isCity: c.motif === 'city', isSalt: c.motif === 'salt',
+        tagList: c.tags.map((t) => ({ label: t })), todoList: c.todo.map((t) => ({ label: t })),
+        touristyDots: [1, 2, 3, 4, 5].map((n) => ({ cls: n <= c.touristy ? 'f' : '' })), touristyLabel: 'Touristy: ' + c.touristy + ' of 5',
+        routes, connCount: routes.length + (routes.length === 1 ? ' route' : ' routes'),
+        openMore: () => this.setState({ panel: 'more', hoverEdge: null }),
+        backToCity: () => this.setState({ panel: 'city' })
+      };
+    };
+
+    let pCity = [], pMore = [], pRoute = [];
+    if (st.sel && st.panel === 'city') pCity = [cityView(byId[st.sel])];
+    if (st.sel && st.panel === 'more') pMore = [cityView(byId[st.sel])];
+    if (routeE) {
+      const flip = st.sel === routeE.b;
+      const from = byId[flip ? routeE.b : routeE.a], to = byId[flip ? routeE.a : routeE.b];
+      const cur = clamp(st.opt || 0, 0, routeE.opts.length - 1);
+      const sorted = routeE.opts.map((o, j) => ({ o, j })).sort((a, b) => MODES.indexOf(a.o.mode) - MODES.indexOf(b.o.mode));
+      pRoute = [{
+        aName: from.name, bName: to.name, hasBack: !!st.sel,
+        kicker: routeE.opts.length > 1 ? 'Bus and flight' : MODE_LABEL[routeE.opts[0].mode] + ' only',
+        back: () => this.setState({ panel: 'city', route: null, view: null }),
+        goTo: () => selectCity(to.id),
+        optList: sorted.map(({ o, j }) => {
+          const mids = flip ? o.stops.slice().reverse() : o.stops;
+          const steps = [{ label: from.name, cls: 'end', kind: '' }].concat(mids.map((x) => ({ label: x.name, cls: x.type, kind: KIND[x.type] })), [{ label: to.name, cls: 'end', kind: '' }]);
+          const border = o.stops.some((x) => x.type === 'border');
+          return Object.assign(modeFlags(o.mode), {
+            label: MODE_LABEL[o.mode], dur: o.dur, cost: kr(o.cost), ops: o.ops, note: o.note, via: viaText(o),
+            overnight: !!o.overnight, border, hasFlags: !!(o.overnight || border),
+            isCur: j === cur, cls: j === cur ? 'cur' : '', pressed: j === cur ? 'true' : 'false',
+            stepList: steps.map((x, n) => Object.assign(x, { delay: (0.25 + n * 0.08).toFixed(2) + 's' })),
+            pick: () => this.setState({ opt: j })
+          });
+        })
+      }];
+    }
+
+    const z = k / kHome;
+    return {
+      rootRef: this.rootRef,
+      rootCls: (st.dragging ? 'grabbing ' : '') + (st.space && !st.dragging ? 'grab ' : '') + (st.live ? 'live' : ''),
+      zoomCls: (z > 1.35 ? 'z1 ' : '') + (z > 2 ? 'z2' : ''),
+      camT, inv,
+      countries: COUNTRIES.map((c) => { const p = W2(c[1], c[2]); return { name: c[0], x: p.x.toFixed(1), y: p.y.toFixed(1) }; }),
+      minors: PLACES.map((p) => { const q = W2(p[1], p[2]); return { name: p[0], x: q.x.toFixed(1), y: q.y.toFixed(1) }; }),
+      edges, stops, nodes, tips,
+      modeToggles: MODES.map((m) => ({ mode: m, label: MODE_LABEL[m], cls: modes[m] ? 'on' : '', pressed: modes[m] ? 'true' : 'false', toggle: toggleMode(m) })),
+      zoomIn: zoomBy(1.5), zoomOut: zoomBy(1 / 1.5), reset,
+      panDown, panMove, panUp, keyDown, keyUp,
+      leaveMap: () => { if (st.hover || st.hoverEdge) this.setState({ hover: null, hoverEdge: null }); },
+      showHint: !hasPanel,
+      hasPanel, panelCls: st.panel === 'more' || st.panel === 'route' ? 'wide' : '',
+      pCity, pMore, pRoute
+    };
+  }
+}
+</script>
+</body>
+</html>
