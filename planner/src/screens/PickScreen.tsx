@@ -1,8 +1,10 @@
-import { Fragment, useMemo, useState, type KeyboardEvent } from 'react'
+import { Fragment, useMemo, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent } from 'react'
+import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, Option, Way } from '../data/types'
 import { useStore, type Pair } from '../store'
 import { clock, day, dec1, hours, kr, nextDayMark, observed, timeUncertain, TYPE_LABEL } from '../lib/format'
 import { mixWays, oneWayWays, passesFilters, type Filters } from '../lib/options'
+import { topTiers } from '../lib/tiers'
 import { WayCard } from '../components/WayCard'
 import { MiniMap } from '../components/MiniMap'
 import { Bag, Moon, Pin } from '../components/icons'
@@ -131,12 +133,15 @@ function FiltersBar({ sort, onSort }: { sort: SortKey; onSort: (k: SortKey) => v
   )
 }
 
-/** Rows fly in to, columns fly home from, each tile the best option of its pair. */
+/** Rows fly in to, columns fly home from. Each cell is the best option of its pair, and only the
+ *  pairs near the top by the active sort light up. A pair with no option leaves a gap. */
 function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]; pair: Pair | null; onPick: (p: Pair | null) => void; sort: SortKey }) {
   const ap = inout.airports
   const byPrice = sort === 'price'
   const [hover, setHover] = useState<Pair | null>(null)
-  const { entries, exits, best, lo, hi } = useMemo(() => {
+  const [focusKey, setFocusKey] = useState<string | null>(null)
+  const tableRef = useRef<HTMLTableElement>(null)
+  const { entries, exits, best, tier } = useMemo(() => {
     const best = new Map<string, Row>()
     const better = (a: Row, b: Row) => (byPrice ? a.o.price_dkk < b.o.price_dkk : a.o.rating.total > b.o.rating.total)
     for (const r of rows) {
@@ -156,37 +161,95 @@ function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]
     }
     const entries = group([...new Set(inout.options.map((o) => o.entry))])
     const exits = group([...new Set(inout.options.map((o) => o.exit))])
-    const vals = [...best.values()].map((r) => (byPrice ? -r.o.price_dkk : r.o.rating.total))
-    return { entries, exits, best, lo: Math.min(...vals), hi: Math.max(...vals) }
+    const keys = [...best.keys()]
+    const tiers = topTiers(keys.map((k) => (byPrice ? best.get(k)!.o.price_dkk : best.get(k)!.o.rating.total)), byPrice ? 'asc' : 'desc')
+    const tier = new Map(keys.map((k, i) => [k, tiers[i]]))
+    return { entries, exits, best, tier }
   }, [inout, rows, ap, byPrice])
 
-  const step = (r: Row) => {
-    const v = byPrice ? -r.o.price_dkk : r.o.rating.total
-    return hi === lo ? 4 : Math.min(4, Math.floor(((v - lo) / (hi - lo)) * 5))
-  }
   const hl = hover ?? pair
-  const allExits = exits.flatMap((e) => e.codes)
+  const allEntries = entries.flatMap((g) => g.codes)
+  const allExits = exits.flatMap((g) => g.codes)
   const any = best.size > 0
-  // the ends of the ramp in the unit the tiles are sorted by
-  const end = (v: number) => (byPrice ? kr(-v) : dec1(v))
+  const name = (c: string) => ap[c]?.name ?? c
+
+  // One tab stop for the whole grid: the cell focused last, else the picked pair, else the first pair.
+  const pickedKey = pair ? `${pair.in}|${pair.home}` : null
+  const tabKey = focusKey && best.has(focusKey)
+    ? focusKey
+    : pickedKey && best.has(pickedKey)
+      ? pickedKey
+      : allEntries.flatMap((en) => allExits.map((ex) => `${en}|${ex}`)).find((k) => best.has(k))
+
+  const cellOf = (el: EventTarget | null) => {
+    const k = el instanceof Element ? el.closest<HTMLElement>('[data-cell]')?.dataset.cell : undefined
+    if (!k) return null
+    const [en, ex] = k.split('|')
+    return { k, en, ex }
+  }
+  /** Arrow keys walk to the next pair that exists that way, Home and End to the ends of the row. */
+  const onKeyDown = (e: KeyboardEvent<HTMLTableElement>) => {
+    const at = cellOf(e.target)
+    if (!at) return
+    const r = allEntries.indexOf(at.en)
+    const c = allExits.indexOf(at.ex)
+    const walk = (dr: number, dc: number, i = r + dr, j = c + dc): string | null => {
+      for (; i >= 0 && i < allEntries.length && j >= 0 && j < allExits.length; i += dr, j += dc) {
+        const k = `${allEntries[i]}|${allExits[j]}`
+        if (best.has(k)) return k
+      }
+      return null
+    }
+    const moves: Record<string, () => string | null> = {
+      ArrowRight: () => walk(0, 1),
+      ArrowLeft: () => walk(0, -1),
+      ArrowDown: () => walk(1, 0),
+      ArrowUp: () => walk(-1, 0),
+      Home: () => walk(0, 1, r, 0),
+      End: () => walk(0, -1, r, allExits.length - 1),
+    }
+    if (!(e.key in moves)) return
+    e.preventDefault()
+    const next = moves[e.key]()
+    if (next) tableRef.current?.querySelector<HTMLElement>(`[data-cell="${next}"]`)?.focus()
+  }
+  const onFocus = (e: FocusEvent<HTMLTableElement>) => {
+    const at = cellOf(e.target)
+    if (!at) return
+    setFocusKey(at.k)
+    setHover({ in: at.en, home: at.ex })
+  }
+  const onPointerOver = (e: PointerEvent<HTMLTableElement>) => {
+    const at = cellOf(e.target)
+    if (at && e.pointerType === 'mouse') setHover({ in: at.en, home: at.ex })
+  }
+
   return (
     <section className="mx" aria-labelledby="mx-title">
       <div className="sec-head">
         <h3 className="sec-title" id="mx-title">Pairs</h3>
         <span className="count">{best.size} {best.size === 1 ? 'pair' : 'pairs'}</span>
-        <span className="sec-note">Each tile is the {byPrice ? 'cheapest' : 'best rated'} option of its pair. Pick one to list its options.</span>
+        <span className="sec-note">Pick a pair to see its flights.</span>
         <span className="spacer" />
         {any && (
-          <span className="ramp" role="img" aria-label={byPrice ? `Price from ${end(lo)} to ${end(hi)}` : `Rating from ${end(lo)} to ${end(hi)}`}>
-            <small className="ramp-k">{byPrice ? 'price' : 'rating'}</small>
-            <small>{end(lo)}</small>
-            {[0, 1, 2, 3, 4].map((i) => <i key={i} className={`s${i}`} />)}
-            <small>{end(hi)}</small>
+          <span className="mx-key" role="img" aria-label={`Amber cells are the ${byPrice ? 'cheapest' : 'best rated'} 10 pairs, amber numbers the next 20`}>
+            <span className="k1"><i aria-hidden="true" />Best 10</span>
+            <span className="k2">Next 20</span>
           </span>
         )}
       </div>
       <div className="mx-box">
-        <table className="matrix" onMouseLeave={() => setHover(null)}>
+        <table
+          ref={tableRef}
+          className="matrix"
+          role="grid"
+          aria-labelledby="mx-title"
+          onKeyDown={onKeyDown}
+          onFocus={onFocus}
+          onBlur={() => setHover(null)}
+          onPointerOver={onPointerOver}
+          onPointerLeave={() => setHover(null)}
+        >
           <thead>
             <tr>
               <th className="corner" rowSpan={2} scope="col"><span className="in">Fly in to</span><span className="out">Fly home from</span></th>
@@ -194,7 +257,7 @@ function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]
             </tr>
             <tr>
               {allExits.map((c) => (
-                <th key={c} scope="col" className={`col${hl?.home === c ? ' hl' : ''}`} title={ap[c]?.name ?? c}>{c}</th>
+                <th key={c} scope="col" className={`col${hl?.home === c ? ' hl' : ''}`} title={name(c)}>{c}</th>
               ))}
             </tr>
           </thead>
@@ -204,25 +267,29 @@ function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]
                 <tr className="grp"><th colSpan={allExits.length + 1} scope="rowgroup"><span>{REGION_NAME[g.g] ?? g.g}</span></th></tr>
                 {g.codes.map((en) => (
                   <tr key={en} className={hl?.in === en ? 'hl' : ''}>
-                    <th className="rowh" scope="row" title={ap[en]?.name ?? en}><b>{ap[en]?.name ?? en}</b><span className="code">{en}</span></th>
+                    <th className="rowh" scope="row">
+                      <span className="rowh-in"><Flag code={ap[en]?.country ?? ''} />{name(en)}</span>
+                    </th>
                     {allExits.map((ex) => {
-                      const r = best.get(`${en}|${ex}`)
-                      const on = pair?.in === en && pair?.home === ex
-                      const lit = hl && (hl.in === en || hl.home === ex) ? ' hl' : ''
+                      const k = `${en}|${ex}`
+                      const r = best.get(k)
                       if (!r) return <td key={ex} className="none" />
+                      const on = pair?.in === en && pair?.home === ex
+                      const rating = dec1(r.o.rating.total)
+                      const price = kr(r.o.price_dkk)
+                      const label = `${name(en)} in, ${name(ex)} home: ${byPrice ? `${price}, rated ${rating}` : `rated ${rating}, ${price}`}`
                       return (
-                        <td key={ex} className={`t s${step(r)}${on ? ' on' : ''}${en === ex ? ' same' : ''}${lit}`}>
+                        <td key={ex} className={`t t${tier.get(k) ?? 0}${on ? ' on' : ''}`}>
                           <button
                             type="button"
+                            data-cell={k}
+                            tabIndex={k === tabKey ? 0 : -1}
                             onClick={() => onPick(on ? null : { in: en, home: ex })}
-                            onMouseEnter={() => setHover({ in: en, home: ex })}
-                            onFocus={() => setHover({ in: en, home: ex })}
-                            onBlur={() => setHover(null)}
                             aria-pressed={on}
-                            title={`${ap[en]?.name ?? en} in, ${ap[ex]?.name ?? ex} home: ${kr(r.o.price_dkk)}, rated ${dec1(r.o.rating.total)}`}
+                            aria-label={label}
+                            title={label}
                           >
-                            <b>{dec1(r.o.rating.total)}</b>
-                            <small>{Math.round(r.o.price_dkk / 1000)}k</small>
+                            {byPrice ? `${Math.round(r.o.price_dkk / 1000)}k` : rating}
                           </button>
                         </td>
                       )
