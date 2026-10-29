@@ -5,7 +5,7 @@
   :scope {
     display: block;
     overflow: visible;
-    font-family: var(--mono, 'IBM Plex Mono', ui-monospace, monospace);
+    font-family: var(--font-num);
     font-variant-numeric: tabular-nums;
     font-weight: 500;
     -webkit-font-smoothing: antialiased;
