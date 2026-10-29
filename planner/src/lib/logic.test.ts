@@ -108,6 +108,49 @@ describe('schedule from dated flights', () => {
     expect(s.warnings.some((w) => w.level === 'error' && w.text.includes('lands after the flight home'))).toBe(true)
   })
 
+  it('takes a date set on a leg as a dated moment, so the stops around it get exact days', () => {
+    const bus = (from: string, to: string, over = {}) => ({ from, to, mode: 'bus' as const, operator: null, hours: 9, price_dkk: 150, overnight: false, border: false, flight: null, ...over })
+    const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
+      { node: 'BOG', hop: null },
+      { node: 'MDE', hop: bus('BOG', 'MDE', { date: '2026-12-10' }) },
+      { node: 'LPB', hop: bus('MDE', 'LPB') },
+      { node: 'VVI', hop: bus('LPB', 'VVI', { date: '2027-01-20', overnight: true }) },
+    ] }
+    const s = schedule(j, wi, wh, 'VVI', names)
+    expect(s.places[0]).toMatchObject({ days: 7, inDay: '2026-12-03', outDay: '2026-12-10', exact: true, depart: '2026-12-10' })
+    // MDE and LPB share 10 Dec to 20 Jan between them
+    expect(s.places.slice(1, 3).map((p) => p.days)).toEqual([21, 20])
+    expect(s.places.slice(1, 3).map((p) => p.exact)).toEqual([false, false])
+    expect(s.places[2]).toMatchObject({ inDay: '2026-12-31', outDay: '2027-01-20' })
+    // an overnight leg gets there the day after
+    expect(s.places[3]).toMatchObject({ arrive: '2027-01-21', inDay: '2027-01-21', days: 13, exact: true })
+    expect(s.warnings).toHaveLength(0)
+  })
+
+  it("keeps a picked flight's times on the day set, and warns when the day set is another", () => {
+    const flight = { quote_id: 'Q', depart: '2026-12-20T23:00', arrive: '2026-12-21T04:00', hours: 4, price_dkk: 900, carriers: [], via: [], layover_h: [] }
+    const hop = (date: string) => ({ from: 'BOG', to: 'VVI', mode: 'flight' as const, operator: null, hours: 4, price_dkk: 900, overnight: false, border: false, flight, date })
+    const j = (date: string): Journey => ({ id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [{ node: 'BOG', hop: null }, { node: 'VVI', hop: hop(date) }] })
+    const same = schedule(j('2026-12-20'), wi, wh, 'VVI', names)
+    expect(same.places[1].arrive).toBe('2026-12-21T04:00')
+    expect(same.warnings).toHaveLength(0)
+    const other = schedule(j('2026-12-15'), wi, wh, 'VVI', names)
+    expect(other.places[0]).toMatchObject({ depart: '2026-12-15', days: 12 })
+    expect(other.warnings.some((w) => w.level === 'warn' && w.text.includes('price is for another day'))).toBe(true)
+  })
+
+  it('never calls a same day leg early: arriving at 14:30 and leaving that day is fine', () => {
+    const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
+      { node: 'BOG', hop: null },
+      { node: 'VVI', hop: { from: 'BOG', to: 'VVI', mode: 'bus', operator: null, hours: 30, price_dkk: 100, overnight: false, border: true, flight: null, date: '2026-12-03' } },
+    ] }
+    const s = schedule(j, wi, wh, 'VVI', names)
+    expect(s.places[0].days).toBe(0)
+    expect(s.warnings.filter((w) => w.level === 'error')).toHaveLength(0)
+    const early = schedule({ ...j, places: [j.places[0], { ...j.places[1], hop: { ...j.places[1].hop!, date: '2026-12-01' } }] }, wi, wh, 'VVI', names)
+    expect(early.warnings.some((w) => w.level === 'error' && w.text.includes('leaves 1 Dec'))).toBe(true)
+  })
+
   it('warns when the journey does not end at the exit', () => {
     const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [{ node: 'BOG', hop: null }] }
     expect(schedule(j, wi, wh, 'VVI', names).warnings.some((w) => w.text.includes('end in VVI'))).toBe(true)

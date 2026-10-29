@@ -95,7 +95,21 @@ describe('tripRoute', () => {
       'LPB>CPH 2027-02-02',
     ])
     expect(flightLegs(r).map((l) => l.key)).toEqual(['in', 'hop2', 'hop3', 'home'])
-    expect(flyOn(r.legs[0])).toBe('~2 Dec')
+    expect(flyOn(r.legs[0])).toBe('2 Dec')
+    expect(flyOn(r.legs[1])).toBe('~12 Dec')
+  })
+
+  it('leaves on the day set on a leg, and the stops around it take their days from it', () => {
+    const j = journey()
+    j.places[4] = { node: 'CBB', hop: hop('LPB', 'CBB', { date: '2027-01-05' }) }
+    const r = tripRoute(data, j)!
+    expect(r.legs.find((l) => l.key === 'hop4')).toMatchObject({ date: '2027-01-05', dated: true })
+    // BOG and LPB share 20 Dec to 5 Jan, CBB and LPB share 5 Jan to 2 Feb
+    expect(r.legs.find((l) => l.key === 'hop3')).toMatchObject({ date: '2026-12-28', dated: false })
+    const bo = r.countries[r.countries.length - 1]
+    expect(bo.stops).toEqual([{ name: 'La Paz', days: 8 }, { name: 'Cochabamba', days: 14 }, { name: 'La Paz', days: 14 }])
+    expect(bo).toMatchObject({ days: 36, exact: false })
+    expect(r.countries.find((c) => c.country === 'SV')).toMatchObject({ stops: [], days: 0 })
   })
 
   it('is null when a way has left the data', () => {

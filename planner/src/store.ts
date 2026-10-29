@@ -98,6 +98,8 @@ interface State {
   removeStop: (i: number) => void
   /** move a stop to another position in the route (the landing stop stays first) */
   moveStop: (from: number, to: number) => void
+  /** set the day you set out on the leg to place i, "2026-12-13", or null to let it be estimated */
+  setHopDate: (i: number, date: string | null) => void
 
   /** every trip in the list: the browser's own trips and the table trips it has no copy of */
   saved: Journey[]
@@ -220,6 +222,14 @@ export const useStore = create<State>((set, get) => ({
     list.splice(to, 0, p)
     get().setJourney({ ...j, places: rehop(list, get()) })
     get().setCursor(to)
+  },
+  setHopDate: (i, date) => {
+    const j = get().journey
+    const p = j?.places[i]
+    if (!j || !p?.hop) return
+    const { date: _, ...hop } = p.hop
+    const places = j.places.map((q, k) => (k === i ? { ...q, hop: date ? { ...hop, date } : hop } : q))
+    get().setJourney({ ...j, places })
   },
 
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),
