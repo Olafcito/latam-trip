@@ -1,0 +1,72 @@
+/* The trip at a glance above the rail: the places as narrow panels, the open one shows its photo.
+   Calm at rest, the photos of the closed ones dimmed, one line of facts under. */
+.tg { display: grid; gap: 10px; margin-bottom: 18px; }
+.tg-strip { display: flex; gap: 4px; height: 124px; margin: 0; padding: 0; list-style: none; }
+.tg-p { flex: 1 1 0; min-width: 0; transition: flex-grow 420ms var(--ease-drawer); }
+.tg-p[data-open] { flex-grow: calc(var(--n) * 0.8); }
+.tg-p button {
+  position: relative; display: block; width: 100%; height: 100%; overflow: hidden;
+  padding: 0; border: 0; border-radius: var(--radius); background: var(--surface-3);
+  color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.tg-p button:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.tg-p img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.22; filter: saturate(0.5);
+  transition: opacity var(--t-slow) ease, filter var(--t-slow) ease;
+}
+.tg-p[data-open] img { opacity: 1; filter: none; }
+/* a scrim under the open one's words, so they read on any photo */
+.tg-p button::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, color-mix(in srgb, var(--ground) 88%, transparent), transparent 62%);
+  opacity: 0; transition: opacity var(--t-slow) ease;
+}
+.tg-p[data-open] button::after { opacity: 1; }
+/* closed: the name runs up the panel. Open: it lies along the bottom with the nights beside it */
+.tg-name {
+  position: absolute; left: 50%; bottom: 10px; z-index: 1; max-height: calc(100% - 20px); overflow: hidden;
+  writing-mode: vertical-rl; transform: translateX(-50%) rotate(180deg);
+  font-size: 12px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--muted);
+}
+.tg-p[data-open] .tg-name {
+  left: 12px; right: 12px; bottom: 26px; max-height: none;
+  writing-mode: horizontal-tb; transform: none;
+  font-size: 14px; color: var(--text);
+}
+.tg-meta {
+  position: absolute; left: 12px; right: 12px; bottom: 9px; z-index: 1; overflow: hidden;
+  font-size: 11.5px; white-space: nowrap; text-overflow: ellipsis; font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--text) 80%, transparent);
+  opacity: 0; transition: opacity var(--t-med) ease;
+}
+.tg-p[data-open] .tg-meta { opacity: 1; }
+.tg-sum { margin: 0; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tg-sum b { font-weight: 600; color: var(--text); }
+.tg-part { color: var(--faint); }
+
+@media (hover: hover) and (pointer: fine) {
+  .tg-p:not([data-open]) button:hover img { opacity: 0.4; }
+  .tg-p:not([data-open]) button:hover .tg-name { color: var(--text); }
+}
+.tg-p button:active { transform: scale(0.98); transition: transform 120ms var(--ease-out); }
+
+/* a phone: every place a small card with its photo and name, in a row to swipe */
+@media (max-width: 560px) {
+  .tg-strip { height: 96px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .tg-strip::-webkit-scrollbar { display: none; }
+  .tg-p, .tg-p[data-open] { flex: 0 0 116px; scroll-snap-align: start; }
+  .tg-p img { opacity: 0.85; filter: none; }
+  .tg-p button::after { opacity: 1; }
+  .tg-name, .tg-p[data-open] .tg-name {
+    left: 10px; right: 10px; bottom: 24px; max-height: none;
+    writing-mode: horizontal-tb; transform: none; font-size: 13px; color: var(--text);
+  }
+  .tg-meta, .tg-p[data-open] .tg-meta { left: 10px; right: 10px; bottom: 8px; opacity: 1; }
+  .tg-from { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tg-p, .tg-p img, .tg-p button::after, .tg-meta { transition: none; }
+  .tg-p button:active { transform: none; }
+}

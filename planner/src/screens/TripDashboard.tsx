@@ -5,6 +5,7 @@ import { TotalsPanel } from '../components/TotalsPanel'
 import { MiniMap } from '../components/MiniMap'
 import { Download, Pin, Warn } from '../components/icons'
 import { Story } from '../components/story/Story'
+import { TripHead } from '../components/story/TripHead'
 
 // The dashboard of one trip: the route as a story down a rail, from Copenhagen and back, with the
 // costs and the map beside it. Details rest behind a hover or a click.
@@ -47,6 +48,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
   const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
+  const partial = !!t.ground_unknown
+  const heads = journey.places.map((p, i) => ({ name: nm(p.node), node: map.nodes.find((n) => n.id === p.node), days: sched.places[i].days, inDay: sched.places[i].inDay }))
 
   return (
     <div className="dash">
@@ -73,7 +76,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
 
       <div className="dash-grid">
         <section className="card pad dash-route" aria-label="Route">
-          <h3 className="h3">Route</h3>
+          <TripHead places={heads} from={wi.depart} to={wh.arrive} total={allIn} partial={partial} />
           <Story data={data} journey={journey} sched={sched} wayIn={wi} wayHome={wh} />
         </section>
 
