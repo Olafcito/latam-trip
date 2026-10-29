@@ -878,9 +878,29 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
                     "src": q.get("source"), "at": t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")})
         pairs.setdefault(f"{leg['from']}-{leg['to']}", {}).setdefault(date, []).append(row)
     for dates in pairs.values():
-        for rows in dates.values():
+        for date, rows in dates.items():
+            rows = _drop_carrierless_twins(rows)
             rows.sort(key=lambda r: (r["p"], r["h"], r["d"] or "", r["src"] or ""))
+            dates[date] = rows
     return {"pairs": {k: dict(sorted(v.items())) for k, v in sorted(pairs.items())}}
+
+
+def _drop_carrierless_twins(rows):
+    """A result row read without its airlines is the same flight as a row with the same price, times, stops and
+    source that has them: keep the named ones, with the newest observation of the twins."""
+    twin = lambda r: (r["p"], r["d"], r["a"], r.get("n"), r["s"], r["src"])
+    named = {}
+    for r in rows:
+        if r["c"]:
+            named.setdefault(twin(r), []).append(r)
+    kept = []
+    for r in rows:
+        if r["c"] or twin(r) not in named:
+            kept.append(r)
+            continue
+        for n in named[twin(r)]:
+            n["at"] = max(n["at"], r["at"])
+    return kept
 
 
 def write_pair_dates(paths):
