@@ -99,6 +99,10 @@ export interface ScheduledPlace {
 export interface Warning {
   level: 'error' | 'warn'
   text: string
+  /** the place index of the leg at fault, when one leg is */
+  leg?: number
+  /** the first day that leg can leave instead */
+  fix?: string
 }
 
 export interface Schedule {
@@ -139,12 +143,21 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
   if (places[0]) places[0].arrive = wayIn.arrive
   let since = wayIn.arrive
   let start = 0
-  const share = (end: number, until: string) => {
+  /** the days from since to until over places start to end. leg is the one leaving at until, null for the way home */
+  const share = (end: number, until: string, leg: number | null) => {
     const n = end - start + 1
     const days = dayDiff(since, until)
     if (before(until, since)) {
       const where = start === end ? 'there' : `to ${names(places[start].node)}`
-      warnings.push({ level: 'error', text: `The leg on from ${names(places[end].node)} leaves ${until.length === 10 ? day(until) : dayTime(until)}, before you get ${where} ${dayTime(since)}` })
+      const w: Warning = { level: 'error', text: `The leg on from ${names(places[end].node)} leaves ${until.length === 10 ? day(until) : dayTime(until)}, before you get ${where} ${dayTime(since)}` }
+      if (leg != null) {
+        // a day alone can leave the day you get there, unless the flight picked for that day is the early one
+        const landed = since.slice(0, 10)
+        const f = j.places[leg].hop?.flight
+        w.leg = leg
+        w.fix = f && f.depart.slice(0, 10) === landed ? addDays(landed, 1) : landed
+      }
+      warnings.push(w)
     }
     let at = since.slice(0, 10)
     for (let k = start; k <= end; k++) {
@@ -164,7 +177,7 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
     }
     places[i - 1].depart = t.depart
     places[i].arrive = t.arrive
-    share(i - 1, t.depart)
+    share(i - 1, t.depart, i)
     if (before(wayHome.depart, t.arrive)) {
       const by = f && t.depart === f.depart ? `The flight to ${names(p.node)} lands` : `The leg to ${names(p.node)} gets there`
       warnings.push({ level: 'error', text: `${by} after the flight home leaves` })
@@ -174,7 +187,7 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
   })
   if (places.length) {
     places[places.length - 1].depart = wayHome.depart
-    share(places.length - 1, wayHome.depart)
+    share(places.length - 1, wayHome.depart, null)
   }
   const last = places[places.length - 1]
   if (last && last.node !== exitNode) warnings.push({ level: 'warn', text: `The journey has to end in ${names(exitNode)}, where the way home leaves` })
