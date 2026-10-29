@@ -88,7 +88,11 @@ interface State {
   /** the stop the trip is being built from, as an index into its places; null means the last one */
   cursor: number | null
   setCursor: (i: number | null) => void
-  /** move the cursor to a stop by its map place (the last visit when it appears twice) */
+  /** true when no stop is being built from, so the trip pane shows only the itinerary */
+  idle: boolean
+  /** a tap on a stop: build from it, or, when it is the stop already being built from, stop building */
+  toggleCursor: (i: number) => void
+  /** a tap on a stop on the map: toggleCursor by its map place (the last visit when it appears twice) */
   cursorTo: (node: string) => void
   /** the map's numbers for hops the planner's network lacks, set once the map has loaded */
   legFacts: LegFacts | null
@@ -165,7 +169,7 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const journey = newJourney(data.inout, wayIn, wayHome, optionId)
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, paneMini: false })
+    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false })
   },
   startOnMap: (wayIn, wayHome, optionId) => get().startJourney(wayIn, wayHome, optionId),
   setJourney: (journey) => {
@@ -174,24 +178,31 @@ export const useStore = create<State>((set, get) => ({
   },
   openSaved: (journey) => {
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, paneMini: false, notice: null })
+    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
   },
   openTrip: (journey) => {
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, notice: null })
+    set({ journey, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
   },
-  closeTrip: () => set({ mapOpen: false, screen: 'trips', view: 'home', cursor: null }),
+  closeTrip: () => set({ mapOpen: false, screen: 'trips', view: 'home', cursor: null, idle: false }),
 
   cursor: null,
+  idle: false,
   setCursor: (i) => {
     const j = get().journey
-    set({ cursor: j && i != null && i < j.places.length - 1 ? i : null })
+    set({ cursor: j && i != null && i < j.places.length - 1 ? i : null, idle: false })
+  },
+  toggleCursor: (i) => {
+    const { journey: j, cursor, idle } = get()
+    if (!j) return
+    if (!idle && i === (cursor ?? j.places.length - 1)) set({ idle: true })
+    else get().setCursor(i)
   },
   cursorTo: (node) => {
     const j = get().journey
     if (!j) return
     const i = j.places.map((p) => p.node).lastIndexOf(node)
-    if (i >= 0) get().setCursor(i)
+    if (i >= 0) get().toggleCursor(i)
   },
   legFacts: null,
   setLegFacts: (legFacts) => set({ legFacts }),
@@ -307,7 +318,7 @@ export const useStore = create<State>((set, get) => ({
     else write(CURRENT_KEY, null)
     const gone = saved.filter((s) => !r.saved.some((x) => x.id === s.id)).map((s) => s.id)
     set({
-      journey: r.current, saved: r.saved, hidden: hide(get(), gone), mapOpen: r.open, cursor: null,
+      journey: r.current, saved: r.saved, hidden: hide(get(), gone), mapOpen: r.open, cursor: null, idle: false,
       compare: compare.filter((c) => r.saved.some((s) => s.id === c)),
     })
   },

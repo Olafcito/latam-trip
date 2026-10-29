@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type PointerEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { RouteMap } from '@map/map/RouteMap'
 import { buildModel } from '@map/data/model'
 import type { TripState } from '@map/data/trips'
@@ -19,6 +19,7 @@ export function PlannerMap() {
   const mapOpen = useStore((s) => s.mapOpen)
   const applyMapTrips = useStore((s) => s.applyMapTrips)
   const cursor = useStore((s) => s.cursor)
+  const idle = useStore((s) => s.idle)
   const cursorTo = useStore((s) => s.cursorTo)
   const insertLeg = useStore((s) => s.insertLeg)
   const setLegFacts = useStore((s) => s.setLegFacts)
@@ -39,7 +40,7 @@ export function PlannerMap() {
   useEffect(() => {
     if (facts) setLegFacts(facts)
   }, [facts, setLegFacts])
-  const focusAt = journey && cursor != null ? journey.places[cursor]?.node ?? null : null
+  const focusAt = idle ? false : journey && cursor != null ? journey.places[cursor]?.node ?? null : null
   const onTrips = useCallback(
     (update: (s: TripState) => TripState) => {
       const { journey: j, saved: s, mapOpen: o, data: d } = useStore.getState()
@@ -57,12 +58,17 @@ export function PlannerMap() {
     )
   }
   const hasPane = mapOpen && !!journey
-  // a tap on the map itself, beside the pane, folds the pane to its small card
-  const fold = (e: PointerEvent) => {
+  // a tap on the map itself, beside the pane, folds the pane to its small card. It runs on the click, before
+  // the map's own handler, so a tap on one of the trip's stops can keep the pane open in the same event
+  const fold = (e: MouseEvent) => {
     if (hasPane && !paneMini && (e.target as Element).closest('.rmap-canvas')) setPaneMini(true)
   }
+  const onStop = (id: string) => {
+    cursorTo(id)
+    setPaneMini(false)
+  }
   return data ? (
-    <div className="mapwrap" onPointerDownCapture={fold}>
+    <div className="mapwrap" onClickCapture={fold}>
       <RouteMap
         data={data}
         trips={trips}
@@ -70,7 +76,7 @@ export function PlannerMap() {
         fitTripOnLoad
         focus={hasPane}
         focusAt={focusAt}
-        onStop={cursorTo}
+        onStop={onStop}
         onLeg={insertLeg}
         onFamilies={setFamilies}
         side={hasPane ? <MapSide reach={model && families ? { model, families } : null} /> : null}
