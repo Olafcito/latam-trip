@@ -1,4 +1,4 @@
-import type { AppData, BagRule, InOut, MapData, TripParams } from './types'
+import type { AppData, BagRule, InOut, MapData, Meta, TripParams } from './types'
 
 // Live data from the repo; public/data (npm run sync-data) is the offline copy.
 export const REMOTE_BASE =
@@ -18,13 +18,18 @@ async function getJson<T>(base: string, path: string, timeoutMs: number): Promis
 }
 
 async function loadFrom(base: string, timeoutMs: number) {
-  const [inout, map, bags, trip] = await Promise.all([
+  const [inout, map, bags, trip, meta] = await Promise.all([
     getJson<InOut>(base, 'data/inout.json', timeoutMs),
     getJson<MapData>(base, 'data/network/map.json', timeoutMs),
     getJson<BagRule[]>(base, 'data/bag_rules.json', timeoutMs).catch(() => [] as BagRule[]),
     getJson<TripParams>(base, 'trip.json', timeoutMs).catch(() => ({}) as TripParams),
+    // when the data was last checked. Optional: without it the freshness corner shows ?
+    getJson<Meta>(base, 'data/web/meta.json', timeoutMs).then(
+      (m) => (m && typeof m.last_checked === 'object' && m.last_checked !== null ? m : null),
+      () => null,
+    ),
   ])
-  return { inout, map, bags, trip }
+  return { inout, map, bags, trip, meta }
 }
 
 export async function loadData(): Promise<AppData> {
