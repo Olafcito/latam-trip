@@ -13,6 +13,7 @@
 - Slow: about 1 to 2 weeks in places he likes, fewer and longer stops. Keep it simple and not over-packed. He wants freedom to decide on the ground.
 - He does not want a very FIXED amount of days each place he wants flexibility on when to move on, so if he liked one place he can be for as much as he wants, or as little as he wants. Thats why dates works as just a general idea, but should be kept flexible.
 - Overland inside a region by bus to see the country. Flights to jump between regions.
+- Christmas at a beach with vibes, never a small local city: "no way I am spending Christmas in a small local city I want that by where there is beaches and vibes" (29 Oct 2026).
 - Christmas and New Year somewhere social and festive with locals and travellers, christmas and new years can be seperate places, but be weary of flight prices and consider that, otherwise busses can also do. If both can be both places thats also welcome.
 - Budget: hostels, street food, cheap living, with room for diving and experiences. About 650 to 700 kr a day all in.
 - Bags: carry-on plus a cabin bag.
