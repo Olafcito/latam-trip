@@ -18806,8 +18806,8 @@
    "source": "crawl",
    "oneway_min_dkk": 1960.0,
    "oneway_min_hours": 24.83,
-   "fastest_hours": 5.6,
-   "fastest_price_dkk": 3560.0,
+   "fastest_hours": 4.77,
+   "fastest_price_dkk": 2727.0,
    "nonstop": false,
    "vias": [
     "MDE",
@@ -18825,10 +18825,12 @@
    ],
    "dates": [
     "2026-12-05",
-    "2026-12-10"
+    "2026-12-09",
+    "2026-12-10",
+    "2026-12-11"
    ],
    "return_min_dkk": null,
-   "quotes": 8,
+   "quotes": 10,
    "flights": [
     {
      "quote_id": "Q:d366a680748f",
