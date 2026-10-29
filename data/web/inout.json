@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T14:52:23Z",
+ "generated_at": "2026-10-29T15:06:08Z",
  "currency": "DKK",
  "home": [
   "CPH"
@@ -9744,6 +9744,33 @@
    "flags": [],
    "notes": "site=; other= | offerprice null; protection=0"
   },
+  "TQ:65e17178d8e7": {
+   "id": "TQ:65e17178d8e7",
+   "quote_id": "Q:65e17178d8e7",
+   "source": "momondo-manual",
+   "observed_at": "2026-10-29T15:05Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>GUA",
+    "VVI>CPH"
+   ],
+   "price_dkk": 9334,
+   "fare_brand": "Light + Economy",
+   "cabin_bag": null,
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": null,
+   "checked_bag_fee_dkk": 560,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": "https://www.momondo.dk/flight-search/CPH-GUA/2026-12-02/VVI-CPH/2027-02-02",
+   "carriers": [
+    "Air France",
+    "BoA",
+    "KLM"
+   ],
+   "flags": [],
+   "notes": "Screenshot from Simon on the 2 Dec / 2 Feb search. Out has 3 stops (AMS, PTY and a third not shown). Flere flyselskaber. 299 kr cheaper than the 9,633 seen on 28 Oct."
+  },
   "TQ:4e53c2c3174a": {
    "id": "TQ:4e53c2c3174a",
    "quote_id": "Q:4e53c2c3174a",
@@ -9879,33 +9906,6 @@
     "price_unverified"
    ],
    "notes": "Leg-2 list price (COPA+KLM home 20.8h). BoA+AF home not offered in leg-2 list."
-  },
-  "TQ:82adece0d30b": {
-   "id": "TQ:82adece0d30b",
-   "quote_id": "Q:82adece0d30b",
-   "source": "momondo",
-   "observed_at": "2026-10-28T10:08:17Z",
-   "structure": "open_jaw",
-   "legs": [
-    "CPH>GUA",
-    "VVI>CPH"
-   ],
-   "price_dkk": 9299,
-   "fare_brand": "Light + Economy",
-   "cabin_bag": "1 x håndbagage",
-   "cabin_bag_fee_dkk": 0,
-   "checked_bag": "paid",
-   "checked_bag_fee_dkk": 560,
-   "tickets_inside": 1,
-   "self_transfer": false,
-   "link": "https://www.momondo.dk/flight-search/CPH-GUA/2026-12-03/VVI-CPH/2027-02-02?sort=price_a",
-   "carriers": [
-    "Air France",
-    "BoA",
-    "KLM"
-   ],
-   "flags": [],
-   "notes": "booking site: Flightnetwork; other offers: Annonce 9509 / Flybillet 9336 / Mytrip 9336; carrier names only (no IATA codes shown); times local; momondo multi-city; rank = card position in cheapest-sorted list"
   },
   "TQ:6b468ddaa1d4": {
    "id": "TQ:6b468ddaa1d4",
@@ -54573,6 +54573,131 @@
      "kind": "flight",
      "from": "CPH",
      "to": "GUA",
+     "depart": "2026-12-02T06:00",
+     "arrive": "2026-12-02T21:36",
+     "hours": 22.6,
+     "connections": [
+      {
+       "airport": "AMS",
+       "layover_h": null
+      },
+      {
+       "airport": "PTY",
+       "layover_h": null
+      }
+     ],
+     "carriers": [
+      "KLM"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:65e17178d8e7",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:65e17178d8e7"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "GUA",
+   "depart": "2026-12-02T06:00",
+   "arrive": "2026-12-02T21:36",
+   "total_hours": 22.6,
+   "flying_hours": 22.6,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "AMS",
+    "PTY",
+    "GUA"
+   ],
+   "score": 4,
+   "id": "I0591",
+   "shared_ticket": "TQ:65e17178d8e7",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0592"
+  },
+  "H0592": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "VVI",
+     "to": "CPH",
+     "depart": "2027-02-02T09:05",
+     "arrive": "2027-02-03T09:10",
+     "hours": 19.08,
+     "connections": [
+      {
+       "airport": "GRU",
+       "layover_h": null
+      },
+      {
+       "airport": "CDG",
+       "layover_h": null
+      }
+     ],
+     "carriers": [
+      "BoA",
+      "Air France"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:65e17178d8e7",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:65e17178d8e7"
+   ],
+   "flags": [],
+   "from": "VVI",
+   "to": "CPH",
+   "depart": "2027-02-02T09:05",
+   "arrive": "2027-02-03T09:10",
+   "total_hours": 19.1,
+   "flying_hours": 19.1,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "VVI",
+    "GRU",
+    "CDG",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0592",
+   "shared_ticket": "TQ:65e17178d8e7",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0591"
+  },
+  "I0593": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "GUA",
      "depart": "2026-12-08T12:05",
      "arrive": "2026-12-08T22:44",
      "hours": 17.65,
@@ -54620,7 +54745,7 @@
     "GUA"
    ],
    "score": 5,
-   "id": "I0591",
+   "id": "I0593",
    "shared_ticket": "TQ:4e53c2c3174a",
    "price_dkk": 0,
    "extras": {
@@ -54629,9 +54754,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0592"
+   "paired_with": "H0594"
   },
-  "H0592": {
+  "H0594": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -54687,7 +54812,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0592",
+   "id": "H0594",
    "shared_ticket": "TQ:4e53c2c3174a",
    "price_dkk": 0,
    "extras": {
@@ -54696,9 +54821,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0591"
+   "paired_with": "I0593"
   },
-  "I0593": {
+  "I0595": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -54750,134 +54875,8 @@
     "GUA"
    ],
    "score": 5,
-   "id": "I0593",
-   "shared_ticket": "TQ:0eec9795ce58",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "H0594"
-  },
-  "H0594": {
-   "direction": "home",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "VVI",
-     "to": "CPH",
-     "depart": "2027-02-03T11:55",
-     "arrive": "2027-02-04T16:40",
-     "hours": 23.75,
-     "connections": [
-      {
-       "airport": "GRU",
-       "layover_h": 5.15
-      },
-      {
-       "airport": "AMS",
-       "layover_h": 3.0
-      }
-     ],
-     "carriers": [
-      "G3",
-      "KL"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": false,
-     "ticket": "TQ:0eec9795ce58",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:0eec9795ce58"
-   ],
-   "flags": [],
-   "from": "VVI",
-   "to": "CPH",
-   "depart": "2027-02-03T11:55",
-   "arrive": "2027-02-04T16:40",
-   "total_hours": 23.8,
-   "flying_hours": 23.8,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": false,
-   "airports": [
-    "VVI",
-    "GRU",
-    "AMS",
-    "CPH"
-   ],
-   "score": 3,
-   "id": "H0594",
-   "shared_ticket": "TQ:0eec9795ce58",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "I0593"
-  },
-  "I0595": {
-   "direction": "in",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "CPH",
-     "to": "GUA",
-     "depart": "2026-12-04T09:55",
-     "arrive": "2026-12-04T21:36",
-     "hours": 18.68,
-     "connections": [
-      {
-       "airport": "AMS",
-       "layover_h": 1.5
-      },
-      {
-       "airport": "SJO",
-       "layover_h": 2.25
-      }
-     ],
-     "carriers": [
-      "KL",
-      "CM"
-     ],
-     "flight_numbers": [],
-     "overnight_layover": false,
-     "ticket": "TQ:e462fb53eb1b",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:e462fb53eb1b"
-   ],
-   "flags": [],
-   "from": "CPH",
-   "to": "GUA",
-   "depart": "2026-12-04T09:55",
-   "arrive": "2026-12-04T21:36",
-   "total_hours": 18.7,
-   "flying_hours": 18.7,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": false,
-   "airports": [
-    "CPH",
-    "AMS",
-    "SJO",
-    "GUA"
-   ],
-   "score": 5,
    "id": "I0595",
-   "shared_ticket": "TQ:e462fb53eb1b",
+   "shared_ticket": "TQ:0eec9795ce58",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
@@ -54914,6 +54913,132 @@
      ],
      "flight_numbers": [],
      "overnight_layover": false,
+     "ticket": "TQ:0eec9795ce58",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:0eec9795ce58"
+   ],
+   "flags": [],
+   "from": "VVI",
+   "to": "CPH",
+   "depart": "2027-02-03T11:55",
+   "arrive": "2027-02-04T16:40",
+   "total_hours": 23.8,
+   "flying_hours": 23.8,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "VVI",
+    "GRU",
+    "AMS",
+    "CPH"
+   ],
+   "score": 3,
+   "id": "H0596",
+   "shared_ticket": "TQ:0eec9795ce58",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0595"
+  },
+  "I0597": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "GUA",
+     "depart": "2026-12-04T09:55",
+     "arrive": "2026-12-04T21:36",
+     "hours": 18.68,
+     "connections": [
+      {
+       "airport": "AMS",
+       "layover_h": 1.5
+      },
+      {
+       "airport": "SJO",
+       "layover_h": 2.25
+      }
+     ],
+     "carriers": [
+      "KL",
+      "CM"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
+     "ticket": "TQ:e462fb53eb1b",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:e462fb53eb1b"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "GUA",
+   "depart": "2026-12-04T09:55",
+   "arrive": "2026-12-04T21:36",
+   "total_hours": 18.7,
+   "flying_hours": 18.7,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "AMS",
+    "SJO",
+    "GUA"
+   ],
+   "score": 5,
+   "id": "I0597",
+   "shared_ticket": "TQ:e462fb53eb1b",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0598"
+  },
+  "H0598": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "VVI",
+     "to": "CPH",
+     "depart": "2027-02-03T11:55",
+     "arrive": "2027-02-04T16:40",
+     "hours": 23.75,
+     "connections": [
+      {
+       "airport": "GRU",
+       "layover_h": 5.15
+      },
+      {
+       "airport": "AMS",
+       "layover_h": 3.0
+      }
+     ],
+     "carriers": [
+      "G3",
+      "KL"
+     ],
+     "flight_numbers": [],
+     "overnight_layover": false,
      "ticket": "TQ:e462fb53eb1b",
      "self_transfer_inside": false
     }
@@ -54939,7 +55064,7 @@
     "CPH"
    ],
    "score": 3,
-   "id": "H0596",
+   "id": "H0598",
    "shared_ticket": "TQ:e462fb53eb1b",
    "price_dkk": 0,
    "extras": {
@@ -54948,9 +55073,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0595"
+   "paired_with": "I0597"
   },
-  "I0597": {
+  "I0599": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -55004,7 +55129,7 @@
     "GUA"
    ],
    "score": 5,
-   "id": "I0597",
+   "id": "I0599",
    "shared_ticket": "TQ:935017d8c0c6",
    "price_dkk": 0,
    "extras": {
@@ -55013,9 +55138,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0598"
+   "paired_with": "H0600"
   },
-  "H0598": {
+  "H0600": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -55069,7 +55194,7 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0598",
+   "id": "H0600",
    "shared_ticket": "TQ:935017d8c0c6",
    "price_dkk": 0,
    "extras": {
@@ -55078,9 +55203,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0597"
+   "paired_with": "I0599"
   },
-  "I0599": {
+  "I0601": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -55134,7 +55259,7 @@
     "GUA"
    ],
    "score": 5,
-   "id": "I0599",
+   "id": "I0601",
    "shared_ticket": "TQ:d4b611c74a80",
    "price_dkk": 0,
    "extras": {
@@ -55143,9 +55268,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0600"
+   "paired_with": "H0602"
   },
-  "H0600": {
+  "H0602": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -55199,141 +55324,8 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0600",
-   "shared_ticket": "TQ:d4b611c74a80",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "I0599"
-  },
-  "I0601": {
-   "direction": "in",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "CPH",
-     "to": "GUA",
-     "depart": "2026-12-03T06:00",
-     "arrive": "2026-12-03T22:44",
-     "hours": 23.73,
-     "connections": [
-      {
-       "airport": "AMS",
-       "layover_h": 3.83
-      },
-      {
-       "airport": "PTY",
-       "layover_h": 4.85
-      }
-     ],
-     "carriers": [
-      "KLM"
-     ],
-     "flight_numbers": [
-      "KLM 1266",
-      "KLM 757",
-      "KLM 3027"
-     ],
-     "overnight_layover": false,
-     "ticket": "TQ:82adece0d30b",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:82adece0d30b"
-   ],
-   "flags": [],
-   "from": "CPH",
-   "to": "GUA",
-   "depart": "2026-12-03T06:00",
-   "arrive": "2026-12-03T22:44",
-   "total_hours": 23.7,
-   "flying_hours": 23.7,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": false,
-   "airports": [
-    "CPH",
-    "AMS",
-    "PTY",
-    "GUA"
-   ],
-   "score": 3,
-   "id": "I0601",
-   "shared_ticket": "TQ:82adece0d30b",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "H0602"
-  },
-  "H0602": {
-   "direction": "home",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "VVI",
-     "to": "CPH",
-     "depart": "2027-02-02T09:05",
-     "arrive": "2027-02-03T09:10",
-     "hours": 19.08,
-     "connections": [
-      {
-       "airport": "GRU",
-       "layover_h": 1.83
-      },
-      {
-       "airport": "CDG",
-       "layover_h": 1.08
-      }
-     ],
-     "carriers": [
-      "BoA",
-      "Air France"
-     ],
-     "flight_numbers": [
-      "BoA 736",
-      "Air France 453",
-      "Air France 1750"
-     ],
-     "overnight_layover": false,
-     "ticket": "TQ:82adece0d30b",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:82adece0d30b"
-   ],
-   "flags": [],
-   "from": "VVI",
-   "to": "CPH",
-   "depart": "2027-02-02T09:05",
-   "arrive": "2027-02-03T09:10",
-   "total_hours": 19.1,
-   "flying_hours": 19.1,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": false,
-   "airports": [
-    "VVI",
-    "GRU",
-    "CDG",
-    "CPH"
-   ],
-   "score": 5,
    "id": "H0602",
-   "shared_ticket": "TQ:82adece0d30b",
+   "shared_ticket": "TQ:d4b611c74a80",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
