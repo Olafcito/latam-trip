@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { AppData, InOut, MapData, Ticket, Way } from '../data/types'
-import { schedule, totals, type Journey } from './journey'
+import { schedule, totals, type Hop, type Journey } from './journey'
 import { mixWays, priceOfWays, totalRating, priceScore } from './options'
 import { shortestPath } from './graph'
 import { kr, hours, dayTime, nextDayMark } from './format'
-import { doorToDoorHours } from './time'
+import { addDays, doorToDoorHours } from './time'
 
 const ticket = (id: string, price: number, cabin: number | null = 0, checked: number | null = 300): Ticket => ({
   id, quote_id: 'Q:' + id, source: 'test', observed_at: '2026-10-28T12:00:00Z', structure: 'one_way', legs: [],
@@ -149,6 +149,18 @@ describe('schedule from dated flights', () => {
     expect(s.warnings.filter((w) => w.level === 'error')).toHaveLength(0)
     const early = schedule({ ...j, places: [j.places[0], { ...j.places[1], hop: { ...j.places[1].hop!, date: '2026-12-01' } }] }, wi, wh, 'VVI', names)
     expect(early.warnings.some((w) => w.level === 'error' && w.text.includes('leaves 1 Dec'))).toBe(true)
+  })
+
+  it('points a leg that leaves too early at itself and offers the first day that works', () => {
+    const bus: Hop = { from: 'BOG', to: 'VVI', mode: 'bus', operator: null, hours: 30, price_dkk: 100, overnight: false, border: true, flight: null, date: '2026-12-01' }
+    const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [{ node: 'BOG', hop: null }, { node: 'VVI', hop: bus }] }
+    const w = schedule(j, wi, wh, 'VVI', names).warnings.find((x) => x.level === 'error')!
+    // a bus with no time can leave the day you land
+    expect(w).toMatchObject({ leg: 1, fix: wi.arrive.slice(0, 10) })
+    // a flight picked for the landing day leaves before you land, so the next day
+    const flight = { depart: `${wi.arrive.slice(0, 10)}T05:30`, arrive: `${wi.arrive.slice(0, 10)}T09:00`, hours: 3.5, price_dkk: 900, carriers: ['AV'], via: [], layover_h: [] } as unknown as Hop['flight']
+    const early = schedule({ ...j, places: [j.places[0], { node: 'VVI', hop: { ...bus, mode: 'flight', date: undefined, flight } }] }, wi, wh, 'VVI', names)
+    expect(early.warnings.find((x) => x.level === 'error')).toMatchObject({ leg: 1, fix: addDays(wi.arrive.slice(0, 10), 1) })
   })
 
   it('warns when the journey does not end at the exit', () => {
