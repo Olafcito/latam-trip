@@ -24,6 +24,14 @@ The map shows only quotes the crawler accepted (`ok = 1`). Ad offers, incomplete
 
 Add `--fetch-elevation` to look up altitudes for new places. The result is cached in `data/network/elevation.json`.
 
+### Options pane
+
+The Options button in the top bar opens a third pane beside the map with the flight option tables: whole trips, long-haul tickets, regional flights and a note on how the ratings work. Clicking a whole trip or a long-haul ticket rings its arrival and home airports on the map. The pane reads three more files in `data/web/`, `dash_trips.json`, `dash_journeys.json` and `dash_flights.json`, and shows them as they are. Nothing is recomputed in the browser. If one file is missing, that tab says so and the others keep working. Rebuild them from the repo root with:
+
+    python3 src/inout.py --root . && python3 src/itineraries.py --root . && python3 src/dashboard_data.py --root .
+
+The same tables are in `data/web/dash_index.html`, a standalone page that the pane was built from.
+
 Run the app locally:
 
     cd web

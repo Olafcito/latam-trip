@@ -9,7 +9,7 @@ import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
-import { HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
+import { DASH_HI, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, addRouteLayers, routeOpacity, setLabelFocus, setRouteHit } from './layers'
 import { Panel, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
@@ -26,6 +26,8 @@ export interface RouteMapProps {
   onTrips(update: (s: TripState) => TripState): void
   /** How far a trip fit may zoom in, as a multiple of the whole-map scale. */
   maxFitZoom?: number
+  /** Airport codes (IATA) to ring on the map, from the row picked in the Options pane. */
+  highlight?: string[]
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
@@ -47,7 +49,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2 }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -294,6 +296,32 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2 }: RouteMapPro
       setBuilt(null)
     }
   }, [model])
+
+  // ---- the airports of the option picked in the Options pane ----------------------------
+  // Its own source and layer, so the city selection, hover and trip drawing are untouched.
+  const hiKey = highlight?.join(',') ?? ''
+  useEffect(() => {
+    if (!map) return
+    const codes = new Set(hiKey.split(',').filter(Boolean))
+    const places = model.places.filter((p) => p.iata && codes.has(p.iata))
+    map.getSource<GeoJSONSource>(DASH_HI)?.setData({
+      type: 'FeatureCollection',
+      features: places.map((p) => ({ type: 'Feature', properties: { id: p.id }, geometry: { type: 'Point', coordinates: [p.lon, p.lat] } })),
+    })
+    if (!places.length || !root.current) return
+    // bring both airports into the free part of the map, without zooming in closer than now
+    const panel = live.current.view.panel
+    if (places.every((p) => inView([p.lon, p.lat], panel))) return
+    const lons = places.map((p) => p.lon)
+    const lats = places.map((p) => p.lat)
+    const pad = pads(panel)
+    map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], {
+      padding: { top: pad.top + 30, left: pad.left + 30, right: pad.right + 30, bottom: pad.bottom + 30 },
+      maxZoom: map.getZoom(),
+      duration: reducedMotion() ? 0 : 900,
+      easing: EASE,
+    })
+  }, [map, model, hiKey, inView, pads])
 
   // ---- highlight: feature-state only, no React render ------------------------------------
 

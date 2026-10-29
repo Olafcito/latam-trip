@@ -20,6 +20,8 @@ export const HIT_ROUTES = 'route-hit'
 export const HIT_PLACES = 'place-hit'
 export const LABEL_LAYERS = { focus: 'label-focus', dest: 'label-dest', town: 'label-town' }
 export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
+/** Source and layer for the airports highlighted from the Options pane. */
+export const DASH_HI = 'dash-hi'
 
 /** Overview routes are faint. Hovering a city previews its routes, and a selection shows only its own. */
 export function routeOpacity(base: number): ExpressionSpecification {
@@ -111,6 +113,7 @@ export function addRouteLayers(map: MLMap, model: Model) {
   map.addSource('mover', { type: 'geojson', data: empty })
   map.addSource('trip', { type: 'geojson', data: empty })
   map.addSource('trip-stops', { type: 'geojson', data: empty })
+  map.addSource(DASH_HI, { type: 'geojson', data: empty })
   map.addImage('diamond', diamondSdf(), { sdf: true })
 
   map.addLayer({
@@ -218,6 +221,21 @@ export function addRouteLayers(map: MLMap, model: Model) {
     },
   })
   map.addLayer(dot)
+  // the airports of the flight option picked in the Options pane: a wide amber halo under the markers
+  map.addLayer({
+    id: DASH_HI,
+    type: 'circle',
+    source: DASH_HI,
+    paint: {
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 16, 8, 22],
+      'circle-color': C.flight,
+      'circle-opacity': 0.18,
+      'circle-stroke-color': C.flight,
+      'circle-stroke-width': 2,
+      'circle-stroke-opacity': 0.9,
+      'circle-pitch-alignment': 'map',
+    },
+  })
   // airports: amber diamonds, filled for flight hubs and outlined for the rest. Always shown.
   map.addLayer({
     id: 'place-air',

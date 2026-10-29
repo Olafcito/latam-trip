@@ -1,3 +1,4 @@
+import type { DashFlight, DashJourney, DashTrip } from './dash'
 import type { MapData } from './types'
 
 // Dev: the Vite middleware serves the repo's data/ folder at /data.
@@ -17,6 +18,32 @@ export async function loadMapData(base = BASE): Promise<MapData> {
     getJson<MapData['countries']>('countries', base),
   ])
   return { places, connections, countries }
+}
+
+export interface DashData {
+  trips: DashTrip[] | null
+  journeys: DashJourney[] | null
+  flights: DashFlight[] | null
+}
+
+/** One dash table, or null when its file is missing or broken, so the other tables still show. */
+async function optional<T>(name: string, base: string): Promise<T[] | null> {
+  try {
+    const rows = await getJson<unknown>(name, base)
+    return Array.isArray(rows) ? (rows as T[]) : null
+  } catch {
+    return null
+  }
+}
+
+/** The flight option tables (dash_trips, dash_journeys, dash_flights). Each is null when its file is missing. */
+export async function loadDash(base = BASE): Promise<DashData> {
+  const [trips, journeys, flights] = await Promise.all([
+    optional<DashTrip>('dash_trips', base),
+    optional<DashJourney>('dash_journeys', base),
+    optional<DashFlight>('dash_flights', base),
+  ])
+  return { trips, journeys, flights }
 }
 
 /** The ranked trips to start from (data/saved_trips.json). Missing file: no seeds. */
