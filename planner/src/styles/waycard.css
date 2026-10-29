@@ -28,8 +28,6 @@
    local times under it. Everything is placed by share of the line. */
 .wx {
   --pt: 9px;
-  /* the dates and codes under the line, lifted to pass 4.5:1 on the card */
-  --faint: #7f97a4;
   position: relative;
   display: grid; grid-template-rows: 18px 14px auto;
   min-width: 0;
