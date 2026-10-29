@@ -40,7 +40,7 @@ code, kbd { font-family: var(--font-num); font-size: 0.92em; color: var(--flight
 /* type */
 .h2 { margin: 0; font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
 .mono { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
-.label, .h3 { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; letter-spacing: 0; text-transform: lowercase; color: var(--faint); }
+.label, .h3 { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--faint); }
 .h3 { margin: 0 0 8px; }
 
 /* buttons: hairline, amber when primary, words when a link. Every button presses to 0.97. */
@@ -127,7 +127,7 @@ code, kbd { font-family: var(--font-num); font-size: 0.92em; color: var(--flight
 
 /* hairline table: mono numbers right aligned, sticky head on the surface */
 table.grid { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
-table.grid th { position: sticky; top: 0; z-index: 1; padding: 8px 10px; background: var(--surface); border-bottom: 1px solid var(--line-2); text-align: left; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: lowercase; color: var(--faint); white-space: nowrap; }
+table.grid th { position: sticky; top: 0; z-index: 1; padding: 8px 10px; background: var(--surface); border-bottom: 1px solid var(--line-2); text-align: left; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--faint); white-space: nowrap; }
 table.grid td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 table.grid :is(th, td).num { text-align: right; font-family: var(--font-num); font-weight: 500; }
 @media (hover: hover) and (pointer: fine) {
@@ -144,7 +144,7 @@ table.grid :is(th, td).num { text-align: right; font-family: var(--font-num); fo
   font-size: 13px;
   transition: border-color var(--t-fast) ease;
 }
-.fld { display: flex; flex-direction: column; gap: 4px; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: lowercase; color: var(--muted); }
+.fld { display: flex; flex-direction: column; gap: 4px; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--muted); }
 /* Windows paints native options light unless told otherwise */
 select option { background: var(--surface-2); color: var(--text); }
 .fld input[type='number'] { width: 110px; font-family: var(--font-num); }
