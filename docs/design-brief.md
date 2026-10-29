@@ -53,6 +53,9 @@ Places also gain bed prices for specific dates, found by Claude: site, name, dor
 - I want to send the itinerary to Claude to price it (see 4). Legs to and from Europe are always priced as one combined ticket, so I don't have to think about that.
 - Once prices are in, I want the itinerary with a price per leg, the total in kroner, total travel hours, night landings and self-transfers, compared with the existing whole-trip options.
 - I want to name, save, change and delete my itineraries.
+- When I pick a date for a leg, I want to see the prices known for that exact date (and the days around it), how old they are, and the times and airlines. If there's nothing for that date, or it's old, I want two ways to get it: open that exact search on Momondo in a new tab, or ask Claude (see 4).
+- On Momondo, a small "Save prices" and "Save trip" button (added to my browser) sends what I see straight into the app's data. Back in the app, I want those prices to show up for that leg and date, marked as saved by me. If saving failed, the app (or the button) tells me clearly, and the problem goes to Claude to fix.
+- I want to pick the next place on a trip from a list as well as from the map: places I can reach from where I am, with how (bus, boat, flight), how long it takes and what it costs, plus a search box for any place.
 
 ### 4. Ask Claude
 - From a place, a leg, an itinerary or an experience, I want to ask Claude to: find flight prices, find hostel or hotel prices for dates (hostel and/or hotel; dorm, private or either; optional maximum per night), research an experience (optionally with my own question), research a new place that isn't on the map, or answer a free question.
