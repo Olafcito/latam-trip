@@ -605,7 +605,7 @@
     "duration_min": 45,
     "price_dkk": {
      "min": 404,
-     "typical": 524
+     "typical": 449
     },
     "frequency": "several daily",
     "overnight": false,
@@ -628,6 +628,7 @@
      "return_dkk": null,
      "dates_searched": [
       "2027-01-10",
+      "2027-01-31",
       "2027-02-01",
       "2027-02-02"
      ],
@@ -651,6 +652,26 @@
        "self_transfer": false,
        "searched": "2027-01-10",
        "link": null
+      },
+      {
+       "date": "2027-01-31",
+       "from": "CBB",
+       "to": "VVI",
+       "dkk": 449,
+       "dep": "22:25",
+       "arr": "23:15",
+       "arr_days": 0,
+       "duration_min": 50,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 656"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-31",
+       "link": "https://www.momondo.dk/flight-search/CBB-VVI/2027-01-31"
       },
       {
        "date": "2027-02-01",
@@ -717,10 +738,10 @@
       "self_transfer",
       "tight_connection"
      ],
-     "quotes": 11
+     "quotes": 12
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T20:22:27Z",
+    "observed_at": "2026-10-29T15:03:03Z",
     "note": "Rome2rio fly+bus figure 1h25; the bus (6-10 h) is the usual choice and cheaper (US$2-9).",
     "booking_url": "https://www.momondo.dk/flight-search/CBB-VVI/2027-02-01",
     "source_url": "https://www.rome2rio.com/s/Cochabamba/Santa-Cruz-de-la-Sierra",
@@ -15168,21 +15189,25 @@
      "Avianca",
      "BoA",
      "Copa Airlines",
+     "El Dorado (BOG) - Viru Viru Intl",
+     "GOL",
      "JetSMART",
      "LATAM Airlines",
-     "SANSA"
+     "SANSA",
+     "Tocumen Intl (PTY) - São Paulo Guarulhos",
+     "Tocumen Intl (PTY) - Viru Viru Intl"
     ],
-    "duration_min": 840,
+    "duration_min": 696,
     "price_dkk": {
-     "min": 4877,
-     "typical": 5179
+     "min": 4505,
+     "typical": 5936
     },
     "frequency": null,
     "overnight": false,
     "border": true,
     "stops": [
      {
-      "place_id": "MIA",
+      "place_id": "PTY",
       "type": "layover",
       "wait_min": null
      }
@@ -15192,6 +15217,7 @@
      "nonstop": false,
      "vias": [
       "BOG",
+      "GRU",
       "LIM",
       "MDE",
       "MIA",
@@ -15203,21 +15229,55 @@
       "Avianca",
       "BoA",
       "Copa Airlines",
+      "El Dorado (BOG) - Viru Viru Intl",
+      "GOL",
       "JetSMART",
       "LATAM Airlines",
       "SANSA",
+      "Tocumen Intl (PTY) - São Paulo Guarulhos",
+      "Tocumen Intl (PTY) - Viru Viru Intl",
       "avianca"
      ],
      "oneway_dkk": {
-      "min": 4877,
-      "observed_at": "2026-10-28T11:06:22Z"
+      "min": 4505,
+      "observed_at": "2026-10-29T15:00:28Z"
      },
      "return_dkk": null,
      "dates_searched": [
+      "2027-01-25",
       "2027-01-28",
       "2027-02-01"
      ],
      "by_date": [
+      {
+       "date": "2027-01-25",
+       "from": "MGA",
+       "to": "VVI",
+       "dkk": 4505,
+       "dep": "15:49",
+       "arr": "15:50",
+       "arr_days": 1,
+       "duration_min": 1321,
+       "vias": [
+        "SJO",
+        "PTY",
+        "GRU"
+       ],
+       "carriers": [
+        "BoA",
+        "Copa Airlines",
+        "Tocumen Intl (PTY) - São Paulo Guarulhos"
+       ],
+       "flights": [
+        "Copa Airlines 839",
+        "Copa Airlines 839",
+        "Tocumen Intl (PTY) - São Paulo Guarulhos (GRU)",
+        "BoA 735"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-25",
+       "link": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-25"
+      },
       {
        "date": "2027-01-28",
        "from": "MGA",
@@ -15275,45 +15335,47 @@
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 4877,
-      "duration_min": 1055,
+      "dkk": 4505,
+      "duration_min": 1321,
       "vias": [
        "SJO",
        "PTY",
-       "LIM"
+       "GRU"
       ],
       "carriers": [
+       "BoA",
        "Copa Airlines",
-       "LATAM Airlines",
-       "SANSA"
+       "Tocumen Intl (PTY) - São Paulo Guarulhos"
       ],
-      "date": "2027-01-28",
+      "date": "2027-01-25",
       "self_transfer": true
      },
      "fastest": {
-      "dkk": 5904,
-      "duration_min": 840,
+      "dkk": 8798,
+      "duration_min": 696,
       "vias": [
-       "MIA"
+       "PTY"
       ],
       "carriers": [
-       "Avianca",
-       "BoA"
+       "Copa Airlines",
+       "Tocumen Intl (PTY) - Viru Viru Intl"
       ],
-      "date": "2027-01-28"
+      "date": "2027-01-25"
      },
      "flags": [
+      "airport_change",
       "basic_fare",
       "self_transfer",
       "self_transfer_unverified",
+      "tight_connection",
       "us_transit"
      ],
-     "quotes": 7
+     "quotes": 14
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T11:07:23Z",
+    "observed_at": "2026-10-29T15:02:54Z",
     "note": null,
-    "booking_url": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-28"
+    "booking_url": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-25"
    }
   ]
  },
@@ -17674,13 +17736,16 @@
      "Boliviana de Aviacion",
      "Copa",
      "Copa Airlines",
+     "El Alto Intl (LPB) - J Wilsterman",
      "JetSMART",
-     "LATAM Airlines"
+     "José María Córdova (MDE) - Santiago",
+     "LATAM Airlines",
+     "Tocumen Intl (PTY) - Viru Viru Intl"
     ],
     "duration_min": 660,
     "price_dkk": {
-     "min": 3307,
-     "typical": 3847
+     "min": 2625,
+     "typical": 3526
     },
     "frequency": null,
     "overnight": false,
@@ -17706,6 +17771,7 @@
       "LIM",
       "LPB",
       "PTY",
+      "SCL",
       "VVI"
      ],
      "carriers": [
@@ -17714,18 +17780,22 @@
       "Boliviana de Aviacion",
       "Copa",
       "Copa Airlines",
+      "El Alto Intl (LPB) - J Wilsterman",
       "JetSMART",
-      "LATAM Airlines"
+      "José María Córdova (MDE) - Santiago",
+      "LATAM Airlines",
+      "Tocumen Intl (PTY) - Viru Viru Intl"
      ],
      "oneway_dkk": {
-      "min": 3307,
-      "observed_at": "2026-10-28T19:10:59Z"
+      "min": 2625,
+      "observed_at": "2026-10-29T14:48:22Z"
      },
      "return_dkk": null,
      "dates_searched": [
       "2026-12-14",
       "2026-12-17",
-      "2027-01-15"
+      "2027-01-15",
+      "2027-01-26"
      ],
      "by_date": [
       {
@@ -17807,22 +17877,47 @@
        "self_transfer": false,
        "searched": "2027-01-15",
        "link": null
+      },
+      {
+       "date": "2027-01-26",
+       "from": "MDE",
+       "to": "CBB",
+       "dkk": 2625,
+       "dep": "18:10",
+       "arr": "00:35",
+       "arr_days": 2,
+       "duration_min": 1765,
+       "vias": [
+        "LIM",
+        "LPB"
+       ],
+       "carriers": [
+        "El Alto Intl (LPB) - J Wilsterman",
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "LATAM Airlines 2393",
+        "LATAM Airlines 2400",
+        "El Alto Intl (LPB) - J Wilsterman (CBB)"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-26",
+       "link": "https://www.momondo.dk/flight-search/MDE-CBB/2027-01-26"
       }
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 3307,
-      "duration_min": 950,
+      "dkk": 2625,
+      "duration_min": 1765,
       "vias": [
-       "BOG",
-       "CUZ",
+       "LIM",
        "LPB"
       ],
       "carriers": [
-       "Avianca",
-       "BoA"
+       "El Alto Intl (LPB) - J Wilsterman",
+       "LATAM Airlines"
       ],
-      "date": "2026-12-14",
+      "date": "2027-01-26",
       "self_transfer": true
      },
      "fastest": {
@@ -17839,15 +17934,17 @@
       "date": "2026-12-14"
      },
      "flags": [
+      "airport_change",
+      "basic_fare",
       "long_layover",
       "self_transfer"
      ],
-     "quotes": 8
+     "quotes": 16
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T19:12:39Z",
+    "observed_at": "2026-10-29T14:48:22Z",
     "note": null,
-    "booking_url": "https://www.momondo.dk/flight-search/MDE-CBB/2026-12-14"
+    "booking_url": "https://www.momondo.dk/flight-search/MDE-CBB/2027-01-26"
    }
   ]
  },
@@ -21561,12 +21658,13 @@
     "mode": "flight",
     "operators": [
      "Avianca",
+     "Comalapa Intl. (SAL) - El Dorado",
      "Copa Airlines"
     ],
     "duration_min": 239,
     "price_dkk": {
      "min": 1696,
-     "typical": 1696
+     "typical": 1805
     },
     "frequency": null,
     "overnight": false,
@@ -21582,11 +21680,14 @@
     "flight": {
      "nonstop": false,
      "vias": [
+      "BOG",
       "PTY",
-      "SAL"
+      "SAL",
+      "SJO"
      ],
      "carriers": [
       "Avianca",
+      "Comalapa Intl. (SAL) - El Dorado",
       "Copa Airlines"
      ],
      "oneway_dkk": {
@@ -21599,7 +21700,8 @@
       "2026-12-09",
       "2026-12-11",
       "2026-12-12",
-      "2027-01-12"
+      "2027-01-12",
+      "2027-01-14"
      ],
      "by_date": [
       {
@@ -21715,6 +21817,29 @@
        "self_transfer": false,
        "searched": "2027-01-10",
        "link": "https://www.momondo.dk/flight-search/MGA-MDE/2027-01-10"
+      },
+      {
+       "date": "2027-01-14",
+       "from": "MGA",
+       "to": "MDE",
+       "dkk": 1745,
+       "dep": "05:25",
+       "arr": "13:10",
+       "arr_days": 0,
+       "duration_min": 405,
+       "vias": [
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 314",
+        "Avianca 369"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-14",
+       "link": "https://www.momondo.dk/flight-search/MGA-MDE/2027-01-14"
       }
      ],
      "round_trips": [],
@@ -21742,13 +21867,14 @@
       "date": "2027-01-12"
      },
      "flags": [
+      "airport_change",
       "basic_fare",
       "tight_connection"
      ],
-     "quotes": 7
+     "quotes": 14
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T13:03:34Z",
+    "observed_at": "2026-10-29T14:40:56Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/MGA-MDE/2027-01-10"
    }
@@ -22339,6 +22465,188 @@
     "observed_at": "2026-10-28T19:15:10Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/CLO-CBB/2026-12-14"
+   }
+  ]
+ },
+ {
+  "id": "CBB-MGA",
+  "a": "CBB",
+  "b": "MGA",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Avianca",
+     "BoA",
+     "Copa Airlines",
+     "El Alto Intl (LPB) - J Wilsterman",
+     "El Dorado (BOG) - El Alto Intl",
+     "El Dorado (BOG) - Viru Viru Intl",
+     "LATAM Airlines",
+     "Tocumen Intl (PTY) - São Paulo Guarulhos",
+     "Viru Viru Intl (VVI) - J Wilsterman"
+    ],
+    "duration_min": 1007,
+    "price_dkk": {
+     "min": 5110,
+     "typical": 6149
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [
+     {
+      "place_id": "LPB",
+      "type": "layover",
+      "wait_min": null
+     },
+     {
+      "place_id": "LIM",
+      "type": "layover",
+      "wait_min": null
+     },
+     {
+      "place_id": "PTY",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "BOG",
+      "GRU",
+      "LIM",
+      "LPB",
+      "MIA",
+      "PTY",
+      "VVI"
+     ],
+     "carriers": [
+      "Avianca",
+      "BoA",
+      "Copa Airlines",
+      "El Alto Intl (LPB) - J Wilsterman",
+      "El Dorado (BOG) - El Alto Intl",
+      "El Dorado (BOG) - Viru Viru Intl",
+      "LATAM Airlines",
+      "Tocumen Intl (PTY) - São Paulo Guarulhos",
+      "Viru Viru Intl (VVI) - J Wilsterman"
+     ],
+     "oneway_dkk": {
+      "min": 5110,
+      "observed_at": "2026-10-29T14:53:11Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2027-01-24",
+      "2027-01-25"
+     ],
+     "by_date": [
+      {
+       "date": "2027-01-24",
+       "from": "MGA",
+       "to": "CBB",
+       "dkk": 5728,
+       "dep": "14:08",
+       "arr": "12:55",
+       "arr_days": 1,
+       "duration_min": 1247,
+       "vias": [
+        "PTY",
+        "LIM",
+        "LPB"
+       ],
+       "carriers": [
+        "BoA",
+        "Copa Airlines",
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 105",
+        "Copa Airlines 489",
+        "LATAM Airlines 2400",
+        "BoA 613"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-24",
+       "link": "https://www.momondo.dk/flight-search/MGA-CBB/2027-01-24"
+      },
+      {
+       "date": "2027-01-25",
+       "from": "MGA",
+       "to": "CBB",
+       "dkk": 5110,
+       "dep": "14:08",
+       "arr": "18:35",
+       "arr_days": 1,
+       "duration_min": 1587,
+       "vias": [
+        "PTY",
+        "GRU",
+        "VVI"
+       ],
+       "carriers": [
+        "BoA",
+        "Copa Airlines",
+        "Tocumen Intl (PTY) - São Paulo Guarulhos"
+       ],
+       "flights": [
+        "Copa Airlines 105",
+        "Tocumen Intl (PTY) - São Paulo Guarulhos (GRU)",
+        "BoA 735",
+        "BoA 649"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-25",
+       "link": "https://www.momondo.dk/flight-search/MGA-CBB/2027-01-25"
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 5110,
+      "duration_min": 1587,
+      "vias": [
+       "PTY",
+       "GRU",
+       "VVI"
+      ],
+      "carriers": [
+       "BoA",
+       "Copa Airlines",
+       "Tocumen Intl (PTY) - São Paulo Guarulhos"
+      ],
+      "date": "2027-01-25",
+      "self_transfer": true
+     },
+     "fastest": {
+      "dkk": 6740,
+      "duration_min": 1007,
+      "vias": [
+       "PTY",
+       "LIM",
+       "LPB"
+      ],
+      "carriers": [
+       "BoA",
+       "Copa Airlines",
+       "LATAM Airlines"
+      ],
+      "date": "2027-01-24"
+     },
+     "flags": [
+      "airport_change",
+      "basic_fare",
+      "self_transfer",
+      "us_transit"
+     ],
+     "quotes": 8
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-29T14:58:00Z",
+    "note": null,
+    "booking_url": "https://www.momondo.dk/flight-search/MGA-CBB/2027-01-25"
    }
   ]
  }

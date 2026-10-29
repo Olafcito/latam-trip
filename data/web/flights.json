@@ -3515,6 +3515,30 @@
   ]
  },
  {
+  "from": "MDE",
+  "to": "CBB",
+  "dkk": 2625,
+  "hours": 29.42,
+  "dep": "2027-01-26T18:10",
+  "arr": "2027-01-28T00:35",
+  "vias": [
+   "LIM",
+   "LPB"
+  ],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-CBB/2027-01-26",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
   "from": "SAL",
   "to": "MDE",
   "dkk": 2630,
@@ -3597,6 +3621,31 @@
   ],
   "notes": [],
   "link": null,
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MDE",
+  "to": "CBB",
+  "dkk": 2677,
+  "hours": 17.75,
+  "dep": "2027-01-26T18:10",
+  "arr": "2027-01-27T12:55",
+  "vias": [
+   "LIM",
+   "LPB"
+  ],
+  "carriers": [
+   "BoA",
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-CBB/2027-01-26",
   "shows": [
    "daytime landing"
   ]
@@ -4286,32 +4335,6 @@
    "basic fare"
   ],
   "link": null,
-  "shows": [
-   "cheapest",
-   "daytime landing"
-  ]
- },
- {
-  "from": "MDE",
-  "to": "CBB",
-  "dkk": 3307,
-  "hours": 15.83,
-  "dep": "2026-12-14T01:55",
-  "arr": "2026-12-14T18:45",
-  "vias": [
-   "BOG",
-   "CUZ",
-   "LPB"
-  ],
-  "carriers": [
-   "Avianca",
-   "BoA"
-  ],
-  "notes": [
-   "self transfer",
-   "long layover"
-  ],
-  "link": "https://www.momondo.dk/flight-search/MDE-CBB/2026-12-14",
   "shows": [
    "cheapest",
    "daytime landing"
@@ -5106,6 +5129,33 @@
   ]
  },
  {
+  "from": "MGA",
+  "to": "VVI",
+  "dkk": 4505,
+  "hours": 22.02,
+  "dep": "2027-01-25T15:49",
+  "arr": "2027-01-26T15:50",
+  "vias": [
+   "SJO",
+   "PTY",
+   "GRU"
+  ],
+  "carriers": [
+   "BoA",
+   "Copa Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-25",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "SAL",
   "to": "VVI",
   "dkk": 4611,
@@ -5190,33 +5240,6 @@
   ]
  },
  {
-  "from": "MGA",
-  "to": "VVI",
-  "dkk": 4877,
-  "hours": 17.58,
-  "dep": "2027-01-28T09:00",
-  "arr": "2027-01-29T04:35",
-  "vias": [
-   "SJO",
-   "PTY",
-   "LIM"
-  ],
-  "carriers": [
-   "Copa Airlines",
-   "LATAM Airlines",
-   "SANSA"
-  ],
-  "notes": [
-   "self transfer",
-   "basic fare",
-   "long layover"
-  ],
-  "link": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-28",
-  "shows": [
-   "cheapest"
-  ]
- },
- {
   "from": "SJO",
   "to": "LPB",
   "dkk": 4880,
@@ -5259,6 +5282,33 @@
   "shows": [
    "cheapest",
    "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "CBB",
+  "dkk": 5110,
+  "hours": 26.45,
+  "dep": "2027-01-25T14:08",
+  "arr": "2027-01-26T18:35",
+  "vias": [
+   "PTY",
+   "GRU",
+   "VVI"
+  ],
+  "carriers": [
+   "BoA",
+   "Copa Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-CBB/2027-01-25",
+  "shows": [
+   "cheapest",
    "daytime landing"
   ]
  },
@@ -5368,30 +5418,6 @@
   ],
   "notes": [],
   "link": null,
-  "shows": [
-   "fastest"
-  ]
- },
- {
-  "from": "MGA",
-  "to": "VVI",
-  "dkk": 5904,
-  "hours": 14.0,
-  "dep": "2027-01-28T11:50",
-  "arr": "2027-01-29T03:50",
-  "vias": [
-   "MIA"
-  ],
-  "carriers": [
-   "Avianca",
-   "BoA"
-  ],
-  "notes": [
-   "self transfer",
-   "US transit",
-   "long layover"
-  ],
-  "link": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-28",
   "shows": [
    "fastest"
   ]
@@ -5530,6 +5556,33 @@
  },
  {
   "from": "MGA",
+  "to": "CBB",
+  "dkk": 6740,
+  "hours": 16.78,
+  "dep": "2027-01-24T14:08",
+  "arr": "2027-01-25T08:55",
+  "vias": [
+   "PTY",
+   "LIM",
+   "LPB"
+  ],
+  "carriers": [
+   "BoA",
+   "Copa Airlines",
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-CBB/2027-01-24",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
   "to": "LPB",
   "dkk": 7141,
   "hours": 18.92,
@@ -5647,6 +5700,28 @@
   ],
   "notes": [],
   "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "VVI",
+  "dkk": 8798,
+  "hours": 11.6,
+  "dep": "2027-01-25T14:08",
+  "arr": "2027-01-26T03:44",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-25",
   "shows": [
    "fastest"
   ]
