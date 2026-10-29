@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Family } from '@map/data/types'
+import type { Model } from '@map/data/model'
 import { TRIP_COLORS } from '@map/data/trips'
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
@@ -10,6 +11,7 @@ import { Flag } from '@map/map/Flag'
 import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
 import { hopFromArc } from '../lib/journey'
 import { hoverProps } from './PlaceCard'
+import { ReachList } from './ReachList'
 import { Calendar, Close, Download, Grip, Land, ModeChip, Moon, Plane } from './icons'
 
 // The open trip, on the right of the map: its two fixed flights and the stops between them.
@@ -23,7 +25,13 @@ function Money({ v }: { v: number | null }) {
   return v == null ? <span className="q" title="Unknown for at least one part">?</span> : <>{kr(v)}</>
 }
 
-export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; journey: Journey; mini: boolean; onExpand: () => void }) {
+/** The route map's model and the modes switched on on it, for the list of places one leg away. */
+export interface Reach {
+  model: Model
+  families: Set<Family>
+}
+
+export function TripPanel({ data, journey, mini, onExpand, reach = null }: { data: AppData; journey: Journey; mini: boolean; onExpand: () => void; reach?: Reach | null }) {
   const { inout, map } = data
   const saved = useStore((s) => s.saved)
   const setJourney = useStore((s) => s.setJourney)
@@ -35,6 +43,7 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
   const setCursor = useStore((s) => s.setCursor)
   const removeStop = useStore((s) => s.removeStop)
   const moveStop = useStore((s) => s.moveStop)
+  const insertLeg = useStore((s) => s.insertLeg)
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(journey.name)
   useEffect(() => setName(journey.name), [journey.name])
@@ -128,7 +137,7 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
       <span className="plan-pulse" />
       <div>
         <b>Next from {nm(here.node)}</b>
-        <small>{atEnd && endsAtExit ? 'Tap a lit city to go on. The route comes back here to fly home.' : 'Tap a lit city on the map.'}</small>
+        <small>{atEnd && endsAtExit ? 'Tap a lit city or pick one below to go on. The route comes back here to fly home.' : 'Tap a lit city on the map or pick one below.'}</small>
         {canFinish && (
           <span className="plan-finish">
             <span>To {nm(exitNode)}</span>
@@ -136,6 +145,7 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
             <button onClick={() => finish('price')}>cheapest</button>
           </span>
         )}
+        {reach && <ReachList key={here.node} model={reach.model} families={reach.families} here={here.node} onPick={insertLeg} />}
       </div>
     </li>
   )
@@ -266,12 +276,12 @@ export function TripPanel({ data, journey, mini, onExpand }: { data: AppData; jo
 }
 
 /** What sits beside the map: the open trip. With none open the map is left to look around in. */
-export function MapSide() {
+export function MapSide({ reach = null }: { reach?: Reach | null }) {
   const data = useStore((s) => s.data)
   const journey = useStore((s) => s.journey)
   const mapOpen = useStore((s) => s.mapOpen)
   const paneMini = useStore((s) => s.paneMini)
   const setPaneMini = useStore((s) => s.setPaneMini)
   if (!data || !journey || !mapOpen) return null
-  return <TripPanel data={data} journey={journey} mini={paneMini} onExpand={() => setPaneMini(false)} />
+  return <TripPanel data={data} journey={journey} mini={paneMini} onExpand={() => setPaneMini(false)} reach={reach} />
 }

@@ -88,6 +88,26 @@ The Momondo userscript saves what Simon finds by hand as `data/sources/inbox/man
 | `saved_trips.json` | `seed_trips.py` from `seed_spec.json` |
 | `inout.json`, `map.json` | copied from `data/built/` |
 | `trip.json`, `bag_rules.json` | copied from `data/sources/` |
+| `pair_dates.json` | `tripdb build` (`write_pair_dates`): every regional one-way quote by pair and departure date |
+
+### pair_dates.json
+
+Every known price for every regional flight pair, in both directions, grouped by the local departure date. The long-haul tickets are left out: any quote from or to a European airport, the home airports and the alt origins in `trip.json`. Quotes flagged `incomplete`, `ad_offer` or `over_30h` and quotes over the hour limit are left out too. The same quote seen more than once is one entry with its newest `observed_at`. Each date lists its quotes cheapest first. The keys are short to keep the file small:
+
+    {"pairs": {"GUA-SAP": {"2026-12-21": [
+      {"p": 1359, "d": "15:40", "a": "18:50", "h": 3.17, "c": ["Avianca"], "s": 1, "src": "momondo-manual", "at": "2026-10-29T13:13Z"}
+    ]}}}
+
+| Key | Meaning |
+|---|---|
+| `p` | price in kr |
+| `d`, `a` | local departure and arrival clock times |
+| `n` | how many days later it lands, only when it lands on a later day |
+| `h` | hours door to door |
+| `c` | airlines |
+| `s` | stops |
+| `src` | where the price came from: `momondo`, `google_flights`, `expedia`, `kiwi`, `airline:AV`, or `momondo-manual` for a price Simon saved with the Momondo userscript |
+| `at` | when it was last seen, UTC |
 
 The planner reads `data/web/` from GitHub raw on `main` first, then from `planner/public/data/`, which `npm run sync-data` fills.
 
