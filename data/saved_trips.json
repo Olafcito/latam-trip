@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated_at": "2026-10-28T19:04:21Z",
+ "generated_at": "2026-10-29T09:51:12Z",
  "note": "The trips Simon chose on 28 Oct 2026 (ranked list #1, #2, #4, #5, #6). seed_trips.py turns this into data/saved_trips.json. A flight names its quote_id (pinned); if that quote is gone the cheapest acceptable quote of the same route is used.",
  "trips": [
   {
@@ -24,10 +24,11 @@
      "total": 9.2,
      "price": 4.2,
      "way_in": 5,
-     "way_home": 5
+     "way_home": 5,
+     "on_total": 9.2
     },
     "way_in": {
-     "id": "I0141",
+     "id": "I0251",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -83,7 +84,7 @@
      ]
     },
     "way_home": {
-     "id": "H0142",
+     "id": "H0252",
      "direction": "home",
      "type": "ticket",
      "from": "BOG",
@@ -331,10 +332,11 @@
      "total": 8.6,
      "price": 5.0,
      "way_in": 3,
-     "way_home": 4
+     "way_home": 4,
+     "on_total": 8.6
     },
     "way_in": {
-     "id": "I0133",
+     "id": "I0243",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -390,7 +392,7 @@
      ]
     },
     "way_home": {
-     "id": "H0134",
+     "id": "H0244",
      "direction": "home",
      "type": "ticket",
      "from": "CTG",
@@ -644,10 +646,11 @@
      "total": 8.0,
      "price": 5.0,
      "way_in": 3,
-     "way_home": 3
+     "way_home": 3,
+     "on_total": 8.0
     },
     "way_in": {
-     "id": "I0227",
+     "id": "I0685",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -699,7 +702,7 @@
      ]
     },
     "way_home": {
-     "id": "H0228",
+     "id": "H0686",
      "direction": "home",
      "type": "ticket",
      "from": "MDE",
@@ -949,10 +952,11 @@
      "total": 9.3,
      "price": 4.3,
      "way_in": 5,
-     "way_home": 5
+     "way_home": 5,
+     "on_total": 9.3
     },
     "way_in": {
-     "id": "I0161",
+     "id": "I0327",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
@@ -1001,7 +1005,7 @@
      ]
     },
     "way_home": {
-     "id": "H0162",
+     "id": "H0328",
      "direction": "home",
      "type": "ticket",
      "from": "SAL",
@@ -1249,76 +1253,80 @@
     "type": "ticket",
     "entry": "SAL",
     "exit": "VVI",
-    "ticket_quote_id": "Q:08549f9c4a86",
-    "price_dkk": 9071,
+    "ticket_quote_id": "Q:6ac0246c3aa4",
+    "price_dkk": 9363,
     "rating": {
-     "total": 6.7,
-     "price": 2.9,
-     "way_in": 5,
-     "way_home": 3
+     "total": 6.8,
+     "price": 2.6,
+     "way_in": 3,
+     "way_home": 5,
+     "on_total": 6.8
     },
     "way_in": {
-     "id": "I0215",
+     "id": "I0471",
      "direction": "in",
      "type": "ticket",
      "from": "CPH",
      "to": "SAL",
-     "depart": "2026-12-04T12:05",
-     "arrive": "2026-12-04T23:38",
-     "total_hours": 18.6,
-     "flying_hours": 18.6,
+     "depart": "2026-12-02T06:45",
+     "arrive": "2026-12-02T23:38",
+     "total_hours": 23.9,
+     "flying_hours": 23.9,
      "flights": 3,
      "hub_nights": 0,
      "changes": 0,
      "us_transit": false,
      "airports": [
       "CPH",
-      "AMS",
+      "CDG",
       "PTY",
       "SAL"
      ],
      "tickets": [
-      "TQ:08549f9c4a86"
+      "TQ:6ac0246c3aa4"
      ],
      "timeline": [
       {
        "kind": "flight",
        "from": "CPH",
        "to": "SAL",
-       "depart": "2026-12-04T12:05",
-       "arrive": "2026-12-04T23:38",
-       "hours": 18.55,
+       "depart": "2026-12-02T06:45",
+       "arrive": "2026-12-02T23:38",
+       "hours": 23.88,
        "connections": [
         {
-         "airport": "AMS",
-         "layover_h": 1.25
+         "airport": "CDG",
+         "layover_h": 6.0
         },
         {
          "airport": "PTY",
-         "layover_h": 2.55
+         "layover_h": 2.13
         }
        ],
        "carriers": [
-        "KL",
-        "CM"
+        "Air France"
        ],
-       "flight_numbers": [],
+       "flight_numbers": [
+        "Air France 1351",
+        "Air France 474",
+        "Air France 5357"
+       ],
        "overnight_layover": false,
-       "ticket": "TQ:08549f9c4a86",
+       "ticket": "TQ:6ac0246c3aa4",
        "self_transfer_inside": false
       }
      ]
     },
     "way_home": {
-     "id": "H0216",
+     "id": "H0472",
      "direction": "home",
      "type": "ticket",
      "from": "VVI",
      "to": "CPH",
-     "depart": "2027-02-03T11:55",
-     "arrive": "2027-02-04T16:40",
-     "total_hours": 23.8,
-     "flying_hours": 23.8,
+     "depart": "2027-02-02T09:05",
+     "arrive": "2027-02-03T09:10",
+     "total_hours": 19.1,
+     "flying_hours": 19.1,
      "flights": 3,
      "hub_nights": 0,
      "changes": 0,
@@ -1326,37 +1334,41 @@
      "airports": [
       "VVI",
       "GRU",
-      "AMS",
+      "CDG",
       "CPH"
      ],
      "tickets": [
-      "TQ:08549f9c4a86"
+      "TQ:6ac0246c3aa4"
      ],
      "timeline": [
       {
        "kind": "flight",
        "from": "VVI",
        "to": "CPH",
-       "depart": "2027-02-03T11:55",
-       "arrive": "2027-02-04T16:40",
-       "hours": 23.75,
+       "depart": "2027-02-02T09:05",
+       "arrive": "2027-02-03T09:10",
+       "hours": 19.08,
        "connections": [
         {
          "airport": "GRU",
-         "layover_h": 5.15
+         "layover_h": 1.83
         },
         {
-         "airport": "AMS",
-         "layover_h": 3.0
+         "airport": "CDG",
+         "layover_h": 1.08
         }
        ],
        "carriers": [
-        "G3",
-        "KL"
+        "Air France",
+        "BoA"
        ],
-       "flight_numbers": [],
+       "flight_numbers": [
+        "BoA 736",
+        "Air France 453",
+        "Air France 1750"
+       ],
        "overnight_layover": false,
-       "ticket": "TQ:08549f9c4a86",
+       "ticket": "TQ:6ac0246c3aa4",
        "self_transfer_inside": false
       }
      ]
@@ -1525,11 +1537,11 @@
     }
    ],
    "totals": {
-    "long_haul_dkk": 9071,
+    "long_haul_dkk": 9363,
     "in_between_dkk": 3604,
-    "flights_total_dkk": 12675,
+    "flights_total_dkk": 12967,
     "cabin_bag_fees_dkk": 410,
-    "total_with_cabin_bags_dkk": 13085,
+    "total_with_cabin_bags_dkk": 13377,
     "hub_nights": 0,
     "us_transit": false
    }
