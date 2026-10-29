@@ -61,6 +61,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const { inout, map } = data
   const saved = useStore((s) => s.saved)
   const openSaved = useStore((s) => s.openSaved)
+  const setHopDate = useStore((s) => s.setHopDate)
   const saveJourney = useStore((s) => s.saveJourney)
   const go = useStore((s) => s.go)
   // the leg picked in the hero. Its known prices on its day show under the chips.
@@ -136,7 +137,12 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
 
       {sched.warnings.length > 0 && (
         <ul className="dash-warn">
-          {sched.warnings.map((w, i) => <li key={i} className={w.level}><Warn />{w.text}</li>)}
+          {sched.warnings.map((w, i) => (
+            <li key={i} className={w.level}>
+              <Warn />{w.text}
+              {w.leg != null && w.fix && <button type="button" className="btn small" onClick={() => setHopDate(w.leg!, w.fix!)}>Move to {day(w.fix)}</button>}
+            </li>
+          ))}
         </ul>
       )}
 
