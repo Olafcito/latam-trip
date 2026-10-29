@@ -1,4 +1,4 @@
-/* The route as a story: a plain rail with the dates beside it, stops as chapters, travel as a line between. */
+/* The route as a story: a plain rail with the dates beside it, from Copenhagen and back, stops on it, travel drawn between. */
 @scope (:root) to (.rmap) {
 .st {
   --gut: 64px; --rail: 40px;
@@ -6,23 +6,16 @@
 }
 .st > li { position: relative; display: grid; grid-template-columns: var(--gut) var(--rail) minmax(0, 1fr); align-items: stretch; }
 
-/* the date beside the rail, the day of the trip under it */
+/* the date beside the rail */
 .st-gut { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 1px; padding-right: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .st-gut > b { font-size: 12.5px; font-weight: 600; color: var(--text); }
-.st-gut > small { font-size: 11px; color: var(--faint); }
 .st-gut[data-est='true'] > b { color: var(--muted); }
 
 /* the rail: one neutral column the whole way down. Each row draws its own stretch of it. */
 .st-rail { position: relative; display: grid; place-items: center; }
 .st-rail::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); background: var(--line-2); }
-.st-end.in .st-rail::before { top: 50%; }
-.st-end.home .st-rail::before { bottom: 50%; }
-
-/* ends: the way in and home, as plain discs on the rail */
-.st-io { position: relative; z-index: 1; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--surface-3); color: var(--muted); box-shadow: 0 0 0 3px var(--surface), 0 0 0 4px var(--line-2); }
-.st-endbtn { display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 10px 12px; border: 0; border-radius: var(--radius); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background-color var(--t-fast) ease; }
-.st-endbtn b { font-size: 14px; font-weight: 600; }
-.st-endbtn small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.st-stop[data-home='start'] .st-rail::before { top: 50%; }
+.st-stop[data-home='end'] .st-rail::before { bottom: 50%; }
 
 /* stops: tall in proportion to the nights, capped so a long stay does not run away */
 .st-stop { min-height: calc(64px + var(--nights, 0) * 6px); padding: 4px 0; }
@@ -36,8 +29,8 @@
 }
 .st-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .st-nm > b { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
-.st-nm > small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.st-tag { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 4px; max-width: 58ch; font-size: 12.5px; line-height: 1.45; color: color-mix(in srgb, var(--text) 78%, transparent); }
+.st-stop[data-home] { min-height: 52px; }
+.st-stop[data-home] .st-nm > b { font-size: 14px; font-weight: 600; color: var(--muted); }
 .st-nights { flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 64px; }
 .st-nights > b, .st-step > b { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1; }
 .st-nights[data-est='true'] b { color: color-mix(in srgb, var(--text) 70%, transparent); }
@@ -54,19 +47,32 @@
 .st-card:is(:hover, :focus-within) .st-step button { opacity: 1; }
 @media (hover: none) { .st-step button { opacity: 1; } .st-step button:disabled { opacity: 0.25; } }
 
-/* legs: the date in the gutter opens the calendar, the line between the stops opens the boarding pass */
-.st-leg { min-height: 48px; }
-.st-date {
+/* legs: the date in the gutter opens the calendar, the leg drawn between the stops opens its ticket.
+   Each mode has its colour, the long-haul ways the map's green in and orange home. */
+.st-leg { --tone: var(--bus); min-height: 48px; }
+.st-leg[data-f='flight'] { --tone: var(--flight); }
+.st-leg[data-f='boat'] { --tone: var(--boat); }
+.st-leg[data-tone='in'] { --tone: var(--in); }
+.st-leg[data-tone='home'] { --tone: var(--home); }
+.st-when {
   display: flex; flex-direction: column; align-items: flex-end; gap: 1px;
-  margin: 0 -6px 0 0; padding: 4px 6px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit;
-  font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer;
-  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+  margin: 0 -6px 0 0; padding: 4px 6px; border-radius: 8px;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  transition: background-color var(--t-fast) ease, box-shadow var(--t-fast) ease, transform 160ms var(--ease-out);
 }
-.st-date b { font-size: 12.5px; font-weight: 600; color: var(--text); text-decoration: underline dotted color-mix(in srgb, var(--muted) 70%, transparent); text-underline-offset: 3px; }
-.st-date small { font-size: 11px; color: var(--faint); }
+.st-when b { font-size: 12.5px; font-weight: 600; color: var(--text); transition: color var(--t-fast) ease; }
+.st-when small { font-size: 11px; color: var(--faint); }
+.st-date { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.st-date b { text-decoration: underline dotted color-mix(in srgb, var(--muted) 70%, transparent); text-underline-offset: 3px; }
 .st-date[data-known='false'] b { color: var(--muted); }
 .st-date[aria-expanded='true'] { background: var(--surface-3); }
 .st-date:active { transform: scale(0.96); }
+/* the leg's ticket is open: its day lights up in the leg's colour, so the ticket reads as that day's */
+.st-leg:has(.st-hop[aria-expanded='true']) .st-when {
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 45%, transparent);
+}
+.st-leg:has(.st-hop[aria-expanded='true']) .st-when b { color: var(--tone); text-decoration-color: currentColor; }
 
 .st-hop {
   --stroke: var(--muted);
@@ -74,24 +80,25 @@
   border: 0; border-radius: 10px; background: none; color: var(--muted); font: inherit; cursor: pointer;
   transition: color var(--t-fast) ease;
 }
-.st-hl { flex: 1 1 0; height: 2px; opacity: 0.55; background: var(--stroke); transition: opacity var(--t-fast) ease; }
+.st-hl { flex: 1 1 0; height: 2px; opacity: 0.55; background: var(--stroke); transition: opacity var(--t-fast) ease, background-color var(--t-fast) ease; }
 .st-leg[data-f='flight'] .st-hl { background: repeating-linear-gradient(90deg, var(--stroke) 0 6px, transparent 6px 11px); }
 .st-leg[data-f='boat'] .st-hl { background: repeating-linear-gradient(90deg, var(--stroke) 0 2px, transparent 2px 6px); }
 .st-hm { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.st-hm svg { flex: none; }
-.st-hm [data-none] { font-weight: 500; color: var(--muted); }
+.st-hm svg { flex: none; transition: color var(--t-fast) ease; }
 .st-moon { display: inline-flex; color: var(--faint); }
-.st-hop[aria-expanded='true'] { color: var(--text); }
+.st-hop[aria-expanded='true'] { --stroke: var(--tone); color: var(--text); }
 .st-hop[aria-expanded='true'] .st-hl { opacity: 0.9; }
-.st-date:focus-visible, .st-hop:focus-visible, .st-endbtn:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.st-hop[aria-expanded='true'] .st-hm svg { color: var(--tone); }
+.st-date:focus-visible, .st-hop:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 
 @media (hover: hover) and (pointer: fine) {
-  .st-endbtn:hover { background: var(--surface-2); }
   .st-stop:hover .st-card { background: var(--surface-2); }
   .st-date:hover { background: var(--surface-2); }
   .st-date:hover b { text-decoration-color: var(--text); }
-  .st-hop:hover { color: var(--text); }
+  /* on hover the line and its mode take the leg's colour */
+  .st-hop:hover { --stroke: var(--tone); color: var(--text); }
   .st-hop:hover .st-hl { opacity: 0.9; }
+  .st-hop:hover .st-hm svg { color: var(--tone); }
   .st-step button:hover, .wp-step button:hover { color: var(--text); background: var(--line-2); }
 }
 
@@ -113,7 +120,7 @@
 .pop.wide { width: min(304px, calc(100vw - 32px)); padding: 12px; }
 .st-body > .pop { left: 6px; }
 .pop::before { content: ''; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
-.st-end .pop { display: flex; flex-direction: column; gap: 10px; width: min(460px, calc(100vw - 32px)); }
+.pop.way { width: min(460px, calc(100vw - 32px)); }
 .pop-x {
   display: none; position: absolute; top: 6px; right: 6px; width: 40px; height: 40px; place-items: center;
   border: 0; border-radius: 50%; background: var(--surface-3); color: var(--muted); cursor: pointer;
@@ -126,6 +133,10 @@
 .lc[data-f='flight'] { --tone: var(--flight); }
 .lc[data-f='boat'] { --tone: var(--boat); }
 .lc-head { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.lc-when { font-size: 13px; font-weight: 650; color: var(--tone); }
+.lc.way .lc-when { color: var(--text); }
+.lc-day { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lc-more { align-self: flex-start; margin-top: -6px; }
 .lc-night { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; color: var(--boat); }
 .lc-ends { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 12px; }
 .lc-end { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
@@ -223,10 +234,9 @@
   /* the nights take only the number's width, so a name like San Jose (Costa Rica) keeps two lines */
   .st-card { gap: 8px; padding-inline: 8px 4px; }
   .st-nights { min-width: 44px; }
-  .st-gut > small, .st-date small { display: none; }
-  .st-tag { display: none; }
+  .st-when small { display: none; }
   /* on a phone the popovers rise as a sheet from the bottom instead of hanging off their trigger */
-  .pop, .pop.wide, .st-body > .pop, .st-end .pop {
+  .pop, .pop.wide, .st-body > .pop, .pop.way {
     position: fixed; top: auto; left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 78vh; overflow-y: auto;
     transform-origin: bottom center;
     @starting-style { opacity: 0; transform: translateY(12px); }
@@ -238,7 +248,7 @@
   .wp-arr { width: 40px; height: 40px; }
   .wp-nav { height: 40px; }
   .pop-x { display: grid; }
-  .pop, .pop.wide, .st-end .pop { padding-top: 52px; }
+  .pop, .pop.wide, .pop.way { padding-top: 52px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pop { transition: opacity 150ms ease; @starting-style { opacity: 0; transform: none; } }

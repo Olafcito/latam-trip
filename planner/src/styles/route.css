@@ -215,31 +215,6 @@
   border-top: 1px solid var(--line);
 }
 .th-lab { font-size: var(--fs-label); font-weight: 500; color: var(--faint); white-space: nowrap; }
-/* the prices for the picked leg, under the chips: a plain list, cheapest first */
-.lp { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; min-width: 0; margin-top: -4px; }
-.lp-head { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; font-size: var(--fs-small); }
-.lp-head b { font-weight: 600; color: var(--text); }
-.lp-head span { color: var(--faint); }
-.lp-list { list-style: none; margin: 0; padding: 0; }
-.lp-q {
-  display: grid;
-  grid-template-columns: 76px minmax(0, 1.1fr) minmax(0, 1fr) auto;
-  align-items: baseline; gap: 4px 14px;
-  padding: 7px 0;
-  border-top: 1px solid var(--line);
-  font-size: var(--fs-small); font-variant-numeric: tabular-nums;
-}
-.lp-q:first-child { border-top: 0; }
-.lp-p { font-family: var(--font-num); font-size: var(--fs-num); font-weight: 650; color: var(--flight); white-space: nowrap; }
-.lp-t { color: var(--text); white-space: nowrap; }
-.lp-n { margin-left: 1px; font-size: 10px; color: var(--home); }
-.lp-h { margin-left: 8px; color: var(--muted); }
-.lp-c { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
-.lp-s { color: var(--faint); white-space: nowrap; text-align: right; }
-.lp-more { align-self: flex-start; }
-.lp-act { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: var(--fs-small); color: var(--muted); }
-.lp-btns { display: inline-flex; flex-wrap: wrap; gap: 8px; }
-.lp-btns .btn { text-decoration: none; }
 
 @container (max-width: 620px) {
   .th {
@@ -262,10 +237,5 @@
   .fly-ico { grid-row: 1 / 3; }
   .fly-d { line-height: 1.25; }
   .fly-r { font-size: 11.5px; line-height: 1.25; }
-  .lp-q { grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; }
-  .lp-t { text-align: right; }
-  .lp-c { grid-column: 1; }
-  .lp-s { white-space: normal; }
-  .lp-btns, .lp-btns .btn { flex: 1 1 auto; justify-content: center; }
 }
 }
