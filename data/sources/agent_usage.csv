@@ -89,3 +89,8 @@ round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
 38,gf-38d,sonnet,google_flights,8,141141,35,489,26
 38,mom-38a,sonnet,momondo,1,124202,21,210,0
 38,gf-38c,sonnet,google_flights,8,0,0,0,32
+38,mom-38b,sonnet,playwright,1,87237,20,238,0
+38,mom-38a,sonnet,claude-in-chrome,1,79841,17,632,0
+38,mom-38c,sonnet,playwright,1,86585,29,367,0
+38,mom-38e,sonnet,playwright,6,120818,74,1822,33
+38,mom-38d,sonnet,claude-in-chrome,7,86040,236,2080,11
