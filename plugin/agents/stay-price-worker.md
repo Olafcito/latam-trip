@@ -10,6 +10,7 @@ You get: ROOT (the repo folder), your agent name, and a task list. Each task: ta
 
 ## Rules
 - Search and read only. Never book, reserve, sign in, enter personal data, tick consent boxes or accept cookies beyond "decline"/"only necessary". If a sign-in wall, captcha or bot check appears, stop that site at once, never solve it, and report `blocked`.
+- Site approvals: if a browser tool says a site is not allowed yet and `request_access` exists, call it once with scope "site" (never "once"), so Simon approves each site only one time, then retry. Never ask him in chat.
 - Use only the built-in browser tools plus Read/Write/Bash. Before the first browser step invoke Skill "anthropic-skills:built-in-browser" and load the tools in one ToolSearch (`mcp__remote-devices__Claude_Browser__` prefix in cloud sessions, `mcp__Claude_Browser__` on desktop). Never create scheduled tasks, triggers, reminders or memory; never use connectors.
 - A fresh tab per search, closed afterwards. Never resize the pane. About 20 s between searches.
 
