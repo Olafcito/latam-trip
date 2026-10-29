@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import type { Family } from '@map/data/types'
 import { TRIP_COLORS } from '@map/data/trips'
 import { Flag } from '@map/map/Flag'
@@ -6,30 +6,23 @@ import type { AppData, InOut, MapNode, Way } from '../data/types'
 import { useStore } from '../store'
 import { clock, day, hours, kr, weekdayDay } from '../lib/format'
 import { nodeForAirport, nodeName, schedule, totals, type Hop, type Journey, type ScheduledPlace } from '../lib/journey'
-import { countryColor, countryName } from '../lib/colors'
+import { countryName } from '../lib/colors'
+import { flightLegs, tripRoute, type RouteLeg } from '../lib/route'
 import { WayTrack } from '../components/WayCard'
 import { TotalsPanel } from '../components/TotalsPanel'
 import { MiniMap } from '../components/MiniMap'
 import { hoverProps } from '../components/PlaceCard'
 import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosure'
+import { FlyOnChips, RouteLine } from '../components/RouteLine'
 import { Download, Home, Land, ModeChip, Moon, Pin, Transfer, Warn } from '../components/icons'
 
-// The dashboard of one trip. Calm by default: the route as flags, names and days, the legs as an
-// icon, a duration and a price. Everything else opens on a click.
+// The dashboard of one trip. Calm by default: the route as flags with the all-in price and the
+// rough day each flight leaves, then the stops and legs. Everything else opens on a click.
 
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
 const MODE_NAME: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Ground' }
 
-function Fact({ v, k, big }: { v: string; k: string; big?: boolean }) {
-  return (
-    <div className={`fact${big ? ' big' : ''}`}>
-      <b>{v}</b>
-      <small>{k}</small>
-    </div>
-  )
-}
-
-/** A stop: number, flag, city and days. Opens to its country, dates and description. */
+/** A stop: number, flag and city. Opens to its country, dates and description. */
 function StopRow({ i, name, node, country, sp }: { i: number; name: string; node: MapNode | undefined; country: string; sp: ScheduledPlace }) {
   const d = useDisclosure()
   const dates = [sp.arrive && weekdayDay(sp.arrive), sp.depart && weekdayDay(sp.depart)].filter(Boolean).join(' to ')
@@ -39,9 +32,6 @@ function StopRow({ i, name, node, country, sp }: { i: number; name: string; node
         <span className="tl-n" style={{ background: TRIP_COLORS[0] }}>{i + 1}</span>
         <Flag code={country} size={13} title={countryName(country)} />
         <b className="tl-name" {...hoverProps(node)}>{name}</b>
-        <span className="tl-days" title="Days shared evenly between the dated flights around this stop">
-          <b>{sp.days}</b> {sp.days === 1 ? 'day' : 'days'}
-        </span>
         <Chevron open={d.open} />
       </button>
       <DisclosurePanel {...d.panel}>
@@ -135,6 +125,9 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const openSaved = useStore((s) => s.openSaved)
   const saveJourney = useStore((s) => s.saveJourney)
   const go = useStore((s) => s.go)
+  // the leg picked in the hero. Picking does nothing else yet, it is where a fare lookup hooks in.
+  const [leg, setLeg] = useState<string | null>(null)
+  const pickLeg = (l: RouteLeg) => setLeg((k) => (k === l.key ? null : l.key))
 
   const wi = inout.ways[journey.wayIn]
   const wh = inout.ways[journey.wayHome]
@@ -167,9 +160,9 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
   const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
-  const countries = Object.entries(t.days_per_country).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1])
   const countryOf = (id: string) => node(id)?.country ?? inout.airports[id]?.country ?? ''
-  const stops = journey.places.length
+  const route = tripRoute(data, journey)
+  const partial = t.ground_unknown > 0 || t.hub_stay_dkk == null
 
   return (
     <div className="dash">
@@ -185,11 +178,21 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
       </div>
 
       <div className="card dash-hero">
-        <div className="facts">
-          <Fact v={kr(allIn)} k="Total" big />
-          <Fact v={`${day(wi.arrive)} to ${day(wh.depart)}`} k="Dates" />
-          <Fact v={String(sched.totalDays)} k="Days there" />
-          <Fact v={String(stops)} k={stops === 1 ? 'Stop' : 'Stops'} />
+        <div className="th">
+          <div className="th-route">{route && <RouteLine route={route} size="hero" />}</div>
+          <div className="th-price">
+            <span className="th-big">
+              {kr(allIn).replace(/ kr$/, '')}<span className="th-kr"> kr</span>
+              {partial && <span className="th-q" title="Some legs have no price yet, so this is a floor">+?<span className="sr"> plus unpriced legs</span></span>}
+            </span>
+            <span className="th-sub">all in</span>
+          </div>
+          {route && (
+            <div className="th-legs">
+              <span className="th-lab" id="fly-on">Fly on</span>
+              <FlyOnChips legs={flightLegs(route)} pickedLeg={leg} onPickLeg={pickLeg} labelledBy="fly-on" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -234,24 +237,6 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
             <h3 className="h3">Costs</h3>
             <TotalsPanel t={t} total={allIn} />
           </section>
-          {countries.length > 0 && (
-            <section className="card pad" aria-label="Days per country">
-              <h3 className="h3">Days per country</h3>
-              <div className="bar" role="img" aria-label={countries.map(([c, n]) => `${countryName(c)} ${n}`).join(', ')}>
-                {countries.map(([c, n]) => <i key={c} style={{ flexGrow: n, background: countryColor(c) }} title={`${countryName(c)}, ${n} ${n === 1 ? 'day' : 'days'}`} />)}
-              </div>
-              <ul className="dash-legend">
-                {countries.map(([c, n]) => (
-                  <li key={c}>
-                    <i style={{ background: countryColor(c) }} />
-                    <Flag code={c} size={11} />
-                    {countryName(c)}
-                    <b>{n}</b>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
           <section className="card pad" aria-label="Map">
             <MiniMap data={inout} ways={[wi, wh]} onOpen={() => openSaved(journey)} />
           </section>
