@@ -59,6 +59,26 @@
 .rt-end.in > .rt-c:not(.home), .rt-end.out > .rt-c.home { grid-column: 3; }
 .rt-cap { grid-row: 2; }
 
+/* the hero: under every flag the cities in that country and the days there */
+.rt-stop { flex: none; display: flex; flex-direction: column; align-items: center; }
+.rt-cc {
+  grid-row: 2; justify-self: center;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding-top: 4px; max-width: 10.5em;
+  font-size: var(--cap); line-height: 1.2; text-align: center;
+}
+.rt-cc b {
+  font-weight: 600; letter-spacing: -0.005em; color: var(--text);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+.rt-cc span { font-size: calc(var(--cap) - 1px); font-weight: 500; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rt-end.in > .rt-cc { grid-column: 3; }
+.rt-end.out > .rt-cc { grid-column: 1; }
+.rt-cc[data-tone='in'] b { color: var(--in); }
+.rt-cc[data-tone='out'] b { color: var(--home); }
+.rt-cc[data-through='true'] b { font-weight: 500; color: var(--muted); }
+.rt-cc[data-through='true'] span { font-style: italic; opacity: 0.8; }
+
 /* a country: its flag, with a ring around the landing and the way out */
 .rt-c { flex: none; display: grid; place-items: center; height: var(--row); padding: 0 1px; }
 .rt-c .flag, .rt-nf {
@@ -127,6 +147,7 @@
   .rt[data-size='hero'] { --fh: 13px; --chip: 20px; --row: 26px; --lmin: 8px; --lend: 24px; --cap: 12px; }
 }
 @container (max-width: 520px) {
+  .rt-cc { max-width: 7.5em; }
   .rt .rt-c.home { display: none; }
   .rt > .rt-l .mchip { display: none; }
   .rt > .rt-l:has(> .mchip) { min-width: var(--lmin); }
