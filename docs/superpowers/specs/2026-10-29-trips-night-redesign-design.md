@@ -123,6 +123,8 @@ Everything that needs a design, grouped by surface. The workstream that owns eac
 
 Claude Design proposed the Timetable. This is that idea, kept where it works and changed where the data or the screen argue against it.
 
+Only the idea is borrowed. Simon found the visuals Claude Design produced ugly and vibe coded, so nothing of their look is used. Every element is built from 21st components ported to our stack and checked with the design skills. Nothing is added only because Claude Design suggested it.
+
 ### 6.1 Trips home
 
 One shared horizontal time axis from two days before the earliest landing to two days after the latest return across all listed trips. Month names in mono at the top, a hairline tick per week, a faint band on weekends is not used (noise). **(my call)**
@@ -176,7 +178,7 @@ The panel on the map changes from paper to night: background `--surface` (`#0F1F
 
 ## 8. Anti-goals
 
-It fails even if it works when: any light, sand, grey or white surface remains in the planner or the map panel. Cards with shadows come back under another name. Blue links remain. Numbers are set in Bricolage. A screen needs a paragraph to explain itself. Motion is noticed rather than felt.
+It fails even if it works when: any light, sand, grey or white surface remains in the planner or the map panel. Cards with shadows come back under another name. Blue links remain. Numbers are set in Bricolage. A screen needs a paragraph to explain itself. Motion is noticed rather than felt. Any part looks like Claude Design's mockups.
 
 ## 9. Workstreams
 
