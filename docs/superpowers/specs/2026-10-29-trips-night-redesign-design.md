@@ -185,23 +185,15 @@ Each is one branch and merges into `main` as a single merge commit, so any one c
 | Id | Branch | Owns | Depends on |
 |---|---|---|---|
 | A | `redesign/a-night-foundations` | tokens, base CSS, primitives, shell and tabs, CSS split into per screen files, Inter removed | none |
-| B | `redesign/b-timetable` | Trips home: axis, row, TripStrip component, compare tray | A |
-| C | `redesign/c-trip-view` | TripDashboard, WayCard, TotalsPanel, MiniMap on night, leg table, ledger | A, uses TripStrip from B if merged, otherwise builds its own and B adopts it **(see below)** |
+| B | `redesign/b-timetable` | Trips home: axis, rows, compare tray | A, S |
+| S | `redesign/s-trip-strip` | `lib/strip.ts` with tests, `TripStrip` component | none |
+| C | `redesign/c-trip-view` | TripDashboard, WayCard, TotalsPanel, MiniMap on night, leg table, ledger | A, S |
 | D | `redesign/d-pick-night` | PickScreen matrix and options table | A |
 | E | `redesign/e-map-panel-night` | `web/src/map/routeMap.css` panel styles only | A (for values only) |
 | F | `redesign/f-freshness` | meta.json loading, `lib/freshness.ts` with tests, header corner | A |
 | G | `redesign/g-ask-claude` | `lib/claudeTask.ts` with tests, AskClaudeSheet, entry points in the trip view | A, C, F |
 
-B and C both need the strip. To let them run in parallel, the strip is specified here as a shared component `planner/src/components/TripStrip.tsx` with the props below, and B owns its file. C imports it after B merges. If C is ready first it renders a placeholder strip from the same props, and the merge keeps B's file. **(my call)**
-
-```ts
-interface TripStripProps {
-  data: AppData
-  journey: Journey
-  domain: [number, number]   // shared axis in UTC ms
-  size: 'row' | 'full'       // 'row' about 28px high, 'full' about 64px with labels and date ticks
-}
-```
+B and C both need the strip, so it is its own workstream S (`redesign/s-trip-strip`) that only adds new files and runs beside A: a pure, tested `stripLayout(data, journey)` in `planner/src/lib/strip.ts` and a `TripStrip` component that draws a layout on a given time domain at `row` or `full` size. B and C start after A and S are merged. The exact interface is in the plan. **(my call)**
 
 ## 10. Left to the builder
 
