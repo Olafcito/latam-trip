@@ -5,7 +5,7 @@ Every place's things-to-do list is then added as light experiences (researched: 
 keyword regexes in experience_categories.json. Seeded items that a researched experience at the same place already
 covers (its replaces_seed regex) are skipped. Ran once on 2026-10-29; diving.json was folded in and removed, so experiences.jsonl is now the source and is edited directly.
 
-Usage: python3 -I src/seed_experiences.py [--root DIR]
+Usage: python3 -I plugin/skills/trip-checklist/scripts/seed_experiences.py [--root DIR]
 """
 import json, os, re, sys, unicodedata
 

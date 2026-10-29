@@ -13,9 +13,9 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 
 The data under `data/` is the trip's single source of truth and is the same on every branch. Never fork it, never keep a branch-specific copy, and never let a merge pick one side's data over the other. When a merge touches generated data files, take either side and regenerate:
 
-    python -I src/build_web_data.py --root .
-    python -I src/seed_trips.py --root .
-    python src/inout.py --root . && python src/itineraries.py --root . && python src/dashboard_data.py --root .
+    python -I plugin/skills/flight-crawl-orchestrator/scripts/build_web_data.py --root .
+    python -I plugin/skills/flight-crawl-orchestrator/scripts/seed_trips.py --root .
+    python plugin/skills/flight-crawl-orchestrator/scripts/inout.py --root . && python plugin/skills/flight-crawl-orchestrator/scripts/itineraries.py --root . && python plugin/skills/flight-crawl-orchestrator/scripts/dashboard_data.py --root .
 
 Hand-written inputs (`data/seed_spec.json`, `data/network/*.jsonl`, `data/raw/*.jsonl`, `trip.json`, `data/bag_rules.json`) are edited in place. Everything in `data/web/` and `data/saved_trips.json` is generated and is never edited by hand.
 
@@ -25,7 +25,7 @@ A planned `tripdb` CLI will become the only way scripts write data. Until it exi
 
 - `web/`: the route map (React, Vite, MapLibre) with the Options pane for whole trips, long-haul tickets and regional flights. `cd web && npm run dev`.
 - `planner/`: the two-tab trip app, Map and Trips. The Map tab imports `web/` through the `@map` alias. `cd planner && npm run dev`.
-- `plugin/`: the flight crawler plugin, agents, skills and scripts. `src/` holds copies of the scripts to run in place.
+- `plugin/`: the flight crawler plugin, its agents, skills and scripts. It is the only home for code outside the two apps.
 - `data/`: sources, crawl database, built datasets and `data/web/` for the apps.
 - `docs/`: design briefs and the Claude task hand-over (`docs/claude-tasks.md`).
 
@@ -47,7 +47,7 @@ Larger UX and visual design is done in Claude Design (the Claude app) and handed
 
 ### Skills in .claude/
 
-- `.claude/skills` holds two kinds of skills. Skills from `plugin/skills` are generated copies: edit them in `plugin/` and run `python -I src/sync_claude_dir.py --root .`, never by hand in `.claude/`. Skills installed with `npx skills add` are listed in `skills-lock.json`. The sync leaves them alone, and `npx skills update -p` updates them.
+- `.claude/skills` holds two kinds of skills. Skills from `plugin/skills` are generated copies: edit them in `plugin/` and run `python -I plugin/scripts/sync_claude_dir.py --root .`, never by hand in `.claude/`. Skills installed with `npx skills add` are listed in `skills-lock.json`. The sync leaves them alone, and `npx skills update -p` updates them.
 - The 21st.dev MCP lives in Simon's user config (`claude mcp add --scope user`), not in the repo, because it carries his API key. Never commit a key.
 
 ## Checks before a commit that touches an app

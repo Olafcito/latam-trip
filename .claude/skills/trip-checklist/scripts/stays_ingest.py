@@ -1,6 +1,6 @@
 """Check stay-price-worker rows and add them to data/network/stays.jsonl (the stays database the app reads).
 
-Usage: python3 -I src/stays_ingest.py data/raw/stays-<agent>.jsonl [--root DIR] [--usd 6.45] [--eur 7.46]
+Usage: python3 -I plugin/skills/trip-checklist/scripts/stays_ingest.py data/raw/stays-<agent>.jsonl [--root DIR] [--usd 6.45] [--eur 7.46]
 Rows without a price, dates or place are dropped and reported. Prices in USD or EUR are converted to DKK.
 """
 import datetime as dt, json, os, sys

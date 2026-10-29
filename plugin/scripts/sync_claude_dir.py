@@ -4,7 +4,7 @@ edit there, then run this.
 
 Skills installed with `npx skills add` are listed in skills-lock.json and are left alone.
 
-Usage: python3 -I src/sync_claude_dir.py [--root DIR]
+Usage: python3 -I plugin/scripts/sync_claude_dir.py [--root DIR]
 """
 import json, os, shutil, sys
 

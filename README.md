@@ -8,7 +8,7 @@ Simon's Latin America trip (Dec 2026 to Feb 2027): a crawled flight and ground-t
 - `plugin/`: the flight-crawler Claude plugin (agents, skills, scripts). `src/` holds copies of the scripts for running in place.
 - `trip.json`: trip parameters and scoring weights.
 
-Refresh derived data: `python3 -I src/ingest.py && python3 -I src/build_map.py && python3 -I src/evaluate.py`
+Refresh derived data: `python3 -I plugin/skills/flight-crawl-orchestrator/scripts/ingest.py && python3 -I plugin/skills/flight-crawl-orchestrator/scripts/build_map.py && python3 -I plugin/skills/flight-crawl-orchestrator/scripts/evaluate.py`
 
 ## Route map
 
@@ -16,7 +16,7 @@ The map tab lives in `web/` (React, Vite and MapLibre on OpenFreeMap tiles). The
 
 The app reads three files in `data/web/`. Rebuild them after any change to the network or the quotes:
 
-    python3 -I src/build_web_data.py
+    python3 -I plugin/skills/flight-crawl-orchestrator/scripts/build_web_data.py
 
 For crawled flights the exporter also reads `data/crawl.db` and keeps the cheapest fare per departure date and direction, with the real departure time. A search for one date returns flights on the days around it, so these dates can differ from the date that was searched. Flights that were only researched have no dates. Regional return quotes are listed one by one with both legs.
 
@@ -28,7 +28,7 @@ Add `--fetch-elevation` to look up altitudes for new places. The result is cache
 
 The Options button in the top bar opens a third pane beside the map with the flight option tables: whole trips, long-haul tickets, regional flights and a note on how the ratings work. Clicking a whole trip or a long-haul ticket rings its arrival and home airports on the map. The pane reads three more files in `data/web/`, `dash_trips.json`, `dash_journeys.json` and `dash_flights.json`, and shows them as they are. Nothing is recomputed in the browser. If one file is missing, that tab says so and the others keep working. Rebuild them from the repo root with:
 
-    python3 src/inout.py --root . && python3 src/itineraries.py --root . && python3 src/dashboard_data.py --root .
+    python3 plugin/skills/flight-crawl-orchestrator/scripts/inout.py --root . && python3 plugin/skills/flight-crawl-orchestrator/scripts/itineraries.py --root . && python3 plugin/skills/flight-crawl-orchestrator/scripts/dashboard_data.py --root .
 
 The same tables are in `data/web/dash_index.html`, a standalone page that the pane was built from.
 
