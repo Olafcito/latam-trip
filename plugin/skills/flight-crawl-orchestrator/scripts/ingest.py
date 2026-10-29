@@ -5,7 +5,7 @@ Usage: python3 -I ingest.py [--root DIR] [--top N]
 Writes DIR/data/built/trip.db (table quotes). tripdb build runs it and then loads the other tables.
 Scoring (effective cost, DKK-equivalent) is read from trip.json "scoring"; see references/scoring.md.
 """
-import glob, json, os, sqlite3, sys, hashlib
+import glob, json, os, re, sqlite3, sys, hashlib
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
@@ -97,6 +97,11 @@ def eff_cost(q):
     return round(e)
 
 
+def obs_key(t):
+    """observed_at in a form that sorts by time ("...T10:05Z" and "...T10:05:30Z" both occur)."""
+    return re.sub(r"T(\d\d:\d\d)Z$", r"T\1:00Z", t or "")
+
+
 def main():
     os.makedirs(os.path.join(ROOT, "data", "built"), exist_ok=True)
     con = sqlite3.connect(os.path.join(ROOT, "data", "built", "trip.db"))
@@ -106,7 +111,7 @@ def main():
         rank INT, price_dkk REAL, currency TEXT, tickets INT, self_transfer INT, fare_brand TEXT,
         checked_bag TEXT, out_hours REAL, home_hours REAL, mid_hours REAL, max_leg_hours REAL, out_via TEXT, home_via TEXT,
         out_carriers TEXT, home_carriers TEXT, flags TEXT, ok INT, eff_cost REAL, link TEXT, raw TEXT)""")
-    n = 0
+    n, newest = 0, {}
     for f in sorted(glob.glob(os.path.join(ROOT, "data", "sources", "quotes", "*.jsonl"))):
         for line in open(f):
             line = line.strip()
@@ -135,7 +140,16 @@ def main():
                 flags = list(flags) + ["ad_offer"]
             ok = int(not ({"over_30h", "incomplete", "ad_offer"} & set(flags)) and all(x <= MAXH for x in hrs))
             mid_h = sum((m or {}).get("hours") or 0 for m in mids) or None
-            con.execute("INSERT OR IGNORE INTO quotes VALUES (" + ",".join("?" * 31) + ")", (
+            seen_at = obs_key(q.get("observed_at"))
+            if qid in newest:
+                # the same quote seen again: keep the first row, but with the newest time it was seen
+                if seen_at > newest[qid]:
+                    newest[qid] = seen_at
+                    con.execute("UPDATE quotes SET observed_at=? WHERE quote_id=?", (q.get("observed_at"), qid))
+                n += 1
+                continue
+            newest[qid] = seen_at
+            con.execute("INSERT INTO quotes VALUES (" + ",".join("?" * 31) + ")", (
                 qid, q.get("agent"), q.get("task_id"), q.get("source"), q.get("observed_at"), q.get("structure"),
                 pid, var, out_date, home_date, len(L), q.get("rank"), q.get("price_dkk"), q.get("currency"),
                 q.get("tickets"), int(bool(q.get("self_transfer"))) if q.get("self_transfer") is not None else None,

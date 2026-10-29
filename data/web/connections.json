@@ -174,7 +174,7 @@
      ],
      "oneway_dkk": {
       "min": 255,
-      "observed_at": "2026-10-28T12:31:37Z"
+      "observed_at": "2026-10-28T12:32:36Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -247,7 +247,7 @@
      "quotes": 6
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T12:31:37Z",
+    "observed_at": "2026-10-28T12:32:36Z",
     "note": "price_dkk = EcoJet fare US$116. Duration rome2rio 35-57 min.",
     "booking_url": "https://www.momondo.dk/flight-search/LPB-CBB/2027-01-29",
     "source_url": "https://www.rome2rio.com/s/La-Paz/Cochabamba",
@@ -5988,7 +5988,7 @@
      ],
      "oneway_dkk": {
       "min": 1949,
-      "observed_at": "2026-10-28T11:52:25Z"
+      "observed_at": "2026-10-28T11:53:33Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -6048,7 +6048,7 @@
      "quotes": 6
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T11:52:25Z",
+    "observed_at": "2026-10-28T11:53:33Z",
     "note": "Cheapest one-way US$145 (Kiwi snapshot Oct 2026). Peak Dec 20-Jan 6: expect roughly 1.5x (Medellin) to 2-4x (Cartagena, San Andres) the off-peak fare (La Republica Nov 2023: BOG-CTG return COP 0.60-1.1M, BOG-ADZ return COP 0.66-0.73M, BOG-MDE return COP 0.33-0.43M). price_dkk is the cheapest advertised off-peak one-way fare, not a Christmas fare.",
     "booking_url": "https://www.momondo.dk/flight-search/PTY-BOG/2027-01-10",
     "source_url": "https://www.kiwi.com/us/cheap-flights/bogota-colombia/panama-city-panama/",
@@ -12719,7 +12719,7 @@
      ],
      "oneway_dkk": {
       "min": 1855,
-      "observed_at": "2026-10-28T14:11:53Z"
+      "observed_at": "2026-10-28T14:13:01Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -16537,7 +16537,7 @@
      ],
      "oneway_dkk": {
       "min": 945,
-      "observed_at": "2026-10-28T14:16:25Z"
+      "observed_at": "2026-10-28T14:17:35Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -17169,7 +17169,7 @@
      ],
      "oneway_dkk": {
       "min": 1292,
-      "observed_at": "2026-10-28T14:18:41Z"
+      "observed_at": "2026-10-28T14:19:49Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -19112,7 +19112,7 @@
      ],
      "oneway_dkk": {
       "min": 1901,
-      "observed_at": "2026-10-28T14:31:13Z"
+      "observed_at": "2026-10-28T14:32:16Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -19546,7 +19546,7 @@
      ],
      "oneway_dkk": {
       "min": 2419,
-      "observed_at": "2026-10-28T11:59:11Z"
+      "observed_at": "2026-10-28T12:00:20Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -19731,7 +19731,7 @@
      ],
      "oneway_dkk": {
       "min": 1707,
-      "observed_at": "2026-10-28T13:23:41Z"
+      "observed_at": "2026-10-28T13:24:40Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -19936,7 +19936,7 @@
      ],
      "oneway_dkk": {
       "min": 1960,
-      "observed_at": "2026-10-28T13:29:52Z"
+      "observed_at": "2026-10-28T13:30:50Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -20719,7 +20719,7 @@
      ],
      "oneway_dkk": {
       "min": 1485,
-      "observed_at": "2026-10-28T14:06:53Z"
+      "observed_at": "2026-10-28T14:08:26Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -20905,7 +20905,7 @@
      ],
      "oneway_dkk": {
       "min": 2074,
-      "observed_at": "2026-10-28T14:24:57Z"
+      "observed_at": "2026-10-28T14:26:10Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -21151,7 +21151,7 @@
      ],
      "oneway_dkk": {
       "min": 1453,
-      "observed_at": "2026-10-28T12:54:05Z"
+      "observed_at": "2026-10-28T12:55:40Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -21416,7 +21416,7 @@
      ],
      "oneway_dkk": {
       "min": 1696,
-      "observed_at": "2026-10-28T13:02:13Z"
+      "observed_at": "2026-10-28T13:03:34Z"
      },
      "return_dkk": null,
      "dates_searched": [
@@ -21573,7 +21573,7 @@
      "quotes": 7
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T13:02:13Z",
+    "observed_at": "2026-10-28T13:03:34Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/MGA-MDE/2027-01-10"
    }
