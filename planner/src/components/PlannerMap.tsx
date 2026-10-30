@@ -27,6 +27,8 @@ export function PlannerMap() {
   const setPaneMini = useStore((s) => s.setPaneMini)
   const mapCard = useStore((s) => s.mapCard)
   const clearMapCard = useStore((s) => s.clearMapCard)
+  const mapCardFrom = useStore((s) => s.mapCardFrom)
+  const go = useStore((s) => s.go)
   const [data, setData] = useState<RouteData | null>(null)
   const [error, setError] = useState<string | null>(null)
   // the modes switched on on the map, so the trip pane lists the same places the map lights
@@ -86,6 +88,7 @@ export function PlannerMap() {
         onMode={setModeOn}
         card={mapCard}
         onCardOpen={clearMapCard}
+        cardFrom={mapCardFrom && { card: mapCardFrom, label: 'Trips', onBack: () => go('trips') }}
         side={hasPane ? <MapSide reach={model && families ? { model, families } : null} /> : null}
         sideWidth={hasPane && paneMini ? 236 : 360}
         sideMini={hasPane && paneMini}
