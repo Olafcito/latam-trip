@@ -11637,5 +11637,686 @@
   },
   "image_source": "category",
   "saved_in": []
+ },
+ {
+  "id": "gym-san-salvador-300-mma-training-center",
+  "name": "300 MMA Training Center (San Salvador)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "SAL"
+  ],
+  "area": "San Salvador, Colonia Las Mercedes",
+  "country": "SV",
+  "lat": 13.69,
+  "lon": -89.19,
+  "summary": "MMA gym listed at Colonia Las Mercedes, calle Los Granados 175, with 4.9 stars from 29 reviews on Gym Navigator. No website, timetable, coach names or fighter roster could be found, so level and sparring are unverified.",
+  "season": "year round",
+  "dec_jan": "unknown, no holiday schedule found",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown, ask by message before travelling",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [
+    {
+     "site": "Gym Navigator",
+     "rating": 4.9,
+     "count": 29
+    }
+   ],
+   "last_activity": "no dated activity found",
+   "what_people_say": [],
+   "neighbourhood": "Colonia Escalon or Santa Elena for quiet streets, Antiguo Cuscatlan for modern flats (nomad.watch AI guide, unchecked)",
+   "room_month_dkk": null,
+   "studio_month_dkk": 2483,
+   "food_day_dkk": 97,
+   "water_km": 30,
+   "water_note": "Pacific beaches at La Libertad and El Tunco are about 30 km straight line, roughly an hour by bus. Coordinates here are the city centre, not the gym.",
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 6,
+    "cost": 4,
+    "water": 4,
+    "total": 4.7
+   },
+   "score_note": "Training 5 is a cautious guess for a named MMA gym with no roster found. Cost uses a 1 bedroom outside the centre at 385 USD, a generic gym at 33 USD and 3 cheap meals at 15 USD a day, USD x 6.45."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://gymnavigator.com/gyms/el-salvador/",
+   "https://www.travelsafe-abroad.com/cost-of-living/el-salvador/san-salvador/",
+   "https://nomad.watch/cities/SV/san-salvador/guide"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Volcano_San_Salvador_1960.jpg/1280px-Volcano_San_Salvador_1960.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Volcano_San_Salvador_1960.jpg",
+   "credit": "",
+   "licence": "Public domain",
+   "w": 2160,
+   "h": 1440
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-san-salvador-fight-club-el-salvador",
+  "name": "Fight Club El Salvador (San Salvador)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "SAL"
+  ],
+  "area": "San Salvador",
+  "country": "SV",
+  "lat": 13.69,
+  "lon": -89.19,
+  "summary": "Team name that appears as the affiliation of a Salvadoran amateur MMA fighter on Sherdog. No address, website or recent activity was found, so treat it as a lead to ask about, not a confirmed gym.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": "Carlos Gutierrez, 0-0 pro, one amateur loss at Panama Fight League Fight Night 16 on 27 Nov 2020 (Sherdog)",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2020-11 Sherdog fighter page",
+   "what_people_say": [],
+   "neighbourhood": "see city scorecard",
+   "room_month_dkk": null,
+   "studio_month_dkk": 2483,
+   "food_day_dkk": 97,
+   "water_km": 30,
+   "water_note": "Pacific coast about 30 km straight line from the city centre. Position is a placeholder at the city centre.",
+   "score": {
+    "training": 4,
+    "evidence": 1,
+    "local_life": 5,
+    "cost": 4,
+    "water": 4,
+    "total": 3.8
+   },
+   "score_note": "One old Sherdog affiliation and nothing else, so evidence is 1 and training is a low guess. Costs as for San Salvador, USD x 6.45."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/fighter/Carlos-Gutierrez-446837"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Volcano_San_Salvador_1960.jpg/1280px-Volcano_San_Salvador_1960.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Volcano_San_Salvador_1960.jpg",
+   "credit": "",
+   "licence": "Public domain",
+   "w": 2160,
+   "h": 1440
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-san-pedro-sula-xfit-mma-academy",
+  "name": "XFit MMA Academy (San Pedro Sula)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "SAP"
+  ],
+  "area": "San Pedro Sula",
+  "country": "HN",
+  "lat": 15.5,
+  "lon": -88.03,
+  "summary": "MMA team in San Pedro Sula named on Sherdog for an amateur who fought on Panama Fight League cards from 2023 to Sep 2025. No website, address or timetable was found, so sparring and visitor rules are unknown.",
+  "season": "year round",
+  "dec_jan": "unknown, its fighter was active in Dec 2024 and Sep 2025",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": "Francisco Navarro, amateur, 5 fights 2023 to 2025 (UCC 61, GAMMA Central American Championships 2023, 501 Belize Fight Night 6, UCC 72, UCC 78) per Sherdog",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2025-09 Sherdog (UCC 78, 6 Sep 2025)",
+   "what_people_say": [],
+   "neighbourhood": "not researched, no source on San Pedro Sula neighbourhoods was fetched",
+   "room_month_dkk": null,
+   "studio_month_dkk": 1895,
+   "food_day_dkk": 97,
+   "water_km": 39,
+   "water_note": "Puerto Cortes on the Caribbean is about 39 km straight line. Position is a placeholder at the city centre.",
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 6,
+    "cost": 5,
+    "water": 3,
+    "total": 4.7
+   },
+   "score_note": "Recent competing fighter but no gym page or reviews. Costs from TravelTables Jul 2023: 1 bedroom outside centre 294 USD, fitness club 48.59 USD, meals 5 USD, USD x 6.45."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/fighter/Francisco-Navarro-429381",
+   "https://traveltables.com/country/honduras/city/san-pedro-sula/cost-of-living"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Sps_de_dia_2020_2.jpg/1280px-Sps_de_dia_2020_2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Sps_de_dia_2020_2.jpg",
+   "credit": "JVC3ETA",
+   "licence": "CC BY-SA 4.0",
+   "w": 4556,
+   "h": 3386
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-tegucigalpa-ludus-cerberus-mma",
+  "name": "Ludus Cerberus MMA (Tegucigalpa)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "TGU"
+  ],
+  "area": "Tegucigalpa",
+  "country": "HN",
+  "lat": 14.07,
+  "lon": -87.19,
+  "summary": "MMA team in Tegucigalpa named on Sherdog and Tapology for amateurs who fought on Panama Fight League cards between 2015 and 2023. No website, address or recent activity was found, so it may be inactive.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": "Josue Edgardo Garcia (Tegucigalpa, amateur, UCC 58 on 11 Mar 2023) and Mauricio Baldin (2-2, last fight 20 May 2022)",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2023-03 Sherdog (UCC 58)",
+   "what_people_say": [],
+   "neighbourhood": "see city scorecard",
+   "room_month_dkk": null,
+   "studio_month_dkk": 1791,
+   "food_day_dkk": 87,
+   "water_km": 78,
+   "water_note": "Tegucigalpa is inland. The Gulf of Fonseca at San Lorenzo is about 78 km straight line, a long day trip. Position is a placeholder at the city centre.",
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 6,
+    "cost": 5,
+    "water": 2,
+    "total": 4.1
+   },
+   "score_note": "Old evidence only (last seen 2023). Costs from TravelTables Jul 2023: 1 bedroom outside centre 278 USD, fitness club 41.25 USD, meals 4.5 USD, USD x 6.45."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/fighter/Josue-Edgardo-Garcia-409735",
+   "https://tapology.com/fightcenter/fighters/89539-mauricio-baldin",
+   "https://traveltables.com/country/honduras/city/tegucigalpa/cost-of-living"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Sunset_in_Tegucigalpa%2C_Honduras_at_Cafemania.jpg/1280px-Sunset_in_Tegucigalpa%2C_Honduras_at_Cafemania.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Sunset_in_Tegucigalpa,_Honduras_at_Cafemania.jpg",
+   "credit": "Nan Palmero",
+   "licence": "CC BY 2.0",
+   "w": 3492,
+   "h": 1104
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-san-salvador-training",
+  "name": "San Salvador: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "SAL"
+  ],
+  "area": "San Salvador",
+  "country": "SV",
+  "lat": 13.69,
+  "lon": -89.19,
+  "summary": "San Salvador has one named MMA gym, 300 MMA Training Center in Colonia Las Mercedes (4.9 stars, 29 reviews on Gym Navigator), and nothing else I could verify for muay thai or kickboxing. The national scene is growing, with a new pro combat sports commission in June 2025, but I found no gym page, roster or sparring report. Treat it as a base only if you message gyms first.",
+  "season": "year round",
+  "dec_jan": "El Salvador is in its dry season in December and January. No gym holiday closures found.",
+  "price": null,
+  "price_dkk": 2696,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-san-salvador-300-mma-training-center",
+    "gym-san-salvador-fight-club-el-salvador"
+   ],
+   "best_gym": "gym-san-salvador-300-mma-training-center",
+   "room_month_dkk": null,
+   "studio_month_dkk": 2483,
+   "food_day_dkk": 97,
+   "monthly_total_dkk": 5599,
+   "neighbourhoods": "Colonia Escalon, Santa Elena or Antiguo Cuscatlan per nomad.watch (AI guide, unchecked). The gym is in Colonia Las Mercedes.",
+   "safety": "Not verified in this pass. nomad.watch (AI guide) names San Benito (Zona Rosa) as the safe nightlife area.",
+   "water_note": "Pacific at La Libertad and El Tunco about 30 km straight line, about an hour by bus.",
+   "local_life": "Residential capital neighbourhood and Spanish is the working language, but nothing confirms who trains there.",
+   "what_people_say": [],
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 6,
+    "cost": 4,
+    "water": 4,
+    "total": 4.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://gymnavigator.com/gyms/el-salvador/",
+   "https://www.nowboxing.com/2025/06/el-salvador-enlists-international-boxing-mma-consultants-to-serve-as-professional-combat-sports-commission/53877",
+   "https://www.travelsafe-abroad.com/cost-of-living/el-salvador/san-salvador/",
+   "https://nomad.watch/cities/SV/san-salvador/guide"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Volcano_San_Salvador_1960.jpg/1280px-Volcano_San_Salvador_1960.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Volcano_San_Salvador_1960.jpg",
+   "credit": "",
+   "licence": "Public domain",
+   "w": 2160,
+   "h": 1440
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-el-tunco-training",
+  "name": "El Tunco / El Zonte / La Libertad coast: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "TUNCO"
+  ],
+  "area": "El Tunco / El Zonte / La Libertad coast",
+  "country": "SV",
+  "lat": 13.49,
+  "lon": -89.38,
+  "summary": "I found no verified combat gym on the coast. A directory page lists a Tunco Muay Thai & Fitness but it is an AI generated guide with no source, and the only real lead is a Brazilian jiu jitsu or self defence class for 10 USD run by a Performance Academy in El Zonte as part of a retreat. Good for surf and a break, not for a serious striking block.",
+  "season": "year round",
+  "dec_jan": "Dry season. El Tunco is loud on Friday and Saturday nights, El Zonte is calm.",
+  "price": null,
+  "price_dkk": 2838,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": 2580,
+   "food_day_dkk": 77,
+   "monthly_total_dkk": 5160,
+   "neighbourhoods": "El Zonte for calm, El Tunco for backpacker bars (visitelsalvador.ai, 2025). Dorm beds 8 to 15 USD a night.",
+   "safety": "nomad.watch (AI guide) rates El Tunco 6.5 of 10 and mentions petty theft, so unverified.",
+   "water_note": "Beach walkable.",
+   "local_life": "Tourist surf strip. Pupuserias at 0.5 to 1 USD each and comedores at 3 to 5 USD give a cheap food base.",
+   "what_people_say": [],
+   "score": {
+    "training": 2,
+    "evidence": 2,
+    "local_life": 5,
+    "cost": 5,
+    "water": 10,
+    "total": 3.9
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://nomad.watch/cities/SV/el-tunco/guide",
+   "https://www.custom-experiences.com/retreats/el-salvador",
+   "https://www.visitelsalvador.ai/blog/el-zonte-vs-el-tunco-comparatif-2025",
+   "https://www.expatexchange.com/gdc/8/41/10569/El-salvador/Cost-of-Living-in-El-Tunco"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg/1280px-Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg",
+   "credit": "Daniel chavez castro",
+   "licence": "CC BY 3.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-san-pedro-sula-training",
+  "name": "San Pedro Sula: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "SAP"
+  ],
+  "area": "San Pedro Sula",
+  "country": "HN",
+  "lat": 15.5,
+  "lon": -88.03,
+  "summary": "XFit MMA Academy is the only team I could tie to the city, through one amateur fighter who competed on Panama Fight League cards as late as Sep 2025. There is no website, timetable or review count I could reach, so this is a thin lead. The Honduran cards I could verify were held in Tegucigalpa.",
+  "season": "year round",
+  "dec_jan": "No December weather source fetched. The local XFit fighter competed on 7 Dec 2024 and 6 Sep 2025.",
+  "price": null,
+  "price_dkk": 2208,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-san-pedro-sula-xfit-mma-academy"
+   ],
+   "best_gym": "gym-san-pedro-sula-xfit-mma-academy",
+   "room_month_dkk": null,
+   "studio_month_dkk": 1895,
+   "food_day_dkk": 97,
+   "monthly_total_dkk": 5110,
+   "neighbourhoods": "Not researched, no source fetched.",
+   "safety": "Not verified in this pass, check current travel advisories.",
+   "water_note": "Puerto Cortes about 39 km straight line.",
+   "local_life": "Spanish speaking commercial city, but nothing confirms who trains there.",
+   "what_people_say": [],
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 6,
+    "cost": 5,
+    "water": 3,
+    "total": 4.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/fighter/Francisco-Navarro-429381",
+   "https://traveltables.com/country/honduras/city/san-pedro-sula/cost-of-living"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Sps_de_dia_2020_2.jpg/1280px-Sps_de_dia_2020_2.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Sps_de_dia_2020_2.jpg",
+   "credit": "JVC3ETA",
+   "licence": "CC BY-SA 4.0",
+   "w": 4556,
+   "h": 3386
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-tegucigalpa-training",
+  "name": "Tegucigalpa: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "TGU"
+  ],
+  "area": "Tegucigalpa",
+  "country": "HN",
+  "lat": 14.07,
+  "lon": -87.19,
+  "summary": "Tegucigalpa hosts the Honduran MMA cards (UCC 74 on 7 Mar 2025, UCC 77 on 31 May 2025, UCC 82 on 13 Dec 2025 at RadioHouse Casa Campo), so a fight scene exists. The only team I could name is Ludus Cerberus MMA, last seen in 2023, and no gym page or reviews turned up. A May 2026 embassy report calls crime rampant and discourages walking alone, which counts against a long stay.",
+  "season": "year round",
+  "dec_jan": "Cards ran in Tegucigalpa in December (UCC 82 on 13 Dec 2025), so the local scene is active then.",
+  "price": null,
+  "price_dkk": 2057,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-tegucigalpa-ludus-cerberus-mma"
+   ],
+   "best_gym": "gym-tegucigalpa-ludus-cerberus-mma",
+   "room_month_dkk": null,
+   "studio_month_dkk": 1791,
+   "food_day_dkk": 87,
+   "monthly_total_dkk": 4669,
+   "neighbourhoods": "Not researched. Embassy staff live in gated neighbourhoods within about 8 km of the embassy.",
+   "safety": "Embassy post report 2026-05: crime described as rampant, two robberies at gunpoint among people the author knows, avoid walking alone, keep a low profile.",
+   "water_note": "Inland. Gulf of Fonseca about 78 km straight line.",
+   "local_life": "Local capital with no backpacker scene found. The most popular gym named in the embassy report costs about 100 USD a month.",
+   "what_people_say": [
+    {
+     "quote": "rampant",
+     "site": "Talesmag post report Tegucigalpa",
+     "date": "2026-05",
+     "url": "https://www.talesmag.com/real-post-report/honduras/tegucigalpa/3550"
+    }
+   ],
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 6,
+    "cost": 5,
+    "water": 2,
+    "total": 4.1
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/events/Panama-Fight-League-Ultimate-Combat-Challenge-82-110992",
+   "https://www.sherdog.com/events/Ultimate-Combat-Challenge-77-UCC-77-108374",
+   "https://www.tapology.com/fightcenter/bouts/971202-ucc-74-hector-the-beast-samayoa-vs-jhon-skeletor-grueso",
+   "https://www.talesmag.com/real-post-report/honduras/tegucigalpa/3550",
+   "https://traveltables.com/country/honduras/city/tegucigalpa/cost-of-living"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Sunset_in_Tegucigalpa%2C_Honduras_at_Cafemania.jpg/1280px-Sunset_in_Tegucigalpa%2C_Honduras_at_Cafemania.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Sunset_in_Tegucigalpa,_Honduras_at_Cafemania.jpg",
+   "credit": "Nan Palmero",
+   "licence": "CC BY 2.0",
+   "w": 3492,
+   "h": 1104
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-utila-training",
+  "name": "Utila: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "UTIL"
+  ],
+  "area": "Utila",
+  "country": "HN",
+  "lat": 16.1,
+  "lon": -86.93,
+  "summary": "I found no martial arts gym on Utila. Sources describe small local gyms and resort fitness rooms at 5 to 10 USD a visit. It is a diving island, so train elsewhere and come here for the water.",
+  "season": "year round",
+  "dec_jan": "Rainy season runs October to January on the Bay Islands (nomadlio guide for Roatan), so December can be wet.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched.",
+   "safety": "nomad.watch (AI guide) gives no crime data. It notes power cuts, cash shortages and evacuation to the mainland for serious medical cases.",
+   "water_note": "Island, sea walkable.",
+   "local_life": "Dive tourism island. nomad.watch (AI guide) quotes simple monthly apartments at 500 to 1200 USD, which is unverified.",
+   "what_people_say": [],
+   "score": {
+    "training": 1,
+    "evidence": 1,
+    "local_life": 4,
+    "cost": 3,
+    "water": 10,
+    "total": 2.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://nomad.watch/cities/HN/utila/guide"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Utila%2C_Honduras_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Utila,_Honduras_-_panoramio.jpg",
+   "credit": "panacheart",
+   "licence": "CC BY 3.0",
+   "w": 1152,
+   "h": 864
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-roatan-training",
+  "name": "Roatan: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "RTB"
+  ],
+  "area": "Roatan",
+  "country": "HN",
+  "lat": 16.32,
+  "lon": -86.54,
+  "summary": "No combat gym found on Roatan. Gyms listed are Roatan Gym and CrossFit Roatan, and nomadlio rates martial arts there 3 of 10. A Roberto Cyborg Abreu jiu jitsu retreat ran 2 to 5 Apr 2026 at Prospera, a one off, not a regular gym.",
+  "season": "year round",
+  "dec_jan": "Rainy season October to January with storm risk (nomadlio).",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched.",
+   "safety": "nomadlio (AI guide) notes inflated taxi fares, petty theft and limited healthcare.",
+   "water_note": "Island, sea walkable.",
+   "local_life": "Tourist and expat island with higher prices than the mainland. No cost figures could be sourced.",
+   "what_people_say": [],
+   "score": {
+    "training": 2,
+    "evidence": 2,
+    "local_life": 3,
+    "cost": 3,
+    "water": 10,
+    "total": 3.2
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://nomadlio.com/roatan/city-guide",
+   "https://roatan.online/upcoming-events/cyborg-abreu-jiu-jitsu-retreat-roatan-april"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Roatan_Honduras_from_ship.tiff/lossless-page1-1280px-Roatan_Honduras_from_ship.tiff.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Roatan_Honduras_from_ship.tiff",
+   "credit": "Raymondbowen",
+   "licence": "CC BY-SA 3.0",
+   "w": 12036,
+   "h": 1504
+  },
+  "image_source": "place",
+  "saved_in": []
  }
 ]
