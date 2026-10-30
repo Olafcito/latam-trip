@@ -4,7 +4,7 @@
 .tg-title { display: flex; align-items: baseline; gap: 10px; margin: 0 0 12px; font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
 .tg-title span { font-size: var(--fs-small); font-weight: 400; letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--muted); }
 .tg-strip { display: flex; gap: 4px; height: 124px; margin: 0; padding: 0; list-style: none; }
-.tg-p { flex: 1 1 0; min-width: 0; transition: flex-grow 420ms var(--ease-drawer); }
+.tg-p { flex: 1 1 0; min-width: 0; transition: flex-grow var(--t-slow) var(--ease-drawer); }
 .tg-p[data-open] { flex-grow: calc(var(--n) * 0.8); }
 .tg-p button {
   position: relative; display: block; width: 100%; height: 100%; overflow: hidden;
@@ -18,27 +18,25 @@
   transition: opacity var(--t-slow) ease, filter var(--t-slow) ease;
 }
 .tg-p[data-open] img { opacity: 1; filter: none; }
-/* a scrim under the open one's words, so they read on any photo */
+/* a scrim under the words, so they read on any photo */
 .tg-p button::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(to top, color-mix(in srgb, var(--ground) 88%, transparent), transparent 62%);
-  opacity: 0; transition: opacity var(--t-slow) ease;
 }
-.tg-p[data-open] button::after { opacity: 1; }
 /* closed: the name runs up the panel. Open: it lies along the bottom with the nights beside it */
 .tg-name {
   position: absolute; left: 50%; bottom: 10px; z-index: 1; max-height: calc(100% - 20px); overflow: hidden;
   writing-mode: vertical-rl; transform: translateX(-50%) rotate(180deg);
-  font-size: 12px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--muted);
+  font-size: var(--fs-small); font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--text);
 }
 .tg-p[data-open] .tg-name {
-  left: 12px; right: 12px; bottom: 26px; max-height: none;
+  left: 12px; right: 12px; bottom: 1.625rem; max-height: none;
   writing-mode: horizontal-tb; transform: none;
-  font-size: 14px; color: var(--text);
+  font-size: var(--fs-body); color: var(--text);
 }
 .tg-meta {
   position: absolute; left: 12px; right: 12px; bottom: 9px; z-index: 1; overflow: hidden;
-  font-size: 11.5px; white-space: nowrap; text-overflow: ellipsis; font-variant-numeric: tabular-nums;
+  font-size: var(--fs-small); white-space: nowrap; text-overflow: ellipsis; font-variant-numeric: tabular-nums;
   color: color-mix(in srgb, var(--text) 80%, transparent);
   opacity: 0; transition: opacity var(--t-med) ease;
 }
@@ -70,7 +68,7 @@
 .tg-stay { display: none; justify-items: end; font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tg-stay small { font-size: var(--fs-label); font-weight: 400; color: var(--faint); }
 .tg-x {
-  display: grid; place-items: center; width: 28px; height: 28px; margin: -4px -6px 0 0; padding: 0;
+  display: grid; place-items: center; width: var(--hit); height: var(--hit); margin: -8px -10px 0 0; padding: 0;
   border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer;
   transition: background var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
@@ -79,15 +77,15 @@
 .tg-about { max-width: 68ch; margin: 10px 0 0; font-size: var(--fs-body); line-height: 1.5; color: color-mix(in srgb, var(--text) 86%, transparent); }
 .tg-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 28px; margin-top: 14px; }
 .tg-cols h5 { margin: 0 0 6px; font-size: var(--fs-label); font-weight: 500; color: var(--faint); }
-.tg-todo { display: grid; gap: 4px; margin: 0; padding: 0 0 0 16px; font-size: 13px; line-height: 1.4; }
+.tg-todo { display: grid; gap: 4px; margin: 0; padding: 0 0 0 16px; font-size: var(--fs-num); line-height: 1.4; }
 .tg-todo li::marker { color: var(--faint); }
 .tg-tour { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: var(--fs-label); color: var(--faint); }
 .tg-bh, .tg-beds button { display: grid; grid-template-columns: minmax(0, 1fr) 64px 64px; gap: 8px; align-items: baseline; }
 .tg-bh span:not(:first-child), .tg-beds button span:not(:first-child) { text-align: right; }
-.tg-beds { display: grid; margin: 0; padding: 0; list-style: none; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tg-beds { display: grid; margin: 0; padding: 0; list-style: none; font-size: var(--fs-num); font-variant-numeric: tabular-nums; }
 .tg-beds li { border-top: 1px solid var(--line); }
 .tg-beds li:first-child { border-top: 0; }
-.tg-beds button { width: 100%; padding: 5px 0; align-content: center; color: var(--text); font-size: 13px; text-align: left; }
+.tg-beds button { width: 100%; padding: 5px 0; align-content: center; color: var(--text); font-size: var(--fs-num); text-align: left; }
 .tg-beds button > span:first-child { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .tg-beds li[data-sus] button span:not(:first-child) { color: var(--faint); }
 .tg-beds small { display: block; font-size: var(--fs-label); line-height: 1.2; }
@@ -95,19 +93,19 @@
 .tg-finds li { border-top: 1px solid var(--line); }
 .tg-finds li:first-child { border-top: 0; }
 .tg-finds button, .tg-beds button, .tg-more {
-  border: 0; background: none; font: inherit; cursor: pointer; touch-action: manipulation;
+  min-height: var(--hit); border: 0; background: none; font: inherit; cursor: pointer; touch-action: manipulation;
   user-select: none; -webkit-user-select: none; transition: transform var(--t-fast) var(--ease-out);
 }
-.tg-finds button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 6px 0; color: var(--text); font-size: 13px; text-align: left; }
+.tg-finds button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 6px 0; color: var(--text); font-size: var(--fs-num); text-align: left; }
 .tg-finds button:focus-visible, .tg-beds button:focus-visible, .tg-more:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 2px; }
 .tg-find { display: grid; flex: 1; gap: 1px; min-width: 0; }
 .tg-find b, .tg-find small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .tg-find b { font-weight: 500; }
 .tg-find small { font-size: var(--fs-label); color: var(--faint); }
 .tg-find small[data-saved] { color: var(--flight); }
-.tg-score { flex: none; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); }
-.tg-more { margin-top: 2px; padding: 6px 0; color: var(--muted); font-size: 13px; }
-.tg-none { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+.tg-score { flex: none; font-size: var(--fs-num); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); }
+.tg-more { margin-top: 2px; padding: 6px 0; color: var(--muted); font-size: var(--fs-num); }
+.tg-none { margin: 12px 0 0; font-size: var(--fs-num); color: var(--muted); }
 .tg-cr { margin: 12px 0 0; font-size: var(--fs-label); color: var(--faint); }
 
 @media (hover: hover) and (pointer: fine) {
@@ -125,10 +123,10 @@
   .tg-strip::-webkit-scrollbar { display: none; }
   .tg-p, .tg-p[data-open] { flex: 0 0 116px; scroll-snap-align: start; }
   .tg-p img { opacity: 0.85; filter: none; }
-  .tg-p button::after { opacity: 1; }
+  .tg-p button::after { background: linear-gradient(to top, color-mix(in srgb, var(--ground) 94%, transparent), transparent 80%); }
   .tg-name, .tg-p[data-open] .tg-name {
-    left: 10px; right: 10px; bottom: 24px; max-height: none;
-    writing-mode: horizontal-tb; transform: none; font-size: 13px; color: var(--text);
+    left: 10px; right: 10px; bottom: 1.5rem; max-height: none;
+    writing-mode: horizontal-tb; transform: none; font-size: var(--fs-num); color: var(--text);
   }
   .tg-meta, .tg-p[data-open] .tg-meta { left: 10px; right: 10px; bottom: 8px; opacity: 1; }
   .tg-from { display: none; }
@@ -136,7 +134,7 @@
   .tg-finds button, .tg-beds button, .tg-more { min-height: 44px; }
   /* the phone strip drops the arrival day, so the itinerary carries it */
   .tg-stay { display: grid; justify-items: end; }
-  .tg-x { width: 40px; height: 40px; margin: -10px -10px 0 0; }
+  .tg-x { margin-block-start: -10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

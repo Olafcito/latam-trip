@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Way } from '../data/types'
-import { giveNight, schedule, takeNight, type Hop, type Journey, type NightMove } from './journey'
+import { backToFlights, giveNight, schedule, takeNight, type Hop, type Journey, type NightMove } from './journey'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'A', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -196,5 +196,35 @@ describe('a flight moved to another day', () => {
     const w = sched(take(j, 0, 1)).warnings.find((x) => x.picked === 1)
     expect(w).toMatchObject({ level: 'warn', fix: '2026-12-10' })
     expect(w?.leg).toBeUndefined()
+  })
+})
+
+describe('back to the picked flights', () => {
+  const picked = (j: Journey, k: number, day: string): Journey => ({ ...j, places: j.places.map((p, x) => {
+    const flight = { depart: `${day}T10:00`, arrive: `${day}T12:00` } as unknown as Hop['flight']
+    return x === k ? { ...p, hop: { ...p.hop!, date: day, flight } } : p
+  }) })
+  const base = picked(picked(trip(['', '2026-12-10', '2026-12-20', '2027-01-10']), 2, '2026-12-20'), 3, '2027-01-10')
+
+  it('one press puts both legs back, and the stop between keeps its nights', () => {
+    const before = nights(base)
+    const j = give(base, 0)
+    expect(nights(j)[1]).toBe(before[1])
+    expect(sched(j).warnings.filter((w) => w.picked != null)).toHaveLength(2)
+    const back = moved(j, backToFlights(j, sched(j), 2))
+    expect(legDays(back).slice(1)).toEqual(['2026-12-20', '2027-01-10'])
+    expect(sched(back).warnings.filter((w) => w.picked != null)).toHaveLength(0)
+    expect(nights(back)[2]).toBe(before[2])
+  })
+
+  it('leaves the legs before it alone', () => {
+    const j = give(base, 0)
+    const back = moved(j, backToFlights(j, sched(j), 3))
+    expect(legDays(back)[1]).toBe(legDays(j)[1])
+    expect(legDays(back)[2]).toBe('2027-01-10')
+  })
+
+  it('has nothing to do when every flight flies on its day', () => {
+    expect(backToFlights(base, sched(base), 1)).toBeNull()
   })
 })

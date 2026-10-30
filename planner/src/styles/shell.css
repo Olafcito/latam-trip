@@ -20,13 +20,13 @@
   display: flex; align-items: stretch; gap: 28px;
 }
 .brand { display: flex; align-items: baseline; align-self: center; gap: 10px; min-width: 0; }
-.brand-mark { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
-.brand-dates { font-family: var(--font-num); font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.brand-mark { margin: 0; font-size: var(--fs-lead); font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+.brand-dates { font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; color: var(--muted); white-space: nowrap; }
 .brand-src { font-family: var(--font-num); font-size: var(--fs-label); color: var(--faint); white-space: nowrap; }
 .tabs { position: relative; display: flex; align-items: stretch; gap: 4px; }
 .tab {
   padding: 0 12px; border: 0; background: none;
-  font-size: 14px; font-weight: 600; color: var(--muted);
+  font-size: var(--fs-body); font-weight: 600; color: var(--muted);
   cursor: pointer;
   transition: color var(--t-fast) ease;
 }
@@ -53,7 +53,7 @@
 @media (max-width: 560px) {
   .top-in { gap: 16px; }
   .brand { flex-direction: column; align-items: flex-start; gap: 3px; }
-  .brand-dates { font-size: 11px; }
+  .brand-dates { font-size: var(--fs-label); white-space: normal; }
   .tab { padding: 0 10px; }
 }
 /* the narrowest phones: the dates give way, they stand on every trip */
@@ -77,16 +77,16 @@
 /* place card: floats over the map, so it may cast a shadow */
 .pcard { position: fixed; z-index: 50; width: 320px; background: var(--surface); color: var(--text); border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line-2), 0 16px 40px -12px #000000A0; pointer-events: none; animation: fade var(--t-med) var(--ease-out); }
 .pcard .img { aspect-ratio: 16 / 9; background: var(--surface-2) center / cover no-repeat; }
-.pcard .credit { font-size: 10px; color: var(--faint); padding: 3px 10px 0; }
+.pcard .credit { font-size: var(--fs-label); color: var(--faint); padding: 3px 10px 0; }
 .pcard .body { padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 6px; }
-.pcard .tag { font-family: var(--font-word); font-weight: 600; font-size: 13.5px; color: var(--text); white-space: normal; }
-.pcard .sum { font-size: 12px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pcard .tag { font-family: var(--font-word); font-weight: 600; font-size: var(--fs-body); color: var(--text); white-space: normal; }
+.pcard .sum { font-size: var(--fs-small); color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px 10px; }
-.chip { font-family: var(--font-num); font-size: 11px; color: var(--muted); }
+.chip { font-family: var(--font-num); font-size: var(--fs-label); color: var(--muted); }
 .dots { display: inline-flex; gap: 3px; }
 .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-2); }
 .dots i.f { background: var(--flight); }
-.hostel { display: flex; justify-content: space-between; font-size: 11.5px; }
+.hostel { display: flex; justify-content: space-between; font-size: var(--fs-small); }
 .hostel.sus { color: var(--faint); }
 }
 
@@ -102,7 +102,7 @@
   margin-right: -8px; padding: 0 8px;
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   border: 0; border-radius: 8px; background: none;
-  font-family: var(--font-num); font-size: 12px; font-weight: 500; line-height: 1;
+  font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; line-height: 1;
   color: var(--muted);
   cursor: pointer; white-space: nowrap;
   transition: color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
@@ -142,12 +142,12 @@
 /* a bridge over the gap, so the pointer can travel from the button into the popover */
 .fresh-pop::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 8px; }
 
-.fresh-list { border-collapse: collapse; font-family: var(--font-num); font-size: 12px; font-variant-numeric: tabular-nums; }
+.fresh-list { border-collapse: collapse; font-family: var(--font-num); font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
 .fresh-list :is(th, td) { padding: 6px 0; white-space: nowrap; }
 .fresh-list tbody tr + tr :is(th, td) { border-top: 1px solid var(--line); }
 .fresh-list thead th { padding-top: 2px; text-align: left; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; color: var(--faint); }
 .fresh-list thead th:last-child { text-align: right; }
-.fresh-list tbody th { text-align: left; font-family: var(--font-word); font-size: 13px; font-weight: 500; color: var(--text); }
+.fresh-list tbody th { text-align: left; font-family: var(--font-word); font-size: var(--fs-num); font-weight: 500; color: var(--text); }
 .fresh-list th:first-child { padding-right: 20px; }
 .fresh-list tbody th .fresh-dot { display: inline-block; margin-right: 8px; vertical-align: 1px; }
 .fresh-when { padding-right: 16px; color: var(--muted); }
@@ -156,7 +156,7 @@
 tr[data-state='stale'] .fresh-ago { color: var(--flight); }
 tr[data-state='unknown'] :is(.fresh-when, .fresh-ago) { color: var(--faint); }
 .fresh-none { margin: 4px 0; font-size: var(--fs-small); color: var(--muted); }
-.fresh-note { margin: 6px 0 0; padding-top: 8px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--muted); }
+.fresh-note { margin: 6px 0 0; padding-top: 8px; border-top: 1px solid var(--line); font-size: var(--fs-small); color: var(--muted); }
 
 /* the phone: the dot and the age only, so the tabs keep their room */
 @media (max-width: 560px) {

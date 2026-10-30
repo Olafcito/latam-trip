@@ -1,5 +1,5 @@
 import type { AppData, CrawledFlight, InOut, MapData, Mode, StopItem, Way } from '../data/types'
-import { day, dayDiff, dayTime } from './format'
+import { day, dayDiff, dayTime, kr } from './format'
 import { edgeHours, edgePrice, type Arc } from './graph'
 import { priceOfWays } from './options'
 import { addDays } from './time'
@@ -251,6 +251,13 @@ export function giveNight(j: Journey, s: Schedule, i: number): NightMove | null 
   return { legs, lastNights: s.places[last].days - (i === last ? 1 : 0) }
 }
 
+/** Back to the day its flight leaves, for the leg into stop i and each later leg off its flight too, so the stops between keep their nights. */
+export function backToFlights(j: Journey, s: Schedule, i: number): NightMove | null {
+  const legs = s.warnings.flatMap((w) => (w.picked != null && w.picked >= i && w.fix ? [{ hop: w.picked, date: w.fix }] : []))
+  if (!legs.length) return null
+  return { legs, lastNights: j.lastNights ?? s.places[s.places.length - 1].days }
+}
+
 // ---- totals
 
 export interface Totals {
@@ -324,6 +331,16 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null): Total
     days_per_country: days,
     hub_stops: stops,
   }
+}
+
+/** The trip's travel: tickets, regional flights, ground, the nights at the hubs and the bags. Stays at the stops are not in it. */
+export const travelTotal = (t: Totals) =>
+  t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0) + (t.checked_bag_dkk ?? 0)
+
+/** Ground transport in words: what is priced, and how many hops are not. */
+export const groundCost = (t: Totals) => {
+  if (!t.ground_unknown) return kr(t.ground_dkk)
+  return t.ground_dkk ? `${kr(t.ground_dkk)}, ${t.ground_unknown} not priced` : 'Not priced'
 }
 
 export function journeyIsValid(j: unknown): j is Journey {

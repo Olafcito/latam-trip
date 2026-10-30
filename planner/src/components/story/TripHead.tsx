@@ -19,7 +19,8 @@ import { FindPopup, HostelPopup } from './FindPopup'
 
 export interface HeadPlace { name: string; node: MapNode | undefined; days: number; inDay: string }
 
-const nightsOf = (n: number) => `${n} ${n === 1 ? 'night' : 'nights'}`
+const nightsOf = (n: number) => (n ? `${n} ${n === 1 ? 'night' : 'nights'}` : 'Passing through')
+const fromDay = (p: HeadPlace) => `${p.days ? 'from' : 'on'} ${day(p.inDay)}`
 const short = (name: string) => name.replace(/\s*\(.*\)$/, '')
 
 export function TripHead({ places, costs }: { places: HeadPlace[]; costs: ReactNode }) {
@@ -81,14 +82,14 @@ export function TripHead({ places, costs }: { places: HeadPlace[]; costs: ReactN
                 type="button"
                 aria-expanded={i === pick}
                 aria-controls={panelId}
-                aria-label={`${p.name}, ${nightsOf(p.days)} from ${day(p.inDay)}`}
+                aria-label={`${p.name}, ${nightsOf(p.days).toLowerCase()} ${fromDay(p)}`}
                 onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHover(i) }}
                 onFocus={() => setHover(i)}
                 onClick={() => choose(i)}
               >
                 {img && <img src={img} alt="" loading="lazy" decoding="async" draggable={false} />}
                 <span className="tg-name">{short(p.name)}</span>
-                <span className="tg-meta">{nightsOf(p.days)}<span className="tg-from">, from {day(p.inDay)}</span></span>
+                <span className="tg-meta">{nightsOf(p.days)}<span className="tg-from">, {fromDay(p)}</span></span>
               </button>
             </li>
           )
@@ -128,7 +129,7 @@ function Itinerary({ place, finds, onClose, onFind, onBed }: ItineraryProps) {
           <h4>{short(place.name)}{n && <span>{countryName(n.country)}</span>}</h4>
           {p?.tagline && <p className="tg-tag">{p.tagline}</p>}
         </div>
-        <span className="tg-stay">{nightsOf(place.days)}<small>from {day(place.inDay)}</small></span>
+        <span className="tg-stay">{nightsOf(place.days)}<small>{fromDay(place)}</small></span>
         <button type="button" className="tg-x" onClick={onClose} aria-label="Close">
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden><path d="M6 6l12 12M18 6 6 18" /></svg>
         </button>

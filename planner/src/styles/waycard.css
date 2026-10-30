@@ -6,21 +6,21 @@
 .wc.home { --io: var(--home); }
 .wc-h { display: flex; align-items: center; gap: 8px; }
 .wc-dir { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--io); }
-.wc-dur { font-family: var(--font-num); font-size: 12.5px; font-weight: 500; color: var(--muted); }
-.wc-us { margin-left: auto; font-family: var(--font-num); font-size: 11px; font-weight: 500; color: var(--flight); cursor: help; }
+.wc-dur { font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; color: var(--muted); }
+.wc-us { margin-left: auto; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; color: var(--flight); cursor: help; }
 .wc-ends { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
 .wc-end { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .wc-end.right { align-items: flex-end; text-align: right; }
-.wc-city { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--text); }
+.wc-city { display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-num); font-weight: 600; color: var(--text); }
 .wc-city svg { color: var(--io); }
-.wc-t { display: inline-flex; align-items: baseline; gap: 5px; font-family: var(--font-num); font-size: 13px; }
-.wc-t.big b { font-size: 22px; font-weight: 500; line-height: 1; }
-.wc-t small { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.wc-t { display: inline-flex; align-items: baseline; gap: 5px; font-family: var(--font-num); font-size: var(--fs-num); }
+.wc-t.big b { font-size: var(--fs-num-lg); font-weight: 500; line-height: 1; }
+.wc-t small { font-size: var(--fs-small); color: var(--muted); white-space: nowrap; }
 .wc-t .nd { margin-left: 0; vertical-align: baseline; }
-.wc-f { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11.5px; color: var(--muted); }
+.wc-f { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--fs-small); color: var(--muted); }
 .wc-price { font-family: var(--font-num); font-weight: 500; color: var(--text); }
 .wc.compact { padding: 10px 12px 8px; }
-.wc.compact .wc-t.big b { font-size: 18px; }
+.wc.compact .wc-t.big b { font-size: var(--fs-lead); }
 
 /* ---- the way on a time axis ------------------------------------------------------------------
    After the flight timelines on the booking sites: the length of each flight or wait over the line,
@@ -40,7 +40,7 @@
   display: flex; align-items: center; justify-content: center;
   container-type: inline-size;
   padding-inline: 3px; overflow: hidden; white-space: nowrap;
-  font-size: 11.5px; font-weight: 500; color: var(--muted);
+  font-size: var(--fs-small); font-weight: 500; color: var(--muted);
 }
 /* a label as wide as "1h 20m" or more stays, a narrower gap hides it so two never run together */
 @container (max-width: 50px) { .wx-lab > * { visibility: hidden; } }
@@ -75,13 +75,13 @@
 }
 .wx-pt.end { background: var(--text); box-shadow: 0 0 0 2px var(--surface); }
 
-.wx-under { min-height: 30px; margin-top: 3px; font-size: 12.5px; line-height: 1.25; }
+.wx-under { min-height: 30px; margin-top: 3px; font-size: var(--fs-small); line-height: 1.25; }
 /* a third line: the date under the ends on the full card, or a narrow change's code over its two times */
 .wx:not(.compact) .wx-under, .wx-under:has(.wx-wait) { min-height: 46px; }
-.wx-under b { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: var(--muted); }
+.wx-under b { font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.02em; color: var(--muted); }
 .wx-tm { font-weight: 500; color: var(--text); white-space: nowrap; }
 .wx-tm .nd { margin-left: 1px; }
-.wx-dt { font-size: 11px; color: var(--faint); white-space: nowrap; }
+.wx-dt { font-size: var(--fs-label); color: var(--faint); white-space: nowrap; }
 .wx-at { display: flex; flex-direction: column; }
 .wx-at.start { position: absolute; left: 0; align-items: flex-start; }
 .wx-at.end { position: absolute; right: 0; align-items: flex-end; text-align: right; }
