@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
-import { day, dayDiff, kr, thousands, weekdayDay } from '../../lib/format'
+import { day, dayDiff, kr, shortKr, weekdayDay } from '../../lib/format'
 import { momondoUrl } from '../../lib/prices'
 import { addDays } from '../../lib/time'
 import { Caret, External, Minus, Plus } from '../icons'
@@ -23,8 +23,6 @@ function saveLens(l: Lens) {
 }
 /** 0 for Monday */
 const weekday = (d: string) => (new Date(d + 'T00:00:00Z').getUTCDay() + 6) % 7
-/** "1.240" as "1,2k" so a price fits under a day */
-const short = (p: number) => (p >= 10_000 ? `${Math.round(p / 1000)}k` : p >= 1000 ? `${(p / 1000).toFixed(1).replace('.', ',')}k` : thousands(p))
 /** "2026-12" for a date */
 const monthOf = (d: string) => d.slice(0, 7)
 const monthName = (m: string) => `${MONTH[+m.slice(5, 7) - 1]} ${m.slice(0, 4)}`
@@ -137,7 +135,7 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
                 onClick={() => { setFocus(d); onSet(d) }}
               >
                 <b>{lens === 'date' ? +d.slice(8) : tripDay(d)}</b>
-                <small>{p != null ? short(p) : ''}</small>
+                <small>{p != null ? shortKr(p) : ''}</small>
               </button>
             )
           })}

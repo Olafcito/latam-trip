@@ -48,6 +48,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
   const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
+  // a warning about one leg sits on that leg
+  const general = sched.warnings.filter((w) => w.leg == null && w.picked == null)
   const heads = journey.places.map((p, i) => ({ name: nm(p.node), node: map.nodes.find((n) => n.id === p.node), days: sched.places[i].days, inDay: sched.places[i].inDay }))
 
   return (
@@ -63,9 +65,9 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
         <button className="btn link small" onClick={exportJson}><Download />Export JSON</button>
       </div>
 
-      {sched.warnings.some((w) => w.leg == null) && (
+      {general.length > 0 && (
         <ul className="dash-warn">
-          {sched.warnings.filter((w) => w.leg == null).map((w, i) => (
+          {general.map((w, i) => (
             <li key={i} className={w.level}>
               <Warn />{w.text}
             </li>

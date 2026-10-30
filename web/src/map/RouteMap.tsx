@@ -862,8 +862,9 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
         return
       }
       if (hit.kind === 'overland') return
-      // in build mode a tap on one of the trip's stops moves the cursor there, a tap on the cursor stop stops building
+      // in build mode a tap on one of the trip's stops moves the cursor there, a tap on the cursor stop opens its city
       if (hit.kind === 'place' && live.current.focus && act.current.onStop && hit.id !== sel && live.current.stops.includes(hit.id)) {
+        if (hit.id === live.current.focusId) return act.current.select(hit.id)
         act.current.onStop(hit.id)
         if (sel) act.current.deselect()
         return

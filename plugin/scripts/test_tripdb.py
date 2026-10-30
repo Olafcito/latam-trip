@@ -392,7 +392,7 @@ class PairDatesTest(Base):
         self.assertEqual([r["p"] for r in there["2027-01-28"]], [1500, 1900])  # cheapest first
         first = there["2027-01-28"][0]
         self.assertEqual(first, {"p": 1500, "d": "06:10", "a": "12:40", "h": 5.5, "c": ["Avianca"], "s": 1,
-                                 "src": "expedia", "at": "2026-10-20T10:00Z"})
+                                 "src": "expedia", "at": "2026-10-20T10:00Z", "v": ["LIM"]})
         back = doc["pairs"]["VVI-BOG"]["2027-02-02"][0]
         self.assertEqual((back["d"], back["a"], back["n"]), ("06:10", "01:05", 1))
 
@@ -416,3 +416,21 @@ class PairDatesTest(Base):
         rows = tripdb.pair_dates([named, bare, other])["pairs"]["BOG-VVI"]["2027-01-28"]
         self.assertEqual([(r["d"], r["c"], r["at"]) for r in rows],
                          [("06:10", ["Avianca"], "2026-10-28T19:00Z"), ("22:25", [], "2026-10-20T10:00Z")])
+
+    def test_a_row_keeps_its_stops_waits_site_and_warnings_only_when_known(self):
+        full = self.regional(notes="site=Mytrip; other=Kiwi.com 496; protection=1", flags=["airport_change", "basic_fare"],
+                             self_transfer=True, out={"layover_h": [2.5, None], "via": ["LIM", "PTY"], "overnight_layover": True})
+        row = tripdb.pair_dates([full])["pairs"]["BOG-VVI"]["2027-01-28"][0]
+        self.assertEqual((row["v"], row["w"], row["ag"], row["o"], row["f"]),
+                         (["LIM", "PTY"], [2.5, None], "Mytrip", True, ["airport_change", "self_transfer"]))
+        bare = self.regional(notes="no site in this note", out={"via": [], "stops": 1})
+        row = tripdb.pair_dates([bare])["pairs"]["BOG-VVI"]["2027-01-28"][0]
+        self.assertEqual(row["s"], 1)  # a stop can be known without knowing where
+        self.assertFalse({"v", "w", "ag", "o", "f"} & set(row))
+
+    def test_a_named_twin_takes_the_stops_and_site_of_a_row_read_without_airlines(self):
+        named = self.regional(price_dkk=404, price=404, out={"via": []})
+        bare = self.regional(price_dkk=404, price=404, notes="site=Kiwi.com", out={"carriers": [], "layover_h": [1.5]})
+        row = tripdb.pair_dates([named, bare])["pairs"]["BOG-VVI"]["2027-01-28"]
+        self.assertEqual(len(row), 1)
+        self.assertEqual((row[0]["c"], row[0]["v"], row[0]["w"], row[0]["ag"]), (["Avianca"], ["LIM"], [1.5], "Kiwi.com"))

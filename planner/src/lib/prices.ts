@@ -22,6 +22,16 @@ export interface PairQuote {
   src: string | null
   /** when it was last seen, UTC */
   at: string
+  /** the airports it stops at, when known. Can be shorter than s */
+  v?: string[]
+  /** hours waited at each stop, null where not known */
+  w?: (number | null)[]
+  /** the site selling it */
+  ag?: string
+  /** a night at a layover */
+  o?: boolean
+  /** warnings: self_transfer, airport_change */
+  f?: string[]
 }
 
 /** "BOG-VVI" to departure date to its quotes, cheapest first. */
@@ -89,9 +99,9 @@ export function sourceLabel(src: string | null | undefined): string {
   return SOURCE[src] ?? (src.startsWith('airline:') ? src.slice(8) : src.replace(/_/g, ' '))
 }
 
-/** A one-way Momondo search for a leg, cheapest first. */
-export function momondoUrl(from: string, to: string, date: string): string {
-  return `https://www.momondo.dk/flight-search/${from}-${to}/${date}?sort=price_a`
+/** A one-way Momondo search for a leg, cheapest first. The trip id tells the Momondo script which trip a Pick goes to. */
+export function momondoUrl(from: string, to: string, date: string, trip?: string): string {
+  return `https://www.momondo.dk/flight-search/${from}-${to}/${date}?sort=price_a${trip ? `#latam=${encodeURIComponent(trip)}` : ''}`
 }
 
 const IATA = /^[A-Z]{3}$/
