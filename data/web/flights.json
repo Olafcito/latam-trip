@@ -2075,6 +2075,23 @@
   ]
  },
  {
+  "from": "MVD",
+  "to": "VVI",
+  "dkk": 1932,
+  "hours": 6.75,
+  "dep": "2027-01-18T19:25",
+  "arr": "2027-01-19T01:10",
+  "vias": [
+   "AEP"
+  ],
+  "carriers": [],
+  "notes": [],
+  "link": "https://kiwi.com/u/tykm9t",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
   "from": "MDE",
   "to": "VVI",
   "dkk": 1937,
@@ -2882,6 +2899,26 @@
   ]
  },
  {
+  "from": "MVD",
+  "to": "MDE",
+  "dkk": 2281,
+  "hours": 12.38,
+  "dep": "2027-01-18T20:05",
+  "arr": "2027-01-19T06:28",
+  "vias": [
+   "SCL"
+  ],
+  "carriers": [
+   "JetSMART"
+  ],
+  "notes": [],
+  "link": "https://kiwi.com/u/wd26zmx",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "CTG",
   "to": "SAL",
   "dkk": 2283,
@@ -3315,6 +3352,25 @@
   ],
   "notes": [],
   "link": "https://www.momondo.dk/flight-search/GUA-BOG/2027-01-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MVD",
+  "to": "MDE",
+  "dkk": 2543,
+  "hours": 9.62,
+  "dep": "2026-12-22T02:08",
+  "arr": "2026-12-22T09:45",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [],
+  "link": "https://kiwi.com/u/4jczd7",
   "shows": [
    "fastest"
   ]
@@ -3953,6 +4009,26 @@
   ],
   "link": "https://www.momondo.dk/flight-search/MDE-VVI/2026-12-14",
   "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "MVD",
+  "to": "VVI",
+  "dkk": 2926,
+  "hours": 4.42,
+  "dep": "2026-12-21T08:50",
+  "arr": "2026-12-21T12:15",
+  "vias": [
+   "ASU"
+  ],
+  "carriers": [
+   "Paranair"
+  ],
+  "notes": [],
+  "link": "https://kiwi.com/u/jcy9dqf",
+  "shows": [
+   "fastest",
    "daytime landing"
   ]
  },
