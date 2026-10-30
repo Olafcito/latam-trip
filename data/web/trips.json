@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-30T21:27:43Z",
+ "generated_at": "2026-10-30T21:29:07Z",
  "source": "data/sources/trips.jsonl",
  "trips": [
   {
@@ -2537,13 +2537,13 @@
   },
   {
    "id": "ctg-sal-xmas-cbb",
-   "version": 3,
-   "name": "Cartagena in, Christmas in Cochabamba, San Salvador home",
-   "saved_at": "2026-10-30T21:07:43Z",
+   "version": 4,
+   "name": "Cartagena in, Christmas in Cochabamba, Guatemala City home",
+   "saved_at": "2026-10-30T21:28:56Z",
    "by": "plan-trip",
-   "why": "Simon's Cartagena start with Christmas in Cochabamba. Version 3: Medellín 4 nights, then the coffee region by bus (Jardín, Salento) to Cali for 3 nights, as Simon asked, instead of flying Medellín to Cali.",
+   "why": "Simon's Cartagena start with Christmas in Cochabamba. Version 4: home from Guatemala City on 3 Feb (KLM 13:09, lands 4 Feb 13:40, same 7,428 one ticket), ending with El Tunco and then Antigua by shuttle instead of San Salvador.",
    "rank": null,
-   "option_id": "CTG-SAL-ticket",
+   "option_id": "CTG-GUA-ticket",
    "way_in": {
     "direction": "in",
     "type": "ticket",
@@ -2574,12 +2574,12 @@
        "KLM 749"
       ],
       "overnight_layover": false,
-      "ticket": "TQ:cd05b3ca1652",
+      "ticket": "TQ:c3d73e1653c4",
       "self_transfer_inside": false
      }
     ],
     "tickets": [
-     "TQ:cd05b3ca1652"
+     "TQ:c3d73e1653c4"
     ],
     "flags": [],
     "from": "CPH",
@@ -2599,8 +2599,8 @@
      "CTG"
     ],
     "score": 5,
-    "id": "I0431",
-    "shared_ticket": "TQ:cd05b3ca1652",
+    "id": "I0849",
+    "shared_ticket": "TQ:c3d73e1653c4",
     "price_dkk": 0,
     "extras": {
      "cabin_bag_fees_dkk": 0,
@@ -2608,7 +2608,7 @@
      "hub_nights": 0,
      "hub_stay_estimate_dkk": 0
     },
-    "paired_with": "H0432"
+    "paired_with": "H0850"
    },
    "way_home": {
     "direction": "home",
@@ -2616,57 +2616,57 @@
     "timeline": [
      {
       "kind": "flight",
-      "from": "SAL",
+      "from": "GUA",
       "to": "CPH",
-      "depart": "2027-02-02T13:45",
-      "arrive": "2027-02-03T13:40",
-      "hours": 16.92,
+      "depart": "2027-02-03T13:09",
+      "arrive": "2027-02-04T13:40",
+      "hours": 17.52,
       "connections": [
        {
         "airport": "PTY",
-        "layover_h": 1.85
+        "layover_h": 2.1
        },
        {
         "airport": "AMS",
-        "layover_h": 1.25
+        "layover_h": 1.17
        }
       ],
       "carriers": [
        "KLM"
       ],
       "flight_numbers": [
-       "KLM 3000",
+       "KLM 3007",
        "KLM 758",
        "KLM 1271"
       ],
       "overnight_layover": false,
-      "ticket": "TQ:cd05b3ca1652",
+      "ticket": "TQ:c3d73e1653c4",
       "self_transfer_inside": false
      }
     ],
     "tickets": [
-     "TQ:cd05b3ca1652"
+     "TQ:c3d73e1653c4"
     ],
     "flags": [],
-    "from": "SAL",
+    "from": "GUA",
     "to": "CPH",
-    "depart": "2027-02-02T13:45",
-    "arrive": "2027-02-03T13:40",
-    "total_hours": 16.9,
-    "flying_hours": 16.9,
+    "depart": "2027-02-03T13:09",
+    "arrive": "2027-02-04T13:40",
+    "total_hours": 17.5,
+    "flying_hours": 17.5,
     "flights": 3,
     "hub_nights": 0,
     "changes": 0,
     "us_transit": false,
     "airports": [
-     "SAL",
+     "GUA",
      "PTY",
      "AMS",
      "CPH"
     ],
     "score": 5,
-    "id": "H0432",
-    "shared_ticket": "TQ:cd05b3ca1652",
+    "id": "H0850",
+    "shared_ticket": "TQ:c3d73e1653c4",
     "price_dkk": 0,
     "extras": {
      "cabin_bag_fees_dkk": 0,
@@ -2674,13 +2674,13 @@
      "hub_nights": 0,
      "hub_stay_estimate_dkk": 0
     },
-    "paired_with": "I0431"
+    "paired_with": "I0849"
    },
    "tickets": {
-    "TQ:cd05b3ca1652": {
-     "id": "TQ:cd05b3ca1652",
-     "price_dkk": 7472.0,
-     "observed_at": "2026-10-30T20:09:59Z"
+    "TQ:c3d73e1653c4": {
+     "id": "TQ:c3d73e1653c4",
+     "price_dkk": 7428.0,
+     "observed_at": "2026-10-30T16:16:51Z"
     }
    },
    "places": [
@@ -2986,22 +2986,43 @@
      }
     },
     {
-     "node": "SAL",
+     "node": "ANT",
      "hop": {
       "from": "TUNCO",
-      "to": "SAL",
+      "to": "ANT",
       "mode": "shuttle",
-      "operator": "Transporte Acopacific (private car), local buses",
-      "hours": 1.33,
-      "price_dkk": 281,
+      "operator": "Antigua shuttle agencies",
+      "hours": null,
+      "price_dkk": 226,
+      "overnight": false,
+      "border": true,
+      "flight": null,
+      "date": "2027-01-21"
+     }
+    },
+    {
+     "node": "GUA",
+     "hop": {
+      "from": "ANT",
+      "to": "GUA",
+      "mode": "shuttle",
+      "operator": "Guatemala Local Buses / shuttles",
+      "hours": 1.0,
+      "price_dkk": 110,
       "overnight": false,
       "border": false,
       "flight": null,
-      "date": "2027-01-21"
+      "date": "2027-02-03"
      }
     }
    ],
    "history": [
+    {
+     "version": 3,
+     "saved_at": "2026-10-30T21:07:43Z",
+     "by": "plan-trip",
+     "why": "Simon's Cartagena start with Christmas in Cochabamba. Version 3: Medellín 4 nights, then the coffee region by bus (Jardín, Salento) to Cali for 3 nights, as Simon asked, instead of flying Medellín to Cali."
+    },
     {
      "version": 2,
      "saved_at": "2026-10-30T20:58:19Z",
