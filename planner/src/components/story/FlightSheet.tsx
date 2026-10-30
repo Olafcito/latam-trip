@@ -3,7 +3,7 @@ import type { CrawledFlight } from '../../data/types'
 import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../../lib/format'
 import { fareNotes, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
 import type { FlightLink } from '../../lib/links'
-import { checkedAgo, momondoUrl, newestSeen, pricesOn, type PairDates } from '../../lib/prices'
+import { checkedAgo, momondoUrl, nearestDay, newestSeen, pricesOn, type PairDates } from '../../lib/prices'
 import { flightPricesTask } from '../../lib/tasks'
 import { Caret, Check, External, Plane } from '../icons'
 import { stopsText } from './LegCard'
@@ -11,7 +11,8 @@ import { stopsText } from './LegCard'
 // The window behind a flight on the route: the days around it, each with its cheapest fare, and the
 // flights of the day you are looking at. Each flight reads the way a ticket does, airline, then when it
 // leaves and lands with the airports in between, then the price and Pick. Looking at a day changes
-// nothing, only Pick does.
+// nothing, only Pick does. A day with no fares shows the flights of the closest day that has some, so
+// you still see how long the trip is and where it goes through.
 
 /** the flights shown before Show all */
 const SHOWN = 6
@@ -194,13 +195,13 @@ function Flight({ row, name, nextDay, now, onPick }: { row: FareRow; name: (code
 }
 
 /** The flights of one day. Its own part, so Show all starts over with each day. */
-function DayList({ rows, name, nextDay, now, onPick }: { rows: FareRow[]; name: (code: string) => string; nextDay: string | null; now: number; onPick: (f: CrawledFlight) => void }) {
+function DayList({ rows, name, nextDay, now, onPick }: { rows: FareRow[]; name: (code: string) => string; nextDay: string | null; now: number; onPick?: (f: CrawledFlight) => void }) {
   const [all, setAll] = useState(false)
   const shown = all ? rows : rows.slice(0, SHOWN)
   return (
     <>
       <ol className="fl-rows">
-        {shown.map((r) => <li key={r.flight.quote_id}><Flight row={r} name={name} nextDay={nextDay} now={now} onPick={() => onPick(r.flight)} /></li>)}
+        {shown.map((r) => <li key={r.flight.quote_id}><Flight row={r} name={name} nextDay={nextDay} now={now} onPick={onPick ? () => onPick(r.flight) : undefined} /></li>)}
       </ol>
       {rows.length > SHOWN && <button type="button" className="btn small fl-all" onClick={() => setAll((x) => !x)}>{all ? 'Show fewer' : `Show all ${rows.length}`}</button>}
     </>
@@ -231,6 +232,12 @@ export function FlightSheet({ from, to, typical, picked, date, days, fares, stay
   const quotes = useMemo(() => (pd ? pricesOn(pd, from.code, to.code, at) : []), [pd, from.code, to.code, at])
   const rows = useMemo(() => fareRows(quotes, from.code, to.code, at), [quotes, from.code, to.code, at])
   const list = sortFares(picked ? rows.filter((r) => !sameFlight(r.flight, picked)) : rows, by)
+  const near = useMemo(() => {
+    const d = rows.length ? null : nearestDay(pd, from.code, to.code, at)
+    if (!d || !pd) return null
+    const found = fareRows(pricesOn(pd, from.code, to.code, d), from.code, to.code, d)
+    return { day: d, away: dayDiff(at, d), rows: sortFares(picked ? found.filter((r) => !sameFlight(r.flight, picked)) : found, 'cheap') }
+  }, [rows.length, pd, from.code, to.code, at, picked])
   const now = Date.now()
   const seen = newestSeen(quotes)
   const open = link?.saved && at === date ? { href: link.href, label: `Open on ${link.site}` } : { href: momondoUrl(from.code, to.code, at, tripId), label: 'Search Momondo' }
@@ -266,10 +273,18 @@ export function FlightSheet({ from, to, typical, picked, date, days, fares, stay
           </section>
         )}
         {rows.length === 0 ? (
-          <div className="fl-none">
-            <p>No fares seen for {weekdayDay(at)}</p>
-            <a className="btn primary" href={momondoUrl(from.code, to.code, at, tripId)} target="_blank" rel="noopener noreferrer">Search Momondo<External /></a>
-          </div>
+          <>
+            <div className="fl-none">
+              <p>No fares seen for {weekdayDay(at)}</p>
+              <a className="btn small primary" href={momondoUrl(from.code, to.code, at, tripId)} target="_blank" rel="noopener noreferrer">Search Momondo<External /></a>
+            </div>
+            {near && near.rows.length > 0 && (
+              <section className="fl-near" aria-label="Nearest flights">
+                <h4>Nearest flights, {weekdayDay(near.day)}<span>{Math.abs(near.away)} {Math.abs(near.away) === 1 ? 'day' : 'days'} {near.away > 0 ? 'later' : 'earlier'}</span></h4>
+                <DayList key={near.day} rows={near.rows} name={airportName} nextDay={stay.nextDay} now={now} onPick={days.includes(near.day) ? pick : undefined} />
+              </section>
+            )}
+          </>
         ) : <DayList key={at} rows={list} name={airportName} nextDay={stay.nextDay} now={now} onPick={pick} />}
       </div>
       <footer className="fl-foot">

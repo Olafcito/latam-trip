@@ -1,29 +1,67 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { Family } from '@map/data/types'
 import type { Model } from '@map/data/model'
 import { TRIP_COLORS } from '@map/data/trips'
 import type { AppData } from '../data/types'
+import { usePairDates } from '../data/pairDates'
 import { useStore } from '../store'
-import { hours, kr, weekdayDay } from '../lib/format'
-import { groundCost, nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from '../lib/journey'
+import { hours, kr, legHours, weekdayDay } from '../lib/format'
+import { groundCost, legTime, nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from '../lib/journey'
+import { legWindow, type LegWindow } from '../lib/legDates'
 import { countryName } from '../lib/colors'
 import { Flag } from '@map/map/Flag'
 import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
 import { hopFromArc } from '../lib/journey'
+import { Modal } from './Modal'
 import { hoverProps } from './PlaceCard'
 import { ReachList } from './ReachList'
 import { Calendar, Close, Download, External, Grip, Land, ModeChip, Moon, Plane } from './icons'
 import { hopLink } from '../lib/links'
+import { WhenPicker } from './story/WhenPicker'
 
 // The open trip, on the right of the map: its two fixed flights and the stops between them.
 // A stop is the cursor: the map lights what it reaches, and a tap on a lit city adds the next
 // stop right after it. A tap on that stop again stops building and leaves the itinerary. Stops can be dragged into another order or removed. A tap on the map
-// beside the pane folds it to a small card in the corner, a tap on the card unfolds it.
+// beside the pane folds it to a small card in the corner, a tap on the card unfolds it. Each leg shows
+// the day it leaves, a tap on that day opens the calendar of the route, each stop shows its nights.
 
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
 
 function Money({ v }: { v: number | null }) {
   return v == null ? <span className="q" title="Unknown for at least one part">not known</span> : <>{kr(v)}</>
+}
+
+/** The day a leg leaves. The calendar opens over the map, the pane is too narrow and clips it. */
+function PlanDate({ route, w, set, clash, firstDay, stay, trip, onSet }: {
+  route: string
+  w: LegWindow
+  set: boolean
+  clash: boolean
+  firstDay: string
+  stay: { name: string; inDay: string }
+  trip: string
+  onSet: (date: string | null) => void
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <button type="button" className="plan-date" data-set={set} data-clash={clash} aria-label={`${route}, leaves ${weekdayDay(w.date)}${clash ? ', before you get there' : ''}. Change the day`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
+        {weekdayDay(w.date)}
+      </button>
+      {open && createPortal(
+        <Modal label={`When ${route} leaves`} className="wp-md" onClose={() => setOpen(false)}>
+          {() => (
+            <div className="wp-box">
+              <h3>{route}</h3>
+              <WhenPicker date={w.date} set={set} min={w.min} max={w.max} firstDay={firstDay} fares={w.fares} stay={stay} codes={w.codes} trip={trip} onSet={onSet} />
+            </div>
+          )}
+        </Modal>,
+        document.body,
+      )}
+    </>
+  )
 }
 
 /** The route map's model and the modes switched on on it, for the list of places one leg away. */
@@ -47,6 +85,8 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const removeStop = useStore((s) => s.removeStop)
   const moveStop = useStore((s) => s.moveStop)
   const insertLeg = useStore((s) => s.insertLeg)
+  const setHopDate = useStore((s) => s.setHopDate)
+  const pd = usePairDates()
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(journey.name)
   useEffect(() => setName(journey.name), [journey.name])
@@ -75,6 +115,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
 
   const exitNode = nodeForAirport(inout, wh.from)
   const sched = schedule(journey, wi, wh, exitNode, nm)
+  const homeDay = sched.homeDepart.slice(0, 10)
   const t = totals(data, journey, sched)
   const allIn = travelTotal(t)
   const lastIdx = journey.places.length - 1
@@ -193,6 +234,8 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
             const h = p.hop
             const cur = !idle && i === at
             const c = n?.country ?? inout.airports[p.node]?.country ?? ''
+            const took = h ? legHours(legTime(map, h)) : null
+            const days = sched.places[i]?.days ?? 0
             const row = (
               <li
                 key={i}
@@ -207,8 +250,20 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                     title={[h.overland, h.operator, h.flight?.via.length ? `via ${h.flight.via.join(', ')}` : null, h.overnight ? 'overnight' : null].filter(Boolean).join(' · ') || undefined}
                   >
                     <ModeChip family={family(h.mode)} />
+                    {i > 0 && (
+                      <PlanDate
+                        route={`${nm(h.from)} to ${nm(h.to)}`}
+                        w={legWindow(pd, map, h, sched.places[i - 1], homeDay)}
+                        set={!!h.date}
+                        clash={sched.warnings.some((w) => w.leg === i)}
+                        firstDay={sched.firstDay}
+                        stay={{ name: nm(journey.places[i - 1].node), inDay: sched.places[i - 1].inDay }}
+                        trip={journey.id}
+                        onSet={(d) => setHopDate(i, d)}
+                      />
+                    )}
                     <span className="plan-hopt">
-                      {h.hours != null && <span>{hours(h.hours)}</span>}
+                      {took && <span>{took}</span>}
                       {h.price_dkk != null && <span>{kr(h.price_dkk)}</span>}
                     </span>
                     {h.overnight && <Moon />}
@@ -249,7 +304,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                   <span className="plan-n" style={{ background: cur ? '#C98A12' : TRIP_COLORS[0] }}>{i + 1}</span>
                   <Flag code={c} size={12} title={countryName(c)} />
                   <b className="plan-who" {...hoverProps(n)}>{nm(p.node)}</b>
-                  {sched.places[i]?.arrive && <span className="plan-when" title="A dated flight brings you here">{weekdayDay(sched.places[i].arrive!)}</span>}
+                  <span className="plan-when" title="Nights here. The day each leg leaves sets them">{days ? `${days} ${days === 1 ? 'night' : 'nights'}` : 'Passing'}</span>
                   {i > 0 && (
                     <button className="plan-rm" onClick={(e) => { e.stopPropagation(); removeStop(i) }} aria-label={`Remove ${nm(p.node)}`} title="Remove this stop"><Close /></button>
                   )}

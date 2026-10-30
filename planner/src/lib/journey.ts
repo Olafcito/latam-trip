@@ -1,6 +1,6 @@
 import type { AppData, CrawledFlight, InOut, MapData, Mode, StopItem, Way } from '../data/types'
 import { day, dayDiff, dayTime, kr } from './format'
-import { edgeHours, edgePrice, type Arc } from './graph'
+import { edgeHours, edgePrice, groundPath, type Arc } from './graph'
 import { priceOfWays } from './options'
 import { addDays } from './time'
 
@@ -140,6 +140,21 @@ export function legDay(h: Hop, estimate: string): string {
   return h.date ?? h.flight?.depart.slice(0, 10) ?? estimate
 }
 
+/** How long a leg takes. A bus or boat leg with no hours of its own is added up from the map's ground legs, so it is an estimate. */
+export interface LegTime {
+  hours: number | null
+  about: boolean
+  /** the places the way goes through, when it was added up */
+  via: string[]
+}
+
+export function legTime(map: MapData, h: Hop): LegTime {
+  const own = h.flight?.hours ?? h.hours
+  if (own != null || h.mode === 'flight') return { hours: own, about: false, via: [] }
+  const path = groundPath(map, h.from, h.to, h.countries)
+  return path ? { hours: path.cost, about: true, via: path.nodes.slice(1, -1) } : { hours: null, about: false, via: [] }
+}
+
 /**
  * The dated moments of a trip are its landing, the legs with a date set or a picked flight, and
  * its flight home. The days between two dated moments are shared evenly by the places in between.
@@ -229,9 +244,9 @@ function shiftLegs(j: Journey, s: Schedule, i: number, end: number, by: number):
 }
 
 /**
- * The earliest stop decides. A night more at stop i comes from a later stop you choose, or from the
- * free nights. The legs up to that stop leave a day later, the stops between keep their nights, and
- * nothing before stop i changes. Returns null when there is no such night to take.
+ * The earliest stop decides. A night more at stop i comes from the free nights, and from a later stop
+ * you choose once there are none. The legs up to that stop leave a day later, the stops between keep
+ * their nights, and nothing before stop i changes. Returns null when there is no such night to take.
  */
 export function takeNight(j: Journey, s: Schedule, i: number, from: number | 'free'): NightMove | null {
   const last = j.places.length - 1
@@ -249,6 +264,33 @@ export function giveNight(j: Journey, s: Schedule, i: number): NightMove | null 
   const legs = shiftLegs(j, s, i, last, -1)
   if (!legs) return null
   return { legs, lastNights: s.places[last].days - (i === last ? 1 : 0) }
+}
+
+/**
+ * A stop taken out of the trip. The stops before it keep their nights, the stops after it keep theirs
+ * and move earlier, and its nights become free nights. The hop numbers are those of the trip without it.
+ */
+export function stopGoes(j: Journey, s: Schedule, i: number): NightMove | null {
+  const last = j.places.length - 1
+  if (i <= 0 || i > last) return null
+  const hop = (k: number) => j.places[k].hop
+  for (let k = i; k <= last; k++) if (!hop(k)) return null
+  const dayOf = (k: number) => legDay(hop(k)!, s.places[k - 1].outDay)
+  const leaves = dayOf(i)
+  const by = i < last ? dayDiff(leaves, dayOf(i + 1)) : 0
+  const legs: NightMove['legs'] = []
+  for (let k = i + 1; k <= last; k++) legs.push({ hop: k - 1, date: k === i + 1 ? leaves : addDays(dayOf(k), -by) })
+  for (let m = i - 1; m >= 1 && !hop(m)!.date && !hop(m)!.flight; m--) legs.push({ hop: m, date: dayOf(m) })
+  return { legs, lastNights: s.places[i === last ? i - 1 : last].days }
+}
+
+/** The trip with a move on it: the legs on their new days and the nights of the last stop. */
+export function applyMove(j: Journey, m: NightMove): Journey {
+  const places = j.places.map((q, k) => {
+    const leg = m.legs.find((l) => l.hop === k)
+    return leg && q.hop ? { ...q, hop: { ...q.hop, date: leg.date } } : q
+  })
+  return { ...j, places, lastNights: m.lastNights }
 }
 
 /** Back to the day its flight leaves, for the leg into stop i and each later leg off its flight too, so the stops between keep their nights. */

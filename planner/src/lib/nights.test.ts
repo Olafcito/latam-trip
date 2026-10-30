@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { Way } from '../data/types'
-import { backToFlights, giveNight, schedule, takeNight, type Hop, type Journey, type NightMove } from './journey'
+import type { MapData, Way } from '../data/types'
+import { applyMove, backToFlights, giveNight, legTime, schedule, stopGoes, takeNight, type Hop, type Journey, type NightMove } from './journey'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'A', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -196,6 +196,75 @@ describe('a flight moved to another day', () => {
     const w = sched(take(j, 0, 1)).warnings.find((x) => x.picked === 1)
     expect(w).toMatchObject({ level: 'warn', fix: '2026-12-10' })
     expect(w?.leg).toBeUndefined()
+  })
+})
+
+describe('a stop taken out', () => {
+  /** the trip without stop i, its legs joined up the way the store does it */
+  const without = (j: Journey, i: number) => {
+    const m = stopGoes(j, sched(j), i)
+    expect(m).not.toBeNull()
+    const places = j.places.filter((_, k) => k !== i).map((p, k, all) => (k && p.hop!.from !== all[k - 1].node ? { ...p, hop: bus(all[k - 1].node, p.node) } : p))
+    return applyMove({ ...j, places }, m!)
+  }
+
+  it('keeps the nights on both sides, its own become free', () => {
+    const j = without(trip(), 1)
+    expect(nights(j)).toEqual([17, 15, 15])
+    expect(free(j)).toBe(15)
+  })
+
+  it('moves the later stops earlier by its nights', () => {
+    const j = trip([undefined, '2026-12-10', '2026-12-20', '2027-01-01'])
+    expect(legDays(without(j, 2))).toEqual(['2026-12-10', '2026-12-20'])
+    expect(nights(without(j, 2))[2]).toBe(nights(j)[3])
+  })
+
+  it('never changes a stop before it', () => {
+    expect(nights(without(trip(), 3))).toEqual([17, 15, 15])
+    expect(free(without(trip(), 3))).toBe(15)
+  })
+
+  it('leaves the last stop its nights, not the rest of the days', () => {
+    expect(nights(without(give(trip(), 3), 2))[2]).toBe(14)
+  })
+
+  it('adds up, nights and free nights are the length of the trip', () => {
+    const j = without(give(trip(), 0), 2)
+    expect(nights(j).reduce((a, b) => a + b, 0) + free(j)).toBe(62)
+  })
+
+  it('does not take out the first stop', () => {
+    expect(stopGoes(trip(), sched(trip()), 0)).toBeNull()
+  })
+})
+
+describe('how long a leg takes', () => {
+  const edge = (from: string, to: string, duration_h: number, mode = 'bus') => ({ from, to, mode, duration_h, both: true })
+  const map = {
+    nodes: [['A', 'GT'], ['B', 'SV'], ['C', 'HN'], ['D', 'CR']].map(([id, country]) => ({ id, country })),
+    edges: [edge('A', 'B', 6), edge('B', 'C', 9), edge('C', 'D', 20), edge('B', 'D', 12, 'boat'), edge('A', 'D', 2, 'flight')],
+  } as unknown as MapData
+  const leg = (over: Partial<Hop>): Hop => ({ ...bus('A', 'D'), hours: null, ...over })
+
+  it('is the hours of the leg when it has them, and no estimate', () => {
+    expect(legTime(map, leg({ hours: 8 }))).toEqual({ hours: 8, about: false, via: [] })
+  })
+
+  it('adds up the ground legs when it has none, and flies nowhere', () => {
+    expect(legTime(map, leg({}))).toEqual({ hours: 18, about: true, via: ['B'] })
+  })
+
+  it('goes through the countries of the leg in their order', () => {
+    expect(legTime(map, leg({ countries: ['GT', 'SV', 'HN', 'CR'] }))).toEqual({ hours: 35, about: true, via: ['B', 'C'] })
+  })
+
+  it('claims nothing when no way fits those countries', () => {
+    expect(legTime(map, leg({ countries: ['GT', 'CR'] }))).toEqual({ hours: null, about: false, via: [] })
+  })
+
+  it('claims nothing for a flight with no hours', () => {
+    expect(legTime(map, leg({ mode: 'flight' }))).toEqual({ hours: null, about: false, via: [] })
   })
 })
 

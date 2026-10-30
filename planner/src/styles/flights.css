@@ -89,9 +89,12 @@
   .fl-picked .fl-logo { background: var(--surface-3); }
 
   .fl-all { margin: 4px 0 16px; }
-  .fl-none { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px 0; }
+  /* a day with no fares: the line and its search on one row, then the nearest flights keep the same rows */
+.fl-none { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 16px 0; }
   .fl-none p { margin: 0; color: var(--muted); }
   .fl-none .btn svg, .fl-foot .btn svg { margin-left: 4px; }
+.fl-near h4 { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin: 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: var(--fs-small); font-weight: 600; color: var(--text); }
+.fl-near h4 span { font-weight: 400; color: var(--muted); }
   .fl-foot { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--line); }
 
   /* a low window scrolls as one, or the list would have no room */

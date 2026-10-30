@@ -1,19 +1,26 @@
-import { Fragment } from 'react'
-import { clock, hours, kr, nextDayMark, observed, weekdayDay } from '../../lib/format'
+import { Fragment, lazy, Suspense } from 'react'
+import { clock, hours, kr, legHours, nextDayMark, observed, weekdayDay } from '../../lib/format'
 import { stopsOf } from '../../lib/fares'
-import type { Hop } from '../../lib/journey'
+import type { Hop, LegTime } from '../../lib/journey'
 import { sourceLabel } from '../../lib/prices'
 import type { FlightLink } from '../../lib/links'
 import { External, ModeChip, Moon } from '../icons'
 import type { Family } from '@map/data/types'
+import type { LegPoint } from './LegMap'
 
 // The card behind a leg on the timeline: a ticket stub for a bus or a boat, and for a flight with no
 // airport codes to search. Times sit big at the ends when known, the line between them carries the
-// stops, then the operator and the price. A flight with its codes opens the FlightSheet instead.
+// stops, then the operator and the price. A bus or a boat also has a little map of its way, with the
+// time it takes, or says that time is not known. A flight with its codes opens the FlightSheet instead.
+
+// the outlines of the countries are a big file, so they come the first time a little map opens
+const LegMap = lazy(() => import('./LegMap'))
 
 export interface LegEnds { from: string; to: string; fromName: string; toName: string; fromCode: string | null; toCode: string | null }
 
 export const stopsText = (n: number) => (n === 0 ? 'Direct' : n === 1 ? '1 stop' : `${n} stops`)
+
+const inWords = (names: string[]) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`)
 
 function Track({ codes, waits, family }: { codes: string[]; waits: (number | null)[]; family: Family }) {
   return (
@@ -32,17 +39,21 @@ function Track({ codes, waits, family }: { codes: string[]; waits: (number | nul
   )
 }
 
-export function LegCard({ h, ends, family, date, link }: {
+export function LegCard({ h, ends, family, date, time, points, link }: {
   h: Hop
   ends: LegEnds
   family: Family
   /** the day the leg leaves */
   date: string
+  time: LegTime
+  /** the way on the map, with the places it goes through, or null for no map */
+  points: LegPoint[] | null
   link: FlightLink | null
 }) {
   const f = h.flight
   const codes = [ends.fromCode ?? ends.fromName, ...(f?.via ?? []), ends.toCode ?? ends.toName]
-  const dur = f?.hours ?? h.hours
+  const dur = legHours(time) ?? (family === 'flight' ? null : 'Time not known')
+  const through = time.about ? points?.slice(1, -1).map((p) => p.name) ?? [] : []
   const facts = [
     // the overland note already names who runs it
     f?.carriers.join(', ') || (h.overland ? null : h.operator),
@@ -68,7 +79,7 @@ export function LegCard({ h, ends, family, date, link }: {
           <small>{ends.fromName}</small>
         </div>
         <div className="lc-mid">
-          {dur != null && <span className="lc-dur">{hours(dur)}</span>}
+          {dur && <span className="lc-dur">{dur}</span>}
           <Track codes={codes} waits={f?.layover_h ?? []} family={family} />
         </div>
         <div className="lc-end to">
@@ -79,7 +90,9 @@ export function LegCard({ h, ends, family, date, link }: {
         </div>
       </div>
 
+      {points && <Suspense fallback={<div className="lm" aria-hidden="true" />}><LegMap points={points} family={family} /></Suspense>}
       {h.overland && <p className="lc-note">{h.overland}</p>}
+      {through.length > 0 && <p className="lc-note">Through {inWords(through)}. The time adds up those legs, with no waiting.</p>}
       {facts.length > 0 && <ul className="lc-facts">{facts.map((x) => <li key={x}>{x}</li>)}</ul>}
 
       <div className="lc-price">

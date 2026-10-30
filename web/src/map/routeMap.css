@@ -183,9 +183,9 @@
 .stg > *:nth-child(n+8) { animation-delay: .24s }
 
 /* every press shrinks a touch, every focus gets the amber ring */
-.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button),
+.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-date, .plan-rm, .plan-finish button),
 .panel.plan.mini { touch-action: manipulation; }
-.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button):active:not(:disabled),
+.panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-date, .plan-rm, .plan-finish button):active:not(:disabled),
 .panel.plan.mini:active { transform: scale(.97); }
 .panel :focus-visible, .panel.plan.mini:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 
@@ -522,7 +522,14 @@
   .plan-hop { display: flex; align-items: center; gap: 8px; margin-left: 14px; padding: 6px 0 6px 18px; border-left: 2px solid var(--chrome-line); font-size: 12px; color: var(--muted); }
   .plan-hop.flight { border-left-style: dotted; border-left-color: var(--flight); }
   .plan-hop.boat { border-left-style: dashed; border-left-color: var(--boat); }
-  .plan-hopt { display: flex; gap: 10px; min-width: 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  /* the day a leg leaves: a chip like the route's, muted while it is only the even share of the days */
+.plan-date { flex: none; min-height: 28px; padding: 0 8px; border: 0; border-radius: 8px; background: var(--surface-2); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted) !important; cursor: pointer; transition: var(--tint), var(--press); }
+.plan-date[data-set='true'] { color: var(--text) !important; }
+.plan-date[data-clash='true'] { color: var(--err) !important; }
+.plan-date:active { transform: scale(0.97); }
+.plan-date:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
+@media (pointer: coarse) { .plan-date { min-height: 36px; } }
+.plan-hopt { display: flex; gap: 10px; min-width: 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .plan-hop svg { flex: none; }
   .plan-hop-link { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: -6px 0 -6px auto; border-radius: 999px; color: var(--flight); }
   .plan-hop-link:hover { background: var(--chrome-line); }
@@ -598,6 +605,7 @@
   @media (hover: hover) and (pointer: fine) {
     .plan-title:hover { background: var(--surface-2); }
     .plan-link:hover { background: var(--surface-3); color: var(--text) !important; }
+    .plan-date:hover { background: var(--surface-3); }
     .plan-stop:hover { background: var(--surface-2); }
     .plan-stop:hover .plan-rm { opacity: 1; }
     .plan-grip:hover { background: var(--surface-3); color: var(--text); }
@@ -658,7 +666,7 @@
 
 /* reduced motion in the panel: presses and hovers keep their colour, nothing moves */
 @media (prefers-reduced-motion: reduce) {
-  .panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-rm, .plan-finish button, .reach-row):active,
+  .panel :is(.x, .back, .more, .pbtn, .tbtn, .tnew, .ocard, .dirseg button, .tc-leg, .cr-fl, .rname, .plan-link, .plan-date, .plan-rm, .plan-finish button, .reach-row):active,
   .panel.plan.mini:active,
   .panel .back:hover svg, .panel .more:hover .arr, .panel .crow:hover .cr-arrow { transform: none; }
 }

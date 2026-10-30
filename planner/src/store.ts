@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { AppData, CrawledFlight, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
 import { dayDiff } from './lib/format'
-import { journeyIsValid, newJourney, type Hop, type Journey, type NightMove, type Place } from './lib/journey'
+import { applyMove, journeyIsValid, legDay, newJourney, nodeForAirport, nodeName, schedule, stopGoes, type Hop, type Journey, type NightMove, type Place, type Schedule } from './lib/journey'
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
 import type { TripLeg, TripState } from '@map/data/trips'
 import type { CardRef } from '@map/map/useMapMode'
@@ -104,6 +104,8 @@ interface State {
   /** a leg from the map goes in after the cursor, and the cursor moves on to it */
   insertLeg: (leg: TripLeg) => void
   removeStop: (i: number) => void
+  /** another place for stop i. Its two legs are new and keep the days they had */
+  replaceStop: (i: number, node: string) => void
   /** move a stop to another position in the route (the landing stop stays first) */
   moveStop: (from: number, to: number) => void
   /** set the day you set out on the leg to place i, "2026-12-13", or null to let it be estimated */
@@ -245,9 +247,24 @@ export const useStore = create<State>((set, get) => ({
   removeStop: (i) => {
     const { journey: j, cursor } = get()
     if (!j || i <= 0 || i >= j.places.length) return
+    const sched = scheduleOf(j, get().data)
+    const move = sched && stopGoes(j, sched, i)
     const places = rehop(j.places.filter((_, k) => k !== i), get())
-    get().setJourney({ ...j, places })
+    get().setJourney(move ? applyMove({ ...j, places }, move) : { ...j, places })
     if (cursor != null) get().setCursor(cursor > i ? cursor - 1 : cursor === i ? i - 1 : cursor)
+  },
+  replaceStop: (i, node) => {
+    const j = get().journey
+    if (!j || i <= 0 || i >= j.places.length || j.places[i].node === node) return
+    // a leg with no day of its own stays floating, so the even share does not change
+    const dayOf = (h: Hop | null | undefined) => (h && (h.date || h.flight) ? legDay(h, '') : null)
+    const days = [dayOf(j.places[i].hop), dayOf(j.places[i + 1]?.hop)]
+    const open = j.places.map((p, k) => (k === i ? { node, hop: null } : k === i + 1 ? { ...p, hop: null } : p))
+    const places = rehop(open, get()).map((p, k) => {
+      const date = k === i ? days[0] : k === i + 1 ? days[1] : null
+      return date && p.hop ? { ...p, hop: { ...p.hop, date } } : p
+    })
+    get().setJourney({ ...j, places })
   },
   moveStop: (from, to) => {
     const j = get().journey
@@ -269,11 +286,7 @@ export const useStore = create<State>((set, get) => ({
   moveNights: (m) => {
     const j = get().journey
     if (!j) return
-    const places = j.places.map((q, k) => {
-      const leg = m.legs.find((l) => l.hop === k)
-      return leg && q.hop ? { ...q, hop: { ...q.hop, date: leg.date } } : q
-    })
-    get().setJourney({ ...j, places, lastNights: m.lastNights })
+    get().setJourney(applyMove(j, m))
   },
   setHopFlight: (i, flight) => {
     const { journey: j, data, legFacts } = get()
@@ -392,6 +405,14 @@ function hide(s: { repo: Journey[]; hidden: Record<string, number> }, ids: strin
  * Hops after the places moved: a hop that still joins its two places stays (with its picked
  * flight), the rest are looked up again. A new place takes the mode its leg was added with.
  */
+/** The days of a trip, or null while the data is missing or its flights are gone. */
+function scheduleOf(j: Journey, data: AppData | null): Schedule | null {
+  const wi = data?.inout.ways[j.wayIn]
+  const wh = data?.inout.ways[j.wayHome]
+  if (!data || !wi || !wh) return null
+  return schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), (n) => nodeName(data.map, data.inout, n))
+}
+
 function rehop(places: Place[], s: { data: AppData | null; legFacts: LegFacts | null }, mode: Mode | null = null): Place[] {
   const map = s.data?.map
   if (!map) return places
