@@ -26407,5 +26407,110 @@
   },
   "image_source": "place",
   "saved_in": []
+ },
+ {
+  "id": "bosawas-guided-rainforest-trip",
+  "name": "Bosawás rainforest trip with Mayangna guides (Siuna)",
+  "category": "adventure",
+  "tags": [
+   "rainforest",
+   "jungle",
+   "indigenous",
+   "multi-day",
+   "remote"
+  ],
+  "places": [
+   "SIUN"
+  ],
+  "area": "Siuna, Bosawás Biosphere Reserve",
+  "country": "NI",
+  "lat": 13.733,
+  "lon": -84.777,
+  "summary": "Bosawás is the largest rainforest reserve in Central America and a UNESCO biosphere reserve on the Honduras border. Entry needs a certified native guide and a free permit (Siuna, Bonanza or Peñas Blancas); you sleep in Mayangna or Miskitu village cabins and travel by river and trail.",
+  "season": "Dry season January to April is best. May to December is rainy (peak August to October), rivers rise and trails and roads can close.",
+  "dec_jan": "December is end of rainy season: muddy trails and high rivers; January is better.",
+  "price": "Permit free. Guide and tour prices not published; arrange in Siuna or through an agency.",
+  "price_dkk": null,
+  "duration": "4 to 5 days minimum (1 to 2 days of travel each way)",
+  "requirements": "Certified native guide and permit. Rain gear, boots, repellent, headlamp. Check vaccines (yellow fever, hepatitis A and B, malaria prophylaxis). Travel insurance.",
+  "details": {
+   "access": "Siuna (southwest, river trips), Waslala (cloud forest and highlands), Bonanza (hardest, most remote hikes)",
+   "getting_there": "Managua to Siuna by bus about 10.5 h (Transporte El Venado, via Río Blanco) or La Costeña flight about 1 h",
+   "wildlife": "Jaguar, puma and ocelot (mostly tracks), tapir, scarlet macaw, spider and howler monkeys, harpy eagle, hundreds of orchids",
+   "communities": "Mayangna and Miskitu villages, homestay cabins, often no electricity; ask before photographing people",
+   "safety": "Armed settlers (colonos) linked to cattle, logging and illegal gold mining attacked Mayangna and Miskitu communities in the reserve interior in 2020, 2021, 2022 and March 2023 (Wilú, Musawás, Sabakitang), with several killed. No reports of tourists targeted, but go only with an established local guide, stay away from mining areas and check current Danish (UM) and US advice for Nicaragua first.",
+   "what_people_say": [
+    {
+     "quote": "Independent entry is not allowed; a certified native guide and a permit are required.",
+     "site": "Passporter",
+     "date": "2025",
+     "url": "https://passporterapp.com/en/blog/nicaragua/bosawas-reserve-nicaragua-rainforest-guide/"
+    }
+   ]
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://passporterapp.com/en/blog/nicaragua/bosawas-reserve-nicaragua-rainforest-guide/",
+   "https://www.rome2rio.com/Bus/Managua/Siuna",
+   "https://news.mongabay.com/2023/03/un-denounces-new-attacks-on-indigenous-people-in-nicaraguas-largest-reserve/",
+   "https://www.internationalparks.org/nicaragua/Bosaw%C3%A1s"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Zip-line_over_rainforest_canopy_4_January_2005%2C_Costa_Rica.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Zip-line_over_rainforest_canopy_4_January_2005,_Costa_Rica.jpg",
+   "credit": "Khaufle at English Wikipedia",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "penas-blancas-cloud-forest",
+  "name": "Peñas Blancas cloud forest and waterfalls (edge of Bosawás)",
+  "category": "hiking",
+  "tags": [
+   "cloud-forest",
+   "waterfall",
+   "hiking",
+   "community",
+   "quetzal"
+  ],
+  "places": [
+   "PBLM"
+  ],
+  "area": "Peñas Blancas massif, El Cuá road, Jinotega and Matagalpa",
+  "country": "NI",
+  "lat": 13.28,
+  "lon": -85.66,
+  "summary": "The easiest way into the Bosawás forest: a community eco-lodge and farm homestays on the cloud forest massif at the reserve's southern edge. Guided hikes to La Pavona waterfall, swimming streams, primary forest and quetzals at dawn, plus coffee farm life.",
+  "season": "Year round; drier January to April.",
+  "dec_jan": "Coffee harvest season in December and January, wet and cool in the forest.",
+  "price": "Hikes about US$5 per person with a guide; lodge and homestay prices not published (book through the CEN).",
+  "price_dkk": 32,
+  "duration": "2 to 3 days",
+  "requirements": "Book ahead with the CEN (Centro de Entendimiento con la Naturaleza, Km 195 road to El Cuá, +505 470 7590). No alcohol or smoking in the community. Boots, rain gear, warm layer, flashlight.",
+  "details": {
+   "getting_there": "Managua to Matagalpa by microbus (hourly from Mercado Mayoreo), then bus from the Guanuca terminal toward El Cuá or Bocay, off at Empalme La Manzana (2.5 to 3 h)",
+   "hikes": "La Pavona (1.5 to 2 h, hard, big waterfall), Piscina de las Guardatinajas (20 min, bathing stream), El Sonoro (20 min), El Horno (3 h, primary forest, camp for quetzals at dawn), El Cafetal (coffee farm)",
+   "wildlife": "Monkeys, resplendent quetzal, orchids, tree ferns; jaguar present but rarely seen"
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://vianica.com/go/specials/26-penas-blancas-massif-nicaragua.html"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Volc%C3%A1n_de_Fuego_and_Acatenango.jpg/1280px-Volc%C3%A1n_de_Fuego_and_Acatenango.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Volc%C3%A1n_de_Fuego_and_Acatenango.jpg",
+   "credit": "Scottydude",
+   "licence": "CC BY-SA 4.0",
+   "w": 1600,
+   "h": 1200
+  },
+  "image_source": "category",
+  "saved_in": []
  }
 ]

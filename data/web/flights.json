@@ -1769,6 +1769,25 @@
   ]
  },
  {
+  "from": "GUA",
+  "to": "RTB",
+  "dkk": 1794,
+  "hours": 1.33,
+  "dep": "2026-12-15T12:30",
+  "arr": "2026-12-15T13:50",
+  "vias": [],
+  "carriers": [
+   "TAG Airlines"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-15",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "CTG",
   "to": "LIM",
   "dkk": 1817,
@@ -2257,25 +2276,6 @@
   "link": null,
   "shows": [
    "cheapest",
-   "daytime landing"
-  ]
- },
- {
-  "from": "GUA",
-  "to": "RTB",
-  "dkk": 1996,
-  "hours": 1.33,
-  "dep": "2026-12-10T09:40",
-  "arr": "2026-12-10T11:00",
-  "vias": [],
-  "carriers": [
-   "TAG Airlines"
-  ],
-  "notes": [],
-  "link": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-10?sort=price_a",
-  "shows": [
-   "cheapest",
-   "fastest",
    "daytime landing"
   ]
  },
@@ -3639,6 +3639,25 @@
   ]
  },
  {
+  "from": "SAL",
+  "to": "RTB",
+  "dkk": 2641,
+  "hours": 1.33,
+  "dep": "2026-12-08T09:10",
+  "arr": "2026-12-08T10:30",
+  "vias": [],
+  "carriers": [
+   "TAG Airlines"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/SAL-RTB/2026-12-08",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "SDQ",
   "to": "SAL",
   "dkk": 2652,
@@ -3873,6 +3892,31 @@
   ],
   "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-14",
   "shows": [
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "RTB",
+  "dkk": 2773,
+  "hours": 11.58,
+  "dep": "2026-12-08T05:10",
+  "arr": "2026-12-08T16:45",
+  "vias": [
+   "SAL",
+   "SAP"
+  ],
+  "carriers": [
+   "Aerolineas Sosa",
+   "Avianca"
+  ],
+  "notes": [
+   "self transfer",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-RTB/2026-12-08",
+  "shows": [
+   "cheapest",
    "daytime landing"
   ]
  },
@@ -5005,6 +5049,31 @@
   ]
  },
  {
+  "from": "MGA",
+  "to": "RTB",
+  "dkk": 3843,
+  "hours": 15.75,
+  "dep": "2026-12-20T19:35",
+  "arr": "2026-12-21T11:20",
+  "vias": [
+   "SAL",
+   "GUA"
+  ],
+  "carriers": [
+   "Avianca",
+   "TAG Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-RTB/2026-12-20",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "SAP",
   "to": "BOG",
   "dkk": 3861,
@@ -5090,6 +5159,28 @@
    "cheapest",
    "fastest",
    "daytime landing"
+  ]
+ },
+ {
+  "from": "SJO",
+  "to": "RTB",
+  "dkk": 4066,
+  "hours": 3.83,
+  "dep": "2026-12-08T10:00",
+  "arr": "2026-12-08T13:50",
+  "vias": [
+   "GUA"
+  ],
+  "carriers": [
+   "Avianca",
+   "TAG Airlines"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/SJO-RTB/2026-12-08",
+  "shows": [
+   "fastest"
   ]
  },
  {
@@ -5808,6 +5899,28 @@
    "long layover"
   ],
   "link": "https://www.momondo.dk/flight-search/MGA-CBB/2027-01-24",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "MGA",
+  "to": "RTB",
+  "dkk": 6771,
+  "hours": 5.08,
+  "dep": "2026-12-08T05:25",
+  "arr": "2026-12-08T10:30",
+  "vias": [
+   "SAL"
+  ],
+  "carriers": [
+   "Avianca",
+   "TAG Airlines"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MGA-RTB/2026-12-08",
   "shows": [
    "fastest"
   ]

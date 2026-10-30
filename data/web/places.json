@@ -5377,6 +5377,70 @@
   "hub": false
  },
  {
+  "id": "SIUN",
+  "name": "Siuna (Bosawás)",
+  "short_name": "Siuna",
+  "country": "NI",
+  "lat": 13.733,
+  "lon": -84.777,
+  "tier": "town",
+  "type": "nature",
+  "popularity": 4,
+  "iata": "SIU",
+  "airport_transfer_min": null,
+  "why": "Mining town on the edge of Bosawás Biosphere Reserve, the largest rainforest north of the Amazon; main entry point for guided trips with Mayangna and Miskitu guides",
+  "reason": "Mining town on the edge of Bosawás Biosphere Reserve, the largest rainforest north of the Amazon; main entry point for guided trips with Mayangna and Miskitu guides",
+  "summary": null,
+  "categories": [
+   "Nature",
+   "Ruins"
+  ],
+  "things_to_do": [],
+  "touristy": null,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "bosawas-guided-rainforest-trip"
+  ],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
+  "id": "PBLM",
+  "name": "Peñas Blancas massif (Bosawás)",
+  "short_name": "Peñas Blancas massif",
+  "country": "NI",
+  "lat": 13.28,
+  "lon": -85.66,
+  "tier": "town",
+  "type": "nature",
+  "popularity": 4,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Cloud forest massif on the southern edge of Bosawás near El Cuá: waterfalls, quetzals, community eco-lodge run with the CEN, coffee farms",
+  "reason": "Cloud forest massif on the southern edge of Bosawás near El Cuá: waterfalls, quetzals, community eco-lodge run with the CEN, coffee farms",
+  "summary": null,
+  "categories": [
+   "Nature",
+   "Food"
+  ],
+  "things_to_do": [],
+  "touristy": null,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "penas-blancas-cloud-forest"
+  ],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
   "id": "SDQ",
   "name": "Santo Domingo",
   "short_name": "Santo Domingo",
