@@ -1,0 +1,33 @@
+/* The map modes, over the tokens of routeMap.css. */
+@scope (.rmap) {
+  :scope.mode-on .io-mark { display: none; }
+
+  .modeseg .mbtn { transition: background .25s ease, color .25s ease, var(--press); touch-action: manipulation; }
+  .modeseg .mbtn:active { transform: scale(.97); }
+  .modeseg .mbtn svg { flex: none; }
+
+  .scorekey { border-radius: 14px; }
+  .keydot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+
+  .panel.mode { width: 380px; height: calc(100% - 28px); }
+  .panel.mode.collapsed { width: 300px; height: auto; }
+  .panel.mcard { z-index: 9; width: 380px; }
+
+  @container rmap (max-width: 719px) {
+    .seg.modeseg { flex-direction: row; border-radius: 999px; }
+    .modeseg .mbtn { justify-content: center; padding: 0 12px; }
+    .modeseg .mbtn.experiences .mbtn-name, :scope.mode-on .mbtn-name { display: none; }
+    /* the key and the credit ride on top of the sheet, as they do on the plan's */
+    :scope.mode-on.has-panel .ctl-bottom { bottom: calc(42% + 8px); }
+    .legend.scorekey { flex-wrap: nowrap; gap: 8px; padding: 7px 9px; font-size: 11px; white-space: nowrap; }
+    .legend.scorekey span { gap: 4px; }
+    .panel.mode, .panel.mode.collapsed { width: auto; }
+    .panel.mode { height: 42%; max-height: 42%; }
+    .panel.mode.collapsed { height: auto; }
+    .panel.mcard { width: auto; max-height: 62%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modeseg .mbtn:active { transform: none; }
+  }
+}
