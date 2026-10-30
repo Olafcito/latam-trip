@@ -6338,17 +6338,17 @@
    {
     "mode": "flight",
     "operators": [
-     "Pacifica Travel (direct)",
-     "Satena (via Acandi + 25 min boat)"
+     "Charter avioneta (Searca",
+     "Pacifica de Aviacion) EOH to CPB"
     ],
-    "duration_min": null,
-    "duration_range_h": null,
+    "duration_min": 60,
+    "duration_range_h": "0.75-1.0",
     "price_dkk": {
-     "min": null,
+     "min": 816,
      "typical": null
     },
-    "price_local": null,
-    "frequency": "Mon, Wed, Sat (Pacifica)",
+    "price_local": "from COP 400,000 one way (El Pais, Jul 2024); about COP 300,000 (undated Hostelz)",
+    "frequency": "Mon, Wed, Sat (brokenbootstravel 2025)",
     "overnight": false,
     "border": false,
     "stops": [],
@@ -6357,12 +6357,12 @@
      "nonstop": null,
      "vias": [],
      "carriers": [
-      "Pacifica Travel (direct)",
-      "Satena (via Acandi + 25 min boat)"
+      "Charter avioneta (Searca",
+      "Pacifica de Aviacion) EOH to CPB"
      ],
      "oneway_dkk": {
-      "min": null,
-      "observed_at": "2025"
+      "min": 816,
+      "observed_at": "2024"
      },
      "return_dkk": null,
      "dates_searched": [],
@@ -6370,9 +6370,9 @@
      "round_trips": []
     },
     "source": "manual",
-    "source_url": "https://brokenbootstravel.com/?p=7712",
-    "observed_at": "2025",
-    "note": "Fare unknown.",
+    "source_url": "https://www.elpais.com.co/turismo/cuanto-cuesta-viajar-a-capurgana-y-como-llegar-a-este-lugar-2326.html",
+    "observed_at": "2024",
+    "note": "Wikipedia: no scheduled flights at CPB, charter only. Searca sells through Grupo Nautilos. Bag limit not found (small planes, expect tight). 2026 fare unknown.",
     "booking_url": null
    }
   ]
@@ -10605,6 +10605,30 @@
    {
     "mode": "boat",
     "operators": [
+     "Ecoviajes Darien (Bookaway)"
+    ],
+    "duration_min": 84,
+    "duration_range_h": "1.25-1.5",
+    "price_dkk": {
+     "min": 206,
+     "typical": null
+    },
+    "price_local": "US$31-33",
+    "frequency": "08:00 daily, few departures",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://www.bookaway.com/routes/colombia/necocli-to-capurgana",
+    "observed_at": "2026",
+    "note": "Bookable online. Dec to Apr is the windy season: rough, wet crossing, bags in plastic. Locally COP 85,000 one way (colombiamove Jun 2026), many offices sell round trips only (COP 190,000, 2025).",
+    "booking_url": null
+   },
+   {
+    "mode": "boat",
+    "operators": [
      "Local cooperatives (e.g. Caribe SAS)",
      "WhatsApp booking day before"
     ],
@@ -12423,6 +12447,119 @@
     "source_url": "https://www.hostelworld.com/hostels/p/327901/casa-en-el-agua/",
     "observed_at": "2026",
     "note": "The Casa en el Agua transfer, booked via Tranq It Easy WhatsApp +57 301 404 3633. Casa en el Agua's Cloudbeds page says COP 150,000 per way. Hand luggage fits the 8 kg limit. COP converted at 3,200 per USD (Portafolio, late Oct 2026) x 6.45 DKK, so 1,000 COP = about 2 DKK.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "ACD-MDE",
+  "a": "ACD",
+  "b": "MDE",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Satena (Olaya Herrera EOH",
+     "B1900 19 seats)"
+    ],
+    "duration_min": 60,
+    "duration_range_h": "about 1",
+    "price_dkk": {
+     "min": 614,
+     "typical": null
+    },
+    "price_local": "ACD to EOH one way COP 299,200-300,700; round trip COP 602,100-632,100 (Satena fare pages, Oct 2026). COP 170,000-230,000 in 2024 (El Pais)",
+    "frequency": "2024 launch: Mon, Wed, Fri, EOH 14:00, ACD 15:40; later announced Mon-Fri daily",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": null,
+     "vias": [],
+     "carriers": [
+      "Satena (Olaya Herrera EOH",
+      "B1900 19 seats)"
+     ],
+     "oneway_dkk": {
+      "min": 614,
+      "observed_at": "2026"
+     },
+     "return_dkk": null,
+     "dates_searched": [],
+     "by_date": [],
+     "round_trips": []
+    },
+    "source": "manual",
+    "source_url": "https://rutas-destinos.satena.com/en/cheapest-flights-from-acandi-to-medellin",
+    "observed_at": "2026",
+    "note": "Rate 1 DKK = 490 COP (COP 3,160 per USD, Portafolio 21 Oct 2026, USD x 6.45). Dec 22 2026 round trip quoted COP 630,600 (1,287 DKK). Bag allowance not found. Fare seen is ACD to EOH; EOH to ACD page was not reachable.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "ACD-CAPU",
+  "a": "ACD",
+  "b": "CAPU",
+  "options": [
+   {
+    "mode": "boat",
+    "operators": [
+     "Lancha meeting the Satena flight"
+    ],
+    "duration_min": 24,
+    "duration_range_h": "0.4-1.0",
+    "price_dkk": {
+     "min": 41,
+     "typical": null
+    },
+    "price_local": "about COP 20,000",
+    "frequency": "meets flight arrivals",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://www.hostelz.com/hostel/238857-La-Posada-del-Gecko",
+    "observed_at": null,
+    "note": "Colombiamove (Jun 2026) gives 25 min. Price from an undated Hostelz page, verify locally.",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "CTG-ISGR",
+  "a": "CTG",
+  "b": "ISGR",
+  "options": [
+   {
+    "mode": "boat",
+    "operators": [
+     "Mary Cartagena Travel",
+     "Opitours",
+     "CTG Tours",
+     "Cartagena y algo +",
+     "Juan Ballena"
+    ],
+    "duration_min": 60,
+    "duration_range_h": "0.75-1.5",
+    "price_dkk": {
+     "min": 175,
+     "typical": null
+    },
+    "price_local": "from COP 57,000 (US$18-25) + COP 29,000 port tax from Cartagena",
+    "frequency": "daily, 09:00 from Muelle La Bodeguita (09:30 port cutoff); back 11:30-15:00",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://geckoroutes.com/colombia/cartagena-to-isla-grande/",
+    "observed_at": "2025",
+    "note": "price_dkk includes the cash port tax (no tax on the return). Park entry about COP 25,000 (tomplanmytrip 2026). Bags 10-12 kg plus a hand bag. Return boats may stop at Playa Blanca (up to 3.5 h). Afternoon sea is rough Dec-Apr.",
     "booking_url": null
    }
   ]
