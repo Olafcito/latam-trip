@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-30T20:02:07Z",
+ "generated_at": "2026-10-30T20:07:34Z",
  "currency": "DKK",
  "home": [
   "CPH"
@@ -13180,6 +13180,31 @@
    "flags": [],
    "notes": "site=KLM; other=Flightnetwork 7704 / Mytrip 7735 / Flybillet 7744; protection=0"
   },
+  "TQ:3668b5852729": {
+   "id": "TQ:3668b5852729",
+   "quote_id": "Q:3668b5852729",
+   "source": "momondo",
+   "observed_at": "2026-10-30T20:06:48Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>CTG",
+    "GUA>CPH"
+   ],
+   "price_dkk": 7428.0,
+   "fare_brand": "Light",
+   "cabin_bag": "1 x håndbagage",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "paid",
+   "checked_bag_fee_dkk": 1120,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": "https://www.momondo.dk/flight-search/CPH-CTG/2026-12-03/GUA-CPH/2027-02-04",
+   "carriers": [
+    "KLM"
+   ],
+   "flags": [],
+   "notes": "site=KLM; other=Flightnetwork 7713 / Flybillet 7735 / Mytrip 7735; protection=0"
+  },
   "TQ:a5c121ba4a6b": {
    "id": "TQ:a5c121ba4a6b",
    "quote_id": "Q:a5c121ba4a6b",
@@ -13280,6 +13305,31 @@
    "flags": [],
    "notes": "site=KLM; other=Flightnetwork 7707 / Mytrip 7738 / Flybillet 7746; protection=0"
   },
+  "TQ:5dee9e321df9": {
+   "id": "TQ:5dee9e321df9",
+   "quote_id": "Q:5dee9e321df9",
+   "source": "momondo",
+   "observed_at": "2026-10-30T20:06:48Z",
+   "structure": "open_jaw",
+   "legs": [
+    "CPH>CTG",
+    "GUA>CPH"
+   ],
+   "price_dkk": 7713.0,
+   "fare_brand": "Light",
+   "cabin_bag": "1 x håndbagage",
+   "cabin_bag_fee_dkk": 0,
+   "checked_bag": "paid",
+   "checked_bag_fee_dkk": 1120,
+   "tickets_inside": 1,
+   "self_transfer": false,
+   "link": "https://www.momondo.dk/flight-search/CPH-CTG/2026-12-03/GUA-CPH/2027-02-04",
+   "carriers": [
+    "KLM"
+   ],
+   "flags": [],
+   "notes": "site=Flightnetwork; other=Flybillet 7735 / Mytrip 7735 / Booking.com 7857; protection=0"
+  },
   "TQ:efe2f0f3cca5": {
    "id": "TQ:efe2f0f3cca5",
    "quote_id": "Q:efe2f0f3cca5",
@@ -13306,59 +13356,6 @@
     "us_transit"
    ],
    "notes": "site=KLM; other=Expedia 8233 / KLM 8783 / KLM 9968; protection=0"
-  },
-  "TQ:f64155a6e044": {
-   "id": "TQ:f64155a6e044",
-   "quote_id": "Q:f64155a6e044",
-   "source": "momondo",
-   "observed_at": "2026-10-30T19:57:09Z",
-   "structure": "open_jaw",
-   "legs": [
-    "CPH>CTG",
-    "GUA>CPH"
-   ],
-   "price_dkk": 8378.0,
-   "fare_brand": "Light",
-   "cabin_bag": "1 x håndbagage",
-   "cabin_bag_fee_dkk": 0,
-   "checked_bag": "paid",
-   "checked_bag_fee_dkk": 1120,
-   "tickets_inside": 1,
-   "self_transfer": false,
-   "link": "https://www.momondo.dk/flight-search/CPH-CTG/2026-12-02/GUA-CPH/2027-02-03",
-   "carriers": [
-    "KLM"
-   ],
-   "flags": [],
-   "notes": "site=KLM; other=Flightnetwork 8688 / Flybillet 8717 / Mytrip 8727; protection=0"
-  },
-  "TQ:ad2610f2f6e4": {
-   "id": "TQ:ad2610f2f6e4",
-   "quote_id": "Q:ad2610f2f6e4",
-   "source": "momondo",
-   "observed_at": "2026-10-30T16:16:51Z",
-   "structure": "open_jaw",
-   "legs": [
-    "CPH>CTG",
-    "GUA>CPH"
-   ],
-   "price_dkk": 7876.0,
-   "fare_brand": "Light",
-   "cabin_bag": "1 x håndbagage",
-   "cabin_bag_fee_dkk": 0,
-   "checked_bag": "paid",
-   "checked_bag_fee_dkk": 1120,
-   "tickets_inside": 1,
-   "self_transfer": false,
-   "link": "https://www.momondo.dk/flight-search/CPH-CTG/2026-12-03/GUA-CPH/2027-02-03",
-   "carriers": [
-    "Air France",
-    "KLM"
-   ],
-   "flags": [
-    "us_transit"
-   ],
-   "notes": "site=KLM; other=KLM 8784 / KLM 9969 / Expedia 10529; protection=0"
   },
   "TQ:365221b213b3": {
    "id": "TQ:365221b213b3",
@@ -73358,6 +73355,138 @@
      "kind": "flight",
      "from": "CPH",
      "to": "CTG",
+     "depart": "2026-12-03T06:00",
+     "arrive": "2026-12-03T17:35",
+     "hours": 17.58,
+     "connections": [
+      {
+       "airport": "AMS",
+       "layover_h": 1.83
+      },
+      {
+       "airport": "BOG",
+       "layover_h": 1.58
+      }
+     ],
+     "carriers": [
+      "KLM"
+     ],
+     "flight_numbers": [
+      "KLM 1266",
+      "KLM 749",
+      "KLM 749"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:3668b5852729",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:3668b5852729"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "CTG",
+   "depart": "2026-12-03T06:00",
+   "arrive": "2026-12-03T17:35",
+   "total_hours": 17.6,
+   "flying_hours": 17.6,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "AMS",
+    "BOG",
+    "CTG"
+   ],
+   "score": 5,
+   "id": "I0839",
+   "shared_ticket": "TQ:3668b5852729",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0840"
+  },
+  "H0840": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "GUA",
+     "to": "CPH",
+     "depart": "2027-02-04T13:09",
+     "arrive": "2027-02-05T13:40",
+     "hours": 17.52,
+     "connections": [
+      {
+       "airport": "PTY",
+       "layover_h": 2.1
+      },
+      {
+       "airport": "AMS",
+       "layover_h": 1.17
+      }
+     ],
+     "carriers": [
+      "KLM"
+     ],
+     "flight_numbers": [
+      "KLM 3007",
+      "KLM 758",
+      "KLM 1271"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:3668b5852729",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:3668b5852729"
+   ],
+   "flags": [],
+   "from": "GUA",
+   "to": "CPH",
+   "depart": "2027-02-04T13:09",
+   "arrive": "2027-02-05T13:40",
+   "total_hours": 17.5,
+   "flying_hours": 17.5,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "GUA",
+    "PTY",
+    "AMS",
+    "CPH"
+   ],
+   "score": 5,
+   "id": "H0840",
+   "shared_ticket": "TQ:3668b5852729",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0839"
+  },
+  "I0841": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "CTG",
      "depart": "2026-12-04T12:05",
      "arrive": "2026-12-04T23:00",
      "hours": 16.92,
@@ -73405,7 +73534,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0839",
+   "id": "I0841",
    "shared_ticket": "TQ:a5c121ba4a6b",
    "price_dkk": 0,
    "extras": {
@@ -73414,9 +73543,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0840"
+   "paired_with": "H0842"
   },
-  "H0840": {
+  "H0842": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -73471,7 +73600,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0840",
+   "id": "H0842",
    "shared_ticket": "TQ:a5c121ba4a6b",
    "price_dkk": 0,
    "extras": {
@@ -73480,9 +73609,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0839"
+   "paired_with": "I0841"
   },
-  "I0841": {
+  "I0843": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -73537,7 +73666,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0841",
+   "id": "I0843",
    "shared_ticket": "TQ:e5b81694dd8d",
    "price_dkk": 0,
    "extras": {
@@ -73546,9 +73675,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0842"
+   "paired_with": "H0844"
   },
-  "H0842": {
+  "H0844": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -73603,7 +73732,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0842",
+   "id": "H0844",
    "shared_ticket": "TQ:e5b81694dd8d",
    "price_dkk": 0,
    "extras": {
@@ -73612,9 +73741,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0841"
+   "paired_with": "I0843"
   },
-  "I0843": {
+  "I0845": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -73669,7 +73798,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0843",
+   "id": "I0845",
    "shared_ticket": "TQ:afefe3005206",
    "price_dkk": 0,
    "extras": {
@@ -73678,9 +73807,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0844"
+   "paired_with": "H0846"
   },
-  "H0844": {
+  "H0846": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -73735,7 +73864,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0844",
+   "id": "H0846",
    "shared_ticket": "TQ:afefe3005206",
    "price_dkk": 0,
    "extras": {
@@ -73744,9 +73873,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0843"
+   "paired_with": "I0845"
   },
-  "I0845": {
+  "I0847": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -73801,7 +73930,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0845",
+   "id": "I0847",
    "shared_ticket": "TQ:36a4f7472b6c",
    "price_dkk": 0,
    "extras": {
@@ -73810,9 +73939,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0846"
+   "paired_with": "H0848"
   },
-  "H0846": {
+  "H0848": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -73867,7 +73996,7 @@
     "CPH"
    ],
    "score": 5,
-   "id": "H0846",
+   "id": "H0848",
    "shared_ticket": "TQ:36a4f7472b6c",
    "price_dkk": 0,
    "extras": {
@@ -73876,9 +74005,141 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "I0845"
+   "paired_with": "I0847"
   },
-  "I0847": {
+  "I0849": {
+   "direction": "in",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "CPH",
+     "to": "CTG",
+     "depart": "2026-12-03T06:00",
+     "arrive": "2026-12-03T17:35",
+     "hours": 17.58,
+     "connections": [
+      {
+       "airport": "AMS",
+       "layover_h": 1.83
+      },
+      {
+       "airport": "BOG",
+       "layover_h": 1.58
+      }
+     ],
+     "carriers": [
+      "KLM"
+     ],
+     "flight_numbers": [
+      "KLM 1266",
+      "KLM 749",
+      "KLM 749"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:5dee9e321df9",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:5dee9e321df9"
+   ],
+   "flags": [],
+   "from": "CPH",
+   "to": "CTG",
+   "depart": "2026-12-03T06:00",
+   "arrive": "2026-12-03T17:35",
+   "total_hours": 17.6,
+   "flying_hours": 17.6,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "CPH",
+    "AMS",
+    "BOG",
+    "CTG"
+   ],
+   "score": 5,
+   "id": "I0849",
+   "shared_ticket": "TQ:5dee9e321df9",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "H0850"
+  },
+  "H0850": {
+   "direction": "home",
+   "type": "ticket",
+   "timeline": [
+    {
+     "kind": "flight",
+     "from": "GUA",
+     "to": "CPH",
+     "depart": "2027-02-04T13:09",
+     "arrive": "2027-02-05T16:40",
+     "hours": 20.52,
+     "connections": [
+      {
+       "airport": "PTY",
+       "layover_h": 2.1
+      },
+      {
+       "airport": "AMS",
+       "layover_h": 4.08
+      }
+     ],
+     "carriers": [
+      "KLM"
+     ],
+     "flight_numbers": [
+      "KLM 3007",
+      "KLM 758",
+      "KLM 1273"
+     ],
+     "overnight_layover": false,
+     "ticket": "TQ:5dee9e321df9",
+     "self_transfer_inside": false
+    }
+   ],
+   "tickets": [
+    "TQ:5dee9e321df9"
+   ],
+   "flags": [],
+   "from": "GUA",
+   "to": "CPH",
+   "depart": "2027-02-04T13:09",
+   "arrive": "2027-02-05T16:40",
+   "total_hours": 20.5,
+   "flying_hours": 20.5,
+   "flights": 3,
+   "hub_nights": 0,
+   "changes": 0,
+   "us_transit": false,
+   "airports": [
+    "GUA",
+    "PTY",
+    "AMS",
+    "CPH"
+   ],
+   "score": 4,
+   "id": "H0850",
+   "shared_ticket": "TQ:5dee9e321df9",
+   "price_dkk": 0,
+   "extras": {
+    "cabin_bag_fees_dkk": 0,
+    "checked_bag_fees_dkk": 0,
+    "hub_nights": 0,
+    "hub_stay_estimate_dkk": 0
+   },
+   "paired_with": "I0849"
+  },
+  "I0851": {
    "direction": "in",
    "type": "ticket",
    "timeline": [
@@ -73935,7 +74196,7 @@
     "CTG"
    ],
    "score": 5,
-   "id": "I0847",
+   "id": "I0851",
    "shared_ticket": "TQ:efe2f0f3cca5",
    "price_dkk": 0,
    "extras": {
@@ -73944,9 +74205,9 @@
     "hub_nights": 0,
     "hub_stay_estimate_dkk": 0
    },
-   "paired_with": "H0848"
+   "paired_with": "H0852"
   },
-  "H0848": {
+  "H0852": {
    "direction": "home",
    "type": "ticket",
    "timeline": [
@@ -74003,276 +74264,8 @@
     "CPH"
    ],
    "score": 4,
-   "id": "H0848",
-   "shared_ticket": "TQ:efe2f0f3cca5",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "I0847"
-  },
-  "I0849": {
-   "direction": "in",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "CPH",
-     "to": "CTG",
-     "depart": "2026-12-02T06:00",
-     "arrive": "2026-12-02T17:35",
-     "hours": 17.58,
-     "connections": [
-      {
-       "airport": "AMS",
-       "layover_h": 1.83
-      },
-      {
-       "airport": "BOG",
-       "layover_h": 1.58
-      }
-     ],
-     "carriers": [
-      "KLM"
-     ],
-     "flight_numbers": [
-      "KLM 1266",
-      "KLM 741",
-      "KLM 741"
-     ],
-     "overnight_layover": false,
-     "ticket": "TQ:f64155a6e044",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:f64155a6e044"
-   ],
-   "flags": [],
-   "from": "CPH",
-   "to": "CTG",
-   "depart": "2026-12-02T06:00",
-   "arrive": "2026-12-02T17:35",
-   "total_hours": 17.6,
-   "flying_hours": 17.6,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": false,
-   "airports": [
-    "CPH",
-    "AMS",
-    "BOG",
-    "CTG"
-   ],
-   "score": 5,
-   "id": "I0849",
-   "shared_ticket": "TQ:f64155a6e044",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "H0850"
-  },
-  "H0850": {
-   "direction": "home",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "GUA",
-     "to": "CPH",
-     "depart": "2027-02-03T13:09",
-     "arrive": "2027-02-04T13:40",
-     "hours": 17.52,
-     "connections": [
-      {
-       "airport": "PTY",
-       "layover_h": 2.1
-      },
-      {
-       "airport": "AMS",
-       "layover_h": 1.17
-      }
-     ],
-     "carriers": [
-      "KLM"
-     ],
-     "flight_numbers": [
-      "KLM 3007",
-      "KLM 758",
-      "KLM 1271"
-     ],
-     "overnight_layover": false,
-     "ticket": "TQ:f64155a6e044",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:f64155a6e044"
-   ],
-   "flags": [],
-   "from": "GUA",
-   "to": "CPH",
-   "depart": "2027-02-03T13:09",
-   "arrive": "2027-02-04T13:40",
-   "total_hours": 17.5,
-   "flying_hours": 17.5,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": false,
-   "airports": [
-    "GUA",
-    "PTY",
-    "AMS",
-    "CPH"
-   ],
-   "score": 5,
-   "id": "H0850",
-   "shared_ticket": "TQ:f64155a6e044",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "I0849"
-  },
-  "I0851": {
-   "direction": "in",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "CPH",
-     "to": "CTG",
-     "depart": "2026-12-03T06:00",
-     "arrive": "2026-12-03T17:35",
-     "hours": 17.58,
-     "connections": [
-      {
-       "airport": "AMS",
-       "layover_h": 1.83
-      },
-      {
-       "airport": "BOG",
-       "layover_h": 1.58
-      }
-     ],
-     "carriers": [
-      "KLM"
-     ],
-     "flight_numbers": [
-      "KLM 1266",
-      "KLM 749",
-      "KLM 749"
-     ],
-     "overnight_layover": false,
-     "ticket": "TQ:ad2610f2f6e4",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:ad2610f2f6e4"
-   ],
-   "flags": [
-    "us_transit"
-   ],
-   "from": "CPH",
-   "to": "CTG",
-   "depart": "2026-12-03T06:00",
-   "arrive": "2026-12-03T17:35",
-   "total_hours": 17.6,
-   "flying_hours": 17.6,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": false,
-   "airports": [
-    "CPH",
-    "AMS",
-    "BOG",
-    "CTG"
-   ],
-   "score": 5,
-   "id": "I0851",
-   "shared_ticket": "TQ:ad2610f2f6e4",
-   "price_dkk": 0,
-   "extras": {
-    "cabin_bag_fees_dkk": 0,
-    "checked_bag_fees_dkk": 0,
-    "hub_nights": 0,
-    "hub_stay_estimate_dkk": 0
-   },
-   "paired_with": "H0852"
-  },
-  "H0852": {
-   "direction": "home",
-   "type": "ticket",
-   "timeline": [
-    {
-     "kind": "flight",
-     "from": "GUA",
-     "to": "CPH",
-     "depart": "2027-02-03T15:24",
-     "arrive": "2027-02-04T17:00",
-     "hours": 18.6,
-     "connections": [
-      {
-       "airport": "ATL",
-       "layover_h": 2.17
-      },
-      {
-       "airport": "CDG",
-       "layover_h": 2.67
-      }
-     ],
-     "carriers": [
-      "Air France"
-     ],
-     "flight_numbers": [
-      "Air France 2179",
-      "Air France 3595",
-      "Air France 1050"
-     ],
-     "overnight_layover": false,
-     "ticket": "TQ:ad2610f2f6e4",
-     "self_transfer_inside": false
-    }
-   ],
-   "tickets": [
-    "TQ:ad2610f2f6e4"
-   ],
-   "flags": [
-    "us_transit"
-   ],
-   "from": "GUA",
-   "to": "CPH",
-   "depart": "2027-02-03T15:24",
-   "arrive": "2027-02-04T17:00",
-   "total_hours": 18.6,
-   "flying_hours": 18.6,
-   "flights": 3,
-   "hub_nights": 0,
-   "changes": 0,
-   "us_transit": true,
-   "airports": [
-    "GUA",
-    "ATL",
-    "CDG",
-    "CPH"
-   ],
-   "score": 4,
    "id": "H0852",
-   "shared_ticket": "TQ:ad2610f2f6e4",
+   "shared_ticket": "TQ:efe2f0f3cca5",
    "price_dkk": 0,
    "extras": {
     "cabin_bag_fees_dkk": 0,
