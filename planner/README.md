@@ -11,6 +11,8 @@ npm run sync-data   # optional, refreshes the offline copy in public/data
 npm run dev         # http://localhost:5173
 ```
 
+The Latam Trip shortcut on the Desktop runs `scripts/open.ps1`. It starts the dev server on http://localhost:5198 if it is not running and opens the app in the browser. The server keeps running in the background until the PC restarts, so later clicks open at once.
+
 Other scripts:
 
 | Script | What it does |
