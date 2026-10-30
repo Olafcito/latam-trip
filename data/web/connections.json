@@ -1316,16 +1316,19 @@
     "mode": "flight",
     "operators": [
      "Avianca",
+     "BoA",
      "Copa",
      "Copa Airlines",
+     "JetSMART",
      "LATAM",
      "LATAM Airlines",
-     "Service mellem VVI og PTY er underlagt myndighedernes"
+     "Service mellem VVI og PTY er underlagt myndighedernes",
+     "Wingo"
     ],
     "duration_min": 235,
     "price_dkk": {
      "min": 1755,
-     "typical": 2087
+     "typical": 2239
     },
     "frequency": "daily",
     "overnight": false,
@@ -1336,15 +1339,20 @@
      "nonstop": true,
      "vias": [
       "LIM",
-      "PTY"
+      "MDE",
+      "PTY",
+      "UIO"
      ],
      "carriers": [
       "Avianca",
+      "BoA",
       "Copa",
       "Copa Airlines",
+      "JetSMART",
       "LATAM",
       "LATAM Airlines",
       "Service mellem VVI og PTY er underlagt myndighedernes",
+      "Wingo",
       "avianca"
      ],
      "oneway_dkk": {
@@ -1359,6 +1367,8 @@
       "2026-12-20",
       "2026-12-25",
       "2026-12-26",
+      "2026-12-27",
+      "2026-12-28",
       "2026-12-31",
       "2027-01-05",
       "2027-01-15",
@@ -1430,6 +1440,52 @@
        "flights": [
         "LATAM Airlines 2407",
         "LATAM Airlines 2386"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-28",
+       "link": "https://www.momondo.dk/flight-search/VVI-BOG/2026-12-28"
+      },
+      {
+       "date": "2026-12-27",
+       "from": "VVI",
+       "to": "BOG",
+       "dkk": 2493,
+       "dep": "05:30",
+       "arr": "12:15",
+       "arr_days": 0,
+       "duration_min": 465,
+       "vias": [
+        "LIM"
+       ],
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "LATAM Airlines 2407",
+        "LATAM Airlines 4901"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-27",
+       "link": "https://www.momondo.dk/flight-search/VVI-BOG/2026-12-27"
+      },
+      {
+       "date": "2026-12-28",
+       "from": "VVI",
+       "to": "BOG",
+       "dkk": 2437,
+       "dep": "05:30",
+       "arr": "12:15",
+       "arr_days": 0,
+       "duration_min": 465,
+       "vias": [
+        "LIM"
+       ],
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "LATAM Airlines 2407",
+        "LATAM Airlines 4901"
        ],
        "self_transfer": false,
        "searched": "2026-12-28",
@@ -1692,10 +1748,10 @@
       "basic_fare",
       "self_transfer"
      ],
-     "quotes": 28
+     "quotes": 36
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T17:57:44Z",
+    "observed_at": "2026-10-30T12:21:00Z",
     "note": "Avianca nonstop BOG-VVI per Wikipedia; Copa also from PTY. Peak Dec 20-Jan 6: expect roughly 1.5x (Medellin) to 2-4x (Cartagena, San Andres) the off-peak fare (La Republica Nov 2023: BOG-CTG return COP 0.60-1.1M, BOG-ADZ return COP 0.66-0.73M, BOG-MDE return COP 0.33-0.43M). price_dkk is the cheapest advertised off-peak one-way fare, not a Christmas fare.",
     "booking_url": "https://www.momondo.dk/flight-search/VVI-BOG/2027-02-01",
     "source_url": "https://www.kiwi.com/us/cheap-flights/bogota-colombia/santa-cruz-de-la-sierra-bolivia/",
@@ -1719,15 +1775,16 @@
     "mode": "flight",
     "operators": [
      "Avianca",
+     "BoA",
      "Boliviana de Aviacion",
      "LATAM",
-     "BoA",
+     "LATAM Airlines",
      "LATAM Peru"
     ],
     "duration_min": 150,
     "price_dkk": {
-     "min": 1866,
-     "typical": 2279
+     "min": 1818,
+     "typical": 2162
     },
     "frequency": "daily (10/wk)",
     "overnight": false,
@@ -1737,21 +1794,27 @@
     "flight": {
      "nonstop": true,
      "vias": [
-      "BOG"
+      "BOG",
+      "LPB"
      ],
      "carriers": [
       "Avianca",
+      "BoA",
       "Boliviana de Aviacion",
-      "LATAM"
+      "LATAM",
+      "LATAM Airlines"
      ],
      "oneway_dkk": {
-      "min": 1866,
-      "observed_at": "2026-10-28T18:56:29Z"
+      "min": 1818,
+      "observed_at": "2026-10-30T12:23:11Z"
      },
      "return_dkk": null,
      "dates_searched": [
       "2026-12-15",
-      "2026-12-20"
+      "2026-12-20",
+      "2026-12-26",
+      "2026-12-27",
+      "2026-12-28"
      ],
      "by_date": [
       {
@@ -1793,38 +1856,99 @@
        "self_transfer": false,
        "searched": "2026-12-20",
        "link": null
+      },
+      {
+       "date": "2026-12-26",
+       "from": "VVI",
+       "to": "LIM",
+       "dkk": 1818,
+       "dep": "05:30",
+       "arr": "07:10",
+       "arr_days": 0,
+       "duration_min": 160,
+       "vias": [],
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "LATAM Airlines 2407"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-26",
+       "link": "https://www.momondo.dk/flight-search/VVI-LIM/2026-12-26"
+      },
+      {
+       "date": "2026-12-27",
+       "from": "VVI",
+       "to": "LIM",
+       "dkk": 1835,
+       "dep": "05:30",
+       "arr": "07:10",
+       "arr_days": 0,
+       "duration_min": 160,
+       "vias": [],
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "LATAM Airlines 2407"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-27",
+       "link": "https://www.momondo.dk/flight-search/VVI-LIM/2026-12-27"
+      },
+      {
+       "date": "2026-12-28",
+       "from": "VVI",
+       "to": "LIM",
+       "dkk": 2041,
+       "dep": "05:30",
+       "arr": "07:10",
+       "arr_days": 0,
+       "duration_min": 160,
+       "vias": [],
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "LATAM Airlines 2407"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-28",
+       "link": "https://www.momondo.dk/flight-search/VVI-LIM/2026-12-28"
       }
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 1866,
+      "dkk": 1818,
       "duration_min": 160,
       "vias": [],
       "carriers": [
-       "LATAM"
+       "LATAM Airlines"
       ],
-      "date": "2026-12-20",
+      "date": "2026-12-26",
       "self_transfer": false
      },
      "fastest": {
-      "dkk": 2235,
+      "dkk": 2021,
       "duration_min": 150,
       "vias": [],
       "carriers": [
-       "Boliviana de Aviacion"
+       "BoA"
       ],
-      "date": "2026-12-20"
+      "date": "2026-12-27"
      },
      "flags": [
       "basic_fare",
-      "long_layover"
+      "long_layover",
+      "self_transfer"
      ],
-     "quotes": 9
+     "quotes": 16
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T18:56:29Z",
+    "observed_at": "2026-10-30T12:24:06Z",
     "note": "Duration unknown (rome2rio gives 2h35 and 5h34 for the same route). price_dkk = US$196.",
-    "booking_url": null,
+    "booking_url": "https://www.momondo.dk/flight-search/VVI-LIM/2026-12-26",
     "source_url": "https://www.rome2rio.com/s/Santa-Cruz-de-la-Sierra/Lima",
     "researched": {
      "duration_min": null,
@@ -13322,15 +13446,19 @@
      "nonstop": false,
      "vias": [
       "BOG",
+      "LIM",
       "LPB",
       "PTY",
+      "SAL",
       "VVI"
      ],
      "carriers": [
       "Avianca",
+      "BoA",
       "Boliviana de Aviacion",
       "Copa",
-      "Copa Airlines"
+      "Copa Airlines",
+      "LATAM Airlines"
      ],
      "oneway_dkk": {
       "min": 3303,
@@ -13340,6 +13468,9 @@
      "dates_searched": [
       "2026-12-06",
       "2026-12-10",
+      "2026-12-26",
+      "2026-12-27",
+      "2026-12-28",
       "2027-01-20",
       "2027-01-30"
      ],
@@ -13395,6 +13526,84 @@
        "self_transfer": false,
        "searched": "2026-12-10",
        "link": null
+      },
+      {
+       "date": "2026-12-26",
+       "from": "CBB",
+       "to": "SJO",
+       "dkk": 4091,
+       "dep": "16:20",
+       "arr": "12:35",
+       "arr_days": 1,
+       "duration_min": 1335,
+       "vias": [
+        "VVI",
+        "LIM"
+       ],
+       "carriers": [
+        "BoA",
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "BoA 650",
+        "BoA 748",
+        "LATAM Airlines 2938"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-26",
+       "link": "https://www.momondo.dk/flight-search/CBB-SJO/2026-12-26"
+      },
+      {
+       "date": "2026-12-27",
+       "from": "CBB",
+       "to": "SJO",
+       "dkk": 3726,
+       "dep": "23:05",
+       "arr": "12:35",
+       "arr_days": 1,
+       "duration_min": 930,
+       "vias": [
+        "VVI",
+        "LIM"
+       ],
+       "carriers": [
+        "BoA",
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "BoA 158",
+        "LATAM Airlines 2407",
+        "LATAM Airlines 2938"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-27",
+       "link": "https://www.momondo.dk/flight-search/CBB-SJO/2026-12-27"
+      },
+      {
+       "date": "2026-12-28",
+       "from": "CBB",
+       "to": "SJO",
+       "dkk": 4375,
+       "dep": "17:30",
+       "arr": "15:55",
+       "arr_days": 1,
+       "duration_min": 1465,
+       "vias": [
+        "VVI",
+        "LIM"
+       ],
+       "carriers": [
+        "BoA",
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "BoA 148",
+        "BoA 748",
+        "LATAM Airlines 2408"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-28",
+       "link": "https://www.momondo.dk/flight-search/CBB-SJO/2026-12-28"
       },
       {
        "date": "2027-01-20",
@@ -13481,7 +13690,7 @@
       "basic_fare",
       "long_layover"
      ],
-     "quotes": 19
+     "quotes": 25
     },
     "source": "crawl",
     "observed_at": "2026-10-28T19:24:13Z",
@@ -21521,7 +21730,7 @@
     "duration_min": 435,
     "price_dkk": {
      "min": 1897,
-     "typical": 2260
+     "typical": 2271
     },
     "frequency": null,
     "overnight": false,
@@ -21562,6 +21771,7 @@
       "2026-12-22",
       "2026-12-25",
       "2026-12-26",
+      "2026-12-27",
       "2026-12-31",
       "2027-01-28",
       "2027-02-01"
@@ -21704,6 +21914,31 @@
        "self_transfer": false,
        "searched": "2026-12-28",
        "link": "https://www.momondo.dk/flight-search/VVI-MDE/2026-12-28"
+      },
+      {
+       "date": "2026-12-27",
+       "from": "VVI",
+       "to": "MDE",
+       "dkk": 2568,
+       "dep": "05:30",
+       "arr": "17:45",
+       "arr_days": 0,
+       "duration_min": 795,
+       "vias": [
+        "LIM",
+        "BOG"
+       ],
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "flights": [
+        "LATAM Airlines 2407",
+        "LATAM Airlines 4901",
+        "LATAM Airlines 4014"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-27",
+       "link": "https://www.momondo.dk/flight-search/VVI-MDE/2026-12-27"
       },
       {
        "date": "2026-12-31",
@@ -21975,10 +22210,10 @@
       "self_transfer",
       "self_transfer_unverified"
      ],
-     "quotes": 36
+     "quotes": 40
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T19:00:43Z",
+    "observed_at": "2026-10-30T12:22:12Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/VVI-MDE/2027-02-01"
    }
