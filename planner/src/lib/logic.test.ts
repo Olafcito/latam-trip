@@ -127,7 +127,7 @@ describe('schedule from dated flights', () => {
     expect(s.warnings).toHaveLength(0)
   })
 
-  it("keeps a picked flight's times on the day set, and warns when the day set is another", () => {
+  it("keeps a picked flight's times on the day set, and the day set wins with no warning", () => {
     const flight = { quote_id: 'Q', depart: '2026-12-20T23:00', arrive: '2026-12-21T04:00', hours: 4, price_dkk: 900, carriers: [], via: [], layover_h: [] }
     const hop = (date: string) => ({ from: 'BOG', to: 'VVI', mode: 'flight' as const, operator: null, hours: 4, price_dkk: 900, overnight: false, border: false, flight, date })
     const j = (date: string): Journey => ({ id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [{ node: 'BOG', hop: null }, { node: 'VVI', hop: hop(date) }] })
@@ -136,7 +136,7 @@ describe('schedule from dated flights', () => {
     expect(same.warnings).toHaveLength(0)
     const other = schedule(j('2026-12-15'), wi, wh, 'VVI', names)
     expect(other.places[0]).toMatchObject({ depart: '2026-12-15', days: 12 })
-    expect(other.warnings.some((w) => w.level === 'warn' && w.text.includes('price is for another day'))).toBe(true)
+    expect(other.warnings).toHaveLength(0)
   })
 
   it('never calls a same day leg early: arriving at 14:30 and leaving that day is fine', () => {

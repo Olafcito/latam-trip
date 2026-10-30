@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { AppData, CrawledFlight, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
 import { dayDiff } from './lib/format'
-import { applyMove, journeyIsValid, legDay, newJourney, nodeForAirport, nodeName, schedule, stopGoes, type Hop, type Journey, type NightMove, type Place, type Schedule } from './lib/journey'
+import { applyMove, journeyIsValid, legDay, newJourney, nodeForAirport, nodeName, pinLegs, schedule, stopGoes, type Hop, type Journey, type NightMove, type Place, type Schedule } from './lib/journey'
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
 import type { TripLeg, TripState } from '@map/data/trips'
 import type { CardRef } from '@map/map/useMapMode'
@@ -108,7 +108,7 @@ interface State {
   replaceStop: (i: number, node: string) => void
   /** move a stop to another position in the route (the landing stop stays first) */
   moveStop: (from: number, to: number) => void
-  /** set the day you set out on the leg to place i, "2026-12-13", or null to let it be estimated */
+  /** set the day you set out on the leg to place i, "2026-12-13", or null to let it be estimated. No other leg moves */
   setHopDate: (i: number, date: string | null) => void
   /** pick a flight for the leg to place i: its day, times and price become the leg's. null goes back to the typical numbers and keeps the day */
   setHopFlight: (i: number, flight: CrawledFlight | null) => void
@@ -150,7 +150,12 @@ interface State {
 
 export const useStore = create<State>((set, get) => ({
   data: null,
-  setData: (data) => set({ data }),
+  setData: (data) => {
+    set({ data })
+    // a trip stored before a leg lost its flight on another day
+    const j = get().journey
+    if (j) get().setJourney(j)
+  },
   screen: 'trips',
   view: 'home',
   go: (screen, view) => set({ mapCardFrom: null, ...(view ? { screen, view } : { screen }) }),
@@ -188,7 +193,8 @@ export const useStore = create<State>((set, get) => ({
     set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false })
   },
   startOnMap: (wayIn, wayHome, optionId) => get().startJourney(wayIn, wayHome, optionId),
-  setJourney: (journey) => {
+  setJourney: (next) => {
+    const journey = settled(next, get())
     write(CURRENT_KEY, journey)
     set({ journey })
   },
@@ -202,11 +208,13 @@ export const useStore = create<State>((set, get) => ({
       // what another tab stored is not a trip, so this tab stays as it is
     }
   },
-  openSaved: (journey) => {
+  openSaved: (next) => {
+    const journey = settled(next, get())
     write(CURRENT_KEY, journey)
     set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
   },
-  openTrip: (journey) => {
+  openTrip: (next) => {
+    const journey = settled(next, get())
     write(CURRENT_KEY, journey)
     set({ journey, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
   },
@@ -280,8 +288,9 @@ export const useStore = create<State>((set, get) => ({
     const p = j?.places[i]
     if (!j || !p?.hop) return
     const { date: _, ...hop } = p.hop
-    const places = j.places.map((q, k) => (k === i ? { ...q, hop: date ? { ...hop, date } : hop } : q))
-    get().setJourney({ ...j, places })
+    const base = date ? pinned(j, get().data) : j
+    const places = base.places.map((q, k) => (k === i ? { ...q, hop: date ? { ...hop, date } : hop } : q))
+    get().setJourney({ ...base, places })
   },
   moveNights: (m) => {
     const j = get().journey
@@ -289,21 +298,12 @@ export const useStore = create<State>((set, get) => ({
     get().setJourney(applyMove(j, m))
   },
   setHopFlight: (i, flight) => {
-    const { journey: j, data, legFacts } = get()
+    const { journey: j, data } = get()
     const h = j?.places[i]?.hop
     if (!j || !h) return
-    let hop: Hop
-    if (flight) {
-      hop = {
-        ...h, flight, price_dkk: flight.price_dkk, hours: flight.hours, date: flight.depart.slice(0, 10),
-        overnight: dayDiff(flight.depart, flight.arrive) > 0, observed_at: flight.observed_at ?? null,
-      }
-    } else {
-      const typical = data ? hopBetween(data.map, h.from, h.to, h.mode, legFacts ?? undefined) : null
-      const known = typical?.mode === h.mode ? typical : null
-      hop = { ...h, flight: null, price_dkk: known?.price_dkk ?? null, hours: known?.hours ?? null, overnight: known?.overnight ?? false, observed_at: null }
-    }
-    get().setJourney({ ...j, places: j.places.map((q, k) => (k === i ? { ...q, hop } : q)) })
+    const hop = flight ? withFlight(h, flight) : withoutFlight(h, get())
+    const base = flight ? pinned(j, data) : j
+    get().setJourney({ ...base, places: base.places.map((q, k) => (k === i ? { ...q, hop } : q)) })
   },
 
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),
@@ -411,6 +411,44 @@ function scheduleOf(j: Journey, data: AppData | null): Schedule | null {
   const wh = data?.inout.ways[j.wayHome]
   if (!data || !wi || !wh) return null
   return schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), (n) => nodeName(data.map, data.inout, n))
+}
+
+/** The trip with every leg that floats pinned on the day it shows. */
+function pinned(j: Journey, data: AppData | null): Journey {
+  const sched = scheduleOf(j, data)
+  return sched ? pinLegs(j, sched) : j
+}
+
+/** A leg on its picked flight: the flight's day, times and price. A flight set aside gives way to it. */
+function withFlight(h: Hop, flight: CrawledFlight): Hop {
+  const { parked: _, ...hop } = h
+  return {
+    ...hop, flight, price_dkk: flight.price_dkk, hours: flight.hours, date: flight.depart.slice(0, 10),
+    overnight: dayDiff(flight.depart, flight.arrive) > 0, observed_at: flight.observed_at ?? null,
+  }
+}
+
+/** A leg with no flight: the typical numbers of the route, and its day stays. */
+function withoutFlight(h: Hop, s: { data: AppData | null; legFacts: LegFacts | null }): Hop {
+  const typical = s.data ? hopBetween(s.data.map, h.from, h.to, h.mode, s.legFacts ?? undefined) : null
+  const known = typical?.mode === h.mode ? typical : null
+  return { ...h, flight: null, price_dkk: known?.price_dkk ?? null, hours: known?.hours ?? null, overnight: known?.overnight ?? false, observed_at: null }
+}
+
+/**
+ * A picked flight belongs to its day. A leg moved off that day sets the flight aside and takes the
+ * typical numbers, and gets the flight back when it is on that day again.
+ */
+function settled(j: Journey, s: { data: AppData | null; legFacts: LegFacts | null }): Journey {
+  const onDay = (f: CrawledFlight, date: string) => f.depart.slice(0, 10) === date
+  const places = j.places.map((p) => {
+    const h = p.hop
+    if (!h?.date) return p
+    if (h.flight && !onDay(h.flight, h.date)) return { ...p, hop: { ...withoutFlight(h, s), parked: h.flight } }
+    if (!h.flight && h.parked && onDay(h.parked, h.date)) return { ...p, hop: withFlight(h, h.parked) }
+    return p
+  })
+  return places.some((p, k) => p !== j.places[k]) ? { ...j, places } : j
 }
 
 function rehop(places: Place[], s: { data: AppData | null; legFacts: LegFacts | null }, mode: Mode | null = null): Place[] {

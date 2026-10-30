@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { MapData, Way } from '../data/types'
-import { applyMove, backToFlights, giveNight, legTime, schedule, stopGoes, takeNight, type Hop, type Journey, type NightMove } from './journey'
+import { applyMove, giveNight, legTime, pinLegs, schedule, stopGoes, takeNight, type Hop, type Journey, type NightMove } from './journey'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'A', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -188,15 +188,6 @@ describe('a flight moved to another day', () => {
     expect(later.places[1].hop!.date).toBe('2026-12-11')
     expect(nights(later).slice(0, 2)).toEqual([8, 17])
   })
-
-  it('says so on its own leg, with the day it flies', () => {
-    const flight = { quote_id: 'Q', depart: '2026-12-10T08:00', arrive: '2026-12-10T12:00', hours: 4, price_dkk: 900, carriers: [], via: [], layover_h: [] }
-    const j = trip()
-    j.places[1] = { node: 'B', hop: { ...bus('A', 'B'), mode: 'flight', flight } }
-    const w = sched(take(j, 0, 1)).warnings.find((x) => x.picked === 1)
-    expect(w).toMatchObject({ level: 'warn', fix: '2026-12-10' })
-    expect(w?.leg).toBeUndefined()
-  })
 })
 
 describe('a stop taken out', () => {
@@ -268,32 +259,25 @@ describe('how long a leg takes', () => {
   })
 })
 
-describe('back to the picked flights', () => {
-  const picked = (j: Journey, k: number, day: string): Journey => ({ ...j, places: j.places.map((p, x) => {
-    const flight = { depart: `${day}T10:00`, arrive: `${day}T12:00` } as unknown as Hop['flight']
-    return x === k ? { ...p, hop: { ...p.hop!, date: day, flight } } : p
-  }) })
-  const base = picked(picked(trip(['', '2026-12-10', '2026-12-20', '2027-01-10']), 2, '2026-12-20'), 3, '2027-01-10')
-
-  it('one press puts both legs back, and the stop between keeps its nights', () => {
-    const before = nights(base)
-    const j = give(base, 0)
-    expect(nights(j)[1]).toBe(before[1])
-    expect(sched(j).warnings.filter((w) => w.picked != null)).toHaveLength(2)
-    const back = moved(j, backToFlights(j, sched(j), 2))
-    expect(legDays(back).slice(1)).toEqual(['2026-12-20', '2027-01-10'])
-    expect(sched(back).warnings.filter((w) => w.picked != null)).toHaveLength(0)
-    expect(nights(back)[2]).toBe(before[2])
+describe('a day set by hand', () => {
+  it('leaves every other leg on the day it shows', () => {
+    const j = trip()
+    const shown = sched(j).places.slice(0, 3).map((p) => p.outDay)
+    const pinned = pinLegs(j, sched(j))
+    expect(legDays(pinned)).toEqual(shown)
+    expect(nights(pinned)).toEqual(nights(j))
+    const set = { ...pinned, places: pinned.places.map((p, k) => (k === 2 ? { ...p, hop: { ...p.hop!, date: '2026-12-25' } } : p)) }
+    expect(legDays(set)).toEqual([shown[0], '2026-12-25', shown[2]])
+    expect(sched(set).places.slice(0, 3).map((p) => p.outDay)).toEqual([shown[0], '2026-12-25', shown[2]])
   })
 
-  it('leaves the legs before it alone', () => {
-    const j = give(base, 0)
-    const back = moved(j, backToFlights(j, sched(j), 3))
-    expect(legDays(back)[1]).toBe(legDays(j)[1])
-    expect(legDays(back)[2]).toBe('2027-01-10')
-  })
-
-  it('has nothing to do when every flight flies on its day', () => {
-    expect(backToFlights(base, sched(base), 1)).toBeNull()
+  it('does not touch a leg with a day or a flight', () => {
+    const flight = { depart: '2026-12-20T10:00', arrive: '2026-12-20T12:00' } as unknown as Hop['flight']
+    const j = trip([undefined, '2026-12-10'])
+    j.places[2] = { node: 'C', hop: { ...bus('B', 'C'), flight } }
+    const pinned = pinLegs(j, sched(j))
+    expect(pinned.places[1].hop).toBe(j.places[1].hop)
+    expect(pinned.places[2].hop).toBe(j.places[2].hop)
+    expect(pinned.places[3].hop!.date).toBe(sched(j).places[2].outDay)
   })
 })
