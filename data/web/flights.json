@@ -502,6 +502,25 @@
   ]
  },
  {
+  "from": "TLU",
+  "to": "MDE",
+  "dkk": 555,
+  "hours": 1.08,
+  "dep": "2026-12-09T10:45",
+  "arr": "2026-12-09T11:50",
+  "vias": [],
+  "carriers": [
+   "SATENA"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/TLU-MDE/2026-12-09",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "MDE",
   "to": "SMR",
   "dkk": 569,
@@ -3338,6 +3357,27 @@
   ]
  },
  {
+  "from": "MDE",
+  "to": "VVI",
+  "dkk": 2433,
+  "hours": 9.13,
+  "dep": "2026-12-20T12:40",
+  "arr": "2026-12-20T22:48",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/MDE-VVI/2026-12-20",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
   "from": "GUA",
   "to": "BOG",
   "dkk": 2464,
@@ -4114,27 +4154,6 @@
   "link": null,
   "shows": [
    "fastest"
-  ]
- },
- {
-  "from": "MDE",
-  "to": "VVI",
-  "dkk": 2852,
-  "hours": 11.05,
-  "dep": "2026-12-14T10:45",
-  "arr": "2026-12-14T22:48",
-  "vias": [
-   "PTY"
-  ],
-  "carriers": [
-   "Copa Airlines"
-  ],
-  "notes": [
-   "long layover"
-  ],
-  "link": "https://www.momondo.dk/flight-search/MDE-VVI/2026-12-14",
-  "shows": [
-   "daytime landing"
   ]
  },
  {

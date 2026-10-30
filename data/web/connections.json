@@ -12522,42 +12522,139 @@
    {
     "mode": "flight",
     "operators": [
+     "A.P.G.",
+     "CLIC",
+     "SATENA",
      "Satena (9R7716) and Clic (VE7776",
      "VE7850) from Olaya Herrera (EOH)"
     ],
-    "duration_min": 70,
-    "duration_range_h": "1.17-1.28",
+    "duration_min": 65,
     "price_dkk": {
-     "min": 568,
-     "typical": null
+     "min": 555,
+     "typical": 864
     },
-    "price_local": "US$88-189 one way, 5 to 10 Dec 2026 (Kiwi search 30 Oct 2026); Satena fares include a checked bag",
     "frequency": "daily, 2 to 3 nonstops a day (Satena daily since 26 Nov 2025, Clic up to 8 a day in the Dec 2025 peak)",
     "overnight": false,
     "border": false,
     "stops": [],
     "geometry": null,
     "flight": {
-     "nonstop": null,
+     "nonstop": true,
      "vias": [],
      "carriers": [
+      "A.P.G.",
+      "CLIC",
+      "SATENA"
+     ],
+     "oneway_dkk": {
+      "min": 555,
+      "observed_at": "2026-10-30T19:50:49Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-08",
+      "2026-12-09",
+      "2026-12-10"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-08",
+       "from": "TLU",
+       "to": "MDE",
+       "dkk": 864,
+       "dep": "11:45",
+       "arr": "13:05",
+       "arr_days": 0,
+       "duration_min": 80,
+       "vias": [],
+       "carriers": [
+        "A.P.G."
+       ],
+       "flights": [
+        "A.P.G. 5381"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-08",
+       "link": "https://www.momondo.dk/flight-search/TLU-MDE/2026-12-08"
+      },
+      {
+       "date": "2026-12-09",
+       "from": "TLU",
+       "to": "MDE",
+       "dkk": 555,
+       "dep": "10:45",
+       "arr": "11:50",
+       "arr_days": 0,
+       "duration_min": 65,
+       "vias": [],
+       "carriers": [
+        "SATENA"
+       ],
+       "flights": [
+        "SATENA 7717"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-09",
+       "link": "https://www.momondo.dk/flight-search/TLU-MDE/2026-12-09"
+      },
+      {
+       "date": "2026-12-10",
+       "from": "TLU",
+       "to": "MDE",
+       "dkk": 555,
+       "dep": "10:55",
+       "arr": "12:00",
+       "arr_days": 0,
+       "duration_min": 65,
+       "vias": [],
+       "carriers": [
+        "SATENA"
+       ],
+       "flights": [
+        "SATENA 7717"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-10",
+       "link": "https://www.momondo.dk/flight-search/TLU-MDE/2026-12-10"
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 555,
+      "duration_min": 65,
+      "vias": [],
+      "carriers": [
+       "SATENA"
+      ],
+      "date": "2026-12-09",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 555,
+      "duration_min": 65,
+      "vias": [],
+      "carriers": [
+       "SATENA"
+      ],
+      "date": "2026-12-09"
+     },
+     "flags": [],
+     "quotes": 9
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T19:51:57Z",
+    "note": "Leaves from Olaya Herrera (EOH) in town, not Rionegro (MDE). Morning departures 08:00 to 11:55, land 09:10 to 13:06. Airport was closed Feb 2025 to 26 Nov 2025 for runway works; new 2,200 m runway done Aug 2026 (El Universal).",
+    "booking_url": "https://www.momondo.dk/flight-search/TLU-MDE/2026-12-09",
+    "source_url": "https://www.larepublica.co/empresas/satena-anuncio-la-reapertura-de-sus-rutas-hacia-tolu-saliendo-desde-bogota-y-medellin-4276960",
+    "researched": {
+     "duration_min": 70,
+     "price_min": 568,
+     "operators": [
       "Satena (9R7716) and Clic (VE7776",
       "VE7850) from Olaya Herrera (EOH)"
      ],
-     "oneway_dkk": {
-      "min": 568,
-      "observed_at": "2026"
-     },
-     "return_dkk": null,
-     "dates_searched": [],
-     "by_date": [],
-     "round_trips": []
-    },
-    "source": "manual",
-    "source_url": "https://www.larepublica.co/empresas/satena-anuncio-la-reapertura-de-sus-rutas-hacia-tolu-saliendo-desde-bogota-y-medellin-4276960",
-    "observed_at": "2026",
-    "note": "Leaves from Olaya Herrera (EOH) in town, not Rionegro (MDE). Morning departures 08:00 to 11:55, land 09:10 to 13:06. Airport was closed Feb 2025 to 26 Nov 2025 for runway works; new 2,200 m runway done Aug 2026 (El Universal).",
-    "booking_url": null
+     "year": "2026"
+    }
    }
   ]
  },
@@ -23522,6 +23619,8 @@
       "2026-12-11",
       "2026-12-14",
       "2026-12-17",
+      "2026-12-18",
+      "2026-12-20",
       "2026-12-22",
       "2026-12-25",
       "2026-12-26",
@@ -23599,6 +23698,52 @@
        "self_transfer": false,
        "searched": "2026-12-17",
        "link": "https://kiwi.com/u/nfuc6p"
+      },
+      {
+       "date": "2026-12-18",
+       "from": "MDE",
+       "to": "VVI",
+       "dkk": 2806,
+       "dep": "12:40",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 548,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 687",
+        "Copa Airlines 127"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-18",
+       "link": "https://www.momondo.dk/flight-search/MDE-VVI/2026-12-18"
+      },
+      {
+       "date": "2026-12-20",
+       "from": "MDE",
+       "to": "VVI",
+       "dkk": 2433,
+       "dep": "12:40",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 548,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 687",
+        "Copa Airlines 127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
+       "link": "https://www.momondo.dk/flight-search/MDE-VVI/2026-12-20"
       },
       {
        "date": "2026-12-22",
@@ -23964,7 +24109,7 @@
       "self_transfer",
       "self_transfer_unverified"
      ],
-     "quotes": 40
+     "quotes": 47
     },
     "source": "crawl",
     "observed_at": "2026-10-30T12:22:12Z",

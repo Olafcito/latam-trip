@@ -25690,10 +25690,12 @@
     "2026-12-11",
     "2026-12-14",
     "2026-12-17",
+    "2026-12-18",
+    "2026-12-20",
     "2027-01-28"
    ],
    "return_min_dkk": 4583.0,
-   "quotes": 20,
+   "quotes": 27,
    "flights": [
     {
      "quote_id": "Q:3cc1ed1ab4a4",
@@ -30983,6 +30985,134 @@
      "fare_brand": "Economy + Light",
      "cabin_bag": "1 x håndbagage",
      "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    }
+   ]
+  },
+  {
+   "from": "TLU",
+   "to": "MDE",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 555.0,
+   "oneway_min_hours": 1.08,
+   "fastest_hours": 1.08,
+   "fastest_price_dkk": 555.0,
+   "nonstop": true,
+   "vias": [],
+   "carriers": [
+    "A.P.G.",
+    "CLIC",
+    "SATENA"
+   ],
+   "dates": [
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10"
+   ],
+   "return_min_dkk": null,
+   "quotes": 9,
+   "flights": [
+    {
+     "quote_id": "Q:03f9757150f6",
+     "depart": "2026-12-09T10:45",
+     "arrive": "2026-12-09T11:50",
+     "hours": 1.08,
+     "price_dkk": 555.0,
+     "carriers": [
+      "SATENA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:1f79c6fb7879",
+     "depart": "2026-12-10T10:55",
+     "arrive": "2026-12-10T12:00",
+     "hours": 1.08,
+     "price_dkk": 555.0,
+     "carriers": [
+      "SATENA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:a76f1947fe4f",
+     "depart": "2026-12-10T12:05",
+     "arrive": "2026-12-10T13:25",
+     "hours": 1.33,
+     "price_dkk": 566.0,
+     "carriers": [
+      "CLIC"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:18e23bdb3dd8",
+     "depart": "2026-12-08T11:45",
+     "arrive": "2026-12-08T13:05",
+     "hours": 1.33,
+     "price_dkk": 864.0,
+     "carriers": [
+      "A.P.G."
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:477972ad916a",
+     "depart": "2026-12-09T12:05",
+     "arrive": "2026-12-09T13:25",
+     "hours": 1.33,
+     "price_dkk": 864.0,
+     "carriers": [
+      "A.P.G."
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:a110128fb57c",
+     "depart": "2026-12-08T13:55",
+     "arrive": "2026-12-08T15:08",
+     "hours": 1.22,
+     "price_dkk": 1166.0,
+     "carriers": [
+      "SATENA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
      "overnight_layover": false,
      "source": "momondo"
     }
