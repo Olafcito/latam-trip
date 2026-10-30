@@ -1,6 +1,6 @@
 {
  "about": "Saved lists. Items are places (map ids) or experiences (experience ids). The app adds to these through a claude-task issue of type lists_update; Claude applies it here.",
- "updated": "2026-10-29",
+ "updated": "2026-10-30",
  "lists": [
   {
    "id": "want",
@@ -17,6 +17,12 @@
      "id": "LPEN",
      "added": "2026-10-29",
      "note": "Calm beach village 35 min from Leon: surf, sunsets, Juan Venado mangroves. Arrive from El Salvador via the Leon boat shuttle."
+    },
+    {
+     "type": "experience",
+     "id": "gran-treehouse-party",
+     "added": "2026-10-30",
+     "note": "Simon's tip: the Granada jungle party"
     }
    ]
   }

@@ -1099,7 +1099,11 @@
    "bog-monserrate-cable-car-or-funicular",
    "bog-gold-museum-and-botero-museum",
    "bog-usaquen-sunday-flea-market",
-   "bog-zipaquira-salt-cathedral-day-trip"
+   "bog-zipaquira-salt-cathedral-day-trip",
+   "gym-bogota-exile-combat-studio",
+   "gym-bogota-jaguar-rz-muay-thai",
+   "gym-bogota-fight-club-nation",
+   "gym-bogota-mas-sports-center"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2888,7 +2892,8 @@
    "gran-isletas-boat-trip-on-lake-nicaragua",
    "gran-masaya-volcano-at-night",
    "gran-climb-the-cathedral-or-la-merced-tower",
-   "city-granada-training"
+   "city-granada-training",
+   "gran-treehouse-party"
   ],
   "stay_quotes": [],
   "hub": false
