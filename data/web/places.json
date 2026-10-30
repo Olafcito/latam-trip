@@ -703,7 +703,11 @@
    "cbb-plaza-14-de-septiembre-cafes",
    "gym-cochabamba-team-orozco",
    "gym-cochabamba-muay-thai-kick-boxing-cochabamba",
-   "city-cochabamba-training"
+   "city-cochabamba-training",
+   "gym-cochabamba-team-sakuraba-mma",
+   "gym-cochabamba-skilled-combat",
+   "gym-cochabamba-bolivian-kickboxing-academy",
+   "gym-cochabamba-prado-box-house"
   ],
   "stay_quotes": [],
   "hub": true
@@ -781,7 +785,10 @@
    "gym-santa-cruz-team-violencia-cec",
    "gym-santa-cruz-la-base-mma-entram-gym",
    "gym-santa-cruz-nova-team-training-center",
-   "city-santa-cruz-de-la-sierra-training"
+   "city-santa-cruz-de-la-sierra-training",
+   "gym-santa-cruz-white-tiger-combat",
+   "gym-santa-cruz-team-huracan",
+   "gym-santa-cruz-verastegui-boxing"
   ],
   "stay_quotes": [],
   "hub": true
@@ -1180,7 +1187,9 @@
    "gym-panama-city-pedro-alcazar",
    "gym-panama-city-shogun-bjj",
    "gym-panama-city-panama-knock-out",
-   "city-panama-city-training"
+   "city-panama-city-training",
+   "gym-panama-city-lion-boxing-club-marbella",
+   "gym-panama-city-kame-house-mma"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2182,7 +2191,8 @@
    "sal-day-trip-to-boqueron-volcano",
    "gym-san-salvador-300-mma-training-center",
    "gym-san-salvador-fight-club-el-salvador",
-   "city-san-salvador-training"
+   "city-san-salvador-training",
+   "gym-san-salvador-power-gym-mma"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2740,7 +2750,11 @@
    "gym-managua-xtreme-kombat",
    "gym-managua-arte-suave",
    "gym-managua-pesas-miguel-nino",
-   "city-managua-training"
+   "city-managua-training",
+   "gym-managua-starling-mma",
+   "gym-managua-5-street-boxing-gym",
+   "gym-managua-roger-deshon-boxing",
+   "gym-managua-evolve-athletes"
   ],
   "stay_quotes": [],
   "hub": true
