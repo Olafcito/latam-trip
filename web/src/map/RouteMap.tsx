@@ -12,14 +12,15 @@ import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
 import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
 import { addMarkerImages, addModeLayers, modeHit, type ModeHit } from './modeLayers'
-import { CardSlot, ModePanelSlot } from './ModeSlots'
+import { CardWindow } from './CardWindow'
+import { ModePanelSlot } from './ModeSlots'
 import { Panel, type FlightDir, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
 import { IoLegend, WayPanel } from './WayPanel'
 import { C, baseStyle } from './style'
 import { Tooltip } from './Tooltip'
-import { useMapMode, type CardRef, type MapMode } from './useMapMode'
+import { MODE_TITLE, useMapMode, type CardRef, type MapMode } from './useMapMode'
 import './routeMap.css'
 import './modes.css'
 
@@ -61,7 +62,7 @@ export interface RouteMapProps {
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
 const PANEL_W: Record<PanelView | 'mode', number> = { city: 300, more: 360, route: 360, trips: 340, way: 380, mode: 380 }
-/** A card in a map mode. Below DOCK_MIN wide there is no room beside the mode panel, so it goes over it. */
+/** A card's window. Below DOCK_MIN wide there is no room beside the panel, so it goes over it. */
 const CARD_W = 380
 const DOCK_MIN = 1100
 const COLLAPSED_W = 300
@@ -77,8 +78,8 @@ const EMPTY_FC: GeoJSON.FeatureCollection = { type: 'FeatureCollection', feature
 type Point2 = { x: number; y: number }
 type PadView = PanelView | 'mode' | null
 
-/** A card's left edge: beside the mode panel, folded or open, or over it when the map has no room for both. */
-const cardEdge = (dock: boolean, collapsed: boolean) => (collapsed ? COLLAPSED_W + 28 : dock ? PANEL_W.mode + 28 : 14)
+/** A card's left edge: beside the panel, folded or open, or over it when the map has no room for both. */
+const cardEdge = (dock: boolean, collapsed: boolean, panel: PadView) => (!panel ? 14 : collapsed ? COLLAPSED_W + 28 : dock ? PANEL_W[panel] + 28 : 14)
 
 const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -145,15 +146,16 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const W = el.clientWidth
     const H = el.clientHeight
     const open = panel && !live.current.collapsed
-    const card = panel === 'mode' && live.current.cardOpen
-    const sheet = card ? 0.62 : open ? (panel === 'mode' ? MODE_SHEET : 0.52) : 0
+    // on a phone the window covers the map, and folds down to a bar over the sheet to show it, so the sheet is what counts
+    const card = W >= NARROW && !!panel && live.current.cardOpen
+    const sheet = open ? (panel === 'mode' ? MODE_SHEET : 0.52) : 0
     const sideW = live.current.side && !live.current.sideMini ? sideWidth : 0
     // on a phone the score key sits on top of the sheet, and the mode buttons leave the top of the map to the markers
     const key = panel === 'mode' && !card && live.current.mode === 'gyms' ? 80 : 0
     const padding =
       W < NARROW
         ? { top: panel === 'mode' ? 24 : 70, left: 28, right: 64, bottom: sheet ? Math.round(H * sheet) + 16 + key : sideW ? Math.round(H * 0.42) + 16 : 70 }
-        : { top: 70, left: card ? cardEdge(W >= DOCK_MIN, !!live.current.collapsed) + CARD_W + 26 : open ? PANEL_W[panel!] + 54 : 40, right: sideW ? sideW + 54 : 90, bottom: 70 }
+        : { top: 70, left: card ? cardEdge(W >= DOCK_MIN, !!live.current.collapsed, panel) + CARD_W + 26 : open ? PANEL_W[panel!] + 54 : 40, right: sideW ? sideW + 54 : 90, bottom: 70 }
     if (padding.left + padding.right > W - 40 || padding.top + padding.bottom > H - 40) return { top: 20, left: 20, right: 20, bottom: 20 }
     return padding
   }, [sideWidth])
@@ -244,32 +246,41 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     })
   }, [])
 
+  /** A card belongs to what is open under it, so it goes when that does. */
+  const dropCards = useCallback(() => {
+    live.current.cardOpen = false
+    mm.closeCards()
+  }, [mm.closeCards])
+
   const select = useCallback(
     (id: string) => {
+      dropCards()
       store.set(null)
       setCollapsed(false)
       live.current.collapsed = false
       setView({ ...EMPTY, sel: id, panel: 'city' })
       showCity(id, 'city')
     },
-    [showCity, store],
+    [showCity, store, dropCards],
   )
 
   // closing leaves the camera where it is
   const deselect = useCallback(() => {
+    dropCards()
     store.set(null)
     setView(EMPTY)
-  }, [store])
+  }, [store, dropCards])
 
   const openRoute = useCallback(
     (cid: string, from: string, back: View['back'] = 'city') => {
       const conn = model.conns.get(cid)
       if (!conn) return
+      dropCards()
       store.set(null)
       setView((v) => ({ sel: v.sel ?? from, panel: 'route', route: cid, from, opt: 0, back: v.panel === 'more' ? 'more' : back }))
       showRoute(conn)
     },
-    [showRoute, model, store],
+    [showRoute, model, store, dropCards],
   )
 
   const toCity = useCallback(() => {
@@ -309,11 +320,12 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   }, [map, focus, focusId, showCity])
 
   const showTrips = useCallback(() => {
+    dropCards()
     store.set(null)
     setCollapsed(false)
     live.current.collapsed = false
     setView({ ...EMPTY, panel: 'trips' })
-  }, [store])
+  }, [store, dropCards])
 
   /** Opening a trip fits all of it once, the one time the camera may zoom out far. */
   const fitTrip = useCallback(
@@ -351,13 +363,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   const [wayDirs, setWayDirs] = useState<Dir[]>(['in'])
   const openWay = useCallback(
     (dirs: Dir[]) => {
+      dropCards()
       store.set(null)
       setCollapsed(false)
       live.current.collapsed = false
       setWayDirs(dirs)
       setView({ ...EMPTY, panel: 'way' })
     },
-    [store],
+    [store, dropCards],
   )
 
   /** A map place for an airport code: the place itself, or the place that has that airport. */
@@ -366,9 +379,12 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   // ---- map modes -----------------------------------------------------------------------------
 
-  /** Easing options that centre on the free part of the map beside a mode's panel and card. */
+  /** What a card's window sits beside. */
+  const cardPanel = (): PadView => (live.current.mode ? 'mode' : live.current.view.panel)
+
+  /** Easing options that centre on the free part of the map beside a panel and a card. */
   const modeCamera = () => {
-    const pad = pads('mode')
+    const pad = pads(cardPanel())
     return { offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2] as [number, number], duration: reducedMotion() ? 0 : 600, easing: EASE }
   }
 
@@ -402,7 +418,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const own = ref.kind === 'city' ? mm.gymPoints(ref.id) : []
     const at = mm.pointOf(ref)
     const duration = reducedMotion() ? 0 : 900
-    if (own.length > 1) map.fitBounds(boundsOf(own), { padding: pads('mode'), maxZoom: 11, duration, easing: EASE })
+    if (own.length > 1) map.fitBounds(boundsOf(own), { padding: pads(cardPanel()), maxZoom: 11, duration, easing: EASE })
     else if (at) map.flyTo({ ...modeCamera(), center: at, zoom: Math.max(ref.kind === 'city' ? 9 : 11, map.getZoom()), duration })
   }
 
@@ -438,16 +454,25 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     if (at && !inView(at, 'mode')) map.easeTo({ ...modeCamera(), center: at })
   }
 
-  /** Esc inside a mode: a card goes first, then the mode. False when no mode is on. */
+  /** Esc: a card goes first, in any state, then the mode. False when neither is open. */
   const escMode = () => {
-    if (!live.current.mode) return false
     if (live.current.cardOpen) mm.popCard()
-    else setMode(null)
+    else if (live.current.mode) setMode(null)
+    else return false
     return true
   }
 
-  const act = useRef({ select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode })
-  act.current = { select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode }
+  /** A row of a place's Experiences or Training. The map stays on the place, which is what it was looking at. */
+  const openCard = (ref: CardRef) => {
+    live.current.cardOpen = true
+    mm.openCard(ref)
+  }
+
+  const act = useRef({ select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode, dropCards })
+  act.current = { select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode, dropCards }
+
+  /** What the first card covers when there is no room beside the panel. */
+  const underCard = mm.mode ? MODE_TITLE[mm.mode] : (view.sel && model.byId.get(view.sel)?.short_name) || null
 
   // ---- map setup -------------------------------------------------------------------------
 
@@ -815,7 +840,9 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       const hit = hitAt(e.point)
       const sel = live.current.view.sel
       if (!hit) {
-        if (sel) act.current.deselect()
+        // the window goes first, the panel on the next tap
+        if (live.current.cardOpen) act.current.dropCards()
+        else if (sel) act.current.deselect()
         return
       }
       if (hit.kind === 'overland') return
@@ -1040,6 +1067,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
             onAddLeg={trip ? addTripLeg : undefined}
             onRemoveLeg={(i) => trip && onTrips((s) => removeLeg(s, trip.id, i))}
             legIndex={(cid, from, mode) => (trip ? legIndex(trip, cid, from, mode) : -1)}
+            api={mm}
+            onCard={openCard}
           />
           {mm.mode && (
             <ModePanelSlot
@@ -1052,12 +1081,13 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
               onPlace={openPlace}
             />
           )}
-          {mm.mode && mm.card && (
-            <CardSlot
+          {mm.card && (
+            <CardWindow
               api={mm}
-              left={narrow ? null : cardEdge(dock, collapsed)}
+              model={model}
+              left={narrow ? null : cardEdge(dock, collapsed, mm.mode ? 'mode' : view.panel)}
               cardRef={cardRef}
-              backTo={mm.stack.length > 1 ? mm.titleOf(mm.stack.at(-2)!) : null}
+              backTo={mm.stack.length > 1 ? mm.titleOf(mm.stack.at(-2)!) : narrow || !dock ? underCard : null}
               onBack={mm.popCard}
               onClose={mm.closeCards}
               onOpen={mm.pushCard}

@@ -5,6 +5,8 @@ import { familyOf, type AirportFlight, type Connection, type DatedFare, type Fam
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
 import { Flag as CountryFlag } from './Flag'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
+import { PlaceSections } from './PlaceSections'
+import type { CardRef, MapModeApi } from './useMapMode'
 
 export type PanelView = 'city' | 'more' | 'route' | 'trips' | 'way'
 
@@ -41,10 +43,14 @@ export interface PanelProps {
   onAddLeg?(conn: Connection, opt: RouteOption, from: string, cont: boolean): void
   onRemoveLeg(index: number): void
   legIndex(cid: string, from: string, mode: Mode): number
+  /** What a place has in the map modes, for its Experiences and Training. */
+  api: MapModeApi
+  /** A row of a place's Experiences or Training opens its window. */
+  onCard(ref: CardRef): void
 }
 
 /** Wikimedia thumbnails come in fixed steps; swap the width in the URL. */
-const sized = (url: string, w: number) => url.replace(/\/\d+px-([^/]+)$/, `/${w}px-$1`)
+export const sized = (url: string, w: number) => url.replace(/\/\d+px-([^/]+)$/, `/${w}px-$1`)
 
 export function Panel(p: PanelProps) {
   const { model, view } = p
@@ -88,12 +94,14 @@ function HeadButtons(p: PanelProps) {
   )
 }
 
-/** A connection at a glance: the mode as an icon, the time and the lowest price. The words sit in the title. */
+/** A connection at a glance: the mode as an icon, the time and the lowest price. The words sit in the title, and what is unknown is left out. */
 function OptChip({ o }: { o: RouteOption }) {
+  const time = o.duration_min == null ? null : duration(o.duration_min)
+  const price = o.price_dkk.min == null ? null : o.price_dkk.min
   return (
-    <span className="copt mono" title={`${modeLabel(o.mode)}, ${duration(o.duration_min)}, ${fromPrice(o.price_dkk.min)}`}>
+    <span className="copt mono" title={[modeLabel(o.mode), time, price == null ? null : fromPrice(price)].filter(Boolean).join(', ')}>
       <ModeChip family={familyOf(o.mode)} />
-      <b>{duration(o.duration_min)}</b> {kr(o.price_dkk.min)}
+      {time && <b>{time}</b>} {price != null && kr(price)}
     </span>
   )
 }
@@ -170,7 +178,7 @@ function ConnRow({ p, n, from, dir, i }: { p: PanelProps; n: Neighbour; from: st
             // the crawl did not search this way in, so there is no price to read
             <span key={j} className="copt mono" title={`Flight, no crawled fares from ${n.other.short_name}`}>
               <ModeChip family={familyOf(o.mode)} />
-              <b>{duration(o.duration_min)}</b> ?
+              {o.duration_min != null && <b>{duration(o.duration_min)}</b>}
             </span>
           ) : (
             <OptChip key={j} o={o} />
@@ -229,6 +237,7 @@ function CityView(p: PanelProps & { city: Place }) {
           <button className="more" onClick={p.onMore}>More about {city.short_name} <span className="arr"><Arrow /></span></button>
         )}
       </div>
+      <PlaceSections key={city.id} api={p.api} categories={model.data.categories} placeId={city.id} onCard={p.onCard} />
       <div className="sechead">
         <p className="sub">Connections</p>
         <span className="sechead-r">
@@ -317,6 +326,7 @@ function MoreView(p: PanelProps & { city: Place }) {
           <div className="fact"><span className="mono">Altitude</span><span className="mono">{altitude(city.altitude_m) || '?'}</span></div>
           <div className="fact"><span className="mono">Touristy</span><Touristy n={city.touristy} /></div>
         </div>
+        <PlaceSections key={city.id} api={p.api} categories={model.data.categories} placeId={city.id} flush onCard={p.onCard} />
         {!!city.things_to_do?.length && (
           <div>
             <p className="sec-k mono">Things to do</p>

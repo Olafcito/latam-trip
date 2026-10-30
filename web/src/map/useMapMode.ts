@@ -12,6 +12,8 @@ export type { MapMode }
 export type CardRef = { kind: 'gym' | 'city' | 'experience'; id: string }
 export type GymTab = 'gyms' | 'cities'
 
+export const MODE_TITLE: Record<MapMode, string> = { gyms: 'Gyms', experiences: 'Experiences' }
+
 export type MapModeApi = ReturnType<typeof useMapMode>
 
 export function useMapMode(map: MLMap | null, data: MapData) {
@@ -113,7 +115,8 @@ export function useMapMode(map: MLMap | null, data: MapData) {
 
   useEffect(() => {
     if (!map) return
-    const ringed = mode && card && card.kind !== 'city' ? pointOf(card) : null
+    // a card opened from a place panel has a marker too, so the ring is not only for the modes
+    const ringed = card && card.kind !== 'city' ? pointOf(card) : null
     setModeSelection(map, ringed, mode && card?.kind === 'city' ? card.id : null)
   }, [map, mode, card, pointOf])
 

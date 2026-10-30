@@ -1,4 +1,9 @@
-/* The map modes, over the tokens of routeMap.css. */
+/* The map modes and the card window, over the tokens of routeMap.css. */
+@keyframes cardIn { from { opacity: 0; transform: translateX(-14px); } }
+@keyframes cardUp { from { transform: translateY(100%); } }
+@keyframes viewBack { from { opacity: 0; transform: translateX(-12px); } }
+@keyframes rankIn { from { transform: scaleX(0); } }
+
 @scope (.rmap) {
   :scope.mode-on .io-mark { display: none; }
 
@@ -11,7 +16,87 @@
 
   .panel.mode { width: 380px; height: calc(100% - 28px); }
   .panel.mode.collapsed { width: 300px; height: auto; }
-  .panel.mcard { z-index: 9; width: 380px; }
+  /* the card window: one panel, whatever it opened from */
+  .panel.mcard { z-index: 9; width: 380px; animation: cardIn .22s var(--ease-out); }
+  .mc-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 6px 6px 12px; border-bottom: 1px solid var(--line); }
+  .mc-head .back { margin: 0; min-width: 0; }
+  .mc-head .back span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mc-head.solo { position: absolute; z-index: 2; top: 8px; right: 8px; padding: 0; border: 0; }
+  .mc-head.solo .x { background: var(--panel); box-shadow: 0 0 0 1px var(--chrome-line); }
+  .mc-head.solo + .pview .pbody > div:first-child .mc-name { padding-right: 40px; }
+  .pview.mc-back { animation-name: viewBack; }
+  .mcard .pbody > * { flex: none; min-width: 0; }
+  .mcard .mc-where { margin-top: 5px; align-items: baseline; }
+  .mcard .mc-note { padding: 10px 12px; }
+  .mc-note .mc-saved { white-space: normal; }
+  .mc-price { font-size: 18px; font-weight: 700; }
+  .mc-kind { background: transparent; box-shadow: inset 0 0 0 1px var(--chrome-line); color: var(--muted); }
+  .mc-facts .fact:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .hostels li.mc-sum span:last-child { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  /* a score: its tier's colour is set once and the chip, the total and the bars read it */
+  .tier-top { --score: var(--bus); }
+  .tier-mid { --score: var(--flight); }
+  .tier-low { --score: var(--muted); }
+  .tier-none { --score: var(--faint); }
+  .mc-chip { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 24px; border-radius: 8px; background: var(--score); color: var(--ink); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .mc-chip.tier-none { background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+  .mc-score { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 12px; background: var(--surface-2); }
+  .mc-total { flex: none; display: flex; align-items: baseline; gap: 2px; color: var(--score); }
+  .mc-total b { font-size: 34px; line-height: 1; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .mc-total span { font-size: 12px; color: var(--muted); }
+  .mc-bars { flex: 1; min-width: 0; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+  .mc-bars li { display: grid; grid-template-columns: 62px minmax(0, 1fr) 18px; align-items: center; gap: 8px; font-size: 12px; }
+  .mc-bar-l { color: var(--muted); white-space: nowrap; }
+  .mc-bar { display: block; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .mc-bar i { display: block; height: 100%; background: var(--score); transform-origin: left; animation: rankIn .28s var(--ease-out) both; animation-delay: calc(var(--i) * 35ms); }
+  .mc-bar-v { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* lines of text, links, quotes and sources */
+  .mc-dl { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .mc-dl dt { font-size: 12px; color: var(--muted); }
+  .mc-dl dd { margin: 2px 0 0; font-size: 13.5px; line-height: 1.45; white-space: pre-line; overflow-wrap: anywhere; }
+  .mc-dl dd.fine { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+  .mc-dl a, .mc-said a, .mc-src a { color: inherit; text-decoration-color: var(--faint); text-underline-offset: 3px; }
+  .mc-actions { display: flex; flex-direction: column; gap: 6px; }
+  .mc-links { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mc-link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--surface-2); color: var(--text); font: inherit; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; transition: var(--press); }
+  .mc-out { margin-top: 8px; }
+  .mc-quotes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .mc-quotes p { font-size: 13.5px; line-height: 1.5; overflow-wrap: anywhere; }
+  .mc-quotes .mc-said { margin-top: 3px; font-size: 12px; color: var(--muted); }
+  .mc-src summary { display: flex; align-items: center; gap: 6px; min-height: 36px; list-style: none; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--press); }
+  .mc-src summary::-webkit-details-marker { display: none; }
+  .mc-src summary svg { margin-left: auto; transition: transform .18s var(--ease-out); }
+  .mc-src[open] summary svg { transform: rotate(180deg); }
+  .mc-src ul { list-style: none; margin: 0; padding: 0 0 4px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+  .mc-src li { overflow-wrap: anywhere; }
+
+  /* a row that opens a card, in a place panel and inside a city card */
+  .mc-sec { flex: none; }
+  .mc-sec.flush .sechead { padding: 0 0 6px; border-top: 0; margin-top: 0; }
+  .mc-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 8px; border: 0; border-radius: 10px; background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer; transition: var(--press); }
+  .mc-row-t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .mc-row-n { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 14px; font-weight: 600; line-height: 1.25; }
+  .mc-row-s { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mc-saved { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--flight); }
+  .mc-saved svg { vertical-align: -2px; margin-right: 4px; }
+  .mc-more { display: block; width: calc(100% - 28px); min-height: 40px; margin: 0 14px 8px; border: 1px solid var(--chrome-line); border-radius: 10px; background: transparent; color: var(--text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--press); }
+  .mc-sec.flush .mc-more { width: 100%; margin: 6px 0 0; }
+
+  /* a phone's window folded down to show the map */
+  .mc-peek { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--press); }
+  .mc-peek span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .panel :is(.mc-row, .mc-link, .mc-more, .mc-src summary, .mc-peek) { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+  .panel :is(.mc-row, .mc-link, .mc-more, .mc-src summary, .mc-peek):active { transform: scale(.97); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mc-row:hover, .mc-more:hover { background: var(--surface-2); }
+    .mc-row:hover .cr-arrow { transform: translateX(3px); }
+    .mc-link:hover { background: var(--surface-3); }
+    .mc-src summary:hover { color: var(--text); }
+  }
 
   @container rmap (max-width: 719px) {
     .seg.modeseg { flex-direction: row; border-radius: 999px; }
@@ -24,10 +109,18 @@
     .panel.mode, .panel.mode.collapsed { width: auto; }
     .panel.mode { height: 42%; max-height: 42%; }
     .panel.mode.collapsed { height: auto; }
-    .panel.mcard { width: auto; max-height: 62%; }
+    .panel.mcard { top: 56px; bottom: 0; width: auto; max-height: none; padding-bottom: 0; animation: cardUp .26s var(--ease-drawer); }
+    .panel.mcard::before { display: none; }
+    .mcard .pbody { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+    .panel.mcard.peek { top: auto; padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .mc-link, .mc-src summary { min-height: 44px; }
+    .mcard :is(.back, .x) { min-height: 44px; min-width: 44px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .modeseg .mbtn:active { transform: none; }
+    .panel :is(.mc-row, .mc-link, .mc-more, .mc-src summary, .mc-peek):active { transform: none; }
+    .mc-row:hover .cr-arrow { transform: none; }
+    .panel.mcard, .pview.mc-back, .mc-bar i { animation: none; }
   }
 }
