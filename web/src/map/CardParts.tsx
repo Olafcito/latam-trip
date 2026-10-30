@@ -51,7 +51,7 @@ export function CardRow({ name, sub, lead, onClick }: CardRowProps) {
         {lead}
         <span className="mc-row-t">
           <span className="mc-row-n">{name}</span>
-          {sub && <span className="mc-row-s">{sub}</span>}
+          {sub && <span className="mc-row-s" title={typeof sub === 'string' ? sub : undefined}>{sub}</span>}
         </span>
         <span className="cr-arrow"><Arrow s={14} /></span>
       </button>
@@ -70,7 +70,7 @@ export function SavedLine({ note }: { note: string | null | undefined }) {
 export function Part({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
-      <p className="sec-k mono">{title}</p>
+      <h3 className="sec-k mono">{title}</h3>
       {children}
     </div>
   )
@@ -81,8 +81,8 @@ export function FactGrid({ facts }: { facts: Fact[] }) {
   if (!facts.length) return null
   return (
     <div className="facts mc-facts">
-      {facts.map((f) => (
-        <div key={f.label} className="fact"><span className="mono">{f.label}</span><span className="mono">{f.value}</span></div>
+      {facts.map((f, i) => (
+        <div key={i} className="fact"><span className="mono">{f.label}</span><span className="mono">{f.value}</span></div>
       ))}
     </div>
   )
@@ -93,8 +93,8 @@ export function Lines({ facts }: { facts: Fact[] }) {
   if (!facts.length) return null
   return (
     <dl className="mc-dl">
-      {facts.map((f) => (
-        <div key={f.label}>
+      {facts.map((f, i) => (
+        <div key={i}>
           <dt>{f.label}</dt>
           <dd>{f.href ? <a href={f.href} {...away}>{capitalise(f.value)}</a> : capitalise(f.value)}</dd>
           {f.note && <dd className="fine">{f.note}</dd>}
@@ -129,8 +129,8 @@ export function Sources({ urls }: { urls: string[] | null | undefined }) {
     <details className="mc-src">
       <summary><span>Sources</span><span className="mono">{urls.length}</span><Chevron up={false} /></summary>
       <ul>
-        {urls.map((url) => (
-          <li key={url}><a href={url} {...away}>{sourceLabel(url)}</a></li>
+        {urls.map((url, i) => (
+          <li key={i}><a href={url} {...away}>{sourceLabel(url)}</a></li>
         ))}
       </ul>
     </details>

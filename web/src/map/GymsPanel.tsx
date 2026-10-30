@@ -43,7 +43,7 @@ const RankRow = memo(function RankRow({ rank, name, country, where, total, month
         <span className="rrow-rank">{rank}</span>
         <span className="rrow-t">
           <span className="rrow-n">{name}</span>
-          <span className="rrow-s"><Flag code={country} size={11} /><span>{where}</span></span>
+          <span className="rrow-s"><Flag code={country} size={11} /><span title={where}>{where}</span></span>
         </span>
         <span className="rrow-v">
           {total != null && <span className="rrow-score">{scoreText(total)}</span>}
