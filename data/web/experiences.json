@@ -21021,5 +21021,61 @@
   },
   "image_source": "category",
   "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-samurai-fc",
+  "name": "Samurai FC (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "kickboxing"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Guadalajara, Altamira (Zapopan)",
+  "country": "MX",
+  "lat": 20.71,
+  "lon": -103.38,
+  "summary": "Fight gym in Altamira, Zapopan, recommended by people Simon read as the alternative to Lobo Gym depending on where you live. Details still to be checked on Google Maps.",
+  "season": "year round",
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": null,
+  "details": {
+   "gym_kind": null,
+   "disciplines": null,
+   "address": "Av. de las Americas 2157, Altamira, 45160 Zapopan, Jal., Mexico",
+   "neighbourhood": "Altamira, just north of Providencia and near Plaza Patria, a residential middle-class area in the north-west of the city",
+   "website": null,
+   "instagram": null,
+   "facebook": null,
+   "phone": null,
+   "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Samurai+FC+Av.+de+las+Americas+2157+Zapopan",
+   "hours": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "what_people_say": [],
+   "score": null,
+   "score_note": "Added from Simon's tip on 30 Oct 2026; not yet researched. Coordinates approximate for the address."
+  },
+  "researched": false,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/?api=1&query=Samurai+FC+Av.+de+las+Americas+2157+Zapopan"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
  }
 ]
