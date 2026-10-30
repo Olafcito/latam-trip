@@ -47,7 +47,7 @@ html:has(.md[open]) { overflow: hidden; scrollbar-gutter: stable; }
   .md-x:hover { background: var(--surface-3); color: var(--text); }
 }
 
-/* the same detail as a row of facts, for a hostel */
+/* a hostel as a row of facts */
 .mdh { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
 .mdh h3 { margin: 0; padding-right: 36px; font-size: var(--fs-title); font-weight: 650; line-height: 1.3; letter-spacing: -0.01em; overflow-wrap: anywhere; text-wrap: balance; }
 .mdh h3 + small { display: block; margin-top: 4px; font-size: var(--fs-small); color: var(--muted); }
@@ -57,6 +57,7 @@ html:has(.md[open]) { overflow: hidden; scrollbar-gutter: stable; }
 .mdh-facts dd { margin: 0; font-family: var(--font-num); font-size: var(--fs-title); font-weight: 600; font-variant-numeric: tabular-nums; }
 .mdh-facts dd.no { font-family: inherit; font-size: var(--fs-body); font-weight: 500; color: var(--muted); }
 .mdh-note { margin: 0; font-size: var(--fs-small); line-height: 1.45; color: var(--flight); }
+.mdh-go { align-self: flex-start; gap: 6px; text-decoration: none; }
 
 /* a card of the map in the window: the map's styles apply inside .rmap, so its map chrome is taken off here */
 .fp-md { --md-w: 440px; }
