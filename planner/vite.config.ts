@@ -30,7 +30,11 @@ export default defineConfig({
   plugins: [react(), serveRepoData()],
   // one React and one maplibre for both apps' code
   resolve: { alias: { '@map': WEB_SRC }, dedupe: ['react', 'react-dom', 'maplibre-gl'] },
-  server: { fs: { allow: [resolve(import.meta.dirname, '..')] } },
+  server: {
+    fs: { allow: [resolve(import.meta.dirname, '..')] },
+    // a rebase writes a file twice within ms. The watcher drops the second write, and the old code stays served until the next save
+    watch: { awaitWriteFinish: { stabilityThreshold: 150, pollInterval: 30 } },
+  },
   // maplibre finds its worker next to its own module, which pre-bundling would move
   optimizeDeps: { exclude: ['maplibre-gl'] },
   test: { environment: 'node' },
