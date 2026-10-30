@@ -12,6 +12,16 @@ async function getJson<T>(name: string, base: string): Promise<T> {
 }
 
 export async function loadMapData(base = BASE): Promise<MapData> {
+  const data = await readMapData(base)
+  // dev only, and left out of a production build along with the file it loads
+  if (import.meta.env.DEV && typeof location !== 'undefined') {
+    const which = new URLSearchParams(location.search).get('data')
+    if (which) return (await import('./worst')).worstCase(data, which)
+  }
+  return data
+}
+
+async function readMapData(base: string): Promise<MapData> {
   const [places, connections, countries, flights, experiences, categories, lists] = await Promise.all([
     getJson<MapData['places']>('places', base),
     getJson<MapData['connections']>('connections', base),
