@@ -43,6 +43,19 @@ export function disciplinesOf(g: GymRow): Discipline[] {
   return DISCIPLINES.filter((d) => found.has(d))
 }
 
+/** What else a gym lists, beyond the five the filters know: wrestling, judo, a fitness class. */
+export function otherDisciplines(g: GymRow): string[] {
+  const seen = new Set<string>()
+  return (g.details?.disciplines ?? []).flatMap((d) => {
+    const value = d.trim()
+    const low = value.toLowerCase()
+    if (!low || seen.has(low)) return []
+    seen.add(low)
+    const known = PARSE.some(([, re]) => re.test(low)) || (BOXING.test(low) && !FITNESS_BOXING.test(low))
+    return known ? [] : [value]
+  })
+}
+
 export const scoreOf = (r: Experience<{ score?: ScoreCard | null }>): ScoreCard | null => r.details?.score ?? null
 export const totalOf = (r: Experience<{ score?: ScoreCard | null }>): number | null => {
   const t = scoreOf(r)?.total

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { capped, cardPhoto, cityCostFacts, cityLines, experienceLines, gymLines, gymPrices, gymRatings, hostelFacts, indexFacts, numbeoFacts, quoteSource, scoreBars, scoreText } from './cardFacts'
+import { capped, cardPhoto, cityCostFacts, cityLines, experienceLines, gymLines, gymPrices, gymRatings, hostelFacts, indexFacts, numbeoFacts, plainNote, quoteSource, scoreBars, scoreText } from './cardFacts'
 import type { CityRow, Experience, GymRow } from './types'
 
 const row = { id: 'x', name: 'X', category: 'training', tags: [], country: 'MX', lat: 1, lon: 2, summary: null, price: null, price_dkk: null }
@@ -66,9 +66,13 @@ describe('gymLines', () => {
   it('breaks hours into a line per day', () => {
     expect(gymLines(gym({}, { hours: 'Mon 5-6; Tue 7-8' }))[0].value).toBe('Mon 5-6\nTue 7-8')
   })
-  it('takes the water note over the distance, and the distance without a note', () => {
-    expect(gymLines(gym({}, { water_km: 30, water_note: 'Pacific' }))[0].value).toBe('Pacific')
-    expect(gymLines(gym({}, { water_km: 30 }))[0].value).toBe('30 km')
+  it('gives the distance to the water with its note under it, and either one alone', () => {
+    expect(gymLines(gym({}, { water_km: 30, water_note: 'Pacific' }))).toEqual([{ label: 'Water', value: '30 km', note: 'Pacific' }])
+    expect(gymLines(gym({}, { water_km: 30 }))).toEqual([{ label: 'Water', value: '30 km' }])
+    expect(gymLines(gym({}, { water_note: 'Pacific' }))).toEqual([{ label: 'Water', value: 'Pacific' }])
+  })
+  it('spells out the phone number', () => {
+    expect(gymLines(gym({}, { phone: '+52 33 4960 4080' }))).toEqual([{ label: 'Phone', value: '+52 33 4960 4080' }])
   })
   it('leaves blank text out', () => expect(gymLines(gym({}, { sparring: '  ' }))).toEqual([]))
   it('takes season and the rest from the row', () => {
@@ -94,8 +98,27 @@ describe('city facts', () => {
   it('leaves out what the page did not give', () => {
     expect(labels(cityCostFacts(city({ numbeo, room_month_dkk: 3000 })))).toEqual(['Cheap meal', 'Room a month', 'Cost of living index'])
   })
-  it('gives dorm and private only when known', () => {
-    expect(hostelFacts(city({ hostels: { dorm_night_dkk: 50, private_night_dkk: null, n: 2, names: [], source: 'x' } }))).toEqual([{ label: 'Dorm a night', value: '50 kr' }])
+  it('gives dorm, private and the count only when known', () => {
+    expect(hostelFacts(city({ hostels: { dorm_night_dkk: 50, private_night_dkk: null, n: 2, names: [], source: 'x' } }))).toEqual([{ label: 'Dorm a night', value: '50 kr' }, { label: 'Hostels found', value: '2' }])
+  })
+  it('shows the listed price and the season of the row', () => {
+    const row = { ...city(), price_dkk: 2696, season: 'year round', dec_jan: 'Dry' } as CityRow
+    expect(cityCostFacts(row)).toEqual([{ label: 'Listed price', value: '2.696 kr' }])
+    expect(labels(cityLines(row))).toEqual(['Season', 'December and January'])
+  })
+})
+
+describe('plainNote', () => {
+  it('says a raw field in words', () => {
+    expect(plainNote('single_month_no_rent from Managua (no estimate on own page)')).toBe('Living without rent from Managua (no estimate on own page)')
+  })
+  it('drops the clause about a null field and keeps the sentence', () => {
+    expect(plainNote('No listing could be opened, so room_month_dkk is null.')).toBe('No listing could be opened.')
+  })
+  it('leaves other text alone and has nothing for no note', () => {
+    expect(plainNote('Rated by 12 people')).toBe('Rated by 12 people')
+    expect(plainNote(null)).toBeNull()
+    expect(plainNote('  ')).toBeNull()
   })
 })
 

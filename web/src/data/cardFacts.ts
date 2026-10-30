@@ -17,6 +17,15 @@ const count = (label: string, n: number | null | undefined): Fact[] => (has(n) ?
 /** Opening hours come as one line with a semicolon between the days, and read better as a line per day. */
 const byDay = (value: string | null | undefined) => value?.split(/;\s*/).join('\n')
 
+/** A few research notes name a raw field. The data stays as it was written and the card says it in words. */
+export function plainNote(note: string | null | undefined): string | null {
+  const out = note
+    ?.replace(/,?\s*so room_month_dkk is null/g, '')
+    .replace(/single_month_no_rent(_dkk)?/g, 'Living without rent')
+    .trim()
+  return out || null
+}
+
 export const SCORE_MAX = 10
 
 const SCORE_PARTS = [
@@ -76,6 +85,12 @@ function sessions(n: number | string | null | undefined): string | null {
   return n ?? null
 }
 
+/** The distance to the water, with the note on how it was measured under it. */
+function water(km: number | null | undefined, note: string | null | undefined): Fact[] {
+  if (!has(km)) return text('Water', note)
+  return [{ label: 'Water', value: `${thousands(km)} km`, ...(note?.trim() ? { note: note.trim() } : {}) }]
+}
+
 /** The lines under the prices, in the order the card shows them. */
 export function gymLines(g: GymRow): Fact[] {
   const d = g.details
@@ -87,12 +102,13 @@ export function gymLines(g: GymRow): Fact[] {
     ...text('Coaches', d?.coaches),
     ...text('Fighters', d?.fighters),
     ...text('Neighbourhood', d?.neighbourhood),
-    ...text('Water', d?.water_note ?? (has(d?.water_km) ? `${d.water_km} km` : null)),
+    ...water(d?.water_km, d?.water_note),
     ...money('Room', d?.room_month_dkk, ' a month'),
     ...money('Studio', d?.studio_month_dkk, ' a month'),
     ...money('Food', d?.food_day_dkk, ' a day'),
     ...text('Address', d?.address),
     ...text('Address note', d?.address_note),
+    ...text('Phone', d?.phone),
     ...text('Hours', byDay(d?.hours)),
     ...text('Season', g.season),
     ...text('December and January', g.dec_jan),
@@ -117,6 +133,7 @@ export function cityCostFacts(c: CityRow): Fact[] {
   const n = d?.numbeo
   return [
     ...money('Own estimate a month', d?.monthly_total_dkk),
+    ...money('Listed price', c.price_dkk),
     ...money('Cheap meal', n?.meal_cheap_dkk),
     ...money('Gym a month', n?.gym_month_dkk),
     ...money('Room a month', d?.room_month_dkk),
@@ -130,7 +147,7 @@ export function cityCostFacts(c: CityRow): Fact[] {
 
 export function hostelFacts(c: CityRow): Fact[] {
   const h = c.details?.hostels
-  return [...money('Dorm a night', h?.dorm_night_dkk), ...money('Private a night', h?.private_night_dkk)]
+  return [...money('Dorm a night', h?.dorm_night_dkk), ...money('Private a night', h?.private_night_dkk), ...count('Hostels found', h?.n)]
 }
 
 /** The city's place on the outside rankings. An index that does not list the city has no line. */
@@ -165,6 +182,8 @@ export function cityLines(c: CityRow): Fact[] {
     ...text('Also seen', d?.also_seen),
     ...text('Cost note', d?.cost_note),
     ...text('Not verified', d?.unverified),
+    ...text('Season', c.season),
+    ...text('December and January', c.dec_jan),
   ]
 }
 

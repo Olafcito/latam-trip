@@ -13,12 +13,13 @@ import {
   hostelFacts,
   indexFacts,
   numbeoFacts,
+  plainNote,
 } from '../data/cardFacts'
 import { categoryLabel, detailLines } from '../data/experiences'
-import { cityName, disciplinesOf, gymLinks, monthlyCost, rankGyms, scoreOf, totalOf } from '../data/gyms'
+import { cityName, disciplinesOf, gymLinks, monthlyCost, otherDisciplines, rankGyms, scoreOf, totalOf } from '../data/gyms'
 import { countryName, type Model } from '../data/model'
 import type { CityRow, Experience, GymRow, Place } from '../data/types'
-import { kr } from '../lib/format'
+import { kr, observed } from '../lib/format'
 import { CardRow, FactGrid, Lines, Part, Quotes, SavedLine, ScoreBlock, ScoreChip, Sources, away } from './CardParts'
 import { Flag as CountryFlag } from './Flag'
 import { Back, Chevron, Close } from './icons'
@@ -59,8 +60,17 @@ export function CardWindow({ api, model, left, cardRef, backTo, onBack, onClose,
   if (seen.depth !== depth) setSeen({ depth, back: depth < seen.depth })
   const scroller = useRef<HTMLDivElement>(null)
   const tops = useRef(new WeakMap<CardRef, number>())
+  // a keyboard lands in the card, and goes back to what opened it when the last card closes
   useLayoutEffect(() => {
-    if (scroller.current) scroller.current.scrollTop = tops.current.get(card) ?? 0
+    const from = document.activeElement as HTMLElement | null
+    return () => {
+      if (from?.isConnected && from !== document.body) from.focus({ preventScroll: true })
+    }
+  }, [])
+  useLayoutEffect(() => {
+    if (!scroller.current) return
+    scroller.current.scrollTop = tops.current.get(card) ?? 0
+    scroller.current.focus({ preventScroll: true })
   }, [card, peek])
 
   if (peek) {
@@ -86,6 +96,7 @@ export function CardWindow({ api, model, left, cardRef, backTo, onBack, onClose,
       <div
         key={`${card.kind}:${card.id}:${depth}`}
         ref={scroller}
+        tabIndex={-1}
         className={`pview${seen.back ? ' mc-back' : ''}`}
         onScroll={(e) => tops.current.set(card, e.currentTarget.scrollTop)}
       >
@@ -131,7 +142,7 @@ function Photo({ row, name }: { row: Pick<Experience, 'image' | 'image_source'>;
   return (
     <div>
       <div className="hero">
-        <img src={sized(img.url, 960)} alt={name} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailed(true)} />
+        <img src={sized(img.url, 960)} alt={name} width={img.w ?? undefined} height={img.h ?? undefined} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailed(true)} />
       </div>
       <p className="credit mono">
         Photo: <a href={img.page ?? img.url} {...away}>{img.credit || 'Unknown'}</a>
@@ -141,21 +152,30 @@ function Photo({ row, name }: { row: Pick<Experience, 'image' | 'image_source'>;
   )
 }
 
+/** When the row was last checked, at the foot of its card. */
+function Checked({ at }: { at: string | null | undefined }) {
+  return at ? <p className="fine">Checked {observed(at)}</p> : null
+}
+
 function GymCard({ g, api, model, onShow }: { g: GymRow; api: MapModeApi; model: Model; onShow(): void }) {
   const d = g.details
   const cost = monthlyCost(g, api.gyms.cityOf.get(g.id))
   const prices = gymPrices(g)
   const rated = gymRatings(g)
   const chips = disciplinesOf(g)
+  const others = otherDisciplines(g)
+  const note = plainNote(d?.score_note)
   return (
     <>
+      <Photo row={g} name={g.name} />
       <div>
         <h2 className="pname mc-name">{g.name}</h2>
         <Where model={model} country={g.country} area={g.area} />
       </div>
-      {!!(chips.length || d?.gym_kind) && (
+      {!!(chips.length || others.length || d?.gym_kind) && (
         <div className="tags">
           {chips.map((c) => <span key={c} className="tag">{c}</span>)}
+          {others.map((c) => <span key={c} className="tag mc-kind">{capitalise(c)}</span>)}
           {d?.gym_kind && <span className="tag mc-kind">{capitalise(d.gym_kind)}</span>}
         </div>
       )}
@@ -190,7 +210,8 @@ function GymCard({ g, api, model, onShow }: { g: GymRow; api: MapModeApi; model:
       )}
       <Lines facts={gymLines(g)} />
       <Quotes quotes={d?.what_people_say} />
-      {d?.score_note && <p className="fine">{d.score_note}</p>}
+      {note && <p className="fine">{note}</p>}
+      <Checked at={g.checked_at} />
     </>
   )
 }
@@ -203,6 +224,8 @@ function CityCard({ c, api, model, onOpen, onShow }: { c: CityRow; api: MapModeA
   const gyms = rankGyms(api.gyms.gymsOf(c))
   const month = numbeoFacts(c)
   const indices = indexFacts(c)
+  const hostels = hostelFacts(c)
+  const peopleNote = plainNote(n?.contributors_note)
   return (
     <>
       <Photo row={c} name={name} />
@@ -216,21 +239,27 @@ function CityCard({ c, api, model, onOpen, onShow }: { c: CityRow; api: MapModeA
         <Part title="A month here">
           <FactGrid facts={month} />
           {n?.proxy_for && <p className="fine">Figures from {n.proxy_for}.</p>}
-          {n?.contributors_note && <p className="fine">{n.contributors_note}</p>}
+          {peopleNote && <p className="fine">{peopleNote}</p>}
+          {n?.observed && <p className="fine">Read from Numbeo {observed(n.observed)}</p>}
           {n?.numbeo_url && <a className="mc-link mc-out" href={n.numbeo_url} {...away}>Numbeo</a>}
         </Part>
       )}
       <FactGrid facts={cityCostFacts(c)} />
       {d?.monthly_note && <p className="fine">{d.monthly_note}</p>}
       {d?.price_note && <p className="fine">{d.price_note}</p>}
-      {!!h && (
+      {!!(hostels.length || h?.names?.length || h?.source) && (
         <Part title="Hostels">
-          <FactGrid facts={hostelFacts(c)} />
-          {!!h.names?.length && <p className="fine">{h.names.join(', ')}</p>}
-          {h.source && <p className="fine">{h.source}</p>}
+          <FactGrid facts={hostels} />
+          {!!h?.names?.length && <p className="fine">{h.names.join(', ')}</p>}
+          {h?.source && <p className="fine">{h.source}</p>}
         </Part>
       )}
-      {!!indices.length && <Part title="Rankings"><Lines facts={indices} /></Part>}
+      {!!indices.length && (
+        <Part title="Rankings">
+          <Lines facts={indices} />
+          {d?.indices?.observed && <p className="fine">Read {observed(d.indices.observed)}</p>}
+        </Part>
+      )}
       <Lines facts={cityLines(c)} />
       <Quotes quotes={d?.what_people_say} />
       {!!gyms.length && (
@@ -252,6 +281,7 @@ function CityCard({ c, api, model, onOpen, onShow }: { c: CityRow; api: MapModeA
         <div className="mc-links"><button type="button" className="mc-link" onClick={onShow}>Show on map</button></div>
         <Sources urls={c.sources} />
       </div>
+      <Checked at={c.checked_at} />
     </>
   )
 }
@@ -292,6 +322,7 @@ function ExperienceCard({ e, api, model, onShow }: { e: Experience; api: MapMode
         <Sources urls={e.sources} />
       </div>
       {!e.researched && !e.summary && <p className="fine">Not researched yet.</p>}
+      <Checked at={e.checked_at} />
     </>
   )
 }
