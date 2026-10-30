@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-30T20:58:22Z",
+ "generated_at": "2026-10-30T21:07:52Z",
  "source": "data/sources/trips.jsonl",
  "trips": [
   {
@@ -2537,11 +2537,11 @@
   },
   {
    "id": "ctg-sal-xmas-cbb",
-   "version": 2,
+   "version": 3,
    "name": "Cartagena in, Christmas in Cochabamba, San Salvador home",
-   "saved_at": "2026-10-30T20:58:19Z",
+   "saved_at": "2026-10-30T21:07:43Z",
    "by": "plan-trip",
-   "why": "Simon's Cartagena start with Christmas in Cochabamba, repriced with the dated fares. Version 2: longer in Cochabamba (21 to 27 Dec), Santa Cruz to San José on 28 Dec as Simon asked, shuttle to San Juan del Sur on 29 Dec.",
+   "why": "Simon's Cartagena start with Christmas in Cochabamba. Version 3: Medellín 4 nights, then the coffee region by bus (Jardín, Salento) to Cali for 3 nights, as Simon asked, instead of flying Medellín to Cali.",
    "rank": null,
    "option_id": "CTG-SAL-ticket",
    "way_in": {
@@ -2750,18 +2750,63 @@
      }
     },
     {
-     "node": "CLO",
+     "node": "JARD",
      "hop": {
       "from": "MDE",
-      "to": "CLO",
-      "mode": "flight",
-      "operator": "JetSMART, LATAM, Avianca (219 is a 5 Jan fare, not seen for 14 Dec)",
-      "hours": 1.1,
-      "price_dkk": 219,
+      "to": "JARD",
+      "mode": "bus",
+      "operator": "Rapido Ochoa (Terminal Sur)",
+      "hours": 3.0,
+      "price_dkk": 58,
       "overnight": false,
       "border": false,
       "flight": null,
-      "date": "2026-12-14"
+      "date": "2026-12-13"
+     }
+    },
+    {
+     "node": "SALE",
+     "hop": {
+      "from": "JARD",
+      "to": "SALE",
+      "mode": "bus",
+      "operator": "Cootransio minivan to Riosucio, then Flota Occidental to Salento",
+      "hours": 9.0,
+      "price_dkk": 147,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-15"
+     }
+    },
+    {
+     "node": "AXM",
+     "hop": {
+      "from": "SALE",
+      "to": "AXM",
+      "mode": "bus",
+      "operator": "Local minibus from Armenia terminal (operator not named)",
+      "hours": 0.75,
+      "price_dkk": 15,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-17"
+     }
+    },
+    {
+     "node": "CLO",
+     "hop": {
+      "from": "AXM",
+      "to": "CLO",
+      "mode": "bus",
+      "operator": "Expreso Palmira, Expreso Bolivariano, Coomotor, Tax Belalcazar, Flota La Macarena",
+      "hours": 3.6,
+      "price_dkk": 84,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-17"
      }
     },
     {
@@ -2957,6 +3002,12 @@
     }
    ],
    "history": [
+    {
+     "version": 2,
+     "saved_at": "2026-10-30T20:58:19Z",
+     "by": "plan-trip",
+     "why": "Simon's Cartagena start with Christmas in Cochabamba, repriced with the dated fares. Version 2: longer in Cochabamba (21 to 27 Dec), Santa Cruz to San José on 28 Dec as Simon asked, shuttle to San Juan del Sur on 29 Dec."
+    },
     {
      "version": 1,
      "saved_at": "2026-10-30T20:39:50Z",
