@@ -5441,6 +5441,395 @@
   "hub": false
  },
  {
+  "id": "RINC",
+  "name": "Rincon del Mar",
+  "short_name": "Rincon del Mar",
+  "country": "CO",
+  "lat": 9.77,
+  "lon": -75.643,
+  "tier": "town",
+  "type": "beach",
+  "popularity": 3,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Sleepy fishing village on the sand, 40 minutes from the San Bernardo islands",
+  "reason": "Quiet fishing-village beach base in Sucre, closest mainland village to the San Bernardo islands (30 to 40 min by boat)",
+  "summary": "One dirt street of hostels, palm-roof restaurants and fishermen along a long calm beach in Sucre. No ATM, slow internet, occasional water and power cuts. Quiet weekdays; Colombian crowds and loud music mid-December to mid-January and on long weekends.",
+  "categories": [
+   "Beach",
+   "Food",
+   "Nature"
+  ],
+  "things_to_do": [
+   "Day trip or drop-off to Tintipan, Mucura and Santa Cruz del Islote",
+   "Bioluminescent plankton and Isla Pajaro sunset boat (about COP 50,000)",
+   "Mangrove and dry forest walk at 06:00 (Mundo Verde, about COP 30,000)",
+   "Snorkel and dive with Rincon Dive Center",
+   "Sunset drinks at Dos Aguas or the beach bars by Mamallena",
+   "Seafood at La Negrita, Mar Blanco (lobster) and Che"
+  ],
+  "touristy": 2,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "Hostel Blue Sea Rincon del Mar",
+    "dorm_dkk": 74,
+    "private_dkk": 77,
+    "rating": 10.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/rincon-del-mar/"
+   },
+   {
+    "name": "Hostel Beach House",
+    "dorm_dkk": 85,
+    "private_dkk": null,
+    "rating": 9.6,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/rincon-del-mar/"
+   },
+   {
+    "name": "Mamallena Beachside",
+    "dorm_dkk": null,
+    "private_dkk": 106,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/277842/mamallena-beachside/"
+   },
+   {
+    "name": "Merakai Hostel Rincon del Mar",
+    "dorm_dkk": 174,
+    "private_dkk": 166,
+    "rating": 6.3,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/319292/merakai-hostel-rincon-del-mar/"
+   },
+   {
+    "name": "Bamboodas B and B (Casa Bambudas)",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/pl/schroniska/p/314835/bamboodas-b-and-b/"
+   },
+   {
+    "name": "Dos Aguas Lodge",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/st/hostels/p/295371/dos-aguas-lodge/"
+   }
+  ],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "stay-hostel-blue-sea-rincon",
+   "stay-mamallena-beachside-rincon",
+   "stay-dos-aguas-lodge-rincon",
+   "beach-base-rincon-del-mar"
+  ],
+  "stay_quotes": [
+   {
+    "site": "booking",
+    "name": "AguaSol Hostel - Rincon del Mar",
+    "type": "hotel",
+    "room": "cheapest available",
+    "dkk_per_night": 81,
+    "nights": 5,
+    "rating": 8.9,
+    "reviews": 9,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/aguazul-hostel-rincon-del-mar.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Hostal Casa en la Cienaga Rincon del Mar",
+    "type": "hostel",
+    "room": "cheapest available",
+    "dkk_per_night": 108,
+    "nights": 5,
+    "rating": null,
+    "reviews": null,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/hostal-casa-en-la-cienaga.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Hostel Beach House",
+    "type": "guest house",
+    "room": "cheapest available",
+    "dkk_per_night": 132,
+    "nights": 5,
+    "rating": null,
+    "reviews": null,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/hostel-beach-house-rincon.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Palenque Beach House",
+    "type": "guest house",
+    "room": "cheapest available",
+    "dkk_per_night": 220,
+    "nights": 5,
+    "rating": null,
+    "reviews": null,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/palenque-eco-hostel.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Hostel Blue Sea Rincon del Mar",
+    "type": "hostel",
+    "room": "cheapest available",
+    "dkk_per_night": 230,
+    "nights": 5,
+    "rating": null,
+    "reviews": null,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/blue-sea-cottage-dive-center.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Milimar Hostal",
+    "type": "guest house",
+    "room": "cheapest available",
+    "dkk_per_night": 236,
+    "nights": 5,
+    "rating": 8.5,
+    "reviews": 212,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/cabana-milimar.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Mamallena Beachside Rincon del Mar",
+    "type": "guest house",
+    "room": "cheapest available",
+    "dkk_per_night": 489,
+    "nights": 5,
+    "rating": 8.6,
+    "reviews": 458,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/mamallena-beachside.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   }
+  ],
+  "hub": false
+ },
+ {
+  "id": "TLU",
+  "name": "Tolu (Golfo de Morrosquillo airport)",
+  "short_name": "Tolu",
+  "country": "CO",
+  "lat": 9.51,
+  "lon": -75.586,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "TLU",
+  "airport_transfer_min": null,
+  "why": "Colombian holiday town and the airport for the Golfo de Morrosquillo",
+  "reason": "Airport for Rincon del Mar and the San Bernardo islands; daily Satena and Clic nonstops from Medellin Olaya Herrera, Satena from Bogota Mon and Fri",
+  "summary": "Santiago de Tolu is a busy domestic beach resort with a malecon, cycle taxis and the piers for San Bernardo day tours. Useful as the flight arrival for Rincon del Mar, about 1 h away by taxi. Has ATMs, unlike Rincon and the islands.",
+  "categories": [
+   "Transit hub",
+   "Beach"
+  ],
+  "things_to_do": [
+   "Withdraw cash before Rincon or the islands",
+   "Day tour to Mucura and Tintipan from the Carrera Primera piers",
+   "Walk the malecon"
+  ],
+  "touristy": 3,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "Hospedaje el Floral",
+    "dorm_dkk": null,
+    "private_dkk": 164,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/hospedaje-el-floral-santiago-de-tolu.html"
+   },
+   {
+    "name": "Costa de Vikingos",
+    "dorm_dkk": null,
+    "private_dkk": 224,
+    "rating": 8.7,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/costa-de-vikingos.html"
+   },
+   {
+    "name": "Hotel El Puerto",
+    "dorm_dkk": null,
+    "private_dkk": 305,
+    "rating": 9.2,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/hospedaje-el-puerto.html"
+   }
+  ],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "beach-base-rincon-del-mar"
+  ],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
+  "id": "TINT",
+  "name": "Tintipan and Mucura (San Bernardo islands)",
+  "short_name": "Tintipan and Mucura",
+  "country": "CO",
+  "lat": 9.792,
+  "lon": -75.845,
+  "tier": "town",
+  "type": "island",
+  "popularity": 3,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Clear Caribbean water, mangroves and a hostel on its own reef",
+  "reason": "Clear-water San Bernardo islands with overnight hostels (Casa en el Agua on its own reef, Santa Lova on Tintipan); Mucura has the public beach",
+  "summary": "Tintipan is the largest San Bernardo island, mostly mangrove with a few lodges; Mucura next door has the white public beach that fills with day trippers from Tolu. Generators or solar, bucket showers, no ATM, little signal. Most hostels serve all meals.",
+  "categories": [
+   "Beach"
+  ],
+  "things_to_do": [
+   "Stay over at Casa en el Agua, the stilt hostel on a reef",
+   "Snorkel and kayak straight off the deck",
+   "Swim at Mucura before the day boats arrive",
+   "Night plankton swim",
+   "Visit Santa Cruz del Islote, one of the densest islands on earth"
+  ],
+  "touristy": 3,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "Casa en el Agua",
+    "dorm_dkk": 480,
+    "private_dkk": null,
+    "rating": 7.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/310822/santa-lova/"
+   },
+   {
+    "name": "Santa Lova Eco-hostel",
+    "dorm_dkk": 204,
+    "private_dkk": null,
+    "rating": 9.9,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/santa-lova.html"
+   },
+   {
+    "name": "Hostel Santa Cruz del Islote",
+    "dorm_dkk": null,
+    "private_dkk": 244,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/santa-cruz-del-islote-hostel-archipielago-de-san-bernardo.html"
+   }
+  ],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "stay-casa-en-el-agua-tintipan",
+   "stay-santa-lova-tintipan",
+   "beach-base-rincon-del-mar"
+  ],
+  "stay_quotes": [
+   {
+    "site": "booking",
+    "name": "Santa Lova Eco-hostel Isla Tintipan",
+    "type": "hostel",
+    "room": "cheapest available",
+    "dkk_per_night": 204,
+    "nights": 5,
+    "rating": null,
+    "reviews": null,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/santa-lova.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Hostel Santa Cruz del Islote",
+    "type": "guest house",
+    "room": "cheapest available",
+    "dkk_per_night": 244,
+    "nights": 5,
+    "rating": null,
+    "reviews": null,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/santa-cruz-del-islote-hostel-archipielago-de-san-bernardo.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   },
+   {
+    "site": "booking",
+    "name": "Tintipan Glamping",
+    "type": "luxury tent",
+    "room": "cheapest available",
+    "dkk_per_night": 326,
+    "nights": 5,
+    "rating": null,
+    "reviews": null,
+    "check_in": "2026-12-08",
+    "check_out": "2026-12-13",
+    "url": "https://www.booking.com/hotel/co/tintipan-glamping-provincia-de-cartagena.html",
+    "property_id": null,
+    "observed_at": "2026-10-30T12:00:00Z",
+    "task_id": "beach-rincon",
+    "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
+   }
+  ],
+  "hub": false
+ },
+ {
   "id": "SDQ",
   "name": "Santo Domingo",
   "short_name": "Santo Domingo",
