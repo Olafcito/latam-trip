@@ -27433,5 +27433,189 @@
   },
   "image_source": "category",
   "saved_in": []
+ },
+ {
+  "id": "stay-melo-hostel-capurgana",
+  "name": "Melo Capurgana Social Hostel (Melo Party Hostel)",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "social",
+   "party"
+  ],
+  "places": [
+   "CAPU"
+  ],
+  "area": "Via Plan Parejo, before the river, Capurgana village",
+  "country": "CO",
+  "lat": 8.631331,
+  "lon": -77.347152,
+  "summary": "Adults-only party hostel in the village with a pool, sea-view terrace and bar. Daily games, drinking games and an open bar 17:00 to 21:00 with all-you-can-drink viche shots. Not on the water: about 3 minutes' walk to the beach and 10 minutes to the dock.",
+  "season": "Year round.",
+  "dec_jan": "December is high season.",
+  "price": "Booking.com 7 to 12 Dec 2026: 1,062.92 DKK for 5 nights (213 DKK a night, cheapest room, 1 adult). Hostelworld 2026: privates from EUR 29.75, no dorms shown.",
+  "price_dkk": 213,
+  "duration": "3 to 4 nights",
+  "requirements": "Adults only. Pay on arrival in cash or card (3% card fee on Hostelworld). Free cancellation up to 8 days before arrival, else first night charged. No ATMs in Capurgana: bring COP.",
+  "details": {
+   "booking_rating": "8.0 on Booking.com (review count not shown)",
+   "hostelworld_rating": "10 from about 5 reviews (count unlabelled)",
+   "social": "Party hostel for young travellers: daily games, drinking games, open bar 17:00 to 21:00 with viche shots, karaoke, DJ and live music listed",
+   "on_the_water": false,
+   "location": "In the village, 0.2 km from the centre, about 3 min walk to Capurgana beach and 10 min to the dock; sea views from the terrace",
+   "facilities": "Pool, hammocks, catamaran nets, coworking space, fans and mosquito nets, solar power",
+   "booking_channels": "Booking.com (listed as Melo Capurgana Social Hostel), Hostelworld",
+   "what_people_say": [],
+   "note": "No dated guest quotes found on Booking.com mirrors or Hostelworld; Worldpackers review pages did not load."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.booking.com/hotel/co/melo-party-hostel-capurgana.html",
+   "https://www.hostelworld.com/hostels/p/328236/melo-party-hostel-capurgana/",
+   "https://hotel.routard.com/hotel/co/melo-party-hostel-capurgana.en-gb.html?aid=304142"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Capurgan%C3%A1%2C_centro.JPG/1280px-Capurgan%C3%A1%2C_centro.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Capurgan%C3%A1,_centro.JPG",
+   "credit": "P.sutermeister",
+   "licence": "CC BY-SA 4.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": [
+   "want"
+  ]
+ },
+ {
+  "id": "stay-isla-roots-tintipan",
+  "name": "Isla Roots Hostel on Tintipan",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "water",
+   "island",
+   "social"
+  ],
+  "places": [
+   "TINT"
+  ],
+  "area": "Isla Tintipan, San Bernardo islands (exact pin not found)",
+  "country": "CO",
+  "lat": 9.79,
+  "lon": -75.85,
+  "summary": "Rustic eco-hostel on Tintipan with a private beach, bar, three meals a day and a relaxed party atmosphere. Air-conditioned dorms, privates and hammocks; hammocks and swings over the water among mangroves. No wifi, power in rooms only 18:00 to 06:00.",
+  "season": "December to April is dry; avoid mid-December to mid-January for crowds.",
+  "dec_jan": "Dry season with strong trade winds December to March, so choppy boat crossings. Colombian holiday crowds mid-December to mid-January.",
+  "price": "No dated price found. Kayak shows rates from US$24 (undated, about 155 DKK). Not bookable on Booking.com for 7 to 12 or 14 to 19 Dec 2026.",
+  "price_dkk": 155,
+  "duration": "2 to 4 nights",
+  "requirements": "18+. Bring cash: no ATMs on the islands. Full payment within 72 h of booking; 5% fee on card and PayPal. 50% refund up to 14 days before arrival, none after. No outside alcohol. Showers 18:00 to 22:00.",
+  "details": {
+   "rating": "7.7 on Booking.com (125 reviews per Kayak/Momondo, 351 per Kayak ES); 7.7 from 604 verified ratings across sites on Kayak",
+   "social": "Bar and relaxed party atmosphere per its own listing; review tags mention good food and 'buena onda'",
+   "on_the_water": true,
+   "rooms": "Air-conditioned dorms, private rooms, hammocks; shared bathrooms",
+   "booking_channels": "Direct via Cloudbeds (hotels.cloudbeds.com/reservation/vKWw0h), islarootshostel@gmail.com, +57 314 636 5327. Booking.com listing seen on Kayak, but the connector did not find it for December 2026.",
+   "transfer": "Boat only, from Cartagena, Tolu or Rincon del Mar (Cloudbeds). Repo edges: Cartagena COP 150,000 to 160,000 each way, Tolu day tour COP 80,000 to 120,000, Rincon day tour COP 70,000.",
+   "what_people_say": [],
+   "note": "Only AI review summaries found (Kayak), no dated verbatim guest quotes."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://hotels.cloudbeds.com/reservation/vKWw0h",
+   "https://www.kayak.com/Santa-Cruz-del-Islote-Hotels-Isla-Roots-Hostel.3605153.ksp",
+   "https://www.es.kayak.com/Santa-Cruz-del-Islote-Hoteles-Isla-Roots-Hostel.3605153.ksp",
+   "https://www.momondo.com/hotels/el-islote-city/Isla-Roots-Hostel.mhd3605153.ksp"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": [
+   "want"
+  ]
+ },
+ {
+  "id": "stay-eco-hotel-puntanorte-tintipan",
+  "name": "Hotel Puntanorte on the north point of Tintipan",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hotel",
+   "water",
+   "island",
+   "quiet"
+  ],
+  "places": [
+   "TINT"
+  ],
+  "area": "North point of Isla Tintipan, San Bernardo islands",
+  "country": "CO",
+  "lat": 9.804453,
+  "lon": -75.851437,
+  "summary": "Small family-run beachfront hotel at the north tip of Tintipan with a private beach, sea views and fresh seafood cooking. Rustic rooms, no internet, quiet with common-area lights off by 21:30. No eco features are listed despite the 'eco' name.",
+  "season": "December to April is dry.",
+  "dec_jan": "Dry season with strong trade winds December to March. Holiday crowds mid-December to mid-January.",
+  "price": "Booking.com 7 to 12 and 14 to 19 Dec 2026: 4,691.10 DKK for 5 nights (938 DKK a night, cheapest room, 1 adult). Booking mirror: from US$133 a night excl. taxes.",
+  "price_dkk": 938,
+  "duration": "2 to 3 nights",
+  "requirements": "Cash only. Boat transfer is extra (paid shuttle offered). Tap water not drinkable.",
+  "details": {
+   "rating": "Booking.com 9.5 from recent guests (count not shown); subscores staff 9.51, location 9.49, value 8.21",
+   "social": "None: quiet, not a party place, lights off 21:30",
+   "on_the_water": true,
+   "rooms": "8 rooms: doubles, family rooms, a sea-view bungalow; private bathrooms",
+   "booking_channels": "Booking.com (as Hotel Puntanorte); not found under 'Eco Hotel Puntanorte'",
+   "what_people_say": [
+    {
+     "quote": "The staff were amazing - cooked everything fresh on site and so friendly and hospitable.",
+     "site": "Booking.com (Ella)",
+     "date": "Jun 2026",
+     "url": "https://cartagenacaribbeantours.com/property/hotel-puntanorte/BC-3204052"
+    },
+    {
+     "quote": "It's a great place to relax for a few nights.",
+     "site": "Booking.com (Una)",
+     "date": "Mar 2026",
+     "url": "https://cartagenacaribbeantours.com/property/hotel-puntanorte/BC-3204052"
+    },
+    {
+     "quote": "Facilities are rustic but comfortable.",
+     "site": "Booking.com (Leah)",
+     "date": "Jan 2025",
+     "url": "https://cartagenacaribbeantours.com/property/hotel-puntanorte/BC-3204052"
+    }
+   ]
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.booking.com/hotel/co/puntanorte-cartagena-de-indias.html",
+   "https://cartagenacaribbeantours.com/property/hotel-puntanorte/BC-3204052",
+   "https://pelecanus.com.co/trodat/hotelpuntanorte",
+   "https://www.travelmyth.co.uk/Tintipan-Island/Hotels/Hotel-Puntanorte_tmid2587177"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": [
+   "want"
+  ]
  }
 ]
