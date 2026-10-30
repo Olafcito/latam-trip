@@ -2131,7 +2131,10 @@
    "sal-monument-to-memory-and-truth",
    "sal-los-planes-de-renderos-viewpoint-and-pupusas",
    "sal-museo-nacional-david-j-guzman",
-   "sal-day-trip-to-boqueron-volcano"
+   "sal-day-trip-to-boqueron-volcano",
+   "gym-san-salvador-300-mma-training-center",
+   "gym-san-salvador-fight-club-el-salvador",
+   "city-san-salvador-training"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2206,7 +2209,8 @@
    "tunco-sunset-behind-the-tunco-rock",
    "tunco-weekend-live-music-and-bar-crawl",
    "tunco-tamanique-waterfalls",
-   "tunco-day-trip-to-el-zonte"
+   "tunco-day-trip-to-el-zonte",
+   "city-el-tunco-training"
   ],
   "stay_quotes": [],
   "hub": false
@@ -2342,7 +2346,9 @@
   "saved_in": [],
   "experience_ids": [
    "sap-malls-and-local-food-stop",
-   "sap-day-trip-to-lake-yojoa"
+   "sap-day-trip-to-lake-yojoa",
+   "gym-san-pedro-sula-xfit-mma-academy",
+   "city-san-pedro-sula-training"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2396,7 +2402,9 @@
   "experience_ids": [
    "tgu-cristo-del-picacho-viewpoint",
    "tgu-catedral-de-san-miguel-arcangel-and-parque-centr",
-   "tgu-parque-la-leona-viewpoint"
+   "tgu-parque-la-leona-viewpoint",
+   "gym-tegucigalpa-ludus-cerberus-mma",
+   "city-tegucigalpa-training"
   ],
   "stay_quotes": [],
   "hub": false
@@ -2543,7 +2551,8 @@
    "rtb-snorkel-at-half-moon-bay",
    "rtb-day-at-west-bay-beach",
    "rtb-roatan-brewing-co-and-rum-tasting",
-   "rtb-sunset-in-west-end"
+   "rtb-sunset-in-west-end",
+   "city-roatan-training"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2615,7 +2624,8 @@
   "experience_ids": [
    "utila",
    "util-sunset-at-skidrow-cay",
-   "util-bar-nights-and-island-parties"
+   "util-bar-nights-and-island-parties",
+   "city-utila-training"
   ],
   "stay_quotes": [],
   "hub": false
