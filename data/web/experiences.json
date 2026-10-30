@@ -12688,5 +12688,92 @@
   },
   "image_source": "place",
   "saved_in": []
+ },
+ {
+  "id": "gym-medellin-zona-de-combate",
+  "name": "Zona De Combate (Medellin)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "bjj",
+   "kickboxing"
+  ],
+  "places": [
+   "MDE"
+  ],
+  "area": "Medellin, El Poblado",
+  "country": "CO",
+  "lat": 6.216,
+  "lon": -75.571,
+  "summary": "Two-floor MMA, BJJ and striking gym with a cage in central El Poblado, visited by a BJJ Globetrotters writer in March 2025. Only thinly documented online so far: no sparring schedule, fighter list or monthly price found.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": "Private lessons 160,000 COP for two (blog, 2024)",
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Bring your own gloves (blog, 2024). Sparring rules unknown.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA",
+    "BJJ",
+    "striking",
+    "wrestling"
+   ],
+   "coaches": "Jorge MMA 12 (private lessons, blog 2024). Coach Sebas teaches wrestling (BJJ Globetrotters, March 2025).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": null,
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2025-03 BJJ Globetrotters visit",
+   "what_people_say": [
+    {
+     "quote": "I was impressed with the instruction",
+     "site": "thepointsoflife.boardingarea.com",
+     "date": "2024-10-22",
+     "url": "https://thepointsoflife.boardingarea.com/muay-thai-medellin-chapter-3-of-my-combat-journey"
+    }
+   ],
+   "neighbourhood": "El Poblado (Cra 49 #16-16)",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea or lake in Medellin. Guatape lake is a day trip.",
+   "score": {
+    "training": null,
+    "evidence": 3,
+    "local_life": null,
+    "cost": null,
+    "water": 1,
+    "total": null
+   },
+   "score_note": "Provisional. Only two first-hand blog mentions found, no ratings, price or sparring info. Coordinates are approximate from the street address."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.bjjglobetrotters.com/?p=120360",
+   "https://thepointsoflife.boardingarea.com/muay-thai-medellin-chapter-3-of-my-combat-journey"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
  }
 ]

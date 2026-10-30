@@ -23464,6 +23464,158 @@
    "flights": []
   },
   {
+   "from": "MVD",
+   "to": "VVI",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1932.0,
+   "oneway_min_hours": 6.75,
+   "fastest_hours": 4.42,
+   "fastest_price_dkk": 2926.0,
+   "nonstop": false,
+   "vias": [
+    "AEP",
+    "ASU"
+   ],
+   "carriers": [
+    "Aerolineas Argentinas",
+    "Paranair"
+   ],
+   "dates": [
+    "2026-12-21",
+    "2027-01-18"
+   ],
+   "return_min_dkk": null,
+   "quotes": 2,
+   "flights": [
+    {
+     "quote_id": "Q:258e9ce69056",
+     "depart": "2027-01-18T19:25",
+     "arrive": "2027-01-19T01:10",
+     "hours": 6.75,
+     "price_dkk": 1932.0,
+     "carriers": [
+      "Aerolineas Argentinas"
+     ],
+     "via": [
+      "AEP"
+     ],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:22e7e282f873",
+     "depart": "2026-12-21T08:50",
+     "arrive": "2026-12-21T12:15",
+     "hours": 4.42,
+     "price_dkk": 2926.0,
+     "carriers": [
+      "Paranair"
+     ],
+     "via": [
+      "ASU"
+     ],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "cabin bag and checked bag included",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    }
+   ]
+  },
+  {
+   "from": "MVD",
+   "to": "MDE",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 2281.0,
+   "oneway_min_hours": 12.38,
+   "fastest_hours": 9.62,
+   "fastest_price_dkk": 2543.0,
+   "nonstop": false,
+   "vias": [
+    "BOG",
+    "PTY",
+    "SCL"
+   ],
+   "carriers": [
+    "Avianca",
+    "Copa Airlines",
+    "JetSMART"
+   ],
+   "dates": [
+    "2026-12-22",
+    "2026-12-24",
+    "2027-01-18"
+   ],
+   "return_min_dkk": null,
+   "quotes": 3,
+   "flights": [
+    {
+     "quote_id": "Q:61f5183fdeaa",
+     "depart": "2027-01-18T20:05",
+     "arrive": "2027-01-19T06:28",
+     "hours": 12.38,
+     "price_dkk": 2281.0,
+     "carriers": [
+      "JetSMART"
+     ],
+     "via": [
+      "SCL"
+     ],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:d76e74a2ef61",
+     "depart": "2026-12-22T02:08",
+     "arrive": "2026-12-22T09:45",
+     "hours": 9.62,
+     "price_dkk": 2543.0,
+     "carriers": [
+      "Copa Airlines"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "cabin bag included",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:a271261e2b4c",
+     "depart": "2026-12-24T07:20",
+     "arrive": "2026-12-24T17:15",
+     "hours": 11.92,
+     "price_dkk": 2623.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "cabin bag included",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    }
+   ]
+  },
+  {
    "from": "GUA",
    "to": "SAP",
    "mode": "flight",
@@ -28738,6 +28890,7 @@
   "LGW",
   "LHR",
   "LIS",
+  "MVD",
   "SDQ",
   "XPL",
   "ZRH"
