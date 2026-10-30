@@ -9310,6 +9310,25 @@
    "_src": "beachbase-co.jsonl"
   },
   {
+   "kind": "edge",
+   "from": "PTY",
+   "to": "SJO",
+   "mode": "bus",
+   "operator": "Tica Bus",
+   "duration_h": 15,
+   "duration_range": "15-16",
+   "price_dkk": 510,
+   "price_range_local": "from US$79",
+   "frequency": "daily",
+   "overnight": true,
+   "border": true,
+   "both": true,
+   "source": "https://12go.com/en/travel/panama-city/san-jose",
+   "source_year": 2026,
+   "notes": "Cheapest way; Copa flies PTY to SJO nonstop from about 1,950 DKK in December.",
+   "_src": "alongdustyroads.jsonl"
+  },
+  {
    "from": "SJO",
    "to": "LPB",
    "mode": "flight",
@@ -24874,6 +24893,109 @@
      "layover_h": [],
      "fare_brand": null,
      "cabin_bag": "cabin bag included",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    }
+   ]
+  },
+  {
+   "from": "PTY",
+   "to": "MGA",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1938.0,
+   "oneway_min_hours": 4.17,
+   "fastest_hours": 1.72,
+   "fastest_price_dkk": 2357.0,
+   "nonstop": true,
+   "vias": [
+    "SAL"
+   ],
+   "carriers": [
+    "Avianca",
+    "Copa"
+   ],
+   "dates": [
+    "2026-12-11",
+    "2026-12-17"
+   ],
+   "return_min_dkk": null,
+   "quotes": 2,
+   "flights": [
+    {
+     "quote_id": "Q:1dbc8d372223",
+     "depart": "2026-12-17T05:30",
+     "arrive": "2026-12-17T08:40",
+     "hours": 4.17,
+     "price_dkk": 1938.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "SAL"
+     ],
+     "layover_h": [
+      1.25
+     ],
+     "fare_brand": null,
+     "cabin_bag": "incl",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:7ba7b2b40086",
+     "depart": "2026-12-11T12:22",
+     "arrive": "2026-12-11T13:05",
+     "hours": 1.72,
+     "price_dkk": 2357.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "incl",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "kiwi"
+    }
+   ]
+  },
+  {
+   "from": "PTY",
+   "to": "SJO",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1949.0,
+   "oneway_min_hours": 1.38,
+   "fastest_hours": 1.38,
+   "fastest_price_dkk": 1949.0,
+   "nonstop": true,
+   "vias": [],
+   "carriers": [
+    "Copa"
+   ],
+   "dates": [
+    "2026-12-09"
+   ],
+   "return_min_dkk": null,
+   "quotes": 1,
+   "flights": [
+    {
+     "quote_id": "Q:5a9aac111ff9",
+     "depart": "2026-12-09T07:55",
+     "arrive": "2026-12-09T08:18",
+     "hours": 1.38,
+     "price_dkk": 1949.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "incl",
      "checked_bag": null,
      "overnight_layover": false,
      "source": "kiwi"

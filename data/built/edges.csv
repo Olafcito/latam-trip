@@ -236,6 +236,7 @@ ACD,CAPU,boat,Lancha meeting the Satena flight,0.4,0.4-1.0,41,meets flight arriv
 MDE,CAPU,flight,"Charter avioneta (Searca, Pacifica de Aviacion) EOH to CPB",1.0,0.75-1.0,816,"Mon, Wed, Sat (brokenbootstravel 2025)",False,False,True,,,,,,,,,,https://www.elpais.com.co/turismo/cuanto-cuesta-viajar-a-capurgana-y-como-llegar-a-este-lugar-2326.html,2024,"Wikipedia: no scheduled flights at CPB, charter only. Searca sells through Grupo Nautilos. Bag limit not found (small planes, expect tight). 2026 fare unknown."
 NECO,CAPU,boat,Ecoviajes Darien (Bookaway),1.4,1.25-1.5,206,"08:00 daily, few departures",False,False,True,,,,,,,,,,https://www.bookaway.com/routes/colombia/necocli-to-capurgana,2026,"Bookable online. Dec to Apr is the windy season: rough, wet crossing, bags in plastic. Locally COP 85,000 one way (colombiamove Jun 2026), many offices sell round trips only (COP 190,000, 2025)."
 CTG,ISGR,boat,"Mary Cartagena Travel, Opitours, CTG Tours, Cartagena y algo +, Juan Ballena",1.0,0.75-1.5,175,"daily, 09:00 from Muelle La Bodeguita (09:30 port cutoff); back 11:30-15:00",False,False,True,,,,,,,,,,https://geckoroutes.com/colombia/cartagena-to-isla-grande/,2025,"price_dkk includes the cash port tax (no tax on the return). Park entry about COP 25,000 (tomplanmytrip 2026). Bags 10-12 kg plus a hand bag. Return boats may stop at Playa Blanca (up to 3.5 h). Afternoon sea is rough Dec-Apr."
+PTY,SJO,bus,Tica Bus,15,15-16,510,daily,True,True,True,,,,,,,,,,https://12go.com/en/travel/panama-city/san-jose,2026,"Cheapest way; Copa flies PTY to SJO nonstop from about 1,950 DKK in December."
 SJO,LPB,flight,,,,,,,,,2187.0,9.08,7.08,4880.0,False,BOG CUZ LIM PTY SAL VVI,Avianca BoA Boliviana de Aviacion Copa Copa Airlines LATAM,2026-12-06 2026-12-10 2026-12-20 2027-01-05 2027-01-20 2027-01-22 2027-01-27,10971.0,crawl,,
 SJO,VVI,flight,,,,,,,,,2089.0,9.67,7.42,2847.0,False,BOG GUA LIM PTY SAL,Avianca Copa Copa Airlines LATAM LATAM Airlines,2026-12-06 2026-12-10 2026-12-20 2027-01-18 2027-01-20 2027-01-28,4664.0,crawl,,
 SJO,CBB,flight,,,,,,,,,3303.0,18.27,10.45,6008.37,False,BOG LPB PTY VVI,Avianca Boliviana de Aviacion Copa Copa Airlines,2026-12-06 2026-12-10 2027-01-20,,crawl,,
@@ -392,6 +393,8 @@ LHR,GDL,flight,,,,,,,,,,,,,False,,,,9350.0,crawl,,
 GUA,GDL,flight,,,,,,,,,,,,,False,,,,2224.0,crawl,,
 MVD,VVI,flight,,,,,,,,,1932.0,6.75,4.42,2926.0,False,AEP ASU,Aerolineas Argentinas Paranair,2026-12-21 2027-01-18,,crawl,,
 MVD,MDE,flight,,,,,,,,,2281.0,12.38,9.62,2543.0,False,BOG PTY SCL,Avianca Copa Airlines JetSMART,2026-12-22 2026-12-24 2027-01-18,,crawl,,
+PTY,MGA,flight,,,,,,,,,1938.0,4.17,1.72,2357.0,True,SAL,Avianca Copa,2026-12-11 2026-12-17,,crawl,,
+PTY,SJO,flight,,,,,,,,,1949.0,1.38,1.38,1949.0,True,,Copa,2026-12-09,,crawl,,
 VVI,PTY,flight,,,,,,,,,3361.0,22.58,4.9,4735.0,True,BOG LIM MDE UIO,Avianca BoA Copa Copa Airlines JetSMART LATAM Airlines Wingo,2026-12-26 2026-12-27 2026-12-28,,crawl,,
 MDE,VVI,flight,,,,,,,,,1937.0,9.42,7.67,2835.0,False,BOG LIM PTY,Avianca Copa Copa Airlines LATAM Airlines,2026-12-11 2026-12-14 2026-12-17 2027-01-28,4583.0,crawl,,
 GUA,SAP,flight,,,,,,,,,1359.0,3.17,3.17,1359.0,False,SAL,Avianca,2026-12-10 2026-12-21 2026-12-24,,crawl,,

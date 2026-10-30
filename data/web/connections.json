@@ -6094,6 +6094,30 @@
    {
     "mode": "bus",
     "operators": [
+     "Tica Bus"
+    ],
+    "duration_min": 900,
+    "duration_range_h": "15-16",
+    "price_dkk": {
+     "min": 510,
+     "typical": null
+    },
+    "price_local": "from US$79",
+    "frequency": "daily",
+    "overnight": true,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": "https://12go.com/en/travel/panama-city/san-jose",
+    "observed_at": "2026",
+    "note": "Cheapest way; Copa flies PTY to SJO nonstop from about 1,950 DKK in December.",
+    "booking_url": null
+   },
+   {
+    "mode": "bus",
+    "operators": [
      "Tica Bus",
      "Transportes Cristobal Colon (Albrook)"
     ],
@@ -6119,44 +6143,95 @@
    {
     "mode": "flight",
     "operators": [
+     "Copa",
      "Copa Airlines",
      "Avianca",
      "Air Panama"
     ],
     "duration_min": 83,
-    "duration_range_h": "1.4",
     "price_dkk": {
-     "min": 316,
-     "typical": null
+     "min": 1949,
+     "typical": 1949
     },
-    "price_local": "cheapest US$49 (Rome2rio)",
     "frequency": "several daily",
     "overnight": false,
-    "border": false,
+    "border": true,
     "stops": [],
     "geometry": null,
     "flight": {
-     "nonstop": null,
+     "nonstop": true,
      "vias": [],
      "carriers": [
+      "Copa"
+     ],
+     "oneway_dkk": {
+      "min": 1949,
+      "observed_at": "2026-10-30T18:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-09"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-09",
+       "from": "PTY",
+       "to": "SJO",
+       "dkk": 1949,
+       "dep": "07:55",
+       "arr": "08:18",
+       "arr_days": 0,
+       "duration_min": 83,
+       "vias": [],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM818"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-09",
+       "link": "https://kiwi.com/u/prxt4y"
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1949,
+      "duration_min": 83,
+      "vias": [],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-09",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 1949,
+      "duration_min": 83,
+      "vias": [],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-09"
+     },
+     "flags": [],
+     "quotes": 1
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T18:00Z",
+    "note": "Saves a night bus.",
+    "booking_url": "https://kiwi.com/u/prxt4y",
+    "source_url": "https://www.rome2rio.com/s/Panama-City/San-Jose-Costa-Rica",
+    "researched": {
+     "duration_min": 83,
+     "price_min": 316,
+     "operators": [
       "Copa Airlines",
       "Avianca",
       "Air Panama"
      ],
-     "oneway_dkk": {
-      "min": 316,
-      "observed_at": "2026"
-     },
-     "return_dkk": null,
-     "dates_searched": [],
-     "by_date": [],
-     "round_trips": []
-    },
-    "source": "manual",
-    "source_url": "https://www.rome2rio.com/s/Panama-City/San-Jose-Costa-Rica",
-    "observed_at": "2026",
-    "note": "Saves a night bus.",
-    "booking_url": null
+     "year": "2026"
+    }
    }
   ]
  },
@@ -22495,6 +22570,122 @@
     "observed_at": "2026-10-30T09:45Z",
     "note": null,
     "booking_url": "https://kiwi.com/u/wd26zmx"
+   }
+  ]
+ },
+ {
+  "id": "MGA-PTY",
+  "a": "MGA",
+  "b": "PTY",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Avianca",
+     "Copa"
+    ],
+    "duration_min": 103,
+    "price_dkk": {
+     "min": 1938,
+     "typical": 2148
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": true,
+     "vias": [
+      "SAL"
+     ],
+     "carriers": [
+      "Avianca",
+      "Copa"
+     ],
+     "oneway_dkk": {
+      "min": 1938,
+      "observed_at": "2026-10-30T18:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-11",
+      "2026-12-17"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-11",
+       "from": "PTY",
+       "to": "MGA",
+       "dkk": 2357,
+       "dep": "12:22",
+       "arr": "13:05",
+       "arr_days": 0,
+       "duration_min": 103,
+       "vias": [],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM106"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-11",
+       "link": "https://kiwi.com/u/z42n72"
+      },
+      {
+       "date": "2026-12-17",
+       "from": "PTY",
+       "to": "MGA",
+       "dkk": 1938,
+       "dep": "05:30",
+       "arr": "08:40",
+       "arr_days": 0,
+       "duration_min": 250,
+       "vias": [
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "AV316",
+        "AV396"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-17",
+       "link": "https://kiwi.com/u/mbxddms"
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1938,
+      "duration_min": 250,
+      "vias": [
+       "SAL"
+      ],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2026-12-17",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 2357,
+      "duration_min": 103,
+      "vias": [],
+      "carriers": [
+       "Copa"
+      ],
+      "date": "2026-12-11"
+     },
+     "flags": [],
+     "quotes": 2
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T18:00Z",
+    "note": null,
+    "booking_url": "https://kiwi.com/u/mbxddms"
    }
   ]
  },
