@@ -18388,8 +18388,8 @@
   "places": [],
   "area": "Sao Paulo, Vila Andrade (Zona Sul)",
   "country": "BR",
-  "lat": -23.62,
-  "lon": -46.735,
+  "lat": -23.6292347,
+  "lon": -46.736043,
   "summary": "Fight team of Diego Lima, head coach of UFC champion Charles Oliveira, with about 50 professional fighters and more than a dozen in the UFC per a June 2024 report. The Wellhub listing for the public unit shows Muay Thai, BJJ and fitness classes, so the pro team and the open classes may not be the same room.",
   "season": "year round",
   "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
@@ -18409,13 +18409,13 @@
    "sessions_per_week": null,
    "timetable": "Wellhub unit: Mon to Fri 06:00 to 22:00, Sat 09:00 to 15:00, Sun closed. Class list: Muay Thai, BJJ, Jump, dance, circuits.",
    "sparring": "Unknown for visitors. Sherdog 2021 describes two octagons and a four-floor building with dorms, which points to daily pro work.",
-   "visitors": "Not documented. Open Wellhub classes need no booking. Language unverified, expect Portuguese. classes are in Portuguese and English is unverified. Spanish is close enough to follow drills. ",
+   "visitors": "Not stated. Reception service is criticised in two recent reviews, and a Wellhub unit exists.",
    "price_dropin_dkk": null,
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 4.4,
+   "google_reviews": 558,
    "other_ratings": [
     {
      "site": "Wellhub",
@@ -18423,23 +18423,49 @@
      "count": 199
     }
    ],
-   "last_activity": "2026-09 mmasucka (institute renamed). 2024-06 ABC do ABC (50 pros).",
-   "what_people_say": [],
+   "last_activity": "2026-10 Google reviews (several from the last month)",
+   "what_people_say": [
+    {
+     "quote": "For martial arts: spacious mat area but many students. Hot environment with poor ventilation. Good instructors.",
+     "site": "google maps",
+     "date": "2026-10 (3 stars)",
+     "url": "https://www.google.com/maps/place/Chute+Boxe+Diego+Lima/@-23.6292347,-46.736043,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce514faf5f9fbf:0x1640abd9f8e5c334!8m2!3d-23.6292347!4d-46.736043!16s%2Fg%2F1tgnn5z1"
+    },
+    {
+     "quote": "A gym that's truly like a family, with professional, high-quality equipment, excellent and super attentive service.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/Chute+Boxe+Diego+Lima/@-23.6292347,-46.736043,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce514faf5f9fbf:0x1640abd9f8e5c334!8m2!3d-23.6292347!4d-46.736043!16s%2Fg%2F1tgnn5z1"
+    },
+    {
+     "quote": "They focus on martial arts and developing athletes for champions, but classes like functional training and Pilates exist too.",
+     "site": "google maps",
+     "date": "2026-09",
+     "url": "https://www.google.com/maps/place/Chute+Boxe+Diego+Lima/@-23.6292347,-46.736043,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce514faf5f9fbf:0x1640abd9f8e5c334!8m2!3d-23.6292347!4d-46.736043!16s%2Fg%2F1tgnn5z1"
+    }
+   ],
    "neighbourhood": "Vila Andrade and Morumbi area in the south zone, mixed upscale and favela edge. Room prices not found.",
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "water_km": null,
-   "water_note": "No sea or lake in the city. The coast (Santos, Guaruja) is a day trip by bus, not verified.",
-   "score_note": "Training 9: the strongest MMA team in Sao Paulo by results (UFC champion, 12+ UFC fighters). Evidence 6: 199 Wellhub reviews at 4.71 and 2024 and 2026 press, but no first-hand visitor report found. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "water_km": 58,
+   "water_note": "No sea or lake in Sao Paulo. The coast (Santos, Guaruja) is roughly 1 to 1.5 hours by road, a day trip.",
+   "score_note": "Training 8: the pro team (UFC champion, 12+ UFC fighters) is the strongest in the city, but the public unit is a big mixed gym (4.4 from 558 Google reviews, crowded mats, fitness and dance classes), so a visitor gets less of the pro environment. Evidence 8 from 558 recent reviews. Local life 6 and water 2 kept. Cost 9 from Numbeo (2026-10-30): gym 202 DKK plus 1-bed outside centre 2,700 DKK is about 2,900 DKK a month.",
    "score": {
-    "training": 9,
-    "evidence": 6,
+    "training": 8,
+    "evidence": 8,
     "local_life": 6,
-    "cost": 5,
+    "cost": 9,
     "water": 2,
-    "total": 6.7
-   }
+    "total": 7.2
+   },
+   "website": "http://www.chuteboxediegolima.com.br/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+55 11 3501-9829",
+   "google_maps_url": "https://www.google.com/maps/place/Chute+Boxe+Diego+Lima/@-23.6292347,-46.736043,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce514faf5f9fbf:0x1640abd9f8e5c334!8m2!3d-23.6292347!4d-46.736043!16s%2Fg%2F1tgnn5z1",
+   "address": "Av. Giovanni Gronchi, 5653, Vila Andrade, Sao Paulo, 05724-003",
+   "hours": "Mon to Fri 6:00-22:00, Sat 9:00-15:00, Sun closed"
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -18447,7 +18473,10 @@
    "https://wellhub.com/pt-br/search/partners/academia-chute-boxe-diego-lima-vila-suzana-sao-paulo/",
    "https://www.sherdog.com/news/news/Diego-Lima-Discusses-Expansion-of-Chute-Boxe-Sao-Paulo-Charles-Oliveiras-Success-182015",
    "https://abcdoabc.com.br/academia-que-revelou-ex-campeao-do-ufc-leva-educacao-financeira-aos-lutadores/",
-   "https://mmasucka.com/news/chute-boxe-renames-diego-lima-institute-in-honor-of-late-allan-nascimento/"
+   "https://mmasucka.com/news/chute-boxe-renames-diego-lima-institute-in-honor-of-late-allan-nascimento/",
+   "https://www.google.com/maps/search/mma+sao+paulo/",
+   "https://www.google.com/maps/place/Chute+Boxe+Diego+Lima/@-23.6292347,-46.736043,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce514faf5f9fbf:0x1640abd9f8e5c334!8m2!3d-23.6292347!4d-46.736043!16s%2Fg%2F1tgnn5z1",
+   "http://www.chuteboxediegolima.com.br/"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -18472,10 +18501,10 @@
    "bjj"
   ],
   "places": [],
-  "area": "Sao Paulo (neighbourhood not verified)",
+  "area": "Sao Paulo, Barra Funda",
   "country": "BR",
-  "lat": -23.5505,
-  "lon": -46.6333,
+  "lat": -23.5288718,
+  "lon": -46.6588819,
   "summary": "Sao Paulo MMA team founded in 2014 by Caio Borralho and Pablo Sucupira, named Gym of the Year 2024 by World MMA Awards and MMA Junkie. It had 10 UFC athletes in Aug 2025 when Alex Poatan trained there as a visitor.",
   "season": "year round",
   "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
@@ -18495,37 +18524,59 @@
    "sessions_per_week": null,
    "timetable": null,
    "sparring": "Poatan sparred Oleksiejczuk there on 2025-08-07, so top level hard sparring happens. Visitor access unknown.",
-   "visitors": "Not documented. Address and fees not found.",
+   "visitors": "Not stated on Maps.",
    "price_dropin_dkk": null,
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 4.8,
+   "google_reviews": 185,
    "other_ratings": [],
-   "last_activity": "2025-08 Itatiaia (Poatan visit).",
-   "what_people_say": [],
-   "neighbourhood": "Gym address not found, so no neighbourhood advice yet.",
+   "last_activity": "2026-10 Google Maps listing open. Newest written reviews 4 and 6 months old.",
+   "what_people_say": [
+    {
+     "quote": "Best gym I've ever worked out at!",
+     "site": "google maps",
+     "date": "2026-04",
+     "url": "https://www.google.com/maps/place/The+Fighting+Nerds+GYM/@-23.5288718,-46.6588819,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce581030ef67d7:0x1cc59eec222634c0!8m2!3d-23.5288718!4d-46.6588819!16s%2Fg%2F11byyjjlcx"
+    },
+    {
+     "quote": "We had to cancel the 6-month plan we paid for upfront. I've been trying to get my refund since March 11th.",
+     "site": "google maps",
+     "date": "2026-06 (1 star)",
+     "url": "https://www.google.com/maps/place/The+Fighting+Nerds+GYM/@-23.5288718,-46.6588819,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce581030ef67d7:0x1cc59eec222634c0!8m2!3d-23.5288718!4d-46.6588819!16s%2Fg%2F11byyjjlcx"
+    }
+   ],
+   "neighbourhood": "Barra Funda, Perdizes and Santa Cecilia: central west, metro and train at Barra Funda, mixed residential and nightlife.",
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "water_km": null,
-   "water_note": "No sea or lake in the city.",
-   "score_note": "Training 9 for 10 UFC fighters and a Gym of the Year award. Evidence 6: press only, no reviews, no address. Local life 5 is a guess since the neighbourhood is unknown. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "water_km": 58,
+   "water_note": "No sea or lake in Sao Paulo. The coast (Santos, Guaruja) is roughly 1 to 1.5 hours by road, a day trip.",
+   "score_note": "Training 9 kept for 10 UFC fighters and a Gym of the Year award. Evidence 7: 4.8 from 185 Google reviews but almost no written text and one 1-star billing complaint (refund of a prepaid plan), so take a single month. Local life 7 for central Barra Funda. Cost 9 from Numbeo (2026-10-30): gym 202 DKK plus 1-bed outside centre 2,700 DKK is about 2,900 DKK a month.",
    "score": {
     "training": 9,
-    "evidence": 6,
-    "local_life": 5,
-    "cost": 5,
+    "evidence": 7,
+    "local_life": 7,
+    "cost": 9,
     "water": 2,
-    "total": 6.5
-   }
+    "total": 7.6
+   },
+   "website": null,
+   "instagram": null,
+   "facebook": null,
+   "phone": "+55 11 91608-7888",
+   "google_maps_url": "https://www.google.com/maps/place/The+Fighting+Nerds+GYM/@-23.5288718,-46.6588819,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce581030ef67d7:0x1cc59eec222634c0!8m2!3d-23.5288718!4d-46.6588819!16s%2Fg%2F11byyjjlcx",
+   "address": "R. Brigadeiro Galvao, 854, Barra Funda, Sao Paulo, 01151-000",
+   "hours": "Mon to Fri 7:00-21:00, Sat 10:00-11:00, Sun closed"
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://cavac.at/cavacopedia/Fighting%20Nerds",
-   "https://www.itatiaia.com.br/esportes/lutas/antes-de-revanche-poatan-treina-em-academia-brasileira-sensacao-no-ufc/"
+   "https://www.itatiaia.com.br/esportes/lutas/antes-de-revanche-poatan-treina-em-academia-brasileira-sensacao-no-ufc/",
+   "https://www.google.com/maps/search/mma+sao+paulo/",
+   "https://www.google.com/maps/place/The+Fighting+Nerds+GYM/@-23.5288718,-46.6588819,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce581030ef67d7:0x1cc59eec222634c0!8m2!3d-23.5288718!4d-46.6588819!16s%2Fg%2F11byyjjlcx"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -18549,8 +18600,8 @@
   "places": [],
   "area": "Sao Paulo, Santana (north zone)",
   "country": "BR",
-  "lat": -23.499,
-  "lon": -46.628,
+  "lat": -23.5096693,
+  "lon": -46.6263353,
   "summary": "Muay Thai academy at R. Voluntarios da Patria 1231 in Santana, with 134 reviews at 5.0 on the Bendito Guia listing. Reviewers say it teaches both fitness students and people who want to compete, in a family atmosphere.",
   "season": "year round",
   "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
@@ -18573,8 +18624,8 @@
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 5.0,
+   "google_reviews": 147,
    "other_ratings": [
     {
      "site": "Bendito Guia",
@@ -18582,8 +18633,26 @@
      "count": 134
     }
    ],
-   "last_activity": null,
+   "last_activity": "2026-10 Google review (2 weeks old)",
    "what_people_say": [
+    {
+     "quote": "Best team in Brazil, all excellent professional teachers!",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/FTT+FAM%C3%8DLIA+TIGER+TEAM+MATRIZ/@-23.5096693,-46.6263353,17z/data=!3m1!4b1!4m6!3m5!1s0x94cef621548600cf:0x9d1ddf103eac009f!8m2!3d-23.5096693!4d-46.6263353!16s%2Fg%2F11g6_2zdb8"
+    },
+    {
+     "quote": "Here you learn real Muay Thai.",
+     "site": "google maps",
+     "date": "2025",
+     "url": "https://www.google.com/maps/place/FTT+FAM%C3%8DLIA+TIGER+TEAM+MATRIZ/@-23.5096693,-46.6263353,17z/data=!3m1!4b1!4m6!3m5!1s0x94cef621548600cf:0x9d1ddf103eac009f!8m2!3d-23.5096693!4d-46.6263353!16s%2Fg%2F11g6_2zdb8"
+    },
+    {
+     "quote": "I've been a student for 4 years and I can say she's the best at teaching Muay Thai.",
+     "site": "google maps",
+     "date": "2024",
+     "url": "https://www.google.com/maps/place/FTT+FAM%C3%8DLIA+TIGER+TEAM+MATRIZ/@-23.5096693,-46.6263353,17z/data=!3m1!4b1!4m6!3m5!1s0x94cef621548600cf:0x9d1ddf103eac009f!8m2!3d-23.5096693!4d-46.6263353!16s%2Fg%2F11g6_2zdb8"
+    },
     {
      "quote": "Ambiente familiar, otimos professores, treino de qualidade.",
      "site": "Bendito Guia",
@@ -18595,22 +18664,31 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "water_km": null,
-   "water_note": "No sea or lake in the city.",
-   "score_note": "Training 6: competitors mentioned but no fighters or sparring evidence. Evidence 6: 134 reviews but a five star average on an aggregator, undated. Coordinates approximate. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "water_km": 58,
+   "water_note": "No sea or lake in Sao Paulo. The coast (Santos, Guaruja) is roughly 1 to 1.5 hours by road, a day trip.",
+   "score_note": "Muay Thai team (Familia Tiger Team, main unit) with praise for teachers but no detail on sparring or fighters, so training 6. Evidence 7: 5.0 from 147 Google reviews, one 2 weeks old, most 1 to 2 years old. Cost 9 from Numbeo (2026-10-30): gym 202 DKK plus 1-bed outside centre 2,700 DKK is about 2,900 DKK a month.",
    "score": {
     "training": 6,
-    "evidence": 6,
+    "evidence": 7,
     "local_life": 8,
-    "cost": 5,
-    "water": 1,
-    "total": 5.8
-   }
+    "cost": 9,
+    "water": 2,
+    "total": 6.6
+   },
+   "website": null,
+   "instagram": null,
+   "facebook": null,
+   "phone": "+55 11 93075-4799",
+   "google_maps_url": "https://www.google.com/maps/place/FTT+FAM%C3%8DLIA+TIGER+TEAM+MATRIZ/@-23.5096693,-46.6263353,17z/data=!3m1!4b1!4m6!3m5!1s0x94cef621548600cf:0x9d1ddf103eac009f!8m2!3d-23.5096693!4d-46.6263353!16s%2Fg%2F11g6_2zdb8",
+   "address": "R. Voluntarios da Patria, 1231-1233, Santana, Sao Paulo, 02010-100",
+   "hours": "Mon to Fri 7:00-20:00, Sat and Sun closed"
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
-   "https://www.benditoguia.com.br/empresa/academia-tiger-ftt-santana-sao-paulo-sp"
+   "https://www.benditoguia.com.br/empresa/academia-tiger-ftt-santana-sao-paulo-sp",
+   "https://www.google.com/maps/search/muay+thai+sao+paulo/",
+   "https://www.google.com/maps/place/FTT+FAM%C3%8DLIA+TIGER+TEAM+MATRIZ/@-23.5096693,-46.6263353,17z/data=!3m1!4b1!4m6!3m5!1s0x94cef621548600cf:0x9d1ddf103eac009f!8m2!3d-23.5096693!4d-46.6263353!16s%2Fg%2F11g6_2zdb8"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -18712,8 +18790,8 @@
   "places": [],
   "area": "Sao Paulo, Aclimacao",
   "country": "BR",
-  "lat": -23.567,
-  "lon": -46.632,
+  "lat": -23.5705932,
+  "lon": -46.6279392,
   "summary": "Muay Thai studio at R. Muniz de Sousa 884 in Aclimacao, 4.91 from 53 Wellhub reviews. Looks like a studio style class gym, booking required.",
   "season": "year round",
   "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
@@ -18726,7 +18804,7 @@
    "disciplines": [
     "Muay Thai"
    ],
-   "coaches": null,
+   "coaches": "Professor Bruno (named by a reviewer).",
    "fighters": null,
    "sessions_per_week": null,
    "timetable": "Mon to Fri 07:00 to 12:00 and 16:00 to 22:00, Sat 08:00 to 12:00, Sun closed (Wellhub).",
@@ -18736,8 +18814,8 @@
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 4.9,
+   "google_reviews": 131,
    "other_ratings": [
     {
      "site": "Wellhub",
@@ -18745,28 +18823,57 @@
      "count": 53
     }
    ],
-   "last_activity": null,
-   "what_people_say": [],
+   "last_activity": "2026-09 Google review (edited a month ago)",
+   "what_people_say": [
+    {
+     "quote": "The Muay Thai classes are very good and super dynamic, a tough workout. The circuit has a solid boxing base.",
+     "site": "google maps",
+     "date": "2026-09",
+     "url": "https://www.google.com/maps/place/Studio+Move+Thai/@-23.5705932,-46.6279392,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5985df91d385:0x735bd486dc3053b5!8m2!3d-23.5705932!4d-46.6279392!16s%2Fg%2F11gmvrn_yn"
+    },
+    {
+     "quote": "The instructor is very experienced, the environment is welcoming and very organized.",
+     "site": "google maps",
+     "date": "2026-08",
+     "url": "https://www.google.com/maps/place/Studio+Move+Thai/@-23.5705932,-46.6279392,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5985df91d385:0x735bd486dc3053b5!8m2!3d-23.5705932!4d-46.6279392!16s%2Fg%2F11gmvrn_yn"
+    },
+    {
+     "quote": "Excellent instructor, always very helpful, the studio is well-equipped, and the workout is intense.",
+     "site": "google maps",
+     "date": "2026-04",
+     "url": "https://www.google.com/maps/place/Studio+Move+Thai/@-23.5705932,-46.6279392,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5985df91d385:0x735bd486dc3053b5!8m2!3d-23.5705932!4d-46.6279392!16s%2Fg%2F11gmvrn_yn"
+    }
+   ],
    "neighbourhood": "Aclimacao is a central, quiet residential area near Liberdade and Paraiso with metro and the Aclimacao park. Room prices not found.",
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "water_km": null,
-   "water_note": "No sea or lake in the city.",
-   "score_note": "Studio format, no fighter evidence, so training 5. Coordinates approximate. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "water_km": 58,
+   "water_note": "No sea or lake in Sao Paulo. The coast (Santos, Guaruja) is roughly 1 to 1.5 hours by road, a day trip.",
+   "score_note": "Studio format with circuits and booked classes, no fighters or sparring mentioned, so training 5. Evidence 7: 4.9 from 131 Google reviews with several from the last 3 months. Cost 9 from Numbeo (2026-10-30): gym 202 DKK plus 1-bed outside centre 2,700 DKK is about 2,900 DKK a month.",
    "score": {
     "training": 5,
-    "evidence": 5,
+    "evidence": 7,
     "local_life": 6,
-    "cost": 5,
-    "water": 1,
-    "total": 4.8
-   }
+    "cost": 9,
+    "water": 2,
+    "total": 5.8
+   },
+   "website": null,
+   "instagram": "https://www.instagram.com/movethai",
+   "facebook": null,
+   "phone": "+55 11 91331-9767",
+   "google_maps_url": "https://www.google.com/maps/place/Studio+Move+Thai/@-23.5705932,-46.6279392,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5985df91d385:0x735bd486dc3053b5!8m2!3d-23.5705932!4d-46.6279392!16s%2Fg%2F11gmvrn_yn",
+   "address": "Rua Muniz de Sousa, 884, Aclimacao, Sao Paulo, 01534-001",
+   "hours": "Mon to Fri 7:00-12:00 and 17:00-22:00, Sat 8:00-12:30, Sun closed"
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
-   "https://wellhub.com/pt-br/search/partners/VCZUIuwp-cxCnPvwO-6EbjIEcLWfBbBOtX_XeWRcobugurQvbLlYB5Tfk5tZ7fkH/"
+   "https://wellhub.com/pt-br/search/partners/VCZUIuwp-cxCnPvwO-6EbjIEcLWfBbBOtX_XeWRcobugurQvbLlYB5Tfk5tZ7fkH/",
+   "https://www.google.com/maps/search/muay+thai+sao+paulo/",
+   "https://www.google.com/maps/place/Studio+Move+Thai/@-23.5705932,-46.6279392,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5985df91d385:0x735bd486dc3053b5!8m2!3d-23.5705932!4d-46.6279392!16s%2Fg%2F11gmvrn_yn",
+   "https://www.instagram.com/movethai"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -24474,5 +24581,313 @@
   "saved_in": [
    "want"
   ]
+ },
+ {
+  "id": "gym-sao-paulo-viscardi-andrade",
+  "name": "Training Center Viscardi Andrade (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "bjj",
+   "boxing"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Mirandopolis (Zona Sul)",
+  "country": "BR",
+  "lat": -23.6041961,
+  "lon": -46.6360486,
+  "summary": "Martial arts training center in Mirandopolis teaching jiu-jitsu, MMA and boxing, rated 4.9 from 317 Google reviews with many from the last two weeks. Reviews praise the instructors, tatami and structure, and one member has trained there 15 years, but none describe sparring.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "BJJ",
+    "MMA",
+    "boxing"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated. Portuguese.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": 51.2,
+   "neighbourhood": "Mirandopolis, Saude and Vila Mariana: residential south zone next to metro Praca da Arvore and Saude, quiet and safe.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake in Sao Paulo. The coast (Santos, Guaruja) is roughly 1 to 1.5 hours by road, a day trip.",
+   "website": "http://www.ctviscardiandrade.com.br/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+55 11 98814-0106",
+   "google_maps_url": "https://www.google.com/maps/place/Training+Center+Viscardi+Andrade/@-23.6041961,-46.6360486,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5a33af029993:0x3c1337ed8f19baec!8m2!3d-23.6041961!4d-46.6360486!16s%2Fg%2F1ptvvt_lm",
+   "address": "Rua Luis Gois, 877, sobreloja, Mirandopolis, Sao Paulo, 04043-300",
+   "hours": "Mon to Thu 6:30-22:00, Fri 6:30-21:00, Sat and Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 317,
+   "last_activity": "2026-10 Google reviews (2 days old)",
+   "what_people_say": [
+    {
+     "quote": "Excellent training center for jiu-jitsu, MMA, boxing, and similar martial arts!",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/Training+Center+Viscardi+Andrade/@-23.6041961,-46.6360486,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5a33af029993:0x3c1337ed8f19baec!8m2!3d-23.6041961!4d-46.6360486!16s%2Fg%2F1ptvvt_lm"
+    },
+    {
+     "quote": "The best martial arts academy in the region. Welcoming atmosphere, well-equipped tatami mats, instructors, and all staff provide an excellent experience.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/Training+Center+Viscardi+Andrade/@-23.6041961,-46.6360486,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5a33af029993:0x3c1337ed8f19baec!8m2!3d-23.6041961!4d-46.6360486!16s%2Fg%2F1ptvvt_lm"
+    },
+    {
+     "quote": "Top gym! Training here for 15 years.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/Training+Center+Viscardi+Andrade/@-23.6041961,-46.6360486,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5a33af029993:0x3c1337ed8f19baec!8m2!3d-23.6041961!4d-46.6360486!16s%2Fg%2F1ptvvt_lm"
+    }
+   ],
+   "score_note": "Jiu-jitsu led center with MMA and boxing, very fresh reviews but nothing about sparring or fighters, so training 7. Evidence 9 from 317 reviews at 4.9 with many in the last 2 weeks. Cost 9 from Numbeo (2026-10-30): gym 202 DKK plus 1-bed outside centre 2,700 DKK is about 2,900 DKK a month.",
+   "score": {
+    "training": 7,
+    "evidence": 9,
+    "local_life": 8,
+    "cost": 9,
+    "water": 2,
+    "total": 7.3
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/mma+sao+paulo/",
+   "https://www.google.com/maps/place/Training+Center+Viscardi+Andrade/@-23.6041961,-46.6360486,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce5a33af029993:0x3c1337ed8f19baec!8m2!3d-23.6041961!4d-46.6360486!16s%2Fg%2F1ptvvt_lm",
+   "http://www.ctviscardiandrade.com.br/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-versus-fight-club",
+  "name": "Academia Versus Fight Club (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "boxing",
+   "bjj"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Santa Cecilia (centre)",
+  "country": "BR",
+  "lat": -23.5373852,
+  "lon": -46.6469864,
+  "summary": "Muay Thai, boxing and jiu-jitsu gym in Santa Cecilia, central Sao Paulo, rated 4.8 from 122 Google reviews with the latest three weeks old. Reviewers describe an authentic gym with experienced instructors, individual attention in group classes and named boxing coaches.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Trial class possible per a 2026 review, with a 1-star complaint about how a trial was handled.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "boxing",
+    "BJJ"
+   ],
+   "coaches": "Master Edson Tanaka (BJJ), boxing coaches Anderson and Zaka (named by reviewers).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Trial classes exist. Portuguese.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": 57.9,
+   "neighbourhood": "Santa Cecilia, Campos Eliseos and Republica: central, metro Santa Cecilia, busy and rough around the Luz area at night.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake in Sao Paulo. The coast (Santos, Guaruja) is roughly 1 to 1.5 hours by road, a day trip.",
+   "website": "https://www.versusfightclub.com.br/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+55 11 3136-0627",
+   "google_maps_url": "https://www.google.com/maps/place/Academia+Versus+Fight+Club/@-23.5373852,-46.6469864,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce58415ad752fd:0xf3979a21e64eea60!8m2!3d-23.5373852!4d-46.6469864!16s%2Fg%2F12xqlvjxk",
+   "address": "R. Ana Cintra, 44, Santa Cecilia, Sao Paulo, 01201-060",
+   "hours": "Wed and Fri 7:00-10:00, 12:00-13:00 and 17:00-21:00, Tue and Thu 17:00-20:30, Sat and Sun closed (Monday not shown, holiday)",
+   "google_rating": 4.8,
+   "google_reviews": 122,
+   "last_activity": "2026-10 Google review (3 weeks old)",
+   "what_people_say": [
+    {
+     "quote": "The class is group-based but with individual attention. Excellent.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/Academia+Versus+Fight+Club/@-23.5373852,-46.6469864,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce58415ad752fd:0xf3979a21e64eea60!8m2!3d-23.5373852!4d-46.6469864!16s%2Fg%2F12xqlvjxk"
+    },
+    {
+     "quote": "Martial arts academy. The best in the region. Experienced, well-prepared instructors who truly know how to fight!",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Academia+Versus+Fight+Club/@-23.5373852,-46.6469864,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce58415ad752fd:0xf3979a21e64eea60!8m2!3d-23.5373852!4d-46.6469864!16s%2Fg%2F12xqlvjxk"
+    },
+    {
+     "quote": "Boxing class is amazing. Anderson and Zaka are excellent teachers!",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Academia+Versus+Fight+Club/@-23.5373852,-46.6469864,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce58415ad752fd:0xf3979a21e64eea60!8m2!3d-23.5373852!4d-46.6469864!16s%2Fg%2F12xqlvjxk"
+    }
+   ],
+   "score_note": "Experienced instructors and a mixed striking and BJJ timetable but short evening hours and no fighter or sparring detail, so training 6. Evidence 7: 122 reviews at 4.8, newest 3 weeks old. Cost 9 from Numbeo (2026-10-30): gym 202 DKK plus 1-bed outside centre 2,700 DKK is about 2,900 DKK a month.",
+   "score": {
+    "training": 6,
+    "evidence": 7,
+    "local_life": 7,
+    "cost": 9,
+    "water": 2,
+    "total": 6.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+sao+paulo/",
+   "https://www.google.com/maps/place/Academia+Versus+Fight+Club/@-23.5373852,-46.6469864,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce58415ad752fd:0xf3979a21e64eea60!8m2!3d-23.5373852!4d-46.6469864!16s%2Fg%2F12xqlvjxk",
+   "https://www.versusfightclub.com.br/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-xandao-team",
+  "name": "Xandao Team Muay Thai (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Consolacao (near Avenida Paulista)",
+  "country": "BR",
+  "lat": -23.538833,
+  "lon": -46.651557,
+  "summary": "Muay Thai academy of Master Xandao near Avenida Paulista, rated 4.9 from 100 Google reviews. The newest written review is a year old and the rest are 4 to 7 years old, praising Xandao as a serious teacher who treats students like family.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": "Master Xandao (Alexandre, head teacher).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated. Portuguese.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": 58.0,
+   "neighbourhood": "Consolacao, Higienopolis and Paulista: central, metro Higienopolis-Mackenzie and Paulista, safe and busy.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake in Sao Paulo. The coast (Santos, Guaruja) is roughly 1 to 1.5 hours by road, a day trip.",
+   "website": "http://www.xandaoteam.com.br/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+55 11 97959-9441",
+   "google_maps_url": "https://www.google.com/maps/place/Xand%C3%A3o+Team+Muay+Thai/@-23.538833,-46.651557,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce583f5c229d69:0xdc85d1008cdf6f89!8m2!3d-23.538833!4d-46.651557!16s%2Fg%2F11clt0ktfv",
+   "address": "R. Frederico Abranches, 457, Consolacao, Sao Paulo, 01225-001",
+   "hours": "Mon, Wed, Fri 6:00-23:00, Tue and Thu 8:00-23:00, Sat 10:00-12:00, Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 100,
+   "last_activity": "2025 Google review (a year old). Listing shows normal hours.",
+   "what_people_say": [
+    {
+     "quote": "Xandao is an excellent teacher, very funny, and treats his students like family!",
+     "site": "google maps",
+     "date": "2019",
+     "url": "https://www.google.com/maps/place/Xand%C3%A3o+Team+Muay+Thai/@-23.538833,-46.651557,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce583f5c229d69:0xdc85d1008cdf6f89!8m2!3d-23.538833!4d-46.651557!16s%2Fg%2F11clt0ktfv"
+    },
+    {
+     "quote": "The classes are amazing! Master Xandao is an excellent professional.",
+     "site": "google maps",
+     "date": "2022",
+     "url": "https://www.google.com/maps/place/Xand%C3%A3o+Team+Muay+Thai/@-23.538833,-46.651557,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce583f5c229d69:0xdc85d1008cdf6f89!8m2!3d-23.538833!4d-46.651557!16s%2Fg%2F11clt0ktfv"
+    },
+    {
+     "quote": "Top academy, progress at every stage, with preparation and guidance from a master, providing professional training for a fighter.",
+     "site": "google maps",
+     "date": "2019",
+     "url": "https://www.google.com/maps/place/Xand%C3%A3o+Team+Muay+Thai/@-23.538833,-46.651557,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce583f5c229d69:0xdc85d1008cdf6f89!8m2!3d-23.538833!4d-46.651557!16s%2Fg%2F11clt0ktfv"
+    }
+   ],
+   "score_note": "Long-running Muay Thai school with a named master and fighter preparation per old reviews, but nothing recent, so training 6 and evidence 4. Cost 9 from Numbeo (2026-10-30): gym 202 DKK plus 1-bed outside centre 2,700 DKK is about 2,900 DKK a month.",
+   "score": {
+    "training": 6,
+    "evidence": 4,
+    "local_life": 6,
+    "cost": 9,
+    "water": 2,
+    "total": 5.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+sao+paulo/",
+   "https://www.google.com/maps/place/Xand%C3%A3o+Team+Muay+Thai/@-23.538833,-46.651557,17z/data=!3m1!4b1!4m6!3m5!1s0x94ce583f5c229d69:0xdc85d1008cdf6f89!8m2!3d-23.538833!4d-46.651557!16s%2Fg%2F11clt0ktfv",
+   "http://www.xandaoteam.com.br/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
  }
 ]
