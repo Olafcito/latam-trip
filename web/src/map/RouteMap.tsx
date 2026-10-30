@@ -46,7 +46,7 @@ export interface RouteMapProps {
   focus?: boolean
   /** Build mode: the stop the next leg starts from. Null means the trip's end, false means none: the trip is only shown. */
   focusAt?: string | null | false
-  /** Build mode: a tap on one of the trip's stops hands it to the host, which moves its cursor there or, on the cursor stop, stops building. */
+  /** Build mode: a tap on one of the trip's stops other than the cursor stop hands it to the host, which moves its cursor there. A tap on the cursor stop opens its city. */
   onStop?(id: string): void
   /** Build mode: the host places a new leg itself (after its cursor) instead of the trip appending it. */
   onLeg?(leg: TripLeg): void
@@ -64,6 +64,8 @@ export interface RouteMapProps {
   sideMini?: boolean
   /** A map mode went on or off. While one is on the side pane stays away. */
   onMode?(on: boolean): void
+  /** The map's own panel (a city, a route) opened or closed. */
+  onPanel?(open: boolean): void
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
@@ -94,7 +96,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, cardFrom = null, side = null, sideWidth = 360, sideMini = false, onMode }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, cardFrom = null, side = null, sideWidth = 360, sideMini = false, onMode, onPanel }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -126,6 +128,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   useEffect(() => onFamilies?.(families), [families, onFamilies])
   useEffect(() => onMode?.(!!mm.mode), [mm.mode, onMode])
+  const panelOpen = !!view.panel
+  useEffect(() => onPanel?.(panelOpen), [panelOpen, onPanel])
 
   // latest values for the map's event handlers, which are bound once
   const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!pane, sideMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false })

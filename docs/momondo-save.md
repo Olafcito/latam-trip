@@ -44,9 +44,9 @@ The token stays inside Tampermonkey in this browser. Remove GitHub token in the 
 
 You can also skip the token. The buttons then open a filled in GitHub issue instead, and Claude imports the prices from there. See section 6.
 
-## 5. The two buttons
+## 5. The buttons
 
-The buttons sit in a small box at the bottom left of a Momondo flight search. The line under them tells you what happened.
+Save prices and Save trip sit in a small box at the bottom left of a Momondo flight search. The line under them tells you what happened, for Pick as well.
 
 **Save prices** stores every result in the list. Wait until the search is finished, then press it. The script opens each result card, reads its flight details and booking offers, and closes it again. It reads the Billigst tab and the Bedst tab, up to 40 results each, and goes back to the tab you started on. A result that shows in both tabs is saved once. Ads are left out. When it is done the line reads, for example, Saved 14 prices.
 
@@ -67,6 +67,14 @@ Route and dates come from the address of the search page, so the saved prices al
 **Not saved: no rows were read from the page**, **Not saved: 3 of 14 rows have empty legs** or **Not saved: 2 of 14 rows have no price**: the script could not read Momondo's details. That usually means Momondo changed its page. The script saves nothing rather than half a price. It opens a GitHub issue of type fix_parser with the text of the result it could not read and the parser version. Press Submit, and Claude fixes the parser from that text. The fixed script then installs itself through the update in section 2.
 
 **Not saved: open a result first, then press Save trip**: open a result card before you press Save trip.
+
+**Picked 22:25, opening the planner**: the script read that flight and opens the planner in a new tab. The planner says on the trip whether the flight landed on its leg. If the tab cannot connect, start the planner with the desktop icon and press Pick again.
+
+**Not picked: the list changed, press Pick again** or **Not picked: another result opened, press Pick again**: Momondo moved its list while the script read it. Nothing was picked.
+
+**Not picked: this result could not be opened**: Momondo did not open the details of that result. Nothing was picked, so press Pick again or pick another departure.
+
+**Not picked** followed by a reason: the script could not read the flight. That usually means Momondo changed its page. It opens a GitHub issue of type fix_parser in the same way as a failed save, so press Submit there.
 
 ## 7. How the prices reach the app
 
