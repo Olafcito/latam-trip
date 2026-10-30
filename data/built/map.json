@@ -28612,14 +28612,17 @@
     "Avianca",
     "BoA",
     "Copa Airlines",
-    "JetSMART"
+    "JetSMART",
+    "LATAM Airlines",
+    "Wingo"
    ],
    "dates": [
     "2026-12-14",
-    "2026-12-17"
+    "2026-12-17",
+    "2026-12-20"
    ],
    "return_min_dkk": null,
-   "quotes": 7,
+   "quotes": 13,
    "flights": [
     {
      "quote_id": "Q:f0a5ae3099be",
@@ -28696,11 +28699,11 @@
      "source": "momondo"
     },
     {
-     "quote_id": "Q:87175e695065",
-     "depart": "2026-12-14T13:40",
-     "arrive": "2026-12-15T06:50",
-     "hours": 16.17,
-     "price_dkk": 3927.0,
+     "quote_id": "Q:45d206492985",
+     "depart": "2026-12-20T06:42",
+     "arrive": "2026-12-21T06:50",
+     "hours": 23.13,
+     "price_dkk": 3082.0,
      "carriers": [
       "BoA",
       "JetSMART"
@@ -28711,22 +28714,22 @@
       "VVI"
      ],
      "layover_h": [
-      3.0,
+      9.97,
       4.25,
       1.58
      ],
-     "fare_brand": null,
+     "fare_brand": "Basic + Economy",
      "cabin_bag": null,
      "checked_bag": null,
      "overnight_layover": true,
      "source": "momondo"
     },
     {
-     "quote_id": "Q:d443e1a5ffd1",
-     "depart": "2026-12-14T18:40",
-     "arrive": "2026-12-15T06:55",
-     "hours": 11.25,
-     "price_dkk": 4636.0,
+     "quote_id": "Q:ed728dd8d390",
+     "depart": "2026-12-20T22:30",
+     "arrive": "2026-12-21T18:45",
+     "hours": 19.25,
+     "price_dkk": 3202.0,
      "carriers": [
       "Avianca",
       "BoA"
@@ -28736,37 +28739,40 @@
       "LPB"
      ],
      "layover_h": [
-      1.83,
-      3.83
+      8.5,
+      3.25
      ],
-     "fare_brand": null,
-     "cabin_bag": null,
-     "checked_bag": null,
-     "overnight_layover": false,
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": true,
      "source": "momondo"
     },
     {
-     "quote_id": "Q:d0328e9b88bc",
-     "depart": "2026-12-14T18:05",
-     "arrive": "2026-12-15T06:15",
-     "hours": 11.17,
-     "price_dkk": 9488.0,
+     "quote_id": "Q:d8b1a9c91bf9",
+     "depart": "2026-12-20T15:15",
+     "arrive": "2026-12-21T06:50",
+     "hours": 14.58,
+     "price_dkk": 3203.0,
      "carriers": [
+      "Avianca",
       "BoA",
-      "Copa Airlines"
+      "JetSMART"
      ],
      "via": [
-      "PTY",
+      "MDE",
+      "LIM",
       "VVI"
      ],
      "layover_h": [
-      1.93,
-      1.8
+      1.43,
+      4.25,
+      1.58
      ],
      "fare_brand": null,
      "cabin_bag": null,
      "checked_bag": null,
-     "overnight_layover": false,
+     "overnight_layover": true,
      "source": "momondo"
     }
    ]

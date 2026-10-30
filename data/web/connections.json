@@ -26226,12 +26226,14 @@
      "Avianca",
      "BoA",
      "Copa Airlines",
-     "JetSMART"
+     "JetSMART",
+     "LATAM Airlines",
+     "Wingo"
     ],
     "duration_min": 670,
     "price_dkk": {
      "min": 2845,
-     "typical": 3050
+     "typical": 3203
     },
     "frequency": null,
     "overnight": false,
@@ -26264,7 +26266,9 @@
       "Avianca",
       "BoA",
       "Copa Airlines",
-      "JetSMART"
+      "JetSMART",
+      "LATAM Airlines",
+      "Wingo"
      ],
      "oneway_dkk": {
       "min": 2845,
@@ -26273,7 +26277,8 @@
      "return_dkk": null,
      "dates_searched": [
       "2026-12-14",
-      "2026-12-17"
+      "2026-12-17",
+      "2026-12-20"
      ],
      "by_date": [
       {
@@ -26329,6 +26334,34 @@
        "self_transfer": true,
        "searched": "2026-12-17",
        "link": "https://www.momondo.dk/flight-search/CLO-CBB/2026-12-17"
+      },
+      {
+       "date": "2026-12-20",
+       "from": "CLO",
+       "to": "CBB",
+       "dkk": 3082,
+       "dep": "06:42",
+       "arr": "06:50",
+       "arr_days": 1,
+       "duration_min": 1388,
+       "vias": [
+        "MDE",
+        "LIM",
+        "VVI"
+       ],
+       "carriers": [
+        "BoA",
+        "JetSMART"
+       ],
+       "flights": [
+        "JetSMART 5563",
+        "JetSMART 7753",
+        "BoA 741",
+        "BoA 635"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-20",
+       "link": "https://www.momondo.dk/flight-search/CLO-CBB/2026-12-20"
       }
      ],
      "round_trips": [],
@@ -26361,12 +26394,13 @@
       "date": "2026-12-14"
      },
      "flags": [
+      "basic_fare",
       "self_transfer"
      ],
-     "quotes": 7
+     "quotes": 13
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T19:15:10Z",
+    "observed_at": "2026-10-30T19:53:57Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/CLO-CBB/2026-12-14"
    }
