@@ -321,7 +321,7 @@ function ExperienceCard({ e, api, model, onShow }: { e: Experience; api: MapMode
         </div>
         <Sources urls={e.sources} />
       </div>
-      {!e.researched && !e.summary && <p className="fine">Not researched yet.</p>}
+      {!e.researched && !e.summary && !e.sources?.length && <p className="fine">Not researched yet.</p>}
       <Checked at={e.checked_at} />
     </>
   )

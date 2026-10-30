@@ -90,6 +90,8 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
       d = `${m}-${focus.slice(8)}` > last ? last : `${m}-${focus.slice(8)}`
     } else return
     e.preventDefault()
+    // up and down keep the weekday, so past the open days they stay put rather than leave the column
+    if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && (d < min || d > max)) return
     d = d < min ? min : d > max ? max : d
     moved.current = true
     setFocus(d)
@@ -105,7 +107,7 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
         </div>
         <span className="wp-read" aria-live="polite">
           <b>{weekdayDay(date)}</b>
-          <small>Day {tripDay(date)}{fares[date] != null ? ` · ${kr(fares[date])}${fares[date] === cheapest ? ', the cheapest' : ''}` : ''}</small>
+          <small>Day {tripDay(date)}{fares[date] != null ? `, ${kr(fares[date])}${fares[date] === cheapest ? ', the cheapest' : ''}` : ''}</small>
         </span>
       </div>
 

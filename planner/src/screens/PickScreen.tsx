@@ -7,7 +7,7 @@ import { mixWays, oneWayWays, passesFilters, type Filters } from '../lib/options
 import { topTiers } from '../lib/tiers'
 import { WayCard } from '../components/WayCard'
 import { MiniMap } from '../components/MiniMap'
-import { Bag, Moon, Pin } from '../components/icons'
+import { Bag, Caret, Moon, Pin } from '../components/icons'
 
 // Picking the way in and way home: the matrix of airport pairs first, then the options of the
 // picked pair, each opening into a picture of its two ways and one button to build on the map.
@@ -74,7 +74,7 @@ export function PickScreen({ data }: { data: AppData }) {
   return (
     <div className="pick">
       <div className="pick-head">
-        <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'home')}>‹ Trips</button>
+        <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
         <div className="pick-title">
           <h2 className="h2">New trip: where in, where home</h2>
           <div className="seg" role="group" aria-label="Mode">

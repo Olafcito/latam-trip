@@ -12,28 +12,31 @@
 .st-stop { min-height: var(--stop); }
 .st-disc { position: relative; z-index: 1; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); box-shadow: 0 0 0 3px var(--surface), 0 0 0 4px var(--line-2); overflow: hidden; }
 .st-disc .flag { width: 32px !important; height: 32px !important; object-fit: cover; transform: scale(1.6); }
-.st-nf { font-size: var(--fs-label); font-weight: 700; color: var(--muted); }
-/* name at the left, nights at the right edge of the card, the stepper in the free space before the nights so showing it moves nothing */
+.st-nf { font-size: var(--fs-label); font-weight: 600; color: var(--muted); }
+/* name at the left, nights at the right edge of the card, the stepper in the free space before the nights */
 .st-card { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; column-gap: 16px; padding: 6px 0 6px var(--inset); }
-.st-name { justify-self: start; font-size: var(--fs-title); font-weight: 650; letter-spacing: -0.01em; line-height: 1.25; text-wrap: balance; }
+.st-name { justify-self: start; font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; text-wrap: balance; overflow-wrap: anywhere; }
 /* Copenhagen is a bookend, so it steps back in weight and colour, not in size */
 .st-stop[data-home] .st-name { font-weight: 500; color: var(--muted); }
-.st-nights { grid-column: 3; font-size: var(--fs-small); font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* one width on every stop, as wide as Passing through, so the steppers stand in a column */
+.st-nights { grid-column: 3; width: 6.5rem; text-align: right; font-size: var(--fs-small); font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .st-nights b { font-weight: 600; color: var(--text); }
 .st-nights[data-est='true'] b { color: var(--muted); }
 .st-step { grid-column: 2; display: inline-flex; align-items: center; gap: 8px; }
+/* always there, so a stop that can grow says so. The gap makes the two hit areas meet without overlapping. */
 .st-n, .wp-step button {
-  display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--surface-3); color: var(--muted); cursor: pointer;
-  opacity: 0; transition: opacity var(--t-fast) ease, transform var(--t-fast) var(--ease-out), color var(--t-fast) ease;
+  position: relative; display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 50%; background: var(--surface-3); color: var(--muted); cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease;
 }
-.st-n { position: relative; width: 28px; height: 28px; }
-.st-n:disabled { cursor: default; }
-.st-stop:is(:hover, :focus-within) .st-n, .st-stop:has(.pop.nf) .st-n { opacity: 1; }
-.st-stop:is(:hover, :focus-within) .st-n:disabled, .st-stop:has(.pop.nf) .st-n:disabled, .wp-step button:disabled { opacity: 0.25; cursor: default; }
+.st-n::after, .wp-step button::after { content: ''; position: absolute; left: 50%; top: 50%; width: var(--hit); height: var(--hit); transform: translate(-50%, -50%); }
+.st-n:disabled, .wp-step button:disabled { opacity: 0.25; cursor: default; }
 .st-n:active, .wp-step button:active { transform: scale(0.92); }
-.st-n:focus-visible { opacity: 1; outline: 2px solid var(--flight); outline-offset: 2px; }
+.st-n:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 .st-n[aria-expanded='true'] { background: var(--line-2); color: var(--text); }
-@media (hover: none) { .st-n { opacity: 1; } .st-n:disabled { opacity: 0.25; } }
+@media (pointer: coarse) {
+  .st-n, .wp-step button { width: 32px; height: 32px; }
+  .st-step, .wp-step { gap: 12px; }
+}
 
 /* the nights no stop has: a stretch of the route without a leg, so neutral dots and no disc */
 .st-free .st-card { min-height: var(--leg); padding-block: 0; }
@@ -124,8 +127,14 @@
 .pop.way { width: min(460px, calc(100vw - 32px)); }
 /* the choice of where a night comes from hangs from the plus, into the row it changes */
 .pop.nf { left: auto; right: 0; width: min(272px, calc(100vw - 32px)); padding: 12px 8px 8px; transform-origin: top right; }
+/* room is measured in usePop: the side with more of it, and a scroll when even that is short */
+.pop { max-height: var(--room, none); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+@media (min-width: 561px) {
+  .pop[data-up='true'] { top: auto; bottom: calc(100% + 6px); transform-origin: bottom left; }
+  .pop.nf[data-up='true'] { transform-origin: bottom right; }
+}
 .nf-to { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0; padding: 0 8px 12px; font-size: var(--fs-body); overflow-wrap: anywhere; }
-.nf-to > b { font-weight: 650; }
+.nf-to > b { font-weight: 600; }
 .nf-h { margin: 0; padding: 12px 8px 4px; border-top: 1px solid var(--line); font-size: var(--fs-small); color: var(--muted); }
 .nf-list { list-style: none; margin: 0; padding: 0; max-height: min(320px, 50dvh); overflow-y: auto; overscroll-behavior: contain; }
 .nf-row {
@@ -139,7 +148,7 @@
 .nf-row:disabled .st-nights b { color: var(--muted); }
 .nf-row:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
 .pop-x {
-  display: none; position: absolute; top: 6px; right: 6px; width: 40px; height: 40px; place-items: center;
+  display: none; position: absolute; top: 6px; right: 6px; width: max(40px, var(--hit)); height: max(40px, var(--hit)); place-items: center;
   border: 0; border-radius: 50%; background: var(--surface-3); color: var(--muted); cursor: pointer;
 }
 .pop-x:active { transform: scale(0.94); }
@@ -149,70 +158,70 @@
 .lc { --tone: var(--bus); display: flex; flex-direction: column; gap: 12px; }
 .lc[data-f='flight'] { --tone: var(--flight); }
 .lc[data-f='boat'] { --tone: var(--boat); }
-.lc-head { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
-.lc-when { font-size: 13px; font-weight: 650; color: var(--tone); }
+.lc-head { display: flex; align-items: center; gap: 8px; font-size: var(--fs-small); font-weight: 600; color: var(--muted); }
+.lc-when { font-size: var(--fs-num); font-weight: 600; color: var(--tone); }
 .lc.way .lc-when { color: var(--text); }
-.lc-day { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lc-day { font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
 .lc-night { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; color: var(--boat); }
 .lc-ends { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 12px; }
 .lc-end { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .lc-end.to { align-items: flex-end; text-align: right; }
-.lc-time { font-size: 24px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
-.lc-time sup { font-size: 11px; font-weight: 600; color: var(--tone); margin-left: 2px; }
-.lc-code { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--tone); }
-.lc-end small { max-width: 16ch; font-size: 11.5px; line-height: 1.3; color: var(--muted); text-wrap: balance; }
+.lc-time { font-size: var(--fs-num-lg); font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.lc-time sup { font-size: var(--fs-label); font-weight: 600; color: var(--tone); margin-left: 2px; }
+.lc-code { font-size: var(--fs-small); font-weight: 600; letter-spacing: 0.08em; color: var(--tone); }
+.lc-end small { max-width: 16ch; font-size: var(--fs-small); line-height: 1.3; color: var(--muted); text-wrap: balance; }
 .lc-mid { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding-top: 6px; }
-.lc-dur { align-self: center; font-size: 11.5px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lc-dur { align-self: center; font-size: var(--fs-small); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
 .lc-track { display: flex; align-items: center; height: 14px; }
 .lc-seg { flex: 1 1 auto; height: 2px; background: var(--tone); }
 .lc-track[data-f='flight'] .lc-seg { background: repeating-linear-gradient(90deg, var(--tone) 0 4px, transparent 4px 7px); }
 .lc-dot { position: relative; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 2px var(--tone); }
 .lc-dot.end { background: var(--tone); }
-.lc-via { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; font-size: 10.5px; line-height: 1.2; white-space: nowrap; }
-.lc-via b { font-weight: 700; color: var(--text); }
+.lc-via { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; font-size: var(--fs-label); line-height: 1.2; white-space: nowrap; }
+.lc-via b { font-weight: 600; color: var(--text); }
 .lc-via small { color: var(--faint); }
 .lc-track:has(.lc-via) { margin-bottom: 22px; }
-.lc-note { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.lc-note { margin: 0; font-size: var(--fs-small); line-height: 1.45; color: var(--muted); }
 .lc-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.lc-facts li { padding: 3px 8px; border-radius: 999px; background: var(--surface-2); font-size: 11.5px; color: var(--muted); }
+.lc-facts li { padding: 3px 8px; border-radius: 999px; background: var(--surface-2); font-size: var(--fs-small); color: var(--muted); }
 .lc-price { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px dashed var(--line-2); }
-.lc-price b { font-size: 20px; font-weight: 650; color: var(--tone); font-variant-numeric: tabular-nums; }
-.lc-price small { font-size: 11.5px; color: var(--faint); text-align: right; }
+.lc-price b { font-size: var(--fs-head); font-weight: 600; color: var(--tone); font-variant-numeric: tabular-nums; }
+.lc-price small { font-size: var(--fs-small); color: var(--faint); text-align: right; }
 .lc-act { display: flex; flex-wrap: wrap; gap: 6px; }
 .lc-act .btn svg { margin-left: 4px; }
 
 /* ---- the calendar: one month at a time, a price under each day ---- */
 .wp { display: flex; flex-direction: column; gap: 10px; }
 .wp-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.wp-seg { font-size: 12px; }
+.wp-seg { font-size: var(--fs-small); }
 .wp-read { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-variant-numeric: tabular-nums; }
-.wp-read b { font-size: 13.5px; font-weight: 650; }
-.wp-read small { font-size: 11px; color: var(--muted); }
+.wp-read b { font-size: var(--fs-body); font-weight: 600; }
+.wp-read small { font-size: var(--fs-label); color: var(--muted); }
 .wp-cal { display: flex; flex-direction: column; gap: 4px; }
-.wp-nav { display: flex; align-items: center; justify-content: space-between; height: 32px; margin-bottom: 2px; }
-.wp-nav b { font-size: 13px; font-weight: 600; }
+.wp-nav { display: flex; align-items: center; justify-content: space-between; height: var(--hit); margin-bottom: 2px; }
+.wp-nav b { font-size: var(--fs-num); font-weight: 600; }
 .wp-arr {
-  display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px;
+  display: grid; place-items: center; width: var(--hit); height: var(--hit); border: 0; border-radius: 8px;
   background: none; color: var(--muted); cursor: pointer;
   transition: background-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .wp-arr:disabled { opacity: 0.25; cursor: default; }
 .wp-arr:not(:disabled):active { transform: scale(0.92); }
 .wp-wd, .wp-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
-.wp-wd span { text-align: center; font-size: 10.5px; font-weight: 600; color: var(--faint); }
+.wp-wd span { text-align: center; font-size: var(--fs-label); font-weight: 600; color: var(--faint); }
 .wp-d {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
   height: 38px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--text); font: inherit; cursor: pointer;
   transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease;
 }
-.wp-d b { font-size: 13px; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
-.wp-d small { min-height: 13px; font-size: 11px; font-weight: 600; line-height: 1.15; color: var(--faint); font-variant-numeric: tabular-nums; }
+.wp-d b { font-size: var(--fs-num); font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.wp-d small { min-height: 13px; font-size: var(--fs-label); font-weight: 600; line-height: 1.15; color: var(--faint); font-variant-numeric: tabular-nums; }
 .wp-d:disabled { color: var(--faint); opacity: 0.4; cursor: default; }
 .wp-d:not(:disabled):active { transform: scale(0.94); }
 .wp-d[data-priced='true'] small { color: var(--muted); }
 .wp-d[data-cheap='true'] small { color: var(--in); }
 .wp-d[data-sel='true'] { background: var(--flight); color: var(--flight-ink); }
-.wp-d[data-sel='true'] b { font-weight: 650; }
+.wp-d[data-sel='true'] b { font-weight: 600; }
 .wp-d[data-sel='true'] small { color: color-mix(in srgb, var(--flight-ink) 72%, transparent); }
 /* the estimated day, before one is picked: a ring, not a fill */
 .wp-d[data-sel='true'][data-set='false'] { background: none; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--flight); }
@@ -223,13 +232,13 @@
 .wp[data-overland] .wp-d[data-sel='true'] { background: var(--text); color: var(--surface); }
 .wp[data-overland] .wp-d[data-sel='true'][data-set='false'] { background: none; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--muted); }
 .wp-d:focus-visible, .wp-arr:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
-.wp-stay { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 10px; background: var(--surface-2); font-size: 12.5px; color: var(--muted); }
+@media (pointer: coarse) { .wp-d { height: 44px; } }
+.wp-stay { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 10px; background: var(--surface-2); font-size: var(--fs-small); color: var(--muted); }
 .wp-stay b { color: var(--text); font-weight: 600; }
 .wp-step { display: inline-flex; align-items: center; gap: 8px; }
-.wp-step > b { min-width: 2ch; text-align: center; font-size: 16px; }
-.wp-step button { opacity: 1; }
+.wp-step > b { min-width: 2ch; text-align: center; font-size: var(--fs-title); }
 .wp-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
-.wp-key { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--faint); }
+.wp-key { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-label); color: var(--faint); }
 .wp-key i { width: 6px; height: 6px; border-radius: 50%; background: var(--in); }
 .wp-btns { display: inline-flex; gap: 6px; }
 .wp-btns .btn svg { margin-left: 4px; }
@@ -239,35 +248,29 @@
 }
 
 @media (max-width: 560px) {
-  .st { --rail: 32px; --inset: 8px; }
+  .st { --rail: 32px; --inset: 8px; --leg: 60px; }
   /* the nights go under the name and the steppers stand in a column at the thumb, so a long name wraps beside them */
   .st-card { grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; }
   .st-name { grid-column: 1; }
-  .st-nights { grid-column: 1; grid-row: 2; }
+  .st-nights { grid-column: 1; grid-row: 2; width: auto; text-align: left; }
   .st-step { grid-column: 2; grid-row: 1 / 3; }
   .st-free .st-nights { grid-column: 2; grid-row: 1; }
-  .st-line { flex-wrap: wrap; }
+  .st-line { flex-wrap: wrap; align-content: center; row-gap: 2px; }
   /* every leg breaks in the same place, or the rows change height with the length of the times */
-  .st-arrives { flex-basis: 100%; }
+  .st-arrives { flex-basis: 100%; min-width: 0; white-space: normal; }
   /* the warning keeps its icon beside its text, with the fix under the text */
   .st-clash { grid-template-columns: auto minmax(0, 1fr); }
   .st-clash .btn { grid-column: 2; margin-left: 0; }
   /* on a phone the popovers rise as a sheet from the bottom instead of hanging off their trigger */
   .pop, .pop.wide, .pop.way, .pop.nf {
-    position: fixed; top: auto; left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 78vh; overflow-y: auto;
+    position: fixed; top: auto; left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 82vh; overflow-y: auto;
     transform-origin: bottom center;
     @starting-style { opacity: 0; transform: translateY(12px); }
   }
   .wp-d { height: 44px; }
-  /* thumb sized targets */
-  .st-n, .wp-step button { width: 32px; height: 32px; }
-  .st-n::after { content: ''; position: absolute; inset: -6px -4px; }
-  .wp-arr { width: 40px; height: 40px; }
-  .wp-nav { height: 40px; }
   .pop-x { display: grid; }
-  .pop, .pop.wide, .pop.way { padding-top: 52px; }
-  .pop.nf { padding-top: 16px; }
-  .nf-to { padding-right: 48px; }
+  /* the close button shares the first line, so the sheet has no empty row above its content */
+  .nf-to, .wp-top, .lc-head { padding-right: 48px; }
   .nf-list { max-height: none; }
 }
 @media (prefers-reduced-motion: reduce) {

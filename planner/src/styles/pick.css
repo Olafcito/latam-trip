@@ -32,7 +32,7 @@
 /* the section is as wide as the grid, so the key sits at the grid's right edge, not the page's */
 .mx { width: fit-content; min-width: 0; max-width: 100%; }
 .mx-box { overflow-x: auto; overscroll-behavior-x: contain; }
-table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-size: 12px; }
+table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-size: var(--fs-small); }
 .matrix th { background: var(--ground); font-weight: 500; color: var(--muted); white-space: nowrap; transition: background-color var(--t-fast) ease, color var(--t-fast) ease; }
 .matrix thead th { position: sticky; top: 0; z-index: 3; }
 .matrix thead tr:first-child th { height: 24px; }
@@ -62,7 +62,7 @@ table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-
   border: 0; border-radius: 5px;
   background: var(--surface-2);
   color: var(--muted);
-  font-size: 13px; font-weight: 600; line-height: 1;
+  font-size: var(--fs-num); font-weight: 600; line-height: 1;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease, background-color var(--t-med) ease, color var(--t-med) ease;
@@ -98,7 +98,7 @@ table.grid.opts { font-size: var(--fs-small); }
 .opts tbody tr.orow:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
 .opts td.price { font-weight: 600; color: var(--text); }
 .opts td.city b { font-weight: 600; }
-.opts td .code { margin-left: 6px; font-family: var(--font-num); font-size: 11px; color: var(--faint); }
+.opts td .code { margin-left: 6px; font-family: var(--font-num); font-size: var(--fs-label); color: var(--faint); }
 @media (hover: hover) and (pointer: fine) {
   .opts th .sort:hover { color: var(--text); }
   .opts th[aria-sort] .sort:hover { color: var(--flight); }
@@ -114,7 +114,7 @@ table.grid.opts { font-size: var(--fs-small); }
 .ico svg { color: var(--faint); }
 .stamp { display: inline-flex; align-items: baseline; gap: 4px; white-space: nowrap; }
 .stamp b { font-family: var(--font-num); font-weight: 500; }
-.stamp small { font-family: var(--font-num); font-size: 11px; color: var(--muted); }
+.stamp small { font-family: var(--font-num); font-size: var(--fs-label); color: var(--muted); }
 
 /* the expanded option steps up to the surface and stays in view while the table scrolls sideways */
 .opts tr.expand td { padding: 0; background: var(--surface); white-space: normal; border-bottom: 1px solid var(--line-2); }
@@ -128,7 +128,7 @@ table.grid.opts { font-size: var(--fs-small); }
 .expand-in > .ways, .expand-in > .side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .ways .h3 { margin: 0 0 4px; }
 .side .tot { padding: 12px 14px; border-radius: 8px; background: var(--surface-2); }
-.side .tot .v.big { font-size: 20px; }
+.side .tot .v.big { font-size: var(--fs-head); }
 .prov { margin: 0; overflow-wrap: anywhere; }
 @media (max-width: 1100px) { .expand-in { grid-template-columns: minmax(0, 1fr); } }
 
@@ -180,7 +180,7 @@ button.wayrow:active { background: var(--surface-2); }
 /* ---- phone: the matrix scrolls in its own box, heads stay put, the page never goes sideways -- */
 @media (max-width: 640px) {
   .pick { gap: 18px; }
-  .pick-title .h2 { font-size: 22px; }
+  .pick-title .h2 { font-size: var(--fs-num-lg); }
   .filters { gap: 10px 14px; }
   .filters .fld input[type='number'] { width: 96px; min-width: 96px; }
   .mx-box {

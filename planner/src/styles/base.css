@@ -53,7 +53,7 @@ code, kbd { font-family: var(--font-num); font-size: 0.92em; color: var(--flight
   border: 1px solid var(--line-2);
   background: transparent;
   color: var(--text);
-  font-weight: 600; font-size: 13px;
+  font-weight: 600; font-size: var(--fs-num);
   cursor: pointer;
   white-space: nowrap;
   transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease, border-color var(--t-fast) ease, color var(--t-fast) ease;
@@ -62,7 +62,9 @@ code, kbd { font-family: var(--font-num); font-size: 0.92em; color: var(--flight
 .btn::after { content: ''; position: absolute; left: 50%; top: 50%; width: max(100%, var(--hit)); height: max(100%, var(--hit)); transform: translate(-50%, -50%); }
 .btn:active:not(:disabled) { transform: scale(0.97); }
 .btn.primary { background: var(--flight); border-color: var(--flight); color: var(--flight-ink); }
-.btn.small { min-height: 30px; padding: 0 10px; font-size: 12px; }
+.btn.small { min-height: 30px; padding: 0 10px; font-size: var(--fs-small); }
+/* a link dressed as a button keeps the button's look; .btn.link stays a link */
+.btn:not(.link) { text-decoration: none; }
 .btn.link { border: 0; background: none; color: var(--muted); padding: 0 4px; min-height: 0; text-underline-offset: 3px; }
 .btn.primary.wide { width: 100%; min-height: 40px; }
 .btn.danger { border-color: color-mix(in srgb, var(--err) 55%, transparent); color: var(--err); }
@@ -107,7 +109,7 @@ code, kbd { font-family: var(--font-num); font-size: 0.92em; color: var(--flight
   padding: 0 12px;
   border: 0; border-radius: 7px;
   background: transparent;
-  font-size: 12.5px; font-weight: 600;
+  font-size: var(--fs-small); font-weight: 600;
   color: var(--muted);
   cursor: pointer;
   white-space: nowrap;
@@ -120,13 +122,13 @@ code, kbd { font-family: var(--font-num); font-size: 0.92em; color: var(--flight
 }
 
 /* tags: inline mono words, the colour carries the meaning. Pills are the old name. */
-.tag, .pill { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-num); font-size: 11.5px; font-weight: 500; line-height: 1.3; color: var(--muted); white-space: nowrap; }
+.tag, .pill { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; line-height: 1.3; color: var(--muted); white-space: nowrap; }
 .tag.mine { color: var(--text); }
-.tag.draft, .pill.draft { color: var(--flight); }
-.tag.draft::before, .pill.draft::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--flight); }
+.tag.draft { color: var(--flight); }
+.tag.draft::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--flight); }
 
 /* hairline table: mono numbers right aligned, sticky head on the surface */
-table.grid { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+table.grid { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--fs-num); }
 table.grid th { position: sticky; top: 0; z-index: 1; padding: 8px 10px; background: var(--surface); border-bottom: 1px solid var(--line-2); text-align: left; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--faint); white-space: nowrap; }
 table.grid td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 table.grid :is(th, td).num { text-align: right; font-family: var(--font-num); font-weight: 500; }
@@ -141,14 +143,14 @@ table.grid :is(th, td).num { text-align: right; font-family: var(--font-num); fo
   border: 1px solid var(--line-2); border-radius: 8px;
   background: var(--surface-2);
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--fs-num);
   transition: border-color var(--t-fast) ease;
 }
 .fld { display: flex; flex-direction: column; gap: 4px; font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--muted); }
 /* Windows paints native options light unless told otherwise */
 select option { background: var(--surface-2); color: var(--text); }
 .fld input[type='number'] { width: 110px; font-family: var(--font-num); }
-.chk { display: inline-flex; align-items: center; gap: 8px; min-height: var(--hit); font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; -webkit-user-select: none; }
+.chk { display: inline-flex; align-items: center; gap: 8px; min-height: var(--hit); font-size: var(--fs-num); color: var(--muted); cursor: pointer; user-select: none; -webkit-user-select: none; }
 .chk input { width: 16px; height: 16px; margin: 0; }
 @media (hover: hover) and (pointer: fine) {
   :is(.field, .fld select, .fld input):hover { border-color: var(--faint); }
@@ -156,11 +158,11 @@ select option { background: var(--surface-2); color: var(--text); }
 }
 @media (pointer: coarse) {
   /* under 16px iOS zooms the page into the field and leaves it there */
-  .field, .fld select, .fld input, input, select, textarea { font-size: 16px; }
+  .field, .fld select, .fld input, input, select, textarea { font-size: var(--fs-title); }
 }
 
 .tablewrap { overflow-x: auto; overscroll-behavior-x: contain; }
-.nd { font-family: var(--font-num); font-size: 10.5px; font-weight: 600; color: var(--flight); margin-left: 3px; vertical-align: super; }
+.nd { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 600; color: var(--flight); margin-left: 3px; vertical-align: super; }
 .q { color: var(--faint); cursor: help; border-bottom: 1px dotted var(--faint); }
 .warnmark { color: var(--flight); cursor: help; }
 

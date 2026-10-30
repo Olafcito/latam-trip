@@ -163,7 +163,7 @@
   padding: 4px 12px 4px 5px;
   border: 1px solid var(--line-2); border-radius: 999px;
   background: var(--surface-2);
-  font-family: var(--font-num); font-size: 13px; font-variant-numeric: tabular-nums;
+  font-family: var(--font-num); font-size: var(--fs-num); font-variant-numeric: tabular-nums;
   color: var(--text);
   cursor: pointer;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent;
@@ -182,7 +182,7 @@
   color: var(--k);
 }
 .fly-d { font-weight: 600; white-space: nowrap; }
-.fly-r { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.fly-r { display: inline-flex; align-items: center; gap: 3px; font-size: var(--fs-small); color: var(--muted); white-space: nowrap; }
 .fly-r svg { flex: none; color: var(--faint); }
 @media (hover: hover) and (pointer: fine) {
   .fly-chip:hover { background: var(--surface-3); border-color: color-mix(in srgb, var(--k) 45%, var(--line-2)); }
@@ -202,12 +202,12 @@
 .th-price { grid-area: price; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
 .th-big {
   font-family: var(--font-num); font-variant-numeric: tabular-nums;
-  font-size: 32px; font-weight: 650; letter-spacing: -0.025em; line-height: 1.05;
+  font-size: var(--fs-hero); font-weight: 600; letter-spacing: -0.025em; line-height: 1.05;
   color: var(--text); white-space: nowrap;
 }
-.th-kr { font-size: 16px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
-.th-q { margin-left: 4px; font-size: 16px; font-weight: 500; color: var(--faint); cursor: help; }
-.th-sub { font-size: 12px; color: var(--faint); }
+.th-kr { font-size: var(--fs-title); font-weight: 500; letter-spacing: 0; color: var(--muted); }
+.th-q { margin-left: 4px; font-size: var(--fs-title); font-weight: 500; color: var(--faint); cursor: help; }
+.th-sub { font-size: var(--fs-small); color: var(--faint); }
 .th-legs {
   grid-area: legs;
   display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px;
@@ -224,7 +224,7 @@
     padding: 16px 14px 14px;
   }
   .th-price { flex-direction: row; align-items: baseline; gap: 8px; }
-  .th-big { font-size: 28px; }
+  .th-big { font-size: var(--fs-display); }
   .th-legs { flex-direction: column; align-items: stretch; gap: 8px; padding-top: 12px; }
   /* two chips a line, the date over the codes */
   .fly { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -236,6 +236,6 @@
   }
   .fly-ico { grid-row: 1 / 3; }
   .fly-d { line-height: 1.25; }
-  .fly-r { font-size: 11.5px; line-height: 1.25; }
+  .fly-r { font-size: var(--fs-small); line-height: 1.25; }
 }
 }

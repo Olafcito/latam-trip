@@ -2,7 +2,7 @@ import type { AppData } from '../data/types'
 import { useStore } from '../store'
 import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
 import { CostStrip } from '../components/CostStrip'
-import { Download, Pin, Warn } from '../components/icons'
+import { Caret, Download, Pin, Warn } from '../components/icons'
 import { Notice } from '../components/Notice'
 import { Story } from '../components/story/Story'
 import { TripHead } from '../components/story/TripHead'
@@ -36,7 +36,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
     return (
       <div className="dash">
         <div className="row dash-head">
-          <button className="btn link small" onClick={() => go('trips', 'home')}>‹ Trips</button>
+          <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
           <h2 className="h2">{journey.name}</h2>
         </div>
         <div className="card pad empty">Its flights are no longer in the data. <button className="btn small" onClick={() => go('trips', 'pick')}>Pick in and out</button></div>
@@ -47,7 +47,6 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const exitNode = nodeForAirport(inout, wh.from)
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
-  const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
   // a warning about one leg sits on that leg
   const general = sched.warnings.filter((w) => w.leg == null && w.picked == null)
   const heads = journey.places.map((p, i) => ({ name: nm(p.node), node: map.nodes.find((n) => n.id === p.node), days: sched.places[i].days, inDay: sched.places[i].inDay }))
@@ -55,13 +54,12 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   return (
     <div className="dash">
       <div className="row dash-head">
-        <button className="btn link small" onClick={() => go('trips', 'home')}>‹ Trips</button>
+        <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
         <h2 className="h2">{journey.name}</h2>
         {journey.rank != null && <span className="rank" title="Rank among the planned trips">#{journey.rank}</span>}
-        {dirty && <span className="pill draft">Not saved</span>}
         <span className="spacer" />
-        <button className="btn primary small" onClick={() => openSaved(journey)}><Pin />Build on the map</button>
-        <button className="btn small" onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
+        <button className="btn small" onClick={() => openSaved(journey)}><Pin />Build on the map</button>
+        <button className={`btn small${dirty ? ' primary' : ''}`} onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
         <button className="btn link small" onClick={exportJson}><Download />Export JSON</button>
       </div>
 
@@ -78,7 +76,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
       )}
 
       <section className="card pad dash-route" aria-label="Route">
-        <TripHead places={heads} costs={<CostStrip t={t} total={allIn} />} />
+        <TripHead places={heads} costs={<CostStrip t={t} />} />
         <Story data={data} journey={journey} sched={sched} wayIn={wi} wayHome={wh} />
       </section>
     </div>

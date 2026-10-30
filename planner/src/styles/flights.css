@@ -6,7 +6,7 @@
   .fl { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; font-size: var(--fs-body); }
   .fl-top { flex: none; display: flex; flex-direction: column; gap: 16px; padding: 20px 20px 12px; }
   .fl-h { padding-right: 36px; }
-  .fl-h h3 { margin: 0; font-size: var(--fs-title); font-weight: 650; line-height: 1.3; letter-spacing: -0.01em; text-wrap: balance; }
+  .fl-h h3 { margin: 0; font-size: var(--fs-title); font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; text-wrap: balance; }
   .fl-h small { display: block; margin-top: 2px; font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
 
   /* what the day leaves you with on either side of the flight */
@@ -30,8 +30,8 @@
   .fl-day[aria-checked='true'] { background: var(--flight); color: var(--flight-ink); }
   .fl-day[aria-checked='true'] :is(small, span) { color: var(--flight-ink); }
   .fl-day:active { transform: scale(0.97); }
-  .fl-day:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
-  .fl-page { display: none; flex: none; width: 28px; height: 28px; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
+  .fl-day:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+  .fl-page { display: none; flex: none; width: var(--hit); height: var(--hit); place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
   .fl-page:active { transform: scale(0.94); }
   .fl-page:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
   @media (hover: hover) and (pointer: fine) {
@@ -52,7 +52,7 @@
   /* a flight: who, when, how much */
   .fl-row { display: grid; grid-template-columns: 148px minmax(0, 1fr) 96px; gap: 8px 16px; align-items: start; padding: 16px 0; }
   .fl-air { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; align-items: start; min-width: 0; }
-  .fl-logo { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: var(--surface-3); color: var(--muted); font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.02em; }
+  .fl-logo { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: var(--surface-3); color: var(--muted); font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.02em; }
   .fl-who { min-width: 0; }
   .fl-who b, .fl-who small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .fl-who b { font-size: var(--fs-small); font-weight: 600; }
@@ -61,7 +61,7 @@
   .fl-line { display: grid; grid-template-columns: 68px minmax(0, 1fr) 68px; gap: 12px; align-items: start; min-width: 0; }
   .fl-end { min-width: 0; }
   .fl-end.to { text-align: right; }
-  .fl-end b { position: relative; display: block; font-size: var(--fs-num-lg); font-weight: 650; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .fl-end b { position: relative; display: block; font-size: var(--fs-num-lg); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .fl-end sup { position: absolute; left: 100%; top: 0; margin-left: 1px; line-height: 1.2; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0; color: var(--flight); }
   .fl-end small { display: block; margin-top: 2px; font-size: var(--fs-label); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .fl-end small[data-other='true'] { font-weight: 600; color: var(--text); }
@@ -75,7 +75,7 @@
   .fl-notime { margin: 0; padding-top: 8px; font-size: var(--fs-small); color: var(--muted); }
 
   .fl-price { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
-  .fl-price b { font-size: var(--fs-title); font-weight: 650; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .fl-price b { font-size: var(--fs-title); font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .fl-row:has(.fl-notes) .fl-price { grid-row: 1 / span 2; grid-column: 3; }
   .fl-notes { grid-column: 2; list-style: none; display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 0; padding: 0; font-size: var(--fs-small); color: var(--muted); }
   .fl-notes [data-bad='true'] { color: var(--err); }
@@ -111,7 +111,7 @@
     .fl-line, .fl-notime { grid-row: 2; grid-column: 1 / -1; }
     .fl-price, .fl-row:has(.fl-notes) .fl-price { grid-row: 1; grid-column: 2; }
     .fl-notes { grid-column: 1 / -1; }
-    .fl-end b { font-size: 20px; }
+    .fl-end b { font-size: var(--fs-head); }
     .fl-bar { flex-wrap: wrap; }
     .fl-sort { flex: 1 0 100%; margin-left: 0; }
   }

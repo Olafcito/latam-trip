@@ -4,7 +4,7 @@
 /* one column, as wide as the rows of the route read well */
 .dash { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 760px; margin-inline: auto; }
 .dash-head { gap: 10px; }
-.dash-head .h2 { font-size: 20px; letter-spacing: -0.02em; }
+.dash-head .h2 { font-size: var(--fs-head); letter-spacing: -0.02em; }
 .dash .flag { flex: none; display: block; }
 
 /* hero: four facts. The card is the container, so the grid follows its own width, not the window.
@@ -12,16 +12,16 @@
 .dash-hero { container-type: inline-size; overflow: hidden; }
 .facts { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); }
 .fact { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 14px 16px; box-shadow: -1px 0 0 var(--line), 0 -1px 0 var(--line); }
-.fact b { font-size: 18px; font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
+.fact b { font-size: var(--fs-lead); font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
 .fact.big b { font-size: var(--fs-num-lg); color: var(--flight); }
 .fact small { font-size: var(--fs-label); color: var(--faint); }
 @container (max-width: 620px) {
   .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .fact { padding: 12px 14px; }
-  .fact.big b { font-size: 22px; }
+  .fact.big b { font-size: var(--fs-num-lg); }
 }
 .dash-warn { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
-.dash-warn li { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 500; }
+.dash-warn li { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line); font-size: var(--fs-num); font-weight: 500; }
 .dash-warn li svg { flex: none; }
 .dash-warn li .btn { margin-left: auto; flex: none; }
 .dash-warn li.warn { color: var(--flight); }
@@ -45,20 +45,20 @@
 /* ---- route ---- */
 .tl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .tl-way { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 10px 12px; border-radius: var(--radius); background: var(--surface-2); }
-.tl-way b { flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 600; }
-.tl-way small { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.tl-way b { flex: 1 1 auto; min-width: 0; font-size: var(--fs-body); font-weight: 600; }
+.tl-way small { font-size: var(--fs-small); color: var(--muted); white-space: nowrap; }
 .tl-way .io-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
 .tl-way .io-dot.in { background: var(--in); }
 .tl-way .io-dot.home { background: var(--home); }
 
 .tl-stop { position: relative; overflow: hidden; border-radius: var(--radius); box-shadow: inset 0 0 0 1px var(--line); background: var(--surface); transition: background-color var(--t-fast) ease; }
 .tl-stop > .tl-row { min-height: max(var(--hit), 44px); padding: 8px 12px 8px 10px; }
-.tl-n { flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; color: var(--flight-ink); font-size: 12px; font-weight: 600; }
+.tl-n { flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; color: var(--flight-ink); font-size: var(--fs-small); font-weight: 600; }
 .tl-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-.tl-name { min-width: 0; font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tl-dates { font-size: 12px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tl-name { min-width: 0; font-size: var(--fs-body); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl-dates { font-size: var(--fs-small); color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .tl-days { flex: none; font-size: var(--fs-small); color: var(--muted); white-space: nowrap; cursor: help; font-variant-numeric: tabular-nums; }
-.tl-days b { font-size: 15px; font-weight: 600; color: var(--text); }
+.tl-days b { font-size: var(--fs-title); font-weight: 600; color: var(--text); }
 .tl-days[data-exact='false'] b { color: color-mix(in srgb, var(--text) 72%, transparent); }
 /* the stop's share of the trip, along the bottom of its card */
 .tl-bar { position: absolute; left: 0; bottom: 0; height: 3px; border-radius: 0 2px 2px 0; background: var(--in); opacity: 0.75; pointer-events: none; }
@@ -87,7 +87,7 @@
 .dchip-btn {
   position: relative; display: inline-flex; align-items: center; gap: 6px;
   min-height: 30px; padding: 0 10px; border: 0; border-radius: inherit; background: none; color: inherit;
-  font: inherit; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer;
+  font: inherit; font-size: var(--fs-small); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer;
   transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease;
 }
 .dchip-btn::after { content: ''; position: absolute; inset: -7px -2px; }
@@ -115,12 +115,12 @@
 .cph.home { --io: var(--home); }
 .cph-row { flex-wrap: wrap; gap: 4px 10px; min-height: max(var(--hit), 44px); padding: 8px 12px; }
 .cph-dir { flex: none; display: inline-flex; color: var(--io); }
-.cph-route { flex: 1 1 auto; min-width: 0; font-size: 13.5px; font-weight: 600; }
+.cph-route { flex: 1 1 auto; min-width: 0; font-size: var(--fs-body); font-weight: 600; }
 .cph-meta { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: var(--fs-small); color: var(--muted); white-space: nowrap; }
 .cph-dur { color: var(--text); font-weight: 500; }
-.cph-warn { display: inline-flex; font-size: 11px; font-weight: 600; color: var(--flight); cursor: help; }
+.cph-warn { display: inline-flex; font-size: var(--fs-label); font-weight: 600; color: var(--flight); cursor: help; }
 .cph-more { display: flex; flex-direction: column; gap: 8px; padding: 2px 12px 12px; }
-.cph-more p { margin: 0; font-size: 12px; color: var(--muted); }
+.cph-more p { margin: 0; font-size: var(--fs-small); color: var(--muted); }
 @media (hover: hover) and (pointer: fine) {
   .cph:has(> .cph-row:hover) { background: var(--surface-2); }
 }
@@ -133,7 +133,7 @@
 .costs dt { font-size: var(--fs-small); color: var(--muted); }
 .costs dd { margin: 0; font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .costs dd .q { font-size: var(--fs-small); font-weight: 400; }
-.costs-row dl > div:first-child dd { font-size: var(--fs-num-lg); font-weight: 650; line-height: 1.1; letter-spacing: -0.02em; }
+.costs-row dl > div:first-child dd { font-size: var(--fs-num-lg); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
 .costs-btn { width: auto; gap: 6px; min-height: var(--hit); margin: 0 -8px 0 auto; padding: 0 8px; font-size: var(--fs-small); font-weight: 500; color: var(--muted); transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease; }
 .costs-btn:active { transform: scale(0.97); }
 .costs-btn:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
@@ -157,7 +157,7 @@
 .dash-legend b { font-weight: 600; }
 
 /* totals */
-.tot { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; font-size: 13px; }
+.tot { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; font-size: var(--fs-num); }
 .tot .k { color: var(--muted); }
 .tot .v { text-align: right; font-family: var(--font-num); font-weight: 500; }
 .tot .sep { grid-column: 1 / -1; border-top: 1px solid var(--line); margin: 4px 0; }
@@ -170,7 +170,7 @@
 /* mini map */
 .minimap { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 10px; }
 .minimap svg { display: block; }
-.minimap-cta { position: absolute; right: 8px; bottom: 8px; padding: 4px 9px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); font-size: 12px; font-weight: 600; opacity: 0.85; transition: opacity var(--t-fast) ease; }
+.minimap-cta { position: absolute; right: 8px; bottom: 8px; padding: 4px 9px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); font-size: var(--fs-small); font-weight: 600; opacity: 0.85; transition: opacity var(--t-fast) ease; }
 .minimap:focus-visible .minimap-cta { opacity: 1; }
 @media (hover: hover) and (pointer: fine) {
   .minimap:hover .minimap-cta { opacity: 1; }

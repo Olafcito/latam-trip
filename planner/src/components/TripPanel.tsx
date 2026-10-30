@@ -5,7 +5,7 @@ import { TRIP_COLORS } from '@map/data/trips'
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
 import { hours, kr, weekdayDay } from '../lib/format'
-import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
+import { groundCost, nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from '../lib/journey'
 import { countryName } from '../lib/colors'
 import { Flag } from '@map/map/Flag'
 import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
@@ -76,7 +76,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const exitNode = nodeForAirport(inout, wh.from)
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
-  const allIn = t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
+  const allIn = travelTotal(t)
   const lastIdx = journey.places.length - 1
   const at = cursor ?? lastIdx
   const here = journey.places[at]
@@ -271,8 +271,9 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
           <dl className="plan-tot">
             <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
             <dt>Regional flights</dt><dd>{kr(t.regional_flights_dkk)}</dd>
-            <dt>Ground transport</dt><dd>{kr(t.ground_dkk)}{t.ground_unknown ? <span className="q" title={`${t.ground_unknown} hop(s) without a price`}>, some not priced</span> : null}</dd>
+            <dt>Ground transport</dt><dd>{groundCost(t)}</dd>
             <dt>Cabin bags</dt><dd><Money v={t.cabin_bag_dkk} /></dd>
+            <dt>Checked bags</dt><dd><Money v={t.checked_bag_dkk} /></dd>
             <dt>Hub nights, stay est.</dt><dd>{t.hub_nights} · <Money v={t.hub_stay_dkk} /></dd>
             <dt>Flights, hours in the air</dt><dd>{t.flights} · {hours(t.air_hours)}</dd>
           </dl>

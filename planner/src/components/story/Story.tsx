@@ -5,7 +5,7 @@ import type { AppData, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, hours, weekdayDay } from '../../lib/format'
-import { giveNight, legDay, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
+import { backToFlights, giveNight, legDay, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
 import { iataOf, pricesOn, type PairDates } from '../../lib/prices'
 import { familyOf } from '../../lib/route'
@@ -149,7 +149,7 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, home }: {
  * Travel between two stops, one line: the day it leaves, a button to the calendar when the day can
  * move, then its mode and length with its ticket behind them. The rail is the leg drawn.
  */
-function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, stale, fromName, onSet }: {
+function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, stale, fromName, onSet, onBack }: {
   fam: Family
   tone?: 'in' | 'home'
   route: string
@@ -169,6 +169,8 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   stale?: Warning
   fromName: string
   onSet?: (date: string) => void
+  /** puts this leg, and any later leg off its flight, back on its flight */
+  onBack?: (() => void) | null
 }) {
   const when = usePop(false)
   const pop = usePop(false)
@@ -211,7 +213,7 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
       {stale?.fix && (
         <p className="st-clash" data-level="warn">
           <Warn /><span>The flight you picked leaves {day(stale.fix)}</span>
-          {onSet && <button type="button" className="btn small" onClick={() => onSet(stale.fix!)}>Move to {day(stale.fix)}</button>}
+          {onBack && <button type="button" className="btn small" onClick={onBack}>Move to {day(stale.fix)}</button>}
         </p>
       )}
     </li>
@@ -310,6 +312,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           stale={sched.warnings.find((w) => w.picked === i)}
           fromName={ends.fromName}
           onSet={(d) => setHopDate(i, d)}
+          onBack={press(backToFlights(journey, sched, i))}
           aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${dur != null ? `, ${hours(dur)}` : ''}${h.overnight ? ', overnight' : ''}. Details`}
           travel={<Travel fam={fam} dur={dur} overnight={!!h.overnight} />}
           picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} onSet={(d) => setHopDate(i, d)} />}
