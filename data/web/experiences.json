@@ -12775,5 +12775,725 @@
   },
   "image_source": "place",
   "saved_in": []
+ },
+ {
+  "id": "gym-santa-cruz-team-violencia-cec",
+  "name": "Team Violencia CEC (Santa Cruz)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "kickboxing"
+  ],
+  "places": [
+   "VVI"
+  ],
+  "area": "Santa Cruz de la Sierra",
+  "country": "BO",
+  "lat": -17.78,
+  "lon": -63.18,
+  "summary": "Fight team behind the Copa Violencia MMA promotion, with a roster of active pros on Sherdog (Bazan 17-10, Chavez 11-2, Rodriguez 11-3, Flores 12-7-1). It is the most active striking and MMA team found in Bolivia in 2026 but no gym address, timetable or price could be found, so contact before travelling.",
+  "season": "year round",
+  "dec_jan": "Likely yes. Team fighters competed on 13 Dec 2025 (Copa Violencia 2) and 7 Feb 2026 (Copa Violencia 3), so December and early February are fight season. Gym timetable itself unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown, ask by message. Expect an assessment before sparring.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "kickboxing (unverified)"
+   ],
+   "coaches": "Not found. Only fighter pages list the team.",
+   "fighters": "Carlos Bazan (Sherdog 17-10, last fight 21 Aug 2026), Fabio Chavez (11-2, won Copa Violencia 4 on 4 Jul 2026), Leonardo Rodriguez (11-3, Cotoca, main event Copa Violencia 4), Jose David Flores (12-7-1, lost 5 Jun 2026). Sherdog lists Team Violencia CEC for all four.",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2026-10 (Copa Violencia 5 on 24 Oct 2026 per Sherdog fighter page of Ronald Bolivar)",
+   "what_people_say": [],
+   "neighbourhood": "Not known. Gym address not found. City centre and the Equipetrol area are the usual places for visitors to rent a room (general knowledge, unchecked).",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea. Landlocked lowland city, nothing walkable found. Coordinates are the city centre, not the gym.",
+   "score": {
+    "training": 7,
+    "evidence": 4,
+    "local_life": 7,
+    "cost": 8,
+    "water": 2,
+    "total": 6.2
+   },
+   "score_note": "Training 7 from four active pros and a regular fight series. Evidence 4 because it rests on Sherdog and Tapology only, no reviews or timetable. Cost score is a judgement, no gym or room price was found (Numbeo and rental sites could not be opened), so room_month_dkk is null."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://sherdog.com/fighter/Carlos-Bazan-87376",
+   "https://www.sherdog.com/fighter/Fabio-Chavez-206167",
+   "https://sherdog.com/fighter/Leonardo-Rodriguez-243787",
+   "https://www.sherdog.com/fighter/Jose-David-Flores-98023",
+   "https://www.sherdog.com/events/Copa-Violencia-Version-4-113358",
+   "https://www.tapology.com/fightcenter/events/132341-copa-violencia",
+   "https://www.sherdog.com/fighter/Ronald-Bolivar-206179"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "credit": "Rojk",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-santa-cruz-la-base-mma-entram-gym",
+  "name": "La Base MMA / Entram Gym (Santa Cruz)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "VVI"
+  ],
+  "area": "Santa Cruz de la Sierra",
+  "country": "BO",
+  "lat": -17.78,
+  "lon": -63.18,
+  "summary": "Team named on the Sherdog page of featherweight Jhermys Coronado (11-4, three wins in Dec 2025 and Mar 2025). Only this one fighter points to it, and there is no address, timetable or price, so it is a lead to message, not a confirmed base.",
+  "season": "year round",
+  "dec_jan": "Likely yes for fighters. Coronado won on 6 Dec 2025 (TFL 1) and 13 Dec 2025 (CFC 14). Gym timetable unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown, ask by message",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": "Jhermys Coronado (Sherdog 11-4, featherweight, last listed fight 13 Dec 2025, Santa Cruz).",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2025-12 (Sherdog fighter page)",
+   "what_people_say": [],
+   "neighbourhood": "Not known.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea. Coordinates are the city centre, not the gym.",
+   "score": {
+    "training": 5,
+    "evidence": 2,
+    "local_life": 7,
+    "cost": 8,
+    "water": 2,
+    "total": 5.1
+   },
+   "score_note": "Training 5 is cautious, one active pro found. Evidence 2, one fighter page only. Cost score is a judgement, no gym or room price was found (Numbeo and rental sites could not be opened), so room_month_dkk is null."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/fighter/Jhermys-Coronado-383066"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "credit": "Rojk",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-santa-cruz-nova-team-training-center",
+  "name": "Nova Team Training Center (Santa Cruz)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "VVI"
+  ],
+  "area": "Santa Cruz de la Sierra",
+  "country": "BO",
+  "lat": -17.78,
+  "lon": -63.18,
+  "summary": "Training centre linked to promoter Cristian Nova (Cristian Nova Promotions), which hosted International Fighting MMA cards in Santa Cruz. The last dated activity found is from 2022 and 2023, so treat it as unconfirmed for 2026.",
+  "season": "year round",
+  "dec_jan": "unknown, no 2025 or 2026 activity found",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown, ask by message",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2023-07 (Tapology, Santa Cruz Fight Night 3 listing)",
+   "what_people_say": [],
+   "neighbourhood": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea. Coordinates are the city centre.",
+   "score": {
+    "training": 4,
+    "evidence": 1,
+    "local_life": 7,
+    "cost": 8,
+    "water": 2,
+    "total": 4.6
+   },
+   "score_note": "Evidence 1, old Tapology listing only. Cost score is a judgement, no gym or room price was found (Numbeo and rental sites could not be opened), so room_month_dkk is null."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tapology.com/fightcenter/events/101306-santa-cruz-fight-night-3"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "credit": "Rojk",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-la-paz-altitud-mma",
+  "name": "Altitud MMA (La Paz)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "LPB"
+  ],
+  "area": "La Paz, Los Pinos",
+  "country": "BO",
+  "lat": -16.54,
+  "lon": -68.08,
+  "summary": "MMA gym and promotion in the Los Pinos district that runs the Altitud Striking Force cards. Sherdog lists Team Altitud fighters such as Alvaro Quiroga (9-4, won on 28 Aug 2026) and amateurs on ASF cards. Training happens at 3,650 m, so expect a slow first two weeks.",
+  "season": "year round",
+  "dec_jan": "Likely yes. Altitud held ASF 5 on 10 Oct 2025 and AC 2 at the gym on 17 Oct 2026, with ASF 7 set for 13 Nov 2026. December schedule unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown, ask by message",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "striking (unverified)"
+   ],
+   "coaches": null,
+   "fighters": "Alvaro Quiroga (Sherdog 9-4 featherweight, Team Altitud, win 28 Aug 2026), Nicolas Eyzaguirre (amateur 2-2, Team Altitud, win 10 Oct 2025). Altitud promotion has run 6 events and has ASF 7 on 13 Nov 2026.",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2026-10 (Sherdog Altitud organisation page, event AC 2 at Altitud MMA, Los Pinos, 17 Oct 2026)",
+   "what_people_say": [],
+   "neighbourhood": "Not confirmed. Los Pinos is in the southern zone of La Paz, so Calacoto or Obrajes are near (general knowledge, unchecked). Coordinates are approximate for Los Pinos, not the gym door.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea. Lake Titicaca is the nearest big water, a day trip from La Paz. Nothing walkable.",
+   "score": {
+    "training": 6,
+    "evidence": 4,
+    "local_life": 6,
+    "cost": 7,
+    "water": 3,
+    "total": 5.6
+   },
+   "score_note": "Training 6 from an active team and own promotion, sparring not confirmed. Evidence 4 from Sherdog only. Cost score is a judgement, no gym or room price was found (Numbeo and rental sites could not be opened), so room_month_dkk is null."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://sherdog.com/organizations/Altitud-Striking-Force-18026",
+   "https://www.sherdog.com/fighter/Alvaro-Quiroga-181705",
+   "https://www.sherdog.com/fighter/Nicolas-Eyzaguirre-437107",
+   "https://www.sherdog.com/events/ASF-6-Altitud-Striking-Force-6-112742"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg/1280px-Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_La_Paz,_Bolivia_(24473584779).jpg",
+   "credit": "Murray Foubister",
+   "licence": "CC BY-SA 2.0",
+   "w": 14177,
+   "h": 5200
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-la-paz-ufc-gym-bolivia",
+  "name": "UFC Gym Bolivia (La Paz)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "boxing"
+  ],
+  "places": [
+   "LPB"
+  ],
+  "area": "La Paz",
+  "country": "BO",
+  "lat": -16.5,
+  "lon": -68.15,
+  "summary": "Franchise gym with a La Paz page on ufcgymbolivia.com.bo. The page could not be opened, so classes, prices and level are unknown. Branded UFC gyms are usually fitness-style, so expect little real sparring.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": null,
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "no dated activity found",
+   "what_people_say": [],
+   "neighbourhood": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea. Coordinates are the city centre.",
+   "score": {
+    "training": 3,
+    "evidence": 1,
+    "local_life": 4,
+    "cost": 6,
+    "water": 3,
+    "total": 3.4
+   },
+   "score_note": "Training 3 is an assumption from the franchise model, not evidence. Cost score is a judgement, no gym or room price was found (Numbeo and rental sites could not be opened), so room_month_dkk is null."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.ufcgymbolivia.com.bo/la-paz/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg/1280px-Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_La_Paz,_Bolivia_(24473584779).jpg",
+   "credit": "Murray Foubister",
+   "licence": "CC BY-SA 2.0",
+   "w": 14177,
+   "h": 5200
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-cochabamba-team-orozco",
+  "name": "Team Orozco (Cochabamba)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "CBB"
+  ],
+  "area": "Cochabamba",
+  "country": "BO",
+  "lat": -17.39,
+  "lon": -66.16,
+  "summary": "Fight team of featherweight Jhasyb Orozco (Sherdog 4-6-1, Cochabamba), who fought Champion 25 on 21 Aug 2026 and is booked for TFL 3 in Montero on 21 Nov 2026. Only one fighter was found, so level and address are unknown.",
+  "season": "year round",
+  "dec_jan": "Probably. Orozco fought on 28 Nov 2025 (Champion 24) and has a bout on 21 Nov 2026. Gym schedule unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown, ask by message",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": "Jhasyb Orozco (Sherdog 4-6-1, Team Orozco, Cochabamba, upcoming TFL 3 on 21 Nov 2026).",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2026-08 (Sherdog, Champion 25 draw on 21 Aug 2026)",
+   "what_people_say": [],
+   "neighbourhood": "Not known. Coordinates are the city centre.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea. Cochabamba is a valley city at about 2,550 m, nothing swimmable close by was found.",
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 8,
+    "cost": 9,
+    "water": 2,
+    "total": 5.1
+   },
+   "score_note": "Training 4 from a single pro with a losing record, Evidence 2. Cost score is a judgement, no gym or room price was found (Numbeo and rental sites could not be opened), so room_month_dkk is null."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://sherdog.com/fighter/Jhasyb-Orozco-207989"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Panorama_de_Cochabamba_Bolivia.jpg/1280px-Panorama_de_Cochabamba_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_de_Cochabamba_Bolivia.jpg",
+   "credit": "Lucas from Campinas, Brazil",
+   "licence": "CC BY-SA 2.0",
+   "w": 2592,
+   "h": 1944
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-cochabamba-muay-thai-kick-boxing-cochabamba",
+  "name": "Muay Thai - Kick Boxing Cochabamba (Cochabamba)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "kickboxing"
+  ],
+  "places": [
+   "CBB"
+  ],
+  "area": "Cochabamba",
+  "country": "BO",
+  "lat": -17.39,
+  "lon": -66.16,
+  "summary": "A Facebook page named Muay Thai - Kick Boxing Cochabamba appeared in search, which makes it the only striking-specific club found in the city. Facebook blocked the fetch, so coaches, address, prices and activity dates are all unverified.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "unknown, message the page before travelling",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "kickboxing"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "unknown, Spanish is the safe assumption",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "not seen (Facebook blocked)",
+   "what_people_say": [],
+   "neighbourhood": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea. Coordinates are the city centre.",
+   "score": {
+    "training": 4,
+    "evidence": 1,
+    "local_life": 8,
+    "cost": 9,
+    "water": 2,
+    "total": 4.9
+   },
+   "score_note": "Scores are placeholders for an unverified club, Evidence 1. Cost score is a judgement, no gym or room price was found (Numbeo and rental sites could not be opened), so room_month_dkk is null."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.facebook.com/kickboxingmuaythaicbba/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Panorama_de_Cochabamba_Bolivia.jpg/1280px-Panorama_de_Cochabamba_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_de_Cochabamba_Bolivia.jpg",
+   "credit": "Lucas from Campinas, Brazil",
+   "licence": "CC BY-SA 2.0",
+   "w": 2592,
+   "h": 1944
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-santa-cruz-de-la-sierra-training",
+  "name": "Santa Cruz de la Sierra: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "VVI"
+  ],
+  "area": "Santa Cruz de la Sierra",
+  "country": "BO",
+  "lat": -17.78,
+  "lon": -63.18,
+  "summary": "Santa Cruz has the most active MMA scene found in Bolivia, with Team Violencia CEC running its own Copa Violencia cards every few months (Dec 2025, Feb, Jul and Oct 2026). Evidence is only fighter records, with no gym address, timetable, price or review found, so a message to the team is needed before it is a plan. Hot, flat, landlocked and not a beach city.",
+  "season": "year round",
+  "dec_jan": "December is hot and humid (about 30 C plus) with rain, general knowledge. Fight cards ran on 6 and 13 Dec 2025.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-santa-cruz-team-violencia-cec",
+    "gym-santa-cruz-la-base-mma-entram-gym",
+    "gym-santa-cruz-nova-team-training-center"
+   ],
+   "best_gym": "gym-santa-cruz-team-violencia-cec",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched. City centre or Equipetrol are the common visitor areas (general knowledge, unchecked).",
+   "safety": "A Los Tiempos headline of 27 Apr 2026 reports three people shot and a Umopar patrol ambushed in the Santa Cruz area. Treat as an unresolved question and check current advice.",
+   "water_note": "No sea or beach. Nothing walkable found.",
+   "local_life": "Locals fight there and the promotion is Bolivian-run. No foreigner scene was seen.",
+   "what_people_say": [],
+   "score": {
+    "training": 7,
+    "evidence": 4,
+    "local_life": 7,
+    "cost": 8,
+    "water": 2,
+    "total": 6.2
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/events/Copa-Violencia-Version-4-113358",
+   "https://sherdog.com/fighter/Carlos-Bazan-87376",
+   "https://www.lostiempos.com/actualidad/pais/20260427/acribillan-tres-personas-santa-cruz-narcos-emboscan-patrulla-umopar"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_Santa_Cruz_de_la_Sierra_Bolivia.jpg",
+   "credit": "Rojk",
+   "licence": "CC BY-SA 3.0",
+   "w": 1024,
+   "h": 768
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-la-paz-training",
+  "name": "La Paz: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "LPB"
+  ],
+  "area": "La Paz",
+  "country": "BO",
+  "lat": -16.5,
+  "lon": -68.15,
+  "summary": "La Paz has Altitud MMA in Los Pinos, which runs its own cards (latest 17 Oct 2026 at the gym, next ASF 7 on 13 Nov 2026) and has an active featherweight at 9-4. It is a smaller and thinner scene than Santa Cruz and no price, timetable or review was found. At 3,650 m it is a hard place to train in the first fortnight.",
+  "season": "year round",
+  "dec_jan": "December is the wet season and cool at altitude (general knowledge). Altitud event dates seen in Oct and Nov.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-la-paz-altitud-mma",
+    "gym-la-paz-ufc-gym-bolivia"
+   ],
+   "best_gym": "gym-la-paz-altitud-mma",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Southern zone near Los Pinos (Calacoto, Obrajes) is likely. Unchecked.",
+   "safety": "Not researched.",
+   "water_note": "No sea. Lake Titicaca is a day trip.",
+   "local_life": "Bolivian fight team and promotion. Octagon La Paz is a BJJ academy (BJJ Globetrotters, Jan 2021) that adds grappling.",
+   "what_people_say": [],
+   "score": {
+    "training": 6,
+    "evidence": 4,
+    "local_life": 6,
+    "cost": 7,
+    "water": 3,
+    "total": 5.6
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://sherdog.com/organizations/Altitud-Striking-Force-18026",
+   "https://www.sherdog.com/fighter/Alvaro-Quiroga-181705",
+   "https://bjjglobetrotters.com/?p=52164"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg/1280px-Panorama_La_Paz%2C_Bolivia_%2824473584779%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_La_Paz,_Bolivia_(24473584779).jpg",
+   "credit": "Murray Foubister",
+   "licence": "CC BY-SA 2.0",
+   "w": 14177,
+   "h": 5200
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-cochabamba-training",
+  "name": "Cochabamba: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "CBB"
+  ],
+  "area": "Cochabamba",
+  "country": "BO",
+  "lat": -17.39,
+  "lon": -66.16,
+  "summary": "Cochabamba has a pro and amateur MMA scene (Orozco, Rocha, Rosales on Sherdog) but no gym with an address, timetable or review turned up, and the one Muay Thai and kickboxing Facebook page could not be opened. It fits the last week with friends and local life, not serious weeks of training, unless Simon's friends know a gym. Ask them first.",
+  "season": "year round",
+  "dec_jan": "December is warm and wet (general knowledge). Fighters here competed on 28 Nov 2025 and 23 Dec 2022.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-cochabamba-team-orozco",
+    "gym-cochabamba-muay-thai-kick-boxing-cochabamba"
+   ],
+   "best_gym": "gym-cochabamba-team-orozco",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched.",
+   "safety": "Not researched.",
+   "water_note": "No sea. Valley city at about 2,550 m.",
+   "local_life": "Local fighters, no foreigner scene seen. Old friends in the city are a real asset for finding a gym.",
+   "what_people_say": [],
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 8,
+    "cost": 9,
+    "water": 2,
+    "total": 5.1
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://sherdog.com/fighter/Jhasyb-Orozco-207989",
+   "https://www.facebook.com/kickboxingmuaythaicbba/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Panorama_de_Cochabamba_Bolivia.jpg/1280px-Panorama_de_Cochabamba_Bolivia.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_de_Cochabamba_Bolivia.jpg",
+   "credit": "Lucas from Campinas, Brazil",
+   "licence": "CC BY-SA 2.0",
+   "w": 2592,
+   "h": 1944
+  },
+  "image_source": "place",
+  "saved_in": []
  }
 ]
