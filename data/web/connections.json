@@ -2106,12 +2106,57 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-20",
+      "2026-12-21",
       "2026-12-26",
       "2026-12-27",
       "2026-12-28",
       "2027-01-20"
      ],
      "by_date": [
+      {
+       "date": "2026-12-20",
+       "from": "PTY",
+       "to": "VVI",
+       "dkk": 4860,
+       "dep": "21:45",
+       "arr": "03:42",
+       "arr_days": 1,
+       "duration_min": 357,
+       "vias": [],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM221"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
+       "link": "https://kiwi.com/u/hdvm3g"
+      },
+      {
+       "date": "2026-12-21",
+       "from": "PTY",
+       "to": "VVI",
+       "dkk": 3984,
+       "dep": "18:10",
+       "arr": "02:40",
+       "arr_days": 1,
+       "duration_min": 450,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "AV57",
+        "AV167"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-21",
+       "link": "https://kiwi.com/u/kx7kzt"
+      },
       {
        "date": "2026-12-26",
        "from": "VVI",
@@ -2229,7 +2274,7 @@
       "basic_fare",
       "self_transfer"
      ],
-     "quotes": 15
+     "quotes": 17
     },
     "source": "crawl",
     "observed_at": "2026-10-30T12:12:01Z",
