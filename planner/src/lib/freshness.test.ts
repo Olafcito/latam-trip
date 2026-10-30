@@ -23,7 +23,7 @@ describe('freshness', () => {
     expect(isStale(null, NOW)).toBe(false)
     const [f] = freshness(meta({ tasks: null }), NOW)
     expect(f).toEqual({ type: 'tasks', at: null, ageDays: null, stale: false })
-    expect(ageLabel(f.ageDays)).toBe('?')
+    expect(ageLabel(f.ageDays)).toBe('never')
     expect(ageLabel(0)).toBe('today')
     expect(ageLabel(1)).toBe('1 d')
     expect(ageLabel(5)).toBe('5 d')
@@ -65,8 +65,8 @@ describe('freshness', () => {
   it('the checked date reads as a day, with the local clock when there is one', () => {
     expect(checkedLabel('2026-10-29')).toBe('29 Oct')
     expect(checkedLabel('2026-10-28T20:37:33')).toBe('28 Oct 20:37')
-    expect(checkedLabel(null)).toBe('?')
-    expect(checkedLabel('soon')).toBe('?')
+    expect(checkedLabel(null)).toBe('not checked')
+    expect(checkedLabel('soon')).toBe('not checked')
   })
 
   it('the corner leads with flights unless another type is stale and flights is not', () => {

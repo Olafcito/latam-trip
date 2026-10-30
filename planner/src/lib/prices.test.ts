@@ -61,7 +61,7 @@ describe('labels', () => {
   it('calls a price Simon saved "saved by you"', () => {
     expect(sourceLabel('momondo-manual')).toBe('saved by you')
     expect(sourceLabel('google_flights')).toBe('Google Flights')
-    expect(sourceLabel(null)).toBe('?')
+    expect(sourceLabel(null)).toBe('unknown source')
   })
 })
 

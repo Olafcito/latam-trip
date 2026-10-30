@@ -1,0 +1,129 @@
+/* The trip at a glance above the rail: a title, the places as narrow panels with the open one
+   showing its photo, and under them the itinerary of the place clicked. */
+.tg { display: grid; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.tg-title { display: flex; align-items: baseline; gap: 10px; margin: 0 0 12px; font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
+.tg-title span { font-size: var(--fs-small); font-weight: 400; letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--muted); }
+.tg-strip { display: flex; gap: 4px; height: 124px; margin: 0; padding: 0; list-style: none; }
+.tg-p { flex: 1 1 0; min-width: 0; transition: flex-grow 420ms var(--ease-drawer); }
+.tg-p[data-open] { flex-grow: calc(var(--n) * 0.8); }
+.tg-p button {
+  position: relative; display: block; width: 100%; height: 100%; overflow: hidden;
+  padding: 0; border: 0; border-radius: var(--radius); background: var(--surface-3);
+  color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.tg-p button:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.tg-p img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.22; filter: saturate(0.5);
+  transition: opacity var(--t-slow) ease, filter var(--t-slow) ease;
+}
+.tg-p[data-open] img { opacity: 1; filter: none; }
+/* a scrim under the open one's words, so they read on any photo */
+.tg-p button::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, color-mix(in srgb, var(--ground) 88%, transparent), transparent 62%);
+  opacity: 0; transition: opacity var(--t-slow) ease;
+}
+.tg-p[data-open] button::after { opacity: 1; }
+/* closed: the name runs up the panel. Open: it lies along the bottom with the nights beside it */
+.tg-name {
+  position: absolute; left: 50%; bottom: 10px; z-index: 1; max-height: calc(100% - 20px); overflow: hidden;
+  writing-mode: vertical-rl; transform: translateX(-50%) rotate(180deg);
+  font-size: 12px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--muted);
+}
+.tg-p[data-open] .tg-name {
+  left: 12px; right: 12px; bottom: 26px; max-height: none;
+  writing-mode: horizontal-tb; transform: none;
+  font-size: 14px; color: var(--text);
+}
+.tg-meta {
+  position: absolute; left: 12px; right: 12px; bottom: 9px; z-index: 1; overflow: hidden;
+  font-size: 11.5px; white-space: nowrap; text-overflow: ellipsis; font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--text) 80%, transparent);
+  opacity: 0; transition: opacity var(--t-med) ease;
+}
+.tg-p[data-open] .tg-meta { opacity: 1; }
+/* the picked place keeps a hairline under its panel, so it reads as the one the itinerary is for */
+.tg-p button::before {
+  content: ''; position: absolute; left: 10px; right: 10px; bottom: 0; z-index: 2; height: 2px;
+  border-radius: 1px; background: var(--flight); transform: scaleX(0); transition: transform var(--t-slow) var(--ease-out);
+}
+.tg-p[data-pick] button::before { transform: scaleX(1); }
+
+/* the itinerary: grows open from the strip, its words come in once it has made room */
+.tg-it {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows var(--t-med) var(--ease-out);
+}
+.tg-it[data-open='true'] { grid-template-rows: 1fr; transition-duration: 280ms; transition-timing-function: var(--ease-drawer); }
+.tg-it-in { min-height: 0; overflow: hidden; }
+.tg-card {
+  padding: 16px 2px 2px;
+  opacity: 0; transform: translateY(-4px); transition: opacity 120ms ease, transform 120ms ease;
+}
+.tg-it[data-open='true'] .tg-card { opacity: 1; transform: none; transition: opacity 200ms var(--ease-out) 120ms, transform 260ms var(--ease-out) 120ms; }
+.tg-top { display: flex; align-items: flex-start; gap: 12px; }
+.tg-id { flex: 1; min-width: 0; }
+.tg-id h4 { display: flex; align-items: baseline; gap: 8px; margin: 0; font-size: var(--fs-title); font-weight: 600; color: var(--text); text-wrap: balance; }
+.tg-id h4 span { font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
+.tg-tag { margin: 2px 0 0; font-size: var(--fs-small); color: var(--muted); }
+.tg-stay { display: none; justify-items: end; font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tg-stay small { font-size: var(--fs-label); font-weight: 400; color: var(--faint); }
+.tg-x {
+  display: grid; place-items: center; width: 28px; height: 28px; margin: -4px -6px 0 0; padding: 0;
+  border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer;
+  transition: background var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.tg-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
+.tg-x:active { transform: scale(0.96); }
+.tg-about { max-width: 68ch; margin: 10px 0 0; font-size: var(--fs-body); line-height: 1.5; color: color-mix(in srgb, var(--text) 86%, transparent); }
+.tg-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 28px; margin-top: 14px; }
+.tg-cols h5 { margin: 0 0 6px; font-size: var(--fs-label); font-weight: 500; color: var(--faint); }
+.tg-todo { display: grid; gap: 4px; margin: 0; padding: 0 0 0 16px; font-size: 13px; line-height: 1.4; }
+.tg-todo li::marker { color: var(--faint); }
+.tg-tour { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: var(--fs-label); color: var(--faint); }
+.tg-bh, .tg-beds li { display: grid; grid-template-columns: minmax(0, 1fr) 64px 64px; gap: 8px; align-items: baseline; }
+.tg-bh span:not(:first-child), .tg-beds li span:not(:first-child) { text-align: right; }
+.tg-beds { display: grid; margin: 0; padding: 0; list-style: none; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tg-beds li { padding: 5px 0; border-top: 1px solid var(--line); }
+.tg-beds li:first-child { border-top: 0; }
+.tg-beds a, .tg-beds li > span:first-child { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--text); }
+.tg-beds a { text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; transition: text-decoration-color var(--t-fast) ease; }
+.tg-beds a:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 2px; }
+.tg-beds li[data-sus] span:not(:first-child) { color: var(--faint); }
+.tg-beds small { display: block; font-size: var(--fs-label); line-height: 1.2; }
+.tg-none { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+.tg-cr { margin: 12px 0 0; font-size: var(--fs-label); color: var(--faint); }
+
+@media (hover: hover) and (pointer: fine) {
+  .tg-p:not([data-open]) button:hover img { opacity: 0.4; }
+  .tg-p:not([data-open]) button:hover .tg-name { color: var(--text); }
+  .tg-x:hover { background: var(--surface-3); color: var(--text); }
+  .tg-beds a:hover { text-decoration-color: currentColor; }
+}
+.tg-p button:active { transform: scale(0.98); transition: transform 120ms var(--ease-out); }
+
+/* a phone: every place a small card with its photo and name, in a row to swipe */
+@media (max-width: 560px) {
+  .tg-strip { height: 96px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .tg-strip::-webkit-scrollbar { display: none; }
+  .tg-p, .tg-p[data-open] { flex: 0 0 116px; scroll-snap-align: start; }
+  .tg-p img { opacity: 0.85; filter: none; }
+  .tg-p button::after { opacity: 1; }
+  .tg-name, .tg-p[data-open] .tg-name {
+    left: 10px; right: 10px; bottom: 24px; max-height: none;
+    writing-mode: horizontal-tb; transform: none; font-size: 13px; color: var(--text);
+  }
+  .tg-meta, .tg-p[data-open] .tg-meta { left: 10px; right: 10px; bottom: 8px; opacity: 1; }
+  .tg-from { display: none; }
+  .tg-cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  /* the phone strip drops the arrival day, so the itinerary carries it */
+  .tg-stay { display: grid; justify-items: end; }
+  .tg-x { width: 40px; height: 40px; margin: -10px -10px 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tg-p, .tg-p img, .tg-p button::after, .tg-p button::before, .tg-meta, .tg-it { transition: none; }
+  .tg-card, .tg-it[data-open='true'] .tg-card { transform: none; transition: opacity var(--t-med) ease; }
+  .tg-p button:active { transform: none; }
+}
