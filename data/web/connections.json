@@ -5066,14 +5066,17 @@
     "mode": "flight",
     "operators": [
      "Aerolineas Sosa",
+     "Avianca",
+     "BermudAir",
      "CM Airlines",
-     "Copa Airlines",
-     "TAG Airlines"
+     "Hahn Air Systems",
+     "TAG Airlines",
+     "Tropic Air"
     ],
     "duration_min": 80,
     "price_dkk": {
-     "min": 1794,
-     "typical": 2282
+     "min": 1731,
+     "typical": 2644
     },
     "frequency": "not published",
     "overnight": false,
@@ -5083,26 +5086,35 @@
     "flight": {
      "nonstop": true,
      "vias": [
+      "BZE",
       "PTY",
       "SAL",
       "SAP"
      ],
      "carriers": [
       "Aerolineas Sosa",
+      "Avianca",
+      "BermudAir",
       "CM Airlines",
       "Copa Airlines",
-      "TAG Airlines"
+      "Hahn Air Systems",
+      "TAG Airlines",
+      "Tropic Air"
      ],
      "oneway_dkk": {
-      "min": 1794,
-      "observed_at": "2026-10-30T15:42:15Z"
+      "min": 1731,
+      "observed_at": "2026-10-30T15:41:35Z"
      },
      "return_dkk": null,
      "dates_searched": [
       "2026-12-08",
       "2026-12-10",
       "2026-12-15",
-      "2026-12-20"
+      "2026-12-20",
+      "2026-12-26",
+      "2026-12-28",
+      "2026-12-30",
+      "2027-01-15"
      ],
      "by_date": [
       {
@@ -5190,39 +5202,128 @@
        "self_transfer": false,
        "searched": "2026-12-20",
        "link": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-20"
+      },
+      {
+       "date": "2026-12-26",
+       "from": "RTB",
+       "to": "GUA",
+       "dkk": 1731,
+       "dep": "10:50",
+       "arr": "12:10",
+       "arr_days": 0,
+       "duration_min": 80,
+       "vias": [],
+       "carriers": [
+        "TAG Airlines"
+       ],
+       "flights": [
+        "TAG Airlines 414"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-26",
+       "link": "https://www.momondo.dk/flight-search/RTB-GUA/2026-12-26"
+      },
+      {
+       "date": "2026-12-28",
+       "from": "RTB",
+       "to": "GUA",
+       "dkk": 2493,
+       "dep": "06:30",
+       "arr": "09:00",
+       "arr_days": 0,
+       "duration_min": 150,
+       "vias": [
+        "SAP"
+       ],
+       "carriers": [
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3037",
+        "CM Airlines 319"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-28",
+       "link": "https://www.momondo.dk/flight-search/RTB-GUA/2026-12-28"
+      },
+      {
+       "date": "2026-12-30",
+       "from": "RTB",
+       "to": "GUA",
+       "dkk": 2487,
+       "dep": "08:00",
+       "arr": "09:00",
+       "arr_days": 1,
+       "duration_min": 1500,
+       "vias": [
+        "SAP"
+       ],
+       "carriers": [
+        "Aerolineas Sosa",
+        "CM Airlines"
+       ],
+       "flights": [
+        "Aerolineas Sosa 85",
+        "CM Airlines 319"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-30",
+       "link": "https://www.momondo.dk/flight-search/RTB-GUA/2026-12-30"
+      },
+      {
+       "date": "2027-01-15",
+       "from": "RTB",
+       "to": "GUA",
+       "dkk": 2394,
+       "dep": "14:00",
+       "arr": "09:00",
+       "arr_days": 1,
+       "duration_min": 1140,
+       "vias": [
+        "SAP"
+       ],
+       "carriers": [
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3027",
+        "CM Airlines 319"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-15",
+       "link": "https://www.momondo.dk/flight-search/RTB-GUA/2027-01-15"
       }
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 1794,
+      "dkk": 1731,
       "duration_min": 80,
       "vias": [],
       "carriers": [
        "TAG Airlines"
       ],
-      "date": "2026-12-15",
+      "date": "2026-12-26",
       "self_transfer": false
      },
      "fastest": {
-      "dkk": 1794,
+      "dkk": 1731,
       "duration_min": 80,
       "vias": [],
       "carriers": [
        "TAG Airlines"
       ],
-      "date": "2026-12-15"
+      "date": "2026-12-26"
      },
      "flags": [
-      "basic_fare",
       "self_transfer",
       "tight_connection"
      ],
-     "quotes": 18
+     "quotes": 39
     },
     "source": "crawl",
-    "observed_at": "2026-10-30T15:43:30Z",
+    "observed_at": "2026-10-30T15:52:47Z",
     "note": "Fare unknown; TAG tickets non-refundable. Skips a two-day shuttle plus ferry (Adrenalina US$125 + ferry).",
-    "booking_url": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-15",
+    "booking_url": "https://www.momondo.dk/flight-search/RTB-GUA/2026-12-26",
     "source_url": "https://en.wikipedia.org/wiki/Juan_Manuel_G%C3%A1lvez_International_Airport",
     "researched": {
      "duration_min": null,
@@ -25072,10 +25173,14 @@
     "flight": {
      "nonstop": true,
      "vias": [
-      "GUA"
+      "GUA",
+      "SAP"
      ],
      "carriers": [
+      "Aerolineas Sosa",
       "Avianca",
+      "CM Airlines",
+      "Hahn Air Systems",
       "TAG Airlines"
      ],
      "oneway_dkk": {
@@ -25086,7 +25191,11 @@
      "dates_searched": [
       "2026-12-08",
       "2026-12-15",
-      "2026-12-20"
+      "2026-12-20",
+      "2026-12-26",
+      "2026-12-28",
+      "2026-12-30",
+      "2027-01-15"
      ],
      "by_date": [
       {
@@ -25148,6 +25257,98 @@
        "self_transfer": false,
        "searched": "2026-12-20",
        "link": "https://www.momondo.dk/flight-search/SAL-RTB/2026-12-20"
+      },
+      {
+       "date": "2026-12-26",
+       "from": "RTB",
+       "to": "SAL",
+       "dkk": 3157,
+       "dep": "15:00",
+       "arr": "05:20",
+       "arr_days": 1,
+       "duration_min": 860,
+       "vias": [
+        "SAP"
+       ],
+       "carriers": [
+        "Aerolineas Sosa",
+        "Avianca"
+       ],
+       "flights": [
+        "Aerolineas Sosa 89",
+        "Avianca 575"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-26",
+       "link": "https://www.momondo.dk/flight-search/RTB-SAL/2026-12-26"
+      },
+      {
+       "date": "2026-12-28",
+       "from": "RTB",
+       "to": "SAL",
+       "dkk": 2646,
+       "dep": "12:00",
+       "arr": "13:20",
+       "arr_days": 0,
+       "duration_min": 80,
+       "vias": [],
+       "carriers": [
+        "TAG Airlines"
+       ],
+       "flights": [
+        "TAG Airlines 2420"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-28",
+       "link": "https://www.momondo.dk/flight-search/RTB-SAL/2026-12-28"
+      },
+      {
+       "date": "2026-12-30",
+       "from": "RTB",
+       "to": "SAL",
+       "dkk": 3127,
+       "dep": "08:00",
+       "arr": "21:00",
+       "arr_days": 0,
+       "duration_min": 780,
+       "vias": [
+        "SAP"
+       ],
+       "carriers": [
+        "Aerolineas Sosa",
+        "Avianca"
+       ],
+       "flights": [
+        "Aerolineas Sosa 85",
+        "Avianca 535"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-30",
+       "link": "https://www.momondo.dk/flight-search/RTB-SAL/2026-12-30"
+      },
+      {
+       "date": "2027-01-15",
+       "from": "RTB",
+       "to": "SAL",
+       "dkk": 2978,
+       "dep": "14:00",
+       "arr": "21:00",
+       "arr_days": 0,
+       "duration_min": 420,
+       "vias": [
+        "SAP"
+       ],
+       "carriers": [
+        "Avianca",
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3027",
+        "Avianca 535"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-15",
+       "link": "https://www.momondo.dk/flight-search/RTB-SAL/2027-01-15"
       }
      ],
      "round_trips": [],
@@ -25173,7 +25374,7 @@
      "flags": [
       "self_transfer"
      ],
-     "quotes": 5
+     "quotes": 27
     },
     "source": "crawl",
     "observed_at": "2026-10-30T15:46:56Z",
@@ -25215,17 +25416,26 @@
     "flight": {
      "nonstop": false,
      "vias": [
+      "BZE",
       "GUA",
+      "IAH",
       "MIA",
+      "PTY",
       "SAL",
-      "SAP"
+      "SAP",
+      "SJO"
      ],
      "carriers": [
       "Aerolineas Sosa",
       "Avianca",
+      "BermudAir",
       "British Airways",
       "CM Airlines",
-      "TAG Airlines"
+      "Copa Airlines",
+      "SANSA",
+      "TAG Airlines",
+      "Tropic Air",
+      "United Airlines"
      ],
      "oneway_dkk": {
       "min": 3843,
@@ -25235,7 +25445,11 @@
      "dates_searched": [
       "2026-12-08",
       "2026-12-15",
-      "2026-12-20"
+      "2026-12-20",
+      "2026-12-26",
+      "2026-12-28",
+      "2026-12-30",
+      "2027-01-15"
      ],
      "by_date": [
       {
@@ -25315,6 +25529,116 @@
        "self_transfer": true,
        "searched": "2026-12-20",
        "link": "https://www.momondo.dk/flight-search/MGA-RTB/2026-12-20"
+      },
+      {
+       "date": "2026-12-26",
+       "from": "RTB",
+       "to": "MGA",
+       "dkk": 7141,
+       "dep": "15:00",
+       "arr": "08:40",
+       "arr_days": 1,
+       "duration_min": 1060,
+       "vias": [
+        "SAP",
+        "SAL"
+       ],
+       "carriers": [
+        "Aerolineas Sosa",
+        "Avianca"
+       ],
+       "flights": [
+        "Aerolineas Sosa 89",
+        "Avianca 575",
+        "Avianca 396"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-26",
+       "link": "https://www.momondo.dk/flight-search/RTB-MGA/2026-12-26"
+      },
+      {
+       "date": "2026-12-28",
+       "from": "RTB",
+       "to": "MGA",
+       "dkk": 4490,
+       "dep": "06:30",
+       "arr": "18:30",
+       "arr_days": 0,
+       "duration_min": 720,
+       "vias": [
+        "SAP",
+        "GUA",
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca",
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3037",
+        "CM Airlines 319",
+        "Avianca 555",
+        "Avianca 450"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-28",
+       "link": "https://www.momondo.dk/flight-search/RTB-MGA/2026-12-28"
+      },
+      {
+       "date": "2026-12-30",
+       "from": "RTB",
+       "to": "MGA",
+       "dkk": 4653,
+       "dep": "06:30",
+       "arr": "18:30",
+       "arr_days": 0,
+       "duration_min": 720,
+       "vias": [
+        "SAP",
+        "GUA",
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca",
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3037",
+        "CM Airlines 319",
+        "Avianca 555",
+        "Avianca 450"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-30",
+       "link": "https://www.momondo.dk/flight-search/RTB-MGA/2026-12-30"
+      },
+      {
+       "date": "2027-01-15",
+       "from": "RTB",
+       "to": "MGA",
+       "dkk": 4700,
+       "dep": "14:00",
+       "arr": "08:40",
+       "arr_days": 1,
+       "duration_min": 1120,
+       "vias": [
+        "SAP",
+        "GUA",
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca",
+        "TAG Airlines"
+       ],
+       "flights": [
+        "TAG Airlines 3027",
+        "TAG Airlines 321",
+        "Avianca 589",
+        "Avianca 396"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-15",
+       "link": "https://www.momondo.dk/flight-search/RTB-MGA/2027-01-15"
       }
      ],
      "round_trips": [],
@@ -25349,7 +25673,7 @@
       "self_transfer",
       "us_transit"
      ],
-     "quotes": 9
+     "quotes": 30
     },
     "source": "crawl",
     "observed_at": "2026-10-30T15:51:59Z",
@@ -25374,7 +25698,7 @@
     "duration_min": 230,
     "price_dkk": {
      "min": 2773,
-     "typical": 3470
+     "typical": 3296
     },
     "frequency": null,
     "overnight": false,
@@ -25391,14 +25715,21 @@
      "nonstop": false,
      "vias": [
       "GUA",
+      "IAH",
+      "MEX",
       "SAL",
-      "SAP"
+      "SAP",
+      "TGU"
      ],
      "carriers": [
       "Aerolineas Sosa",
+      "Aeromexico",
       "Avianca",
       "CM Airlines",
-      "TAG Airlines"
+      "Copa Airlines",
+      "TAG Airlines",
+      "United Airlines",
+      "Volaris Costa Rica"
      ],
      "oneway_dkk": {
       "min": 2773,
@@ -25406,7 +25737,13 @@
      },
      "return_dkk": null,
      "dates_searched": [
-      "2026-12-08"
+      "2026-12-08",
+      "2026-12-15",
+      "2026-12-20",
+      "2026-12-26",
+      "2026-12-28",
+      "2026-12-30",
+      "2027-01-15"
      ],
      "by_date": [
       {
@@ -25434,6 +25771,162 @@
        "self_transfer": true,
        "searched": "2026-12-08",
        "link": "https://www.momondo.dk/flight-search/SJO-RTB/2026-12-08"
+      },
+      {
+       "date": "2026-12-15",
+       "from": "SJO",
+       "to": "RTB",
+       "dkk": 2776,
+       "dep": "05:10",
+       "arr": "16:45",
+       "arr_days": 0,
+       "duration_min": 695,
+       "vias": [
+        "SAL",
+        "SAP"
+       ],
+       "carriers": [
+        "Aerolineas Sosa",
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 626",
+        "Avianca 536",
+        "Aerolineas Sosa 86"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-15",
+       "link": "https://www.momondo.dk/flight-search/SJO-RTB/2026-12-15"
+      },
+      {
+       "date": "2026-12-20",
+       "from": "SJO",
+       "to": "RTB",
+       "dkk": 2773,
+       "dep": "19:45",
+       "arr": "10:15",
+       "arr_days": 1,
+       "duration_min": 870,
+       "vias": [
+        "SAL",
+        "SAP"
+       ],
+       "carriers": [
+        "Aerolineas Sosa",
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 312",
+        "Avianca 574",
+        "Aerolineas Sosa 88"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-20",
+       "link": "https://www.momondo.dk/flight-search/SJO-RTB/2026-12-20"
+      },
+      {
+       "date": "2026-12-26",
+       "from": "RTB",
+       "to": "SJO",
+       "dkk": 3271,
+       "dep": "15:00",
+       "arr": "11:25",
+       "arr_days": 1,
+       "duration_min": 1225,
+       "vias": [
+        "SAP",
+        "SAL"
+       ],
+       "carriers": [
+        "Aerolineas Sosa",
+        "Avianca"
+       ],
+       "flights": [
+        "Aerolineas Sosa 89",
+        "Avianca 575",
+        "Avianca 609"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-26",
+       "link": "https://www.momondo.dk/flight-search/RTB-SJO/2026-12-26"
+      },
+      {
+       "date": "2026-12-28",
+       "from": "RTB",
+       "to": "SJO",
+       "dkk": 3316,
+       "dep": "17:35",
+       "arr": "23:40",
+       "arr_days": 0,
+       "duration_min": 365,
+       "vias": [
+        "SAP",
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca",
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3029",
+        "Avianca 535",
+        "Avianca 627"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-28",
+       "link": "https://www.momondo.dk/flight-search/RTB-SJO/2026-12-28"
+      },
+      {
+       "date": "2026-12-30",
+       "from": "RTB",
+       "to": "SJO",
+       "dkk": 3500,
+       "dep": "17:35",
+       "arr": "11:25",
+       "arr_days": 1,
+       "duration_min": 1070,
+       "vias": [
+        "SAP",
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca",
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3029",
+        "Avianca 535",
+        "Avianca 609"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-30",
+       "link": "https://www.momondo.dk/flight-search/RTB-SJO/2026-12-30"
+      },
+      {
+       "date": "2027-01-15",
+       "from": "RTB",
+       "to": "SJO",
+       "dkk": 3093,
+       "dep": "14:00",
+       "arr": "23:40",
+       "arr_days": 0,
+       "duration_min": 580,
+       "vias": [
+        "SAP",
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca",
+        "CM Airlines"
+       ],
+       "flights": [
+        "CM Airlines 3027",
+        "Avianca 535",
+        "Avianca 627"
+       ],
+       "self_transfer": true,
+       "searched": "2027-01-15",
+       "link": "https://www.momondo.dk/flight-search/RTB-SJO/2027-01-15"
       }
      ],
      "round_trips": [],
@@ -25466,10 +25959,10 @@
      "flags": [
       "self_transfer"
      ],
-     "quotes": 4
+     "quotes": 36
     },
     "source": "crawl",
-    "observed_at": "2026-10-30T15:54:29Z",
+    "observed_at": "2026-10-30T15:57:05Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/SJO-RTB/2026-12-08"
    }
