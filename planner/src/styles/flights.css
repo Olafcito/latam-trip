@@ -1,0 +1,114 @@
+/* The flight sheet. The top stays while the list scrolls, so the day you are looking at never leaves the window. */
+@scope (:root) to (.rmap) {
+  .fl-md { --md-w: 720px; }
+  .fl { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; font-size: var(--fs-body); }
+  .fl-top { flex: none; display: flex; flex-direction: column; gap: 16px; padding: 20px 20px 12px; }
+  .fl-h { padding-right: 36px; }
+  .fl-h h3 { margin: 0; font-size: var(--fs-title); font-weight: 650; line-height: 1.3; letter-spacing: -0.01em; text-wrap: balance; }
+  .fl-h small { display: block; margin-top: 2px; font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* what the day leaves you with on either side of the flight */
+  .fl-stay { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; }
+  .fl-stay dt { font-size: var(--fs-small); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fl-stay dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; margin: 2px 0 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .fl-stay dd small { font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
+  .fl-stay dd[data-bad='true'] { color: var(--err); }
+
+  /* the days: the one you look at is filled, the day of the leg keeps a ring, the cheapest fare is green */
+  .fl-strip { display: flex; align-items: center; gap: 4px; min-width: 0; margin-inline: -2px; }
+  .fl-strip:has(.fl-page) { margin-inline: -8px; }
+  .fl-days { position: relative; flex: 1; min-width: 0; display: flex; gap: 4px; padding: 2px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .fl-days::-webkit-scrollbar { display: none; }
+  .fl-day { flex: none; width: 68px; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 0 5px; border: 0; border-radius: 10px; background: transparent; color: var(--text); font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; transition: background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out); }
+  .fl-day small { font-size: var(--fs-label); color: var(--muted); }
+  .fl-day b { font-size: var(--fs-num); font-weight: 600; white-space: nowrap; }
+  .fl-day span { min-height: 1.4em; font-size: var(--fs-label); color: var(--muted); }
+  .fl-day[data-low='true'] span { color: var(--in); }
+  .fl-day[data-leg='true'] { box-shadow: inset 0 0 0 1px var(--flight); }
+  .fl-day[aria-checked='true'] { background: var(--flight); color: var(--flight-ink); }
+  .fl-day[aria-checked='true'] :is(small, span) { color: var(--flight-ink); }
+  .fl-day:active { transform: scale(0.97); }
+  .fl-day:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
+  .fl-page { display: none; flex: none; width: 28px; height: 28px; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
+  .fl-page:active { transform: scale(0.94); }
+  .fl-page:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
+  @media (hover: hover) and (pointer: fine) {
+    .fl-page { display: grid; }
+    .fl-page:hover { background: var(--surface-2); color: var(--text); }
+    .fl-day[aria-checked='false']:hover { background: var(--surface-2); }
+  }
+
+  .fl-bar { display: flex; align-items: center; gap: 8px; min-height: var(--hit); }
+  .fl-bar b { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .fl-bar span { font-size: var(--fs-small); color: var(--muted); }
+  .fl-sort { margin-left: auto; }
+
+  .fl-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; border-top: 1px solid var(--line); scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+  .fl-rows { list-style: none; margin: 0; padding: 0; }
+  .fl-rows > li + li { border-top: 1px solid var(--line); }
+
+  /* a flight: who, when, how much */
+  .fl-row { display: grid; grid-template-columns: 148px minmax(0, 1fr) 96px; gap: 8px 16px; align-items: start; padding: 16px 0; }
+  .fl-air { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; align-items: start; min-width: 0; }
+  .fl-logo { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: var(--surface-3); color: var(--muted); font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.02em; }
+  .fl-who { min-width: 0; }
+  .fl-who b, .fl-who small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fl-who b { font-size: var(--fs-small); font-weight: 600; }
+  .fl-who small { font-size: var(--fs-label); color: var(--muted); }
+
+  .fl-line { display: grid; grid-template-columns: 68px minmax(0, 1fr) 68px; gap: 12px; align-items: start; min-width: 0; }
+  .fl-end { min-width: 0; }
+  .fl-end.to { text-align: right; }
+  .fl-end b { position: relative; display: block; font-size: var(--fs-num-lg); font-weight: 650; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .fl-end sup { position: absolute; left: 100%; top: 0; margin-left: 1px; line-height: 1.2; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0; color: var(--flight); }
+  .fl-end small { display: block; margin-top: 2px; font-size: var(--fs-label); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .fl-end small[data-other='true'] { font-weight: 600; color: var(--text); }
+  .fl-mid { min-width: 0; display: flex; flex-direction: column; gap: 3px; text-align: center; }
+  .fl-dur { font-size: var(--fs-label); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .fl-track { position: relative; height: 10px; display: flex; align-items: center; justify-content: space-evenly; }
+  .fl-track::before { content: ''; position: absolute; inset: 4px 0 auto; height: 2px; background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--flight) 55%, transparent) 0 6px, transparent 6px 11px); }
+  .fl-track i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--fl-bg, var(--surface)); box-shadow: inset 0 0 0 2px var(--flight); }
+  .fl-stops { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 10px; font-size: var(--fs-label); line-height: 1.4; color: var(--muted); }
+  .fl-stops b { font-weight: 600; color: var(--text); }
+  .fl-notime { margin: 0; padding-top: 8px; font-size: var(--fs-small); color: var(--muted); }
+
+  .fl-price { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
+  .fl-price b { font-size: var(--fs-title); font-weight: 650; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .fl-row:has(.fl-notes) .fl-price { grid-row: 1 / span 2; grid-column: 3; }
+  .fl-notes { grid-column: 2; list-style: none; display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 0; padding: 0; font-size: var(--fs-small); color: var(--muted); }
+  .fl-notes [data-bad='true'] { color: var(--err); }
+
+  /* the flight you have, held above the day you look at */
+  .fl-picked { --fl-bg: var(--surface-2); margin: 12px -12px 0; padding: 8px 12px 0; border-radius: 12px; background: var(--surface-2); }
+  .fl-picked header { display: flex; align-items: center; gap: 8px; min-height: 24px; font-size: var(--fs-small); font-weight: 600; }
+  .fl-picked header span { display: inline-flex; align-items: center; gap: 6px; color: var(--in); }
+  .fl-picked header small { flex: 1; font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
+  .fl-picked .fl-row { padding-top: 8px; }
+  .fl-picked .fl-logo { background: var(--surface-3); }
+
+  .fl-all { margin: 4px 0 16px; }
+  .fl-none { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px 0; }
+  .fl-none p { margin: 0; color: var(--muted); }
+  .fl-none .btn svg, .fl-foot .btn svg { margin-left: 4px; }
+  .fl-foot { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--line); }
+
+  /* a low window scrolls as one, or the list would have no room */
+  @media (max-height: 700px) {
+    .fl { overflow-y: auto; }
+    .fl-list { flex: none; overflow: visible; }
+  }
+
+  @media (max-width: 560px) {
+    .fl-top { padding: 16px 16px 8px; gap: 12px; }
+    .fl-list { padding-inline: 16px; }
+    .fl-foot { padding-inline: 16px; }
+    .fl-strip { margin-inline: -4px; }
+    .fl-day { width: 60px; }
+    .fl-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+    .fl-line, .fl-notime { grid-row: 2; grid-column: 1 / -1; }
+    .fl-price, .fl-row:has(.fl-notes) .fl-price { grid-row: 1; grid-column: 2; }
+    .fl-notes { grid-column: 1 / -1; }
+    .fl-end b { font-size: 20px; }
+    .fl-bar { flex-wrap: wrap; }
+  }
+}

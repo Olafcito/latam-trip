@@ -39,7 +39,7 @@ function monthCells(m: string): (string | null)[] {
   return out
 }
 
-export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, onSet }: {
+export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, trip, onSet }: {
   date: string
   set: boolean
   /** the first and last day the leg can leave */
@@ -51,6 +51,8 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
   fares: Record<string, number>
   /** the stop before the leg: its name and the day you get there */
   stay: { name: string; inDay: string }
+  /** the trip, so a flight picked on Momondo finds its way back */
+  trip?: string
   codes: { from: string; to: string } | null
   onSet: (date: string | null) => void
 }) {
@@ -155,7 +157,7 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
         <span className="wp-key">{cheapest != null ? <><i /> Cheapest known fare</> : codes ? 'No fares saved for these days yet' : 'Overland, no fares to look up'}</span>
         <span className="wp-btns">
           {set && <button type="button" className="btn link small" onClick={() => onSet(null)}>Back to estimate</button>}
-          {codes && <a className="btn small" href={momondoUrl(codes.from, codes.to, date)} target="_blank" rel="noopener noreferrer">Momondo {day(date)}<External /></a>}
+          {codes && <a className="btn small" href={momondoUrl(codes.from, codes.to, date, trip)} target="_blank" rel="noopener noreferrer">Momondo {day(date)}<External /></a>}
         </span>
       </div>
     </div>
