@@ -4384,6 +4384,31 @@
    "popularity": 3,
    "why": "Quiet beach town on the Costa de Oro about 50 km east of Montevideo, with a Chute Boxe gym",
    "source": "https://en.wikipedia.org/wiki/La_Floresta"
+  },
+  {
+   "kind": "node",
+   "id": "SIUN",
+   "name": "Siuna (Bosawás)",
+   "country": "NI",
+   "lat": 13.733,
+   "lon": -84.777,
+   "type": "nature",
+   "iata": "SIU",
+   "popularity": 4,
+   "why": "Mining town on the edge of Bosawás Biosphere Reserve, the largest rainforest north of the Amazon; main entry point for guided trips with Mayangna and Miskitu guides",
+   "source": "https://passporterapp.com/en/blog/nicaragua/bosawas-reserve-nicaragua-rainforest-guide/"
+  },
+  {
+   "kind": "node",
+   "id": "PBLM",
+   "name": "Peñas Blancas massif (Bosawás)",
+   "country": "NI",
+   "lat": 13.28,
+   "lon": -85.66,
+   "type": "nature",
+   "popularity": 4,
+   "why": "Cloud forest massif on the southern edge of Bosawás near El Cuá: waterfalls, quetzals, community eco-lodge run with the CEN, coffee farms",
+   "source": "https://vianica.com/go/specials/26-penas-blancas-massif-nicaragua.html"
   }
  ],
  "edges": [
@@ -8585,6 +8610,44 @@
    "source_year": 2026,
    "notes": "Door to door private transfer with hotel pickup, price likely per vehicle.",
    "_src": "net-ni-north.jsonl"
+  },
+  {
+   "kind": "edge",
+   "from": "MGA",
+   "to": "SIUN",
+   "mode": "bus",
+   "operator": "Transporte El Venado",
+   "duration_h": 10.4,
+   "duration_range": "10-11",
+   "price_dkk": null,
+   "price_range_local": null,
+   "frequency": "from Mercado Mayoreo or near Hospital Japonés, schedule not confirmed",
+   "overnight": false,
+   "border": false,
+   "both": true,
+   "source": "https://www.rome2rio.com/Bus/Managua/Siuna",
+   "source_year": 2026,
+   "notes": "Via Río Blanco. Long, rough road. La Costeña also flies Managua to Siuna (about 1 h), price not found.",
+   "_src": "bosawas.jsonl"
+  },
+  {
+   "kind": "edge",
+   "from": "MATA",
+   "to": "PBLM",
+   "mode": "bus",
+   "operator": "Matagalpa Guanuca terminal, buses to El Cuá or Bocay",
+   "duration_h": 2.75,
+   "duration_range": "2.5-3",
+   "price_dkk": null,
+   "price_range_local": null,
+   "frequency": "several daily",
+   "overnight": false,
+   "border": false,
+   "both": true,
+   "source": "https://vianica.com/go/specials/26-penas-blancas-massif-nicaragua.html",
+   "source_year": 2026,
+   "notes": "Get off at Empalme La Manzana, about 14 km before El Cuá. About 2 h by car; last stretch dirt road.",
+   "_src": "bosawas.jsonl"
   },
   {
    "from": "SJO",
@@ -24583,21 +24646,90 @@
    "to": "RTB",
    "mode": "flight",
    "source": "crawl",
-   "oneway_min_dkk": 1996.0,
+   "oneway_min_dkk": 1794.0,
    "oneway_min_hours": 1.33,
    "fastest_hours": 1.33,
    "fastest_price_dkk": 1996.0,
    "nonstop": true,
-   "vias": [],
+   "vias": [
+    "PTY",
+    "SAL",
+    "SAP"
+   ],
    "carriers": [
+    "Aerolineas Sosa",
+    "CM Airlines",
+    "Copa Airlines",
     "TAG Airlines"
    ],
    "dates": [
-    "2026-12-10"
+    "2026-12-08",
+    "2026-12-10",
+    "2026-12-15",
+    "2026-12-20"
    ],
    "return_min_dkk": null,
-   "quotes": 1,
+   "quotes": 18,
    "flights": [
+    {
+     "quote_id": "Q:1144f8480fff",
+     "depart": "2026-12-15T12:30",
+     "arrive": "2026-12-15T13:50",
+     "hours": 1.33,
+     "price_dkk": 1794.0,
+     "carriers": [
+      "TAG Airlines"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:85c0fa38a39e",
+     "depart": "2026-12-15T05:30",
+     "arrive": "2026-12-15T10:05",
+     "hours": 4.58,
+     "price_dkk": 1959.0,
+     "carriers": [
+      "TAG Airlines"
+     ],
+     "via": [
+      "SAP"
+     ],
+     "layover_h": [
+      2.92
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:f734db5ec29d",
+     "depart": "2026-12-20T12:45",
+     "arrive": "2026-12-20T15:45",
+     "hours": 3.0,
+     "price_dkk": 1965.0,
+     "carriers": [
+      "TAG Airlines"
+     ],
+     "via": [
+      "SAP"
+     ],
+     "layover_h": [
+      1.25
+     ],
+     "fare_brand": "Economy",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
     {
      "quote_id": "Q:196bb9cf6041",
      "depart": "2026-12-10T09:40",
@@ -24614,6 +24746,47 @@
      "checked_bag": null,
      "overnight_layover": false,
      "source": "momondo-manual"
+    },
+    {
+     "quote_id": "Q:18d9c4f348ee",
+     "depart": "2026-12-20T09:00",
+     "arrive": "2026-12-20T10:20",
+     "hours": 1.33,
+     "price_dkk": 1996.0,
+     "carriers": [
+      "TAG Airlines"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:fe45ac32af41",
+     "depart": "2026-12-08T07:17",
+     "arrive": "2026-12-08T16:45",
+     "hours": 9.47,
+     "price_dkk": 2030.0,
+     "carriers": [
+      "Aerolineas Sosa",
+      "Copa Airlines"
+     ],
+     "via": [
+      "PTY",
+      "SAP"
+     ],
+     "layover_h": [
+      0.73,
+      3.3
+     ],
+     "fare_brand": "Economy Basic + Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
     }
    ]
   },
@@ -28402,6 +28575,386 @@
      "fare_brand": "Economy + Basic",
      "cabin_bag": null,
      "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    }
+   ]
+  },
+  {
+   "from": "SAL",
+   "to": "RTB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 2641.0,
+   "oneway_min_hours": 1.33,
+   "fastest_hours": 1.33,
+   "fastest_price_dkk": 2641.0,
+   "nonstop": true,
+   "vias": [
+    "GUA"
+   ],
+   "carriers": [
+    "Avianca",
+    "TAG Airlines"
+   ],
+   "dates": [
+    "2026-12-08",
+    "2026-12-15",
+    "2026-12-20"
+   ],
+   "return_min_dkk": null,
+   "quotes": 5,
+   "flights": [
+    {
+     "quote_id": "Q:0d3e2ad7bad4",
+     "depart": "2026-12-08T09:10",
+     "arrive": "2026-12-08T10:30",
+     "hours": 1.33,
+     "price_dkk": 2641.0,
+     "carriers": [
+      "TAG Airlines"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:cb745fddd0a1",
+     "depart": "2026-12-20T09:40",
+     "arrive": "2026-12-20T11:00",
+     "hours": 1.33,
+     "price_dkk": 2641.0,
+     "carriers": [
+      "TAG Airlines"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:339439ba459f",
+     "depart": "2026-12-15T08:10",
+     "arrive": "2026-12-15T13:50",
+     "hours": 5.67,
+     "price_dkk": 3889.0,
+     "carriers": [
+      "Avianca",
+      "TAG Airlines"
+     ],
+     "via": [
+      "GUA"
+     ],
+     "layover_h": [
+      3.58
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    }
+   ]
+  },
+  {
+   "from": "MGA",
+   "to": "RTB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 3843.0,
+   "oneway_min_hours": 15.75,
+   "fastest_hours": 5.08,
+   "fastest_price_dkk": 6771.0,
+   "nonstop": false,
+   "vias": [
+    "GUA",
+    "MIA",
+    "SAL",
+    "SAP"
+   ],
+   "carriers": [
+    "Aerolineas Sosa",
+    "Avianca",
+    "British Airways",
+    "CM Airlines",
+    "TAG Airlines"
+   ],
+   "dates": [
+    "2026-12-08",
+    "2026-12-15",
+    "2026-12-20"
+   ],
+   "return_min_dkk": null,
+   "quotes": 9,
+   "flights": [
+    {
+     "quote_id": "Q:953d72bbd916",
+     "depart": "2026-12-20T19:35",
+     "arrive": "2026-12-21T11:20",
+     "hours": 15.75,
+     "price_dkk": 3843.0,
+     "carriers": [
+      "Avianca",
+      "TAG Airlines"
+     ],
+     "via": [
+      "SAL",
+      "GUA"
+     ],
+     "layover_h": [
+      1.83,
+      10.92
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": true,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:50c0dfb7854b",
+     "depart": "2026-12-15T05:25",
+     "arrive": "2026-12-15T13:50",
+     "hours": 8.42,
+     "price_dkk": 3887.0,
+     "carriers": [
+      "Avianca",
+      "TAG Airlines"
+     ],
+     "via": [
+      "SAL",
+      "GUA"
+     ],
+     "layover_h": [
+      1.83,
+      3.58
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:a7a739d2cfda",
+     "depart": "2026-12-20T05:25",
+     "arrive": "2026-12-20T15:45",
+     "hours": 10.33,
+     "price_dkk": 4159.0,
+     "carriers": [
+      "Avianca",
+      "TAG Airlines"
+     ],
+     "via": [
+      "SAL",
+      "GUA",
+      "SAP"
+     ],
+     "layover_h": [
+      1.83,
+      3.83,
+      1.25
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:b7e0d42ac011",
+     "depart": "2026-12-08T06:00",
+     "arrive": "2026-12-08T13:44",
+     "hours": 7.73,
+     "price_dkk": 4899.0,
+     "carriers": [
+      "British Airways"
+     ],
+     "via": [
+      "MIA"
+     ],
+     "layover_h": [
+      2.63
+     ],
+     "fare_brand": "Basic Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:1d3274065039",
+     "depart": "2026-12-15T05:25",
+     "arrive": "2026-12-15T16:45",
+     "hours": 11.33,
+     "price_dkk": 4970.0,
+     "carriers": [
+      "Aerolineas Sosa",
+      "Avianca"
+     ],
+     "via": [
+      "SAL",
+      "SAP"
+     ],
+     "layover_h": [
+      1.33,
+      7.42
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:e57128fbfd44",
+     "depart": "2026-12-15T05:25",
+     "arrive": "2026-12-15T16:40",
+     "hours": 11.25,
+     "price_dkk": 5019.0,
+     "carriers": [
+      "Avianca",
+      "CM Airlines"
+     ],
+     "via": [
+      "SAL",
+      "SAP"
+     ],
+     "layover_h": [
+      1.33,
+      7.33
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    }
+   ]
+  },
+  {
+   "from": "SJO",
+   "to": "RTB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 2773.0,
+   "oneway_min_hours": 11.58,
+   "fastest_hours": 3.83,
+   "fastest_price_dkk": 4066.0,
+   "nonstop": false,
+   "vias": [
+    "GUA",
+    "SAL",
+    "SAP"
+   ],
+   "carriers": [
+    "Aerolineas Sosa",
+    "Avianca",
+    "CM Airlines",
+    "TAG Airlines"
+   ],
+   "dates": [
+    "2026-12-08"
+   ],
+   "return_min_dkk": null,
+   "quotes": 4,
+   "flights": [
+    {
+     "quote_id": "Q:713fa6ddcf6d",
+     "depart": "2026-12-08T05:10",
+     "arrive": "2026-12-08T16:45",
+     "hours": 11.58,
+     "price_dkk": 2773.0,
+     "carriers": [
+      "Aerolineas Sosa",
+      "Avianca"
+     ],
+     "via": [
+      "SAL",
+      "SAP"
+     ],
+     "layover_h": [
+      1.25,
+      7.42
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:f36df756b605",
+     "depart": "2026-12-08T19:45",
+     "arrive": "2026-12-09T06:55",
+     "hours": 11.17,
+     "price_dkk": 2875.0,
+     "carriers": [
+      "Avianca",
+      "CM Airlines"
+     ],
+     "via": [
+      "SAL",
+      "SAP"
+     ],
+     "layover_h": [
+      1.67,
+      6.58
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": true,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:8060d08c5d6c",
+     "depart": "2026-12-08T10:00",
+     "arrive": "2026-12-08T13:50",
+     "hours": 3.83,
+     "price_dkk": 4066.0,
+     "carriers": [
+      "Avianca",
+      "TAG Airlines"
+     ],
+     "via": [
+      "GUA"
+     ],
+     "layover_h": [
+      1.0
+     ],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:14629e18e33b",
+     "depart": "2026-12-08T05:10",
+     "arrive": "2026-12-08T10:30",
+     "hours": 5.33,
+     "price_dkk": 4879.0,
+     "carriers": [
+      "Avianca",
+      "TAG Airlines"
+     ],
+     "via": [
+      "SAL"
+     ],
+     "layover_h": [
+      2.75
+     ],
+     "fare_brand": "Economy + Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
      "overnight_layover": false,
      "source": "momondo"
     }

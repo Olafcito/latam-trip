@@ -220,6 +220,8 @@ MGA,SOMO,bus,Mayoreo terminal to Somoto: direct buses (less often) or via Esteli
 MGA,MATA,bus,"COTRAN bus from Mercado Mayoreo, plus minivan colectivos",2.5,1.75-2.5,23,bus hourly (Rome2rio: about every 20 min); minivan colectivos every 30 min 05:00-18:00,False,False,True,,,,,,,,,,https://www.frommers.com/destinations/matagalpa/planning-a-trip/,,"Frommer's gives 2.5 h and C$60, Rome2rio (2026) gives 1h43 to 2h38 and US$2-5. price_dkk is midpoint of US$2-5. Arrives at COTRAN Sur, 1 km west of Parque Dario."
 LEON,MATA,bus,Direct bus from Leon bus station,3.0,3,9,"only 2 daily: Leon 05:00 and 15:00, Matagalpa back 06:00 and 15:00",False,False,True,,,,,,,,,,https://www.frommers.com/destinations/matagalpa/planning-a-trip/,,"Frommer's is an old guide, check the times locally, fare is likely higher now. Alternative is via Managua."
 LEON,MATA,shuttle,Private transfer (Bookaway),3.17,3.2,1348,"regular, 00:00-23:00 listed",False,False,True,,,,,,,,,,https://www.bookaway.com/de/routes/nicaragua/leon-4-to-matagalpa,2026,"Door to door private transfer with hotel pickup, price likely per vehicle."
+MGA,SIUN,bus,Transporte El Venado,10.4,10-11,,"from Mercado Mayoreo or near Hospital Japonés, schedule not confirmed",False,False,True,,,,,,,,,,https://www.rome2rio.com/Bus/Managua/Siuna,2026,"Via Río Blanco. Long, rough road. La Costeña also flies Managua to Siuna (about 1 h), price not found."
+MATA,PBLM,bus,"Matagalpa Guanuca terminal, buses to El Cuá or Bocay",2.75,2.5-3,,several daily,False,False,True,,,,,,,,,,https://vianica.com/go/specials/26-penas-blancas-massif-nicaragua.html,2026,"Get off at Empalme La Manzana, about 14 km before El Cuá. About 2 h by car; last stretch dirt road."
 SJO,LPB,flight,,,,,,,,,2187.0,9.08,7.08,4880.0,False,BOG CUZ LIM PTY SAL VVI,Avianca BoA Boliviana de Aviacion Copa Copa Airlines LATAM,2026-12-06 2026-12-10 2026-12-20 2027-01-05 2027-01-20 2027-01-22 2027-01-27,10971.0,crawl,,
 SJO,VVI,flight,,,,,,,,,2089.0,9.67,7.42,2847.0,False,BOG GUA LIM PTY SAL,Avianca Copa Copa Airlines LATAM LATAM Airlines,2026-12-06 2026-12-10 2026-12-20 2027-01-18 2027-01-20 2027-01-28,4664.0,crawl,,
 SJO,CBB,flight,,,,,,,,,3303.0,18.27,10.45,6008.37,False,BOG LPB PTY VVI,Avianca Boliviana de Aviacion Copa Copa Airlines,2026-12-06 2026-12-10 2027-01-20,,crawl,,
@@ -379,7 +381,7 @@ MVD,MDE,flight,,,,,,,,,2281.0,12.38,9.62,2543.0,False,BOG PTY SCL,Avianca Copa A
 VVI,PTY,flight,,,,,,,,,3361.0,22.58,4.9,4735.0,True,BOG LIM MDE UIO,Avianca BoA Copa Copa Airlines JetSMART LATAM Airlines Wingo,2026-12-26 2026-12-27 2026-12-28,,crawl,,
 MDE,VVI,flight,,,,,,,,,1937.0,9.42,7.67,2835.0,False,BOG LIM PTY,Avianca Copa Copa Airlines LATAM Airlines,2026-12-11 2026-12-14 2026-12-17 2027-01-28,4583.0,crawl,,
 GUA,SAP,flight,,,,,,,,,1359.0,3.17,3.17,1359.0,False,SAL,Avianca,2026-12-10 2026-12-21 2026-12-24,,crawl,,
-GUA,RTB,flight,,,,,,,,,1996.0,1.33,1.33,1996.0,True,,TAG Airlines,2026-12-10,,crawl,,
+GUA,RTB,flight,,,,,,,,,1794.0,1.33,1.33,1996.0,True,PTY SAL SAP,Aerolineas Sosa CM Airlines Copa Airlines TAG Airlines,2026-12-08 2026-12-10 2026-12-15 2026-12-20,,crawl,,
 GUA,CTG,flight,,,,,,,,,1707.0,22.53,6.2,2345.0,False,MDE PTY SDQ,Arajet Copa Airlines JetSMART Wingo,2027-01-07 2027-01-09 2027-01-10 2027-01-11 2027-01-12,,crawl,,
 SAP,CTG,flight,,,,,,,,,3086.0,11.87,5.72,5611.0,False,MDE PTY SAL,Avianca Copa Airlines JetSMART Wingo,2027-01-10 2027-01-12,,crawl,,
 BOG,GUA,flight,,,,,,,,,1923.0,14.77,3.33,3407.0,True,CLO MEX PTY SDQ,Aeromexico Arajet Avianca Copa Airlines Wingo,2026-12-07 2026-12-08 2026-12-09 2026-12-10 2026-12-11 2026-12-12,,crawl,,
@@ -408,6 +410,9 @@ SAL,VVI,flight,,,,,,,,,3491.0,13.27,9.83,4611.0,False,BOG LIM PTY,Avianca Copa A
 GDL,MDE,flight,,,,,,,,,1715.0,21.63,6.92,2657.0,False,BOG PTY,Copa Airlines JetSMART SATENA Volaris Wingo,2026-12-10,,crawl,,
 GDL,BOG,flight,,,,,,,,,1470.0,4.93,4.93,1470.0,True,LAP NLU PTY,Copa Airlines Viva Volaris,2026-12-10,,crawl,,
 VVI,LIR,flight,,,,,,,,,3669.0,12.58,11.92,4782.0,False,LIM SJO,LATAM Airlines SANSA,2026-12-26 2026-12-27 2026-12-28,,crawl,,
+SAL,RTB,flight,,,,,,,,,2641.0,1.33,1.33,2641.0,True,GUA,Avianca TAG Airlines,2026-12-08 2026-12-15 2026-12-20,,crawl,,
+MGA,RTB,flight,,,,,,,,,3843.0,15.75,5.08,6771.0,False,GUA MIA SAL SAP,Aerolineas Sosa Avianca British Airways CM Airlines TAG Airlines,2026-12-08 2026-12-15 2026-12-20,,crawl,,
+SJO,RTB,flight,,,,,,,,,2773.0,11.58,3.83,4066.0,False,GUA SAL SAP,Aerolineas Sosa Avianca CM Airlines TAG Airlines,2026-12-08,,crawl,,
 SAP,BOG,flight,,,,,,,,,3100.0,13.25,5.52,3861.0,False,MDE PTY SAL,Avianca Copa Airlines JetSMART Wingo,2027-01-10,,crawl,,
 PTY,BOG,flight,,,,,,,,,1949.0,10.52,1.58,2082.0,True,MDE SAL,Avianca Copa Airlines JetSMART Wingo,2027-01-10,,crawl,,
 GUA,BOG,flight,,,,,,,,,2464.0,6.05,3.33,2536.0,True,PTY,Avianca Copa Airlines,2027-01-10,,crawl,,
