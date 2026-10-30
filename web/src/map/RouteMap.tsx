@@ -14,6 +14,7 @@ import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYE
 import { addMarkerImages, addModeLayers, modeHit, type ModeHit } from './modeLayers'
 import { CardWindow } from './CardWindow'
 import { ModePanelSlot } from './ModeSlots'
+import { MODE_SHEET, SHEET_PEEK, reducedMotion } from './sheet'
 import { Panel, type FlightDir, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
@@ -70,8 +71,6 @@ const CARD_W = 380
 const DOCK_MIN = 1100
 const COLLAPSED_W = 300
 const CLUSTER_STEP = 1.5
-/** The share of a phone map a mode's panel takes, as in modes.css. Above this the markers no longer fit beside it. */
-const MODE_SHEET = 0.42
 /** The most a city tap zooms out, in zoom levels. Chaining legs should not drift the map away. */
 const CITY_EASE_OUT = 0.3
 const NARROW = 720
@@ -83,8 +82,6 @@ type PadView = PanelView | 'mode' | null
 
 /** A card's left edge: beside the panel, folded or open, or over it when the map has no room for both. */
 const cardEdge = (dock: boolean, collapsed: boolean, panel: PadView) => (!panel ? 14 : collapsed ? COLLAPSED_W + 28 : dock ? PANEL_W[panel] + 28 : 14)
-
-const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const enabledOptions = (conn: Connection, families: Set<Family>) =>
   conn.options.filter((o) => families.has(familyOf(o.mode))).sort((x, y) => (x.duration_min ?? 1e9) - (y.duration_min ?? 1e9))
@@ -151,13 +148,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const open = panel && !live.current.collapsed
     // on a phone the window covers the map, and folds down to a bar over the sheet to show it, so the sheet is what counts
     const card = W >= NARROW && !!panel && live.current.cardOpen
+    const folded = panel === 'mode' && !!live.current.collapsed
     const sheet = open ? (panel === 'mode' ? MODE_SHEET : 0.52) : 0
     const sideW = live.current.side && !live.current.sideMini ? sideWidth : 0
     // on a phone the score key sits on top of the sheet, and the mode buttons leave the top of the map to the markers
     const key = panel === 'mode' && !card && live.current.mode === 'gyms' ? 80 : 0
     const padding =
       W < NARROW
-        ? { top: panel === 'mode' ? 24 : 70, left: 28, right: 64, bottom: sheet ? Math.round(H * sheet) + 16 + key : sideW ? Math.round(H * 0.42) + 16 : 70 }
+        ? { top: panel === 'mode' ? 24 : 70, left: 28, right: 64, bottom: folded ? SHEET_PEEK + 16 + key : sheet ? Math.round(H * sheet) + 16 + key : sideW ? Math.round(H * 0.42) + 16 : 70 }
         : { top: 70, left: card ? cardEdge(W >= DOCK_MIN, !!live.current.collapsed, panel) + CARD_W + 26 : open ? PANEL_W[panel!] + 54 : 40, right: sideW ? sideW + 54 : 90, bottom: 70 }
     if (padding.left + padding.right > W - 40 || padding.top + padding.bottom > H - 40) return { top: 20, left: 20, right: 20, bottom: 20 }
     return padding
@@ -969,7 +967,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     <div
       ref={root}
       className={`rmap${space ? ' grab' : ''}${pane ? ' has-side' : ''}${pane && sideMini ? ' side-mini' : ''}${(view.panel || mm.mode) && !collapsed ? ' has-panel' : ''}${mm.mode ? ` mode-on mode-${mm.mode}` : ''}`}
-      style={pane ? ({ '--side': `${sideWidth}px` } as CSSProperties) : undefined}
+      style={{ '--mode-sheet': `${MODE_SHEET * 100}%`, ...(pane && { '--side': `${sideWidth}px` }) } as CSSProperties}
       tabIndex={0}
       role="region"
       aria-label="Route map"
@@ -1085,6 +1083,9 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
           {mm.mode && (
             <ModePanelSlot
               api={mm}
+              model={model}
+              narrow={narrow}
+              cardOpen={!!mm.card}
               collapsed={collapsed}
               panelRef={panelRef}
               onCollapse={setCollapsed}

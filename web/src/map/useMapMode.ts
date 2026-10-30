@@ -28,6 +28,8 @@ export function useMapMode(map: MLMap | null, data: MapData) {
   // filters outlive a mode: coming back finds the map as it was left
   const [gymFilter, setGymFilter] = useState<GymFilter>(NO_FILTER)
   const [expFilter, setExpFilter] = useState<ExperienceFilter>(NO_EXPERIENCE_FILTER)
+  // how far each list was scrolled, so coming back finds it there too. Written on every scroll, so no state
+  const [listScroll] = useState<Record<string, number>>(() => ({}))
 
   const modes = useMemo(() => {
     const on: MapMode[] = []
@@ -138,6 +140,7 @@ export function useMapMode(map: MLMap | null, data: MapData) {
     setGymFilter,
     expFilter,
     setExpFilter,
+    listScroll,
     shownGyms,
     shownCities,
     shownExps,
