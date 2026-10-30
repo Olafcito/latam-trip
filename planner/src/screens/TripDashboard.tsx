@@ -3,6 +3,7 @@ import { useStore } from '../store'
 import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
 import { CostStrip } from '../components/CostStrip'
 import { Download, Pin, Warn } from '../components/icons'
+import { Notice } from '../components/Notice'
 import { Story } from '../components/story/Story'
 import { TripHead } from '../components/story/TripHead'
 
@@ -63,6 +64,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
         <button className="btn small" onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
         <button className="btn link small" onClick={exportJson}><Download />Export JSON</button>
       </div>
+
+      <Notice />
 
       {general.length > 0 && (
         <ul className="dash-warn">

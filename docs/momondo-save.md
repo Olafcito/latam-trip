@@ -1,6 +1,6 @@
 # Save Momondo prices from your own browser
 
-The Momondo save script adds two buttons to a Momondo flight search. One press stores the prices you are looking at in this repo, the same way the browser workers store theirs. The app then shows them next to the crawled prices, marked as saved by you.
+The Momondo save script adds two buttons to a Momondo flight search and a Pick button to each result. One press stores the prices you are looking at in this repo, the same way the browser workers store theirs. The app then shows them next to the crawled prices, marked as saved by you.
 
 The script never books, signs in or pays anywhere. It only reads the page and writes to this repo.
 
@@ -54,6 +54,8 @@ The buttons sit in a small box at the bottom left of a Momondo flight search. Th
 
 Route and dates come from the address of the search page, so the saved prices always match the search you ran.
 
+**Pick** sits under Vælg on each result when you came from a leg in the planner, which searches one way. It chooses that exact flight for the leg. The script opens the result, reads its times, stops, price and booking site, closes it again and opens the planner in a new tab with the flight on the leg. A planner tab that is already open follows along. If you open a different departure, press Pick on that one instead and it replaces the first. Remove in the leg's flight sheet takes it off again. The planner has to be running, the desktop icon starts it. Pick needs no token and writes nothing to the repo.
+
 ## 6. What the status line means
 
 **Saved 14 prices** or **Saved trip "name"**: the rows are in the repo, in a new file under data/sources/inbox.
@@ -76,7 +78,7 @@ The next tripdb build reads the inbox, adds the rows to the price data and empti
 
 The script is generated. Do not edit plugin/userscripts/momondo-save.user.js by hand.
 
-The parser is the crawler in plugin/skills/momondo-search/scripts/momondo_crawler.js. That file is the one source of truth. The build puts it into the userscript word for word, next to momondo-save.core.js (rows, checks, issue text) and momondo-save.ui.js (buttons and page clicks). The script version is 1.0 plus the parser version, so bumping PARSER_VERSION in the crawler makes Tampermonkey update the script.
+The parser is the crawler in plugin/skills/momondo-search/scripts/momondo_crawler.js. That file is the one source of truth. The build puts it into the userscript word for word, next to momondo-save.core.js (rows, checks, issue text) and momondo-save.ui.js (buttons and page clicks). The script version is SCRIPT_VERSION in build.js plus the parser version, so bumping either one makes Tampermonkey update the script. A change to the parser bumps PARSER_VERSION in the crawler, any other change bumps SCRIPT_VERSION.
 
 After any change to the crawler, the core or the UI:
 

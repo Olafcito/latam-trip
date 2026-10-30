@@ -40,6 +40,22 @@ test('page URL gives legs, structure and link for every search form', () => {
   assert.equal(core.parseSearchUrl('https://www.momondo.dk/'), null);
 });
 
+test('a planner link names its trip in the hash, and a broken one names none', () => {
+  assert.equal(core.tripOf('#latam=seed-1-gua-bog'), 'seed-1-gua-bog');
+  assert.equal(core.tripOf('#dialog&latam=a%20b'), 'a b');
+  assert.equal(core.tripOf('#dialog'), null);
+  assert.equal(core.tripOf(''), null);
+  assert.equal(core.tripOf('#latam=%E0%A4%A'), null);
+});
+
+test('the pick link carries the trip only when there is one', () => {
+  const pick = { from: 'VVI', to: 'CBB' };
+  assert.equal(new URL(core.pickUrl(pick, null)).searchParams.has('trip'), false);
+  const u = new URL(core.pickUrl(pick, 'a b'));
+  assert.equal(u.searchParams.get('trip'), 'a b');
+  assert.deepEqual(JSON.parse(u.searchParams.get('pick')), pick);
+});
+
 test('a saved price row has the worker schema, source momondo-manual and observed_at in UTC', () => {
   const ctx = ctxFor(OPEN_JAW_URL);
   const row = core.buildRow(parsed('dialog-open-jaw.txt', OPEN_JAW_URL, { rank: 1, cardPrice: 10029 }), Object.assign({}, ctx, { view: 'Billigst' }));

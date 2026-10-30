@@ -1,5 +1,5 @@
 // Pure logic of the Momondo save userscript: URL to legs, parsed dialog to rows,
-// the self-check, the inbox file and the GitHub issue links. No DOM and no GM_* here,
+// the self-check, the inbox file, the GitHub issue links and the link a Pick opens. No DOM and no GM_* here,
 // so Node tests can load it. build.js puts it into momondo-save.user.js.
 var MomondoSave = (function () {
   'use strict';
@@ -12,6 +12,7 @@ var MomondoSave = (function () {
   var MAX_BODY = 60000;        // GitHub issue bodies stop at 65536 characters
   var US = ['MIA', 'JFK', 'EWR', 'ATL', 'IAH', 'DFW', 'ORD', 'LAX', 'FLL', 'MCO', 'IAD', 'BOS', 'CLT', 'PHL'];
   var VIEWS = { price_a: 'Billigst', bestflight_a: 'Bedst', duration_a: 'Hurtigst' };
+  var PLANNER = 'http://localhost:5198/';
 
   // https://www.momondo.dk/flight-search/CPH-GUA/2026-12-03/VVI-CPH/2027-02-03?sort=price_a
   function parseSearchUrl(href) {
@@ -160,6 +161,34 @@ var MomondoSave = (function () {
     return { ok: true, reason: '' };
   }
 
+  // The trip a planner link names: ...?sort=price_a#latam=<trip id>
+  function tripOf(hash) {
+    var m = /[#&]latam=([^&]*)/.exec(hash || '');
+    if (!m) return null;
+    try { return decodeURIComponent(m[1]) || null; } catch (e) { return null; }
+  }
+
+  // The flight of a one-way row as the planner reads it. p is what the row was built from.
+  function pickOf(row, p) {
+    var l = row.out, q = row.legs_requested[0];
+    return {
+      from: q.from, to: q.to, dep: l.dep, arr: l.arr, hours: l.hours, stops: l.stops,
+      via: l.via, layover_h: l.layover_h, carriers: l.carriers, overnight: l.overnight_layover,
+      price: row.price_dkk, site: p.site || null, seen: row.observed_at, self_transfer: row.self_transfer,
+      airport_change: row.flags.indexOf('airport_change') >= 0,
+      fare_brand: row.fare_brand, cabin_bag: row.cabin_bag, checked_bag: row.checked_bag
+    };
+  }
+
+  // Whether the dialog that opened was the card that was pressed: the card shows the departure time.
+  function pickMatches(cardText, pick) {
+    return (cardText || '').indexOf(pick.dep.slice(11, 16)) >= 0;
+  }
+
+  function pickUrl(pick, trip) {
+    return PLANNER + '?' + (trip ? 'trip=' + encodeURIComponent(trip) + '&' : '') + 'pick=' + encodeURIComponent(JSON.stringify(pick));
+  }
+
   function inboxPath(d) {
     return INBOX_DIR + '/manual-' + stamp(d) + '.jsonl';
   }
@@ -286,7 +315,8 @@ var MomondoSave = (function () {
     buildRow: buildRow, buildPriceRows: buildPriceRows, usable: usable, selfCheck: selfCheck,
     inboxPath: inboxPath, inboxContent: inboxContent, base64Utf8: base64Utf8,
     contentsRequest: contentsRequest, issueRequest: issueRequest, issueBody: issueBody, issueUrl: issueUrl,
-    importIssue: importIssue, fixIssue: fixIssue, cutText: cutText
+    importIssue: importIssue, fixIssue: fixIssue, cutText: cutText,
+    tripOf: tripOf, pickOf: pickOf, pickMatches: pickMatches, pickUrl: pickUrl
   };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = MomondoSave;

@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SCRIPT_VERSION = '1.0';
+const SCRIPT_VERSION = '1.1';
 const DIR = __dirname;
 const OUT = path.join(DIR, 'momondo-save.user.js');
 const CRAWLER = path.join(DIR, '..', 'skills', 'momondo-search', 'scripts', 'momondo_crawler.js');
@@ -33,7 +33,7 @@ function build() {
     '// @name         Momondo save (latam-trip)',
     '// @namespace    https://github.com/Olafcito/latam-trip',
     '// @version      ' + version,
-    '// @description  Save Momondo prices or one opened trip into the latam-trip repo',
+    '// @description  Save Momondo prices or one opened trip into the latam-trip repo, or pick a flight for a leg in the planner',
     '// @match        https://www.momondo.dk/flight-search/*',
     '// @match        https://momondo.dk/flight-search/*',
     '// @grant        GM_getValue',
