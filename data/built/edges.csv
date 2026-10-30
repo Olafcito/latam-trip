@@ -366,7 +366,7 @@ LIM,SJO,flight,,,,,,,,,3143.0,3.92,3.92,3143.0,True,PTY,Copa LATAM,2027-01-05,,c
 LIM,SAL,flight,,,,,,,,,2100.0,28.67,6.67,2504.0,False,BOG PTY,Avianca Copa,2027-01-05,,crawl,,
 LIM,SAP,flight,,,,,,,,,3590.0,6.65,6.5,7892.0,False,PTY SAL,Avianca Copa,2027-01-05,,crawl,,
 PTY,LPB,flight,,,,,,,,,2678.0,7.17,7.17,2994.0,False,BOG CUZ LIM VVI,Avianca BoA Copa Airlines,2026-12-21 2026-12-22 2027-01-20 2027-01-27,,crawl,,
-PTY,VVI,flight,,,,,,,,,3787.0,7.5,4.98,4408.0,True,BOG,Avianca Copa,2027-01-20,,crawl,,
+PTY,VVI,flight,,,,,,,,,3787.0,7.5,4.98,4408.0,True,BOG,Avianca Copa,2026-12-20 2026-12-21 2027-01-20,,crawl,,
 MGA,LPB,flight,,,,,,,,,7141.0,18.92,17.25,8555.0,False,BOG CUZ MIA SAL,Avianca,2027-01-20 2027-01-27,,crawl,,
 SAL,LPB,flight,,,,,,,,,3201.0,9.5,9.5,3547.0,False,BOG CUZ LIM PTY VVI,Avianca BoA Copa Airlines LATAM Airlines,2026-12-16 2026-12-19 2026-12-21 2026-12-22 2027-01-20 2027-01-26 2027-01-27,,crawl,,
 MDE,LPB,flight,,,,,,,,,2373.0,8.83,7.33,9974.0,False,BOG CUZ LIM,Avianca LATAM Airlines,2026-12-11 2026-12-14 2026-12-17 2027-01-27,3912.0,crawl,,

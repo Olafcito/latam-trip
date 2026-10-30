@@ -22419,10 +22419,12 @@
     "Copa"
    ],
    "dates": [
+    "2026-12-20",
+    "2026-12-21",
     "2027-01-20"
    ],
    "return_min_dkk": null,
-   "quotes": 5,
+   "quotes": 7,
    "flights": [
     {
      "quote_id": "Q:784fe966f21d",
