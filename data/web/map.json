@@ -24510,11 +24510,12 @@
     "Avianca"
    ],
    "dates": [
+    "2026-12-10",
     "2026-12-21",
     "2026-12-24"
    ],
    "return_min_dkk": null,
-   "quotes": 2,
+   "quotes": 3,
    "flights": [
     {
      "quote_id": "Q:d34866e8fb10",
@@ -24536,6 +24537,27 @@
      "source": "momondo-manual"
     },
     {
+     "quote_id": "Q:c10f63d274e4",
+     "depart": "2026-12-10T20:15",
+     "arrive": "2026-12-10T23:40",
+     "hours": 3.42,
+     "price_dkk": 1362.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "SAL"
+     ],
+     "layover_h": [
+      1.67
+     ],
+     "fare_brand": "Light",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo-manual"
+    },
+    {
      "quote_id": "Q:60aa9a597535",
      "depart": "2026-12-24T05:25",
      "arrive": "2026-12-24T08:35",
@@ -24551,6 +24573,45 @@
      "fare_brand": "Light",
      "cabin_bag": "1 cabin bag included (Momondo)",
      "checked_bag": "not included",
+     "overnight_layover": false,
+     "source": "momondo-manual"
+    }
+   ]
+  },
+  {
+   "from": "GUA",
+   "to": "RTB",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 1996.0,
+   "oneway_min_hours": 1.33,
+   "fastest_hours": 1.33,
+   "fastest_price_dkk": 1996.0,
+   "nonstop": true,
+   "vias": [],
+   "carriers": [
+    "TAG Airlines"
+   ],
+   "dates": [
+    "2026-12-10"
+   ],
+   "return_min_dkk": null,
+   "quotes": 1,
+   "flights": [
+    {
+     "quote_id": "Q:196bb9cf6041",
+     "depart": "2026-12-10T09:40",
+     "arrive": "2026-12-10T11:00",
+     "hours": 1.33,
+     "price_dkk": 1996.0,
+     "carriers": [
+      "TAG Airlines"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": null,
+     "checked_bag": null,
      "overnight_layover": false,
      "source": "momondo-manual"
     }
