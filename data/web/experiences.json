@@ -12970,13 +12970,13 @@
   "places": [
    "MDE"
   ],
-  "area": "Medellin, El Poblado",
+  "area": "Medellin metro, Envigado (Zona 7)",
   "country": "CO",
-  "lat": 6.216,
-  "lon": -75.571,
-  "summary": "Two-floor MMA, BJJ and striking gym with a cage in central El Poblado, visited by a BJJ Globetrotters writer in March 2025. Only thinly documented online so far: no sparring schedule, fighter list or monthly price found.",
+  "lat": 6.1605204,
+  "lon": -75.5954337,
+  "summary": "MMA, BJJ and striking gym with a cage. Google Maps lists it in Envigado (4.8 from 58 reviews) with Friday sparring, but one visitor says it was closed much of late December and early January and would not honour prepaid entries.",
   "season": "year round",
-  "dec_jan": "unknown",
+  "dec_jan": "Closed much of late December 2025 and early January 2026, per a 2026-01 Google review. Expect reduced classes at New Year.",
   "price": "Private lessons 160,000 COP for two (blog, 2024)",
   "price_dkk": null,
   "duration": "monthly membership",
@@ -12993,17 +12993,35 @@
    "fighters": null,
    "sessions_per_week": null,
    "timetable": null,
-   "sparring": null,
-   "visitors": null,
+   "sparring": "Friday sparring is mentioned by a visitor (2026-01 review).",
+   "visitors": "Pay-per-entry packs exist (a visitor bought 8 entries). Prepaid entries were not carried into January.",
    "price_dropin_dkk": null,
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 4.8,
+   "google_reviews": 58,
    "other_ratings": [],
-   "last_activity": "2025-03 BJJ Globetrotters visit",
+   "last_activity": "2026-01 Google review, 2025-03 BJJ Globetrotters visit",
    "what_people_say": [
+    {
+     "quote": "It's a good environment to train in. My problem is I only want to come for sparring Fridays.",
+     "site": "google maps",
+     "date": "2026-01 (3 stars)",
+     "url": "https://www.google.com/maps/place/ZONA+DE+COMBATE+MMA/@6.1605204,-75.5954337,17z/data=!3m1!4b1!4m6!3m5!1s0x8e44293f3f8031bb:0x6ac35c032d21fd3d!8m2!3d6.1605204!4d-75.5954337!16s%2Fg%2F11ptpqlssl"
+    },
+    {
+     "quote": "They were closed much of late December and early January.",
+     "site": "google maps",
+     "date": "2026-01 (3 stars)",
+     "url": "https://www.google.com/maps/place/ZONA+DE+COMBATE+MMA/@6.1605204,-75.5954337,17z/data=!3m1!4b1!4m6!3m5!1s0x8e44293f3f8031bb:0x6ac35c032d21fd3d!8m2!3d6.1605204!4d-75.5954337!16s%2Fg%2F11ptpqlssl"
+    },
+    {
+     "quote": "If you have any amateur or entertainment boxing matches, all the fighters who have come out of here have lost.",
+     "site": "google maps",
+     "date": "2025-10 (1 star)",
+     "url": "https://www.google.com/maps/place/ZONA+DE+COMBATE+MMA/@6.1605204,-75.5954337,17z/data=!3m1!4b1!4m6!3m5!1s0x8e44293f3f8031bb:0x6ac35c032d21fd3d!8m2!3d6.1605204!4d-75.5954337!16s%2Fg%2F11ptpqlssl"
+    },
     {
      "quote": "I was impressed with the instruction",
      "site": "thepointsoflife.boardingarea.com",
@@ -13011,27 +13029,36 @@
      "url": "https://thepointsoflife.boardingarea.com/muay-thai-medellin-chapter-3-of-my-combat-journey"
     }
    ],
-   "neighbourhood": "El Poblado (Cra 49 #16-16)",
+   "neighbourhood": "Envigado Zona 7: residential and quiet, bus or taxi to Poblado.",
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
    "water_km": null,
-   "water_note": "No sea or lake in Medellin. Guatape lake is a day trip.",
+   "water_note": "No sea in Medellin. Guatape lake is a 2 hour bus day trip.",
    "score": {
-    "training": null,
-    "evidence": 3,
-    "local_life": null,
-    "cost": null,
-    "water": 1,
-    "total": null
+    "training": 5,
+    "evidence": 5,
+    "local_life": 7,
+    "cost": 6,
+    "water": 2,
+    "total": 5.3
    },
-   "score_note": "Provisional. Only two first-hand blog mentions found, no ratings, price or sparring info. Coordinates are approximate from the street address."
+   "score_note": "58 reviews at 4.8 but the newest is 9 months old and mixed on fees and December closures, so training 5. Cost 6 from Numbeo (2026-10-30): gym 287 DKK plus 1-bed outside centre 4,195 DKK is about 4,500 DKK a month.",
+   "website": "https://linktr.ee/zonadecombate",
+   "google_maps_url": "https://www.google.com/maps/place/ZONA+DE+COMBATE+MMA/@6.1605204,-75.5954337,17z/data=!3m1!4b1!4m6!3m5!1s0x8e44293f3f8031bb:0x6ac35c032d21fd3d!8m2!3d6.1605204!4d-75.5954337!16s%2Fg%2F11ptpqlssl",
+   "phone": "+57 319 7987641",
+   "address": "Cl. 46E Sur #42 B 05, Zona 7, Envigado, Antioquia",
+   "address_note": "Google Maps 2026-10-30 puts the gym in Envigado. The blog address in El Poblado (Cra 49 #16-16) may be an older site.",
+   "hours": "Mon to Thu 5:00-20:30, Fri 5:00-20:30, Sat 8:00-12:00, Sun closed"
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://www.bjjglobetrotters.com/?p=120360",
-   "https://thepointsoflife.boardingarea.com/muay-thai-medellin-chapter-3-of-my-combat-journey"
+   "https://thepointsoflife.boardingarea.com/muay-thai-medellin-chapter-3-of-my-combat-journey",
+   "https://www.google.com/maps/search/muay+thai+medellin/",
+   "https://www.google.com/maps/place/ZONA+DE+COMBATE+MMA/@6.1605204,-75.5954337,17z/data=!3m1!4b1!4m6!3m5!1s0x8e44293f3f8031bb:0x6ac35c032d21fd3d!8m2!3d6.1605204!4d-75.5954337!16s%2Fg%2F11ptpqlssl",
+   "https://linktr.ee/zonadecombate"
   ],
   "image": {
    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
@@ -17578,8 +17605,8 @@
   ],
   "area": "Mexico City, Centro Historico (Buen Tono 36, near Metro Salto del Agua)",
   "country": "MX",
-  "lat": 19.4265,
-  "lon": -99.1405,
+  "lat": 19.4277317,
+  "lon": -99.143701,
   "summary": "Historic boxing gym in the Centro Historico that Time Out calls the cradle of boxing in Mexico, with Chavez, Barrera and Soto in its history. It hosted a WBC national amateur tournament in October 2024 and a visiting WBC champion in May 2025, so it is alive, but coaches, sparring days and visitor rules are not published.",
   "season": "year round",
   "dec_jan": "Unknown. Time Out lists Mon to Fri 6:00 to 21:30 and Sat 7:00 to 13:00 (2015). No holiday closure evidence found.",
@@ -17604,11 +17631,29 @@
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 4.4,
+   "google_reviews": 202,
    "other_ratings": [],
-   "last_activity": "2025-05 (WBC post, visiting champion)",
+   "last_activity": "2026-10 Google reviews (days old)",
    "what_people_say": [
+    {
+     "quote": "The training sessions are very dynamic; it's an atmosphere of camaraderie and respect.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/Gimnasio+Nuevo+Jordan/@19.4277317,-99.143701,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fed5c68826cd:0x270eee627c629c5a!8m2!3d19.4277317!4d-99.143701!16s%2Fg%2F1trpr41_"
+    },
+    {
+     "quote": "Excellent place to practice boxing, good instructors and above all, an excellent atmosphere.",
+     "site": "google maps",
+     "date": "2026-08",
+     "url": "https://www.google.com/maps/place/Gimnasio+Nuevo+Jordan/@19.4277317,-99.143701,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fed5c68826cd:0x270eee627c629c5a!8m2!3d19.4277317!4d-99.143701!16s%2Fg%2F1trpr41_"
+    },
+    {
+     "quote": "Come on, there's boxing history here",
+     "site": "google maps",
+     "date": "2026-08",
+     "url": "https://www.google.com/maps/place/Gimnasio+Nuevo+Jordan/@19.4277317,-99.143701,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fed5c68826cd:0x270eee627c629c5a!8m2!3d19.4277317!4d-99.143701!16s%2Fg%2F1trpr41_"
+    },
     {
      "quote": "la cuna del boxeo en Mexico",
      "site": "Time Out Mexico",
@@ -17624,20 +17669,27 @@
    "water_note": "No beach. Chapultepec park lakes (boating only) and the Xochimilco canals are in the city, the nearest sea is several hours away by road.",
    "score": {
     "training": 7,
-    "evidence": 5,
+    "evidence": 8,
     "local_life": 9,
     "cost": 8,
     "water": 2,
-    "total": 6.8
+    "total": 7.2
    },
-   "score_note": "Strong pro boxing heritage and confirmed 2024 and 2025 activity, but no coach names, ratings or sparring info. Cost score uses Narvarte room (about 2,800 DKK) plus a cheap gym, fee unverified. MXN to DKK at 0.38 (16.96 MXN per USD, Banxico rate quoted by Mexico News Daily 2026-08-27, USD x 6.45)."
+   "score_note": "Google Maps 2026-10-30: category Fitness center, 4.4 from 202 reviews with several in the last month, all boxing-focused and positive. Coordinates now from Maps.",
+   "google_maps_url": "https://www.google.com/maps/place/Gimnasio+Nuevo+Jordan/@19.4277317,-99.143701,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fed5c68826cd:0x270eee627c629c5a!8m2!3d19.4277317!4d-99.143701!16s%2Fg%2F1trpr41_",
+   "website": "http://nuevojordan.com.mx/",
+   "phone": "+52 55 5801 3770",
+   "address": "Buen Tono 36, 2 piso, Salto del Agua, Centro Historico, Cuauhtemoc, 06070 Ciudad de Mexico",
+   "hours": "Mon to Fri 6:00-22:00, Sat 7:00-15:00, Sun closed"
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://www.timeoutmexico.mx/ciudad-de-mexico/compras/el-nuevo-jordan",
    "https://wbcboxing.com/en/wp-json/wp/v2/posts/132375",
-   "https://wbcboxing.com/en/?p=150308"
+   "https://wbcboxing.com/en/?p=150308",
+   "https://www.google.com/maps/place/Gimnasio+Nuevo+Jordan/@19.4277317,-99.143701,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fed5c68826cd:0x270eee627c629c5a!8m2!3d19.4277317!4d-99.143701!16s%2Fg%2F1trpr41_",
+   "http://nuevojordan.com.mx/"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -17952,16 +18004,35 @@
    "sessions_per_week": null,
    "timetable": "Mon to Thu 7:00 to 13:00 and 16:00 to 22:00, Fri 7:00 to 13:00, Sat 9:00 to 13:00, Sun closed",
    "sparring": "Not found",
-   "visitors": "Via Wellhub or direct contact (55 5038 8778). Language not stated.",
+   "visitors": "Drop-ins welcome. Visitors report English-speaking staff and easy-to-follow classes (2026-10).",
    "price_dropin_dkk": null,
    "price_week_dkk": null,
    "price_month_dkk": 532,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 4.8,
+   "google_reviews": 210,
    "other_ratings": [],
-   "last_activity": "2026-10 (Wellhub listing live)",
-   "what_people_say": [],
+   "last_activity": "2026-10 Google reviews (days old)",
+   "what_people_say": [
+    {
+     "quote": "Popped in to do a drop in while visiting. Very easy going. Great class.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/MD+Self+Defense+Academy+Condesa+%7C+Renzo+Gracie+Mexico/@19.41297,-99.1700257,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fffb0f6b49ed:0xe0a334b04bae1d18!8m2!3d19.41297!4d-99.1700257!16s%2Fg%2F11r0zxg_2x"
+    },
+    {
+     "quote": "I don't speak a word of Spanish, but the class was easy to follow, everyone was friendly and I felt very welcome!",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/MD+Self+Defense+Academy+Condesa+%7C+Renzo+Gracie+Mexico/@19.41297,-99.1700257,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fffb0f6b49ed:0xe0a334b04bae1d18!8m2!3d19.41297!4d-99.1700257!16s%2Fg%2F11r0zxg_2x"
+    },
+    {
+     "quote": "Fortunately they had someone who spoke English to work with me.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/MD+Self+Defense+Academy+Condesa+%7C+Renzo+Gracie+Mexico/@19.41297,-99.1700257,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fffb0f6b49ed:0xe0a334b04bae1d18!8m2!3d19.41297!4d-99.1700257!16s%2Fg%2F11r0zxg_2x"
+    }
+   ],
    "neighbourhood": "Hipodromo Condesa, walkable cafes and parks. Rooms in Condesa and nearby listed at 6,000 to 8,500 MXN.",
    "room_month_dkk": 2800,
    "studio_month_dkk": null,
@@ -17970,19 +18041,25 @@
    "water_note": "No beach. Chapultepec park lakes (boating only) and the Xochimilco canals are in the city, the nearest sea is several hours away by road.",
    "score": {
     "training": 5,
-    "evidence": 4,
+    "evidence": 9,
     "local_life": 7,
     "cost": 8,
     "water": 2,
-    "total": 5.4
+    "total": 6.2
    },
-   "score_note": "Listing only, no reviews or fighter evidence, striking looks secondary to BJJ. The MD name is shared with MD Self Defense Academy Del Valle but common ownership is not verified. MXN to DKK at 0.38 (16.96 MXN per USD, Banxico rate quoted by Mexico News Daily 2026-08-27, USD x 6.45)."
+   "score_note": "Google Maps 2026-10-30: 4.8 from 210 reviews, a dozen from the last month, and visitors drop in. Reviews are about BJJ and gi classes, so striking training stays low (5). Foreigner-friendly in a Condesa expat area, which lowers local life.",
+   "google_maps_url": "https://www.google.com/maps/place/MD+Self+Defense+Academy+Condesa+%7C+Renzo+Gracie+Mexico/@19.41297,-99.1700257,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fffb0f6b49ed:0xe0a334b04bae1d18!8m2!3d19.41297!4d-99.1700257!16s%2Fg%2F11r0zxg_2x",
+   "website": "https://www.mdcondesa.com/",
+   "phone": "+52 55 3426 0813",
+   "address": "Av. Mexico #49, primer piso, Colonia Condesa, Cuauhtemoc, 06100 Ciudad de Mexico",
+   "hours": "Mon and Wed 7:00-21:00, Tue and Thu 7:00-22:00, Fri 7:00-14:00, Sat 9:00-16:00, Sun 11:00-14:00"
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://wellhub.com/es-mx/search/partners/gimnasio-md-condesa-hipodromo-ciudad-de-mexico/",
-   "https://propiedades.com/roma/cuartos-renta"
+   "https://propiedades.com/roma/cuartos-renta",
+   "https://www.google.com/maps/place/MD+Self+Defense+Academy+Condesa+%7C+Renzo+Gracie+Mexico/@19.41297,-99.1700257,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1fffb0f6b49ed:0xe0a334b04bae1d18!8m2!3d19.41297!4d-99.1700257!16s%2Fg%2F11r0zxg_2x"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -22591,6 +22668,936 @@
    "licence": "CC BY-SA 4.0",
    "w": 12000,
    "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-cdmx-boz-fight-club",
+  "name": "Boz Fight Club MMA (Mexico City)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "boxing"
+  ],
+  "places": [
+   "MEX"
+  ],
+  "area": "Mexico City, Anahuac (Miguel Hidalgo)",
+  "country": "MX",
+  "lat": 19.4488944,
+  "lon": -99.1821059,
+  "summary": "MMA school with boxing and Muay Thai in Anahuac, north of Polanco (4.8 from 72 Google reviews, the newest from last week). Reviewers praise a qualified coach, good bags and Thai pads, and an outdoor training area.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30, a Saturday morning class.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA",
+    "boxing",
+    "Muay Thai"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Anahuac, Polanco, Granada and Tacuba: central-north, metro Normal and Colegio Militar nearby.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake nearby. Xochimilco canals about 20 km south are boat rides only.",
+   "website": "http://www.bozfightclubmma.com/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+52 56 3000 2524",
+   "google_maps_url": "https://www.google.com/maps/place/BOZ+FIGHT+CLUB+MMA/@19.4488944,-99.1821059,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1f91728da7b8b:0x74269c40b2e49fc4!8m2!3d19.4488944!4d-99.1821059!16s%2Fg%2F11s0wchbcc",
+   "address": "Calz. Gral. Mariano Escobedo 114, Anahuac I Secc, Miguel Hidalgo, 11320 Ciudad de Mexico",
+   "hours": "Mon to Fri 7:00-22:00, Sat 8:00-12:00, Sun closed",
+   "google_rating": 4.8,
+   "google_reviews": 72,
+   "last_activity": "2026-10 Google review (5 days old). A second branch, Boz Fight Club MMA Tasqueña, is listed at 5.0 from 18 reviews.",
+   "what_people_say": [
+    {
+     "quote": "Great atmosphere, the teacher is fantastic, it just needs some fans.",
+     "site": "google maps",
+     "date": "2026-08",
+     "url": "https://www.google.com/maps/place/BOZ+FIGHT+CLUB+MMA/@19.4488944,-99.1821059,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1f91728da7b8b:0x74269c40b2e49fc4!8m2!3d19.4488944!4d-99.1821059!16s%2Fg%2F11s0wchbcc"
+    },
+    {
+     "quote": "Excellent place to train in mixed martial arts, boxing, Muay Thai, etc. With a dedicated and qualified coach in various combat styles.",
+     "site": "google maps",
+     "date": "2026-01",
+     "url": "https://www.google.com/maps/place/BOZ+FIGHT+CLUB+MMA/@19.4488944,-99.1821059,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1f91728da7b8b:0x74269c40b2e49fc4!8m2!3d19.4488944!4d-99.1821059!16s%2Fg%2F11s0wchbcc"
+    },
+    {
+     "quote": "I found good equipment, a great atmosphere, good teaching.",
+     "site": "google maps",
+     "date": "2025-12",
+     "url": "https://www.google.com/maps/place/BOZ+FIGHT+CLUB+MMA/@19.4488944,-99.1821059,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1f91728da7b8b:0x74269c40b2e49fc4!8m2!3d19.4488944!4d-99.1821059!16s%2Fg%2F11s0wchbcc"
+    }
+   ],
+   "score_note": "Recent, consistent reviews and good equipment, but no fighter or sparring detail, so training 6. Cost 8 matches the other Mexico City rows: a room is about 2,800 DKK a month plus a gym at about 370 DKK (Numbeo 2026-10-30).",
+   "score": {
+    "training": 6,
+    "evidence": 7,
+    "local_life": 7,
+    "cost": 8,
+    "water": 1,
+    "total": 6.2
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/mma+ciudad+de+mexico/",
+   "https://www.google.com/maps/place/BOZ+FIGHT+CLUB+MMA/@19.4488944,-99.1821059,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1f91728da7b8b:0x74269c40b2e49fc4!8m2!3d19.4488944!4d-99.1821059!16s%2Fg%2F11s0wchbcc",
+   "http://www.bozfightclubmma.com/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-cdmx-siam-thaiboxing",
+  "name": "Siam Thaiboxing CDMX (Mexico City)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "mma"
+  ],
+  "places": [
+   "MEX"
+  ],
+  "area": "Mexico City, Santa Apolonia (Azcapotzalco)",
+  "country": "MX",
+  "lat": 19.4779152,
+  "lon": -99.1902428,
+  "summary": "Muay Thai academy in Azcapotzalco with many adult class times, rated 5.0 from 61 Google reviews and one reviewer calling it one of the best Thai boxing gyms in the city. Instructors are described as internationally certified, but sparring and fighters are not mentioned.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Trial class by WhatsApp (one reviewer found booking slow).",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "MMA",
+    "fitness"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Trial class via WhatsApp bot. Spanish.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Azcapotzalco and Tacuba, working-class north-west, far from backpacker areas. Metro line 7 nearby.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake nearby. Xochimilco canals about 20 km south are boat rides only.",
+   "website": "https://siamthaiboxingmx.site/muay-thai",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+52 56 1895 0342",
+   "google_maps_url": "https://www.google.com/maps/place/Muay+Thai+siam.thaiboxing.cdmx/@19.4779152,-99.1902428,17z/data=!3m1!4b1!4m6!3m5!1s0x85d202800132f1b5:0xbf97cfc4ead340fe!8m2!3d19.4779152!4d-99.1902428!16s%2Fg%2F11f578xlxj",
+   "address": "Av. F.F.C.C. Nacionales 434, Santa Apolonia, Azcapotzalco, 02790 Ciudad de Mexico",
+   "hours": "Mon, Wed 7:00-11:00 and 16:00-22:00, Tue and Thu 17:00-22:00, Fri 7:00-11:00 and 16:00-22:00, Sat 9:00-12:30, Sun closed",
+   "google_rating": 5.0,
+   "google_reviews": 61,
+   "last_activity": "2026-07 Google reviews (3 months old)",
+   "what_people_say": [
+    {
+     "quote": "One of the best, if not the best, Thai boxing gyms in Mexico City. Highly recommended.",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Muay+Thai+siam.thaiboxing.cdmx/@19.4779152,-99.1902428,17z/data=!3m1!4b1!4m6!3m5!1s0x85d202800132f1b5:0xbf97cfc4ead340fe!8m2!3d19.4779152!4d-99.1902428!16s%2Fg%2F11f578xlxj"
+    },
+    {
+     "quote": "The instructors are highly qualified and very friendly, plus the place is very clean and has a great community.",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Muay+Thai+siam.thaiboxing.cdmx/@19.4779152,-99.1902428,17z/data=!3m1!4b1!4m6!3m5!1s0x85d202800132f1b5:0xbf97cfc4ead340fe!8m2!3d19.4779152!4d-99.1902428!16s%2Fg%2F11f578xlxj"
+    },
+    {
+     "quote": "I really want to go to a trial class, but it's almost impossible to schedule one with the WhatsApp bot.",
+     "site": "google maps",
+     "date": "2026-02",
+     "url": "https://www.google.com/maps/place/Muay+Thai+siam.thaiboxing.cdmx/@19.4779152,-99.1902428,17z/data=!3m1!4b1!4m6!3m5!1s0x85d202800132f1b5:0xbf97cfc4ead340fe!8m2!3d19.4779152!4d-99.1902428!16s%2Fg%2F11f578xlxj"
+    }
+   ],
+   "score_note": "Muay Thai specialist with strong recent reviews but no fighters or sparring evidence, so training 6. Cost 8 matches the other Mexico City rows: a room is about 2,800 DKK a month plus a gym at about 370 DKK (Numbeo 2026-10-30).",
+   "score": {
+    "training": 6,
+    "evidence": 7,
+    "local_life": 8,
+    "cost": 8,
+    "water": 1,
+    "total": 6.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+ciudad+de+mexico/",
+   "https://www.google.com/maps/place/Muay+Thai+siam.thaiboxing.cdmx/@19.4779152,-99.1902428,17z/data=!3m1!4b1!4m6!3m5!1s0x85d202800132f1b5:0xbf97cfc4ead340fe!8m2!3d19.4779152!4d-99.1902428!16s%2Fg%2F11f578xlxj",
+   "https://siamthaiboxingmx.site/muay-thai"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-cdmx-sport-boxing",
+  "name": "Sport Boxing (Mexico City)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "boxing"
+  ],
+  "places": [
+   "MEX"
+  ],
+  "area": "Mexico City, Escandon (Miguel Hidalgo)",
+  "country": "MX",
+  "lat": 19.4031962,
+  "lon": -99.1751886,
+  "summary": "Boxing-only gym in Escandon next to Condesa and Tacubaya (4.9 from 138 Google reviews, many from the last three months). Members praise challenging classes and coaching, but one review from yesterday accuses the owners of rudeness.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "boxing"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Escandon, Condesa and Roma Sur: central, cafes, walkable.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake nearby. Xochimilco canals about 20 km south are boat rides only.",
+   "website": "http://sportboxing.com.mx/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+52 55 1951 0081",
+   "google_maps_url": "https://www.google.com/maps/place/Sport+Boxing/@19.4031962,-99.1751886,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff6d96543497:0x19727c29ad674968!8m2!3d19.4031962!4d-99.1751886!16s%2Fg%2F11cncp6lx4",
+   "address": "Av Progreso 172, Escandon I Secc, Miguel Hidalgo, 11800 Ciudad de Mexico",
+   "hours": "Mon to Fri 6:00-14:00 and 16:00-21:00, Sat 8:00-12:00, Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 138,
+   "last_activity": "2026-10 Google reviews (a day old)",
+   "what_people_say": [
+    {
+     "quote": "I've been training there for over a year, and I have nothing but praise for the coaching staff, the equipment, and the classes.",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Sport+Boxing/@19.4031962,-99.1751886,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff6d96543497:0x19727c29ad674968!8m2!3d19.4031962!4d-99.1751886!16s%2Fg%2F11cncp6lx4"
+    },
+    {
+     "quote": "Personalized advice and in-depth knowledge of the discipline make Sport Boxing a great family.",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Sport+Boxing/@19.4031962,-99.1751886,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff6d96543497:0x19727c29ad674968!8m2!3d19.4031962!4d-99.1751886!16s%2Fg%2F11cncp6lx4"
+    },
+    {
+     "quote": "The owners treat people terribly and then accuse them of being thieves.",
+     "site": "google maps",
+     "date": "2026-10 (1 star)",
+     "url": "https://www.google.com/maps/place/Sport+Boxing/@19.4031962,-99.1751886,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff6d96543497:0x19727c29ad674968!8m2!3d19.4031962!4d-99.1751886!16s%2Fg%2F11cncp6lx4"
+    }
+   ],
+   "score_note": "Boxing only (no kicks), solid reviews, so training 5 for a kickboxer. One fresh 1-star about the owners. Cost 8 matches the other Mexico City rows: a room is about 2,800 DKK a month plus a gym at about 370 DKK (Numbeo 2026-10-30).",
+   "score": {
+    "training": 5,
+    "evidence": 8,
+    "local_life": 7,
+    "cost": 8,
+    "water": 1,
+    "total": 5.9
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/gimnasio+de+box+ciudad+de+mexico/",
+   "https://www.google.com/maps/place/Sport+Boxing/@19.4031962,-99.1751886,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff6d96543497:0x19727c29ad674968!8m2!3d19.4031962!4d-99.1751886!16s%2Fg%2F11cncp6lx4",
+   "http://sportboxing.com.mx/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-cdmx-real-fighters",
+  "name": "Real Fighters Mexico (Mexico City)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "boxing",
+   "kickboxing"
+  ],
+  "places": [
+   "MEX"
+  ],
+  "area": "Mexico City, Coapa (Coyoacan, south)",
+  "country": "MX",
+  "lat": 19.302431,
+  "lon": -99.1199356,
+  "summary": "Multi-discipline fight school in a sports centre in Coapa in the far south of the city (4.7 from 102 Google reviews). A reviewer describes a large group of amateur and professional competitors, but 2026 reviews include a 1-star and a 3-star about coaching behaviour.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Reviewers mention that visitors cannot look round the facilities before joining.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "Muay Thai",
+    "boxing",
+    "kickboxing"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated. One 2026-03 reviewer says visitors are not allowed to see the facilities.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Coapa, Coyoacan and Tlalpan: residential south, about 45 minutes from Centro by metro and bus.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake nearby. Xochimilco canals about 20 km south are boat rides only.",
+   "website": "http://www.realfighters.mx/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+52 55 8841 9852",
+   "google_maps_url": "https://www.google.com/maps/place/Real+Fighters+M%C3%A9xico/@19.302431,-99.1199356,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce018d14f87053:0xd45df628e7cb4d3!8m2!3d19.302431!4d-99.1199356!16s%2Fg%2F1hc2rnzxs",
+   "address": "Calz. del Hueso 590, Coapa, Los Girasoles, Coyoacan, 04920 Ciudad de Mexico (Centro Social y Deportivo Rosario Iglesias Rocha)",
+   "hours": "Mon, Wed 7:00-22:00, Tue and Thu 6:00-22:00, Fri 7:00-22:00, Sat 8:00-14:00, Sun closed",
+   "google_rating": 4.7,
+   "google_reviews": 102,
+   "last_activity": "2026-09 Google reviews (1 month old)",
+   "what_people_say": [
+    {
+     "quote": "Top-notch facilities, friendly and highly skilled instructors, and a large and solid group of amateur and professional competitors across multiple disciplines.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/Real+Fighters+M%C3%A9xico/@19.302431,-99.1199356,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce018d14f87053:0xd45df628e7cb4d3!8m2!3d19.302431!4d-99.1199356!16s%2Fg%2F1hc2rnzxs"
+    },
+    {
+     "quote": "Excellent place to train, totally worth the price. A breeding ground for champions.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/Real+Fighters+M%C3%A9xico/@19.302431,-99.1199356,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce018d14f87053:0xd45df628e7cb4d3!8m2!3d19.302431!4d-99.1199356!16s%2Fg%2F1hc2rnzxs"
+    },
+    {
+     "quote": "My experience after training there for quite some time was rather disappointing.",
+     "site": "google maps",
+     "date": "2026-09 (1 star)",
+     "url": "https://www.google.com/maps/place/Real+Fighters+M%C3%A9xico/@19.302431,-99.1199356,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce018d14f87053:0xd45df628e7cb4d3!8m2!3d19.302431!4d-99.1199356!16s%2Fg%2F1hc2rnzxs"
+    }
+   ],
+   "score_note": "Competitor group and several disciplines give training 7, but mixed recent reviews and a far-south location. Cost 8 matches the other Mexico City rows: a room is about 2,800 DKK a month plus a gym at about 370 DKK (Numbeo 2026-10-30).",
+   "score": {
+    "training": 7,
+    "evidence": 7,
+    "local_life": 6,
+    "cost": 8,
+    "water": 1,
+    "total": 6.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/mma+ciudad+de+mexico/",
+   "https://www.google.com/maps/place/Real+Fighters+M%C3%A9xico/@19.302431,-99.1199356,17z/data=!3m1!4b1!4m6!3m5!1s0x85ce018d14f87053:0xd45df628e7cb4d3!8m2!3d19.302431!4d-99.1199356!16s%2Fg%2F1hc2rnzxs",
+   "http://www.realfighters.mx/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-medellin-mma-colombia",
+  "name": "MMA Colombia (Medellin)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "boxing",
+   "bjj"
+  ],
+  "places": [
+   "MDE"
+  ],
+  "area": "Medellin, Guayabal",
+  "country": "CO",
+  "lat": 6.1967177,
+  "lon": -75.5844851,
+  "summary": "Large combat sports club with classes from 5 am to evening in boxing, Muay Thai, BJJ and MMA, rated 4.8 from 469 Google reviews. Several visitors report staying 1 to 10 weeks, and one calls its sparring well organised and safe.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30, open weekends 7:00 to 13:00.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Drop-in and weekly rates exist per visitor reviews. Not published on Maps.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA",
+    "Muay Thai",
+    "boxing",
+    "BJJ and no-gi"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": "Described as well organised and safe by a visitor (older review). Private lessons offered.",
+   "visitors": "Visitors trained 4 days to 10 weeks, one for a week, one for 3 weeks (2026 reviews). Some English spoken in class.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Guayabal, Las Vegas and Poblado Manila: working and middle class, 10 to 15 minutes from Poblado by bus or taxi.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea in Medellin. Guatape lake is a 2 hour bus day trip.",
+   "website": "http://www.mmacolombia.com.co/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+57 310 4616084",
+   "google_maps_url": "https://www.google.com/maps/place/MMA+Colombia/@6.1967177,-75.5844851,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46826547e4deb7:0x9740c6a9a409ff17!8m2!3d6.1967177!4d-75.5844851!16s%2Fg%2F11cky3q_r0",
+   "address": "Cra 50E #10 Sur-173, Guayabal, Medellin",
+   "hours": "Mon to Thu 5:00-21:00, Fri 5:00-20:00, Sat and Sun 7:00-13:00",
+   "google_rating": 4.8,
+   "google_reviews": 469,
+   "last_activity": "2026-02 Google reviews (8 months old), 469 reviews in total",
+   "what_people_say": [
+    {
+     "quote": "I spent 10 weeks training here as a beginner boxer and beginner ju jitsu student from the United States.",
+     "site": "google maps",
+     "date": "2026-02",
+     "url": "https://www.google.com/maps/place/MMA+Colombia/@6.1967177,-75.5844851,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46826547e4deb7:0x9740c6a9a409ff17!8m2!3d6.1967177!4d-75.5844851!16s%2Fg%2F11cky3q_r0"
+    },
+    {
+     "quote": "Classes in the morning and evening were diverse in levels and were intense and technique heavy.",
+     "site": "google maps",
+     "date": "2026-01",
+     "url": "https://www.google.com/maps/place/MMA+Colombia/@6.1967177,-75.5844851,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46826547e4deb7:0x9740c6a9a409ff17!8m2!3d6.1967177!4d-75.5844851!16s%2Fg%2F11cky3q_r0"
+    },
+    {
+     "quote": "The amount of classes they have throughout the day, the variety, and the knowledge of the instructors really makes this gym special.",
+     "site": "google maps",
+     "date": "2026-02",
+     "url": "https://www.google.com/maps/place/MMA+Colombia/@6.1967177,-75.5844851,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46826547e4deb7:0x9740c6a9a409ff17!8m2!3d6.1967177!4d-75.5844851!16s%2Fg%2F11cky3q_r0"
+    }
+   ],
+   "score_note": "469 reviews at 4.8 and repeated multi-week visitor reports, but one 2025 reviewer calls it unprofessional and no fighter list was seen, so training 7. Cost 6 from Numbeo (2026-10-30): gym 287 DKK plus 1-bed outside centre 4,195 DKK is about 4,500 DKK a month. Water 2: no sea, lake is a day trip.",
+   "score": {
+    "training": 7,
+    "evidence": 10,
+    "local_life": 7,
+    "cost": 6,
+    "water": 2,
+    "total": 6.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+medellin/",
+   "https://www.google.com/maps/place/MMA+Colombia/@6.1967177,-75.5844851,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46826547e4deb7:0x9740c6a9a409ff17!8m2!3d6.1967177!4d-75.5844851!16s%2Fg%2F11cky3q_r0",
+   "http://www.mmacolombia.com.co/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-medellin-atlab",
+  "name": "ATLAB (Medellin)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "boxing",
+   "bjj"
+  ],
+  "places": [
+   "MDE"
+  ],
+  "area": "Medellin, El Poblado south (Mall Zona Dos)",
+  "country": "CO",
+  "lat": 6.198272,
+  "lon": -75.5655687,
+  "summary": "Boxing and Brazilian Jiu-Jitsu academy in the basement of Mall Zona Dos, rated 4.8 from 129 Google reviews with a boxing review from two days ago. A regular says it teaches boxing properly where other academies use it for fitness, but one 2026 reviewer warns beginners away.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30, weekend mornings.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "boxing",
+    "BJJ"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "South El Poblado, Envigado border: expat-heavy, cafes, short taxi to Parque Lleras.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea in Medellin. Guatape lake is a 2 hour bus day trip.",
+   "website": "https://atlabclub.com/",
+   "instagram": null,
+   "facebook": null,
+   "phone": null,
+   "google_maps_url": "https://www.google.com/maps/place/ATLAB/@6.198272,-75.5655687,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46828576334b39:0xa825897f23cd9485!8m2!3d6.198272!4d-75.5655687!16s%2Fg%2F11c5g7r80z",
+   "address": "Carrera 32, Mall Zona 2 Sur #2 Sur-47, Piso -2, Medellin (Mall Zona Dos)",
+   "hours": "Mon to Thu 5:00-20:00, Fri 5:00-19:00, Sat and Sun 8:00-12:00",
+   "google_rating": 4.8,
+   "google_reviews": 129,
+   "last_activity": "2026-10 Google review (2 days old)",
+   "what_people_say": [
+    {
+     "quote": "I believe Atlab is the best if you're looking to learn boxing specifically. Many other academies use boxing as a way to exercise.",
+     "site": "google maps",
+     "date": "2026-03",
+     "url": "https://www.google.com/maps/place/ATLAB/@6.198272,-75.5655687,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46828576334b39:0xa825897f23cd9485!8m2!3d6.198272!4d-75.5655687!16s%2Fg%2F11c5g7r80z"
+    },
+    {
+     "quote": "I train in boxing at this gym twice a week. It has everything you need, the instructors are well-prepared.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/ATLAB/@6.198272,-75.5655687,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46828576334b39:0xa825897f23cd9485!8m2!3d6.198272!4d-75.5655687!16s%2Fg%2F11c5g7r80z"
+    },
+    {
+     "quote": "If you're just starting BJJ or boxing, I don't recommend this place.",
+     "site": "google maps",
+     "date": "2026-07 (2 stars)",
+     "url": "https://www.google.com/maps/place/ATLAB/@6.198272,-75.5655687,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46828576334b39:0xa825897f23cd9485!8m2!3d6.198272!4d-75.5655687!16s%2Fg%2F11c5g7r80z"
+    }
+   ],
+   "score_note": "Boxing and BJJ only, so kickboxing needs another gym. Training 6. Cost 6 from Numbeo (2026-10-30): gym 287 DKK plus 1-bed outside centre 4,195 DKK is about 4,500 DKK a month.",
+   "score": {
+    "training": 6,
+    "evidence": 8,
+    "local_life": 5,
+    "cost": 6,
+    "water": 2,
+    "total": 5.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/kickboxing+medellin/",
+   "https://www.google.com/maps/place/ATLAB/@6.198272,-75.5655687,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46828576334b39:0xa825897f23cd9485!8m2!3d6.198272!4d-75.5655687!16s%2Fg%2F11c5g7r80z",
+   "https://atlabclub.com/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-medellin-primitivo-mma",
+  "name": "Primitivo MMA Club (Medellin)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "kickboxing",
+   "mma"
+  ],
+  "places": [
+   "MDE"
+  ],
+  "area": "Medellin, Guayabal",
+  "country": "CO",
+  "lat": 6.2064268,
+  "lon": -75.5849612,
+  "summary": "Striking-focused club run by Edgardo (Dutch kickboxing mixed into traditional Muay Thai) and his wife Pahola, rated 5.0 from 52 Google reviews, nine of them from two weeks ago. A visitor says both speak fluent English and he will train there for as long as he is in Medellin.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30, including Sunday morning.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Contact through Pahola by phone or WhatsApp. Beginners welcome.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "kickboxing",
+    "MMA"
+   ],
+   "coaches": "Edgardo (head trainer, Dutch kickboxing and Muay Thai) and Pahola (runs the club), per a visitor review.",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "English spoken by both owners. Visiting trainers train there for their whole stay (2026-10 review).",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Guayabal and Las Vegas, close to MMA Colombia, 10 to 15 minutes from Poblado.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea in Medellin. Guatape lake is a 2 hour bus day trip.",
+   "website": null,
+   "instagram": null,
+   "facebook": null,
+   "phone": "+57 300 8173639",
+   "google_maps_url": "https://www.google.com/maps/place/PRIMITIVO+MMA+CLUB/@6.2064268,-75.5849612,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46838f1c775e95:0x9263292d94937117!8m2!3d6.2064268!4d-75.5849612!16s%2Fg%2F11n47_c0cm",
+   "address": "Cl. 2 Sur #51A-30, Piso 4, Guayabal, Medellin",
+   "hours": "Mon to Fri 6:00-8:00, 10:00-12:00 and 18:00-20:00, Sat 10:00-12:00, Sun 9:00-12:00",
+   "google_rating": 5.0,
+   "google_reviews": 52,
+   "last_activity": "2026-10 Google reviews (2 weeks old)",
+   "what_people_say": [
+    {
+     "quote": "Primitivo is an absolute must train at if you are in Medellin and looking to train Kickboxing/Muay Thai.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/PRIMITIVO+MMA+CLUB/@6.2064268,-75.5849612,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46838f1c775e95:0x9263292d94937117!8m2!3d6.2064268!4d-75.5849612!16s%2Fg%2F11n47_c0cm"
+    },
+    {
+     "quote": "Edgardo does the training and he is exceptional. His combination of Dutch Kickboxing mixed into traditional Muay Thai makes you proficient very fast.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/PRIMITIVO+MMA+CLUB/@6.2064268,-75.5849612,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46838f1c775e95:0x9263292d94937117!8m2!3d6.2064268!4d-75.5849612!16s%2Fg%2F11n47_c0cm"
+    },
+    {
+     "quote": "A great place to practice Muay Thai and kickboxing. I would recommend it to anyone, whether they are a beginner or a professional.",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/PRIMITIVO+MMA+CLUB/@6.2064268,-75.5849612,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46838f1c775e95:0x9263292d94937117!8m2!3d6.2064268!4d-75.5849612!16s%2Fg%2F11n47_c0cm"
+    }
+   ],
+   "score_note": "Best striking fit in Medellin on paper: fresh reviews, English-speaking coach, kickboxing and Muay Thai. Training 7 because sparring days and fighters are not stated and many reviews look like a recent review burst. Cost 6 from Numbeo (2026-10-30): gym 287 DKK plus 1-bed outside centre 4,195 DKK is about 4,500 DKK a month.",
+   "score": {
+    "training": 7,
+    "evidence": 7,
+    "local_life": 7,
+    "cost": 6,
+    "water": 2,
+    "total": 6.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+medellin/",
+   "https://www.google.com/maps/place/PRIMITIVO+MMA+CLUB/@6.2064268,-75.5849612,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46838f1c775e95:0x9263292d94937117!8m2!3d6.2064268!4d-75.5849612!16s%2Fg%2F11n47_c0cm"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-medellin-santhai-muay-thai",
+  "name": "Santhai Muay Thai (Sabaneta, Medellin)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [
+   "MDE"
+  ],
+  "area": "Sabaneta, south Medellin metro",
+  "country": "CO",
+  "lat": 6.1497618,
+  "lon": -75.6151595,
+  "summary": "Thai-style Muay Thai academy in Sabaneta south of Medellin, rated 5.0 from 74 Google reviews. Reviewers describe a family atmosphere and a teacher who explains technique in detail, and training like in Thailand.",
+  "season": "year round",
+  "dec_jan": "unknown. Google Maps lists it open 24 hours, which is likely a placeholder, so check the timetable.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Contact via WhatsApp.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Sabaneta: a small town south of Envigado with parks and cheap food, metro to Poblado in 30 to 40 minutes.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea in Medellin. Guatape lake is a 2 hour bus day trip.",
+   "website": null,
+   "instagram": "https://www.instagram.com/santhai_mt/",
+   "facebook": null,
+   "phone": "+57 311 7561663",
+   "google_maps_url": "https://www.google.com/maps/place/SANTHAI+MUAYTHAI+-+Medellin+Muay+Thai+Trainer/@6.1497618,-75.6151595,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46833b1bfdd7d7:0x81baa55d3fd85b38!8m2!3d6.1497618!4d-75.6151595!16s%2Fg%2F11kqfzqs0s",
+   "address": "Cl 71 Sur #43A-35, Sabaneta, Antioquia",
+   "hours": "Listed open 24 hours on Google Maps (placeholder, timetable not shown)",
+   "google_rating": 5.0,
+   "google_reviews": 74,
+   "last_activity": "2026-06 Google review (4 months old)",
+   "what_people_say": [
+    {
+     "quote": "He's a great teacher; he takes the time to explain things in detail. The training is like what they do in Thailand.",
+     "site": "google maps",
+     "date": "2026-06",
+     "url": "https://www.google.com/maps/place/SANTHAI+MUAYTHAI+-+Medellin+Muay+Thai+Trainer/@6.1497618,-75.6151595,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46833b1bfdd7d7:0x81baa55d3fd85b38!8m2!3d6.1497618!4d-75.6151595!16s%2Fg%2F11kqfzqs0s"
+    },
+    {
+     "quote": "More than just a Muay Thai academy, it's a family where you feel safe and secure.",
+     "site": "google maps",
+     "date": "2026-04",
+     "url": "https://www.google.com/maps/place/SANTHAI+MUAYTHAI+-+Medellin+Muay+Thai+Trainer/@6.1497618,-75.6151595,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46833b1bfdd7d7:0x81baa55d3fd85b38!8m2!3d6.1497618!4d-75.6151595!16s%2Fg%2F11kqfzqs0s"
+    }
+   ],
+   "score_note": "Pure Muay Thai with warm reviews but no sparring or fighter evidence, so training 5. Cost 6 from Numbeo (2026-10-30): gym 287 DKK plus 1-bed outside centre 4,195 DKK is about 4,500 DKK a month.",
+   "score": {
+    "training": 5,
+    "evidence": 6,
+    "local_life": 8,
+    "cost": 6,
+    "water": 2,
+    "total": 5.6
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+medellin/",
+   "https://www.google.com/maps/place/SANTHAI+MUAYTHAI+-+Medellin+Muay+Thai+Trainer/@6.1497618,-75.6151595,17z/data=!3m1!4b1!4m6!3m5!1s0x8e46833b1bfdd7d7:0x81baa55d3fd85b38!8m2!3d6.1497618!4d-75.6151595!16s%2Fg%2F11kqfzqs0s",
+   "https://www.instagram.com/santhai_mt/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-medellin-muay-thai-medellin",
+  "name": "Muay Thai Medellin (Medellin)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [
+   "MDE"
+  ],
+  "area": "Medellin, El Poblado south",
+  "country": "CO",
+  "lat": 6.1802303,
+  "lon": -75.5517776,
+  "summary": "Small Muay Thai gym in south El Poblado listed on The Art of 8 (4.9 from 36 Google reviews). Hours on Maps are mornings only and the newest reviews are a year old.",
+  "season": "year round",
+  "dec_jan": "unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": "David (first name from a review).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Short stays of a few days reported.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "South Poblado near Parque Lleras: expat zone.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea in Medellin. Guatape lake is a 2 hour bus day trip.",
+   "website": "https://theartof8.com/muay-thai/medellin/muay-thai-medelln/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+57 313 4831142",
+   "google_maps_url": "https://www.google.com/maps/place/Muay+Thai+Medell%C3%ADn/@6.1802303,-75.5517776,17z/data=!3m1!4b1!4m6!3m5!1s0x8e4682e9e55aee85:0x8585e1d7a80d7ec9!8m2!3d6.1802303!4d-75.5517776!16s%2Fg%2F11b8ztvnyq",
+   "address": "Carrera 10 #19 Sur-141 a 19 Sur-191, Medellin",
+   "hours": "Mon to Thu 6:30-9:00, Fri 6:30-9:00 and 13:30-18:00, Sat and Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 36,
+   "last_activity": "2025 Google review (a year old)",
+   "what_people_say": [
+    {
+     "quote": "Awesome muay thai training and David is super friendly!",
+     "site": "google maps",
+     "date": "2025",
+     "url": "https://www.google.com/maps/place/Muay+Thai+Medell%C3%ADn/@6.1802303,-75.5517776,17z/data=!3m1!4b1!4m6!3m5!1s0x8e4682e9e55aee85:0x8585e1d7a80d7ec9!8m2!3d6.1802303!4d-75.5517776!16s%2Fg%2F11b8ztvnyq"
+    },
+    {
+     "quote": "Excellent academy at an international level with an EXCELLENT COACH!",
+     "site": "google maps",
+     "date": "2023",
+     "url": "https://www.google.com/maps/place/Muay+Thai+Medell%C3%ADn/@6.1802303,-75.5517776,17z/data=!3m1!4b1!4m6!3m5!1s0x8e4682e9e55aee85:0x8585e1d7a80d7ec9!8m2!3d6.1802303!4d-75.5517776!16s%2Fg%2F11b8ztvnyq"
+    }
+   ],
+   "score_note": "Few and old reviews, morning classes only, so training 5 and evidence 4. Cost 6 from Numbeo (2026-10-30): gym 287 DKK plus 1-bed outside centre 4,195 DKK is about 4,500 DKK a month.",
+   "score": {
+    "training": 5,
+    "evidence": 4,
+    "local_life": 4,
+    "cost": 6,
+    "water": 2,
+    "total": 4.5
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+medellin/",
+   "https://www.google.com/maps/place/Muay+Thai+Medell%C3%ADn/@6.1802303,-75.5517776,17z/data=!3m1!4b1!4m6!3m5!1s0x8e4682e9e55aee85:0x8585e1d7a80d7ec9!8m2!3d6.1802303!4d-75.5517776!16s%2Fg%2F11b8ztvnyq",
+   "https://theartof8.com/muay-thai/medellin/muay-thai-medelln/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
   },
   "image_source": "place",
   "saved_in": []
