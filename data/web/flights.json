@@ -2151,6 +2151,26 @@
   ]
  },
  {
+  "from": "PTY",
+  "to": "MGA",
+  "dkk": 1938,
+  "hours": 4.17,
+  "dep": "2026-12-17T05:30",
+  "arr": "2026-12-17T08:40",
+  "vias": [
+   "SAL"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [],
+  "link": "https://kiwi.com/u/mbxddms",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "SAL",
   "to": "GDL",
   "dkk": 1939,
@@ -2167,6 +2187,25 @@
    "basic fare"
   ],
   "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "SJO",
+  "dkk": 1949,
+  "hours": 1.38,
+  "dep": "2026-12-09T07:55",
+  "arr": "2026-12-09T08:18",
+  "vias": [],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [],
+  "link": "https://kiwi.com/u/prxt4y",
   "shows": [
    "cheapest",
    "fastest",
@@ -3073,6 +3112,23 @@
   ],
   "notes": [],
   "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-11",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "PTY",
+  "to": "MGA",
+  "dkk": 2357,
+  "hours": 1.72,
+  "dep": "2026-12-11T12:22",
+  "arr": "2026-12-11T13:05",
+  "vias": [],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [],
+  "link": "https://kiwi.com/u/z42n72",
   "shows": [
    "fastest"
   ]
