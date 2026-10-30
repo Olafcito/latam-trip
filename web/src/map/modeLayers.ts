@@ -307,7 +307,6 @@ export function addModeLayers(map: MLMap) {
     id: SEL_LAYER,
     type: 'circle',
     source: SEL_SOURCE,
-    layout: { visibility: 'none' },
     paint: { 'circle-radius': 19, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': C.text, 'circle-stroke-width': 2 },
   })
 }
@@ -318,7 +317,6 @@ const show = (on: boolean) => (on ? 'visible' : 'none')
 export function setMapMode(map: MLMap, mode: MapMode | null) {
   for (const id of NORMAL_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', show(!mode))
   for (const m of ['gyms', 'experiences'] as const) for (const id of MODE_LAYERS[m]) map.setLayoutProperty(id, 'visibility', show(mode === m))
-  map.setLayoutProperty(SEL_LAYER, 'visibility', show(!!mode))
 }
 
 export function setModeData(map: MLMap, source: string, data: GeoJSON.FeatureCollection) {
