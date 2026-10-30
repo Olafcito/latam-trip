@@ -4528,6 +4528,27 @@
   ]
  },
  {
+  "from": "VVI",
+  "to": "PTY",
+  "dkk": 3361,
+  "hours": 22.58,
+  "dep": "2026-12-26T03:45",
+  "arr": "2026-12-27T01:20",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-PTY/2026-12-26",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
   "from": "CBB",
   "to": "BOG",
   "dkk": 3377,
@@ -4814,6 +4835,31 @@
   ]
  },
  {
+  "from": "VVI",
+  "to": "LIR",
+  "dkk": 3669,
+  "hours": 12.58,
+  "dep": "2026-12-26T05:30",
+  "arr": "2026-12-26T16:05",
+  "vias": [
+   "LIM",
+   "SJO"
+  ],
+  "carriers": [
+   "LATAM Airlines",
+   "SANSA"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-LIR/2026-12-26",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "SAP",
   "to": "MGA",
   "dkk": 3709,
@@ -4954,6 +5000,29 @@
   ]
  },
  {
+  "from": "VVI",
+  "to": "PTY",
+  "dkk": 3961,
+  "hours": 9.83,
+  "dep": "2026-12-27T05:30",
+  "arr": "2026-12-27T14:20",
+  "vias": [
+   "LIM"
+  ],
+  "carriers": [
+   "Copa Airlines",
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-PTY/2026-12-27",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
   "from": "BOG",
   "to": "CBB",
   "dkk": 3977,
@@ -5079,6 +5148,25 @@
   ],
   "notes": [],
   "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "PTY",
+  "dkk": 4343,
+  "hours": 4.9,
+  "dep": "2026-12-27T01:10",
+  "arr": "2026-12-27T05:04",
+  "vias": [],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-PTY/2026-12-27",
   "shows": [
    "fastest"
   ]
@@ -5276,24 +5364,6 @@
   ]
  },
  {
-  "from": "VVI",
-  "to": "PTY",
-  "dkk": 4735,
-  "hours": 4.9,
-  "dep": "2026-12-26T01:10",
-  "arr": "2026-12-26T05:04",
-  "vias": [],
-  "carriers": [
-   "Copa"
-  ],
-  "notes": [],
-  "link": "https://kiwi.com/u/8mhf3y9",
-  "shows": [
-   "cheapest",
-   "fastest"
-  ]
- },
- {
   "from": "CTG",
   "to": "MGA",
   "dkk": 4773,
@@ -5310,6 +5380,29 @@
    "basic fare"
   ],
   "link": "https://www.momondo.dk/flight-search/CTG-MGA/2026-12-10",
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "LIR",
+  "dkk": 4782,
+  "hours": 11.92,
+  "dep": "2026-12-27T05:30",
+  "arr": "2026-12-27T15:25",
+  "vias": [
+   "LIM",
+   "SJO"
+  ],
+  "carriers": [
+   "LATAM Airlines",
+   "SANSA"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-LIR/2026-12-27",
   "shows": [
    "fastest"
   ]
@@ -5375,7 +5468,6 @@
   "link": null,
   "shows": [
    "cheapest",
-   "fastest",
    "daytime landing"
   ]
  },
@@ -5737,6 +5829,29 @@
   "link": null,
   "shows": [
    "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "MGA",
+  "dkk": 7351,
+  "hours": 13.92,
+  "dep": "2026-12-26T01:10",
+  "arr": "2026-12-26T13:05",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-MGA/2026-12-26",
+  "shows": [
+   "fastest"
   ]
  },
  {
