@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
 import { RouteMap } from '@map/map/RouteMap'
 import { buildModel } from '@map/data/model'
 import type { TripState } from '@map/data/trips'
@@ -35,6 +35,16 @@ export function PlannerMap() {
   const [families, setFamilies] = useState<Set<Family> | null>(null)
   // a map mode owns taps on the map, so they leave the trip pane as it was
   const [modeOn, setModeOn] = useState(false)
+  // the tap that opens a map panel also folds the pane, so the pane comes back when that panel closes
+  const tapFolded = useRef(false)
+  const unfoldLater = useRef(false)
+  const onPanel = useCallback(
+    (open: boolean) => {
+      if (!open && unfoldLater.current) setPaneMini(false)
+      unfoldLater.current = open && tapFolded.current
+    },
+    [setPaneMini],
+  )
   const model =useMemo(() => (data ? buildModel(data) : null), [data])
 
   useEffect(() => {
@@ -67,7 +77,9 @@ export function PlannerMap() {
   // a tap on the map itself, beside the pane, folds the pane to its small card. It runs on the click, before
   // the map's own handler, so a tap on one of the trip's stops can keep the pane open in the same event
   const fold = (e: MouseEvent) => {
-    if (hasPane && !paneMini && !modeOn && (e.target as Element).closest('.rmap-canvas')) setPaneMini(true)
+    if (!(e.target as Element).closest('.rmap-canvas')) return
+    tapFolded.current = hasPane && !paneMini && !modeOn
+    if (tapFolded.current) setPaneMini(true)
   }
   const onStop = (id: string) => {
     cursorTo(id)
@@ -86,6 +98,7 @@ export function PlannerMap() {
         onLeg={insertLeg}
         onFamilies={setFamilies}
         onMode={setModeOn}
+        onPanel={onPanel}
         card={mapCard}
         onCardOpen={clearMapCard}
         cardFrom={mapCardFrom && { card: mapCardFrom, label: 'Trips', onBack: () => go('trips') }}
