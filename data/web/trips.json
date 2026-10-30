@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-30T20:16:42Z",
+ "generated_at": "2026-10-30T20:40:03Z",
  "source": "data/sources/trips.jsonl",
  "trips": [
   {
@@ -2080,6 +2080,895 @@
       "border": true,
       "flight": null,
       "overland": "Placeholder for travelling up overland."
+     }
+    }
+   ],
+   "history": []
+  },
+  {
+   "id": "ctg-sal-xmas-cbb",
+   "version": 1,
+   "name": "Cartagena in, Christmas in Cochabamba, San Salvador home",
+   "saved_at": "2026-10-30T20:39:50Z",
+   "by": "plan-trip",
+   "why": "Simon's Cartagena start with Christmas in Cochabamba (his planner trip of 30 Oct), repriced with the dated fares: Cali to Santa Cruz from Cali on 20 Dec, Santa Cruz to San José on 27 Dec, the direct San José to San Juan del Sur shuttle, home 2 Feb.",
+   "rank": null,
+   "option_id": "CTG-SAL-ticket",
+   "way_in": {
+    "direction": "in",
+    "type": "ticket",
+    "timeline": [
+     {
+      "kind": "flight",
+      "from": "CPH",
+      "to": "CTG",
+      "depart": "2026-12-03T06:00",
+      "arrive": "2026-12-03T17:35",
+      "hours": 17.58,
+      "connections": [
+       {
+        "airport": "AMS",
+        "layover_h": 1.83
+       },
+       {
+        "airport": "BOG",
+        "layover_h": 1.58
+       }
+      ],
+      "carriers": [
+       "KLM"
+      ],
+      "flight_numbers": [
+       "KLM 1266",
+       "KLM 749",
+       "KLM 749"
+      ],
+      "overnight_layover": false,
+      "ticket": "TQ:cd05b3ca1652",
+      "self_transfer_inside": false
+     }
+    ],
+    "tickets": [
+     "TQ:cd05b3ca1652"
+    ],
+    "flags": [],
+    "from": "CPH",
+    "to": "CTG",
+    "depart": "2026-12-03T06:00",
+    "arrive": "2026-12-03T17:35",
+    "total_hours": 17.6,
+    "flying_hours": 17.6,
+    "flights": 3,
+    "hub_nights": 0,
+    "changes": 0,
+    "us_transit": false,
+    "airports": [
+     "CPH",
+     "AMS",
+     "BOG",
+     "CTG"
+    ],
+    "score": 5,
+    "id": "I0431",
+    "shared_ticket": "TQ:cd05b3ca1652",
+    "price_dkk": 0,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 0,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
+    "paired_with": "H0432"
+   },
+   "way_home": {
+    "direction": "home",
+    "type": "ticket",
+    "timeline": [
+     {
+      "kind": "flight",
+      "from": "SAL",
+      "to": "CPH",
+      "depart": "2027-02-02T13:45",
+      "arrive": "2027-02-03T13:40",
+      "hours": 16.92,
+      "connections": [
+       {
+        "airport": "PTY",
+        "layover_h": 1.85
+       },
+       {
+        "airport": "AMS",
+        "layover_h": 1.25
+       }
+      ],
+      "carriers": [
+       "KLM"
+      ],
+      "flight_numbers": [
+       "KLM 3000",
+       "KLM 758",
+       "KLM 1271"
+      ],
+      "overnight_layover": false,
+      "ticket": "TQ:cd05b3ca1652",
+      "self_transfer_inside": false
+     }
+    ],
+    "tickets": [
+     "TQ:cd05b3ca1652"
+    ],
+    "flags": [],
+    "from": "SAL",
+    "to": "CPH",
+    "depart": "2027-02-02T13:45",
+    "arrive": "2027-02-03T13:40",
+    "total_hours": 16.9,
+    "flying_hours": 16.9,
+    "flights": 3,
+    "hub_nights": 0,
+    "changes": 0,
+    "us_transit": false,
+    "airports": [
+     "SAL",
+     "PTY",
+     "AMS",
+     "CPH"
+    ],
+    "score": 5,
+    "id": "H0432",
+    "shared_ticket": "TQ:cd05b3ca1652",
+    "price_dkk": 0,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 0,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
+    "paired_with": "I0431"
+   },
+   "tickets": {
+    "TQ:cd05b3ca1652": {
+     "id": "TQ:cd05b3ca1652",
+     "price_dkk": 7472.0,
+     "observed_at": "2026-10-30T20:09:59Z"
+    }
+   },
+   "places": [
+    {
+     "node": "CTG",
+     "hop": null
+    },
+    {
+     "node": "TINT",
+     "hop": {
+      "from": "CTG",
+      "to": "TINT",
+      "mode": "boat",
+      "operator": "Tranq It Easy (from Muelle La Bodeguita)",
+      "hours": 2.0,
+      "price_dkk": 322,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-04"
+     }
+    },
+    {
+     "node": "TLU",
+     "hop": {
+      "from": "TINT",
+      "to": "TLU",
+      "mode": "boat",
+      "operator": "Tolu tour operators from the Carrera Primera piers (e.g. Navegar Club)",
+      "hours": 1.0,
+      "price_dkk": 242,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-09"
+     }
+    },
+    {
+     "node": "MDE",
+     "hop": {
+      "from": "TLU",
+      "to": "MDE",
+      "mode": "flight",
+      "operator": "SATENA",
+      "hours": 1.08,
+      "price_dkk": 555.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:03f9757150f6",
+       "depart": "2026-12-09T10:45",
+       "arrive": "2026-12-09T11:50",
+       "hours": 1.08,
+       "price_dkk": 555.0,
+       "carriers": [
+        "SATENA"
+       ],
+       "via": [],
+       "layover_h": [],
+       "fare_brand": null,
+       "cabin_bag": null,
+       "source": "momondo",
+       "observed_at": "2026-10-30T19:50:49Z"
+      },
+      "observed_at": "2026-10-30T19:50:49Z",
+      "date": "2026-12-09"
+     }
+    },
+    {
+     "node": "CLO",
+     "hop": {
+      "from": "MDE",
+      "to": "CLO",
+      "mode": "flight",
+      "operator": "JetSMART, LATAM, Avianca (219 is a 5 Jan fare, not seen for 14 Dec)",
+      "hours": 1.1,
+      "price_dkk": 219,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-14"
+     }
+    },
+    {
+     "node": "VVI",
+     "hop": {
+      "from": "CLO",
+      "to": "VVI",
+      "mode": "flight",
+      "operator": "Copa",
+      "hours": 9.77,
+      "price_dkk": 2355,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:235b899a9952",
+       "depart": "2026-12-20T12:02",
+       "arrive": "2026-12-20T22:48",
+       "hours": 9.77,
+       "price_dkk": 2355,
+       "carriers": [
+        "Copa"
+       ],
+       "via": [
+        "PTY"
+       ],
+       "layover_h": [
+        2.95
+       ],
+       "fare_brand": "Economy Basic",
+       "cabin_bag": null,
+       "source": "momondo-manual",
+       "observed_at": "2026-10-30T19:05Z"
+      },
+      "observed_at": "2026-10-30T19:05Z",
+      "date": "2026-12-20"
+     }
+    },
+    {
+     "node": "CBB",
+     "hop": {
+      "from": "VVI",
+      "to": "CBB",
+      "mode": "flight",
+      "operator": "BoA",
+      "hours": 0.75,
+      "price_dkk": 441.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:475f402b670e",
+       "depart": "2026-12-21T05:35",
+       "arrive": "2026-12-21T06:20",
+       "hours": 0.75,
+       "price_dkk": 441.0,
+       "carriers": [
+        "BoA"
+       ],
+       "via": [],
+       "layover_h": [],
+       "fare_brand": "Economy",
+       "cabin_bag": "1 x håndbagage",
+       "source": "momondo",
+       "observed_at": "2026-10-30T19:43:48Z"
+      },
+      "observed_at": "2026-10-30T19:43:48Z",
+      "date": "2026-12-21"
+     }
+    },
+    {
+     "node": "VVI",
+     "hop": {
+      "from": "CBB",
+      "to": "VVI",
+      "mode": "flight",
+      "operator": "BoA",
+      "hours": 0.83,
+      "price_dkk": 471.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:c2a3bdfa9d0f",
+       "depart": "2026-12-26T13:35",
+       "arrive": "2026-12-26T14:25",
+       "hours": 0.83,
+       "price_dkk": 471.0,
+       "carriers": [
+        "BoA"
+       ],
+       "via": [],
+       "layover_h": [],
+       "fare_brand": "Economy",
+       "cabin_bag": "1 x håndbagage",
+       "source": "momondo",
+       "observed_at": "2026-10-30T19:48:51Z"
+      },
+      "observed_at": "2026-10-30T19:48:51Z",
+      "date": "2026-12-26"
+     }
+    },
+    {
+     "node": "SJO",
+     "hop": {
+      "from": "VVI",
+      "to": "SJO",
+      "mode": "flight",
+      "operator": "LATAM Airlines",
+      "hours": 9.08,
+      "price_dkk": 2561.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:583fe2c28dce",
+       "depart": "2026-12-27T05:30",
+       "arrive": "2026-12-27T12:35",
+       "hours": 9.08,
+       "price_dkk": 2561.0,
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "via": [
+        "LIM"
+       ],
+       "layover_h": [
+        2.5
+       ],
+       "fare_brand": "Basic",
+       "cabin_bag": "1 x håndbagage",
+       "source": "momondo",
+       "observed_at": "2026-10-30T11:56:59Z"
+      },
+      "observed_at": "2026-10-30T11:56:59Z",
+      "date": "2026-12-27"
+     }
+    },
+    {
+     "node": "SJDS",
+     "hop": {
+      "from": "SJO",
+      "to": "SJDS",
+      "mode": "shuttle",
+      "operator": "Caribe Shuttle (shared minivan, door to door)",
+      "hours": 7.5,
+      "price_dkk": 464,
+      "overnight": false,
+      "border": true,
+      "flight": null,
+      "date": "2026-12-28"
+     }
+    },
+    {
+     "node": "MGA",
+     "hop": {
+      "from": "SJDS",
+      "to": "MGA",
+      "mode": "shuttle",
+      "operator": "Public bus / shuttle",
+      "hours": 3.5,
+      "price_dkk": 110,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2027-01-09"
+     }
+    },
+    {
+     "node": "LEON",
+     "hop": {
+      "from": "MGA",
+      "to": "LEON",
+      "mode": "shuttle",
+      "operator": "Public bus / microbus / shuttle",
+      "hours": 2.0,
+      "price_dkk": 87,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2027-01-11"
+     }
+    },
+    {
+     "node": "TUNCO",
+     "hop": {
+      "from": "LEON",
+      "to": "TUNCO",
+      "mode": "boat",
+      "operator": "Shuttle to La Union + speedboat across the Gulf of Fonseca to Potosi + shuttle to Leon (Civitatis package; Ruta del Golfo boat)",
+      "hours": 8.0,
+      "price_dkk": 684,
+      "overnight": false,
+      "border": true,
+      "flight": null,
+      "date": "2027-01-18"
+     }
+    },
+    {
+     "node": "SAL",
+     "hop": {
+      "from": "TUNCO",
+      "to": "SAL",
+      "mode": "shuttle",
+      "operator": "Transporte Acopacific (private car), local buses",
+      "hours": 1.33,
+      "price_dkk": 281,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2027-01-21"
+     }
+    }
+   ],
+   "history": []
+  },
+  {
+   "id": "sal-vvi-colombia-jan",
+   "version": 1,
+   "name": "San Salvador in, Colombia in January, Santa Cruz home",
+   "saved_at": "2026-10-30T20:39:50Z",
+   "by": "plan-trip",
+   "why": "Simon's San Salvador start with Colombia in January and Bolivia last (his planner trip B), repriced: the Air France one-ticket for the shorter way home, the Caribe shuttle to San José, the bus Cali to Bogotá, and Bogotá to La Paz to Cochabamba instead of the 3,977 direct fare.",
+   "rank": null,
+   "option_id": "SAL-VVI-ticket",
+   "way_in": {
+    "direction": "in",
+    "type": "ticket",
+    "timeline": [
+     {
+      "kind": "flight",
+      "from": "CPH",
+      "to": "SAL",
+      "depart": "2026-12-02T06:45",
+      "arrive": "2026-12-02T23:38",
+      "hours": 23.88,
+      "connections": [
+       {
+        "airport": "CDG",
+        "layover_h": 6.0
+       },
+       {
+        "airport": "PTY",
+        "layover_h": 2.13
+       }
+      ],
+      "carriers": [
+       "Air France"
+      ],
+      "flight_numbers": [
+       "Air France 1351",
+       "Air France 474",
+       "Air France 5357"
+      ],
+      "overnight_layover": false,
+      "ticket": "TQ:6ac0246c3aa4",
+      "self_transfer_inside": false
+     }
+    ],
+    "tickets": [
+     "TQ:6ac0246c3aa4"
+    ],
+    "flags": [],
+    "from": "CPH",
+    "to": "SAL",
+    "depart": "2026-12-02T06:45",
+    "arrive": "2026-12-02T23:38",
+    "total_hours": 23.9,
+    "flying_hours": 23.9,
+    "flights": 3,
+    "hub_nights": 0,
+    "changes": 0,
+    "us_transit": false,
+    "airports": [
+     "CPH",
+     "CDG",
+     "PTY",
+     "SAL"
+    ],
+    "score": 3,
+    "id": "I0489",
+    "shared_ticket": "TQ:6ac0246c3aa4",
+    "price_dkk": 0,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 0,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
+    "paired_with": "H0490"
+   },
+   "way_home": {
+    "direction": "home",
+    "type": "ticket",
+    "timeline": [
+     {
+      "kind": "flight",
+      "from": "VVI",
+      "to": "CPH",
+      "depart": "2027-02-02T09:05",
+      "arrive": "2027-02-03T09:10",
+      "hours": 19.08,
+      "connections": [
+       {
+        "airport": "GRU",
+        "layover_h": 1.83
+       },
+       {
+        "airport": "CDG",
+        "layover_h": 1.08
+       }
+      ],
+      "carriers": [
+       "Air France",
+       "BoA"
+      ],
+      "flight_numbers": [
+       "BoA 736",
+       "Air France 453",
+       "Air France 1750"
+      ],
+      "overnight_layover": false,
+      "ticket": "TQ:6ac0246c3aa4",
+      "self_transfer_inside": false
+     }
+    ],
+    "tickets": [
+     "TQ:6ac0246c3aa4"
+    ],
+    "flags": [],
+    "from": "VVI",
+    "to": "CPH",
+    "depart": "2027-02-02T09:05",
+    "arrive": "2027-02-03T09:10",
+    "total_hours": 19.1,
+    "flying_hours": 19.1,
+    "flights": 3,
+    "hub_nights": 0,
+    "changes": 0,
+    "us_transit": false,
+    "airports": [
+     "VVI",
+     "GRU",
+     "CDG",
+     "CPH"
+    ],
+    "score": 5,
+    "id": "H0490",
+    "shared_ticket": "TQ:6ac0246c3aa4",
+    "price_dkk": 0,
+    "extras": {
+     "cabin_bag_fees_dkk": 0,
+     "checked_bag_fees_dkk": 0,
+     "hub_nights": 0,
+     "hub_stay_estimate_dkk": 0
+    },
+    "paired_with": "I0489"
+   },
+   "tickets": {
+    "TQ:6ac0246c3aa4": {
+     "id": "TQ:6ac0246c3aa4",
+     "price_dkk": 9363.0,
+     "observed_at": "2026-10-28T19:33:09Z"
+    }
+   },
+   "places": [
+    {
+     "node": "SAL",
+     "hop": null
+    },
+    {
+     "node": "LEON",
+     "hop": {
+      "from": "SAL",
+      "to": "LEON",
+      "mode": "boat",
+      "operator": "Shuttle to La Union + speedboat across the Gulf of Fonseca to Potosi + shuttle to Leon (Civitatis package; Ruta del Golfo boat)",
+      "hours": 8.0,
+      "price_dkk": 684,
+      "overnight": false,
+      "border": true,
+      "flight": null,
+      "date": "2026-12-07"
+     }
+    },
+    {
+     "node": "LPEN",
+     "hop": {
+      "from": "LEON",
+      "to": "LPEN",
+      "mode": "shuttle",
+      "operator": "Private taxi Leon to Las Penitas",
+      "hours": 0.5,
+      "price_dkk": 81,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-14"
+     }
+    },
+    {
+     "node": "LEON",
+     "hop": {
+      "from": "LPEN",
+      "to": "LEON",
+      "mode": "shuttle",
+      "operator": "Private taxi Leon to Las Penitas",
+      "hours": 0.5,
+      "price_dkk": 81,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-18"
+     }
+    },
+    {
+     "node": "MGA",
+     "hop": {
+      "from": "LEON",
+      "to": "MGA",
+      "mode": "shuttle",
+      "operator": "Public bus / microbus / shuttle",
+      "hours": 2.0,
+      "price_dkk": 87,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-18"
+     }
+    },
+    {
+     "node": "CORN",
+     "hop": {
+      "from": "MGA",
+      "to": "CORN",
+      "mode": "flight",
+      "operator": "La Costena",
+      "hours": 1.33,
+      "price_dkk": 645,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-18"
+     }
+    },
+    {
+     "node": "MGA",
+     "hop": {
+      "from": "CORN",
+      "to": "MGA",
+      "mode": "flight",
+      "operator": "La Costena",
+      "hours": 1.33,
+      "price_dkk": 645,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-30"
+     }
+    },
+    {
+     "node": "GRAN",
+     "hop": {
+      "from": "MGA",
+      "to": "GRAN",
+      "mode": "shuttle",
+      "operator": "Public bus / microbus / shuttle",
+      "hours": 1.25,
+      "price_dkk": 71,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2026-12-30"
+     }
+    },
+    {
+     "node": "SJDS",
+     "hop": {
+      "from": "GRAN",
+      "to": "SJDS",
+      "mode": "shuttle",
+      "operator": "Nica Shuttle / local buses via Rivas",
+      "hours": 1.5,
+      "price_dkk": 58,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2027-01-02"
+     }
+    },
+    {
+     "node": "SJO",
+     "hop": {
+      "from": "SJDS",
+      "to": "SJO",
+      "mode": "shuttle",
+      "operator": "Caribe Shuttle (shared minivan, door to door)",
+      "hours": 7.5,
+      "price_dkk": 464,
+      "overnight": false,
+      "border": true,
+      "flight": null,
+      "date": "2027-01-09"
+     }
+    },
+    {
+     "node": "MDE",
+     "hop": {
+      "from": "SJO",
+      "to": "MDE",
+      "mode": "flight",
+      "operator": "Wingo",
+      "hours": 2.0,
+      "price_dkk": 945.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:f83cd694885f",
+       "depart": "2027-01-10T07:10",
+       "arrive": "2027-01-10T10:10",
+       "hours": 2.0,
+       "price_dkk": 945.0,
+       "carriers": [
+        "Wingo"
+       ],
+       "via": [],
+       "layover_h": [],
+       "fare_brand": "Go Basic",
+       "cabin_bag": "fee",
+       "source": "momondo",
+       "observed_at": "2026-10-28T14:16:25Z"
+      },
+      "observed_at": "2026-10-28T14:16:25Z",
+      "date": "2027-01-10"
+     }
+    },
+    {
+     "node": "CLO",
+     "hop": {
+      "from": "MDE",
+      "to": "CLO",
+      "mode": "flight",
+      "operator": "JetSMART, LATAM, Avianca (219 is a 5 Jan fare, not seen for 17 Jan)",
+      "hours": 1.1,
+      "price_dkk": 219,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2027-01-17"
+     }
+    },
+    {
+     "node": "BOG",
+     "hop": {
+      "from": "CLO",
+      "to": "BOG",
+      "mode": "bus",
+      "operator": "Expreso Palmira, Expreso Bolivariano, Flota La Macarena; Flota Magdalena minivan",
+      "hours": 11.25,
+      "price_dkk": 175,
+      "overnight": false,
+      "border": false,
+      "flight": null,
+      "date": "2027-01-23"
+     }
+    },
+    {
+     "node": "LPB",
+     "hop": {
+      "from": "BOG",
+      "to": "LPB",
+      "mode": "flight",
+      "operator": "LATAM Airlines",
+      "hours": 9.75,
+      "price_dkk": 2000.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:10bbe28be683",
+       "depart": "2027-01-28T17:15",
+       "arrive": "2027-01-29T04:00",
+       "hours": 9.75,
+       "price_dkk": 2000.0,
+       "carriers": [
+        "LATAM Airlines"
+       ],
+       "via": [
+        "LIM"
+       ],
+       "layover_h": [
+        4.58
+       ],
+       "fare_brand": "Basic",
+       "cabin_bag": "1 x håndbagage",
+       "source": "momondo",
+       "observed_at": "2026-10-28T11:02:25Z"
+      },
+      "observed_at": "2026-10-28T11:02:25Z",
+      "date": "2027-01-28"
+     }
+    },
+    {
+     "node": "CBB",
+     "hop": {
+      "from": "LPB",
+      "to": "CBB",
+      "mode": "flight",
+      "operator": "BoA",
+      "hours": 0.75,
+      "price_dkk": 255.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:87e38d9f7133",
+       "depart": "2027-01-29T12:10",
+       "arrive": "2027-01-29T12:55",
+       "hours": 0.75,
+       "price_dkk": 255.0,
+       "carriers": [
+        "BoA"
+       ],
+       "via": [],
+       "layover_h": [],
+       "fare_brand": "Economy",
+       "cabin_bag": "1 x håndbagage",
+       "source": "momondo",
+       "observed_at": "2026-10-28T12:31:37Z"
+      },
+      "observed_at": "2026-10-28T12:31:37Z",
+      "date": "2027-01-29"
+     }
+    },
+    {
+     "node": "VVI",
+     "hop": {
+      "from": "CBB",
+      "to": "VVI",
+      "mode": "flight",
+      "operator": "BoA",
+      "hours": 0.83,
+      "price_dkk": 404.0,
+      "overnight": false,
+      "border": false,
+      "flight": {
+       "quote_id": "Q:0bdd2cd96aec",
+       "depart": "2027-02-01T10:35",
+       "arrive": "2027-02-01T11:25",
+       "hours": 0.83,
+       "price_dkk": 404.0,
+       "carriers": [
+        "BoA"
+       ],
+       "via": [],
+       "layover_h": [],
+       "fare_brand": "Economy",
+       "cabin_bag": "1 x håndbagage",
+       "source": "momondo",
+       "observed_at": "2026-10-28T12:35:40Z"
+      },
+      "observed_at": "2026-10-28T12:35:40Z",
+      "date": "2027-02-01"
      }
     }
    ],
