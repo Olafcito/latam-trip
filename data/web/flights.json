@@ -1790,6 +1790,26 @@
   ]
  },
  {
+  "from": "VVI",
+  "to": "LIM",
+  "dkk": 1818,
+  "hours": 2.67,
+  "dep": "2026-12-26T05:30",
+  "arr": "2026-12-26T07:10",
+  "vias": [],
+  "carriers": [
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-LIM/2026-12-26",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "MEX",
   "to": "SAL",
   "dkk": 1827,
@@ -1893,26 +1913,6 @@
   "shows": [
    "cheapest",
    "fastest",
-   "daytime landing"
-  ]
- },
- {
-  "from": "VVI",
-  "to": "LIM",
-  "dkk": 1866,
-  "hours": 2.67,
-  "dep": "2026-12-20T05:30",
-  "arr": "2026-12-20T07:10",
-  "vias": [],
-  "carriers": [
-   "LATAM"
-  ],
-  "notes": [
-   "basic fare"
-  ],
-  "link": null,
-  "shows": [
-   "cheapest",
    "daytime landing"
   ]
  },
@@ -2341,6 +2341,23 @@
   "shows": [
    "cheapest",
    "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "LIM",
+  "dkk": 2021,
+  "hours": 2.5,
+  "dep": "2026-12-27T20:00",
+  "arr": "2026-12-27T21:30",
+  "vias": [],
+  "carriers": [
+   "BoA"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/VVI-LIM/2026-12-27",
+  "shows": [
+   "fastest"
   ]
  },
  {
@@ -2792,21 +2809,6 @@
   "notes": [
    "basic fare"
   ],
-  "link": null,
-  "shows": [
-   "fastest"
-  ]
- },
- {
-  "from": "VVI",
-  "to": "LIM",
-  "dkk": 2235,
-  "hours": 2.5,
-  "dep": "2026-12-20T20:00",
-  "arr": "2026-12-20T21:30",
-  "vias": [],
-  "carriers": [],
-  "notes": [],
   "link": null,
   "shows": [
    "fastest"
@@ -4882,6 +4884,32 @@
   ]
  },
  {
+  "from": "CBB",
+  "to": "SJO",
+  "dkk": 3726,
+  "hours": 15.5,
+  "dep": "2026-12-27T23:05",
+  "arr": "2026-12-28T12:35",
+  "vias": [
+   "VVI",
+   "LIM"
+  ],
+  "carriers": [
+   "BoA",
+   "LATAM Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/CBB-SJO/2026-12-27",
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "BOG",
   "to": "LPB",
   "dkk": 3751,
@@ -5517,9 +5545,7 @@
   ],
   "link": null,
   "shows": [
-   "cheapest",
-   "fastest",
-   "daytime landing"
+   "fastest"
   ]
  },
  {

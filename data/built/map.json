@@ -18256,25 +18256,153 @@
    "to": "SJO",
    "mode": "flight",
    "source": "crawl",
-   "oneway_min_dkk": 5136.33,
-   "oneway_min_hours": 13.7,
+   "oneway_min_dkk": 3726.0,
+   "oneway_min_hours": 15.5,
    "fastest_hours": 13.7,
    "fastest_price_dkk": 5136.33,
    "nonstop": false,
    "vias": [
+    "LIM",
     "PTY",
+    "SAL",
     "VVI"
    ],
    "carriers": [
+    "Avianca",
+    "BoA",
     "Boliviana de Aviacion",
-    "Copa"
+    "Copa",
+    "LATAM Airlines"
    ],
    "dates": [
+    "2026-12-26",
+    "2026-12-27",
+    "2026-12-28",
     "2027-01-30"
    ],
    "return_min_dkk": null,
-   "quotes": 2,
+   "quotes": 8,
    "flights": [
+    {
+     "quote_id": "Q:ea05b15047f9",
+     "depart": "2026-12-27T23:05",
+     "arrive": "2026-12-28T12:35",
+     "hours": 15.5,
+     "price_dkk": 3726.0,
+     "carriers": [
+      "BoA",
+      "LATAM Airlines"
+     ],
+     "via": [
+      "VVI",
+      "LIM"
+     ],
+     "layover_h": [
+      5.58,
+      2.5
+     ],
+     "fare_brand": "Economy + Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": true,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:825ba8b28156",
+     "depart": "2026-12-27T19:40",
+     "arrive": "2026-12-28T12:35",
+     "hours": 18.92,
+     "price_dkk": 3726.0,
+     "carriers": [
+      "BoA",
+      "LATAM Airlines"
+     ],
+     "via": [
+      "VVI",
+      "LIM"
+     ],
+     "layover_h": [
+      9.0,
+      2.5
+     ],
+     "fare_brand": "Economy + Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": true,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:138f7c4a6485",
+     "depart": "2026-12-26T16:20",
+     "arrive": "2026-12-27T12:35",
+     "hours": 22.25,
+     "price_dkk": 4091.0,
+     "carriers": [
+      "BoA",
+      "LATAM Airlines"
+     ],
+     "via": [
+      "VVI",
+      "LIM"
+     ],
+     "layover_h": [
+      2.83,
+      12.17
+     ],
+     "fare_brand": "Economy + Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": true,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:c26da19b8e00",
+     "depart": "2026-12-28T17:30",
+     "arrive": "2026-12-29T15:55",
+     "hours": 24.42,
+     "price_dkk": 4375.0,
+     "carriers": [
+      "BoA",
+      "LATAM Airlines"
+     ],
+     "via": [
+      "VVI",
+      "LIM"
+     ],
+     "layover_h": [
+      1.67,
+      15.5
+     ],
+     "fare_brand": "Economy + Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": true,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:6957860904ed",
+     "depart": "2026-12-26T22:25",
+     "arrive": "2026-12-27T12:35",
+     "hours": 16.17,
+     "price_dkk": 4723.0,
+     "carriers": [
+      "BoA",
+      "LATAM Airlines"
+     ],
+     "via": [
+      "VVI",
+      "LIM"
+     ],
+     "layover_h": [
+      6.25,
+      2.5
+     ],
+     "fare_brand": "Economy + Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": true,
+     "source": "momondo"
+    },
     {
      "quote_id": "Q:8496560911c5",
      "depart": "2027-01-30T19:40",
@@ -18738,29 +18866,36 @@
    "oneway_min_dkk": 1755.0,
    "oneway_min_hours": 7.75,
    "fastest_hours": 3.92,
-   "fastest_price_dkk": 2601.0,
+   "fastest_price_dkk": 3866.0,
    "nonstop": true,
    "vias": [
     "LIM",
-    "PTY"
+    "MDE",
+    "PTY",
+    "UIO"
    ],
    "carriers": [
     "Avianca",
+    "BoA",
     "Copa",
     "Copa Airlines",
+    "JetSMART",
     "LATAM",
     "LATAM Airlines",
-    "Service mellem VVI og PTY er underlagt myndighedernes"
+    "Service mellem VVI og PTY er underlagt myndighedernes",
+    "Wingo"
    ],
    "dates": [
     "2026-12-25",
     "2026-12-26",
+    "2026-12-27",
+    "2026-12-28",
     "2026-12-31",
     "2027-01-15",
     "2027-02-01"
    ],
    "return_min_dkk": null,
-   "quotes": 15,
+   "quotes": 23,
    "flights": [
     {
      "quote_id": "Q:33f610ef55de",
@@ -20795,25 +20930,48 @@
    "to": "LIM",
    "mode": "flight",
    "source": "crawl",
-   "oneway_min_dkk": 1866.0,
+   "oneway_min_dkk": 1818.0,
    "oneway_min_hours": 2.67,
    "fastest_hours": 2.5,
    "fastest_price_dkk": 2235.0,
    "nonstop": true,
    "vias": [
-    "BOG"
+    "BOG",
+    "LPB"
    ],
    "carriers": [
     "Avianca",
+    "BoA",
     "Boliviana de Aviacion",
-    "LATAM"
+    "LATAM",
+    "LATAM Airlines"
    ],
    "dates": [
-    "2026-12-20"
+    "2026-12-20",
+    "2026-12-26",
+    "2026-12-27",
+    "2026-12-28"
    ],
    "return_min_dkk": null,
-   "quotes": 6,
+   "quotes": 13,
    "flights": [
+    {
+     "quote_id": "Q:94b7aaead2af",
+     "depart": "2026-12-26T05:30",
+     "arrive": "2026-12-26T07:10",
+     "hours": 2.67,
+     "price_dkk": 1818.0,
+     "carriers": [
+      "LATAM Airlines"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Basic",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
     {
      "quote_id": "Q:63b8f8f6651e",
      "depart": "2026-12-20T05:30",
@@ -20830,6 +20988,23 @@
      "checked_bag": "paid",
      "overnight_layover": false,
      "source": "expedia"
+    },
+    {
+     "quote_id": "Q:5d2bc308fa85",
+     "depart": "2026-12-27T20:00",
+     "arrive": "2026-12-27T21:30",
+     "hours": 2.5,
+     "price_dkk": 2021.0,
+     "carriers": [
+      "BoA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "momondo"
     },
     {
      "quote_id": "Q:129b61dcea1b",
@@ -20868,6 +21043,28 @@
      "checked_bag": "paid",
      "overnight_layover": false,
      "source": "expedia"
+    },
+    {
+     "quote_id": "Q:c0bee91f9a45",
+     "depart": "2026-12-27T22:10",
+     "arrive": "2026-12-28T06:15",
+     "hours": 9.08,
+     "price_dkk": 3242.0,
+     "carriers": [
+      "BoA",
+      "LATAM Airlines"
+     ],
+     "via": [
+      "LPB"
+     ],
+     "layover_h": [
+      6.08
+     ],
+     "fare_brand": "Economy + Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": true,
+     "source": "momondo"
     }
    ]
   },
@@ -25012,11 +25209,12 @@
     "2026-12-22",
     "2026-12-25",
     "2026-12-26",
+    "2026-12-27",
     "2026-12-31",
     "2027-02-01"
    ],
    "return_min_dkk": null,
-   "quotes": 16,
+   "quotes": 20,
    "flights": [
     {
      "quote_id": "Q:a84dca90a9b3",
