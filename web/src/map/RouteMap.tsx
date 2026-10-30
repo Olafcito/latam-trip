@@ -74,6 +74,8 @@ const CLUSTER_STEP = 1.5
 /** The most a city tap zooms out, in zoom levels. Chaining legs should not drift the map away. */
 const CITY_EASE_OUT = 0.3
 const NARROW = 720
+/** The lowest zoom: a phone goes further out to fit the whole region beside its controls, wide screens would see the edge of the world. */
+const lowestZoom = (width: number) => (width < NARROW ? 1 : 1.5)
 const MOVER: Record<Family, [string, string]> = { ground: [C.bus, '#E6FFF7'], boat: [C.boat, '#EEF5FF'], flight: [C.flight, '#FFF4D6'] }
 const EMPTY_FC: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] }
 
@@ -391,7 +393,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   const fitMode = (m: MapMode) => {
     const points = mm.points(m)
-    if (points.length) fit(boundsOf(points), 'mode', 6, 30)
+    if (points.length) fit(boundsOf(points), 'mode', 6, narrow ? 16 : 30)
   }
 
   const setMode = (next: MapMode | null) => {
@@ -501,7 +503,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       pitchWithRotate: false,
       touchPitch: false,
       renderWorldCopies: false,
-      minZoom: 1.5,
+      minZoom: lowestZoom(el.clientWidth),
       maxZoom: 12,
     })
     m.touchZoomRotate.disableRotation()
@@ -518,6 +520,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     })
     const ro = new ResizeObserver(() => {
       m.resize()
+      m.setMinZoom(lowestZoom(el.clientWidth))
       setNarrow(el.clientWidth < NARROW)
       setDock(el.clientWidth >= DOCK_MIN)
     })
