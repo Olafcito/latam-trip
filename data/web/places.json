@@ -3437,6 +3437,46 @@
     "rating": 9.7,
     "price_suspect": false,
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/capurgana/"
+   },
+   {
+    "name": "Hostal Capurganá",
+    "dorm_dkk": 75,
+    "private_dkk": 127,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/no/vandrerhjem/sor-amerika/colombia/capurgana/"
+   },
+   {
+    "name": "Hostal Doble Vista",
+    "dorm_dkk": 97,
+    "private_dkk": 161,
+    "rating": 5.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/no/vandrerhjem/sor-amerika/colombia/capurgana/"
+   },
+   {
+    "name": "Casa Wago",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": 9.3,
+    "price_suspect": false,
+    "url": "https://hotel.routard.com/hotel/co/casa-wago.en-gb.html?aid=304142"
+   },
+   {
+    "name": "La Posada del Gecko",
+    "dorm_dkk": null,
+    "private_dkk": null,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://southamericabackpacker.com/colombia/capurgana/"
+   },
+   {
+    "name": "BlueBayou Capurganá",
+    "dorm_dkk": null,
+    "private_dkk": 144,
+    "rating": 9.3,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/bluebayou-capurgana-capurgana1.html"
    }
   ],
   "hostel_note": null,
@@ -3445,7 +3485,11 @@
    "capu-walk-the-jungle-trails-to-el-cielito-waterfall",
    "capu-snorkel-at-la-mocha-and-playa-aguacate",
    "capu-boat-or-walk-to-sapzurro-and-la-miel",
-   "capu-beach-days"
+   "capu-beach-days",
+   "stay-casa-wago-capurgana",
+   "stay-hostal-doble-vista-capurgana",
+   "stay-cabanas-los-almendros-capurgana",
+   "beach-base-capurgana"
   ],
   "stay_quotes": [],
   "hub": false
@@ -4714,9 +4758,25 @@
     "name": "Hilltop Sapzurro",
     "dorm_dkk": 64,
     "private_dkk": 171,
-    "rating": null,
+    "rating": 9.1,
     "price_suspect": false,
     "url": "https://www.hostelworld.com/hostels/south-america/colombia/sapzurro/"
+   },
+   {
+    "name": "Hostal El Chileno Sapzurro",
+    "dorm_dkk": null,
+    "private_dkk": 285,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/hostal-el-chileno-sapzurro.html"
+   },
+   {
+    "name": "Cafe del Mar Sapzurro",
+    "dorm_dkk": null,
+    "private_dkk": 401,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.booking.com/hotel/co/cafe-del-mar-sapzurro.html"
    }
   ],
   "hostel_note": null,
@@ -4726,7 +4786,9 @@
    "sapz-hike-over-the-hill-to-capurgana-about-1-5-h",
    "sapz-diana-waterfall",
    "sapz-snorkel-and-freedive",
-   "sapz-cabo-tiburon-border-of-south-and-central-america"
+   "sapz-cabo-tiburon-border-of-south-and-central-america",
+   "stay-hilltop-sapzurro",
+   "beach-base-capurgana"
   ],
   "stay_quotes": [],
   "hub": false
@@ -5827,6 +5889,129 @@
     "notes": "Booking.com connector, 1 adult, total for 5 nights; room type not returned"
    }
   ],
+  "hub": false
+ },
+ {
+  "id": "ISGR",
+  "name": "Isla Grande (Rosario Islands)",
+  "short_name": "Isla Grande",
+  "country": "CO",
+  "lat": 10.177,
+  "lon": -75.738,
+  "tier": "town",
+  "type": "island",
+  "popularity": 3,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Car-free coral island an hour off Cartagena",
+  "reason": "Largest inhabited island of the Rosario archipelago, 1 h by morning boat from Cartagena, with eco hostels, Orika village and a plankton lagoon",
+  "summary": "Largest inhabited island in the Corales del Rosario national park, with eco hostels on the water, the Afro-Colombian village of Orika, mangroves and a bioluminescent plankton lagoon. Day-trippers fill the beach clubs and Playa Libre from 10:00 to 16:00, then it goes quiet. Mid December to mid January is high season.",
+  "categories": [
+   "Beach",
+   "Nature",
+   "Nightlife"
+  ],
+  "things_to_do": [
+   "Night swim in the plankton lagoon (Laguna Encantada), best near new moon",
+   "Snorkel off the hostels and Playa Libre",
+   "Walk through the mangroves to Orika village for cheap local food",
+   "Kayak the mangroves",
+   "Sunset at Sol y Papaya"
+  ],
+  "touristy": 3,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "El Hamaquero Hostal EcoNativo",
+    "dorm_dkk": 200,
+    "private_dkk": 432,
+    "rating": 8.9,
+    "price_suspect": false,
+    "url": "https://www.thebrokebackpacker.com/?p=468926"
+   },
+   {
+    "name": "Secreto Hostel (Paraiso Secreto)",
+    "dorm_dkk": 142,
+    "private_dkk": 471,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.thebrokebackpacker.com/?p=468926"
+   },
+   {
+    "name": "Ecohotel Arte y Aventura",
+    "dorm_dkk": 77,
+    "private_dkk": 135,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.thebrokebackpacker.com/?p=468926"
+   },
+   {
+    "name": "Eco Hotel Las Palmeras",
+    "dorm_dkk": 86,
+    "private_dkk": null,
+    "rating": 8.5,
+    "price_suspect": false,
+    "url": "https://cartagenacaribbeantours.com/property/eco-hotel-las-palmeras/BC-2025344"
+   },
+   {
+    "name": "Isla Mulata Hostel",
+    "dorm_dkk": 257,
+    "private_dkk": 407,
+    "rating": 8.4,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hosteldetails.php/Galeria-Isla-Ecohostel/Isla-Rosario/101931"
+   },
+   {
+    "name": "Orika del Mar",
+    "dorm_dkk": null,
+    "private_dkk": 335,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.thebrokebackpacker.com/?p=468926"
+   }
+  ],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "stay-el-hamaquero-isla-grande",
+   "stay-secreto-hostel-isla-grande",
+   "stay-eco-hotel-las-palmeras-isla-grande",
+   "stay-arte-y-aventura-isla-grande",
+   "beach-base-isla-grande"
+  ],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
+  "id": "ACD",
+  "name": "Acandi",
+  "short_name": "Acandi",
+  "country": "CO",
+  "lat": 8.512,
+  "lon": -77.279,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "ACD",
+  "airport_transfer_min": null,
+  "why": "Airstrip town south of Capurgana",
+  "reason": "Airstrip with Satena flights to Medellin Olaya Herrera; 25 min boat on to Capurgana. Danish UM advises against all travel to Choco except the Capurgana tourist area",
+  "summary": "Municipal seat on the Darien coast with Satena flights to Medellin Olaya Herrera. Travellers only pass through to the 25 minute lancha to Capurgana. Danish UM advises against all travel in Choco except the Capurgana tourist area (June 2026).",
+  "categories": [
+   "Transit hub"
+  ],
+  "things_to_do": [
+   "Lancha on to Capurgana"
+  ],
+  "touristy": 1,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [],
+  "stay_quotes": [],
   "hub": false
  },
  {

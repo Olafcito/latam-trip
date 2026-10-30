@@ -26906,5 +26906,522 @@
   },
   "image_source": "category",
   "saved_in": []
+ },
+ {
+  "id": "stay-casa-wago-capurgana",
+  "name": "Casa Wago, beachfront guesthouse at Bahia Aguacate",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "guesthouse",
+   "water",
+   "quiet"
+  ],
+  "places": [
+   "CAPU"
+  ],
+  "area": "Bahia Aguacate, east of Capurgana",
+  "country": "CO",
+  "lat": 8.615,
+  "lon": -77.33,
+  "summary": "Small beachfront guesthouse on the calm Aguacate bay, reached by boat or a 60 to 90 min jungle path from the village. Own French and local restaurant, sea and jungle sounds, very quiet.",
+  "season": "Year round. Dec to Apr is windy with rough boat crossings.",
+  "dec_jan": "December is high season; book ahead. Booking showed no rooms for 8 to 13 Dec 2026.",
+  "price": "Price not found",
+  "price_dkk": null,
+  "duration": "4 to 5 nights",
+  "requirements": "Cash in COP: no ATMs in Capurgana or Sapzurro.",
+  "details": {
+   "what_people_say": [
+    {
+     "quote": "Muy tranquilo. Solo los sonidos del mar y la selva",
+     "site": "Booking.com guest review",
+     "date": "2026",
+     "url": "https://hotel.routard.com/hotel/co/casa-wago.en-gb.html?aid=304142"
+    }
+   ],
+   "fit": "On the water and quiet, but far from village bars; same remoteness issue as Acuali, more so.",
+   "coords_note": "Approximate, Bahia Aguacate area"
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://hotel.routard.com/hotel/co/casa-wago.en-gb.html?aid=304142"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Capurgan%C3%A1%2C_centro.JPG/1280px-Capurgan%C3%A1%2C_centro.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Capurgan%C3%A1,_centro.JPG",
+   "credit": "P.sutermeister",
+   "licence": "CC BY-SA 4.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "stay-hostal-doble-vista-capurgana",
+  "name": "Hostal Doble Vista, beachfront hostel at Aguacate",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "water"
+  ],
+  "places": [
+   "CAPU"
+  ],
+  "area": "Vereda El Aguacate, 2.9 km from Capurgana",
+  "country": "CO",
+  "lat": 8.615104,
+  "lon": -77.330451,
+  "summary": "Adults-only beachfront hostel with dorms, privates, restaurant and bar on Bahia Aguacate, good snorkelling in front. Hostelworld reviews are weak.",
+  "season": "Year round.",
+  "dec_jan": "December is high season.",
+  "price": "Dorm about EUR 12.94, private EUR 21.56 (Hostelworld 2026); Booking 148 DKK/night for 8 to 13 Dec 2026",
+  "price_dkk": 97,
+  "duration": "4 to 5 nights",
+  "requirements": "Cash in COP: no ATMs in Capurgana or Sapzurro.",
+  "details": {
+   "rating": "Hostelworld 5.4 from 13 reviews",
+   "fit": "Water yes, social hub no: 60 to 90 min walk or boat to town."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.hostelworld.com/no/vandrerhjem/sor-amerika/colombia/capurgana/",
+   "https://southamericabackpacker.com/colombia/capurgana/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Capurgan%C3%A1%2C_centro.JPG/1280px-Capurgan%C3%A1%2C_centro.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Capurgan%C3%A1,_centro.JPG",
+   "credit": "P.sutermeister",
+   "licence": "CC BY-SA 4.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "stay-cabanas-los-almendros-capurgana",
+  "name": "Cabanas Los Almendros, garden cabins in Capurgana village",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "jungle"
+  ],
+  "places": [
+   "CAPU"
+  ],
+  "area": "Capurgana centre",
+  "country": "CO",
+  "lat": 8.636255,
+  "lon": -77.350224,
+  "summary": "Well rated budget cabins with hammocks and a garden in the middle of the village, 400 m from the beach, solar power. Easiest base for restaurants and meeting other travellers.",
+  "season": "Year round.",
+  "dec_jan": "December is high season.",
+  "price": "Dorm about 85 DKK, private 129 DKK (Hostelworld 2026); Booking 99 DKK/night for 8 to 13 Dec 2026",
+  "price_dkk": 99,
+  "duration": "4 to 5 nights",
+  "requirements": "Cash in COP: no ATMs in Capurgana or Sapzurro.",
+  "details": {
+   "rating": "Booking 9.0 from 233 reviews; Hostelworld 9.7 from 32",
+   "fit": "Not on the water but central and cheap."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.hostelworld.com/no/vandrerhjem/sor-amerika/colombia/capurgana/",
+   "https://hostelz.com/cheapest-hostels-in-capurgana"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Capurgan%C3%A1%2C_centro.JPG/1280px-Capurgan%C3%A1%2C_centro.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Capurgan%C3%A1,_centro.JPG",
+   "credit": "P.sutermeister",
+   "licence": "CC BY-SA 4.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "stay-hilltop-sapzurro",
+  "name": "Hilltop Sapzurro, hostel on the bay",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "water"
+  ],
+  "places": [
+   "SAPZ"
+  ],
+  "area": "Sapzurro bay",
+  "country": "CO",
+  "lat": 8.657579,
+  "lon": -77.3659,
+  "summary": "Hostel on Sapzurro bay with a sandy beach in front, jungle behind, pool, bar and free snorkel gear, 30 min walk up to La Miel in Panama. Free nightly access to the sister hostel in Capurgana.",
+  "season": "Year round.",
+  "dec_jan": "December is high season.",
+  "price": "Dorm from 64 DKK, private 171 DKK (Hostelworld 2026); Booking 67 DKK/night for 8 to 13 Dec 2026",
+  "price_dkk": 67,
+  "duration": "4 to 5 nights",
+  "requirements": "Cash in COP: no ATMs in Capurgana or Sapzurro. No kitchen.",
+  "details": {
+   "rating": "Booking 9.1",
+   "warning": "A 2018 guide (alongdustyroads) said some guests had very bad experiences at Hilltop.",
+   "fit": "Water and price fit well; Sapzurro is tiny with only a few restaurants."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.hostelworld.com/hostels/p/91847/hilltop-sapzurro/",
+   "https://hotel.routard.com/hotel/co/hilltop-sapzurro.en-gb.html?aid=304142",
+   "https://www.alongdustyroads.com/posts/things-to-do-capurgana-colombia-guide"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg/1280px-Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Bah%C3%ADa_de_Sapzurro_y_claridad_marina.jpg",
+   "credit": "Johan Andrés Toro",
+   "licence": "CC BY-SA 4.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "stay-el-hamaquero-isla-grande",
+  "name": "El Hamaquero Hostal EcoNativo, Isla Grande",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "water"
+  ],
+  "places": [
+   "ISGR"
+  ],
+  "area": "Muelle Palmar, Isla Grande",
+  "country": "CO",
+  "lat": 10.172072,
+  "lon": -75.746613,
+  "summary": "Waterfront eco hostel with dorms, privates, hammocks, pool, breakfast and the Salpicon restaurant. Runs snorkel and nature restoration projects. A nearby beach club plays music 08:00 to 16:00.",
+  "season": "Dec to Apr windy, rough afternoon sea.",
+  "dec_jan": "Mid Dec to mid Jan is high season.",
+  "price": "Dorm from US$31, private US$67 (Broke Backpacker, Aug 2026); Booking 359 DKK/night for 8 to 13 Dec 2026",
+  "price_dkk": 200,
+  "duration": "3 to 5 nights",
+  "requirements": "Boat from Cartagena at 09:00, cash for port tax.",
+  "details": {
+   "rating": "8.9 Booking",
+   "what_people_say": [
+    {
+     "quote": "I really appreciated that this place treads lightly on the environment.. with water and electricity usage.",
+     "site": "Booking.com guest review",
+     "date": "2026",
+     "url": "https://hotel.routard.com/hotel/co/ecohotel-el-hamaquero.en-gb.html?aid=304142"
+    }
+   ]
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.thebrokebackpacker.com/?p=468926",
+   "https://hotel.routard.com/hotel/co/ecohotel-el-hamaquero.en-gb.html?aid=304142"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "stay-secreto-hostel-isla-grande",
+  "name": "Secreto Hostel (Paraiso Secreto), Isla Grande",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "water"
+  ],
+  "places": [
+   "ISGR"
+  ],
+  "area": "Isla Grande",
+  "country": "CO",
+  "lat": 10.177,
+  "lon": -75.738,
+  "summary": "Small eco hostel (16 guests) with its own beach, pools, bar and yoga, where guests stay a few days to swim, read and talk. Village food is a walk through the mangroves. Power off for parts of the day.",
+  "season": "Dec to Apr windy.",
+  "dec_jan": "High season; Booking had no rooms 8 to 13 Dec 2026.",
+  "price": "Dorm from US$22, private US$73 (Broke Backpacker, Aug 2026). Dinner COP 25,000 (Hostelgeeks, undated)",
+  "price_dkk": 142,
+  "duration": "3 to 5 nights",
+  "requirements": "Boat from Muelle La Bodeguita at 09:00.",
+  "details": {
+   "coords_note": "Approximate, island centre",
+   "what_people_say": [
+    {
+     "quote": "act like it's 1995... and talk to each other!",
+     "site": "Hostelgeeks (sign at the hostel)",
+     "date": "undated",
+     "url": "https://hostelgeeks.com/secreto-hostel-rosario-islands-colombia/"
+    }
+   ]
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.thebrokebackpacker.com/?p=468926",
+   "https://hostelgeeks.com/secreto-hostel-rosario-islands-colombia/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "stay-eco-hotel-las-palmeras-isla-grande",
+  "name": "Eco Hotel Las Palmeras, Isla Grande",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "budget"
+  ],
+  "places": [
+   "ISGR"
+  ],
+  "area": "Sector La Punta, Isla Grande",
+  "country": "CO",
+  "lat": 10.179953,
+  "lon": -75.731053,
+  "summary": "Budget lodge with dorm beds and cabins 2 min from Playa Libre, local food, calm. Rooms run hot with weak fans and neighbours can play loud music.",
+  "season": "Dec to Apr windy.",
+  "dec_jan": "High season.",
+  "price": "Booking 86 DKK/night cheapest room for 8 to 13 Dec 2026; rates from US$50 on a reseller",
+  "price_dkk": 86,
+  "duration": "3 to 5 nights",
+  "requirements": "Cash.",
+  "details": {
+   "rating": "Booking 8.5 from 495 reviews"
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://cartagenacaribbeantours.com/property/eco-hotel-las-palmeras/BC-2025344"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "stay-arte-y-aventura-isla-grande",
+  "name": "Ecohotel Arte y Aventura, Isla Grande",
+  "category": "beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "jungle"
+  ],
+  "places": [
+   "ISGR"
+  ],
+  "area": "Sector La Charca, Isla Grande",
+  "country": "CO",
+  "lat": 10.177175,
+  "lon": -75.73097,
+  "summary": "Basic bungalows in shady forest near a quiet beach and mangroves; local, social rather than party. Fans only, Spanish helps.",
+  "season": "Dec to Apr windy.",
+  "dec_jan": "High season.",
+  "price": "Dorm from US$12, private US$21 (Broke Backpacker, Aug 2026); Booking 254 DKK/night for 8 to 13 Dec 2026",
+  "price_dkk": 77,
+  "duration": "3 to 5 nights",
+  "requirements": "Cash and a power bank.",
+  "details": {},
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.thebrokebackpacker.com/?p=468926"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "beach-base-capurgana",
+  "name": "Beach base: Capurgana and Sapzurro",
+  "category": "beach",
+  "tags": [
+   "beach-base",
+   "stay",
+   "water",
+   "jungle"
+  ],
+  "places": [
+   "CAPU",
+   "SAPZ"
+  ],
+  "area": "Darien coast, Choco",
+  "country": "CO",
+  "lat": 8.63,
+  "lon": -77.34,
+  "summary": "Car-free village where travellers stay days, jungle paths to Sapzurro, La Miel and El Cielito, clear water at Aguacate and La Miel. Since July 2025 a hybrid solar plant gives 24 h power.",
+  "season": "Dec to Apr is the dry, windy season; December averages about 147 mm rain.",
+  "dec_jan": "December and Christmas are high season: hostels fill, prices rise, Necocli boats are rough.",
+  "price": "Beds 67 to 160 DKK; flight MDE about 614 to 816 DKK one way",
+  "price_dkk": null,
+  "duration": "4 to 5 nights",
+  "requirements": "Cash in COP: no ATMs in Capurgana or Sapzurro. Passport for La Miel (border closes 18:00).",
+  "details": {
+   "score": {
+    "access": 6,
+    "water_and_lodging": 7,
+    "long_stay_crowd": 9,
+    "food_and_bars": 6,
+    "total": 28,
+    "max": 40
+   },
+   "verdict": "The best match for living by the water among other long-stay travellers, with a real village of restaurants and a few bars. Access is the weak point: Satena via Acandi or an irregular charter, and the best water-side lodges sit outside town.",
+   "access": "Satena EOH to Acandi about 1 h, COP 300,700 one way (614 DKK), then 25 min lancha. Charter EOH to CPB Mon, Wed, Sat from COP 400,000 (2024). Or bus MDE to Necocli 8 to 10 h plus 1.5 h boat (COP 85,000).",
+   "food_and_bars": "Josefina's (seafood), The Dock (pizza), Capurgarepa, Kukamba Bar and Grill, Posada del Gecko (pizza), Discoteca Carambolo over the water, Rooftop 180. Fish empanadas by the pier.",
+   "hike": "Capurgana to Sapzurro over the hill about 1.5 h, muddy after rain; Sapzurro to La Miel (Panama) about 15 to 30 min up steps, passport needed, no stamp. Boat Capurgana to Sapzurro COP 10,000.",
+   "electricity": "MinEnergia, 30 Jul 2025: first continuous 24 h power from a hybrid solar plant. Older guides report nightly cuts 05:00 to 09:00.",
+   "safety": "Danish UM (Jun 2026) advises against all travel in Choco except Capurgana tourist area; Acandi town is not exempt. Clan del Golfo controls the wider Uraba and Darien. Guides call the tourist area safe; stay on marked trails.",
+   "rate": "1 DKK = 490 COP (COP 3,160 per USD, Oct 2026, USD x 6.45)",
+   "what_people_say": [
+    {
+     "quote": "Por primera vez en su historia, Capurganá contará con energía eléctrica continua, las 24 horas del día.",
+     "site": "MinEnergia",
+     "date": "2025-07-30",
+     "url": "https://www.minenergia.gov.co/es/sala-de-prensa/noticias-index/gobierno-nacional-lleva-por-primera-vez-energia-continua-a-capurgana-y-acandi-con-nueva-central-solar-hibrida/"
+    },
+    {
+     "quote": "Do not wander off into the deep jungle under any circumstances.",
+     "site": "Colombiamove",
+     "date": "2026-06-20",
+     "url": "https://colombiamove.com/blog/capurgana-sapzurro-colombia-travel-guide/"
+    }
+   ]
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://colombiamove.com/blog/capurgana-sapzurro-colombia-travel-guide/",
+   "https://brokenbootstravel.com/?p=7712",
+   "https://rutas-destinos.satena.com/en/cheapest-flights-from-acandi-to-medellin",
+   "https://www.elpais.com.co/turismo/cuanto-cuesta-viajar-a-capurgana-y-como-llegar-a-este-lugar-2326.html",
+   "https://southamericabackpacker.com/colombia/capurgana/",
+   "https://www.alongdustyroads.com/posts/things-to-do-capurgana-colombia-guide",
+   "https://www.minenergia.gov.co/es/sala-de-prensa/noticias-index/gobierno-nacional-lleva-por-primera-vez-energia-continua-a-capurgana-y-acandi-con-nueva-central-solar-hibrida/",
+   "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/colombia/",
+   "https://www.traveldojo.com/capurgana"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Capurgan%C3%A1%2C_centro.JPG/1280px-Capurgan%C3%A1%2C_centro.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:Capurgan%C3%A1,_centro.JPG",
+   "credit": "P.sutermeister",
+   "licence": "CC BY-SA 4.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "beach-base-isla-grande",
+  "name": "Beach base: Isla Grande, Rosario Islands",
+  "category": "beach",
+  "tags": [
+   "beach-base",
+   "stay",
+   "water"
+  ],
+  "places": [
+   "ISGR"
+  ],
+  "area": "Corales del Rosario national park, off Cartagena",
+  "country": "CO",
+  "lat": 10.177,
+  "lon": -75.738,
+  "summary": "Easy to reach island with eco hostels on the water, mangroves, Orika village and the plankton lagoon. Day-trippers own the beaches from 10:00 to 16:00 and most guests stay 2 to 3 nights, so the long-stay crowd is thin.",
+  "season": "Dec to Apr windy, rough afternoon sea.",
+  "dec_jan": "Mid Dec to mid Jan high season, weekends busiest.",
+  "price": "Beds 77 to 260 DKK; boat 175 DKK each way incl. port tax",
+  "price_dkk": 175,
+  "duration": "4 to 5 nights",
+  "requirements": "Park entry about COP 25,000, port tax COP 29,000 cash.",
+  "details": {
+   "score": {
+    "access": 9,
+    "water_and_lodging": 7,
+    "long_stay_crowd": 5,
+    "food_and_bars": 4,
+    "total": 25,
+    "max": 40
+   },
+   "verdict": "Fastest and cheapest to reach, with good lodges on the water and the plankton lagoon. The crowd is mostly day-trippers and short stays, and eating out means a few simple places in Orika, hotel restaurants and beach clubs, so it suits 2 to 3 quiet nights more than a 5 night social base.",
+   "access": "Boat 09:00 from Muelle La Bodeguita, about 1 h, from COP 57,000 plus COP 29,000 port tax; returns 11:30 to 15:00.",
+   "food_and_bars": "Orika village has a few cheap local places and small shops, sometimes reggaeton or a small disco at night. Sol y Papaya, Sabor Nativo Cafe, Pa'ue Beach Lounge, Bora Bora beach club.",
+   "plankton": "Laguna Encantada, best on dark nights near new moon; hostels arrange the tour. Price not found.",
+   "rate": "1 DKK = 490 COP (COP 3,160 per USD, Oct 2026, USD x 6.45)",
+   "what_people_say": [
+    {
+     "quote": "Ferry rates start from $18 (57,000 COP).",
+     "site": "GeckoRoutes",
+     "date": "2025-11-01",
+     "url": "https://geckoroutes.com/colombia/cartagena-to-isla-grande/"
+    }
+   ]
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tomplanmytrip.com/?p=47595",
+   "https://geckoroutes.com/colombia/cartagena-to-isla-grande/",
+   "https://www.geckoroutes.com/es/colombia/cosas-que-hacer-en-isla-grande-colombia/",
+   "https://www.thebrokebackpacker.com/?p=468926",
+   "https://www.islands.com/1643425/little-known-rosario-islands-colombia-best-kept-secret-cheap-tropical-vacation",
+   "https://explorersaway.com/?p=14824"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
  }
 ]
