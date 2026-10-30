@@ -4446,7 +4446,7 @@
     "duration_min": 190,
     "price_dkk": {
      "min": 1359,
-     "typical": 1469
+     "typical": 1362
     },
     "frequency": "at least 2 daily (05:25 and 15:40)",
     "overnight": false,
@@ -4473,10 +4473,34 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-10",
       "2026-12-21",
       "2026-12-24"
      ],
      "by_date": [
+      {
+       "date": "2026-12-10",
+       "from": "GUA",
+       "to": "SAP",
+       "dkk": 1362,
+       "dep": "20:15",
+       "arr": "23:40",
+       "arr_days": 0,
+       "duration_min": 205,
+       "vias": [
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "AV589",
+        "AV574"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-10",
+       "link": "https://www.momondo.dk/flight-search/GUA-SAP/2026-12-10?sort=price_a"
+      },
       {
        "date": "2026-12-21",
        "from": "GUA",
@@ -4545,10 +4569,10 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 2
+     "quotes": 3
     },
     "source": "crawl",
-    "observed_at": "2026-10-29T13:13Z",
+    "observed_at": "2026-10-30T15:37Z",
     "note": "1 stop in San Salvador (SAL). Priced GUA to SAP only: 21 Dec 15:40 to 18:50 for 1,359 kr, 24 Dec 05:25 to 08:35 for 1,579 kr.",
     "booking_url": null,
     "source_url": "https://www.momondo.dk",
@@ -5043,38 +5067,88 @@
     "operators": [
      "TAG Airlines"
     ],
-    "duration_min": null,
-    "duration_range_h": null,
+    "duration_min": 80,
     "price_dkk": {
-     "min": null,
-     "typical": null
+     "min": 1996,
+     "typical": 1996
     },
-    "price_local": null,
     "frequency": "not published",
     "overnight": false,
-    "border": false,
+    "border": true,
     "stops": [],
     "geometry": null,
     "flight": {
-     "nonstop": null,
+     "nonstop": true,
      "vias": [],
      "carriers": [
       "TAG Airlines"
      ],
      "oneway_dkk": {
-      "min": null,
-      "observed_at": "2026"
+      "min": 1996,
+      "observed_at": "2026-10-30T15:37Z"
      },
      "return_dkk": null,
-     "dates_searched": [],
-     "by_date": [],
-     "round_trips": []
+     "dates_searched": [
+      "2026-12-10"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-10",
+       "from": "GUA",
+       "to": "RTB",
+       "dkk": 1996,
+       "dep": "09:40",
+       "arr": "11:00",
+       "arr_days": 0,
+       "duration_min": 80,
+       "vias": [],
+       "carriers": [
+        "TAG Airlines"
+       ],
+       "flights": [
+        "5U413"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-10",
+       "link": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-10?sort=price_a"
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1996,
+      "duration_min": 80,
+      "vias": [],
+      "carriers": [
+       "TAG Airlines"
+      ],
+      "date": "2026-12-10",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 1996,
+      "duration_min": 80,
+      "vias": [],
+      "carriers": [
+       "TAG Airlines"
+      ],
+      "date": "2026-12-10"
+     },
+     "flags": [],
+     "quotes": 1
     },
-    "source": "manual",
-    "source_url": "https://en.wikipedia.org/wiki/Juan_Manuel_G%C3%A1lvez_International_Airport",
-    "observed_at": "2026",
+    "source": "crawl",
+    "observed_at": "2026-10-30T15:37Z",
     "note": "Fare unknown; TAG tickets non-refundable. Skips a two-day shuttle plus ferry (Adrenalina US$125 + ferry).",
-    "booking_url": null
+    "booking_url": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-10?sort=price_a",
+    "source_url": "https://en.wikipedia.org/wiki/Juan_Manuel_G%C3%A1lvez_International_Airport",
+    "researched": {
+     "duration_min": null,
+     "price_min": null,
+     "operators": [
+      "TAG Airlines"
+     ],
+     "year": "2026"
+    }
    }
   ]
  },

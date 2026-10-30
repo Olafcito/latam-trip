@@ -2261,6 +2261,25 @@
   ]
  },
  {
+  "from": "GUA",
+  "to": "RTB",
+  "dkk": 1996,
+  "hours": 1.33,
+  "dep": "2026-12-10T09:40",
+  "arr": "2026-12-10T11:00",
+  "vias": [],
+  "carriers": [
+   "TAG Airlines"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-10?sort=price_a",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "CUN",
   "to": "BOG",
   "dkk": 1999,
