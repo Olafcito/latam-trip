@@ -2,6 +2,7 @@ import type { CrawledFlight } from '../data/types'
 import { clock } from './format'
 import { sourceLabel, type PairQuote } from './prices'
 import { addDays } from './time'
+import { nights } from './waytrack'
 
 // The fares known for a day as the rows of the flight sheet. A quote from pair_dates and a flight
 // picked on a trip take one shape, so a picked flight and the day's list read the same.
@@ -57,6 +58,7 @@ export function quoteFlight(q: PairQuote, from: string, to: string, date: string
     site: q.ag ?? null,
     self_transfer: q.f?.includes('self_transfer'),
     airport_change: q.f?.includes('airport_change'),
+    stopover: q.f?.includes('stopover'),
   }
 }
 
@@ -97,8 +99,10 @@ export function fareNotes(f: CrawledFlight, name: (code: string) => string, next
   if (f.airport_change) notes.push({ text: 'Changes airport on the way' })
   const longest = f.layover_h.reduce<number>((at, h, i) => ((h ?? 0) > (f.layover_h[at] ?? 0) ? i : at), 0)
   const where = f.via[longest] ? ` in ${name(f.via[longest])}` : ''
-  if (f.overnight_layover) notes.push({ text: `A night${where}` })
-  else if ((f.layover_h[longest] ?? 0) >= LONG_WAIT_H) notes.push({ text: `Long wait${where}` })
+  const wait = f.layover_h[longest] ?? 0
+  if (f.stopover) notes.push({ text: `Stopover${where}${wait ? `, ${nights(Math.max(1, Math.round(wait / 24)))}` : ''}` })
+  else if (f.overnight_layover) notes.push({ text: `A night${where}` })
+  else if (wait >= LONG_WAIT_H) notes.push({ text: `Long wait${where}` })
   if (timed(f)) {
     const leaves = +clock(f.depart).slice(0, 2)
     const lands = +clock(f.arrive).slice(0, 2)

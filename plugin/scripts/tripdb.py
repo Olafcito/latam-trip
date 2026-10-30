@@ -1025,7 +1025,8 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
     {"p": price kr, "d": local departure "06:10", "a": local arrival "12:40", "n": days later it lands (only when > 0),
      "h": hours, "c": airlines, "s": stops, "src": source, "at": newest observed_at (UTC, "2026-10-28T10:00Z")},
     plus what the row knows beyond that, each key only when known: "v": airports it stops at, "w": hours waited at
-    each, "ag": the site selling it, "o": true for a night at a layover, "f": "self_transfer" and "airport_change".
+    each, "ag": the site selling it, "o": true for a night at a layover, "f": "self_transfer", "airport_change" and
+    "stopover". A quote flagged "stopover" is a planned stay on the way, so max_hours does not apply to it.
     The same quote seen more than once (tripdb's quote key) is one entry with its newest observed_at."""
     newest = {}
     for q in quotes:
@@ -1038,9 +1039,11 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
         a, b = legs[0].get("from"), legs[0].get("to")
         if not a or not b or a in long_haul or b in long_haul:
             continue
-        if PAIR_DATES_SKIP & set(q.get("flags") or []):
+        flags = set(q.get("flags") or [])
+        stopover = "stopover" in flags
+        if PAIR_DATES_SKIP & (flags - {"over_30h"} if stopover else flags):
             continue
-        if not isinstance(out.get("hours"), (int, float)) or out["hours"] > max_hours:
+        if not isinstance(out.get("hours"), (int, float)) or (out["hours"] > max_hours and not stopover):
             continue
         if (q.get("notes") or "").split(";")[0].replace("site=", "").strip() in ("Sponsoreret", "Annonce"):
             continue
@@ -1094,7 +1097,7 @@ def _row_detail(q, out, via):
     flags = set(q.get("flags") or [])
     if q.get("self_transfer"):
         flags.add("self_transfer")
-    marks = sorted(flags & {"self_transfer", "airport_change"})
+    marks = sorted(flags & {"self_transfer", "airport_change", "stopover"})
     if marks:
         d["f"] = marks
     return d
