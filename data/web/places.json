@@ -5293,7 +5293,12 @@
   "hostels": [],
   "hostel_note": null,
   "saved_in": [],
-  "experience_ids": [],
+  "experience_ids": [
+   "gym-montevideo-fighting-spirit-dojo",
+   "gym-montevideo-calavera-crew",
+   "gym-montevideo-azeta-team",
+   "city-montevideo-training"
+  ],
   "stay_quotes": [],
   "hub": false
  },
@@ -5322,7 +5327,10 @@
   "hostels": [],
   "hostel_note": null,
   "saved_in": [],
-  "experience_ids": [],
+  "experience_ids": [
+   "gym-la-floresta-chute-boxe",
+   "city-la-floresta-training"
+  ],
   "stay_quotes": [],
   "hub": false
  },
