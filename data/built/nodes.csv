@@ -79,3 +79,6 @@ MVD,Montevideo,UY,-34.9,-56.16,city,MVD,2,"Uruguay's capital on the Rio de la Pl
 LAFL,La Floresta,UY,-34.76,-55.68,beach,MVD,3,"Quiet beach town on the Costa de Oro about 50 km east of Montevideo, with a Chute Boxe gym",0
 SIUN,Siuna (Bosawás),NI,13.733,-84.777,nature,SIU,4,"Mining town on the edge of Bosawás Biosphere Reserve, the largest rainforest north of the Amazon; main entry point for guided trips with Mayangna and Miskitu guides",0
 PBLM,Peñas Blancas massif (Bosawás),NI,13.28,-85.66,nature,,4,"Cloud forest massif on the southern edge of Bosawás near El Cuá: waterfalls, quetzals, community eco-lodge run with the CEN, coffee farms",0
+RINC,Rincon del Mar,CO,9.77,-75.643,beach,,3,"Quiet fishing-village beach base in Sucre, closest mainland village to the San Bernardo islands (30 to 40 min by boat)",1
+TLU,Tolu (Golfo de Morrosquillo airport),CO,9.51,-75.586,hub,TLU,3,"Airport for Rincon del Mar and the San Bernardo islands; daily Satena and Clic nonstops from Medellin Olaya Herrera, Satena from Bogota Mon and Fri",1
+TINT,Tintipan and Mucura (San Bernardo islands),CO,9.792,-75.845,island,,3,"Clear-water San Bernardo islands with overnight hostels (Casa en el Agua on its own reef, Santa Lova on Tintipan); Mucura has the public beach",1

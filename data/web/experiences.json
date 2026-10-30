@@ -26512,5 +26512,399 @@
   },
   "image_source": "category",
   "saved_in": []
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "season": "December to April is dry; avoid mid-December to mid-January, Semana Santa and June holidays for crowds.",
+  "dec_jan": "Dry season starts; strong trade winds (brisas) from December to about March make boat crossings choppy. Colombian holiday crowds and higher prices mid-December to mid-January.",
+  "requirements": "18+. No outside alcohol or speakers. 70% deposit by PayPal (5.7% fee), 30% cash on arrival; cards not accepted. Book well ahead; dates historically opened about two months out.",
+  "duration": "2 to 3 nights is typical; reviewers split on more",
+  "id": "stay-casa-en-el-agua-tintipan",
+  "name": "Casa en el Agua: stilt hostel on a reef (San Bernardo islands)",
+  "tags": [
+   "stay",
+   "hostel",
+   "water",
+   "island",
+   "social"
+  ],
+  "places": [
+   "TINT"
+  ],
+  "area": "Santa Cruz del Islote reef, San Bernardo islands",
+  "lat": 9.786,
+  "lon": -75.858,
+  "summary": "A palm-roofed hostel built on stilts over a dead coral reef, reached only by boat. Snorkel and swim off the deck, communal family-style meals, a bar until midnight and a party some nights. Solar power, desalinated water, dry toilets, no wifi.",
+  "price": "Hostelworld from EUR 64.39 a night (2026). Older direct price list: hammock COP 160,000, 4-bed dorm COP 200,000, privates from COP 320,000, with three meals and the daily Islote tour. Boat from Cartagena COP 150,000-160,000 each way.",
+  "price_dkk": 480,
+  "details": {
+   "booking_channels": [
+    "Casa en el Agua Cloudbeds booking engine: hotels.cloudbeds.com/en/reservas/esQw9m",
+    "Email casaenelagua@gmail.com (no phone signal on the island)",
+    "Tranq It Easy (boat and bookings): WhatsApp +57 301 404 3633, tranqiteasy@gmail.com, tranqiteasy.com",
+    "Hostelworld listing 327901",
+    "Booking.com (Simon only saw 2 to 4 Dec open; the connector found no availability for 2 to 4 Dec or 10 to 12 Nov)"
+   ],
+   "rooms": "Hammocks, a 4-bed dorm and several named privates (older price list)",
+   "on_the_water": true,
+   "social": "Social and party-leaning; depends on who is staying",
+   "how_long_people_stay": "Mostly 1 to 3 nights; several reviewers say one night is enough because there is nowhere else to buy food or drinks.",
+   "getting_there": "Tranq It Easy boat 09:00 daily from Muelle La Bodeguita, Cartagena, 2 h; return 12:00. From Rincon del Mar or Tolu, ask a day-tour boat to drop you at the Islote.",
+   "watch_out": "Bedbug complaints in 2024 (Petit Fute) and again in 2026 Hostelworld summary; cash theft report 2024; extras (snorkel, kayak, plankton) cost more; boat called expensive.",
+   "hostelworld_rating": "7.8 from 80 reviews (atmosphere 6.9)",
+   "what_people_say": [
+    {
+     "quote": "The staff were great vibes. Very social, family style meals were great.",
+     "site": "Hostelworld",
+     "date": "stayed Sep 2026",
+     "url": "https://www.hostelworld.com/hostels/p/327901/casa-en-el-agua/"
+    },
+    {
+     "quote": "One night is definitely enough for here.",
+     "site": "Hostelworld (Dina)",
+     "date": "stayed Sep 2026",
+     "url": "https://www.hostelworld.com/hostels/p/327901/casa-en-el-agua/"
+    },
+    {
+     "quote": "For the social aspect you have to get lucky with who's staying there because it can get boring alone.",
+     "site": "Hostelworld (Dina)",
+     "date": "stayed Sep 2026",
+     "url": "https://www.hostelworld.com/da/vandrerhjem/p/327901/casa-en-el-agua/"
+    },
+    {
+     "quote": "The hostel is set up to make friends.",
+     "site": "Petit Fute (Zachary B.)",
+     "date": "Feb 2024",
+     "url": "https://www.petitfute.com/v74032-isla-tintipan/c1166-hebergement/1624132-casa-en-el-agua/tous-les-avis.html"
+    }
+   ]
+  },
+  "sources": [
+   "https://www.hostelworld.com/hostels/p/327901/casa-en-el-agua/",
+   "https://www.hostelworld.com/da/vandrerhjem/p/327901/casa-en-el-agua/",
+   "https://hotels.cloudbeds.com/en/reservas/esQw9m",
+   "https://bagpipe-rabbit-elsc.squarespace.com/casa-en-el-agua-backpacker-travel-guide",
+   "https://www.petitfute.com/v74032-isla-tintipan/c1166-hebergement/1624132-casa-en-el-agua/tous-les-avis.html",
+   "https://www.tomplanmytrip.com/isla-mucura-casa-en-el-agua-paradise-san-bernardo/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "season": "December to April is dry; avoid mid-December to mid-January, Semana Santa and June holidays for crowds.",
+  "dec_jan": "Dry season starts; strong trade winds (brisas) from December to about March make boat crossings choppy. Colombian holiday crowds and higher prices mid-December to mid-January.",
+  "requirements": "Cash preferred, cards not accepted per Hostelworld. No outside drinks. Book via Booking.com, Hostelworld, Cloudbeds or santalovahostel@gmail.com.",
+  "duration": "4 to 5 nights",
+  "id": "stay-santa-lova-tintipan",
+  "name": "Santa Lova eco-hostel on Tintipan beach",
+  "tags": [
+   "stay",
+   "hostel",
+   "water",
+   "island",
+   "social"
+  ],
+  "places": [
+   "TINT"
+  ],
+  "area": "Tintipan, San Bernardo islands",
+  "lat": 9.79,
+  "lon": -75.85,
+  "summary": "Beachfront eco-hostel on Tintipan with four 8-bed dorms, privates, a beach bar and restaurant, and shared seafood dinners. Solar powered with bucket showers and dry toilets. The best-rated budget bed on the islands and a short boat hop from Casa en el Agua.",
+  "price": "Booking.com 8 to 13 Dec 2026: US$157.81 for 5 nights (US$31.56 a night, cheapest bed). Hostelworld from EUR 21.56. Breakfast included; lunch and dinner extra.",
+  "price_dkk": 204,
+  "details": {
+   "on_the_water": true,
+   "rooms": "Four 8-bed mixed dorms, one family room, six private doubles",
+   "social": "Social meals; one 2026 review complains of music all day",
+   "hostelworld_rating": "9.9 from 87 reviews",
+   "contact": "+57 312 892 2965, santalovahostel@gmail.com",
+   "what_people_say": [
+    {
+     "quote": "Our only mistake was booking just one night as we loved this place!",
+     "site": "Hostelworld (Caitlin)",
+     "date": "stayed Jul 2026",
+     "url": "https://www.hostelworld.com/hostels/p/310822/santa-lova/"
+    },
+    {
+     "quote": "the hostel blasted music from 10am to 11pm every day",
+     "site": "Hostelworld (Angus)",
+     "date": "stayed Mar 2026",
+     "url": "https://www.hostelworld.com/hostels/p/310822/santa-lova/"
+    }
+   ]
+  },
+  "sources": [
+   "https://www.hostelworld.com/hostels/p/310822/santa-lova/",
+   "https://hotels.cloudbeds.com/reservation/sxUlQk",
+   "https://www.booking.com/hotel/co/santa-lova.html"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "season": "December to April is dry; avoid mid-December to mid-January, Semana Santa and June holidays for crowds.",
+  "dec_jan": "Dry season starts; strong trade winds (brisas) from December to about March make boat crossings choppy. Colombian holiday crowds and higher prices mid-December to mid-January.",
+  "requirements": "Cash only in practice (no ATM in Rincon or on the islands). Hand luggage fine.",
+  "duration": "4 to 5 nights",
+  "id": "stay-hostel-blue-sea-rincon",
+  "name": "Hostel Blue Sea: beachfront dorm in Rincon del Mar",
+  "tags": [
+   "stay",
+   "hostel",
+   "water",
+   "budget"
+  ],
+  "places": [
+   "RINC"
+  ],
+  "area": "Rincon del Mar main beach",
+  "lat": 9.771,
+  "lon": -75.645,
+  "summary": "Three-storey beachfront house with dorms, privates and an on-site dive centre on Rincon's main beach. Top-rated cheap bed in the village and a good base for island and plankton trips.",
+  "price": "Hostelworld from EUR 9.97 dorm, EUR 10.36 private (2026). Booking.com 8 to 13 Dec 2026: US$178.51 for 5 nights (US$35.70 a night).",
+  "price_dkk": 74,
+  "details": {
+   "on_the_water": true,
+   "social": "Dive-centre crowd; no reviews describe it as a party hostel",
+   "hostelworld_rating": "10 from 86 reviews"
+  },
+  "sources": [
+   "https://www.hostelworld.com/hostels/south-america/colombia/rincon-del-mar/",
+   "https://www.booking.com/hotel/co/blue-sea-cottage-dive-center.html"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "season": "December to April is dry; avoid mid-December to mid-January, Semana Santa and June holidays for crowds.",
+  "dec_jan": "Dry season starts; strong trade winds (brisas) from December to about March make boat crossings choppy. Colombian holiday crowds and higher prices mid-December to mid-January.",
+  "requirements": "Cash only in practice (no ATM in Rincon or on the islands). Hand luggage fine.",
+  "duration": "4 to 5 nights",
+  "id": "stay-mamallena-beachside-rincon",
+  "name": "Mamallena Beachside: private room on the sand in Rincon del Mar",
+  "tags": [
+   "stay",
+   "hostel",
+   "water",
+   "private"
+  ],
+  "places": [
+   "RINC"
+  ],
+  "area": "Rincon del Mar main beach",
+  "lat": 9.768,
+  "lon": -75.642,
+  "summary": "Privates only, every room with its own bathroom, about 20 m from the sea, with a guest kitchen and island tours arranged. More an aparthotel than a hostel; quiet midweek, beach bars next door.",
+  "price": "Booking.com 8 to 13 Dec 2026: US$378.75 for 5 nights (US$75.75 a night). Hostelworld from EUR 14.24 (likely per bed in a shared private).",
+  "price_dkk": 489,
+  "details": {
+   "on_the_water": true,
+   "social": "Quiet; no bar or food on site",
+   "hostelworld_rating": "9.7 from 82 reviews",
+   "booking_rating": "8.6 from 458 reviews",
+   "what_people_say": [
+    {
+     "quote": "Laid back and quiet during the week.",
+     "site": "Hostelworld",
+     "date": "2023",
+     "url": "https://www.hostelworld.com/hostels/p/277842/mamallena-beachside/"
+    }
+   ]
+  },
+  "sources": [
+   "https://www.hostelworld.com/hostels/p/277842/mamallena-beachside/",
+   "https://www.booking.com/hotel/co/mamallena-beachside.html",
+   "https://vickiviaja.com/things-to-do-in-rincon-del-mar"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "season": "December to April is dry; avoid mid-December to mid-January, Semana Santa and June holidays for crowds.",
+  "dec_jan": "Dry season starts; strong trade winds (brisas) from December to about March make boat crossings choppy. Colombian holiday crowds and higher prices mid-December to mid-January.",
+  "requirements": "Cash only in practice (no ATM in Rincon or on the islands). Hand luggage fine.",
+  "duration": "4 to 5 nights",
+  "id": "stay-dos-aguas-lodge-rincon",
+  "name": "Dos Aguas Lodge: eco lodge between beach and mangrove (Rincon del Mar)",
+  "tags": [
+   "stay",
+   "lodge",
+   "water",
+   "quiet",
+   "jungle"
+  ],
+  "places": [
+   "RINC"
+  ],
+  "area": "Rincon del Mar, across the bridge",
+  "lat": 9.77,
+  "lon": -75.643,
+  "summary": "Bali-style lodge built by local artisans on a quiet beach with mangroves behind, with dorms, privates, a beach cocktail bar and breakfast. Runs the plankton and Isla Pajaro boat with a local fisherman. The writers' top pick in Rincon; often full weeks ahead.",
+  "price": null,
+  "price_dkk": null,
+  "details": {
+   "on_the_water": true,
+   "social": "Calm, couples and nature crowd; cocktail bar",
+   "rooms": "Private rooms and spacious dorms (Along Dusty Roads)",
+   "note": "No price on Hostelworld or Booking.com for 8 to 13 Dec 2026."
+  },
+  "sources": [
+   "https://alongdustyroads.com/posts/rincon-del-mar-colombia",
+   "https://www.hostelworld.com/st/hostels/p/295371/dos-aguas-lodge/",
+   "https://www.tomplanmytrip.com/travel-to-colombia/destinations-in-colombia/caribbean-west/rincon-del-mar/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "season": "December to April is dry; avoid mid-December to mid-January, Semana Santa and June holidays for crowds.",
+  "dec_jan": "Dry season starts; strong trade winds (brisas) from December to about March make boat crossings choppy. Colombian holiday crowds and higher prices mid-December to mid-January.",
+  "requirements": "Cash only in practice (no ATM in Rincon or on the islands). Hand luggage fine.",
+  "duration": "4 to 5 nights (3 in Rincon, 1 to 2 on Tintipan)",
+  "id": "beach-base-rincon-del-mar",
+  "name": "Rincon del Mar and the San Bernardo islands: beach base scorecard",
+  "tags": [
+   "beach-base"
+  ],
+  "places": [
+   "RINC",
+   "TINT",
+   "TLU"
+  ],
+  "area": "Rincon del Mar, Tintipan and Mucura (Sucre and Bolivar)",
+  "lat": 9.78,
+  "lon": -75.7,
+  "summary": "Fly Medellin Olaya Herrera to Tolu (1 h 10, from about 570 DKK, daily) and taxi 1 h, or bus 3 to 4 h from Cartagena for about 80 DKK. Base in Rincon del Mar on the beach and spend 1 to 2 nights out on Tintipan (Casa en el Agua or Santa Lova). Water is clearest on the islands; Rincon is calm and quiet with a handful of seafood restaurants and beach bars.",
+  "price": "Beds from about 75 DKK (Rincon dorm) to 490 DKK (Rincon beachfront private); islands 200 to 480 DKK with meals at Casa en el Agua.",
+  "price_dkk": null,
+  "details": {
+   "score": {
+    "access": 7,
+    "water_and_lodging": 8,
+    "long_stay_crowd": 5,
+    "food_and_bars": 5,
+    "total": 6.3,
+    "note": "total is the plain mean of the four criteria"
+   },
+   "verdict": "A real disconnect base with clear water and on-the-water beds, easiest by a cheap 70-minute flight from Medellin to Tolu. The weak spots are a thin long-stay backpacker crowd and limited nightlife, and the Colombian holiday rush from mid-December.",
+   "access": "MDE (EOH) to TLU Satena or Clic nonstop 1 h 10, US$88 to 189 for 5 to 10 Dec 2026; BOG to TLU Satena Mon and Fri; no CTG to TLU flight. Tolu to Rincon taxi about 1 h. Cartagena bus to San Onofre plus mototaxi 3 to 4 h, about COP 40,000. Tranq It Easy boat Cartagena to the islands 09:00 daily, 2 h, COP 150,000 to 160,000.",
+   "water_and_lodging": "Islands have the clearest water and Casa en el Agua sits on the reef. Rincon has several beachfront hostels (Blue Sea, Beach House, Mamallena, Dos Aguas, Merakai).",
+   "long_stay_crowd": "Writers recommend 3 nights in Rincon; Casa en el Agua guests mostly stay 1 to 3 nights; Mucura is a day-trip beach.",
+   "food_and_bars": "Rincon: La Negrita, Kapito Harri, Che, Canto del Caracol, El Refugio de Petra, Mar Blanco, Dubai, beach bars by Mamallena, Dos Aguas bar. Quiet nightlife. Islands: hostel kitchens and bars only.",
+   "village_life": "About 4,000 people, one dirt main street, fishermen, friendly; no street lights.",
+   "utilities": "No ATM in Rincon or on the islands (Tolu and San Onofre have them). Water outages and scarce water; occasional power cuts in Rincon; islands on solar or generators with bucket showers. Slow internet, Claro SIM helps.",
+   "safety": "Writers felt safe day and night in Rincon. Do not arrive in San Onofre after dark. Check that night plankton boats carry lights.",
+   "dec_jan": "Dry season starts; strong trade winds (brisas) from December to about March make boat crossings choppy. Colombian holiday crowds and higher prices mid-December to mid-January.",
+   "currency_note": "COP converted at 3,200 per USD (Portafolio, late Oct 2026) x 6.45 DKK, so 1,000 COP = about 2 DKK.",
+   "what_people_say": [
+    {
+     "quote": "Getting lost in the middle of the ocean means accepting power outages and water supply issues.",
+     "site": "Tom Plan My Trip",
+     "date": "May 2026",
+     "url": "https://www.tomplanmytrip.com/isla-mucura-casa-en-el-agua-paradise-san-bernardo/"
+    },
+    {
+     "quote": "Clic aumentará sus frecuencias hasta alcanzar los ocho vuelos diarios durante la temporada.",
+     "site": "La República",
+     "date": "2 Dec 2025",
+     "url": "https://www.larepublica.co/empresas/clic-air-dispone-mas-de-25-000-sillas-hacia-tolu-durante-la-temporada-de-fin-de-ano-4283236"
+    },
+    {
+     "quote": "Los vuelos desde Medellín-Tolú serán de lunes a domingo, y los de Bogotá-Tolú serán de lunes y viernes.",
+     "site": "La República",
+     "date": "24 Nov 2025",
+     "url": "https://www.larepublica.co/empresas/satena-anuncio-la-reapertura-de-sus-rutas-hacia-tolu-saliendo-desde-bogota-y-medellin-4276960"
+    }
+   ]
+  },
+  "sources": [
+   "https://www.tomplanmytrip.com/travel-to-colombia/destinations-in-colombia/caribbean-west/rincon-del-mar/",
+   "https://www.tomplanmytrip.com/isla-mucura-casa-en-el-agua-paradise-san-bernardo/",
+   "https://alongdustyroads.com/posts/rincon-del-mar-colombia",
+   "https://vickiviaja.com/things-to-do-in-rincon-del-mar",
+   "https://www.larepublica.co/empresas/satena-anuncio-la-reapertura-de-sus-rutas-hacia-tolu-saliendo-desde-bogota-y-medellin-4276960",
+   "https://www.larepublica.co/empresas/clic-air-dispone-mas-de-25-000-sillas-hacia-tolu-durante-la-temporada-de-fin-de-ano-4283236",
+   "https://www.valoraanalitik.com/?p=530135",
+   "https://www.eluniversal.com.co/colombia/2026/08/02/inauguracion-del-aeropuerto-de-tolu-termino-en-nueva-polemica/",
+   "https://www.hostelworld.com/hostels/p/327901/casa-en-el-agua/",
+   "https://www.hostelworld.com/hostels/p/310822/santa-lova/",
+   "https://nomadicniko.com/colombia/san-bernardo-islands",
+   "https://www.elheraldo.co/atlantico/2024/12/16/temporada-de-fuertes-brisas-se-adelanto-en-el-puerto-de-barranquilla/",
+   "https://www.portafolio.co/economia/finanzas/precio-del-dolar-hoy-en-colombia-la-divisa-inicia-cerca-de-3-160-este-21-de-octubre-504832"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": []
  }
 ]
