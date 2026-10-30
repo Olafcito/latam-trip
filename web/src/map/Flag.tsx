@@ -94,6 +94,14 @@ const FLAGS: Record<string, Draw> = {
       <circle cx="15" cy="10" r="4" fill="#002776" />
     </>
   ),
+  UY: () => (
+    <>
+      <rect width="30" height="20" fill="#FFFFFF" />
+      {[0, 2, 4, 6, 8].map((i) => <rect key={i} y={i * 2.22 + 2.22} width="30" height="2.22" fill="#0038A8" />)}
+      <rect width="11" height="11.1" fill="#FFFFFF" />
+      <circle cx="5.5" cy="5.5" r="3" fill="#FCD116" />
+    </>
+  ),
   US: () => (
     <>
       <rect width="30" height="20" fill="#FFFFFF" />

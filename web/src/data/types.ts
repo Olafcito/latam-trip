@@ -166,11 +166,164 @@ export interface AirportFlight {
   link: string | null
 }
 
+/** One row of experiences.json. Training gyms and city scorecards fill `details`, see GymRow and CityRow. */
+export interface Experience<D = Record<string, unknown>> {
+  id: string
+  name: string
+  category: string
+  tags: string[]
+  area: string | null
+  country: string
+  lat: number | null
+  lon: number | null
+  summary: string | null
+  price: string | null
+  price_dkk: number | null
+  duration?: string | null
+  season?: string | null
+  dec_jan?: string | null
+  requirements?: string | null
+  researched?: boolean
+  checked_at?: string | null
+  places?: string[]
+  image?: Place['image']
+  image_source?: string | null
+  saved_in?: unknown
+  sources?: string[]
+  details?: D | null
+}
+
+/** Every value is out of 10. Any of them can be missing while a gym is still being researched. */
+export interface ScoreCard {
+  training: number | null
+  evidence: number | null
+  local_life: number | null
+  cost: number | null
+  water: number | null
+  total: number | null
+}
+
+export interface OtherRating {
+  site: string
+  rating: number | null
+  count: number | null
+}
+
+export interface Quote {
+  quote: string
+  site: string | null
+  date: string | null
+  url: string | null
+}
+
+export interface GymDetails {
+  gym_kind?: string | null
+  disciplines?: string[] | null
+  coaches?: string | null
+  fighters?: string | null
+  sessions_per_week?: number | null
+  timetable?: string | null
+  sparring?: string | null
+  visitors?: string | null
+  price_dropin_dkk?: number | null
+  price_week_dkk?: number | null
+  price_month_dkk?: number | null
+  private_dkk?: number | null
+  google_rating?: number | null
+  google_reviews?: number | null
+  other_ratings?: OtherRating[] | null
+  last_activity?: string | null
+  what_people_say?: Quote[] | null
+  neighbourhood?: string | null
+  room_month_dkk?: number | null
+  studio_month_dkk?: number | null
+  food_day_dkk?: number | null
+  water_km?: number | null
+  water_note?: string | null
+  score?: ScoreCard | null
+  score_note?: string | null
+  website?: string | null
+  instagram?: string | null
+  facebook?: string | null
+  phone?: string | null
+  google_maps_url?: string | null
+  address?: string | null
+  address_note?: string | null
+  hours?: string | null
+}
+
+export interface Numbeo {
+  numbeo_url?: string | null
+  proxy_for?: string | null
+  col_index?: number | null
+  rent_index?: number | null
+  col_plus_rent_index?: number | null
+  single_month_no_rent_dkk?: number | null
+  rent_1bed_outside_dkk?: number | null
+  meal_cheap_dkk?: number | null
+  gym_month_dkk?: number | null
+  monthly_total_dkk?: number | null
+  contributors_note?: string | null
+  observed?: string | null
+}
+
+export interface CityHostels {
+  dorm_night_dkk?: number | null
+  private_night_dkk?: number | null
+  n?: number | null
+  names?: string[] | null
+  source?: string | null
+}
+
+export interface CityIndices {
+  backpacker_index_usd_day?: number | null
+  backpacker_index_dkk_day?: number | null
+  backpacker_index_year?: number | null
+  backpacker_index_url?: string | null
+  backpacker_index_note?: string | null
+  expat_friendliness_rank?: number | null
+  expat_settling_rank?: number | null
+  expat_edition?: number | string | null
+  expat_url?: string | null
+  tasteatlas_cuisine_rank?: number | null
+  tasteatlas_cuisine_score?: number | null
+  tasteatlas_city_rank?: number | null
+  tasteatlas_url?: string | null
+  observed?: string | null
+}
+
+export interface CityDetails {
+  gyms?: string[] | null
+  best_gym?: string | null
+  monthly_total_dkk?: number | null
+  monthly_note?: string | null
+  price_note?: string | null
+  cost_note?: string | null
+  room_month_dkk?: number | null
+  studio_month_dkk?: number | null
+  food_day_dkk?: number | null
+  neighbourhoods?: string | null
+  safety?: string | null
+  local_life?: string | null
+  water_note?: string | null
+  also_seen?: string | null
+  unverified?: string | null
+  what_people_say?: Quote[] | null
+  score?: ScoreCard | null
+  numbeo?: Numbeo | null
+  hostels?: CityHostels | null
+  indices?: CityIndices | null
+}
+
+export type GymRow = Experience<GymDetails>
+export type CityRow = Experience<CityDetails>
+
 export interface MapData {
   places: Place[]
   connections: Connection[]
   countries: Country[]
   flights?: AirportFlight[]
+  experiences?: Experience[]
 }
 
 /** The three route families the map draws and the toggles switch. */
