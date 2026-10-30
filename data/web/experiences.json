@@ -11700,14 +11700,16 @@
     "water": 4,
     "total": 4.7
    },
-   "score_note": "Training 5 is a cautious guess for a named MMA gym with no roster found. Cost uses a 1 bedroom outside the centre at 385 USD, a generic gym at 33 USD and 3 cheap meals at 15 USD a day, USD x 6.45."
+   "score_note": "Training 5 is a cautious guess for a named MMA gym with no roster found. Cost uses a 1 bedroom outside the centre at 385 USD, a generic gym at 33 USD and 3 cheap meals at 15 USD a day, USD x 6.45.",
+   "instagram": "https://www.instagram.com/300mmatrainingcenter/"
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://gymnavigator.com/gyms/el-salvador/",
    "https://www.travelsafe-abroad.com/cost-of-living/el-salvador/san-salvador/",
-   "https://nomad.watch/cities/SV/san-salvador/guide"
+   "https://nomad.watch/cities/SV/san-salvador/guide",
+   "https://www.instagram.com/300mmatrainingcenter/"
   ],
   "image": {
    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Volcano_San_Salvador_1960.jpg/1280px-Volcano_San_Salvador_1960.jpg",
@@ -20476,7 +20478,7 @@
    "sessions_per_week": null,
    "timetable": null,
    "sparring": null,
-   "visitors": "Unknown. Ask about weekly or monthly rates and whether classes are in Spanish or Portuguese.",
+   "visitors": "Unknown. No Google listing, so confirm the gym exists and where it trains (Instagram DM) before planning around it. Sanda & MMA Uy in Atlantida (about 7 km west, 4.9 from 52 reviews) is the listed alternative.",
    "price_dropin_dkk": null,
    "price_week_dkk": null,
    "price_month_dkk": null,
@@ -20484,7 +20486,7 @@
    "google_rating": null,
    "google_reviews": null,
    "other_ratings": [],
-   "last_activity": "unknown. Instagram @dgic.uruguay shows in search results as Chute Boxe Uruguay but robots.txt blocked reading it; no directory (1122.com.uy, movete.com.uy) lists a gym in La Floresta.",
+   "last_activity": "unknown. Google Maps check 2026-10-30: no Chute Boxe or combat gym is listed in La Floresta. Plus code 68QF+3C7 resolves to Playa La Floresta (beach, 4.7 from 783 reviews). Instagram @dgic.uruguay is the only trace.",
    "what_people_say": [],
    "neighbourhood": "La Floresta itself, 200 m to 1 km from the beach. Neighbours: Costa Azul, Araminda, Guazú-Virá, Atlántida (about 10 km west) for shops and a second option for classes.",
    "room_month_dkk": null,
@@ -20500,14 +20502,15 @@
     "water": 10,
     "total": 4.6
    },
-   "score_note": "Training score 4 is a placeholder because nothing is verified about coaching or sparring. Link to Chute Boxe Brazil not confirmed. Studio is a 20,000 UYU per month annual rent (infocasas), summer is far higher. UYU to DKK at 0.161 (assumed 40 UYU per USD x 6.45 DKK per USD, rate not verified)."
+   "score_note": "Not found on Google Maps on 2026-10-30 (plus code lands on the beach). Training 4 stays a placeholder. UYU to DKK at 0.161 (assumed 40 UYU per USD x 6.45, rate not verified)."
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://www.instagram.com/dgic.uruguay/",
    "https://1122.com.uy/rubro-zona/todo-canelones/kick-boxing/PRD3443/Z03009",
-   "https://www.infocasas.com.uy/alquiler/inmuebles/canelones/la-floresta"
+   "https://www.infocasas.com.uy/alquiler/inmuebles/canelones/la-floresta",
+   "https://www.google.com/maps/search/68QF+3C7+La+Floresta,+Canelones,+Uruguay/"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -20549,10 +20552,10 @@
    "website": "https://fightingspiritdojo.com.uy/",
    "instagram": null,
    "facebook": null,
-   "phone": "094 505 083",
-   "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Dr.+Mart%C3%ADn+C.+Mart%C3%ADnez+1627+Montevideo",
-   "address": "Dr. Martín C. Martínez 1627, Cordón, 11200 Montevideo",
-   "hours": "Mon to Fri 8:00-10:30 and 16:30-22:00, closed Sat and Sun",
+   "phone": "+598 94 505 083",
+   "google_maps_url": "https://www.google.com/maps/place/Fighting+Spirit+Dojo/@-34.8995213,-56.1714384,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81b2673b2087:0xbedb4ea6068e39a0!8m2!3d-34.8995213!4d-56.1714384!16s%2Fg%2F11f29y6rry",
+   "address": "Dr. Martin C. Martinez 1627, 11200 Montevideo",
+   "hours": "Mon to Fri 8:00-10:30 and 16:30-22:00, Sat and Sun closed",
    "gym_kind": "fight team",
    "disciplines": [
     "kickboxing",
@@ -20571,11 +20574,24 @@
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 5.0,
+   "google_reviews": 76,
    "other_ratings": [],
-   "last_activity": "2025-10 UPL 8 results (Sherdog) and live website",
-   "what_people_say": [],
+   "last_activity": "2026-08 Google review, 2025-10 UPL 8 results",
+   "what_people_say": [
+    {
+     "quote": "The best place to practice boxing!",
+     "site": "google maps",
+     "date": "2026-08",
+     "url": "https://www.google.com/maps/place/Fighting+Spirit+Dojo/@-34.8995213,-56.1714384,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81b2673b2087:0xbedb4ea6068e39a0!8m2!3d-34.8995213!4d-56.1714384!16s%2Fg%2F11f29y6rry"
+    },
+    {
+     "quote": "The best dojo to learn martial arts. A beautiful atmosphere and great camaraderie; you feel like a family.",
+     "site": "google maps",
+     "date": "2025-10 or earlier",
+     "url": "https://www.google.com/maps/place/Fighting+Spirit+Dojo/@-34.8995213,-56.1714384,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81b2673b2087:0xbedb4ea6068e39a0!8m2!3d-34.8995213!4d-56.1714384!16s%2Fg%2F11f29y6rry"
+    }
+   ],
    "neighbourhood": "Cordón, Parque Rodó, Palermo. Central, student area, buses to the Rambla beaches.",
    "room_month_dkk": null,
    "studio_month_dkk": 3000,
@@ -20584,20 +20600,21 @@
    "water_note": "Playa Ramírez and Parque Rodó rambla about 2 to 3 km, 30 minute walk or short bus.",
    "score": {
     "training": 6,
-    "evidence": 4,
+    "evidence": 7,
     "local_life": 8,
     "cost": 3,
     "water": 6,
-    "total": 5.7
+    "total": 6.1
    },
-   "score_note": "Active competitors but sparring and fees not documented. Cordón 1-bed rents 25,000 to 29,000 UYU (infocasas), Pocitos studio 18,500. UYU to DKK at 0.161 (assumed 40 UYU per USD x 6.45 DKK per USD, rate not verified)."
+   "score_note": "Google Maps 2026-10-30: 5.0 from 76 reviews, newest 2 months old, though reviews are short. Active competitors (UPL 8) but sparring still not stated. Cost 3 as for other Montevideo rows."
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://fightingspiritdojo.com.uy/",
    "https://www.sherdog.com/events/UPL-8-MMA-Tournament-110134",
-   "https://www.infocasas.com.uy/alquiler-apartamento-de-1-dormitorio-en-cordon/193937000"
+   "https://www.infocasas.com.uy/alquiler-apartamento-de-1-dormitorio-en-cordon/193937000",
+   "https://www.google.com/maps/place/Fighting+Spirit+Dojo/@-34.8995213,-56.1714384,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81b2673b2087:0xbedb4ea6068e39a0!8m2!3d-34.8995213!4d-56.1714384!16s%2Fg%2F11f29y6rry"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -20637,13 +20654,13 @@
   "duration": "monthly membership",
   "requirements": "Trial class. Sparring not stated on site.",
   "details": {
-   "website": "https://www.calaveracrew.com/",
+   "website": "http://www.calaveracrew.com/",
    "instagram": "https://www.instagram.com/calavera_crew",
    "facebook": null,
    "phone": "+598 94 572 448",
-   "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Carlos+Quijano+1280+Montevideo",
-   "address": "Carlos Quijano 1280 esq. San José, Montevideo (1122.com.uy lists 18 y Río Negro, Galería del London)",
-   "hours": "Classes Mon to Fri, weight room Mon to Fri 9:00-13:00 and 16:00-21:30, Sat 10:00-14:00",
+   "google_maps_url": "https://www.google.com/maps/place/Calavera+CREW/@-34.9071241,-56.1888144,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81893a63428d:0xf524b0cb9da933a6!8m2!3d-34.9071241!4d-56.1888144!16s%2Fg%2F11fp6mv276",
+   "address": "Carlos Quijano 1280, 11100 Montevideo",
+   "hours": "Mon to Fri 8:00-13:00 and 16:00-21:30, Sat 10:00-14:00, Sun closed",
    "gym_kind": "fight team",
    "disciplines": [
     "Muay Thai",
@@ -20664,7 +20681,7 @@
    "price_month_dkk": null,
    "private_dkk": null,
    "google_rating": 5.0,
-   "google_reviews": 22,
+   "google_reviews": 25,
    "other_ratings": [
     {
      "site": "wanderlog (Google reviews)",
@@ -20672,8 +20689,20 @@
      "count": 22
     }
    ],
-   "last_activity": "2025-01 Google review (wanderlog), 2024 GAMMA Pan Am on site",
+   "last_activity": "2026-04 Google review (6 months old)",
    "what_people_say": [
+    {
+     "quote": "Excellent training and good vibes, I recommend it",
+     "site": "google maps",
+     "date": "2026-04",
+     "url": "https://www.google.com/maps/place/Calavera+CREW/@-34.9071241,-56.1888144,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81893a63428d:0xf524b0cb9da933a6!8m2!3d-34.9071241!4d-56.1888144!16s%2Fg%2F11fp6mv276"
+    },
+    {
+     "quote": "An excellent gym with highly technical classes tailored to each individual's level, recreational or competitive.",
+     "site": "google maps",
+     "date": "2024",
+     "url": "https://www.google.com/maps/place/Calavera+CREW/@-34.9071241,-56.1888144,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81893a63428d:0xf524b0cb9da933a6!8m2!3d-34.9071241!4d-56.1888144!16s%2Fg%2F11fp6mv276"
+    },
     {
      "quote": "Excellent environment, very friendly",
      "site": "wanderlog (Google review, Emiliano F)",
@@ -20701,14 +20730,15 @@
     "water": 7,
     "total": 6.1
    },
-   "score_note": "Wanderlog rating page shows a different address (Durazno 1032), so the 22 reviews may belong to an older location. Strongest documented striking gym found in Montevideo. UYU to DKK at 0.161 (assumed 40 UYU per USD x 6.45 DKK per USD, rate not verified)."
+   "score_note": "Google Maps 2026-10-30: 5.0 from 25 reviews, newest 6 months old, all short and general. Training 7 kept from earlier research (Muay Thai, kickboxing, MMA). Cost 3 as for other Montevideo rows."
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://www.calaveracrew.com/",
    "https://wanderlog.com/place/details/12636937/calavera-crew",
-   "https://1122.com.uy/rubro-zona/montevideo/muay-thai/PRD7197/Z01000"
+   "https://1122.com.uy/rubro-zona/montevideo/muay-thai/PRD7197/Z01000",
+   "https://www.google.com/maps/place/Calavera+CREW/@-34.9071241,-56.1888144,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81893a63428d:0xf524b0cb9da933a6!8m2!3d-34.9071241!4d-56.1888144!16s%2Fg%2F11fp6mv276"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -20736,8 +20766,8 @@
   ],
   "area": "Montevideo, Malvín",
   "country": "UY",
-  "lat": -34.887,
-  "lon": -56.107,
+  "lat": -34.8896119,
+  "lon": -56.1021301,
   "summary": "MMA team in Malvín led by coach Agustín Zas, home of UFC hopeful Paulo Portillo, and fighters listed under AZ Team on Sherdog up to September 2026. Very little published about classes, fees or striking sessions, so it needs a message or a visit.",
   "season": "year round",
   "dec_jan": "unknown",
@@ -20746,13 +20776,13 @@
   "duration": "monthly membership",
   "requirements": "Unknown.",
   "details": {
-   "website": null,
+   "website": "https://www.azetateam.com/",
    "instagram": null,
    "facebook": null,
-   "phone": null,
-   "google_maps_url": null,
-   "address": "Malvín, Montevideo (street not found)",
-   "hours": null,
+   "phone": "+598 96 739 075",
+   "google_maps_url": "https://www.google.com/maps/place/AZETA+TEAM/@-34.8896119,-56.1021301,17z/data=!3m1!4b1!4m6!3m5!1s0x959f8789bd8f62c1:0x20489b17605e617b!8m2!3d-34.8896119!4d-56.1021301!16s%2Fg%2F11ycg5ps1w",
+   "address": "Rio de la Plata 1715, 11400 Montevideo",
+   "hours": "Mon to Fri 7:00-11:30 and 17:00-21:00, Sat and Sun closed",
    "gym_kind": "fight team",
    "disciplines": [
     "MMA"
@@ -20767,11 +20797,24 @@
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "google_rating": null,
-   "google_reviews": null,
+   "google_rating": 5.0,
+   "google_reviews": 8,
    "other_ratings": [],
-   "last_activity": "2026-09 Sherdog (Figueredo, UPL 14)",
-   "what_people_say": [],
+   "last_activity": "2026-10 Sherdog (Figueredo, UPL 14), 2026-04 Google review",
+   "what_people_say": [
+    {
+     "quote": "Without a doubt, the best MMA and martial arts gym in Uruguay.",
+     "site": "google maps",
+     "date": "2026-04",
+     "url": "https://www.google.com/maps/place/AZETA+TEAM/@-34.8896119,-56.1021301,17z/data=!3m1!4b1!4m6!3m5!1s0x959f8789bd8f62c1:0x20489b17605e617b!8m2!3d-34.8896119!4d-56.1021301!16s%2Fg%2F11ycg5ps1w"
+    },
+    {
+     "quote": "Great place to train, Agustin is very professional and dedicated. You can see the level and passion in every class.",
+     "site": "google maps",
+     "date": "2025-11",
+     "url": "https://www.google.com/maps/place/AZETA+TEAM/@-34.8896119,-56.1021301,17z/data=!3m1!4b1!4m6!3m5!1s0x959f8789bd8f62c1:0x20489b17605e617b!8m2!3d-34.8896119!4d-56.1021301!16s%2Fg%2F11ycg5ps1w"
+    }
+   ],
    "neighbourhood": "Malvín, Buceo, Punta Gorda. Residential seaside barrios, 2-bed flats 41,500 UYU (infocasas).",
    "room_month_dkk": null,
    "studio_month_dkk": 3000,
@@ -20780,19 +20823,21 @@
    "water_note": "Malvín beach and Rambla within walking distance (approximate).",
    "score": {
     "training": 6,
-    "evidence": 3,
+    "evidence": 4,
     "local_life": 8,
     "cost": 3,
     "water": 8,
-    "total": 5.7
+    "total": 5.9
    },
-   "score_note": "Strong fighters, no public timetable or price. Striking content unknown. UYU to DKK at 0.161 (assumed 40 UYU per USD x 6.45 DKK per USD, rate not verified)."
+   "score_note": "Google Maps 2026-10-30: Muay Thai boxing gym, 5.0 from only 8 reviews, newest 6 months old. Training 6 kept from earlier research (UPL fighters). Cost 3 as for other Montevideo rows. Water 0.5 km to Malvin beach."
   },
   "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
    "https://www.elobservador.com.uy/polideportivo/el-uruguayo-paulo-portillo-pelea-brasil-un-combate-estelar-su-sueno-llegar-la-prestigiosa-ufc-y-que-se-podra-ver-este-viernes-espn-n6052300",
-   "https://www.sherdog.com/fighter/Santiago-Figueredo-448055"
+   "https://www.sherdog.com/fighter/Santiago-Figueredo-448055",
+   "https://www.google.com/maps/place/AZETA+TEAM/@-34.8896119,-56.1021301,17z/data=!3m1!4b1!4m6!3m5!1s0x959f8789bd8f62c1:0x20489b17605e617b!8m2!3d-34.8896119!4d-56.1021301!16s%2Fg%2F11ycg5ps1w",
+   "https://www.azetateam.com/"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
@@ -21076,6 +21121,416 @@
    "h": 6000
   },
   "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-montevideo-mko-knockout",
+  "name": "MKO Montevideo Knockout (Montevideo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "kickboxing",
+   "muay-thai",
+   "mma",
+   "boxing"
+  ],
+  "places": [
+   "MVD"
+  ],
+  "area": "Montevideo, Cordon / Centro",
+  "country": "UY",
+  "lat": -34.9183781,
+  "lon": -56.1588902,
+  "summary": "Combat sports and martial arts gym with the biggest review base of the Montevideo striking gyms on Google Maps (4.8 from 145). Reviewers are mostly long-term members of all ages and praise the instructors and atmosphere, but none describe sparring.",
+  "season": "year round",
+  "dec_jan": "unknown. Opens at 7:00 on weekdays per Google Maps (2026-10-30), no December notice found.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Spanish speaking. Message them first.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "combat sports",
+    "kickboxing",
+    "martial arts",
+    "fitness"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated. A 2018 reviewer joined a class after an email, no complications.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "Cordon, Centro and Parque Rodo, central and walkable to Pocitos.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Playa Pocitos and Playa Ramirez are about a 15 to 25 minute walk.",
+   "website": "http://www.montevideoknockout.com/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+598 92 800 109",
+   "google_maps_url": "https://www.google.com/maps/place/MKO+Montevideo+Knockout+COMBAT+GYM+FITNESS/@-34.9183781,-56.1588902,17z/data=!3m1!4b1!4m6!3m5!1s0x959f819e226ce7a1:0x5d8860d4c779ba06!8m2!3d-34.9183781!4d-56.1588902!16s%2Fg%2F11b77qmk49",
+   "address": "Luis de la Torre 581, 11300 Montevideo",
+   "hours": "Opens 7:00 weekdays (full timetable not shown on Google Maps)",
+   "google_rating": 4.8,
+   "google_reviews": 145,
+   "last_activity": "2026-10 Google review (a week old)",
+   "what_people_say": [
+    {
+     "quote": "A place to train seriously (if you want) and have a lot of fun. All the classes are excellent, with instructors who make you feel right at home.",
+     "site": "google maps",
+     "date": "2025-10 or earlier",
+     "url": "https://www.google.com/maps/place/MKO+Montevideo+Knockout+COMBAT+GYM+FITNESS/@-34.9183781,-56.1588902,17z/data=!3m1!4b1!4m6!3m5!1s0x959f819e226ce7a1:0x5d8860d4c779ba06!8m2!3d-34.9183781!4d-56.1588902!16s%2Fg%2F11b77qmk49"
+    },
+    {
+     "quote": "They maintain strict discipline while teaching progressively, with patience, intelligence, and skill.",
+     "site": "google maps",
+     "date": "2025-10 or earlier",
+     "url": "https://www.google.com/maps/place/MKO+Montevideo+Knockout+COMBAT+GYM+FITNESS/@-34.9183781,-56.1588902,17z/data=!3m1!4b1!4m6!3m5!1s0x959f819e226ce7a1:0x5d8860d4c779ba06!8m2!3d-34.9183781!4d-56.1588902!16s%2Fg%2F11b77qmk49"
+    },
+    {
+     "quote": "The best place to train in Montevideo",
+     "site": "google maps",
+     "date": "2025-12",
+     "url": "https://www.google.com/maps/place/MKO+Montevideo+Knockout+COMBAT+GYM+FITNESS/@-34.9183781,-56.1588902,17z/data=!3m1!4b1!4m6!3m5!1s0x959f819e226ce7a1:0x5d8860d4c779ba06!8m2!3d-34.9183781!4d-56.1588902!16s%2Fg%2F11b77qmk49"
+    }
+   ],
+   "score_note": "145 Google reviews at 4.8 with one from this month, but all praise is general and sparring is never mentioned, so training 6. Cost 3 matches the other Montevideo rows (Uruguay is pricey, no fees published). Water: Pocitos about 1 km straight line.",
+   "water_km": 0.6,
+   "score": {
+    "training": 6,
+    "evidence": 8,
+    "local_life": 8,
+    "cost": 3,
+    "water": 10,
+    "total": 6.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+montevideo/",
+   "https://www.google.com/maps/place/MKO+Montevideo+Knockout+COMBAT+GYM+FITNESS/@-34.9183781,-56.1588902,17z/data=!3m1!4b1!4m6!3m5!1s0x959f819e226ce7a1:0x5d8860d4c779ba06!8m2!3d-34.9183781!4d-56.1588902!16s%2Fg%2F11b77qmk49",
+   "http://www.montevideoknockout.com/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-montevideo-ufc-uruguay-fighting-club",
+  "name": "Gym UFC Uruguay Fighting Club (Montevideo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "boxing",
+   "kickboxing"
+  ],
+  "places": [
+   "MVD"
+  ],
+  "area": "Montevideo, Aguada / Goes (Av. Gral. Flores)",
+  "country": "UY",
+  "lat": -34.8730868,
+  "lon": -56.177065,
+  "summary": "All-martial-arts gym on Av. Gral. Flores with 98 Google reviews at 4.7. Most reviewers like the respectful atmosphere and teachers, but two 1-star reviews call it undisciplined and unqualified.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30, Sunday closed.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Message them first.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA",
+    "boxing",
+    "kickboxing",
+    "martial arts"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated. A reviewer says new students are treated well.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "Aguada, Goes and La Comercial, working class and cheaper than Pocitos.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Rambla and Playa Ramirez are about 5 km by bus.",
+   "website": null,
+   "instagram": "https://www.instagram.com/gimnasio_uruguay_fighting_club/",
+   "facebook": null,
+   "phone": "+598 94 109 098",
+   "google_maps_url": "https://www.google.com/maps/place/Gym+UFC+Uruguay+Fighting+Club/@-34.8730868,-56.177065,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81dcaeddcad1:0xbc4f3fabee98ef9a!8m2!3d-34.8730868!4d-56.177065!16s%2Fg%2F11h6nk9ypp",
+   "address": "Av. Gral. Flores 2939, 11800 Montevideo",
+   "hours": "Mon to Fri 8:00-12:00 and 16:00-22:00, Sat 8:00-12:00, Sun closed",
+   "google_rating": 4.7,
+   "google_reviews": 98,
+   "last_activity": "2026-09 Google review (a month old)",
+   "what_people_say": [
+    {
+     "quote": "Great atmosphere, they're respectful and treat new students well, the teachers are good teachers, and it's more spacious than I expected.",
+     "site": "google maps",
+     "date": "2026-04",
+     "url": "https://www.google.com/maps/place/Gym+UFC+Uruguay+Fighting+Club/@-34.8730868,-56.177065,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81dcaeddcad1:0xbc4f3fabee98ef9a!8m2!3d-34.8730868!4d-56.177065!16s%2Fg%2F11h6nk9ypp"
+    },
+    {
+     "quote": "There's no discipline and no qualified instructors. You'll waste your time hitting a punching bag.",
+     "site": "google maps",
+     "date": "2025-12 (1 star)",
+     "url": "https://www.google.com/maps/place/Gym+UFC+Uruguay+Fighting+Club/@-34.8730868,-56.177065,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81dcaeddcad1:0xbc4f3fabee98ef9a!8m2!3d-34.8730868!4d-56.177065!16s%2Fg%2F11h6nk9ypp"
+    },
+    {
+     "quote": "They pay attention, explain things well, and you really learn.",
+     "site": "google maps",
+     "date": "2025-10 or earlier",
+     "url": "https://www.google.com/maps/place/Gym+UFC+Uruguay+Fighting+Club/@-34.8730868,-56.177065,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81dcaeddcad1:0xbc4f3fabee98ef9a!8m2!3d-34.8730868!4d-56.177065!16s%2Fg%2F11h6nk9ypp"
+    }
+   ],
+   "score_note": "98 reviews at 4.7 and recent, but split opinion on instruction quality and no fighter or sparring evidence, so training 5. Cost 3 as for other Montevideo rows.",
+   "water_km": 4.8,
+   "score": {
+    "training": 5,
+    "evidence": 7,
+    "local_life": 8,
+    "cost": 3,
+    "water": 6,
+    "total": 5.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/mma+montevideo/",
+   "https://www.google.com/maps/place/Gym+UFC+Uruguay+Fighting+Club/@-34.8730868,-56.177065,17z/data=!3m1!4b1!4m6!3m5!1s0x959f81dcaeddcad1:0xbc4f3fabee98ef9a!8m2!3d-34.8730868!4d-56.177065!16s%2Fg%2F11h6nk9ypp",
+   "https://www.instagram.com/gimnasio_uruguay_fighting_club/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-montevideo-muay-thai-fire-punch",
+  "name": "Muay Thai Fire Punch (Montevideo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [
+   "MVD"
+  ],
+  "area": "Montevideo, Av. Gral. Flores (north, Manga)",
+  "country": "UY",
+  "lat": -34.8335974,
+  "lon": -56.1445849,
+  "summary": "Small Muay Thai gym in the north of the city that only runs evening classes (18:30 to 22:30 on weekdays). Only 19 Google reviews at 4.9 and the newest is a year old, though reviewers name instructor Luis Olivera as committed.",
+  "season": "year round",
+  "dec_jan": "unknown. Weekday evenings only per Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Message them on Facebook first.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": "Luis Olivera (named by a reviewer).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "North Montevideo, far from the beaches. Living near Centro or Cordon and taking a bus is more realistic.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Malvin beach is about 7 km, Pocitos 10 km.",
+   "website": null,
+   "instagram": null,
+   "facebook": "https://www.facebook.com/MuayThai.FirePunch/",
+   "phone": "+598 98 626 764",
+   "google_maps_url": "https://www.google.com/maps/place/Muay+Thai+Fire+Punch/@-34.8335974,-56.1445849,17z/data=!3m1!4b1!4m6!3m5!1s0x95a02a416b5cb78f:0x2f5b7bf627a543d8!8m2!3d-34.8335974!4d-56.1445849!16s%2Fg%2F11ddzk159p",
+   "address": "Av. Gral. Flores 5292, 12000 Montevideo",
+   "hours": "Mon to Fri 18:30-22:30, Sat and Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 19,
+   "last_activity": "2025 Google review (about a year old)",
+   "what_people_say": [
+    {
+     "quote": "The best place to do Muay Thai. Luis Olivera is an excellent instructor who is committed to progress and continuous improvement.",
+     "site": "google maps",
+     "date": "2022",
+     "url": "https://www.google.com/maps/place/Muay+Thai+Fire+Punch/@-34.8335974,-56.1445849,17z/data=!3m1!4b1!4m6!3m5!1s0x95a02a416b5cb78f:0x2f5b7bf627a543d8!8m2!3d-34.8335974!4d-56.1445849!16s%2Fg%2F11ddzk159p"
+    },
+    {
+     "quote": "If you're looking for a friendly place where you can train hard and get results, look no further than this place.",
+     "site": "google maps",
+     "date": "2023",
+     "url": "https://www.google.com/maps/place/Muay+Thai+Fire+Punch/@-34.8335974,-56.1445849,17z/data=!3m1!4b1!4m6!3m5!1s0x95a02a416b5cb78f:0x2f5b7bf627a543d8!8m2!3d-34.8335974!4d-56.1445849!16s%2Fg%2F11ddzk159p"
+    }
+   ],
+   "score_note": "Pure Muay Thai but few reviews, none recent, evening classes only, so training 5 and evidence 3. Cost 3 as for other Montevideo rows.",
+   "water_km": 7.0,
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 7,
+    "cost": 3,
+    "water": 5,
+    "total": 4.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+montevideo/",
+   "https://www.google.com/maps/place/Muay+Thai+Fire+Punch/@-34.8335974,-56.1445849,17z/data=!3m1!4b1!4m6!3m5!1s0x95a02a416b5cb78f:0x2f5b7bf627a543d8!8m2!3d-34.8335974!4d-56.1445849!16s%2Fg%2F11ddzk159p",
+   "https://www.facebook.com/MuayThai.FirePunch/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-atlantida-sanda-mma-uy",
+  "name": "Sanda & MMA Uy (Atlantida)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "kickboxing"
+  ],
+  "places": [
+   "LAFL"
+  ],
+  "area": "Atlantida, Costa de Oro, Canelones (7 km west of La Floresta)",
+  "country": "UY",
+  "lat": -34.7626629,
+  "lon": -55.7539204,
+  "summary": "Sanda and MMA school in Atlantida, the nearest listed combat gym to La Floresta (4.9 from 52 Google reviews). Reviews praise a passionate coach called Fede but the newest are two to three years old.",
+  "season": "year round",
+  "dec_jan": "unknown. Weekday hours 7:00 to 22:00 per Google Maps 2026-10-30. Beach town, expect summer changes.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Message on Instagram first.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Sanda",
+    "MMA",
+    "self-defence"
+   ],
+   "coaches": "Fede (first name from reviews).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "Atlantida or La Floresta, 7 km apart on the Costa de Oro, bus between them.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Atlantida beach is walkable.",
+   "website": null,
+   "instagram": "https://instagram.com/sandaymma_uy",
+   "facebook": null,
+   "phone": "+598 95 928 610",
+   "google_maps_url": "https://www.google.com/maps/place/Sanda+%26+MMA+Uy/@-34.7626629,-55.7539204,17z/data=!3m1!4b1!4m6!3m5!1s0x959ff7edf2ee8011:0x9cc52c1a4bf91cbf!8m2!3d-34.7626629!4d-55.7539204!16s%2Fg%2F11k0sjdxqw",
+   "address": "Jose Leon Laborido Sandoval y Calle 53, Atlantida, Canelones",
+   "hours": "Mon to Fri 7:00-22:00, Sat and Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 52,
+   "last_activity": "2024 Google reviews (newest about 2 years old)",
+   "what_people_say": [
+    {
+     "quote": "By far the best place to train... the coach makes all the difference with his passion for what he does.",
+     "site": "google maps",
+     "date": "2023",
+     "url": "https://www.google.com/maps/place/Sanda+%26+MMA+Uy/@-34.7626629,-55.7539204,17z/data=!3m1!4b1!4m6!3m5!1s0x959ff7edf2ee8011:0x9cc52c1a4bf91cbf!8m2!3d-34.7626629!4d-55.7539204!16s%2Fg%2F11k0sjdxqw"
+    },
+    {
+     "quote": "The best place to go and feel great, both physically and mentally, with Fede, undoubtedly the best teacher!",
+     "site": "google maps",
+     "date": "2024",
+     "url": "https://www.google.com/maps/place/Sanda+%26+MMA+Uy/@-34.7626629,-55.7539204,17z/data=!3m1!4b1!4m6!3m5!1s0x959ff7edf2ee8011:0x9cc52c1a4bf91cbf!8m2!3d-34.7626629!4d-55.7539204!16s%2Fg%2F11k0sjdxqw"
+    }
+   ],
+   "score_note": "Few details on level or sparring and no review in the last two years, so training 4. Cost 3 as for other Uruguay rows. Water: Atlantida beach about 0.5 km.",
+   "water_km": 0.9,
+   "score": {
+    "training": 4,
+    "evidence": 4,
+    "local_life": 8,
+    "cost": 3,
+    "water": 10,
+    "total": 5.2
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+kickboxing+gimnasio+La+Floresta+Canelones+Uruguay/",
+   "https://www.google.com/maps/place/Sanda+%26+MMA+Uy/@-34.7626629,-55.7539204,17z/data=!3m1!4b1!4m6!3m5!1s0x959ff7edf2ee8011:0x9cc52c1a4bf91cbf!8m2!3d-34.7626629!4d-55.7539204!16s%2Fg%2F11k0sjdxqw",
+   "https://instagram.com/sandaymma_uy"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
   "saved_in": []
  }
 ]
