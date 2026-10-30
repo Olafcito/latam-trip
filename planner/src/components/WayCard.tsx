@@ -1,17 +1,16 @@
-import { Fragment, type ReactNode } from 'react'
+import type { CSSProperties } from 'react'
 import type { Airport, InOut, Way } from '../data/types'
 import { clock, day, hours, kr, nextDayMark, timeUncertain } from '../lib/format'
-import { nights, wayTrack, wayTrackLabel, type TrackWait } from '../lib/waytrack'
+import { nights, wayAxis, wayTrack, wayTrackLabel, type TrackWait } from '../lib/waytrack'
 import { Home, Land, Moon, Sun, Transfer } from './icons'
-import { useEdgeFade } from './useEdgeFade'
 import { FlightLinks } from './FlightLinks'
 import { wayLinks } from '../lib/links'
 
-// One way as a picture: the two ends with their big times, and under them the way as a transit line
+// One way as a picture: the two ends with their big times, and under them the way on a time axis
 // with every airport, its local times and the waits between flights.
 
 function Stamp({ s, from, big }: { s: string; from?: string; big?: boolean }) {
-  if (!s) return <span className="wc-t">?</span>
+  if (!s) return null
   const nd = from ? nextDayMark(from, s) : ''
   return (
     <span className={`wc-t${big ? ' big' : ''}`}>
@@ -23,11 +22,11 @@ function Stamp({ s, from, big }: { s: string; from?: string; big?: boolean }) {
   )
 }
 
-/** A clock time under a node, with "+1" when it falls on a later day than the way leaves. */
+/** A clock time on the axis, with "+1" when it falls on a later day than the way leaves. */
 function Time({ t, start }: { t: string; start: string }) {
   const nd = nextDayMark(start, t)
   return (
-    <span className="wt-tm">
+    <span className="wx-tm">
       {clock(t)}
       {nd && <sup className="nd">{nd}</sup>}
       {timeUncertain(t) && <span className="warnmark" title="Time not known exactly">!</span>}
@@ -35,35 +34,13 @@ function Time({ t, start }: { t: string; start: string }) {
   )
 }
 
-type Side = 'fly' | 'wait' | undefined
-
-/** One airport point on the line: a ring, the line on either side of it, the code and times under it. */
-function Node({ code, l, r, end, top, title, children }: {
-  code: string
-  l?: Side
-  r?: Side
-  end?: boolean
-  top?: ReactNode
-  title?: string
-  children?: ReactNode
-}) {
-  return (
-    <span className="wt-n" data-l={l} data-r={r} data-end={end ? '' : undefined} title={title}>
-      <span className="wt-top">{top}</span>
-      <span className="wt-dot"><i className="wt-ring" /></span>
-      <b className="wt-c">{code}</b>
-      {children}
-    </span>
-  )
-}
-
 /** What a wait says above the line: a moon and the nights, or how long the change is. */
 function WaitLabel({ p }: { p: TrackWait }) {
-  if (p.type === 'night') return <span className="wt-w night"><Moon />{nights(p.nights)}</span>
-  if (p.type === 'day_stop') return <span className="wt-w day"><Sun s={12} />{hours(p.hours)}</span>
-  if (p.type === 'self_transfer') return <span className="wt-w xfer"><Transfer s={12} />{hours(p.hours)}</span>
-  if (p.overnight) return <span className="wt-w night"><Moon />{hours(p.hours)}</span>
-  return <span className="wt-w">{hours(p.hours)}</span>
+  if (p.type === 'night') return <span className="wx-w night"><Moon />{nights(p.nights)}</span>
+  if (p.type === 'day_stop') return <span className="wx-w day"><Sun s={12} />{hours(p.hours)}</span>
+  if (p.type === 'self_transfer') return <span className="wx-w xfer"><Transfer s={12} />{hours(p.hours)}</span>
+  if (p.overnight) return <span className="wx-w night"><Moon />{hours(p.hours)}</span>
+  return <span className="wx-w">{hours(p.hours)}</span>
 }
 
 function waitTitle(p: TrackWait): string {
@@ -77,66 +54,71 @@ function waitTitle(p: TrackWait): string {
 }
 
 /**
- * The way as a transit line, after the ReUI stepper on 21st.dev: a ring at every airport, the flights
- * as solid stretches in the way's colour, the waits dashed and dimmer, each node with its code and
- * local time under it. Evenly spaced, not to scale. A narrow card folds each wait into one node with
- * both times, and the line scrolls with fading edges if it still does not fit.
+ * The way on a time axis, after the flight timelines of the booking sites: every stretch is as long
+ * as the hours it takes, with a floor so a short hop keeps room for its labels, so a night in Madrid
+ * fills the line the way it fills the trip. Flights are solid bars with their time over them, waits
+ * sit between them in their own style, and every airport is a point with its code and local times
+ * under it, so the time points are the axis. A change inside one ticket shows its code and its
+ * length only, since the data has no clock times for it, and its two flights carry no hours.
  */
 export function WayTrack({ way, airports, compact = false }: { way: Way; airports?: Record<string, Airport>; compact?: boolean }) {
-  const ref = useEdgeFade<HTMLDivElement>()
-  const t = wayTrack(way)
+  const t = wayTrack(way, airports)
+  const ax = wayAxis(t)
   const start = way.depart
-  const side = (i: number): Side => t.parts[i]?.kind
-  const date = (s: string | null) => (s ? <small className="wt-dt">{day(s)}</small> : null)
-  const items: ReactNode[] = [
-    <Node key="s" code={t.start.code} r={side(0)} end title={t.start.time ? `${t.start.code}, leaves ${day(t.start.time)} ${clock(t.start.time)}` : t.start.code}>
-      {t.start.time && <Time t={t.start.time} start={start} />}
-      {date(t.start.time)}
-    </Node>,
-  ]
-  t.parts.forEach((p, i) => {
-    if (p.kind === 'fly') {
-      items.push(
-        <span key={i} className="wt-s" data-k="fly">
-          <span className="wt-sl">{p.approx ? '~' : ''}{hours(p.hours)}</span>
-        </span>,
-      )
-      return
-    }
-    const l: Side = side(i - 1) === 'fly' ? 'fly' : 'wait'
-    const r: Side = side(i + 1) === 'fly' ? 'fly' : side(i + 1) ? 'wait' : undefined
-    const title = waitTitle(p)
-    const merged = (
-      <Node code={p.code} l={l} r={r} top={<WaitLabel p={p} />} title={title}>
-        {p.arrive && <Time t={p.arrive} start={start} />}
-        {p.depart && <Time t={p.depart} start={start} />}
-      </Node>
-    )
-    // a change inside one ticket has no times of its own, so it is always one node
-    if (!p.arrive || !p.depart) {
-      items.push(<Fragment key={i}>{merged}</Fragment>)
-      return
-    }
-    items.push(
-      <Fragment key={i}>
-        <span className="wt-wide">
-          <Node code={p.code} l={l} r="wait" title={title}><Time t={p.arrive} start={start} />{date(p.arrive)}</Node>
-          <span className="wt-s" data-k="wait"><span className="wt-sl"><WaitLabel p={p} /></span></span>
-          <Node code={p.code} l="wait" r={r} title={title}><Time t={p.depart} start={start} />{date(p.depart)}</Node>
-        </span>
-        <span className="wt-narrow">{merged}</span>
-      </Fragment>,
-    )
-  })
-  items.push(
-    <Node key="e" code={t.end.code} l={side(t.parts.length - 1)} end title={t.end.time ? `${t.end.code}, lands ${day(t.end.time)} ${clock(t.end.time)}` : t.end.code}>
-      {t.end.time && <Time t={t.end.time} start={start} />}
-      {date(t.end.time)}
-    </Node>,
-  )
+  const pct = (f: number) => `${f * 100}%`
+  const span = (p: { left: number; width: number }): CSSProperties => ({ left: pct(p.left), width: pct(p.width) })
+  // a flight split around a change carries no hours, so the change's label may borrow from both sides and stay centred
+  const quiet = (i: number) => { const q = ax.parts[i]?.part; return q?.kind === 'fly' && q.approx ? ax.parts[i].width / 2 : 0 }
+  const room = (i: number) => { const q = ax.parts[i]; const e = Math.min(quiet(i - 1), quiet(i + 1)); return { left: q.left - e, width: q.width + 2 * e } }
+  const dt = (s: string | null) => (s && !compact ? <small className="wx-dt">{day(s)}</small> : null)
   return (
-    <div className={`wt-box${compact ? ' compact' : ''}`} role="img" aria-label={wayTrackLabel(way, airports)}>
-      <div ref={ref} className="wt">{items}</div>
+    <div className={`wx${compact ? ' compact' : ''}`} role="img" aria-label={wayTrackLabel(way, airports)}>
+      <div className="wx-over" aria-hidden="true">
+        {ax.parts.map((q, i) => { const p = q.part; return (
+          <span key={i} className="wx-lab" data-k={p.kind} style={span(p.kind === 'wait' ? room(i) : q)} title={p.kind === 'wait' ? waitTitle(p) : undefined}>
+            {p.kind === 'fly' ? !p.approx && <span className="wx-dur">{hours(p.hours)}</span> : <WaitLabel p={p} />}
+          </span>
+        ) })}
+      </div>
+      <div className="wx-line" aria-hidden="true">
+        {ax.parts.map((q, i) => (
+          <span key={i} className="wx-seg" data-k={q.part.kind} data-type={q.part.kind === 'wait' ? q.part.type : undefined} style={span(q)} />
+        ))}
+        <i className="wx-pt end" style={{ left: '0%' }} />
+        {ax.parts.slice(1).map((q, i) => <i key={i} className="wx-pt" style={{ left: pct(q.left) }} />)}
+        <i className="wx-pt end" style={{ left: '100%' }} />
+      </div>
+      <div className="wx-under" aria-hidden="true">
+        <span className="wx-at start">
+          <b>{t.start.code}</b>
+          {t.start.time && <Time t={t.start.time} start={start} />}
+          {dt(t.start.time)}
+        </span>
+        {ax.parts.map((q, i) => {
+          const p = q.part
+          if (p.kind !== 'wait') return null
+          return (
+            <span key={i} className="wx-wait" style={span(q)}>
+              {/* wide: the landing under the left edge, the take-off under the right. Narrow: stacked in the middle */}
+              <span className="wx-wide">
+                {p.arrive && <span className="wx-at l"><Time t={p.arrive} start={start} /></span>}
+                <b className="wx-code">{p.code}</b>
+                {p.depart && <span className="wx-at r"><Time t={p.depart} start={start} /></span>}
+              </span>
+              <span className="wx-narrow">
+                <b>{p.code}</b>
+                {p.arrive && <Time t={p.arrive} start={start} />}
+                {p.depart && <Time t={p.depart} start={start} />}
+              </span>
+            </span>
+          )
+        })}
+        <span className="wx-at end">
+          <b>{t.end.code}</b>
+          {t.end.time && <Time t={t.end.time} start={start} />}
+          {dt(t.end.time)}
+        </span>
+      </div>
     </div>
   )
 }

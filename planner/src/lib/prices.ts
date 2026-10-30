@@ -62,7 +62,7 @@ export function priceState(quotes: PairQuote[], now: number = Date.now()): 'none
 /** "checked 2 days ago", "checked 5 hours ago", "checked just now". */
 export function checkedAgo(at: string, now: number = Date.now()): string {
   const t = Date.parse(at)
-  if (!Number.isFinite(t)) return 'checked ?'
+  if (!Number.isFinite(t)) return 'not checked'
   const h = Math.max(0, (now - t) / 3_600_000)
   if (h < 1) return 'checked just now'
   if (h < 24) {
@@ -85,7 +85,7 @@ const SOURCE: Record<string, string> = {
 
 /** Where a price came from, as Simon reads it. A price from his Momondo userscript is "saved by you". */
 export function sourceLabel(src: string | null | undefined): string {
-  if (!src) return '?'
+  if (!src) return 'unknown source'
   return SOURCE[src] ?? (src.startsWith('airline:') ? src.slice(8) : src.replace(/_/g, ' '))
 }
 

@@ -1,0 +1,256 @@
+/* The route as a story: a plain rail with the dates beside it, from Copenhagen and back, stops on it, travel drawn between. */
+@scope (:root) to (.rmap) {
+.st {
+  --gut: 64px; --rail: 40px;
+  list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;
+}
+.st > li { position: relative; display: grid; grid-template-columns: var(--gut) var(--rail) minmax(0, 1fr); align-items: stretch; }
+
+/* the date beside the rail */
+.st-gut { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 1px; padding-right: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st-gut > b { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.st-gut[data-est='true'] > b { color: var(--muted); }
+
+/* the rail: one neutral column the whole way down. Each row draws its own stretch of it. */
+.st-rail { position: relative; display: grid; place-items: center; }
+.st-rail::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); background: var(--line-2); }
+.st-stop[data-home='start'] .st-rail::before { top: 50%; }
+.st-stop[data-home='end'] .st-rail::before { bottom: 50%; }
+
+/* stops: tall in proportion to the nights, capped so a long stay does not run away */
+.st-stop { min-height: calc(64px + var(--nights, 0) * 6px); padding: 4px 0; }
+.st-disc { position: relative; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--surface-3); box-shadow: 0 0 0 3px var(--surface), 0 0 0 4px var(--line-2); overflow: hidden; }
+.st-disc .flag { width: 34px !important; height: 34px !important; object-fit: cover; transform: scale(1.6); }
+.st-nf { font-size: 10px; font-weight: 700; color: var(--muted); }
+.st-card {
+  display: flex; align-items: center; gap: 12px; margin: 0 0 0 2px; padding: 8px 10px 8px 12px;
+  border-radius: 10px;
+  transition: background-color var(--t-fast) ease;
+}
+.st-nm { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.st-nm > b { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
+.st-stop[data-home] { min-height: 52px; }
+.st-stop[data-home] .st-nm > b { font-size: 14px; font-weight: 600; color: var(--muted); }
+.st-nights { flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 64px; }
+.st-nights > b, .st-step > b { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1; }
+.st-nights[data-est='true'] b { color: color-mix(in srgb, var(--text) 70%, transparent); }
+.st-nights small { font-size: 11px; color: var(--faint); }
+.st-step { display: inline-flex; align-items: center; gap: 4px; }
+.st-step button, .wp-step button {
+  display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--surface-3); color: var(--muted); cursor: pointer;
+  opacity: 0; transition: opacity var(--t-fast) ease, transform var(--t-fast) var(--ease-out), color var(--t-fast) ease;
+}
+.st-step button:disabled { cursor: default; }
+.st-card:is(:hover, :focus-within) .st-step button:disabled, .wp-step button:disabled { opacity: 0.25; cursor: default; }
+.st-step button:active, .wp-step button:active { transform: scale(0.92); }
+.st-step button:focus-visible { opacity: 1; outline: 2px solid var(--flight); outline-offset: 2px; }
+.st-card:is(:hover, :focus-within) .st-step button { opacity: 1; }
+@media (hover: none) { .st-step button { opacity: 1; } .st-step button:disabled { opacity: 0.25; } }
+
+/* legs: the date in the gutter opens the calendar, the leg drawn between the stops opens its ticket.
+   Each mode has its colour, the long-haul ways the map's green in and orange home. */
+.st-leg { --tone: var(--bus); min-height: 48px; }
+.st-leg[data-f='flight'] { --tone: var(--flight); }
+.st-leg[data-f='boat'] { --tone: var(--boat); }
+.st-leg[data-tone='in'] { --tone: var(--in); }
+.st-leg[data-tone='home'] { --tone: var(--home); }
+.st-when {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 1px;
+  margin: 0 -6px 0 0; padding: 4px 6px; border-radius: 8px;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  transition: background-color var(--t-fast) ease, box-shadow var(--t-fast) ease, transform 160ms var(--ease-out);
+}
+.st-when b { font-size: 12.5px; font-weight: 600; color: var(--text); transition: color var(--t-fast) ease; }
+.st-when small { font-size: 11px; color: var(--faint); }
+.st-date { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.st-date b { text-decoration: underline dotted color-mix(in srgb, var(--muted) 70%, transparent); text-underline-offset: 3px; }
+.st-date[data-known='false'] b { color: var(--muted); }
+.st-date[aria-expanded='true'] { background: var(--surface-3); }
+.st-date:active { transform: scale(0.96); }
+/* the leg's ticket is open: its day lights up in the leg's colour, so the ticket reads as that day's */
+.st-leg:has(.st-hop[aria-expanded='true']) .st-when {
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 45%, transparent);
+}
+.st-leg:has(.st-hop[aria-expanded='true']) .st-when b { color: var(--tone); text-decoration-color: currentColor; }
+
+.st-hop {
+  --stroke: var(--muted);
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; margin-left: 6px; padding: 0 4px;
+  border: 0; border-radius: 10px; background: none; color: var(--muted); font: inherit; cursor: pointer;
+  transition: color var(--t-fast) ease;
+}
+.st-hl { flex: 1 1 0; height: 2px; opacity: 0.55; background: var(--stroke); transition: opacity var(--t-fast) ease, background-color var(--t-fast) ease; }
+.st-leg[data-f='flight'] .st-hl { background: repeating-linear-gradient(90deg, var(--stroke) 0 6px, transparent 6px 11px); }
+.st-leg[data-f='boat'] .st-hl { background: repeating-linear-gradient(90deg, var(--stroke) 0 2px, transparent 2px 6px); }
+.st-hm { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st-hm svg { flex: none; transition: color var(--t-fast) ease; }
+.st-moon { display: inline-flex; color: var(--faint); }
+.st-hop[aria-expanded='true'] { --stroke: var(--tone); color: var(--text); }
+.st-hop[aria-expanded='true'] .st-hl { opacity: 0.9; }
+.st-hop[aria-expanded='true'] .st-hm svg { color: var(--tone); }
+.st-date:focus-visible, .st-hop:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .st-stop:hover .st-card { background: var(--surface-2); }
+  .st-date:hover { background: var(--surface-2); }
+  .st-date:hover b { text-decoration-color: var(--text); }
+  /* on hover the line and its mode take the leg's colour */
+  .st-hop:hover { --stroke: var(--tone); color: var(--text); }
+  .st-hop:hover .st-hl { opacity: 0.9; }
+  .st-hop:hover .st-hm svg { color: var(--tone); }
+  .st-step button:hover, .wp-step button:hover { color: var(--text); background: var(--line-2); }
+}
+
+/* a leg that leaves before you get there: its date in the error colour, the fix under the line */
+.st-date[data-clash='true'] b { color: var(--err); text-decoration-color: color-mix(in srgb, var(--err) 60%, transparent); }
+.st-clash { grid-column: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: -6px 0 6px 8px; font-size: 12.5px; font-weight: 500; color: var(--err); }
+.st-clash svg { flex: none; }
+
+/* ---- popovers: rise from their trigger ---- */
+.pop-wrap { position: relative; display: inline-flex; }
+.st-body.pop-wrap { display: flex; }
+.pop {
+  position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; width: min(360px, calc(100vw - 32px));
+  padding: 14px; border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-2), 0 18px 40px -12px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.3);
+  transform-origin: top left; opacity: 1; transform: none;
+  transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out);
+  @starting-style { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+.pop.wide { width: min(304px, calc(100vw - 32px)); padding: 12px; }
+.st-body > .pop { left: 6px; }
+.pop::before { content: ''; position: absolute; left: 0; right: 0; top: -8px; height: 8px; }
+.pop.way { width: min(460px, calc(100vw - 32px)); }
+.pop-x {
+  display: none; position: absolute; top: 6px; right: 6px; width: 40px; height: 40px; place-items: center;
+  border: 0; border-radius: 50%; background: var(--surface-3); color: var(--muted); cursor: pointer;
+}
+.pop-x:active { transform: scale(0.94); }
+.pop-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+
+/* ---- the boarding pass ---- */
+.lc { --tone: var(--bus); display: flex; flex-direction: column; gap: 12px; }
+.lc[data-f='flight'] { --tone: var(--flight); }
+.lc[data-f='boat'] { --tone: var(--boat); }
+.lc-head { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.lc-when { font-size: 13px; font-weight: 650; color: var(--tone); }
+.lc.way .lc-when { color: var(--text); }
+.lc-day { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lc-more { align-self: flex-start; margin-top: -6px; }
+.lc-night { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; color: var(--boat); }
+.lc-ends { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 12px; }
+.lc-end { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.lc-end.to { align-items: flex-end; text-align: right; }
+.lc-time { font-size: 24px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.lc-time sup { font-size: 11px; font-weight: 600; color: var(--tone); margin-left: 2px; }
+.lc-code { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--tone); }
+.lc-end small { max-width: 16ch; font-size: 11.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lc-mid { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding-top: 6px; }
+.lc-dur { align-self: center; font-size: 11.5px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lc-track { display: flex; align-items: center; height: 14px; }
+.lc-seg { flex: 1 1 auto; height: 2px; background: var(--tone); }
+.lc-track[data-f='flight'] .lc-seg { background: repeating-linear-gradient(90deg, var(--tone) 0 4px, transparent 4px 7px); }
+.lc-dot { position: relative; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 2px var(--tone); }
+.lc-dot.end { background: var(--tone); }
+.lc-via { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; font-size: 10.5px; line-height: 1.2; white-space: nowrap; }
+.lc-via b { font-weight: 700; color: var(--text); }
+.lc-via small { color: var(--faint); }
+.lc-track:has(.lc-via) { margin-bottom: 22px; }
+.lc-note { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.lc-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.lc-facts li { padding: 3px 8px; border-radius: 999px; background: var(--surface-2); font-size: 11.5px; color: var(--muted); }
+.lc-price { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px dashed var(--line-2); }
+.lc-price b { font-size: 20px; font-weight: 650; color: var(--tone); font-variant-numeric: tabular-nums; }
+.lc-price small { font-size: 11.5px; color: var(--faint); text-align: right; }
+.lc-others { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.lc-others li { display: grid; grid-template-columns: 64px auto minmax(0, 1fr) auto; align-items: baseline; gap: 8px; padding: 5px 0; border-top: 1px solid var(--line); font-size: 12px; font-variant-numeric: tabular-nums; }
+.lc-others b { font-weight: 600; }
+.lc-others span { color: var(--muted); }
+.lc-o-c { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lc-others small { color: var(--faint); font-size: 11px; }
+.lc-act { display: flex; flex-wrap: wrap; gap: 6px; }
+.lc-act .btn svg { margin-left: 4px; }
+
+/* ---- the calendar: one month at a time, a price under each day ---- */
+.wp { display: flex; flex-direction: column; gap: 10px; }
+.wp-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.wp-seg { font-size: 12px; }
+.wp-read { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; font-variant-numeric: tabular-nums; }
+.wp-read b { font-size: 13.5px; font-weight: 650; }
+.wp-read small { font-size: 11px; color: var(--muted); }
+.wp-cal { display: flex; flex-direction: column; gap: 4px; }
+.wp-nav { display: flex; align-items: center; justify-content: space-between; height: 32px; margin-bottom: 2px; }
+.wp-nav b { font-size: 13px; font-weight: 600; }
+.wp-arr {
+  display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px;
+  background: none; color: var(--muted); cursor: pointer;
+  transition: background-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.wp-arr:disabled { opacity: 0.25; cursor: default; }
+.wp-arr:not(:disabled):active { transform: scale(0.92); }
+.wp-wd, .wp-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.wp-wd span { text-align: center; font-size: 10.5px; font-weight: 600; color: var(--faint); }
+.wp-d {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
+  height: 38px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--text); font: inherit; cursor: pointer;
+  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease;
+}
+.wp-d b { font-size: 13px; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.wp-d small { min-height: 13px; font-size: 11px; font-weight: 600; line-height: 1.15; color: var(--faint); font-variant-numeric: tabular-nums; }
+.wp-d:disabled { color: var(--faint); opacity: 0.4; cursor: default; }
+.wp-d:not(:disabled):active { transform: scale(0.94); }
+.wp-d[data-priced='true'] small { color: var(--muted); }
+.wp-d[data-cheap='true'] small { color: var(--in); }
+.wp-d[data-sel='true'] { background: var(--flight); color: var(--flight-ink); }
+.wp-d[data-sel='true'] b { font-weight: 650; }
+.wp-d[data-sel='true'] small { color: color-mix(in srgb, var(--flight-ink) 72%, transparent); }
+/* the estimated day, before one is picked: a ring, not a fill */
+.wp-d[data-sel='true'][data-set='false'] { background: none; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--flight); }
+.wp-d[data-sel='true'][data-set='false'] small { color: var(--muted); }
+/* no fares to show: no empty price line under the days */
+.wp[data-fares='false'] .wp-d small { display: none; }
+/* a bus or a boat: the chosen day in plain white, the amber belongs to flights */
+.wp[data-overland] .wp-d[data-sel='true'] { background: var(--text); color: var(--surface); }
+.wp[data-overland] .wp-d[data-sel='true'][data-set='false'] { background: none; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--muted); }
+.wp-d:focus-visible, .wp-arr:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
+.wp-stay { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 10px; background: var(--surface-2); font-size: 12.5px; color: var(--muted); }
+.wp-stay b { color: var(--text); font-weight: 600; }
+.wp-step { display: inline-flex; align-items: center; gap: 8px; }
+.wp-step > b { min-width: 2ch; text-align: center; font-size: 16px; }
+.wp-step button { opacity: 1; }
+.wp-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.wp-key { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--faint); }
+.wp-key i { width: 6px; height: 6px; border-radius: 50%; background: var(--in); }
+.wp-btns { display: inline-flex; gap: 6px; }
+.wp-btns .btn svg { margin-left: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .wp-d:not(:disabled):not([data-sel='true']):hover { background: var(--surface-3); }
+  .wp-arr:not(:disabled):hover { background: var(--surface-3); color: var(--text); }
+}
+
+@media (max-width: 560px) {
+  .st { --gut: 60px; --rail: 32px; }
+  .st-gut { padding-right: 8px; }
+  /* the nights take only the number's width, so a name like San Jose (Costa Rica) keeps two lines */
+  .st-card { gap: 8px; padding-inline: 8px 4px; }
+  .st-nights { min-width: 44px; }
+  .st-when small { display: none; }
+  /* on a phone the popovers rise as a sheet from the bottom instead of hanging off their trigger */
+  .pop, .pop.wide, .st-body > .pop, .pop.way {
+    position: fixed; top: auto; left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 78vh; overflow-y: auto;
+    transform-origin: bottom center;
+    @starting-style { opacity: 0; transform: translateY(12px); }
+  }
+  .wp-d { height: 44px; }
+  /* thumb sized targets */
+  .st-date { min-height: 44px; justify-content: center; }
+  .st-step button, .wp-step button { width: 32px; height: 32px; }
+  .wp-arr { width: 40px; height: 40px; }
+  .wp-nav { height: 40px; }
+  .pop-x { display: grid; }
+  .pop, .pop.wide, .pop.way { padding-top: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop { transition: opacity 150ms ease; @starting-style { opacity: 0; transform: none; } }
+}
+}

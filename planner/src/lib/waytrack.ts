@@ -2,9 +2,14 @@ import type { Airport, FlightItem, StopKind, Way } from '../data/types'
 import { clock, day, dayDiff, hours } from './format'
 
 // A long-haul way as a transit line: the flights as stretches, every wait between them as a stop.
-// Evenly spaced, not to scale. Times are local at each airport, as in the data.
+// Times are local at each airport, as in the data. A ticket with changes only knows its first
+// take-off, its last landing and how long each change is, so its flights are shared out by the
+// distance each one covers to place the changes on the line, and no clock time is made up for them.
+// wayAxis lays the parts out to
+// scale, by the hours each one takes from the first take-off, with a floor so a short hop still has
+// room for its labels.
 
-/** A stretch in the air. approx when it is a share of one ticket's flight split around its changes. */
+/** A stretch in the air. approx when it is a share of one ticket's flight split around its changes, so its length is only drawn. */
 export interface TrackFly {
   kind: 'fly'
   hours: number
@@ -21,7 +26,7 @@ export interface TrackWait {
   nights: number
   /** a layover inside one ticket that runs over night */
   overnight: boolean
-  /** local times, known for a stop between tickets, null for a change inside one ticket */
+  /** local times from the data, for a stop between tickets. A change inside one ticket has none */
   arrive: string | null
   depart: string | null
   stay: number | null
@@ -34,8 +39,29 @@ export interface WayTrackModel {
   parts: (TrackFly | TrackWait)[]
 }
 
+/** km between two airports along the earth */
+function km(a: Airport, b: Airport): number {
+  const r = Math.PI / 180
+  const h = Math.sin(((b.lat - a.lat) * r) / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(((b.lon - a.lon) * r) / 2) ** 2
+  return 12742 * Math.asin(Math.sqrt(h))
+}
+
+/**
+ * The hours in the air of each flight on one ticket. With every airport known, each gets a share in
+ * proportion to a rough block time for its distance, 800 km an hour plus half an hour on the ground.
+ * Without, the shares are even.
+ */
+function shares(path: string[], air: number, airports: Record<string, Airport>): number[] {
+  const legs = path.length - 1
+  const ap = path.map((c) => airports[c])
+  if (ap.some((a) => !a)) return Array(legs).fill(air / legs)
+  const rough = ap.slice(1).map((b, i) => km(ap[i], b) / 800 + 0.5)
+  const sum = rough.reduce((a, b) => a + b, 0)
+  return rough.map((r) => (air * r) / sum)
+}
+
 /** The way's flights split around their changes, with the stops between tickets kept as they are. */
-export function wayTrack(w: Way): WayTrackModel {
+export function wayTrack(w: Way, airports: Record<string, Airport> = {}): WayTrackModel {
   const parts: (TrackFly | TrackWait)[] = []
   for (const it of w.timeline) {
     if (it.kind !== 'flight') {
@@ -48,17 +74,56 @@ export function wayTrack(w: Way): WayTrackModel {
     const f = it as FlightItem
     const legs = f.connections.length + 1
     const lay = f.connections.reduce((a, c) => a + (c.layover_h ?? 0), 0)
-    const each = legs === 1 ? f.hours : Math.max(0.5, (f.hours - lay) / legs)
+    const path = [f.from, ...f.connections.map((c) => c.airport), f.to]
+    const each = legs === 1 ? [f.hours] : shares(path, Math.max(0.5 * legs, f.hours - lay), airports)
     f.connections.forEach((c, i) => {
-      parts.push({ kind: 'fly', hours: each, approx: true })
+      parts.push({ kind: 'fly', hours: each[i], approx: true })
       parts.push({
         kind: 'wait', code: c.airport, type: 'layover', hours: c.layover_h, nights: 0,
         overnight: f.overnight_layover && i === f.connections.length - 1, arrive: null, depart: null, stay: null,
       })
     })
-    parts.push({ kind: 'fly', hours: each, approx: legs > 1 })
+    parts.push({ kind: 'fly', hours: each[legs - 1], approx: legs > 1 })
   }
   return { start: { code: w.from, time: w.depart || null }, end: { code: w.to, time: w.arrive || null }, parts }
+}
+
+/** A part on the axis: its hours from the take-off, and where it is drawn as shares of the line. */
+export interface AxisPart { part: TrackFly | TrackWait; start: number; hours: number; left: number; width: number }
+export interface WayAxis {
+  parts: AxisPart[]
+  total: number
+  /** where an hour from the take-off falls on the line, 0 to 1 */
+  x: (h: number) => number
+}
+
+/** the least share of the line a part gets, so a 1 hour change between two long flights can carry its code */
+const FLOOR = 0.1
+
+export function wayAxis(t: WayTrackModel): WayAxis {
+  let at = 0
+  const raw = t.parts.map((part) => {
+    const h = Math.max(0, part.hours ?? 1)
+    const out = { part, start: at, hours: h }
+    at += h
+    return out
+  })
+  const total = at
+  const floor = Math.min(FLOOR, 0.5 / Math.max(1, raw.length))
+  const weight = raw.map((p) => Math.max(p.hours, total * floor))
+  const sum = weight.reduce((a, b) => a + b, 0) || 1
+  let left = 0
+  const parts = raw.map((p, i) => {
+    const out = { ...p, left, width: weight[i] / sum }
+    left += out.width
+    return out
+  })
+  const x = (h: number) => {
+    const p = parts.find((q) => h <= q.start + q.hours) ?? parts[parts.length - 1]
+    if (!p) return 0
+    return p.left + (p.hours > 0 ? Math.min(1, Math.max(0, (h - p.start) / p.hours)) : 0) * p.width
+  }
+  return { parts, total, x }
 }
 
 /** "1 night", "2 nights". */

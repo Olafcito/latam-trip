@@ -1,4 +1,4 @@
-// Formatting rules from the brief: Danish numbers (6.494 kr), "3 Dec 06:00", unknown values as "?" (never 0).
+// Formatting rules from the brief: Danish numbers (6.494 kr), "3 Dec 06:00", unknown values in words or left out, never "?" and never 0.
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -9,17 +9,17 @@ export function thousands(n: number): string {
 }
 
 export function kr(dkk: number | null | undefined): string {
-  return dkk == null || !Number.isFinite(dkk) ? '?' : `${thousands(dkk)} kr`
+  return dkk == null || !Number.isFinite(dkk) ? 'no price' : `${thousands(dkk)} kr`
 }
 
 /** One decimal with a Danish comma: 9.9 -> "9,9". */
 export function dec1(n: number | null | undefined): string {
-  return n == null ? '?' : n.toFixed(1).replace('.', ',')
+  return n == null ? '' : n.toFixed(1).replace('.', ',')
 }
 
-/** Hours to "16h 10m"; null to "?". */
+/** Hours to "16h 10m"; null to an empty string. */
 export function hours(h: number | null | undefined): string {
-  if (h == null || !Number.isFinite(h)) return '?'
+  if (h == null || !Number.isFinite(h)) return ''
   const m = Math.round(h * 60)
   const hh = Math.floor(m / 60)
   const mm = m % 60
@@ -36,7 +36,7 @@ export function dayTime(local: string): string {
 export function day(local: string): string {
   const m = Number(local.slice(5, 7))
   const d = Number(local.slice(8, 10))
-  return `${d} ${MON[m - 1] ?? '?'}`
+  return `${d} ${MON[m - 1] ?? ''}`
 }
 
 /** "13 to 17 Dec", or "28 Dec to 3 Jan" across a month. */
@@ -74,7 +74,7 @@ export function timeUncertain(local: string): boolean {
 }
 
 export function observed(at: string | null | undefined): string {
-  if (!at) return '?'
+  if (!at) return 'unknown'
   const d = new Date(at)
   if (Number.isNaN(d.getTime())) return at
   return `${d.getUTCDate()} ${MON[d.getUTCMonth()]}`

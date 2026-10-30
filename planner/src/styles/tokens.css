@@ -14,7 +14,8 @@
   /* text */
   --text: #EAF0F2;
   --muted: #93A7B2;
-  --faint: #5F7785;
+  /* the small grey text, at least 4.5:1 on every night surface */
+  --faint: #7F97A4;
 
   /* meaning: modes, the two long-haul ways, errors */
   --flight: #F2B544;

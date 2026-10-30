@@ -45,7 +45,7 @@ export function ReachList({ model, families, here, onPick }: { model: Model; fam
                 <span className="reach-name">{r.place.name}</span>
                 <span className="reach-mode" role="img" aria-label={MODE[r.family]}><ModeChip family={r.family} /></span>
                 <span className="reach-h">{hours(r.hours)}</span>
-                <span className="reach-p">{r.price == null ? '?' : kr(r.price)}</span>
+                <span className="reach-p">{r.price == null ? 'no price' : kr(r.price)}</span>
               </button>
             </li>
           ))}
