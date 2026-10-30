@@ -29,7 +29,9 @@ export function PlannerMap() {
   const [error, setError] = useState<string | null>(null)
   // the modes switched on on the map, so the trip pane lists the same places the map lights
   const [families, setFamilies] = useState<Set<Family> | null>(null)
-  const model = useMemo(() => (data ? buildModel(data) : null), [data])
+  // a map mode owns taps on the map, so they leave the trip pane as it was
+  const [modeOn, setModeOn] = useState(false)
+  const model =useMemo(() => (data ? buildModel(data) : null), [data])
 
   useEffect(() => {
     loadRouteData().then(setData, (e: unknown) => setError(e instanceof Error ? e.message : String(e)))
@@ -61,7 +63,7 @@ export function PlannerMap() {
   // a tap on the map itself, beside the pane, folds the pane to its small card. It runs on the click, before
   // the map's own handler, so a tap on one of the trip's stops can keep the pane open in the same event
   const fold = (e: MouseEvent) => {
-    if (hasPane && !paneMini && (e.target as Element).closest('.rmap-canvas')) setPaneMini(true)
+    if (hasPane && !paneMini && !modeOn && (e.target as Element).closest('.rmap-canvas')) setPaneMini(true)
   }
   const onStop = (id: string) => {
     cursorTo(id)
@@ -79,6 +81,7 @@ export function PlannerMap() {
         onStop={onStop}
         onLeg={insertLeg}
         onFamilies={setFamilies}
+        onMode={setModeOn}
         side={hasPane ? <MapSide reach={model && families ? { model, families } : null} /> : null}
         sideWidth={hasPane && paneMini ? 236 : 360}
         sideMini={hasPane && paneMini}
