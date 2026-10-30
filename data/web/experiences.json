@@ -26599,7 +26599,9 @@
    "h": 3216
   },
   "image_source": "category",
-  "saved_in": []
+  "saved_in": [
+   "want"
+  ]
  },
  {
   "category": "beach",
@@ -26663,7 +26665,9 @@
    "h": 3216
   },
   "image_source": "category",
-  "saved_in": []
+  "saved_in": [
+   "want"
+  ]
  },
  {
   "category": "beach",
@@ -26957,7 +26961,9 @@
    "h": 2112
   },
   "image_source": "place",
-  "saved_in": []
+  "saved_in": [
+   "want"
+  ]
  },
  {
   "id": "stay-hostal-doble-vista-capurgana",
@@ -27001,7 +27007,9 @@
    "h": 2112
   },
   "image_source": "place",
-  "saved_in": []
+  "saved_in": [
+   "want"
+  ]
  },
  {
   "id": "stay-cabanas-los-almendros-capurgana",
@@ -27045,7 +27053,9 @@
    "h": 2112
   },
   "image_source": "place",
-  "saved_in": []
+  "saved_in": [
+   "want"
+  ]
  },
  {
   "id": "stay-hilltop-sapzurro",

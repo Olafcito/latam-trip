@@ -23,6 +23,36 @@
      "id": "gran-treehouse-party",
      "added": "2026-10-30",
      "note": "New Year's Eve candidate: party and maybe stay the night"
+    },
+    {
+     "type": "experience",
+     "id": "stay-hostal-doble-vista-capurgana",
+     "added": "2026-10-30",
+     "note": "Simon's shortlist for a few days by the water, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-cabanas-los-almendros-capurgana",
+     "added": "2026-10-30",
+     "note": "Simon's shortlist for a few days by the water, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-casa-wago-capurgana",
+     "added": "2026-10-30",
+     "note": "Simon's shortlist for a few days by the water, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-casa-en-el-agua-tintipan",
+     "added": "2026-10-30",
+     "note": "Simon's shortlist for a few days by the water, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-santa-lova-tintipan",
+     "added": "2026-10-30",
+     "note": "Simon's shortlist for a few days by the water, 30 Oct"
     }
    ]
   }
