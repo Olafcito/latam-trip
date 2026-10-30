@@ -10,6 +10,7 @@ import { CompareTray } from '../components/CompareTray'
 import { RouteLine } from '../components/RouteLine'
 import { Download, Pin, Plus, Trash } from '../components/icons'
 import { PickScreen } from './PickScreen'
+import { Notice } from '../components/Notice'
 import { TripDashboard } from './TripDashboard'
 
 // The Trips tab. Its home is a list: one row per trip with its name, its route as flags from the
@@ -45,8 +46,6 @@ function Timetable({ data }: { data: AppData }) {
   const openSaved = useStore((s) => s.openSaved)
   const openTrip = useStore((s) => s.openTrip)
   const go = useStore((s) => s.go)
-  const notice = useStore((s) => s.notice)
-  const setNotice = useStore((s) => s.setNotice)
   const file = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('rank')
@@ -106,18 +105,11 @@ function Timetable({ data }: { data: AppData }) {
     </div>
   )
 
-  const note = notice && (
-    <p className="tt-notice" role="status">
-      {notice}
-      <button type="button" className="btn link small" onClick={() => setNotice(null)}>Dismiss</button>
-    </p>
-  )
-
   if (!rows.length) {
     return (
       <div className="tt tt-empty">
         <h2 className="sr">Trips</h2>
-        {note}
+        <Notice />
         <p>No trips yet. Start with the way in and the way home.</p>
         {newTrip}
         {io}
@@ -128,7 +120,7 @@ function Timetable({ data }: { data: AppData }) {
   return (
     <div className="tt">
       <h2 className="sr">Trips</h2>
-      {note}
+      <Notice />
       <div className="tt-bar">
         <SortSeg value={sort} onChange={setSort} />
         <span className="tt-count mono">{rows.length} {rows.length === 1 ? 'trip' : 'trips'}</span>

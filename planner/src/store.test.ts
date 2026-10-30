@@ -12,6 +12,24 @@ const trip: Journey = {
   places: [{ node: 'GDL', hop: null }, { node: 'GUA', hop: null }, { node: 'SAL', hop: null }],
 }
 
+describe('another tab changes the trip', () => {
+  it('follows when this tab shows the same trip and stays when it does not', () => {
+    useStore.getState().setJourney(trip)
+    useStore.getState().followTab(JSON.stringify({ ...trip, name: 'Changed there' }))
+    expect(useStore.getState().journey?.name).toBe('Changed there')
+    useStore.getState().followTab(JSON.stringify({ ...trip, id: 'other', name: 'Another trip' }))
+    expect(useStore.getState().journey?.name).toBe('Changed there')
+  })
+
+  it('stays as it is when the stored text is not a trip', () => {
+    useStore.getState().setJourney(trip)
+    useStore.getState().followTab('not json')
+    useStore.getState().followTab('{}')
+    useStore.getState().followTab(null)
+    expect(useStore.getState().journey?.name).toBe('Test')
+  })
+})
+
 describe('picking a flight for a leg', () => {
   const edge = { from: 'GDL', to: 'GUA', mode: 'flight', oneway_min_dkk: 700, oneway_min_hours: 4 } as MapEdge
   const flight: CrawledFlight = {

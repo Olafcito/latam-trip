@@ -12,7 +12,7 @@ import { localOnly, mergeTrips, retireSeeds } from './lib/repoTrips'
 const FILTERS_KEY = 'latam-planner.filters'
 /** the browser's own trips: every trip except a table trip it never changed */
 const SAVED_KEY = 'latam-planner.journeys'
-const CURRENT_KEY = 'latam-planner.current'
+export const CURRENT_KEY = 'latam-planner.current'
 /** table trips deleted in this browser, by id, with the version deleted (a newer version shows again) */
 const HIDDEN_KEY = 'latam-planner.hidden'
 /** the old seed import: which seeded trips this browser was given. Read once when the table trips arrive */
@@ -80,6 +80,8 @@ interface State {
   startJourney: (wayIn: Way, wayHome: Way, optionId: string | null) => void
   startOnMap: (wayIn: Way, wayHome: Way, optionId: string | null) => void
   setJourney: (j: Journey) => void
+  /** another tab stored a trip: this tab follows when it shows the same trip */
+  followTab: (stored: string | null) => void
   /** open a saved journey on the map */
   openSaved: (j: Journey) => void
   /** open a journey's dashboard on the Trips tab */
@@ -187,6 +189,16 @@ export const useStore = create<State>((set, get) => ({
   setJourney: (journey) => {
     write(CURRENT_KEY, journey)
     set({ journey })
+  },
+  followTab: (stored) => {
+    const shown = get().journey
+    if (!shown || !stored) return
+    try {
+      const next: unknown = JSON.parse(stored)
+      if (journeyIsValid(next) && next.id === shown.id) set({ journey: next })
+    } catch {
+      // what another tab stored is not a trip, so this tab stays as it is
+    }
   },
   openSaved: (journey) => {
     write(CURRENT_KEY, journey)

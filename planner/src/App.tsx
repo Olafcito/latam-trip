@@ -1,9 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { loadData } from './data/load'
 import { loadRepoTrips } from './data/routeMap'
+import { pickedLeg, readPick, withoutPick, type Pick } from './lib/pickLink'
 import { resolveDeepLink, rowToJourney, urlWithTrip, withTripWays } from './lib/repoTrips'
-import { useStore, type Screen } from './store'
-import { observed } from './lib/format'
+import { CURRENT_KEY, useStore, type Screen } from './store'
+import { clock, observed, weekdayDay } from './lib/format'
+import { nodeName } from './lib/journey'
 import { Warn } from './components/icons'
 import { Freshness } from './components/Freshness'
 import { MapScreen } from './screens/MapScreen'
@@ -78,13 +80,38 @@ let linkRead = false
 
 /** /?trip=<id> opens that trip, as a click in the Trips list does. An unknown id shows the list with a note. */
 function openDeepLink() {
+  if (linkRead) return
   linkRead = true
   const s = useStore.getState()
+  const pick = readPick(window.location.search)
+  if (pick) window.history.replaceState(window.history.state, '', withoutPick(window.location.href))
   const link = resolveDeepLink(window.location.search, s.saved, s.journey)
-  if (!link) return syncAddress()
-  if (link.kind === 'open') return s.openTrip(link.journey)
-  s.go('trips', 'home')
-  s.setNotice(`There is no trip with the id ${link.id}. These are the trips there are.`)
+  if (link?.kind === 'unknown') {
+    s.go('trips', 'home')
+    return s.setNotice(`There is no trip with the id ${link.id}. These are the trips there are.`)
+  }
+  if (link) s.openTrip(link.journey)
+  if (pick) return landPick(pick)
+  if (!link) syncAddress()
+}
+
+/** &pick=<flight> puts the flight chosen on Momondo on its leg of the open trip. */
+function landPick(pick: Pick | 'bad') {
+  const s = useStore.getState()
+  const { journey, data } = s
+  if (!journey || !data) {
+    s.go('trips', 'home')
+    return s.setNotice('Open the trip, then pick the flight again.')
+  }
+  s.openTrip(journey)
+  if (pick === 'bad') return s.setNotice('The flight in that link could not be read, so nothing changed.')
+  const name = (id: string) => nodeName(data.map, data.inout, id)
+  const leg = pickedLeg(journey, data.map, pick)
+  if (leg < 0) return s.setNotice(`This trip has no leg from ${pick.from} to ${pick.to}, so nothing changed.`)
+  s.setHopFlight(leg, pick.flight)
+  const hop = journey.places[leg].hop
+  const { depart, carriers } = pick.flight
+  if (hop) s.setNotice(`Picked ${carriers.join(', ')} from ${name(hop.from)} to ${name(hop.to)}, ${weekdayDay(depart)} at ${clock(depart)}.`)
 }
 
 /** ?trip=<id> while a trip is open, nothing when none is. */
@@ -121,6 +148,15 @@ export function App() {
   }, [setData, setRepoTrips])
 
   useEffect(() => useStore.subscribe(syncAddress), [])
+
+  // a flight picked on Momondo lands in a new tab, and a tab already on the trip follows
+  useEffect(() => {
+    const follow = (e: StorageEvent) => {
+      if (e.key === CURRENT_KEY) useStore.getState().followTab(e.newValue)
+    }
+    window.addEventListener('storage', follow)
+    return () => window.removeEventListener('storage', follow)
+  }, [])
 
   if (error) {
     return (

@@ -1,13 +1,14 @@
-// Browser side of the Momondo save userscript: the two buttons, reading the page with the
-// crawler (CR.parseDlg and CR.crawl), and writing to GitHub. build.js puts it into momondo-save.user.js.
-/* global CR, MomondoSave, GM_getValue, GM_setValue, GM_deleteValue, GM_registerMenuCommand, GM_xmlhttpRequest, GM_setClipboard, GM_openInTab */
+// Browser side of the Momondo save userscript: the two buttons, Pick on each result, reading the page
+// with the crawler (CR.parseDlg and CR.crawl), and writing to GitHub. build.js puts it into momondo-save.user.js.
+/* global CR, MomondoSave, MutationObserver, sessionStorage, GM_getValue, GM_setValue, GM_deleteValue, GM_registerMenuCommand, GM_xmlhttpRequest, GM_setClipboard, GM_openInTab */
 var MomondoSaveUI = (function () {
   'use strict';
   var M = MomondoSave;
   var TOKEN_KEY = 'github_token';
+  var TRIP_KEY = 'latam-trip';
   var MAX_CARDS = 40;
   var busy = false;
-  var ui = {};
+  var ui = { picks: [] };
   var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
 
   function status(text, kind) {
@@ -39,13 +40,19 @@ var MomondoSaveUI = (function () {
     ui.trip.addEventListener('click', function () { guard(saveTrip); });
   }
 
-  async function guard(fn) {
+  function lock(on) {
+    ui.prices.disabled = ui.trip.disabled = on;
+    ui.picks = ui.picks.filter(function (b) { return b.isConnected !== false; });
+    ui.picks.forEach(function (b) { b.disabled = on; });
+  }
+
+  async function guard(fn, failed) {
     if (busy) return;
     busy = true;
-    ui.prices.disabled = ui.trip.disabled = true;
+    lock(true);
     try { await fn(); }
-    catch (e) { status('Not saved: ' + (e && e.message ? e.message : e), 'bad'); }
-    finally { busy = false; ui.prices.disabled = ui.trip.disabled = false; }
+    catch (e) { status((failed || 'Not saved') + ': ' + (e && e.message ? e.message : e), 'bad'); }
+    finally { busy = false; lock(false); }
   }
 
   function request(spec) {
@@ -282,6 +289,94 @@ var MomondoSaveUI = (function () {
     status(res.text, res.ok ? 'ok' : 'bad');
   }
 
+  // Momondo can drop the address's #latam=<trip> while it works, so it is kept for the tab.
+  function rememberTrip() {
+    var trip = M.tripOf(location.hash);
+    try {
+      if (trip) sessionStorage.setItem(TRIP_KEY, trip);
+      return trip || sessionStorage.getItem(TRIP_KEY);
+    } catch (e) { return trip; }
+  }
+
+  async function pick(card, button) {
+    var ctx = context();
+    var num = Number((/\d+$/.exec(card.getAttribute('aria-label')) || [])[0]);
+    var at = cardNumbers().indexOf(num);
+    if (at < 0) { status('Not picked: the list changed, press Pick again', 'bad'); return; }
+    var was = card.innerText, y = window.scrollY;
+    button.textContent = 'Reading';
+    status('Reading the flight');
+    await closeDialog();
+    CR.__dlg0 = null;
+    var r = (await CR.crawl(at, at + 1, [ctx.legs[0].date]))[0] || { err: 'nocard' };
+    window.scrollTo(0, y);
+    button.textContent = 'Pick';
+    if (!M.usable(r)) { status('Not picked: this result could not be opened', 'bad'); return; }
+    var view = currentView(ctx.sort);
+    var row = M.buildRow(r, Object.assign({}, ctx, { view: view }));
+    var check = M.selfCheck([row], 1);
+    if (!check.ok) {
+      var fix = await reportFix(ctx, 'pick', view, check.reason, CR.__dlg0 || firstCardText());
+      status('Not picked: ' + check.reason + '. ' + fix, 'bad');
+      return;
+    }
+    var flight = M.pickOf(row, r);
+    if (!M.pickMatches(was, flight)) { status('Not picked: another result opened, press Pick again', 'bad'); return; }
+    GM_openInTab(M.pickUrl(flight, ui.tripId), { active: true });
+    // a leg has one flight, so the last Pick is the only one lit
+    ui.picks.forEach(function (b) { b.textContent = 'Pick'; delete b.dataset.done; });
+    button.textContent = 'Picked';
+    button.dataset.done = 'true';
+    status('Picked ' + flight.dep.slice(11, 16) + ', opening the planner', 'ok');
+  }
+
+  function pickButton(card) {
+    var host = document.createElement('span');
+    host.setAttribute('data-latam-pick', '');
+    var root = host.attachShadow({ mode: 'open' });
+    root.innerHTML =
+      '<style>' +
+      ':host{display:block;margin-top:6px}' +
+      'button{display:block;width:100%;height:36px;border:0;border-radius:6px;background:#f2b544;color:#13202a;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:transform 120ms ease-out,background 120ms ease-out}' +
+      'button:hover{background:#f7c766}button:active{transform:scale(.97)}' +
+      'button:focus-visible{outline:2px solid #f2b544;outline-offset:2px}' +
+      'button:disabled{opacity:.5;cursor:default}' +
+      'button[data-done]{background:#58d68d}' +
+      '@media (prefers-reduced-motion:reduce){button{transition:none}button:active{transform:none}}' +
+      '</style>' +
+      '<button id="k" type="button" title="Use this flight for the leg in the planner">Pick</button>';
+    var button = root.getElementById('k');
+    button.disabled = busy;
+    button.addEventListener('click', function (e) {
+      // the press is for this button and not for the card under it
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      guard(function () { return pick(card, button); }, 'Not picked');
+    });
+    ui.picks.push(button);
+    return host;
+  }
+
+  // A Pick under each Vælg. The planner's Momondo links are one way, so other searches have none.
+  function decorate() {
+    var s = M.parseSearchUrl(location.href);
+    if (!s || s.legs.length !== 1) return;
+    Array.from(document.querySelectorAll('[role="group"][aria-label^="Resultat nr."]')).forEach(function (card) {
+      if (card.querySelector('[data-latam-pick]')) return;
+      var choose = Array.from(card.querySelectorAll('button,a,[role="button"]')).find(function (b) { return /^Vælg$/.test((b.innerText || '').trim()); });
+      if (choose && choose.parentElement) choose.parentElement.insertBefore(pickButton(card), choose.nextSibling);
+    });
+  }
+
+  // Results load in and the list is redrawn when it is sorted or filtered.
+  function watch() {
+    var wait = null;
+    decorate();
+    new MutationObserver(function () {
+      if (wait) return;
+      wait = setTimeout(function () { wait = null; decorate(); }, 250);
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
   function menu() {
     GM_registerMenuCommand('Set GitHub token', function () {
       var t = window.prompt('Paste a fine-grained GitHub token for Olafcito/latam-trip with Contents read and write. Leave empty to remove the saved token.');
@@ -305,8 +400,10 @@ var MomondoSaveUI = (function () {
 
   function start() {
     if (document.getElementById('latam-momondo-save')) return;
+    ui.tripId = rememberTrip();
     panel();
     menu();
+    watch();
   }
 
   return { start: start };

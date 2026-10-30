@@ -17,7 +17,7 @@ test('momondo-save.user.js is up to date with the crawler and its sources (run n
 test('the userscript embeds the crawler file verbatim and its version', () => {
   const crawlerSrc = fs.readFileSync(build.CRAWLER, 'utf8').replace(/\r\n/g, '\n').replace(/\n*$/, '\n');
   assert.ok(SRC().includes(crawlerSrc));
-  assert.match(SRC(), new RegExp('// @version +1\\.0\\.' + crawler.PARSER_VERSION.replace('.', '\\.') + '\\n'));
+  assert.match(SRC(), new RegExp('// @version +1\\.1\\.' + crawler.PARSER_VERSION.replace('.', '\\.') + '\\n'));
 });
 
 test('header: matches the flight search, grants and connects what the script uses', () => {
@@ -39,22 +39,39 @@ function fakeElement() {
   };
 }
 
-function browser({ dialogText, token, promptAnswer, putStatus = 201, issueStatus = 403 }) {
-  const els = { p: fakeElement(), t: fakeElement(), s: fakeElement() };
+function browser({ dialogText, token, promptAnswer, putStatus = 201, issueStatus = 403, url = OPEN_JAW_URL, card }) {
+  const els = { p: fakeElement(), t: fakeElement(), s: fakeElement(), k: fakeElement() };
   const calls = { menu: [], requests: [], opened: [], clipboard: null };
   const store = token ? { github_token: token } : {};
-  const dlg = dialogText == null ? [] : [{ className: 'dlg', innerText: dialogText, querySelectorAll: () => [] }];
+  const opened = { className: 'dlg', innerText: dialogText, querySelectorAll: () => [] };
+  // a card opens its dialog when it is pressed, the Save trip tests start with it open
+  const dlg = dialogText == null || card ? [] : [opened];
+  const group = card && {
+    innerText: card, added: null,
+    getAttribute: () => 'Resultat nr. 0',
+    scrollIntoView: () => {},
+    querySelector: () => group.added,
+    querySelectorAll: () => [choose]
+  };
+  const choose = card && {
+    innerText: 'V\u00e6lg',
+    click: () => { dlg.splice(0, 1, opened); },
+    parentElement: { insertBefore: (host) => { group.added = host; } }
+  };
   const document = {
-    body: { innerText: '', appendChild: () => {} },
+    body: { innerText: '', appendChild: () => {}, contains: () => false },
     getElementById: () => null,
-    createElement: () => ({ style: {}, attachShadow: () => ({ set innerHTML(v) {}, getElementById: (id) => els[id] }) }),
-    querySelectorAll: (sel) => (sel === '[role="dialog"]' ? dlg : []),
+    createElement: () => ({ style: {}, setAttribute: () => {}, attachShadow: () => ({ set innerHTML(v) {}, getElementById: (id) => els[id] }) }),
+    querySelectorAll: (sel) => (sel === '[role="dialog"]' ? dlg : sel.startsWith('[role="group"]') && group ? [group] : []),
     querySelector: () => null
   };
-  const window = { prompt: () => promptAnswer };
+  const window = { prompt: () => promptAnswer, scrollY: 0, scrollTo: () => {} };
+  const session = {};
   const ctx = {
-    document, window, location: new URL(OPEN_JAW_URL), history: { back: () => {} },
+    document, window, location: new URL(url), history: { back: () => { dlg.length = 0; } },
     URL, TextEncoder, btoa, setTimeout, Promise, console,
+    MutationObserver: function () { this.observe = () => {}; },
+    sessionStorage: { getItem: (k) => session[k] ?? null, setItem: (k, v) => { session[k] = v; } },
     GM_getValue: (k, d) => (k in store ? store[k] : d),
     GM_setValue: (k, v) => { store[k] = v; },
     GM_deleteValue: (k) => { delete store[k]; },
@@ -79,6 +96,44 @@ async function pressTrip(b) {
   }
   return b.els.s.textContent;
 }
+
+const ONE_WAY_URL = 'https://www.momondo.dk/flight-search/BOG-VVI/2027-01-14?sort=price_a#latam=seed-1';
+
+async function pressPick(b) {
+  b.els.k.click();
+  for (let i = 0; i < 400 && !/^(Picked|Not picked)/.test(b.els.s.textContent); i++) await new Promise((r) => setTimeout(r, 20));
+  return b.els.s.textContent;
+}
+
+test('Pick on a one-way search opens the planner with that flight for the trip of the link', async () => {
+  const b = browser({ dialogText: fixture('dialog-v5-oneway.txt'), url: ONE_WAY_URL, card: '05:25 \u2013 13:10\nAvianca\n1.745 kr.\nV\u00e6lg' });
+  assert.equal(await pressPick(b), 'Picked 05:25, opening the planner');
+  assert.equal(b.els.k.textContent, 'Picked');
+  assert.equal(b.calls.opened.length, 1);
+  const url = new URL(b.calls.opened[0]);
+  assert.equal(url.origin, 'http://localhost:5198');
+  assert.equal(url.searchParams.get('trip'), 'seed-1');
+  const pick = JSON.parse(url.searchParams.get('pick'));
+  assert.equal(pick.from, 'BOG');
+  assert.equal(pick.to, 'VVI');
+  assert.equal(pick.dep, '2027-01-14T05:25');
+  assert.equal(pick.arr, '2027-01-14T13:10');
+  assert.equal(pick.price, 1745);
+  assert.deepEqual(pick.via, ['SAL']);
+  assert.equal(pick.site, 'Travellink.dk');
+});
+
+test('Pick does not trust a dialog that does not show the time of the pressed card', async () => {
+  const b = browser({ dialogText: fixture('dialog-v5-oneway.txt'), url: ONE_WAY_URL, card: '17:50 \u2013 18:35\n1.745 kr.\nV\u00e6lg' });
+  assert.equal(await pressPick(b), 'Not picked: another result opened, press Pick again');
+  assert.equal(b.calls.opened.length, 0);
+});
+
+test('a search with more than one leg has no Pick', () => {
+  const b = browser({ dialogText: fixture('dialog-v5-oneway.txt'), url: OPEN_JAW_URL, card: '05:25\nV\u00e6lg' });
+  b.els.k.click();
+  assert.equal(b.els.s.textContent, '');
+});
 
 test('starts with two buttons and three menu entries', () => {
   const b = browser({});
