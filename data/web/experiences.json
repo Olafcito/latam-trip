@@ -24006,5 +24006,471 @@
   },
   "image_source": "place",
   "saved_in": []
+ },
+ {
+  "id": "gym-bogota-exile-combat-studio",
+  "name": "Exile Combat Studio (Bogota)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "boxing",
+   "bjj"
+  ],
+  "places": [
+   "BOG"
+  ],
+  "area": "Bogota, Chico Norte",
+  "country": "CO",
+  "lat": 4.6675056,
+  "lon": -74.0571655,
+  "summary": "Combat studio teaching Muay Thai, boxing, MMA, jiu-jitsu and wrestling, rated 5.0 from 42 Google reviews with one from two weeks ago. Reviewers call it the best combat academy in the city and praise an English-speaking Muay Thai coach, Ricardo.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular timetable on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Beginners to competitors per reviews.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "boxing",
+    "MMA",
+    "BJJ",
+    "wrestling"
+   ],
+   "coaches": "Ricardo (Muay Thai, named by a visitor who has trained in Thailand).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Foreign visitors have trained here. English spoken by the Muay Thai coach per reviews.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Chico Norte, Chapinero Alto and Rosales: safe, upmarket, cafes, short taxi to Chapinero.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake in Bogota. Laguna de Guatavita is roughly 1.5 hours by road. Cartagena or the Caribbean coast is a flight away.",
+   "website": null,
+   "instagram": null,
+   "facebook": null,
+   "phone": "+57 318 8698740",
+   "google_maps_url": "https://www.google.com/maps/place/Exile+Combat+Studio/@4.6675056,-74.0571655,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b5e8b2338c5:0x8ec066cf5fbc0329!8m2!3d4.6675056!4d-74.0571655!16s%2Fg%2F11s30nzkgt",
+   "address": "Cra. 16 #80-84, Bogota",
+   "hours": "Mon and Wed 6:00-10:00 and 18:00-20:30, Tue and Thu 6:00-10:00 and 18:00-20:00, Fri 6:00-10:00, Sat 9:00-12:30, Sun 9:00-11:30",
+   "google_rating": 5.0,
+   "google_reviews": 42,
+   "last_activity": "2026-10 Google review (edited 2 weeks ago)",
+   "what_people_say": [
+    {
+     "quote": "The best place to learn Muay Thai",
+     "site": "google maps",
+     "date": "2026-10",
+     "url": "https://www.google.com/maps/place/Exile+Combat+Studio/@4.6675056,-74.0571655,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b5e8b2338c5:0x8ec066cf5fbc0329!8m2!3d4.6675056!4d-74.0571655!16s%2Fg%2F11s30nzkgt"
+    },
+    {
+     "quote": "I have trained in different countries (also in Thailand), and I think he is the best muay thai trainer I've had in all those years.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/Exile+Combat+Studio/@4.6675056,-74.0571655,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b5e8b2338c5:0x8ec066cf5fbc0329!8m2!3d4.6675056!4d-74.0571655!16s%2Fg%2F11s30nzkgt"
+    },
+    {
+     "quote": "The best combat academy in the city, excellent both for beginners and for those looking to compete in MMA, Jiu-Jitsu, Muay Thai, or Kickboxing.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/Exile+Combat+Studio/@4.6675056,-74.0571655,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b5e8b2338c5:0x8ec066cf5fbc0329!8m2!3d4.6675056!4d-74.0571655!16s%2Fg%2F11s30nzkgt"
+    }
+   ],
+   "score_note": "Broad combat curriculum with a competition side and an English-speaking Muay Thai coach, but only 42 reviews and no sparring detail, so training 7. Cost 8 from Numbeo (2026-10-30): gym 219 DKK plus 1-bed outside centre 3,288 DKK is about 3,500 DKK a month.",
+   "score": {
+    "training": 7,
+    "evidence": 6,
+    "local_life": 6,
+    "cost": 8,
+    "water": 1,
+    "total": 6.2
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+bogota/",
+   "https://www.google.com/maps/place/Exile+Combat+Studio/@4.6675056,-74.0571655,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b5e8b2338c5:0x8ec066cf5fbc0329!8m2!3d4.6675056!4d-74.0571655!16s%2Fg%2F11s30nzkgt"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Panorama_van_bogota_2.png/1280px-Panorama_van_bogota_2.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_van_bogota_2.png",
+   "credit": "Panorama_van_bogota.jpg: Jan Arkesteijn derivative work: Niclond23 (talk)",
+   "licence": "Public domain",
+   "w": 4653,
+   "h": 854
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-bogota-jaguar-rz-muay-thai",
+  "name": "Jaguar RZ Muay Thai (Bogota)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [
+   "BOG"
+  ],
+  "area": "Bogota, Chico",
+  "country": "CO",
+  "lat": 4.6678689,
+  "lon": -74.0521161,
+  "summary": "Muay Thai gym run by coach Andres in the Chico area, rated 4.8 from 51 Google reviews with several from the last month. Visitors report training 5 days to 2 weeks and expats praise the welcoming small group and private classes.",
+  "season": "year round",
+  "dec_jan": "unknown. Hours not listed on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Contact by phone or website.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": "Andres (head coach, named by several visitors).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Visitors trained 5 days to 2 weeks. Coach speaks English. Private classes recommended by a student.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Chico, Chico Norte and Rosales: safe upmarket area with cafes, expat-heavy.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake in Bogota. Laguna de Guatavita is roughly 1.5 hours by road. Cartagena or the Caribbean coast is a flight away.",
+   "website": "https://muaythaibogota.com/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+57 322 9520282",
+   "google_maps_url": "https://www.google.com/maps/place/Jaguar+RZ+Muay+Thai/@4.6678689,-74.0521161,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b8141bad989:0xa3db957fa685b2e!8m2!3d4.6678689!4d-74.0521161!16s%2Fg%2F11p_1ztb46",
+   "address": "Calle 85, Paseo del Faro #11-53 int 2, Bogota",
+   "hours": null,
+   "google_rating": 4.8,
+   "google_reviews": 51,
+   "last_activity": "2026-09 Google reviews (several from a month ago)",
+   "what_people_say": [
+    {
+     "quote": "I recently went to Bogota for a week vacation and spent 5 days learning Muay Thai with Andres. He is an excellent teacher.",
+     "site": "google maps",
+     "date": "2026-09",
+     "url": "https://www.google.com/maps/place/Jaguar+RZ+Muay+Thai/@4.6678689,-74.0521161,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b8141bad989:0xa3db957fa685b2e!8m2!3d4.6678689!4d-74.0521161!16s%2Fg%2F11p_1ztb46"
+    },
+    {
+     "quote": "The coach is friendly, competent, and speaks English. The team is professional.",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Jaguar+RZ+Muay+Thai/@4.6678689,-74.0521161,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b8141bad989:0xa3db957fa685b2e!8m2!3d4.6678689!4d-74.0521161!16s%2Fg%2F11p_1ztb46"
+    },
+    {
+     "quote": "Andres is really cool and has great energy. I highly recommend the personalized classes.",
+     "site": "google maps",
+     "date": "2026-06",
+     "url": "https://www.google.com/maps/place/Jaguar+RZ+Muay+Thai/@4.6678689,-74.0521161,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b8141bad989:0xa3db957fa685b2e!8m2!3d4.6678689!4d-74.0521161!16s%2Fg%2F11p_1ztb46"
+    }
+   ],
+   "score_note": "Single-coach Muay Thai gym, visitor friendly with fresh reviews, but no word on sparring or fighters, so training 6. Cost 8 from Numbeo (2026-10-30): gym 219 DKK plus 1-bed outside centre 3,288 DKK is about 3,500 DKK a month.",
+   "score": {
+    "training": 6,
+    "evidence": 7,
+    "local_life": 5,
+    "cost": 8,
+    "water": 1,
+    "total": 5.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+bogota/",
+   "https://www.google.com/maps/place/Jaguar+RZ+Muay+Thai/@4.6678689,-74.0521161,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9b8141bad989:0xa3db957fa685b2e!8m2!3d4.6678689!4d-74.0521161!16s%2Fg%2F11p_1ztb46",
+   "https://muaythaibogota.com/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Panorama_van_bogota_2.png/1280px-Panorama_van_bogota_2.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_van_bogota_2.png",
+   "credit": "Panorama_van_bogota.jpg: Jan Arkesteijn derivative work: Niclond23 (talk)",
+   "licence": "Public domain",
+   "w": 4653,
+   "h": 854
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-bogota-fight-club-nation",
+  "name": "Fight Club Bogota (Bogota)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "BOG"
+  ],
+  "area": "Bogota, Chapinero",
+  "country": "CO",
+  "lat": 4.6316482,
+  "lon": -74.0642865,
+  "summary": "Small Chapinero gym (Fight Club Nation) rated 4.3 from 106 Google reviews. Long-time members praise the experienced trainers Pastor, Fredy and Johan, while a 2026 two-star visitor review and an old equipment complaint pull the rating down.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular timetable on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Technique classes Monday, Wednesday and Friday per a reviewer.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "combat sports (not itemised on Maps)",
+    "capoeira"
+   ],
+   "coaches": "Pastor (trainer and fighter), Fredy and Johan.",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": "Technique classes usually Mon, Wed, Fri per a reviewer (2025).",
+   "sparring": null,
+   "visitors": "Not stated. A 2026 visitor who trained here in 2025 and 2026 gave 2 stars.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "Chapinero Central and Quinta Camacho: local, busy, lots of food and nightlife, near the Carrera 7 corridor.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake in Bogota. Laguna de Guatavita is roughly 1.5 hours by road. Cartagena or the Caribbean coast is a flight away.",
+   "website": null,
+   "instagram": null,
+   "facebook": null,
+   "phone": "+57 320 2469434",
+   "google_maps_url": "https://www.google.com/maps/place/FIGHT+CLUB+BOGOTA/@4.6316482,-74.0642865,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9a26057f5d61:0xbfcb2816038a3b40!8m2!3d4.6316482!4d-74.0642865!16s%2Fg%2F1q5bm_63g",
+   "address": "Ak 7 #45-19, Chapinero, Bogota",
+   "hours": "Mon to Fri 6:00-11:00 and 16:00-21:00, Sat 6:00-12:00, Sun 9:00-13:00",
+   "google_rating": 4.3,
+   "google_reviews": 106,
+   "last_activity": "2026-08 Google review (2 months old)",
+   "what_people_say": [
+    {
+     "quote": "Pastor, Fredy and Johan are all very experienced trainers who know what they're talking about.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/FIGHT+CLUB+BOGOTA/@4.6316482,-74.0642865,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9a26057f5d61:0xbfcb2816038a3b40!8m2!3d4.6316482!4d-74.0642865!16s%2Fg%2F1q5bm_63g"
+    },
+    {
+     "quote": "Pastor has a lot of experience and knowledge; a great trainer and fighter.",
+     "site": "google maps",
+     "date": "2024",
+     "url": "https://www.google.com/maps/place/FIGHT+CLUB+BOGOTA/@4.6316482,-74.0642865,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9a26057f5d61:0xbfcb2816038a3b40!8m2!3d4.6316482!4d-74.0642865!16s%2Fg%2F1q5bm_63g"
+    },
+    {
+     "quote": "I trained here in 2025 and 2026. The gym has a good atmosphere.",
+     "site": "google maps",
+     "date": "2026-05 (2 stars)",
+     "url": "https://www.google.com/maps/place/FIGHT+CLUB+BOGOTA/@4.6316482,-74.0642865,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9a26057f5d61:0xbfcb2816038a3b40!8m2!3d4.6316482!4d-74.0642865!16s%2Fg%2F1q5bm_63g"
+    }
+   ],
+   "score_note": "Experienced local trainers but the discipline mix is unclear, rating is only 4.3 and reviews are mixed, so training 6. Cost 8 from Numbeo (2026-10-30): gym 219 DKK plus 1-bed outside centre 3,288 DKK is about 3,500 DKK a month.",
+   "score": {
+    "training": 6,
+    "evidence": 6,
+    "local_life": 8,
+    "cost": 8,
+    "water": 1,
+    "total": 6.2
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+bogota/",
+   "https://www.google.com/maps/place/FIGHT+CLUB+BOGOTA/@4.6316482,-74.0642865,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9a26057f5d61:0xbfcb2816038a3b40!8m2!3d4.6316482!4d-74.0642865!16s%2Fg%2F1q5bm_63g"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Panorama_van_bogota_2.png/1280px-Panorama_van_bogota_2.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_van_bogota_2.png",
+   "credit": "Panorama_van_bogota.jpg: Jan Arkesteijn derivative work: Niclond23 (talk)",
+   "licence": "Public domain",
+   "w": 4653,
+   "h": 854
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-bogota-mas-sports-center",
+  "name": "MAS Sports Center (Bogota)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "bjj",
+   "kickboxing"
+  ],
+  "places": [
+   "BOG"
+  ],
+  "area": "Bogota, La Macarena",
+  "country": "CO",
+  "lat": 4.618197,
+  "lon": -74.0691816,
+  "summary": "Brazilian Jiu-Jitsu led martial arts school with kickboxing on the timetable, rated 4.8 from 64 Google reviews with one from last month. Members describe a family atmosphere and a good level, but reviews are mostly about BJJ.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "BJJ",
+    "kickboxing"
+   ],
+   "coaches": "De la Riva family (named by a reviewer).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated. Spanish.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "water_km": null,
+   "neighbourhood": "La Macarena, Santa Fe and Teusaquillo: central, bohemian, short walk to the Parque Nacional, take care at night.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "No sea or lake in Bogota. Laguna de Guatavita is roughly 1.5 hours by road. Cartagena or the Caribbean coast is a flight away.",
+   "website": null,
+   "instagram": null,
+   "facebook": "https://m.facebook.com/profile.php/?id=100049531187007",
+   "phone": "+57 313 2241649",
+   "google_maps_url": "https://www.google.com/maps/place/MAS+Sports+Center/@4.618197,-74.0691816,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9984e8dec36b:0xc01e14688607e398!8m2!3d4.618197!4d-74.0691816!16s%2Fg%2F11g6xqy2wq",
+   "address": "Ac. 32 #13A-1, Piso 3, Bogota",
+   "hours": "Mon to Fri 7:00-19:00, Sat 10:00-17:00, Sun closed",
+   "google_rating": 4.8,
+   "google_reviews": 64,
+   "last_activity": "2026-09 Google review (a month old)",
+   "what_people_say": [
+    {
+     "quote": "An incredible vibe and excellent level.",
+     "site": "google maps",
+     "date": "2026-09",
+     "url": "https://www.google.com/maps/place/MAS+Sports+Center/@4.618197,-74.0691816,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9984e8dec36b:0xc01e14688607e398!8m2!3d4.618197!4d-74.0691816!16s%2Fg%2F11g6xqy2wq"
+    },
+    {
+     "quote": "We cultivate both martial arts training and a warm, supportive, and welcoming family atmosphere.",
+     "site": "google maps",
+     "date": "2025-12",
+     "url": "https://www.google.com/maps/place/MAS+Sports+Center/@4.618197,-74.0691816,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9984e8dec36b:0xc01e14688607e398!8m2!3d4.618197!4d-74.0691816!16s%2Fg%2F11g6xqy2wq"
+    },
+    {
+     "quote": "Excellent academy, good level, strong mind.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/MAS+Sports+Center/@4.618197,-74.0691816,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9984e8dec36b:0xc01e14688607e398!8m2!3d4.618197!4d-74.0691816!16s%2Fg%2F11g6xqy2wq"
+    }
+   ],
+   "score_note": "Strong BJJ school where striking is a side option, short generic reviews, so training 5. Cost 8 from Numbeo (2026-10-30): gym 219 DKK plus 1-bed outside centre 3,288 DKK is about 3,500 DKK a month.",
+   "score": {
+    "training": 5,
+    "evidence": 6,
+    "local_life": 8,
+    "cost": 8,
+    "water": 1,
+    "total": 5.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/mma+bogota/",
+   "https://www.google.com/maps/place/MAS+Sports+Center/@4.618197,-74.0691816,17z/data=!3m1!4b1!4m6!3m5!1s0x8e3f9984e8dec36b:0xc01e14688607e398!8m2!3d4.618197!4d-74.0691816!16s%2Fg%2F11g6xqy2wq",
+   "https://m.facebook.com/profile.php/?id=100049531187007"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Panorama_van_bogota_2.png/1280px-Panorama_van_bogota_2.png",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_van_bogota_2.png",
+   "credit": "Panorama_van_bogota.jpg: Jan Arkesteijn derivative work: Niclond23 (talk)",
+   "licence": "Public domain",
+   "w": 4653,
+   "h": 854
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gran-treehouse-party",
+  "name": "Treehouse jungle party (Granada)",
+  "category": "nightlife",
+  "tags": [
+   "party",
+   "hostel",
+   "jungle",
+   "zipline"
+  ],
+  "places": [
+   "GRAN"
+  ],
+  "area": "Pozo de Oro, slopes of Mombacho volcano near Granada",
+  "country": "NI",
+  "lat": 11.86,
+  "lon": -85.99,
+  "summary": "The Treehouse is a jungle hostel 150 m up Mombacho volcano just outside Granada, known for its parties (reviewers mention a rave), zip-lines, a canopy bridge, bar, hammocks and big views. Simon heard it recommended as the Granada party to go to.",
+  "season": "year round",
+  "dec_jan": "Dry season, busy with backpackers",
+  "price": "Dorm from US$13 a night (hostelz 2025); party entry not published",
+  "price_dkk": 84,
+  "duration": "an evening, or stay a night",
+  "requirements": null,
+  "details": {
+   "how_to_get_there": "Free guest shuttle Wednesday to Saturday at 12:00 from Hostel De Boca en Boca and Townhouse Hostel in Granada. By chicken bus: from the Rivas bus terminal in Granada take a bus towards Rivas, Nandaime or Diriomo and ask for Pozo de Oro (about 20 min, C$12), then walk up at the Treehouse sign around km 57.5.",
+   "party_day": "Not confirmed by a source; check the hostel's Instagram or Hostelworld page",
+   "rating": "9.3 on hostelz",
+   "hostelworld": "https://www.hostelworld.com/hostels/p/287881/treehouse/"
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.hostelz.com/best-hostels-granada-nicaragua",
+   "https://www.hostelz.com/l/de/hostel/+416536-The-Treehouse",
+   "https://www.hostelworld.com/hostels/p/287881/treehouse/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Granada%2C_Nicaragua_panorama.jpg/1280px-Granada%2C_Nicaragua_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Granada,_Nicaragua_panorama.jpg",
+   "credit": "Mark Larson",
+   "licence": "CC BY-SA 2.0",
+   "w": 2035,
+   "h": 499
+  },
+  "image_source": "place",
+  "saved_in": [
+   "want"
+  ]
  }
 ]
