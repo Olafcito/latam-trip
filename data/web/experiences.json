@@ -12002,6 +12002,16 @@
     "monthly_total_dkk": 9682,
     "contributors_note": "340 entries, 26 contributors, last update 24 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 50,
+    "private_night_dkk": null,
+    "n": 2,
+    "names": [
+     "La Zona Hostel",
+     "Hostal Cumbres del Volcan Flor Blanca"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -12063,6 +12073,17 @@
     "cost": 5,
     "water": 10,
     "total": 3.9
+   },
+   "hostels": {
+    "dorm_night_dkk": 67,
+    "private_night_dkk": 84,
+    "n": 6,
+    "names": [
+     "Dos Palmas",
+     "The Salty Dogs Hostel - El Tunco",
+     "The Duck Dive El Tunco"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -12140,6 +12161,17 @@
     "monthly_total_dkk": 7004,
     "contributors_note": "Low sample: 62 entries, 4 contributors, last update 2 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 78,
+    "private_night_dkk": 98,
+    "n": 5,
+    "names": [
+     "Tamarindo Hostel",
+     "Hostal Juan Lindo",
+     "Dos Molinos B&B"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -12222,6 +12254,15 @@
     "monthly_total_dkk": 7323,
     "contributors_note": "128 entries, 9 contributors, last update 2 Oct 2026. single_month_no_rent from San Pedro Sula (no estimate on own page)",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 64,
+    "private_night_dkk": 194,
+    "n": 2,
+    "names": [
+     "Palmira Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -12284,6 +12325,17 @@
     "cost": 3,
     "water": 10,
     "total": 2.8
+   },
+   "hostels": {
+    "dorm_night_dkk": 101,
+    "private_night_dkk": 134,
+    "n": 5,
+    "names": [
+     "MAZAPAN",
+     "La Hamaca Hostel - Utila",
+     "Fenix Hotel & Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -12342,6 +12394,17 @@
     "cost": 3,
     "water": 10,
     "total": 3.2
+   },
+   "hostels": {
+    "dorm_night_dkk": 116,
+    "private_night_dkk": null,
+    "n": 1,
+    "names": [
+     "ONAT Hostel",
+     "Roatan Backpackers' Hostel",
+     "Adventure Hostels"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -12667,6 +12730,17 @@
     "monthly_total_dkk": 7453,
     "contributors_note": "761 entries, 48 contributors, last update 28 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 81,
+    "private_night_dkk": 117,
+    "n": 6,
+    "names": [
+     "Hostel Hospedarte Guadalajara Centro",
+     "Leveli Coliving & Hostel Guadalajara",
+     "Hostel Hospedarte Chapultepec"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -13421,6 +13495,17 @@
     "monthly_total_dkk": 3874,
     "contributors_note": "376 entries, 28 contributors, last update 24 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 32,
+    "private_night_dkk": 36,
+    "n": 6,
+    "names": [
+     "TRAVELERO HOSTEL & TOURS",
+     "Adventure 360º Hostel",
+     "Ibiza Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -13498,6 +13583,17 @@
     "monthly_total_dkk": 3023,
     "contributors_note": "233 entries, 16 contributors, last update 24 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 61,
+    "private_night_dkk": 71,
+    "n": 6,
+    "names": [
+     "Wild Rover La Paz",
+     "Casa de huéspedes La Casa Bonita",
+     "Hotel Martí"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -13575,6 +13671,17 @@
     "monthly_total_dkk": 2946,
     "contributors_note": "123 entries, 9 contributors, last update 24 Oct 2026. Rent of 101 USD and meal of 1.68 USD look too low. single_month_no_rent from Santa Cruz de la Sierra (no estimate on own page)",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 67,
+    "private_night_dkk": 61,
+    "n": 6,
+    "names": [
+     "Running Chaski Hostel",
+     "El Pueblito Hostel",
+     "Valley Wasi Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -13989,6 +14096,16 @@
     "monthly_total_dkk": 5538,
     "contributors_note": "351 entries, 15 contributors, last update 28 Oct 2026. Rent of 181 USD looks too low for a 1 bed",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 94,
+    "private_night_dkk": null,
+    "n": 1,
+    "names": [
+     "Casa Inti",
+     "La Bicicleta Hostal"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -14068,6 +14185,17 @@
     "monthly_total_dkk": 5538,
     "contributors_note": "Leon page has 2 contributors, last update 27 Jul 2025, rent and gym empty, so Managua used",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 37,
+    "private_night_dkk": null,
+    "n": 1,
+    "names": [
+     "Casa Lula Leon Hostal",
+     "Bigfoot Hostel & Volcano Boarding",
+     "Poco a Poco Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -14140,6 +14268,17 @@
     "monthly_total_dkk": 6629,
     "contributors_note": "Very low sample and stale: 5 contributors in 18 months, last update 30 Apr 2025, gym empty. Meal of 4.24 USD looks too low. single_month_no_rent from Managua (no estimate on own page)",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 83,
+    "private_night_dkk": 206,
+    "n": 6,
+    "names": [
+     "White Rabbit Hostel",
+     "Hostal Azul",
+     "Casa Yoly Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -14219,6 +14358,17 @@
     "monthly_total_dkk": 5538,
     "contributors_note": "Own page not read (slug failed, retry blocked by Numbeo monthly page limit), Managua used",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 95,
+    "private_night_dkk": 276,
+    "n": 6,
+    "names": [
+     "Dreamsea Surf Camp",
+     "Hola Ola Hostel",
+     "Surf Town Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -14284,6 +14434,17 @@
     "cost": 5,
     "water": 10,
     "total": 2.9
+   },
+   "hostels": {
+    "dorm_night_dkk": 112,
+    "private_night_dkk": 290,
+    "n": 5,
+    "names": [
+     "Marumar",
+     "Finca Popoyo",
+     "Big Surf House"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -14732,6 +14893,17 @@
     "monthly_total_dkk": 11749,
     "contributors_note": "768 entries, 65 contributors, last update 28 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 94,
+    "private_night_dkk": 101,
+    "n": 6,
+    "names": [
+     "Viajero Casco Viejo Hostel",
+     "El Machico Hostel",
+     "Hostal Casa Areka"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -15724,6 +15896,17 @@
     "monthly_total_dkk": 8226,
     "contributors_note": "292 entries, 29 contributors, last update 24 Oct 2026. single_month_no_rent from San Salvador (no estimate on own page)",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 74,
+    "private_night_dkk": 68,
+    "n": 5,
+    "names": [
+     "Tequila Sunrise",
+     "Central Hostel Reforma",
+     "Central Hostel Zona 4"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -15808,6 +15991,17 @@
     "monthly_total_dkk": 8086,
     "contributors_note": "Low sample: 30 contributors in 18 months, some data estimated, last update 2 Oct 2026. single_month_no_rent from San Salvador (no estimate on own page)",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 103,
+    "private_night_dkk": 348,
+    "n": 5,
+    "names": [
+     "Tropicana Hostel",
+     "Maya Papaya",
+     "Adra Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -15871,6 +16065,17 @@
     "cost": 6,
     "water": 10,
     "total": 4.8
+   },
+   "hostels": {
+    "dorm_night_dkk": 161,
+    "private_night_dkk": 361,
+    "n": 6,
+    "names": [
+     "Mr. Mullets",
+     "La Iguana Perdida",
+     "Socialtel Atitlan (ex Selina)"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -15948,6 +16153,17 @@
     "monthly_total_dkk": 7247,
     "contributors_note": "Very low sample and stale: 2 contributors in 18 months, last update 30 Apr 2025. single_month_no_rent from San Salvador (no estimate on own page)",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 66,
+    "private_night_dkk": 55,
+    "n": 6,
+    "names": [
+     "Casa Seibel",
+     "Kasa Kiwi Hostel & Travel Agency",
+     "Casa I'X"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -16509,6 +16725,17 @@
     "monthly_total_dkk": 12531,
     "contributors_note": "593 entries, 38 contributors, last update 28 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 73,
+    "private_night_dkk": 181,
+    "n": 6,
+    "names": [
+     "Casa Escalante Hostel",
+     "Gaudys Hostel",
+     "Chillout Escalante Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -16898,7 +17125,18 @@
     "water": 4,
     "total": 2.8
    },
-   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms."
+   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms.",
+   "hostels": {
+    "dorm_night_dkk": 101,
+    "private_night_dkk": 93,
+    "n": 6,
+    "names": [
+     "Hospedaje Dodero",
+     "Sunset House Hostel",
+     "Hostel Casa Mar"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
+   }
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -17598,6 +17836,17 @@
     "monthly_total_dkk": 9476,
     "contributors_note": "1445 entries past 12 months, 142 contributors, last update 27 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 90,
+    "private_night_dkk": null,
+    "n": 3,
+    "names": [
+     "Mexico City Hostel",
+     "Hostel Mundo Joven Catedral",
+     "CASA MX Alameda"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -19632,6 +19881,18 @@
     "monthly_total_dkk": 9467,
     "contributors_note": "No Numbeo price page for Playa del Carmen (Cannot find city id), Cancun used. Cancun: 235 entries, 18 contributors, 27 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 125,
+    "private_night_dkk": null,
+    "n": 4,
+    "names": [
+     "Sayab",
+     "Che Playa Hostel & Bar",
+     "Wabi Hostel",
+     "Tres Mundos Hostel"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -19784,6 +20045,17 @@
     "monthly_total_dkk": 9467,
     "contributors_note": "235 entries, 18 contributors, last update 27 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 198,
+    "private_night_dkk": null,
+    "n": 3,
+    "names": [
+     "Nomads Hotel & Rooftop Pool",
+     "Caleta Hostel Rooftop & Pool",
+     "The Boat House Cancun"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
@@ -19859,6 +20131,17 @@
     "monthly_total_dkk": 9242,
     "contributors_note": "217 entries, 20 contributors, last update 27 Oct 2026",
     "observed": "2026-10-30"
+   },
+   "hostels": {
+    "dorm_night_dkk": 115,
+    "private_night_dkk": 130,
+    "n": 5,
+    "names": [
+     "Kualena Hostel",
+     "Spartacus Boutique Hostel for Men",
+     "Hostel Vallarta"
+    ],
+    "source": "map profiles (Hostelworld, hostelz) and stay quotes"
    }
   },
   "researched": true,
