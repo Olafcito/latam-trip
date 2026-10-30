@@ -11,6 +11,7 @@ import {
   hiddenByCost,
   mapsUrl,
   monthlyCost,
+  otherDisciplines,
   rankCities,
   rankGyms,
   scoreTier,
@@ -65,6 +66,13 @@ describe('disciplinesOf', () => {
   it('falls back to the tags when the details have no list', () => {
     expect(disciplinesOf(gym('a', { tags: ['gym', 'mma'] }, { disciplines: null }))).toEqual(['MMA'])
   })
+})
+
+describe('otherDisciplines', () => {
+  it('keeps what the five leave out, once each', () => {
+    expect(otherDisciplines(gym('a', {}, { disciplines: ['Muay Thai', 'wrestling', 'boxing (fitness)', 'Wrestling', 'boxing', ' '] }))).toEqual(['wrestling', 'boxing (fitness)'])
+  })
+  it('is empty without a list', () => expect(otherDisciplines(gym('a', {}, { disciplines: null }))).toEqual([]))
 })
 
 describe('gymWorld', () => {
