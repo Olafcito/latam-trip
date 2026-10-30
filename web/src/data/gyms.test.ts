@@ -237,4 +237,11 @@ describe('spreadGyms', () => {
     const at = spreadGyms([gym('a'), gym('b'), gym('c')])
     expect(new Set([...at.values()].map(String)).size).toBe(3)
   })
+  it('gives a big group a wider ring, so its markers do not sit on each other', () => {
+    const reach = (n: number) => {
+      const spots = [...spreadGyms(Array.from({ length: n }, (_, i) => gym(`g${i}`, { lat: 0, lon: 0 }))).values()]
+      return Math.max(...spots.map(([lon, lat]) => Math.hypot(lon, lat)))
+    }
+    expect(reach(16)).toBeGreaterThan(reach(3) * 1.5)
+  })
 })

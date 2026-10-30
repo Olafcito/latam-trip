@@ -259,8 +259,8 @@ export function gymLinks(g: GymRow): GymLink[] {
 const SPREAD = 0.008
 
 /**
- * Where each marker sits on the map. Rows that share a spot move apart on a small circle, or only the top
- * one could be tapped. The links keep the real coordinates.
+ * Where each marker sits on the map. Rows that share a spot move apart on a small circle, wider for a big
+ * group, or only the top one could be tapped. The links keep the real coordinates.
  */
 export function spreadGyms(rows: { id: string; lat: number | null; lon: number | null }[]): Map<string, [number, number]> {
   const groups = new Map<string, typeof rows>()
@@ -271,10 +271,11 @@ export function spreadGyms(rows: { id: string; lat: number | null; lon: number |
   }
   const at = new Map<string, [number, number]>()
   for (const group of groups.values()) {
+    const reach = SPREAD * Math.max(1, group.length / 8)
     group.forEach((r, i) => {
       if (group.length === 1) return at.set(r.id, [r.lon!, r.lat!])
       const angle = (i / group.length) * 2 * Math.PI
-      at.set(r.id, [r.lon! + SPREAD * Math.cos(angle), r.lat! + SPREAD * Math.sin(angle)])
+      at.set(r.id, [r.lon! + reach * Math.cos(angle), r.lat! + reach * Math.sin(angle)])
     })
   }
   return at
