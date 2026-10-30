@@ -4358,6 +4358,32 @@
      "https://www.hostelworld.com/hostels/p/42740/la-buena-onda/"
     ]
    }
+  },
+  {
+   "kind": "node",
+   "id": "MVD",
+   "name": "Montevideo",
+   "country": "UY",
+   "lat": -34.9,
+   "lon": -56.16,
+   "type": "city",
+   "iata": "MVD",
+   "popularity": 2,
+   "why": "Uruguay's capital on the Rio de la Plata, city beaches along the Rambla; candidate training base",
+   "source": "https://en.wikipedia.org/wiki/Montevideo"
+  },
+  {
+   "kind": "node",
+   "id": "LAFL",
+   "name": "La Floresta",
+   "country": "UY",
+   "lat": -34.76,
+   "lon": -55.68,
+   "type": "beach",
+   "iata": "MVD",
+   "popularity": 3,
+   "why": "Quiet beach town on the Costa de Oro about 50 km east of Montevideo, with a Chute Boxe gym",
+   "source": "https://en.wikipedia.org/wiki/La_Floresta"
   }
  ],
  "edges": [
@@ -28890,7 +28916,6 @@
   "LGW",
   "LHR",
   "LIS",
-  "MVD",
   "SDQ",
   "XPL",
   "ZRH"
