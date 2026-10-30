@@ -30,7 +30,7 @@ export interface PairQuote {
   ag?: string
   /** a night at a layover */
   o?: boolean
-  /** warnings: self_transfer, airport_change */
+  /** warnings: self_transfer, airport_change, and stopover for a planned stay on the way */
   f?: string[]
 }
 

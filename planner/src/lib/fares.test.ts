@@ -85,6 +85,13 @@ describe('what a flight changes around it', () => {
   it('names where a long wait or a night at a stop falls', () => {
     expect(texts(flight({ v: ['PTY', 'LIM'], w: [1.5, 5.83] }))).toEqual(['Long wait in Lima'])
     expect(texts(flight({ v: ['LIM'], w: [9], o: true }))).toEqual(['A night in Lima'])
+  })
+
+  it('names a planned stopover and its nights instead of warning about the wait', () => {
+    expect(texts(flight({ v: ['PTY'], w: [26.95], o: true, f: ['stopover'] }))).toEqual(['Stopover in Panama City, 1 night'])
+    expect(texts(flight({ v: ['PTY'], w: [50], o: true, f: ['stopover'] }))).toEqual(['Stopover in Panama City, 2 nights'])
+    expect(texts(flight({ v: ['LIM', 'PTY'], w: [1.5, 26.95], f: ['stopover'] }))).toEqual(['Stopover in Panama City, 1 night'])
+    expect(texts(flight({ v: ['PTY'], f: ['stopover'] }))).toEqual(['Stopover in Panama City'])
     expect(texts(flight({ v: ['LIM'], w: [3.9] }))).toEqual([])
   })
 

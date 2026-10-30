@@ -428,6 +428,17 @@ class PairDatesTest(Base):
         self.assertEqual(row["s"], 1)  # a stop can be known without knowing where
         self.assertFalse({"v", "w", "ag", "o", "f"} & set(row))
 
+    def test_a_planned_stopover_is_kept_past_the_hour_limit_with_its_wait(self):
+        long = {"hours": 33.77, "via": ["PTY"], "layover_h": [26.95], "overnight_layover": True}
+        self.assertEqual(tripdb.pair_dates([self.regional(out=long)])["pairs"], {})
+        self.assertEqual(tripdb.pair_dates([self.regional(flags=["over_30h"], out=long)])["pairs"], {})
+        for flags in (["stopover"], ["stopover", "over_30h"]):
+            row = tripdb.pair_dates([self.regional(flags=flags, out=long)])["pairs"]["BOG-VVI"]["2027-01-28"][0]
+            self.assertEqual((row["h"], row["v"], row["w"], row["o"], row["f"]), (33.77, ["PTY"], [26.95], True, ["stopover"]))
+        # only the limit on hours is lifted, a row that is unusable for another reason stays out
+        self.assertEqual(tripdb.pair_dates([self.regional(flags=["stopover", "incomplete"], out=long)])["pairs"], {})
+        self.assertEqual(tripdb.pair_dates([self.regional(flags=["stopover"], out={"hours": None})])["pairs"], {})
+
     def test_a_named_twin_takes_the_stops_and_site_of_a_row_read_without_airlines(self):
         named = self.regional(price_dkk=404, price=404, out={"via": []})
         bare = self.regional(price_dkk=404, price=404, notes="site=Kiwi.com", out={"carriers": [], "layover_h": [1.5]})

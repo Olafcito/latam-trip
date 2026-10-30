@@ -193,6 +193,8 @@ export interface CrawledFlight {
   site?: string | null
   self_transfer?: boolean
   airport_change?: boolean
+  /** a planned stay at the longest layover, not a wait */
+  stopover?: boolean
 }
 
 export interface MapEdge {
