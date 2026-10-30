@@ -21,6 +21,8 @@ export const FILES = [
   'data/web/connections.json',
   'data/web/countries.json',
   'data/web/flights.json',
+  // the training gyms and city scorecards on the map
+  'data/web/experiences.json',
   // every regional price by pair and day, for the fly-on leg picked in the trip hero
   'data/web/pair_dates.json',
   // the trips table: the latest version of every planned trip
