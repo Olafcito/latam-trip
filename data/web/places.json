@@ -3587,7 +3587,8 @@
    "gym-medellin-atlab",
    "gym-medellin-primitivo-mma",
    "gym-medellin-santhai-muay-thai",
-   "gym-medellin-muay-thai-medellin"
+   "gym-medellin-muay-thai-medellin",
+   "stay-los-patios-medellin"
   ],
   "stay_quotes": [],
   "hub": true
