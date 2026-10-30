@@ -2660,6 +2660,27 @@
   ]
  },
  {
+  "from": "BOG",
+  "to": "VVI",
+  "dkk": 2111,
+  "hours": 9.67,
+  "dep": "2026-12-21T12:08",
+  "arr": "2026-12-21T22:48",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/BOG-VVI/2026-12-21?sort=price_a",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
   "from": "LIM",
   "to": "VVI",
   "dkk": 2144,
@@ -2892,27 +2913,6 @@
   ]
  },
  {
-  "from": "BOG",
-  "to": "VVI",
-  "dkk": 2240,
-  "hours": 9.63,
-  "dep": "2027-01-28T12:08",
-  "arr": "2027-01-28T22:46",
-  "vias": [
-   "PTY"
-  ],
-  "carriers": [
-   "Copa Airlines"
-  ],
-  "notes": [
-   "basic fare"
-  ],
-  "link": "https://www.momondo.dk/flight-search/BOG-VVI/2027-01-28",
-  "shows": [
-   "daytime landing"
-  ]
- },
- {
   "from": "SAL",
   "to": "CTG",
   "dkk": 2255,
@@ -3024,20 +3024,23 @@
  {
   "from": "CLO",
   "to": "VVI",
-  "dkk": 2331,
-  "hours": 8.62,
-  "dep": "2026-12-11T18:05",
-  "arr": "2026-12-12T03:42",
+  "dkk": 2299,
+  "hours": 9.77,
+  "dep": "2026-12-21T12:02",
+  "arr": "2026-12-21T22:48",
   "vias": [
    "PTY"
   ],
   "carriers": [
-   "Copa Airlines"
+   "Copa"
   ],
-  "notes": [],
-  "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-11",
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-21?sort=price_a",
   "shows": [
-   "cheapest"
+   "cheapest",
+   "daytime landing"
   ]
  },
  {
@@ -3966,27 +3969,6 @@
   "link": "https://kiwi.com/u/x5zdm2t",
   "shows": [
    "fastest"
-  ]
- },
- {
-  "from": "CLO",
-  "to": "VVI",
-  "dkk": 2730,
-  "hours": 9.77,
-  "dep": "2026-12-14T12:02",
-  "arr": "2026-12-14T22:48",
-  "vias": [
-   "PTY"
-  ],
-  "carriers": [
-   "Copa Airlines"
-  ],
-  "notes": [
-   "self transfer"
-  ],
-  "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-14",
-  "shows": [
-   "daytime landing"
   ]
  },
  {

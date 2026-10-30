@@ -1365,6 +1365,7 @@
      },
      "dates_searched": [
       "2026-12-20",
+      "2026-12-21",
       "2026-12-25",
       "2026-12-26",
       "2026-12-27",
@@ -1398,6 +1399,29 @@
        "self_transfer": false,
        "searched": "2026-12-20",
        "link": null
+      },
+      {
+       "date": "2026-12-21",
+       "from": "BOG",
+       "to": "VVI",
+       "dkk": 2111,
+       "dep": "12:08",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 580,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM335",
+        "CM127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-21",
+       "link": "https://www.momondo.dk/flight-search/BOG-VVI/2026-12-21?sort=price_a"
       },
       {
        "date": "2026-12-25",
@@ -1748,7 +1772,7 @@
       "basic_fare",
       "self_transfer"
      ],
-     "quotes": 36
+     "quotes": 40
     },
     "source": "crawl",
     "observed_at": "2026-10-30T12:21:00Z",
@@ -17733,6 +17757,7 @@
      "carriers": [
       "Avianca",
       "COPA",
+      "Copa",
       "Copa Airlines",
       "LATAM"
      ],
@@ -17745,6 +17770,8 @@
       "2026-12-11",
       "2026-12-14",
       "2026-12-17",
+      "2026-12-20",
+      "2026-12-21",
       "2026-12-22",
       "2027-01-27",
       "2027-02-01"
@@ -17818,6 +17845,52 @@
        "self_transfer": false,
        "searched": "2026-12-17",
        "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-17"
+      },
+      {
+       "date": "2026-12-20",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2355,
+       "dep": "12:02",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 586,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM308",
+        "CM127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-20?sort=price_a"
+      },
+      {
+       "date": "2026-12-21",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2299,
+       "dep": "12:02",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 586,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM308",
+        "CM127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-21",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-21?sort=price_a"
       },
       {
        "date": "2026-12-22",
@@ -17916,7 +17989,7 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 17
+     "quotes": 22
     },
     "source": "crawl",
     "observed_at": "2026-10-28T19:05:05Z",
