@@ -3,7 +3,7 @@ import { capped } from '@map/data/cardFacts'
 import type { MapData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
 import type { Hostel, MapNode } from '../../data/types'
-import { day, kr } from '../../lib/format'
+import { day, kr, shortPlace as short } from '../../lib/format'
 import { countryName } from '../../lib/colors'
 import { placeFinds, type FindRow, type PlaceFinds } from '../../lib/placeFinds'
 import { Modal } from '../Modal'
@@ -21,7 +21,6 @@ export interface HeadPlace { name: string; node: MapNode | undefined; days: numb
 
 const nightsOf = (n: number) => (n ? `${n} ${n === 1 ? 'night' : 'nights'}` : 'Passing through')
 const fromDay = (p: HeadPlace) => `${p.days ? 'from' : 'on'} ${day(p.inDay)}`
-const short = (name: string) => name.replace(/\s*\(.*\)$/, '')
 
 export function TripHead({ places, costs }: { places: HeadPlace[]; costs: ReactNode }) {
   const [hover, setHover] = useState<number | null>(null)
@@ -106,7 +105,7 @@ export function TripHead({ places, costs }: { places: HeadPlace[]; costs: ReactN
   )
 }
 
-interface ItineraryProps {
+export interface ItineraryProps {
   place: HeadPlace
   finds: PlaceFinds | null
   onClose: () => void
@@ -114,7 +113,7 @@ interface ItineraryProps {
   onBed: (h: Hostel) => void
 }
 
-function Itinerary({ place, finds, onClose, onFind, onBed }: ItineraryProps) {
+export function Itinerary({ place, finds, onClose, onFind, onBed }: ItineraryProps) {
   const n = place.node
   const p = n?.profile
   const todo = p?.things_to_do ?? []

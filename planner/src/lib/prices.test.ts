@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { MapData } from '../data/types'
-import { checkedAgo, iataOf, momondoUrl, priceState, pricesOn, sourceLabel, type PairDates, type PairQuote } from './prices'
+import { checkedAgo, iataOf, momondoUrl, nearestDay, priceState, pricesOn, sourceLabel, type PairDates, type PairQuote } from './prices'
 import { flightPricesTask } from './tasks'
 
 const NOW = Date.parse('2026-10-29T12:00:00Z')
@@ -87,5 +87,21 @@ describe('searching again', () => {
     expect(iataOf(map, 'bogota')).toBe('BOG')
     expect(iataOf(map, 'salento')).toBeNull()
     expect(iataOf(map, 'CPH')).toBe('CPH')
+  })
+})
+
+describe('the nearest day with fares', () => {
+  const fare = [q(100, '2026-10-20T00:00:00Z')]
+  const pd: PairDates = { pairs: { 'A-B': { '2027-01-05': fare, '2027-01-01': fare, '2027-01-09': [], '2027-02-01': fare } } }
+
+  it('finds the closest day on either side', () => {
+    expect(nearestDay(pd, 'A', 'B', '2027-01-04')).toBe('2027-01-05')
+    expect(nearestDay(pd, 'A', 'B', '2027-01-20')).toBe('2027-02-01')
+  })
+  it('takes the earlier day on a tie', () => expect(nearestDay(pd, 'A', 'B', '2027-01-03')).toBe('2027-01-01'))
+  it('skips a day with no fares in it', () => expect(nearestDay(pd, 'A', 'B', '2027-01-10')).toBe('2027-01-05'))
+  it('has none for a route with no fares', () => {
+    expect(nearestDay(pd, 'B', 'A', '2027-01-04')).toBeNull()
+    expect(nearestDay(null, 'A', 'B', '2027-01-04')).toBeNull()
   })
 })

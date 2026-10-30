@@ -49,6 +49,13 @@ export function pricesOn(pd: PairDates | null | undefined, from: string, to: str
   return [...list].sort((x, y) => x.p - y.p || x.h - y.h)
 }
 
+/** The closest day with fares for a route, on either side of this one. The earlier one on a tie. */
+export function nearestDay(pd: PairDates | null | undefined, from: string, to: string, date: string): string | null {
+  const days = Object.entries(pd?.pairs?.[`${from}-${to}`] ?? {}).filter(([d, q]) => d !== date && q.length > 0).map(([d]) => d).sort()
+  const gap = (d: string) => Math.abs(Date.parse(d) - Date.parse(date))
+  return days.reduce<string | null>((best, d) => (best == null || gap(d) < gap(best) ? d : best), null)
+}
+
 /** The newest observation among the quotes, as epoch ms, or null. */
 export function newestSeen(quotes: PairQuote[]): number | null {
   let best: number | null = null

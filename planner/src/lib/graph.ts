@@ -79,6 +79,51 @@ export function shortestPath(map: MapData, from: string, to: string, metric: Pat
   return { nodes, arcs, cost: dist.get(to)! }
 }
 
+/**
+ * The overland way between two places by hours, with no flight in it. Given countries, it goes
+ * through them in that order, the way a long bus leg is written up, or there is no way.
+ */
+export function groundPath(map: MapData, from: string, to: string, countries?: string[] | null): PathResult | null {
+  const land = countries?.length ? countries : null
+  const country = new Map(map.nodes.map((n) => [n.id, n.country]))
+  const start = land ? land.indexOf(country.get(from) ?? '') : 0
+  const end = land ? land.length - 1 : 0
+  if (start < 0) return null
+  const out = new Map<string, Arc[]>()
+  const add = (n: string, arc: Arc) => out.set(n, [...(out.get(n) ?? []), arc])
+  for (const e of map.edges) {
+    if (e.mode === 'flight' || edgeHours(e) == null) continue
+    add(e.from, { edge: e, to: e.to, reversed: false })
+    if (e.both) add(e.to, { edge: e, to: e.from, reversed: true })
+  }
+  interface Step { node: string; at: number; cost: number; prev: Step | null; arc: Arc | null }
+  const seen = new Map<string, Step>([[`${from}|${start}`, { node: from, at: start, cost: 0, prev: null, arc: null }]])
+  const done = new Set<string>()
+  while (true) {
+    let cur: Step | null = null
+    let key = ''
+    for (const [k, s] of seen) if (!done.has(k) && (!cur || s.cost < cur.cost)) { cur = s; key = k }
+    if (!cur) return null
+    if (cur.node === to && cur.at === end) break
+    done.add(key)
+    for (const arc of out.get(cur.node) ?? []) {
+      const at = !land || country.get(arc.to) === land[cur.at] ? cur.at : country.get(arc.to) === land[cur.at + 1] ? cur.at + 1 : -1
+      if (at < 0) continue
+      const k = `${arc.to}|${at}`
+      const cost = cur.cost + edgeHours(arc.edge)!
+      if (cost < (seen.get(k)?.cost ?? Infinity)) seen.set(k, { node: arc.to, at, cost, prev: cur, arc })
+    }
+  }
+  const last = seen.get(`${to}|${end}`)!
+  const nodes: string[] = []
+  const arcs: Arc[] = []
+  for (let s: Step | null = last; s; s = s.prev) {
+    nodes.unshift(s.node)
+    if (s.arc) arcs.unshift(s.arc)
+  }
+  return { nodes, arcs, cost: last.cost }
+}
+
 /** Crawled flights of an edge, cheapest first. */
 export function crawledFlights(e: MapEdge): CrawledFlight[] {
   return [...(e.flights ?? [])].sort((a, b) => a.price_dkk - b.price_dkk)

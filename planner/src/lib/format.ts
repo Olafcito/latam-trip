@@ -23,6 +23,12 @@ export function dec1(n: number | null | undefined): string {
 }
 
 /** Hours to "16h 10m"; null to an empty string. */
+/** An estimate to the hour. Minutes would claim more than it knows. */
+export const aboutHours = (h: number): string => `About ${Math.max(1, Math.round(h))}h`
+
+/** A place's name without the country some names carry in brackets. */
+export const shortPlace = (name: string) => name.replace(/\s*\(.*\)$/, '')
+
 export function hours(h: number | null | undefined): string {
   if (h == null || !Number.isFinite(h)) return ''
   const m = Math.round(h * 60)
@@ -97,3 +103,6 @@ export const STOP_LABEL: Record<string, string> = {
   day_stop: 'Day stop',
   night: 'Night',
 }
+
+/** How long a leg takes in words, an estimate as one. Null when it is not known. */
+export const legHours = (t: { hours: number | null; about: boolean }) => (t.hours == null ? null : t.about ? aboutHours(t.hours) : hours(t.hours))
