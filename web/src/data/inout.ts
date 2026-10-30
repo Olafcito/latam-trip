@@ -30,13 +30,13 @@ export function ioMarkers(trip: Trip | null, place: (code: string) => string | n
 
 /** 18.68 -> "18,7 h". */
 export function hours(h: number | null | undefined): string {
-  if (h == null || !Number.isFinite(h)) return '?'
+  if (h == null || !Number.isFinite(h)) return 'time unknown'
   return `${String(Math.round(h * 10) / 10).replace('.', ',')} h`
 }
 
 /** A local ISO time as "Wed 2 Dec 09:55". */
 export function dayTime(iso: string | null | undefined): string {
-  if (!iso) return '?'
+  if (!iso) return 'time unknown'
   const d = new Date(iso.slice(0, 10) + 'T00:00:00Z')
   if (Number.isNaN(d.getTime())) return iso
   const day = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).replace(',', '')
@@ -76,8 +76,8 @@ export function wayRows(way: SeedWay): WayRow[] {
         depart: dayTime(f.depart),
         arrive: dayTime(f.arrive),
         hours: hours(f.hours),
-        carriers: (f.carriers ?? []).join(', ') || '?',
-        numbers: (f.flight_numbers ?? []).join(', ') || '?',
+        carriers: (f.carriers ?? []).join(', ') || 'not listed',
+        numbers: (f.flight_numbers ?? []).join(', ') || 'not listed',
         connections: (f.connections ?? []).map((c) => ({ airport: c.airport, hours: hours(c.layover_h) })),
       }
     }
@@ -87,7 +87,7 @@ export function wayRows(way: SeedWay): WayRow[] {
       kind: 'stop',
       label: (STOP_LABEL[s.kind] ?? s.kind) + nights,
       airport: s.airport,
-      ground: `${hours(s.hours)} on the ground`,
+      ground: s.hours == null ? '' : `${hours(s.hours)} on the ground`,
       arrive: dayTime(s.arrive),
       depart: dayTime(s.depart),
     }

@@ -39,7 +39,7 @@ export function PlaceCard() {
   return (
     <div className="pcard" style={{ left, top }} role="tooltip">
       {p.image?.url && <div className="img" style={{ backgroundImage: `url("${p.image.url}")` }} />}
-      {p.image?.url && <div className="credit">Photo: {p.image.credit ?? '?'} · {p.image.license ?? '?'}, Wikimedia Commons</div>}
+      {p.image?.url && <div className="credit">Photo: {p.image.credit || 'Unknown'}{p.image.license ? ` · ${p.image.license}` : ''}, Wikimedia Commons</div>}
       <div className="body">
         <div className="small muted">{node.name}, {countryName(node.country)}</div>
         {p.tagline && <div className="tag">{p.tagline}</div>}
