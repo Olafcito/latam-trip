@@ -26,6 +26,8 @@ export const TRIP_OVERLAND = 'trip-overland'
 export const HIT_OVERLAND = 'trip-overland-hit'
 
 export const VIA_LAYER = 'route-via'
+/** The small amber bookmark on a place that is saved or holds something saved. */
+export const SAVED_LAYER = 'place-saved'
 
 /** Overview routes are faint. A flight in focus that only flies via layovers hides its direct arc for its via path. Hovering a city previews its routes, and a selection shows only its own. */
 export function routeOpacity(base: number): ExpressionSpecification {
@@ -62,6 +64,8 @@ const hot = fs('hot')
 const lit: ExpressionSpecification = ['any', sel, hot, near]
 const DIM = 0.45
 const QUIET = 0.12
+/** A saved place stays findable when a trip quiets the map around it. */
+const SAVED_DIM = 0.8
 /** Towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection; the rest dims beside one. */
 const placeFade = (dim: number): ExpressionSpecification => [
   'interpolate', ['linear'], ['zoom'],
@@ -103,7 +107,8 @@ function label(id: string, fontStack: string[], size: number, extra: Partial<Sym
   }
 }
 
-export function addRouteLayers(map: MLMap, model: Model) {
+/** Needs the images from addMarkerImages. `saved` lists the places that carry a bookmark. */
+export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
   const countries: GeoJSON.FeatureCollection = {
     type: 'FeatureCollection',
     features: model.data.countries.map((c) => ({
@@ -304,6 +309,21 @@ export function addRouteLayers(map: MLMap, model: Model) {
       'circle-color': '#000',
       'circle-opacity': 0,
     },
+  })
+  map.addLayer({
+    id: SAVED_LAYER,
+    type: 'symbol',
+    source: 'places',
+    filter: ['in', ['get', 'id'], ['literal', saved]],
+    layout: {
+      'icon-image': 'bookmark-saved',
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 3, 0.42, 8, 0.58],
+      'icon-anchor': 'bottom-left',
+      'icon-offset': [6, -6],
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+    paint: { 'icon-opacity': placeFade(SAVED_DIM) },
   })
 
   // stops on the highlighted route, at their real coordinates
