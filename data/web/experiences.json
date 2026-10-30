@@ -22076,5 +22076,63 @@
   },
   "image_source": "category",
   "saved_in": []
+ },
+ {
+  "id": "gym-la-libertad-300-mma-the-point",
+  "name": "300 MMA Training Center, The Point (La Libertad)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "TUNCO"
+  ],
+  "area": "La Libertad, The Point (Punta Roca)",
+  "country": "SV",
+  "lat": 13.486,
+  "lon": -89.322,
+  "summary": "Beach branch of 300 MMA Training Center at The Point in La Libertad, by the Punta Roca surf break, with a second location in San Salvador. Simon confirmed both locations on the gym's Instagram; classes, prices and sparring still to check.",
+  "season": "year round",
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": null,
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA"
+   ],
+   "instagram": "https://www.instagram.com/300mmatrainingcenter/",
+   "website": null,
+   "facebook": null,
+   "phone": null,
+   "google_maps_url": "https://www.google.com/maps/search/?api=1&query=300+MMA+Training+Center+La+Libertad",
+   "address": "The Point, La Libertad, El Salvador",
+   "hours": null,
+   "water_km": 0.2,
+   "water_note": "On the seafront at the Punta Roca surf break; El Tunco about 15 minutes west",
+   "google_rating": null,
+   "google_reviews": null,
+   "what_people_say": [],
+   "score": null,
+   "score_note": "Second location reported by Simon from the gym's Instagram (30 Oct 2026). Not yet researched; coordinates approximate."
+  },
+  "researched": false,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.instagram.com/300mmatrainingcenter/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg/1280px-Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Puente_peatonal_Rio_El_Tunco_-_panoramio.jpg",
+   "credit": "Daniel chavez castro",
+   "licence": "CC BY 3.0",
+   "w": 2816,
+   "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": []
  }
 ]
