@@ -8,7 +8,7 @@ export function thousands(n: number): string {
 
 /** Minutes to the compact handoff format: 55 -> "55m", 65 -> "1h05", 540 -> "9h". */
 export function duration(min: number | null | undefined): string {
-  if (min == null || !Number.isFinite(min)) return '?'
+  if (min == null || !Number.isFinite(min)) return 'time unknown'
   const m = Math.round(min)
   if (m < 60) return `${m}m`
   const h = Math.floor(m / 60)
@@ -16,13 +16,13 @@ export function duration(min: number | null | undefined): string {
   return r === 0 ? `${h}h` : `${h}h${String(r).padStart(2, '0')}`
 }
 
-/** "from 1.040 kr", or "?" when there is no price. */
+/** "from 1.040 kr", or "no price" when there is none. */
 export function fromPrice(dkk: number | null | undefined): string {
-  return dkk == null ? '?' : `from ${thousands(dkk)} kr`
+  return dkk == null ? 'no price' : `from ${thousands(dkk)} kr`
 }
 
 export function kr(dkk: number | null | undefined): string {
-  return dkk == null ? '?' : `${thousands(dkk)} kr`
+  return dkk == null ? 'no price' : `${thousands(dkk)} kr`
 }
 
 export function altitude(m: number | null | undefined): string {

@@ -268,9 +268,9 @@ function FlightRow({ model, r, i }: { model: Model; r: AirportFlight; i: number 
     <li className="frow" style={{ animationDelay: `${Math.min(i, 10) * 0.05}s` }}>
       <a href={url} target="_blank" rel="noreferrer" title={`${r.from} to ${r.to}, times local at each airport`}>
         <span className="fr-time mono">
-          {r.dep ? `${weekday(r.dep.slice(0, 10))} ${shortDate(r.dep.slice(0, 10))} ${r.dep.slice(11, 16)}` : '?'}
+          {r.dep ? `${weekday(r.dep.slice(0, 10))} ${shortDate(r.dep.slice(0, 10))} ${r.dep.slice(11, 16)}` : 'time unknown'}
           {' → '}
-          {r.arr ? r.arr.slice(11, 16) + plus : '?'}
+          {r.arr ? r.arr.slice(11, 16) + plus : 'time unknown'}
           {land && <span className={`land ${land}`}>{land === 'night' && <Moon />}{LAND_TEXT[land]}</span>}
         </span>
         <span className="fr-price mono">{kr(r.dkk)}</span>
@@ -288,7 +288,7 @@ function FlightRow({ model, r, i }: { model: Model; r: AirportFlight; i: number 
 }
 
 function Touristy({ n }: { n: number | null | undefined }) {
-  if (n == null) return <span className="mono">?</span>
+  if (n == null) return <span className="mono">Not rated</span>
   return (
     <span className="meter" role="img" aria-label={`Touristy ${n} of 5`}>
       {[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= n ? 'f' : ''} />)}
@@ -323,7 +323,7 @@ function MoreView(p: PanelProps & { city: Place }) {
         {city.why && <p className="p-why">{city.why}</p>}
         {city.summary && <p className="p-sum">{city.summary}</p>}
         <div className="facts">
-          <div className="fact"><span className="mono">Altitude</span><span className="mono">{altitude(city.altitude_m) || '?'}</span></div>
+          {city.altitude_m != null && <div className="fact"><span className="mono">Altitude</span><span className="mono">{altitude(city.altitude_m)}</span></div>}
           <div className="fact"><span className="mono">Touristy</span><Touristy n={city.touristy} /></div>
         </div>
         <PlaceSections key={city.id} api={p.api} categories={model.data.categories} placeId={city.id} flush onCard={p.onCard} />
@@ -444,7 +444,7 @@ const times = (l: { dep: string | null; arr: string | null; arr_days: number }) 
 
 // "Sun 20 to Mon 28 Dec", with the month only once when both dates share it
 function span(a: string | null, b: string | null) {
-  const day = (d: string | null) => (d ? `${weekday(d)} ${shortDate(d)}` : '?')
+  const day = (d: string | null) => (d ? `${weekday(d)} ${shortDate(d)}` : 'date unknown')
   if (a && b && a.slice(0, 7) === b.slice(0, 7)) return `${weekday(a)} ${Number(a.slice(8))} to ${day(b)}`
   return `${day(a)} to ${day(b)}`
 }
@@ -494,8 +494,8 @@ function FlightFacts({ model, o, from }: { model: Model; o: RouteOption; from: s
       <div className="facts">
         <div className="fact"><span className="mono">One-way</span><span className="mono">{fromPrice(f.oneway_dkk.min)}</span></div>
         <div className="fact"><span className="mono">Return</span><span className="mono">{f.return_dkk?.min != null ? fromPrice(f.return_dkk.min) : 'not searched'}</span></div>
-        <div className="fact"><span className="mono">Routing</span><span>{f.nonstop ? 'Nonstop' + (f.vias.length ? ' or via ' + f.vias.join(', ') : '') : f.vias.length ? 'via ' + f.vias.join(', ') : '?'}</span></div>
-        <div className="fact"><span className="mono">Carriers</span><span>{f.carriers.join(', ') || '?'}</span></div>
+        <div className="fact"><span className="mono">Routing</span><span>{f.nonstop ? 'Nonstop' + (f.vias.length ? ' or via ' + f.vias.join(', ') : '') : f.vias.length ? 'via ' + f.vias.join(', ') : 'not listed'}</span></div>
+        <div className="fact"><span className="mono">Carriers</span><span>{f.carriers.join(', ') || 'not listed'}</span></div>
       </div>
       {f.cheapest && <p className="ops"><b>Cheapest</b> · <span className="mono">{itin(f.cheapest)}</span>{f.cheapest.self_transfer ? ' · self transfer' : ''}</p>}
       {f.fastest && f.fastest.dkk !== f.cheapest?.dkk && <p className="ops"><b>Fastest</b> · <span className="mono">{itin(f.fastest)}</span></p>}
@@ -564,7 +564,7 @@ function RouteView(p: PanelProps & { conn: Connection }) {
             <Stops model={model} conn={conn} o={cur} from={from} />
             {cur.mode === 'flight' ? <FlightFacts model={model} o={cur} from={from} /> : (
               <div className="facts">
-                <div className="fact"><span className="mono">Frequency</span><span>{cur.frequency || '?'}</span></div>
+                <div className="fact"><span className="mono">Frequency</span><span>{cur.frequency || 'not listed'}</span></div>
                 <div className="fact"><span className="mono">Local price</span><span>{cur.price_local || kr(cur.price_dkk.min)}</span></div>
                 {cur.duration_range_h && <div className="fact"><span className="mono">Range</span><span className="mono">{cur.duration_range_h.replace('-', ' to ')} h</span></div>}
                 {cur.observed_at && <div className="fact"><span className="mono">Researched</span><span className="mono">{observed(cur.observed_at)}</span></div>}

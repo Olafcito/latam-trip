@@ -17,15 +17,16 @@ describe('duration', () => {
     expect(duration(65)).toBe('1h05')
     expect(duration(540)).toBe('9h')
     expect(duration(402)).toBe('6h42')
-    expect(duration(null)).toBe('?')
+    expect(duration(null)).toBe('time unknown')
   })
 })
 
 describe('prices', () => {
   it('formats from prices and plain amounts', () => {
     expect(fromPrice(1040)).toBe('from 1.040 kr')
-    expect(fromPrice(null)).toBe('?')
+    expect(fromPrice(null)).toBe('no price')
     expect(kr(255)).toBe('255 kr')
+    expect(kr(null)).toBe('no price')
   })
 })
 

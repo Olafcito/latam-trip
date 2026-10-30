@@ -49,19 +49,21 @@ describe('way pane rows', () => {
   it('gives a flight row its times, hours, carriers, numbers and connections', () => {
     const [first, , last] = wayRows(w)
     expect(first).toMatchObject({ kind: 'flight', from: 'CPH', to: 'MAD', depart: 'Wed 2 Dec 06:10', arrive: 'Wed 2 Dec 09:35', hours: '3,4 h', carriers: 'Ryanair', numbers: 'Ryanair 606', connections: [] })
-    expect(last).toMatchObject({ carriers: 'Iberia, Copa', numbers: 'IB 6341, CM 391', connections: [{ airport: 'SJO', hours: '2,4 h' }, { airport: 'PTY', hours: '?' }] })
+    expect(last).toMatchObject({ carriers: 'Iberia, Copa', numbers: 'IB 6341, CM 391', connections: [{ airport: 'SJO', hours: '2,4 h' }, { airport: 'PTY', hours: 'time unknown' }] })
   })
 
   it('gives a stop row its kind, nights and hours on the ground', () => {
     expect(wayRows(w)[1]).toEqual({ kind: 'stop', label: 'Night (1 night)', airport: 'MAD', ground: '29,8 h on the ground', arrive: 'Wed 2 Dec 09:35', depart: 'Thu 3 Dec 15:20' })
     const st = wayRows(way({ timeline: [{ kind: 'self_transfer', airport: 'MAD', arrive: null, depart: null, hours: 3.17 }] }))[0]
-    expect(st).toMatchObject({ label: 'Self-transfer', ground: '3,2 h on the ground', arrive: '?' })
+    expect(st).toMatchObject({ label: 'Self-transfer', ground: '3,2 h on the ground', arrive: 'time unknown' })
+    const bare = wayRows(way({ timeline: [{ kind: 'connection', airport: 'MAD', arrive: null, depart: null, hours: null }] }))[0]
+    expect(bare).toMatchObject({ ground: '' })
   })
 
   it('formats hours and times the Danish way', () => {
     expect(hours(1.333)).toBe('1,3 h')
     expect(hours(12)).toBe('12 h')
-    expect(hours(null)).toBe('?')
+    expect(hours(null)).toBe('time unknown')
     expect(dayTime('2027-02-04T17:00')).toBe('Thu 4 Feb 17:00')
   })
 })

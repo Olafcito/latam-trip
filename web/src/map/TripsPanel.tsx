@@ -186,7 +186,7 @@ function NewTrip({ onCreate }: { onCreate(name: string): void }) {
 
 /** "3 Dec 22:44" from a local ISO time. */
 function when(iso: string | null | undefined): string {
-  if (!iso) return '?'
+  if (!iso) return 'time unknown'
   const d = new Date(iso.slice(0, 10) + 'T00:00:00')
   const mon = d.toLocaleString('en-GB', { month: 'short' })
   return `${d.getDate()} ${mon} ${iso.slice(11, 16)}`
