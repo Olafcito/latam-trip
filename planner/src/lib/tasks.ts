@@ -27,14 +27,14 @@ export function taskIssue(summary: string, line: string, task: Task): TaskIssue 
   return { title, body, url, task }
 }
 
-/** A flight_prices task for one one-way leg on one day, a day either side. Codes are IATA. */
-export function flightPricesTask(leg: { from: string; to: string; date: string; fromName?: string; toName?: string }, flexDays = 1): TaskIssue {
-  const task: Task = { type: 'flight_prices', legs: [{ from: leg.from, to: leg.to, date: leg.date, flex_days: flexDays }], from: 'app' }
+/** A flight_prices task for every flight of one one-way leg, on the day and the days either side. Codes are IATA. */
+export function flightPricesTask(leg: { from: string; to: string; date: string; fromName?: string; toName?: string }, flexDays = 3): TaskIssue {
+  const task: Task = { type: 'flight_prices', legs: [{ from: leg.from, to: leg.to, date: leg.date, flex_days: flexDays }], all_flights: true, from: 'app' }
   const names = `${leg.fromName ?? leg.from} to ${leg.toName ?? leg.to}`
   const flex = flexDays === 1 ? 'a day either side' : `${flexDays} days either side`
   return taskIssue(
     `${leg.from} to ${leg.to} ${day(leg.date)}`,
-    `One-way prices for ${names} on ${day(leg.date)}, ${flex}.`,
+    `Every one-way flight from ${names} on ${day(leg.date)} and ${flex}.`,
     task,
   )
 }

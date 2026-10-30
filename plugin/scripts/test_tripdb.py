@@ -1,6 +1,6 @@
 """Tests for tripdb. Run from the repo root: python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_*.py"
 Every test works in its own temporary root, so the real data is never touched."""
-import contextlib, io, json, os, shutil, sys, tempfile, threading, unittest
+import contextlib, io, json, os, shutil, subprocess, sys, tempfile, threading, unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tripdb  # noqa: E402
@@ -445,3 +445,24 @@ class PairDatesTest(Base):
         row = tripdb.pair_dates([named, bare])["pairs"]["BOG-VVI"]["2027-01-28"]
         self.assertEqual(len(row), 1)
         self.assertEqual((row[0]["c"], row[0]["v"], row[0]["w"], row[0]["ag"]), (["Avianca"], ["LIM"], [1.5], "Kiwi.com"))
+
+
+class MomondoLinesTest(unittest.TestCase):
+    """The converter in momondo-search: the same airline later the same day is another flight to the planner."""
+    SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "skills", "momondo-search", "scripts", "momondo_lines.py")
+    OUT = ("count=2 done=True title=LPB-CBB\n"
+           "1;255;BoA;0;;;;;;0~01-29T08:00,01-29T08:45,0.75,0,,,OB 640,0,0\n"
+           "2;300;BoA;0;;;;;;0~01-29T12:10,01-29T12:55,0.75,0,,,OB 644,0,0\n")
+
+    def convert(self, *switch):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "out.txt")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(self.OUT)
+            done = subprocess.run([sys.executable, "-I", self.SCRIPT, "worker", "t1", *switch, "--legs", "LPB-CBB@2027-01-29", path],
+                                  capture_output=True, encoding="utf-8", check=True)
+        return [json.loads(line)["out"]["dep"] for line in done.stdout.splitlines()]
+
+    def test_near_identical_rows_go_unless_every_flight_is_asked_for(self):
+        self.assertEqual(self.convert(), ["2027-01-29T08:00"])
+        self.assertEqual(self.convert("--all"), ["2027-01-29T08:00", "2027-01-29T12:10"])

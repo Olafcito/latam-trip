@@ -8,11 +8,13 @@ Legacy forms (still accepted):
 Structure: one_way (1 leg), return (A-B,B-A), open_jaw (2 legs otherwise), multi_city (3+ legs).
 Rows: out = first leg, home = last leg (2+ legs), mid = legs in between (multi_city).
 Near-identical rows (same carriers and via per leg, hours within 2, price within 500, same self-transfer) are dropped.
+--all keeps them: the same airline later the same day is another flight to pick (an all_flights task).
 """
 import json, sys, datetime
 
 US = {"MIA", "JFK", "EWR", "ATL", "IAH", "DFW", "ORD", "LAX", "FLL", "MCO", "IAD", "BOS", "CLT", "PHL"}
-a = sys.argv[1:]
+a = [x for x in sys.argv[1:] if x != "--all"]
+keep_all = "--all" in sys.argv
 agent, task = a[0], a[1]
 if a[2] == "--legs":
     spec = [x.split("@") for x in a[3].split(",")]
@@ -91,7 +93,7 @@ for line in open(inf):
            "us_transit": "us_transit" in flags, "changeable": h[7] or "unknown", "link": link, "flags": flags,
            "notes": f"site={h[2]}; other={h[8] if len(h) > 8 else ''}; protection={h[9] if len(h) > 9 else ''}",
            "_legs": legs}
-    if any(similar(row, k) for k in kept):
+    if not keep_all and any(similar(row, k) for k in kept):
         continue
     kept.append(row)
     out = {k: v for k, v in row.items() if k != "_legs"}

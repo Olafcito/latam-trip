@@ -289,7 +289,7 @@ export function FlightSheet({ from, to, typical, picked, date, days, fares, stay
       </div>
       <footer className="fl-foot">
         {rows.length > 0 && <a className="btn small" href={open.href} target="_blank" rel="noopener noreferrer">{open.label}<External /></a>}
-        <a className="btn small link" href={task.url} target="_blank" rel="noopener noreferrer" title="A prefilled task. Claude checks a day either side">Ask Claude to check</a>
+        <a className="btn small link" href={task.url} target="_blank" rel="noopener noreferrer" title="A prefilled task. Claude checks every flight this day and 3 days either side">Ask Claude to check</a>
       </footer>
     </div>
   )
