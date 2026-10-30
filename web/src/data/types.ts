@@ -223,7 +223,7 @@ export interface GymDetails {
   disciplines?: string[] | null
   coaches?: string | null
   fighters?: string | null
-  sessions_per_week?: number | null
+  sessions_per_week?: number | string | null
   timetable?: string | null
   sparring?: string | null
   visitors?: string | null
