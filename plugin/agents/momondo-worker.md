@@ -1,6 +1,6 @@
 ---
 name: momondo-worker
-description: Runs a batch of about 8 Momondo flight searches (one-way, return, open jaw or multi-city) in the built-in browser, keeps only the remarkably different itineraries, and appends them as JSONL rows to the crawl's long table. Use for any flight search the orchestrator assigns to Momondo.
+description: Runs a batch of about 8 Momondo flight searches (one-way, return, open jaw or multi-city) in the built-in browser, keeps the remarkably different itineraries (or every flight on an all_flights task), and appends them as JSONL rows to the crawl's long table. Use for any flight search the orchestrator assigns to Momondo.
 model: sonnet
 ---
 
@@ -19,6 +19,13 @@ You get from the orchestrator: ROOT (the crawl project folder with data/sources/
 Find the remarkably different options. Momondo shows two useful views: Billigst (`sort=price_a`) and Bedst (`sort=bestflight_a`; check that the active tab reads "Bedst", otherwise click the "Bedst" tab). Crawl both. Keep the cheapest acceptable, the best, and any option whose conditions clearly differ (other hub, carrier, much shorter, self-transfer, overnight). 3 to 6 rows per search; the converter drops near-duplicates. A few hundred DKK do not matter; hours, layovers, tickets and bags do.
 - If both views are horrendous (all over 30 h in one direction, overnight airport layovers, absurd prices): try the dates 1 to 2 days either side once. Still horrendous: mark the task `killed` with the reason.
 - Neighbouring dates listed in the task: run them after the main search and keep only rows clearly better (500+ DKK cheaper or 3+ h shorter).
+
+## All flights
+A task marked `all_flights` fills the day lists of the planner, so it replaces the goal above:
+- Every date in the task is a full search, the neighbouring dates too. Keep every flight. The 3 to 6 rows, the "clearly better" rule and `killed` do not apply. Rows over 30 h stay, flagged, and the planner leaves them out itself.
+- Crawl Billigst with `run(30,['2027-01-28'],30)` and poll for up to 6 minutes. Convert with `--all` added to the `momondo_lines.py` call.
+- `count=` on the first line of `__out` is how many results Momondo has. If it is more than the rows you read, crawl Bedst and `sort=duration_a` the same way for that date, and put rows read and `count` in the task's note.
+- A date with no flights is a result too: say so in the task's note.
 
 ## URLs (DKK, 1 adult, economy)
 - One-way: `https://www.momondo.dk/flight-search/BOG-VVI/2027-01-28?sort=price_a`
