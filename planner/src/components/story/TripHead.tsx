@@ -1,14 +1,18 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+import { capped } from '@map/data/cardFacts'
+import { loadRouteData } from '../../data/routeMap'
 import type { MapNode } from '../../data/types'
 import { day, kr } from '../../lib/format'
 import { countryName } from '../../lib/colors'
+import { placeFinds, type FindRow, type PlaceFinds } from '../../lib/placeFinds'
+import { useStore } from '../../store'
 
 // The top of the route, after the 21st Hover Expand Gallery: its places as narrow panels with their
 // names, the one under the mouse or the Tab key opens to its photo. A click opens that place's
 // itinerary under the strip, after the 21st Expandable Card (id 35717): what to do there and where
 // to sleep. The panel stays mounted so it can open and close from wherever it is, its words fade
 // in once it has made room, Escape closes it and gives the focus back. On a phone the places are a
-// row to swipe instead.
+// row to swipe instead. Its Experiences and Training rows open their window on the map.
 
 export interface HeadPlace { name: string; node: MapNode | undefined; days: number; inDay: string }
 
@@ -20,6 +24,7 @@ export function TripHead({ places }: { places: HeadPlace[] }) {
   const [pick, setPick] = useState<number | null>(null)
   // what the panel shows, kept while it closes so its words fade out instead of vanishing
   const [shown, setShown] = useState(0)
+  const [read, setRead] = useState<((placeId: string) => PlaceFinds) | null>(null)
   const btns = useRef<(HTMLButtonElement | null)[]>([])
   const panelId = useId()
   // the picked place holds the big panel while its itinerary is open, a hover only brightens the others
@@ -44,6 +49,12 @@ export function TripHead({ places }: { places: HeadPlace[] }) {
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   })
+  // the map's data comes the first time an itinerary opens. Without it the itinerary still has its own lines,
+  // and the Map tab says when that data cannot load
+  useEffect(() => {
+    if (pick == null || read) return
+    loadRouteData().then((data) => setRead(() => placeFinds(data)), () => {})
+  }, [pick, read])
 
   return (
     <header className="tg">
@@ -78,18 +89,20 @@ export function TripHead({ places }: { places: HeadPlace[] }) {
       </ul>
       <div id={panelId} className="tg-it" data-open={pick != null} inert={pick == null} role="region" aria-label={places[shown] ? `${short(places[shown].name)} itinerary` : undefined}>
         <div className="tg-it-in">
-          {places[shown] && <Itinerary key={shown} place={places[shown]} onClose={close} />}
+          {places[shown] && <Itinerary key={shown} place={places[shown]} finds={read && places[shown].node ? read(places[shown].node.id) : null} onClose={close} />}
         </div>
       </div>
     </header>
   )
 }
 
-function Itinerary({ place, onClose }: { place: HeadPlace; onClose: () => void }) {
+function Itinerary({ place, finds, onClose }: { place: HeadPlace; finds: PlaceFinds | null; onClose: () => void }) {
   const n = place.node
   const p = n?.profile
   const todo = p?.things_to_do ?? []
   const beds = p?.hostels ?? []
+  const exps = finds?.experiences ?? []
+  const training = finds?.training ?? []
   const credit = [p?.image?.credit, p?.image?.license].filter(Boolean).join(', ')
   return (
     <div className="tg-card">
@@ -104,7 +117,7 @@ function Itinerary({ place, onClose }: { place: HeadPlace; onClose: () => void }
         </button>
       </div>
       {p?.summary && <p className="tg-about">{p.summary}</p>}
-      {todo.length || beds.length ? (
+      {todo.length || beds.length || exps.length || training.length ? (
         <div className="tg-cols">
           {!!todo.length && (
             <section>
@@ -129,11 +142,39 @@ function Itinerary({ place, onClose }: { place: HeadPlace; onClose: () => void }
               </ul>
             </section>
           )}
+          {!!exps.length && <Finds title="Experiences" rows={exps} />}
+          {!!training.length && <Finds title="Training" rows={training} />}
         </div>
       ) : (
         <p className="tg-none">Nothing gathered for this place yet.</p>
       )}
       {credit && <p className="tg-cr">Photo: {credit}, Wikimedia Commons</p>}
     </div>
+  )
+}
+
+/** A row names the thing and opens its window on the map, the detail stays there. */
+function Finds({ title, rows }: { title: string; rows: FindRow[] }) {
+  const openMapCard = useStore((s) => s.openMapCard)
+  const [open, setOpen] = useState(false)
+  const { shown, folded } = capped(rows, open)
+  return (
+    <section>
+      <h5>{title}</h5>
+      <ul className="tg-finds">
+        {shown.map((r) => (
+          <li key={r.ref.id}>
+            <button type="button" onClick={() => openMapCard(r.ref)}>
+              <span className="tg-find">
+                <b>{r.name}</b>
+                {r.sub && <small data-saved={r.saved || undefined}>{r.sub}</small>}
+              </span>
+              {r.score && <span className="tg-score">{r.score}</span>}
+            </button>
+          </li>
+        ))}
+      </ul>
+      {folded > 0 && <button type="button" className="tg-more" onClick={() => setOpen(true)}>Show all {rows.length}</button>}
+    </section>
   )
 }

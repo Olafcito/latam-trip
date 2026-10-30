@@ -4,6 +4,7 @@ import { DEFAULT_FILTERS, type Filters } from './lib/options'
 import { journeyIsValid, newJourney, type Journey, type Place } from './lib/journey'
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
 import type { TripLeg, TripState } from '@map/data/trips'
+import type { CardRef } from '@map/map/useMapMode'
 import type { Mode } from './data/types'
 import { localOnly, mergeTrips, retireSeeds } from './lib/repoTrips'
 
@@ -128,6 +129,10 @@ interface State {
   paneMini: boolean
   setPaneMini: (mini: boolean) => void
   showOnMap: () => void
+  /** a gym, city or experience the map opens when it next shows, from a row of an itinerary */
+  mapCard: CardRef | null
+  openMapCard: (card: CardRef) => void
+  clearMapCard: () => void
   /** a trip edit from the route map, read back into journeys */
   applyMapTrips: (after: TripState, facts?: LegFacts) => void
 }
@@ -307,6 +312,9 @@ export const useStore = create<State>((set, get) => ({
   paneMini: false,
   setPaneMini: (paneMini) => set({ paneMini }),
   showOnMap: () => set({ mapOpen: true, screen: 'map' }),
+  mapCard: null,
+  openMapCard: (mapCard) => set({ mapCard, mapOpen: true, screen: 'map' }),
+  clearMapCard: () => set({ mapCard: null }),
   applyMapTrips: (after, facts) => {
     const { data, journey, saved, mapOpen, compare } = get()
     if (!data) return
