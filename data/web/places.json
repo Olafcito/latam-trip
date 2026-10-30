@@ -1249,7 +1249,12 @@
    "sjo-museo-del-oro-precolombino",
    "sjo-mercado-central",
    "sjo-barrio-escalante-food-scene",
-   "sjo-day-trip-to-poas-or-irazu-volcano"
+   "sjo-day-trip-to-poas-or-irazu-volcano",
+   "gym-san-jose-athletic-advance",
+   "gym-san-jose-marcial-dojo",
+   "gym-san-jose-vfs-academy",
+   "gym-san-jose-sutai-gym",
+   "city-san-jose-training"
   ],
   "stay_quotes": [],
   "hub": true
@@ -3294,7 +3299,8 @@
    "lir-rincon-de-la-vieja-national-park",
    "lir-beaches-of-guanacaste-playas-del-coco",
    "lir-barra-honda-caves",
-   "lir-day-trip-to-santa-rosa-national-park"
+   "lir-day-trip-to-santa-rosa-national-park",
+   "city-liberia-training"
   ],
   "stay_quotes": [],
   "hub": false
@@ -4859,7 +4865,15 @@
    "mex-museo-nacional-de-antropologia",
    "mex-teotihuacan-pyramids-day-trip",
    "mex-tacos-and-markets-in-roma-and-condesa",
-   "mex-lucha-libre-at-arena-mexico"
+   "mex-lucha-libre-at-arena-mexico",
+   "gym-cdmx-nuevo-jordan",
+   "gym-cdmx-pancho-rosales",
+   "gym-cdmx-romanza",
+   "gym-cdmx-bonebreakers",
+   "gym-cdmx-md-condesa",
+   "gym-cdmx-md-del-valle",
+   "gym-cdmx-team-guerra-central",
+   "city-mexico-city-training"
   ],
   "stay_quotes": [],
   "hub": true
