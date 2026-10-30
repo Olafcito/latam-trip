@@ -12536,11 +12536,11 @@
   "places": [
    "GDL"
   ],
-  "area": "Guadalajara, Tlajomulco (Santa Anita, Lopez Mateos Sur)",
+  "area": "Guadalajara metro, Tlajomulco (San Agustin, Provence Center on Lopez Mateos Sur)",
   "country": "MX",
-  "lat": 20.557,
-  "lon": -103.428,
-  "summary": "Francisco Grasso's fight team and the home of UFC fighters Alexa Grasso, Diego Lopes, Alessandro Costa, Loopy Godinez and Irene Aldana. Pro level striking, wrestling and BJJ, but the current address, price and whether paying amateur visitors get into sparring are not confirmed. Coordinates are approximate for the Tapology address.",
+  "lat": 20.5676965,
+  "lon": -103.457349,
+  "summary": "Francisco Grasso's fight team and the home of UFC fighters Alexa Grasso, Diego Lopes, Alessandro Costa, Loopy Godinez and Irene Aldana. Google Maps puts it in a plaza in San Agustin, Tlajomulco (4.9 from 53 reviews), but the visible reviews are 3 to 5 years old and sparring access for paying visitors is still not confirmed.",
   "season": "year round",
   "dec_jan": "unknown. Fighters have bouts on 21 Nov and 12 Dec 2026 (Combat Edge), so the team is active in December.",
   "price": null,
@@ -12552,40 +12552,61 @@
    "disciplines": [
     "MMA",
     "kickboxing",
+    "Muay Thai",
     "wrestling",
-    "BJJ"
+    "BJJ and no-gi grappling"
    ],
-   "coaches": "Francisco 'Pancho' Grasso head coach (uncle of Alexa Grasso). Luis Grasso also leads. Diego Lopes helps coach BJJ (EssentiallySports 2024).",
+   "coaches": "Francisco 'Pancho' Grasso head coach (uncle of Alexa Grasso). Luis Grasso also leads. Diego Lopes helps coach BJJ (EssentiallySports 2024). Reviewers name coaches Vargaz and David.",
    "fighters": "Alexa Grasso (UFC, 18-5-1), Diego Lopes (28-8, UFC 335 on 12 Dec 2026 vs Oliveira), Alessandro Costa (17-5), Loopy Godinez (15-6), Irene Aldana. Combat Edge rates 4 active fighters. Next-fight.com lists 29 fighters and 1 coach.",
    "sessions_per_week": null,
    "timetable": "A 2023 visitor trained 9 pm to 1 am and sometimes 2 or 3 sessions a day (Squamish Chief). No published timetable found.",
    "sparring": "Team sparring with UFC level fighters is described (Aldana is Grasso's main sparring partner). Access for paying amateur visitors not confirmed.",
-   "visitors": "Not published. One Canadian female fighter trained 3 weeks and was invited back (Squamish Chief, undated 2023). Spanish helps.",
+   "visitors": "Drop-in visitors have trained (a no-gi and grappling visitor, 2023 review). Price and weekly rates still unpublished. Spanish helps.",
    "price_dropin_dkk": null,
    "price_week_dkk": null,
    "price_month_dkk": null,
    "private_dkk": null,
-   "address_note": "Tapology (2026 page fetched 2026-10-30): Av. Lopez Mateos Sur 5565 Local D2, Plaza Provenza Santa Anita, Tlajomulco, CP 45645, phone 044 33 1094 2345. ESPN Deportes (Jan 2021) put the gym on Periferico Poniente in Zapopan, so it has moved or there are two sites. Current address NOT confirmed. Facebook page: TeamGrassoJalisco.",
-   "google_rating": null,
-   "google_reviews": null,
+   "address_note": "Confirmed on Google Maps 2026-10-30: the gym is in San Agustin (Tlajomulco de Zuniga), in the Provence Center plaza on Lopez Mateos Sur. The Zapopan Periferico address from 2021 is old. Maps category is Muay Thai boxing gym.",
+   "google_rating": 4.9,
+   "google_reviews": 53,
    "other_ratings": [],
-   "last_activity": "2026-10 Combat Edge roster page (fights 21 Nov and 12 Dec 2026)",
-   "what_people_say": [],
-   "neighbourhood": "If the Santa Anita address is right: Tlajomulco / Santa Anita on the road toward Lake Chapala, car or bus needed. Not verified.",
+   "last_activity": "2026-10 Combat Edge roster page (fights 21 Nov and 12 Dec 2026). Newest Google reviews seen are about 3 years old.",
+   "what_people_say": [
+    {
+     "quote": "Both coaches and students are extremely welcoming here. Coach Vargaz and Coach David are very friendly and patient as well.",
+     "site": "google maps",
+     "date": "2023",
+     "url": "https://www.google.com/maps/place/Lobo+Gym/@20.5676965,-103.457349,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ab539ba5e8b3:0xf042111231f06b1a!8m2!3d20.5676965!4d-103.457349!16s%2Fg%2F11ck6rk6vc"
+    },
+    {
+     "quote": "My family and I visited this gym because we're fans of Alexa and Irene. They treated us very well. A UFC-level gym.",
+     "site": "google maps",
+     "date": "2021",
+     "url": "https://www.google.com/maps/place/Lobo+Gym/@20.5676965,-103.457349,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ab539ba5e8b3:0xf042111231f06b1a!8m2!3d20.5676965!4d-103.457349!16s%2Fg%2F11ck6rk6vc"
+    }
+   ],
+   "neighbourhood": "San Agustin, Provenza and Santa Anita in Tlajomulco, on Lopez Mateos Sur toward Lake Chapala. Residential suburb, car or bus needed.",
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "water_km": null,
-   "water_note": "Lake Chapala is roughly 40 minutes by road from Santa Anita (general knowledge, not sourced).",
+   "water_km": 35,
+   "water_note": "Lake Chapala (Chapala town) is about 35 km by road, roughly 40 minutes by car.",
    "score": {
     "training": 9,
     "evidence": 5,
     "local_life": 4,
-    "cost": 6,
+    "cost": 8,
     "water": 4,
-    "total": 6.5
+    "total": 6.8
    },
-   "score_note": "Elite team but price, current address and visitor sparring unverified. Cost 6 is an estimate: Expatistan average gym is MXN 1,142 per month, about 410 DKK at 0.36 DKK per MXN. No room price found."
+   "score_note": "Elite team (training 9 kept). Evidence 5: 4.9 from 53 Google reviews but none recent. Cost 8 from Numbeo (2026-10-30): gym 182 DKK plus 1-bed outside centre 3,238 DKK. Local life 4 because it is a suburban plaza.",
+   "website": null,
+   "instagram": null,
+   "facebook": "https://facebook.com/lobogymprovenza/",
+   "phone": "+52 33 4960 4080",
+   "google_maps_url": "https://www.google.com/maps/place/Lobo+Gym/@20.5676965,-103.457349,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ab539ba5e8b3:0xf042111231f06b1a!8m2!3d20.5676965!4d-103.457349!16s%2Fg%2F11ck6rk6vc",
+   "address": "Av. Adolfo Lopez Mateos Sur #5565-Local D2, Provenza Residencial, 45645 San Agustin, Jalisco (Provence Center)",
+   "hours": "Mon to Fri 8:00-11:00 and 17:00-21:00 (Tue and Thu evening from 18:00), Sat and Sun closed"
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -12596,7 +12617,10 @@
    "https://squamishchief.com/local-sports/from-guadalajara-to-squamish-mats-ufc-fighter-shares-lobo-gym-experience-7417173",
    "https://espn.com.mx/mma/nota?_slug_=para-alexa-grassoel-lobo-gym-es-como-una-familia&id=3594884",
    "https://www.essentiallysports.com/ufc-mma-news-who-does-alexa-grasso-train-with-ufc-champs-gym-coach-teammates-and-more/",
-   "https://expatistan.com/price/gym/guadalajara"
+   "https://expatistan.com/price/gym/guadalajara",
+   "https://www.google.com/maps/search/Lobo+Gym+MMA+Team+Grasso+Guadalajara/",
+   "https://www.google.com/maps/place/Lobo+Gym/@20.5676965,-103.457349,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ab539ba5e8b3:0xf042111231f06b1a!8m2!3d20.5676965!4d-103.457349!16s%2Fg%2F11ck6rk6vc",
+   "https://facebook.com/lobogymprovenza/"
   ],
   "image": {
    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
@@ -14090,7 +14114,7 @@
  },
  {
   "id": "gym-sjds-fight-club",
-  "name": "Fight Club Gym (San Juan del Sur)",
+  "name": "Moju Fight (San Juan del Sur)",
   "category": "training",
   "tags": [
    "gym",
@@ -14105,11 +14129,11 @@
   "country": "NI",
   "lat": 11.2536,
   "lon": -85.8691,
-  "summary": "The town's main gym with a real boxing ring, free weights, and boxing, MMA and Ju Jitsu classes next to CrossFit and bootcamp. It is a fitness-first gym with combat classes, and the only organised fight events nearby were three Pacific Coast Fight League cards in San Juan del Sur from 2022 to 2023.",
+  "summary": "Fight gym in San Juan del Sur a few blocks from the beach, now called Moju Fight according to Simon (formerly listed as Fight Club Gym, with a boxing ring and boxing, MMA and Ju Jitsu classes). US$40 a month; coaches, timetable and sparring still to check.",
   "season": "year round",
   "dec_jan": "Unknown. Dec 8 2022 PCFL 2 fight card was held in San Juan del Sur, so the town has fight activity in December.",
-  "price": "March 2020: visitors US$5 drop-in, US$15 week, US$30 month. Nicaraguans US$20 month.",
-  "price_dkk": 194,
+  "price": "US$40 a month (Simon, Oct 2026)",
+  "price_dkk": 258,
   "duration": "monthly membership",
   "requirements": "None stated. Class schedule was published as an image in March 2020, current times need a message.",
   "details": {
@@ -14129,7 +14153,7 @@
    "visitors": "Drop-in, weekly and monthly rates for visitors (2020 prices). English and Spanish unknown.",
    "price_dropin_dkk": 32,
    "price_week_dkk": 97,
-   "price_month_dkk": 194,
+   "price_month_dkk": 258,
    "private_dkk": null,
    "google_rating": null,
    "google_reviews": null,
@@ -14175,7 +14199,8 @@
     "water": 10,
     "total": 5.4
    },
-   "score_note": "Training 4 because combat classes sit inside a general gym and no coaches, fighters or sparring were found. Price 2020 USD x 6.45. No room price found, cost 8 is an estimate from the low gym fee."
+   "score_note": "Training 4 because combat classes sit inside a general gym and no coaches, fighters or sparring were found. Price 2020 USD x 6.45. No room price found, cost 8 is an estimate from the low gym fee. | 30 Oct 2026: Simon reports the gym now runs as Moju Fight, US$40 a month (about 258 DKK). Not yet confirmed that it is the same gym as Fight Club Gym.",
+   "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Moju+Fight+San+Juan+del+Sur"
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -21613,7 +21638,7 @@
  },
  {
   "id": "gym-guadalajara-samurai-fc",
-  "name": "Samurai FC (Guadalajara)",
+  "name": "Samurai Fight Center (Guadalajara), permanently closed",
   "category": "training",
   "tags": [
    "gym",
@@ -21625,9 +21650,9 @@
   ],
   "area": "Guadalajara, Altamira (Zapopan)",
   "country": "MX",
-  "lat": 20.71,
-  "lon": -103.38,
-  "summary": "Fight gym in Altamira, Zapopan, recommended by people Simon read as the alternative to Lobo Gym depending on where you live. Details still to be checked on Google Maps.",
+  "lat": 20.7132352,
+  "lon": -103.3958117,
+  "summary": "Samurai Fight Center in Altamira, Zapopan had a ring, an MMA cage and a tatami and was called one of the most renowned schools in Guadalajara (4.8 from 144 Google reviews). Google Maps marks it Permanently closed on 2026-10-30 and no new listing under the name exists, so it should not be used as a training base unless the gym confirms it moved.",
   "season": "year round",
   "dec_jan": null,
   "price": null,
@@ -21635,26 +21660,59 @@
   "duration": "monthly membership",
   "requirements": null,
   "details": {
-   "gym_kind": null,
-   "disciplines": null,
-   "address": "Av. de las Americas 2157, Altamira, 45160 Zapopan, Jal., Mexico",
-   "neighbourhood": "Altamira, just north of Providencia and near Plaza Patria, a residential middle-class area in the north-west of the city",
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA",
+    "BJJ",
+    "boxing",
+    "Muay Thai",
+    "fitness"
+   ],
+   "address": "Av. de las Americas 2157, Altamira, 45160 Zapopan, Jalisco",
+   "neighbourhood": "Altamira, just north of Providencia and near Plaza Patria, a residential middle-class area in the north-west of the city.",
    "website": null,
    "instagram": null,
    "facebook": null,
-   "phone": null,
-   "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Samurai+FC+Av.+de+las+Americas+2157+Zapopan",
-   "hours": null,
-   "google_rating": null,
-   "google_reviews": null,
-   "what_people_say": [],
-   "score": null,
-   "score_note": "Added from Simon's tip on 30 Oct 2026; not yet researched. Coordinates approximate for the address."
+   "phone": "+52 33 1983 2264",
+   "google_maps_url": "https://www.google.com/maps/place/Samurai+Fight+Center/@20.7132352,-103.3958117,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afb58161ed23:0xb4e7f7ff2501cfd7!8m2!3d20.7132352!4d-103.3958117!16s%2Fg%2F11cn93npsb",
+   "hours": "Permanently closed on Google Maps (2026-10-30), no hours listed",
+   "google_rating": 4.8,
+   "google_reviews": 144,
+   "what_people_say": [
+    {
+     "quote": "Excellent space for MMA, BJJ, and fitness training. It's one of the most renowned schools in Guadalajara.",
+     "site": "google maps",
+     "date": "2025",
+     "url": "https://www.google.com/maps/place/Samurai+Fight+Center/@20.7132352,-103.3958117,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afb58161ed23:0xb4e7f7ff2501cfd7!8m2!3d20.7132352!4d-103.3958117!16s%2Fg%2F11cn93npsb"
+    },
+    {
+     "quote": "The best martial arts academy in Mexico is a place where you'll experience personal growth.",
+     "site": "google maps",
+     "date": "2025",
+     "url": "https://www.google.com/maps/place/Samurai+Fight+Center/@20.7132352,-103.3958117,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afb58161ed23:0xb4e7f7ff2501cfd7!8m2!3d20.7132352!4d-103.3958117!16s%2Fg%2F11cn93npsb"
+    }
+   ],
+   "score": {
+    "training": 2,
+    "evidence": 2,
+    "local_life": 7,
+    "cost": 8,
+    "water": 4,
+    "total": 4.1
+   },
+   "score_note": "Scored low because Google Maps shows Permanently closed (2026-10-30). Before closing it had 4.8 from 144 reviews and a ring, cage and tatami, so its pre-closure level looked like training 6. Ask the coordinator whether to hide it. Cost 8 from Numbeo gym plus 1-bed outside centre.",
+   "water_km": 45,
+   "last_activity": "Newest Google reviews about a year old (2025). Marked permanently closed on Google Maps 2026-10-30.",
+   "visitors": "Not applicable while closed.",
+   "sparring": "Not stated.",
+   "water_note": "Lake Chapala is about 45 km away."
   },
-  "researched": false,
+  "researched": true,
   "checked_at": "2026-10-30",
   "sources": [
-   "https://www.google.com/maps/search/?api=1&query=Samurai+FC+Av.+de+las+Americas+2157+Zapopan"
+   "https://www.google.com/maps/search/?api=1&query=Samurai+FC+Av.+de+las+Americas+2157+Zapopan",
+   "https://www.google.com/maps/search/Samurai+FC+Av.+de+las+Americas+2157+Altamira+Zapopan/",
+   "https://www.google.com/maps/place/Samurai+Fight+Center/@20.7132352,-103.3958117,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afb58161ed23:0xb4e7f7ff2501cfd7!8m2!3d20.7132352!4d-103.3958117!16s%2Fg%2F11cn93npsb"
   ],
   "image": {
    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
@@ -22131,6 +22189,408 @@
    "licence": "CC BY 3.0",
    "w": 2816,
    "h": 2112
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-tiger-thai-mma",
+  "name": "Tiger Thai MMA (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "mma",
+   "boxing"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Guadalajara, Americana (central)",
+  "country": "MX",
+  "lat": 20.6712292,
+  "lon": -103.3680513,
+  "summary": "Muay Thai, MMA and boxing gym in Colonia Americana, a central bar-and-cafe district (4.8 from 94 Google reviews). Two visitors from three months ago say it welcomes drop-ins and visiting trainers.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular weekday hours on Google Maps 2026-10-30, no December notice.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Drop-ins accepted per recent reviews.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "MMA",
+    "boxing"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Drop-ins welcome per two visitor reviews (2026-07). Spanish and some English.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "Americana, Lafayette and Providencia: central, cafes, walkable, many foreigners and locals.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Lake Chapala is about 45 km, one hour by bus or car.",
+   "website": "http://www.tigerthaimma.com/",
+   "instagram": null,
+   "facebook": null,
+   "phone": "+52 33 1455 5813",
+   "google_maps_url": "https://www.google.com/maps/place/Tiger+Thai+MMA/@20.6712292,-103.3680513,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ac190067bb85:0x55c89126dfb7ae75!8m2!3d20.6712292!4d-103.3680513!16s%2Fg%2F1ptyglvgj",
+   "address": "C. Miguel Lerdo de Tejada 1973, Col. Americana, 44150 Guadalajara",
+   "hours": "Mon to Fri 6:00-10:00 and 17:00-22:00, Sat and Sun closed",
+   "google_rating": 4.8,
+   "google_reviews": 94,
+   "last_activity": "2026-07 Google reviews (3 months old)",
+   "what_people_say": [
+    {
+     "quote": "Everyone was very friendly and approachable! Very accommodating of drop-ins",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Tiger+Thai+MMA/@20.6712292,-103.3680513,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ac190067bb85:0x55c89126dfb7ae75!8m2!3d20.6712292!4d-103.3680513!16s%2Fg%2F1ptyglvgj"
+    },
+    {
+     "quote": "My friends and I were visiting Guadalajara and trained Tiger Thai here. The trainers are very friendly and helped us with anything we needed.",
+     "site": "google maps",
+     "date": "2026-07",
+     "url": "https://www.google.com/maps/place/Tiger+Thai+MMA/@20.6712292,-103.3680513,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ac190067bb85:0x55c89126dfb7ae75!8m2!3d20.6712292!4d-103.3680513!16s%2Fg%2F1ptyglvgj"
+    },
+    {
+     "quote": "Almost a full year with great instructors in MMA, Boxing, and Muay Thai. Very professional, and they're also going to compete.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/Tiger+Thai+MMA/@20.6712292,-103.3680513,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ac190067bb85:0x55c89126dfb7ae75!8m2!3d20.6712292!4d-103.3680513!16s%2Fg%2F1ptyglvgj"
+    }
+   ],
+   "score_note": "Recent visitor reviews and drop-in policy, but no fighter or sparring evidence, so training 6. Cost 8 from Numbeo (2026-10-30): gym 182 DKK plus 1-bed outside centre 3,238 DKK is about 3,400 DKK a month. Water 4 (Chapala about 45 km).",
+   "water_km": 42.8,
+   "score": {
+    "training": 6,
+    "evidence": 7,
+    "local_life": 8,
+    "cost": 8,
+    "water": 4,
+    "total": 6.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+guadalajara/",
+   "https://www.google.com/maps/place/Tiger+Thai+MMA/@20.6712292,-103.3680513,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ac190067bb85:0x55c89126dfb7ae75!8m2!3d20.6712292!4d-103.3680513!16s%2Fg%2F1ptyglvgj",
+   "http://www.tigerthaimma.com/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-monsters-mma",
+  "name": "Monsters MMA (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "bjj"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Guadalajara, Blanco y Cuellar (east)",
+  "country": "MX",
+  "lat": 20.6752078,
+  "lon": -103.3090128,
+  "summary": "Large MMA school in the east of the city (4.9 from 101 Google reviews, the newest from last month) with a cafe on site and kids classes. Reviews praise space, equipment and staff but say little about striking depth or sparring.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular weekday hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "MMA",
+    "BJJ",
+    "kids classes"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "Blanco y Cuellar, Santa Tere and Americana, residential east-central area.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Lake Chapala is about 45 km, one hour by bus or car.",
+   "website": null,
+   "instagram": null,
+   "facebook": "https://www.facebook.com/MMAMONSTERS/",
+   "phone": "+52 33 2328 7260",
+   "google_maps_url": "https://www.google.com/maps/place/Monsters+MMA/@20.6752078,-103.3090128,17z/data=!3m1!4b1!4m6!3m5!1s0x8428b1792f94b21b:0xd77a7013cf52135c!8m2!3d20.6752078!4d-103.3090128!16s%2Fg%2F11hcm94z2w",
+   "address": "Calle Federacion 1996, Blanco y Cuellar, 44730 Guadalajara",
+   "hours": "Mon, Wed, Fri 7:00-9:00 and 17:00-21:00, Tue and Thu 17:00-21:00, Sat and Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 101,
+   "last_activity": "2026-09 Google review (a month old)",
+   "what_people_say": [
+    {
+     "quote": "One of the best MMA gyms. Highly recommended; they also have a great cafe on-site.",
+     "site": "google maps",
+     "date": "2026-09",
+     "url": "https://www.google.com/maps/place/Monsters+MMA/@20.6752078,-103.3090128,17z/data=!3m1!4b1!4m6!3m5!1s0x8428b1792f94b21b:0xd77a7013cf52135c!8m2!3d20.6752078!4d-103.3090128!16s%2Fg%2F11hcm94z2w"
+    },
+    {
+     "quote": "Very spacious place and the staff is very attentive; the equipment is suitable for the classes.",
+     "site": "google maps",
+     "date": "2026-08",
+     "url": "https://www.google.com/maps/place/Monsters+MMA/@20.6752078,-103.3090128,17z/data=!3m1!4b1!4m6!3m5!1s0x8428b1792f94b21b:0xd77a7013cf52135c!8m2!3d20.6752078!4d-103.3090128!16s%2Fg%2F11hcm94z2w"
+    }
+   ],
+   "score_note": "101 recent reviews at 4.9 but general praise and a family and kids feel, no sparring evidence, so training 5. Cost 8 from Numbeo (2026-10-30): gym 182 DKK plus 1-bed outside centre 3,238 DKK is about 3,400 DKK a month.",
+   "water_km": 42.0,
+   "score": {
+    "training": 5,
+    "evidence": 7,
+    "local_life": 7,
+    "cost": 8,
+    "water": 4,
+    "total": 6.1
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/kickboxing+guadalajara/",
+   "https://www.google.com/maps/place/Monsters+MMA/@20.6752078,-103.3090128,17z/data=!3m1!4b1!4m6!3m5!1s0x8428b1792f94b21b:0xd77a7013cf52135c!8m2!3d20.6752078!4d-103.3090128!16s%2Fg%2F11hcm94z2w",
+   "https://www.facebook.com/MMAMONSTERS/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-elite-fighters",
+  "name": "Elite Fighters (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "mma",
+   "bjj"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Guadalajara, Circunvalacion Vallarta",
+  "country": "MX",
+  "lat": 20.6837046,
+  "lon": -103.3816046,
+  "summary": "Muay Thai and MMA academy with striking and gi and no-gi jiu-jitsu classes, rated 4.9 from 67 Google reviews. The newest review is a year old and it offers a trial class and private lessons.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Trial class offered per a review.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "MMA",
+    "BJJ (gi and no-gi)"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Trial class and private lessons per reviews.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "Circunvalacion Vallarta and Americana, central and walkable.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Lake Chapala is about 45 km, one hour by bus or car.",
+   "website": null,
+   "instagram": null,
+   "facebook": null,
+   "phone": "+52 33 3661 5458",
+   "google_maps_url": "https://www.google.com/maps/place/Elite+Fighters/@20.6837046,-103.3816046,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ae152bcb41a9:0xe199409168a26f4f!8m2!3d20.6837046!4d-103.3816046!16s%2Fg%2F11c2kkqqhy",
+   "address": "Av. Adolfo Lopez Mateos Nte 555-B, Circunvalacion Vallarta, 44680 Guadalajara",
+   "hours": "Mon to Fri 7:00-9:00 and 16:00-21:00, Sat 7:00-8:00, Sun closed",
+   "google_rating": 4.9,
+   "google_reviews": 67,
+   "last_activity": "2025 Google review (a year old)",
+   "what_people_say": [
+    {
+     "quote": "This mixed martial arts academy is highly recommended for both beginners and advanced athletes. They offer striking classes focused on Muay Thai.",
+     "site": "google maps",
+     "date": "2025-10",
+     "url": "https://www.google.com/maps/place/Elite+Fighters/@20.6837046,-103.3816046,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ae152bcb41a9:0xe199409168a26f4f!8m2!3d20.6837046!4d-103.3816046!16s%2Fg%2F11c2kkqqhy"
+    },
+    {
+     "quote": "If you're looking for a place to train, you can take a trial class, which will give you a good idea of what it's like.",
+     "site": "google maps",
+     "date": "2024",
+     "url": "https://www.google.com/maps/place/Elite+Fighters/@20.6837046,-103.3816046,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ae152bcb41a9:0xe199409168a26f4f!8m2!3d20.6837046!4d-103.3816046!16s%2Fg%2F11c2kkqqhy"
+    }
+   ],
+   "score_note": "Solid reviews for beginners and advanced, but no recent reviews and no fighter or sparring evidence, so training 6. Cost 8 from Numbeo (2026-10-30): gym 182 DKK plus 1-bed outside centre 3,238 DKK is about 3,400 DKK a month.",
+   "water_km": 44.5,
+   "score": {
+    "training": 6,
+    "evidence": 5,
+    "local_life": 7,
+    "cost": 8,
+    "water": 4,
+    "total": 6.2
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+guadalajara/",
+   "https://www.google.com/maps/place/Elite+Fighters/@20.6837046,-103.3816046,17z/data=!3m1!4b1!4m6!3m5!1s0x8428ae152bcb41a9:0xe199409168a26f4f!8m2!3d20.6837046!4d-103.3816046!16s%2Fg%2F11c2kkqqhy"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-axihuayan-muay-thai",
+  "name": "Axihuayan Muay Thai (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "grappling"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Guadalajara, Santa Teresita",
+  "country": "MX",
+  "lat": 20.6869063,
+  "lon": -103.3630676,
+  "summary": "Muay Thai academy with grappling and a community feel in Santa Teresita, rated 5.0 from 60 Google reviews. Reviewers describe intense classes with coach feedback, but the newest review is 11 months old.",
+  "season": "year round",
+  "dec_jan": "unknown. Regular hours on Google Maps 2026-10-30, Saturday morning class.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Multi-level classes, beginners welcome.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "grappling"
+   ],
+   "coaches": "Rodri (first name from a review).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Multi-level classes, beginners welcome per reviews.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "other_ratings": [],
+   "neighbourhood": "Santa Teresita and Americana, central residential with cafes.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_note": "Lake Chapala is about 45 km, one hour by bus or car.",
+   "website": null,
+   "instagram": "https://www.instagram.com/axihuayanmuaythai/",
+   "facebook": null,
+   "phone": "+52 33 2613 4707",
+   "google_maps_url": "https://www.google.com/maps/place/Axihuayan+Muay+Thai/@20.6869063,-103.3630676,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afc7856e9f93:0x9f913a034792db55!8m2!3d20.6869063!4d-103.3630676!16s%2Fg%2F11rfpbg6v9",
+   "address": "C. General Eulogio Parra 1416, Santa Teresita, 44600 Guadalajara",
+   "hours": "Mon, Wed, Fri 7:30-11:00 and 18:30-21:30, Tue and Thu 8:15-11:00 and 18:15-21:30, Sat 9:00-12:00, Sun closed",
+   "google_rating": 5.0,
+   "google_reviews": 60,
+   "last_activity": "2025-11 Google review (11 months old)",
+   "what_people_say": [
+    {
+     "quote": "Great Muay Thai gym. Really strong and knowledgeable instructors. Very community-driven. Classes are intense and focused.",
+     "site": "google maps",
+     "date": "2024",
+     "url": "https://www.google.com/maps/place/Axihuayan+Muay+Thai/@20.6869063,-103.3630676,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afc7856e9f93:0x9f913a034792db55!8m2!3d20.6869063!4d-103.3630676!16s%2Fg%2F11rfpbg6v9"
+    },
+    {
+     "quote": "The coach trains with you the entire time and shows you exactly what to do.",
+     "site": "google maps",
+     "date": "2023",
+     "url": "https://www.google.com/maps/place/Axihuayan+Muay+Thai/@20.6869063,-103.3630676,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afc7856e9f93:0x9f913a034792db55!8m2!3d20.6869063!4d-103.3630676!16s%2Fg%2F11rfpbg6v9"
+    }
+   ],
+   "score_note": "Pure Muay Thai with community feel, but no fighters or sparring days named and few recent reviews, so training 6. Cost 8 from Numbeo (2026-10-30): gym 182 DKK plus 1-bed outside centre 3,238 DKK is about 3,400 DKK a month.",
+   "water_km": 44.3,
+   "score": {
+    "training": 6,
+    "evidence": 5,
+    "local_life": 8,
+    "cost": 8,
+    "water": 4,
+    "total": 6.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.google.com/maps/search/muay+thai+guadalajara/",
+   "https://www.google.com/maps/place/Axihuayan+Muay+Thai/@20.6869063,-103.3630676,17z/data=!3m1!4b1!4m6!3m5!1s0x8428afc7856e9f93:0x9f913a034792db55!8m2!3d20.6869063!4d-103.3630676!16s%2Fg%2F11rfpbg6v9",
+   "https://www.instagram.com/axihuayanmuaythai/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
   },
   "image_source": "place",
   "saved_in": []
