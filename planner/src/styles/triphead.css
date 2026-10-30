@@ -92,6 +92,22 @@
 .tg-beds a:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 2px; }
 .tg-beds li[data-sus] span:not(:first-child) { color: var(--faint); }
 .tg-beds small { display: block; font-size: var(--fs-label); line-height: 1.2; }
+.tg-finds { display: grid; margin: 0; padding: 0; list-style: none; }
+.tg-finds li { border-top: 1px solid var(--line); }
+.tg-finds li:first-child { border-top: 0; }
+.tg-finds button, .tg-more {
+  border: 0; background: none; font: inherit; cursor: pointer; touch-action: manipulation;
+  user-select: none; -webkit-user-select: none; transition: transform var(--t-fast) var(--ease-out);
+}
+.tg-finds button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 6px 0; color: var(--text); font-size: 13px; text-align: left; }
+.tg-finds button:focus-visible, .tg-more:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 2px; }
+.tg-find { display: grid; flex: 1; gap: 1px; min-width: 0; }
+.tg-find b, .tg-find small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tg-find b { font-weight: 500; }
+.tg-find small { font-size: var(--fs-label); color: var(--faint); }
+.tg-find small[data-saved] { color: var(--flight); }
+.tg-score { flex: none; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); }
+.tg-more { margin-top: 2px; padding: 6px 0; color: var(--muted); font-size: 13px; }
 .tg-none { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
 .tg-cr { margin: 12px 0 0; font-size: var(--fs-label); color: var(--faint); }
 
@@ -100,8 +116,10 @@
   .tg-p:not([data-open]) button:hover .tg-name { color: var(--text); }
   .tg-x:hover { background: var(--surface-3); color: var(--text); }
   .tg-beds a:hover { text-decoration-color: currentColor; }
+  .tg-finds button:hover b, .tg-more:hover { color: var(--flight); }
 }
 .tg-p button:active { transform: scale(0.98); transition: transform 120ms var(--ease-out); }
+.tg-finds button:active, .tg-more:active { transform: scale(0.98); }
 
 /* a phone: every place a small card with its photo and name, in a row to swipe */
 @media (max-width: 560px) {
@@ -117,6 +135,7 @@
   .tg-meta, .tg-p[data-open] .tg-meta { left: 10px; right: 10px; bottom: 8px; opacity: 1; }
   .tg-from { display: none; }
   .tg-cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .tg-finds button, .tg-more { min-height: 44px; }
   /* the phone strip drops the arrival day, so the itinerary carries it */
   .tg-stay { display: grid; justify-items: end; }
   .tg-x { width: 40px; height: 40px; margin: -10px -10px 0 0; }
@@ -126,4 +145,6 @@
   .tg-p, .tg-p img, .tg-p button::after, .tg-p button::before, .tg-meta, .tg-it { transition: none; }
   .tg-card, .tg-it[data-open='true'] .tg-card { transform: none; transition: opacity var(--t-med) ease; }
   .tg-p button:active { transform: none; }
+  .tg-finds button, .tg-more { transition: none; }
+  .tg-finds button:active, .tg-more:active { transform: none; }
 }

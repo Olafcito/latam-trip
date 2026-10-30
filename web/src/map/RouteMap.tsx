@@ -51,6 +51,9 @@ export interface RouteMapProps {
   onLeg?(leg: TripLeg): void
   /** The modes switched on with the Bus, Boat and Flight toggles, told to the host on every change. */
   onFamilies?(families: Set<Family>): void
+  /** A card the host asks the map to open, for example from a row outside the map. Told back on onCardOpen, so the host can clear it. */
+  card?: CardRef | null
+  onCardOpen?(): void
   /** A pane the host renders on the right of the map; the camera keeps clear of it. */
   side?: ReactNode
   sideWidth?: number
@@ -90,7 +93,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, side = null, sideWidth = 360, sideMini = false, onMode }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, side = null, sideWidth = 360, sideMini = false, onMode }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -467,6 +470,15 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     live.current.cardOpen = true
     mm.openCard(ref)
   }
+
+  // a card the host asked for
+  const openAsked = useRef(openCard)
+  openAsked.current = openCard
+  useEffect(() => {
+    if (!card) return
+    openAsked.current(card)
+    onCardOpen?.()
+  }, [card, onCardOpen])
 
   const act = useRef({ select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode, dropCards })
   act.current = { select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode, dropCards }
