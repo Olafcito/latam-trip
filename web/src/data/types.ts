@@ -36,6 +36,8 @@ export interface Place {
   image?: { url: string; page?: string; credit?: string; licence?: string; w?: number; h?: number } | null
   hostels?: Hostel[]
   hostel_note?: string | null
+  experience_ids?: string[] | null
+  saved_in?: string[] | null
 }
 
 export type StopType = 'stop' | 'change' | 'border' | 'layover'
@@ -188,7 +190,7 @@ export interface Experience<D = Record<string, unknown>> {
   places?: string[]
   image?: Place['image']
   image_source?: string | null
-  saved_in?: unknown
+  saved_in?: string[] | null
   sources?: string[]
   details?: D | null
 }
@@ -318,12 +320,34 @@ export interface CityDetails {
 export type GymRow = Experience<GymDetails>
 export type CityRow = Experience<CityDetails>
 
+/** One row of experience_categories.json, for the name a category shows under. */
+export interface ExperienceCategory {
+  id: string
+  name: string
+}
+
+/** One saved place or experience in lists.json. */
+export interface SavedItem {
+  type: 'place' | 'experience'
+  id: string
+  note?: string | null
+  added?: string | null
+}
+
+export interface SavedList {
+  id: string
+  name: string
+  items: SavedItem[]
+}
+
 export interface MapData {
   places: Place[]
   connections: Connection[]
   countries: Country[]
   flights?: AirportFlight[]
   experiences?: Experience[]
+  categories?: ExperienceCategory[]
+  lists?: SavedList[]
 }
 
 /** The three route families the map draws and the toggles switch. */
