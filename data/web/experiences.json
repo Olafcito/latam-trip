@@ -11988,6 +11988,20 @@
     "cost": 4,
     "water": 4,
     "total": 4.7
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/San-Salvador",
+    "proxy_for": null,
+    "col_index": 42.9,
+    "rent_index": 21.7,
+    "col_plus_rent_index": 33.0,
+    "single_month_no_rent_dkk": 4716,
+    "rent_1bed_outside_dkk": 4966,
+    "meal_cheap_dkk": 44,
+    "gym_month_dkk": 193,
+    "monthly_total_dkk": 9682,
+    "contributors_note": "340 entries, 26 contributors, last update 24 Oct 2026",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -12112,6 +12126,20 @@
     "cost": 5,
     "water": 3,
     "total": 4.7
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/San-Pedro-Sula",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4316,
+    "rent_1bed_outside_dkk": 2688,
+    "meal_cheap_dkk": 48,
+    "gym_month_dkk": 244,
+    "monthly_total_dkk": 7004,
+    "contributors_note": "Low sample: 62 entries, 4 contributors, last update 2 Oct 2026",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -12180,6 +12208,20 @@
     "cost": 5,
     "water": 2,
     "total": 4.1
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Tegucigalpa",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4316,
+    "rent_1bed_outside_dkk": 3007,
+    "meal_cheap_dkk": 48,
+    "gym_month_dkk": 239,
+    "monthly_total_dkk": 7323,
+    "contributors_note": "128 entries, 9 contributors, last update 2 Oct 2026. single_month_no_rent from San Pedro Sula (no estimate on own page)",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -12598,7 +12640,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 7453,
    "neighbourhoods": "Not verified. Near Lobo Gym's Santa Anita address that would be Tlajomulco or the Chapala road. Zapopan for Black Martials and MMA Sportcenter.",
    "safety": "Not researched.",
    "water_note": "Lake Chapala and Ajijic are roughly 45 to 60 minutes from Guadalajara by bus or car (general knowledge).",
@@ -12611,6 +12653,20 @@
     "cost": 6,
     "water": 3,
     "total": 6.6
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Guadalajara",
+    "proxy_for": null,
+    "col_index": 40.5,
+    "rent_index": 17.4,
+    "col_plus_rent_index": 29.8,
+    "single_month_no_rent_dkk": 4215,
+    "rent_1bed_outside_dkk": 3238,
+    "meal_cheap_dkk": 85,
+    "gym_month_dkk": 182,
+    "monthly_total_dkk": 7453,
+    "contributors_note": "761 entries, 48 contributors, last update 28 Oct 2026",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -13338,7 +13394,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 3874,
    "neighbourhoods": "Not researched. City centre or Equipetrol are the common visitor areas (general knowledge, unchecked).",
    "safety": "A Los Tiempos headline of 27 Apr 2026 reports three people shot and a Umopar patrol ambushed in the Santa Cruz area. Treat as an unresolved question and check current advice.",
    "water_note": "No sea or beach. Nothing walkable found.",
@@ -13351,6 +13407,20 @@
     "cost": 8,
     "water": 2,
     "total": 6.2
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Santa-Cruz-Bolivia",
+    "proxy_for": null,
+    "col_index": 19.8,
+    "rent_index": 10.1,
+    "col_plus_rent_index": 15.3,
+    "single_month_no_rent_dkk": 2295,
+    "rent_1bed_outside_dkk": 1579,
+    "meal_cheap_dkk": 13,
+    "gym_month_dkk": 126,
+    "monthly_total_dkk": 3874,
+    "contributors_note": "376 entries, 28 contributors, last update 24 Oct 2026",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -13401,7 +13471,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 3023,
    "neighbourhoods": "Southern zone near Los Pinos (Calacoto, Obrajes) is likely. Unchecked.",
    "safety": "Not researched.",
    "water_note": "No sea. Lake Titicaca is a day trip.",
@@ -13414,6 +13484,20 @@
     "cost": 7,
     "water": 3,
     "total": 5.6
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/La-Paz",
+    "proxy_for": null,
+    "col_index": 16.5,
+    "rent_index": 5.0,
+    "col_plus_rent_index": 11.2,
+    "single_month_no_rent_dkk": 1938,
+    "rent_1bed_outside_dkk": 1085,
+    "meal_cheap_dkk": 14,
+    "gym_month_dkk": 103,
+    "monthly_total_dkk": 3023,
+    "contributors_note": "233 entries, 16 contributors, last update 24 Oct 2026",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -13464,7 +13548,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 2946,
    "neighbourhoods": "Not researched.",
    "safety": "Not researched.",
    "water_note": "No sea. Valley city at about 2,550 m.",
@@ -13477,6 +13561,20 @@
     "cost": 9,
     "water": 2,
     "total": 5.1
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Cochabamba",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 2295,
+    "rent_1bed_outside_dkk": 651,
+    "meal_cheap_dkk": 11,
+    "gym_month_dkk": 142,
+    "monthly_total_dkk": 2946,
+    "contributors_note": "123 entries, 9 contributors, last update 24 Oct 2026. Rent of 101 USD and meal of 1.68 USD look too low. single_month_no_rent from Santa Cruz de la Sierra (no estimate on own page)",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -13864,7 +13962,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 5538,
    "neighbourhoods": "Unverified. Bello Horizonte and Zona Hippos are where two gyms are listed.",
    "safety": "Not researched this round.",
    "water_note": "Lake Managua is polluted and not for swimming. Beaches are 1 to 2 hours by road.",
@@ -13877,6 +13975,20 @@
     "cost": 6,
     "water": 3,
     "total": 5.1
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Managua",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4371,
+    "rent_1bed_outside_dkk": 1167,
+    "meal_cheap_dkk": 64,
+    "gym_month_dkk": 224,
+    "monthly_total_dkk": 5538,
+    "contributors_note": "351 entries, 15 contributors, last update 28 Oct 2026. Rent of 181 USD looks too low for a 1 bed",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -13929,7 +14041,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 5538,
    "neighbourhoods": "Not researched for gyms. Hostels are central, near the cathedral per Hostelz.",
    "safety": "Not researched this round.",
    "water_note": "Las Penitas beach is about 35 minutes by bus from Leon per the route data in this repo.",
@@ -13942,6 +14054,20 @@
     "cost": 7,
     "water": 5,
     "total": 3.5
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Managua",
+    "proxy_for": "Managua",
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4371,
+    "rent_1bed_outside_dkk": 1167,
+    "meal_cheap_dkk": 64,
+    "gym_month_dkk": 224,
+    "monthly_total_dkk": 5538,
+    "contributors_note": "Leon page has 2 contributors, last update 27 Jul 2025, rent and gym empty, so Managua used",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -13987,7 +14113,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 6629,
    "neighbourhoods": "Not researched.",
    "safety": "Not researched this round.",
    "water_note": "Lake Nicaragua is next to the old town, a short walk or taxi to the lakefront. Swimming quality not checked.",
@@ -14000,6 +14126,20 @@
     "cost": 7,
     "water": 8,
     "total": 3.4
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Granada-Nicaragua",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4371,
+    "rent_1bed_outside_dkk": 2258,
+    "meal_cheap_dkk": 27,
+    "gym_month_dkk": null,
+    "monthly_total_dkk": 6629,
+    "contributors_note": "Very low sample and stale: 5 contributors in 18 months, last update 30 Apr 2025, gym empty. Meal of 4.24 USD looks too low. single_month_no_rent from Managua (no estimate on own page)",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -14045,7 +14185,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 5538,
    "neighbourhoods": "Town centre near the beach and bus stop.",
    "safety": "Not researched this round.",
    "water_note": "Bay beach walkable. Surf breaks nearby by shuttle.",
@@ -14065,6 +14205,20 @@
     "cost": 8,
     "water": 10,
     "total": 5.4
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Managua",
+    "proxy_for": "Managua",
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4371,
+    "rent_1bed_outside_dkk": 1167,
+    "meal_cheap_dkk": 64,
+    "gym_month_dkk": 224,
+    "monthly_total_dkk": 5538,
+    "contributors_note": "Own page not read (slug failed, retry blocked by Numbeo monthly page limit), Managua used",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -14551,7 +14705,7 @@
    "room_month_dkk": 3000,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 11749,
    "neighbourhoods": "Not verified. Bella Vista, El Cangrejo, San Francisco or Casco Viejo hostels are likely, with taxi or bus to the gym.",
    "safety": "Curundu and El Chorrillo are rough barrios. Not researched further.",
    "water_note": "Bay of Panama and the Cinta Costera in the city. Real swimming beaches are an hour or more away.",
@@ -14564,6 +14718,20 @@
     "cost": 6,
     "water": 5,
     "total": 5.1
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Panama-City",
+    "proxy_for": null,
+    "col_index": 49.4,
+    "rent_index": 27.9,
+    "col_plus_rent_index": 39.4,
+    "single_month_no_rent_dkk": 5516,
+    "rent_1bed_outside_dkk": 6233,
+    "meal_cheap_dkk": 74,
+    "gym_month_dkk": 283,
+    "monthly_total_dkk": 11749,
+    "contributors_note": "768 entries, 65 contributors, last update 28 Oct 2026",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -14613,7 +14781,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 11749,
    "neighbourhoods": "Bocas Town on Isla Colon. Not researched.",
    "safety": "Not researched.",
    "water_note": "Caribbean sea in town, beaches by boat or bus.",
@@ -14626,6 +14794,20 @@
     "cost": 6,
     "water": 10,
     "total": 4.8
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Panama-City",
+    "proxy_for": "Panama City",
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 5516,
+    "rent_1bed_outside_dkk": 6233,
+    "meal_cheap_dkk": 74,
+    "gym_month_dkk": 283,
+    "monthly_total_dkk": 11749,
+    "contributors_note": "Own page not read (retry blocked by Numbeo monthly page limit), Panama City used. Bocas is likely cheaper for rent",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -15515,7 +15697,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 8226,
    "neighbourhoods": "Zona 10 and Zona 15 are the usual expat zones, not verified.",
    "safety": "Not researched, use normal big city caution.",
    "water_note": "No water in the city.",
@@ -15528,6 +15710,20 @@
     "cost": 6,
     "water": 1,
     "total": 4.7
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Guatemala-City",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4716,
+    "rent_1bed_outside_dkk": 3510,
+    "meal_cheap_dkk": 44,
+    "gym_month_dkk": 242,
+    "monthly_total_dkk": 8226,
+    "contributors_note": "292 entries, 29 contributors, last update 24 Oct 2026. single_month_no_rent from San Salvador (no estimate on own page)",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -15598,6 +15794,20 @@
     "cost": 6,
     "water": 2,
     "total": 4.9
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Antigua-Guatemala",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4716,
+    "rent_1bed_outside_dkk": 3370,
+    "meal_cheap_dkk": 44,
+    "gym_month_dkk": 265,
+    "monthly_total_dkk": 8086,
+    "contributors_note": "Low sample: 30 contributors in 18 months, some data estimated, last update 2 Oct 2026. single_month_no_rent from San Salvador (no estimate on own page)",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -15711,7 +15921,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 7247,
    "neighbourhoods": "Central Xela near the Spanish schools.",
    "safety": "Not researched.",
    "water_note": "No water nearby.",
@@ -15724,6 +15934,20 @@
     "cost": 7,
     "water": 1,
     "total": 5.1
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Quetzaltenango-Guatemala",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 4716,
+    "rent_1bed_outside_dkk": 2531,
+    "meal_cheap_dkk": 44,
+    "gym_month_dkk": 211,
+    "monthly_total_dkk": 7247,
+    "contributors_note": "Very low sample and stale: 2 contributors in 18 months, last update 30 Apr 2025. single_month_no_rent from San Salvador (no estimate on own page)",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -16250,7 +16474,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 12531,
    "neighbourhoods": "Barrio Escalante (hostels, food), San Pedro (students, near the old MMA Costa Rica gym), Heredia for VFS Academy.",
    "safety": "Not researched. Use normal big-city caution at night.",
    "water_note": "None in the city. Jaco beach is about 90 minutes by car.",
@@ -16271,7 +16495,21 @@
     "water": 2,
     "total": 5.2
    },
-   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms."
+   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms.",
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/San-Jose-Costa-Rica",
+    "proxy_for": null,
+    "col_index": 58.7,
+    "rent_index": 24.7,
+    "col_plus_rent_index": 42.9,
+    "single_month_no_rent_dkk": 6472,
+    "rent_1bed_outside_dkk": 6059,
+    "meal_cheap_dkk": 79,
+    "gym_month_dkk": 437,
+    "monthly_total_dkk": 12531,
+    "contributors_note": "593 entries, 38 contributors, last update 28 Oct 2026",
+    "observed": "2026-10-30"
+   }
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -16318,7 +16556,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 12602,
    "neighbourhoods": "Tourist strip in town, cheaper rooms inland (not researched).",
    "safety": "Not researched.",
    "water_note": "Big surf beach in town.",
@@ -16332,7 +16570,21 @@
     "water": 10,
     "total": 2.7
    },
-   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms."
+   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms.",
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Tamarindo-Costa-Rica",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 6472,
+    "rent_1bed_outside_dkk": 6130,
+    "meal_cheap_dkk": 79,
+    "gym_month_dkk": 660,
+    "monthly_total_dkk": 12602,
+    "contributors_note": "Low sample: 14 contributors in 18 months, some data estimated, last update 2 Oct 2026. single_month_no_rent from San Jose (Costa Rica) (no estimate on own page)",
+    "observed": "2026-10-30"
+   }
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -16445,7 +16697,7 @@
    "room_month_dkk": null,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 9857,
    "neighbourhoods": "Beachfront strip, cheaper inland.",
    "safety": "Not researched.",
    "water_note": "Beach in town.",
@@ -16459,7 +16711,21 @@
     "water": 10,
     "total": 3.2
    },
-   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms."
+   "cost_note": "Room, food and monthly gym prices not found this round (search budget used up). Costa Rica is the most expensive country on the route, so expect beach towns to cost clearly more than Nicaragua or Colombia. Verify on Airbnb, Facebook rental groups and by messaging gyms.",
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Jaco-Beach-Costa-Rica",
+    "proxy_for": null,
+    "col_index": null,
+    "rent_index": null,
+    "col_plus_rent_index": null,
+    "single_month_no_rent_dkk": 6472,
+    "rent_1bed_outside_dkk": 3385,
+    "meal_cheap_dkk": 74,
+    "gym_month_dkk": 340,
+    "monthly_total_dkk": 9857,
+    "contributors_note": "Page is Jaco Beach. Low sample: 8 contributors in 18 months, some data estimated, last update 2 Oct 2026. single_month_no_rent from San Jose (Costa Rica) (no estimate on own page)",
+    "observed": "2026-10-30"
+   }
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -17296,7 +17562,7 @@
    "room_month_dkk": 2800,
    "studio_month_dkk": null,
    "food_day_dkk": null,
-   "monthly_total_dkk": null,
+   "monthly_total_dkk": 9476,
    "neighbourhoods": "Narvarte Poniente: furnished rooms 6,300 to 8,350 MXN (about 2,400 to 3,200 DKK), listings on propiedades.com. Roma: 5,800 to 10,000 MXN, median 7,500 (about 2,850 DKK). Condesa and Hipodromo: 6,000 to 8,500 MXN. Centro and Doctores (Nuevo Jordan): room rents not found, a 2020 El Financiero piece put Doctores one-bedroom flats at 7,000 to 10,000 MXN. Borough average for a two bedroom flat in Aug 2026 was 29,149 MXN in Cuauhtemoc (Roma, Condesa, Doctores, Centro) against 20,486 MXN in Benito Juarez (Narvarte), so Narvarte is the cheaper base. Asking prices from small samples, expect some bargaining.",
    "safety": "Tepito and Centro are often viewed negatively by outsiders (Culture Trip). A June 2026 Airbnb guest called the Pancho Rosales area safe. Not otherwise researched.",
    "water_note": "No beach. Chapultepec park lakes (boating only) and the Xochimilco canals are in the city, the nearest sea is several hours away by road.",
@@ -17318,6 +17584,20 @@
     "cost": 8,
     "water": 2,
     "total": 6.6
+   },
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Mexico-City",
+    "proxy_for": null,
+    "col_index": 45.5,
+    "rent_index": 25.8,
+    "col_plus_rent_index": 36.3,
+    "single_month_no_rent_dkk": 4908,
+    "rent_1bed_outside_dkk": 4568,
+    "meal_cheap_dkk": 68,
+    "gym_month_dkk": 374,
+    "monthly_total_dkk": 9476,
+    "contributors_note": "1445 entries past 12 months, 142 contributors, last update 27 Oct 2026",
+    "observed": "2026-10-30"
    }
   },
   "researched": true,
@@ -17330,6 +17610,1102 @@
    "https://www.airbnb.ca/experiences/5980258",
    "https://bjjglobetrotters.com/?p=31410",
    "https://theculturetrip.com/north-america/mexico/articles/welcome-to-the-mexico-city-neighborhood-that-is-world-famous-for-boxing"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-chute-boxe-diego-lima",
+  "name": "Chute Boxe Diego Lima (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "bjj"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Vila Andrade (Zona Sul)",
+  "country": "BR",
+  "lat": -23.62,
+  "lon": -46.735,
+  "summary": "Fight team of Diego Lima, head coach of UFC champion Charles Oliveira, with about 50 professional fighters and more than a dozen in the UFC per a June 2024 report. The Wellhub listing for the public unit shows Muay Thai, BJJ and fitness classes, so the pro team and the open classes may not be the same room.",
+  "season": "year round",
+  "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. Wellhub says no booking needed for the open classes. Pro team sparring is likely by invitation, ask first.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "Muay Thai",
+    "MMA",
+    "BJJ"
+   ],
+   "coaches": "Diego Lima, head coach of Charles Oliveira (Sherdog 2021-09-28 and ABC do ABC 2024-06-21).",
+   "fighters": "About 50 pros, over 12 in the UFC (ABC do ABC 2024-06). Charles Oliveira (ex UFC champion), Allan Nascimento (UFC flyweight, reported dead in Aug 2026 at 34, institute renamed in his honour per mmasucka 2026-09-02), Elves Brener (UFC). Tapology count not checked.",
+   "sessions_per_week": null,
+   "timetable": "Wellhub unit: Mon to Fri 06:00 to 22:00, Sat 09:00 to 15:00, Sun closed. Class list: Muay Thai, BJJ, Jump, dance, circuits.",
+   "sparring": "Unknown for visitors. Sherdog 2021 describes two octagons and a four-floor building with dorms, which points to daily pro work.",
+   "visitors": "Not documented. Open Wellhub classes need no booking. Language unverified, expect Portuguese. classes are in Portuguese and English is unverified. Spanish is close enough to follow drills. ",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [
+    {
+     "site": "Wellhub",
+     "rating": 4.71,
+     "count": 199
+    }
+   ],
+   "last_activity": "2026-09 mmasucka (institute renamed). 2024-06 ABC do ABC (50 pros).",
+   "what_people_say": [],
+   "neighbourhood": "Vila Andrade and Morumbi area in the south zone, mixed upscale and favela edge. Room prices not found.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea or lake in the city. The coast (Santos, Guaruja) is a day trip by bus, not verified.",
+   "score_note": "Training 9: the strongest MMA team in Sao Paulo by results (UFC champion, 12+ UFC fighters). Evidence 6: 199 Wellhub reviews at 4.71 and 2024 and 2026 press, but no first-hand visitor report found. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "score": {
+    "training": 9,
+    "evidence": 6,
+    "local_life": 6,
+    "cost": 5,
+    "water": 2,
+    "total": 6.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://wellhub.com/pt-br/search/partners/academia-chute-boxe-diego-lima-vila-suzana-sao-paulo/",
+   "https://www.sherdog.com/news/news/Diego-Lima-Discusses-Expansion-of-Chute-Boxe-Sao-Paulo-Charles-Oliveiras-Success-182015",
+   "https://abcdoabc.com.br/academia-que-revelou-ex-campeao-do-ufc-leva-educacao-financeira-aos-lutadores/",
+   "https://mmasucka.com/news/chute-boxe-renames-diego-lima-institute-in-honor-of-late-allan-nascimento/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-fighting-nerds",
+  "name": "Fighting Nerds / Combat Club Sao Paulo (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "kickboxing",
+   "bjj"
+  ],
+  "places": [],
+  "area": "Sao Paulo (neighbourhood not verified)",
+  "country": "BR",
+  "lat": -23.5505,
+  "lon": -46.6333,
+  "summary": "Sao Paulo MMA team founded in 2014 by Caio Borralho and Pablo Sucupira, named Gym of the Year 2024 by World MMA Awards and MMA Junkie. It had 10 UFC athletes in Aug 2025 when Alex Poatan trained there as a visitor.",
+  "season": "year round",
+  "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. A pro heavy team, likely not set up for drop-in beginners. Message first.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "striking",
+    "BJJ"
+   ],
+   "coaches": "Caio Borralho and Pablo Sucupira (founders, Sucupira on striking), plus Wagner Mota and Flavio Alvaro (wiki mirror).",
+   "fighters": "10 UFC athletes in Aug 2025: Caio Borralho, Jean Silva, Mauricio Ruffy, Carlos Prates, Bruna Brasil, Thiago Moises, Kaynan Kruschewsky, Michal Oleksiejczuk, Mayra Sheetara (Itatiaia 2025-08-08).",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": "Poatan sparred Oleksiejczuk there on 2025-08-07, so top level hard sparring happens. Visitor access unknown.",
+   "visitors": "Not documented. Address and fees not found.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2025-08 Itatiaia (Poatan visit).",
+   "what_people_say": [],
+   "neighbourhood": "Gym address not found, so no neighbourhood advice yet.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea or lake in the city.",
+   "score_note": "Training 9 for 10 UFC fighters and a Gym of the Year award. Evidence 6: press only, no reviews, no address. Local life 5 is a guess since the neighbourhood is unknown. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "score": {
+    "training": 9,
+    "evidence": 6,
+    "local_life": 5,
+    "cost": 5,
+    "water": 2,
+    "total": 6.5
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://cavac.at/cavacopedia/Fighting%20Nerds",
+   "https://www.itatiaia.com.br/esportes/lutas/antes-de-revanche-poatan-treina-em-academia-brasileira-sensacao-no-ufc/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-tiger-ftt-santana",
+  "name": "Academia Tiger FTT, Familia Tiger Team (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Santana (north zone)",
+  "country": "BR",
+  "lat": -23.499,
+  "lon": -46.628,
+  "summary": "Muay Thai academy at R. Voluntarios da Patria 1231 in Santana, with 134 reviews at 5.0 on the Bendito Guia listing. Reviewers say it teaches both fitness students and people who want to compete, in a family atmosphere.",
+  "season": "year round",
+  "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. Confirm hours by phone ((11) 95038-8210 on the listing).",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": "Not named in the sources found.",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not documented. Language unverified.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [
+    {
+     "site": "Bendito Guia",
+     "rating": 5.0,
+     "count": 134
+    }
+   ],
+   "last_activity": null,
+   "what_people_say": [
+    {
+     "quote": "Ambiente familiar, otimos professores, treino de qualidade.",
+     "site": "Bendito Guia",
+     "date": "undated",
+     "url": "https://www.benditoguia.com.br/empresa/academia-tiger-ftt-santana-sao-paulo-sp"
+    }
+   ],
+   "neighbourhood": "Santana is a normal residential north zone neighbourhood with a metro line. Room prices not found.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea or lake in the city.",
+   "score_note": "Training 6: competitors mentioned but no fighters or sparring evidence. Evidence 6: 134 reviews but a five star average on an aggregator, undated. Coordinates approximate. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "score": {
+    "training": 6,
+    "evidence": 6,
+    "local_life": 8,
+    "cost": 5,
+    "water": 1,
+    "total": 5.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.benditoguia.com.br/empresa/academia-tiger-ftt-santana-sao-paulo-sp"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-squadrao-thai-brasil",
+  "name": "Squadrao Thai Brasil (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Vila Prudente (east zone)",
+  "country": "BR",
+  "lat": -23.583,
+  "lon": -46.583,
+  "summary": "Muay Thai gym at R. Imbituba 248 in Vila Prudente, rated 4.9 from 48 reviews on Wellhub. Open Mon to Fri 06:00 to 22:00 and Sat morning.",
+  "season": "year round",
+  "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. Wellhub says booking is required for classes.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": "Mon to Fri 06:00 to 22:00, Sat 08:00 to 12:00, Sun closed (Wellhub).",
+   "sparring": null,
+   "visitors": "Not documented. Language unverified.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [
+    {
+     "site": "Wellhub",
+     "rating": 4.9,
+     "count": 48
+    }
+   ],
+   "last_activity": null,
+   "what_people_say": [],
+   "neighbourhood": "Vila Prudente and Mooca area, working class east zone with metro. Room prices not found.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea or lake in the city.",
+   "score_note": "No fighter or sparring evidence found, so training 5. Coordinates approximate. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "score": {
+    "training": 5,
+    "evidence": 4,
+    "local_life": 8,
+    "cost": 5,
+    "water": 1,
+    "total": 5.1
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://wellhub.com/pt-br/search/partners/squadrao-thai-brasil-alto-da-mooca/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-studio-move-thai",
+  "name": "Studio Move Thai (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Aclimacao",
+  "country": "BR",
+  "lat": -23.567,
+  "lon": -46.632,
+  "summary": "Muay Thai studio at R. Muniz de Sousa 884 in Aclimacao, 4.91 from 53 Wellhub reviews. Looks like a studio style class gym, booking required.",
+  "season": "year round",
+  "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Booking required per Wellhub.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": "Mon to Fri 07:00 to 12:00 and 16:00 to 22:00, Sat 08:00 to 12:00, Sun closed (Wellhub).",
+   "sparring": null,
+   "visitors": "Not documented. Language unverified.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [
+    {
+     "site": "Wellhub",
+     "rating": 4.91,
+     "count": 53
+    }
+   ],
+   "last_activity": null,
+   "what_people_say": [],
+   "neighbourhood": "Aclimacao is a central, quiet residential area near Liberdade and Paraiso with metro and the Aclimacao park. Room prices not found.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea or lake in the city.",
+   "score_note": "Studio format, no fighter evidence, so training 5. Coordinates approximate. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "score": {
+    "training": 5,
+    "evidence": 5,
+    "local_life": 6,
+    "cost": 5,
+    "water": 1,
+    "total": 4.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://wellhub.com/pt-br/search/partners/VCZUIuwp-cxCnPvwO-6EbjIEcLWfBbBOtX_XeWRcobugurQvbLlYB5Tfk5tZ7fkH/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sao-paulo-ct-wai-kru",
+  "name": "C.T. Wai Kru Muay Thai (Sao Paulo)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Sao Paulo, Jardim Alvina (far north zone)",
+  "country": "BR",
+  "lat": -23.448,
+  "lon": -46.712,
+  "summary": "Muay Thai academy on Estrada das Taipas 3941 in the far north zone, rated 5.0 from 21 reviews on Bendito Guia. Far from the centre, so only worth it if you live nearby.",
+  "season": "year round",
+  "dec_jan": "Unknown. December is Brazilian summer holiday time and gyms often cut hours around Christmas and New Year, so confirm by message.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. Phone (11) 96337-2285 on the listing.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not documented. A reviewer says she was well received.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [
+    {
+     "site": "Bendito Guia",
+     "rating": 5.0,
+     "count": 21
+    }
+   ],
+   "last_activity": null,
+   "what_people_say": [
+    {
+     "quote": "Top, estrutura monstra professores bem preparados, recomendo",
+     "site": "Bendito Guia",
+     "date": "undated",
+     "url": "https://www.benditoguia.com.br/empresa/c-t-wai-kru-muay-thai-jardim-alvina-sao-paulo"
+    }
+   ],
+   "neighbourhood": "Taipas and Jardim Alvina, outer periphery, long commute. Room prices not found.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No sea or lake in the city.",
+   "score_note": "Few reviews, no fighter evidence. Coordinates approximate. Cost 5 is a judgment: no gym fee or room price could be sourced this round (search budget ran out, Numbeo not reachable). Wellhub plan prices are an aggregator pass, not the gym's own fee.",
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 8,
+    "cost": 5,
+    "water": 1,
+    "total": 4.9
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.benditoguia.com.br/empresa/c-t-wai-kru-muay-thai-jardim-alvina-sao-paulo"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-rio-nova-uniao-flamengo",
+  "name": "Nova Uniao / Upper Academy (Rio de Janeiro)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "bjj"
+  ],
+  "places": [],
+  "area": "Rio de Janeiro, Flamengo",
+  "country": "BR",
+  "lat": -22.931,
+  "lon": -43.176,
+  "summary": "Nova Uniao was created in Rio in 1995 and a 2020 BJJEE guide lists Upper Academy in Flamengo as its HQ with MMA classes. Current fight team strength and visitor policy could not be verified, and the brand has a written authorisation policy since 2014.",
+  "season": "year round",
+  "dec_jan": "Unknown. Summer in Rio, hot and humid, gyms run but may trim hours around Christmas and Carnival (Feb 2027 is outside the likely window but check).",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. A 2012 Rio Times piece warns pro heavy MMA gyms may not take beginners and that classes are in Portuguese.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "BJJ"
+   ],
+   "coaches": "Andre Pederneiras leads the brand (BJJEE 2014-04-11).",
+   "fighters": "Not verified this round.",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not documented. Free first class is common in Rio (Rio Times 2012).",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2020-03 BJJEE (HQ listing). Nothing newer found.",
+   "what_people_say": [],
+   "neighbourhood": "Flamengo is a real residential bayside district with metro, 20 minutes to Copacabana and Ipanema. Room prices not found.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": 0.5,
+   "water_note": "Flamengo beach and the bay are next door, swimming is better at Ipanema or Copacabana by metro.",
+   "score_note": "Training 7 on brand pedigree only. Evidence 3: nothing from 2025 or 2026. Water distance is a rough guess. Cost judgment only: no 2026 gym or room price found. A 2012 Rio Times piece gave about R$200 a month, which is too old to convert. ",
+   "score": {
+    "training": 7,
+    "evidence": 3,
+    "local_life": 7,
+    "cost": 4,
+    "water": 7,
+    "total": 6.0
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.bjjee.com/articles/12-best-bjj-academies-to-visit-in-rio-de-janeiro/",
+   "https://www.bjjee.com/bjj-news/nova-uniaos-leader-andre-pederneiras-announces-new-policy-from-now-on-nobody-has-the-right-to-use-the-brand-name-nova-uniao/",
+   "https://www.riotimesonline.com/?p=111687"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-rio-btt-lagoa",
+  "name": "Brazilian Top Team Lagoa (Rio de Janeiro)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai",
+   "bjj"
+  ],
+  "places": [],
+  "area": "Rio de Janeiro, Lagoa and Leblon",
+  "country": "BR",
+  "lat": -22.97,
+  "lon": -43.217,
+  "summary": "Run by MMA legend Murilo Bustamante and described as a respected Muay Thai team for beginners to pros (muaythai.com guide, updated June 2026). A classic MMA gym with a BJJ history per BJJEE.",
+  "season": "year round",
+  "dec_jan": "Unknown. Summer in Rio, hot and humid, gyms run but may trim hours around Christmas and Carnival (Feb 2027 is outside the likely window but check).",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "Muay Thai",
+    "BJJ"
+   ],
+   "coaches": "Murilo Bustamante (muaythai.com).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not documented. Pricing not found.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2026-06 muaythai.com guide update.",
+   "what_people_say": [],
+   "neighbourhood": "Leblon, Lagoa and Ipanema are Rio's priciest districts. Rooms will cost well above the city average, not sourced.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": 0.8,
+   "water_note": "Rodrigo de Freitas lagoon and Leblon beach are close, distances approximate.",
+   "score_note": "Pedigree gym, but only a guide listing as evidence. Cost judgment only: no 2026 gym or room price found. A 2012 Rio Times piece gave about R$200 a month, which is too old to convert. ",
+   "score": {
+    "training": 7,
+    "evidence": 3,
+    "local_life": 4,
+    "cost": 3,
+    "water": 9,
+    "total": 5.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://muaythai.com/?p=5957",
+   "https://www.bjjee.com/articles/12-best-bjj-academies-to-visit-in-rio-de-janeiro/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-rio-jaber-muay-thai",
+  "name": "Jaber Muay Thai (Rio de Janeiro)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Rio de Janeiro, Ipanema",
+  "country": "BR",
+  "lat": -22.984,
+  "lon": -43.21,
+  "summary": "Muay Thai school in Ipanema taught by Professor Gabriel Glat Jaber, about a five minute walk from the beach (muaythai.com guide).",
+  "season": "year round",
+  "dec_jan": "Unknown. Summer in Rio, hot and humid, gyms run but may trim hours around Christmas and Carnival (Feb 2027 is outside the likely window but check).",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": "Gabriel Glat Jaber.",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not documented.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": null,
+   "what_people_say": [],
+   "neighbourhood": "Ipanema is central and the most expensive beach district. Room prices not found.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": 0.4,
+   "water_note": "About a five minute walk to Ipanema beach per muaythai.com.",
+   "score_note": "Only a guide listing. Cost judgment only: no 2026 gym or room price found. A 2012 Rio Times piece gave about R$200 a month, which is too old to convert. ",
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 4,
+    "cost": 3,
+    "water": 10,
+    "total": 4.7
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://muaythai.com/?p=5957"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-rio-thai-boxing-warriors",
+  "name": "Thai Boxing Warriors, Professor Wallace (Rio de Janeiro)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Rio de Janeiro, Vila Valqueire (west zone)",
+  "country": "BR",
+  "lat": -22.88,
+  "lon": -43.36,
+  "summary": "Highly rated Muay Thai gym for all levels in Vila Valqueire with affiliates in Madureira and Praca Seca, top of the muaythai.com Rio list. A normal suburban local gym with no tourist crowd.",
+  "season": "year round",
+  "dec_jan": "Unknown. Summer in Rio, hot and humid, gyms run but may trim hours around Christmas and Carnival (Feb 2027 is outside the likely window but check).",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai"
+   ],
+   "coaches": "Professor Wallace.",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Takes students of all levels per muaythai.com. Language unverified.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": null,
+   "what_people_say": [],
+   "neighbourhood": "Vila Valqueire and Madureira, suburban west zone. Cheaper than the beach districts, rooms not sourced.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "The beach is a long bus or train ride away.",
+   "score_note": "Local gym ranking only, no fighters or reviews. Cost judgment only: no 2026 gym or room price found. A 2012 Rio Times piece gave about R$200 a month, which is too old to convert. ",
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 9,
+    "cost": 6,
+    "water": 2,
+    "total": 5.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://muaythai.com/?p=5957"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-rio-shogun-fight-team",
+  "name": "Shogun Fight Team (Rio de Janeiro)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Rio de Janeiro, Pechincha and Recreio",
+  "country": "BR",
+  "lat": -22.934,
+  "lon": -43.36,
+  "summary": "Affiliates of MMA legend Mauricio Shogun Rua in Pechincha and Recreio, teaching Chute Boxe style Muay Thai (muaythai.com guide).",
+  "season": "year round",
+  "dec_jan": "Unknown. Summer in Rio, hot and humid, gyms run but may trim hours around Christmas and Carnival (Feb 2027 is outside the likely window but check).",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "Muay Thai",
+    "MMA"
+   ],
+   "coaches": "Shogun affiliate, instructors not named.",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not documented.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": null,
+   "what_people_say": [],
+   "neighbourhood": "Recreio is a beach district in the far west with a calmer, suburban feel, Pechincha is inland.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": 1.5,
+   "water_note": "Recreio beach if you live there, distance a rough guess.",
+   "score_note": "Affiliate branding only. Cost judgment only: no 2026 gym or room price found. A 2012 Rio Times piece gave about R$200 a month, which is too old to convert. ",
+   "score": {
+    "training": 6,
+    "evidence": 3,
+    "local_life": 8,
+    "cost": 6,
+    "water": 6,
+    "total": 6.0
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://muaythai.com/?p=5957"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-rio-team-nogueira",
+  "name": "Team Nogueira (Rio de Janeiro)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "bjj"
+  ],
+  "places": [],
+  "area": "Rio de Janeiro, Recreio and Barra da Tijuca",
+  "country": "BR",
+  "lat": -23.0,
+  "lon": -43.366,
+  "summary": "MMA team of the Nogueira brothers that held a beach day at Recreio in 2012 and was reported to be opening a concept unit in Barra and a nucleus at the Olympic Park. I could only see page titles for the newer items, so current activity is unconfirmed.",
+  "season": "year round",
+  "dec_jan": "Unknown. Summer in Rio, hot and humid, gyms run but may trim hours around Christmas and Carnival (Feb 2027 is outside the likely window but check).",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "BJJ"
+   ],
+   "coaches": "Antonio Rodrigo Nogueira (Sherdog 2012-03-20).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not documented.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2012-03 Sherdog. Lance headlines about Barra and Parque Olimpico seen without dates.",
+   "what_people_say": [],
+   "neighbourhood": "Barra da Tijuca is car oriented and suburban, Recreio is quieter.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": 1.0,
+   "water_note": "Barra and Recreio beaches, distance approximate.",
+   "score_note": "Pedigree only, evidence is old. Cost judgment only: no 2026 gym or room price found. A 2012 Rio Times piece gave about R$200 a month, which is too old to convert. ",
+   "score": {
+    "training": 7,
+    "evidence": 2,
+    "local_life": 4,
+    "cost": 4,
+    "water": 8,
+    "total": 5.3
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.sherdog.com/news/news/Anderson-Silva-Junior-dos-Santos-Spread-MMA-on-Rio-Beach-with-Team-Nogueira-Day-41243/amp"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "city-sao-paulo-training",
+  "name": "Sao Paulo: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [],
+  "area": "Sao Paulo",
+  "country": "BR",
+  "lat": -23.5505,
+  "lon": -46.6333,
+  "summary": "Sao Paulo holds Chute Boxe Diego Lima and Fighting Nerds, two of the strongest MMA teams in Brazil (50 pros and 12+ UFC fighters, and Gym of the Year 2024 with 10 UFC athletes), so the top end is as high as anywhere on the route. The hard part is access: I found no visitor policy, no gym fee and no English or Spanish information, and the pro rooms are likely not drop-in friendly. Plan a message to Diego Lima's unit first, and keep a Muay Thai gym like Tiger FTT Santana or Squadrao Thai as the daily fallback. No sea within an hour.",
+  "season": "year round",
+  "dec_jan": "Summer, warm and rainy season (general climate, not sourced). Gym hours around Christmas unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-sao-paulo-chute-boxe-diego-lima",
+    "gym-sao-paulo-fighting-nerds",
+    "gym-sao-paulo-tiger-ftt-santana",
+    "gym-sao-paulo-squadrao-thai-brasil",
+    "gym-sao-paulo-studio-move-thai",
+    "gym-sao-paulo-ct-wai-kru"
+   ],
+   "best_gym": "gym-sao-paulo-chute-boxe-diego-lima",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": 7043,
+   "neighbourhoods": "Santana (north, metro, local), Aclimacao or Vila Mariana (central, quiet), Vila Prudente (east, working class). Pick by gym, the city is huge.",
+   "safety": "Not researched. Normal big city caution, avoid walking at night in unfamiliar districts.",
+   "water_note": "No sea or lake in the city. The coast is a day trip, not verified.",
+   "local_life": "Brazilian city of 12 million with strong local fight culture, little tourist training scene found. Portuguese only, Spanish helps.",
+   "what_people_say": [],
+   "score": {
+    "training": 9,
+    "evidence": 6,
+    "local_life": 7,
+    "cost": 5,
+    "water": 2,
+    "total": 6.9
+   },
+   "cost_note": "No room, food or gym prices found this round (search budget ran out, Numbeo not reachable). Brazil gym fees are usually far below Europe, but verify with Facebook rental groups and by messaging the gyms.",
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Sao-Paulo",
+    "proxy_for": null,
+    "col_index": 38.6,
+    "rent_index": 15.1,
+    "col_plus_rent_index": 27.7,
+    "single_month_no_rent_dkk": 4343,
+    "rent_1bed_outside_dkk": 2700,
+    "meal_cheap_dkk": 54,
+    "gym_month_dkk": 202,
+    "monthly_total_dkk": 7043,
+    "contributors_note": "1791 entries, 166 contributors, last update 28 Oct 2026",
+    "observed": "2026-10-30"
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://wellhub.com/pt-br/search/partners/academia-chute-boxe-diego-lima-vila-suzana-sao-paulo/",
+   "https://abcdoabc.com.br/academia-que-revelou-ex-campeao-do-ufc-leva-educacao-financeira-aos-lutadores/",
+   "https://cavac.at/cavacopedia/Fighting%20Nerds",
+   "https://www.itatiaia.com.br/esportes/lutas/antes-de-revanche-poatan-treina-em-academia-brasileira-sensacao-no-ufc/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "city-rio-training",
+  "name": "Rio de Janeiro: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [],
+  "area": "Rio de Janeiro",
+  "country": "BR",
+  "lat": -22.9068,
+  "lon": -43.1729,
+  "summary": "Rio is the better lifestyle base: beach districts, a bay, and a long MMA history (Nova Uniao, Brazilian Top Team, Team Nogueira, Shogun affiliates). Evidence is thin though, mostly guide listings, with no 2025 or 2026 first-hand reports, so contact gyms before committing. Thai Boxing Warriors in Vila Valqueire is the most local option, BTT Lagoa and Jaber Muay Thai are the beach ones.",
+  "season": "year round",
+  "dec_jan": "Summer, hot and humid (general climate, not sourced). Gym hours around Christmas unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-rio-nova-uniao-flamengo",
+    "gym-rio-btt-lagoa",
+    "gym-rio-jaber-muay-thai",
+    "gym-rio-thai-boxing-warriors",
+    "gym-rio-shogun-fight-team",
+    "gym-rio-team-nogueira"
+   ],
+   "best_gym": "gym-rio-btt-lagoa",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": 7041,
+   "neighbourhoods": "Flamengo or Botafogo (bay side, metro, cheaper than Ipanema), Ipanema or Leblon for the beach at premium prices, Recreio for a quiet beach with Shogun and Nogueira affiliates.",
+   "safety": "Not researched. Tourist districts have petty theft, keep valuables out of sight on the beach and at night.",
+   "water_note": "Beaches are the draw: Ipanema and Leblon within walking distance of BTT and Jaber, Flamengo bay next to Nova Uniao.",
+   "local_life": "Local fighters train in suburban gyms like Vila Valqueire, beach districts are more mixed with visitors. Classes in Portuguese.",
+   "what_people_say": [],
+   "score": {
+    "training": 7,
+    "evidence": 3,
+    "local_life": 7,
+    "cost": 4,
+    "water": 8,
+    "total": 6.1
+   },
+   "cost_note": "No 2026 prices found. A 2012 Rio Times piece gave about R$200 a month and a one time joining fee of about R$30, too old to rely on.",
+   "numbeo": {
+    "numbeo_url": "https://www.numbeo.com/cost-of-living/in/Rio-De-Janeiro",
+    "proxy_for": null,
+    "col_index": 35.5,
+    "rent_index": 15.2,
+    "col_plus_rent_index": 26.0,
+    "single_month_no_rent_dkk": 4017,
+    "rent_1bed_outside_dkk": 3024,
+    "meal_cheap_dkk": 57,
+    "gym_month_dkk": 182,
+    "monthly_total_dkk": 7041,
+    "contributors_note": "998 entries, 95 contributors, last update 27 Oct 2026",
+    "observed": "2026-10-30"
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://muaythai.com/?p=5957",
+   "https://www.bjjee.com/articles/12-best-bjj-academies-to-visit-in-rio-de-janeiro/",
+   "https://www.riotimesonline.com/?p=111687"
   ],
   "image": {
    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
