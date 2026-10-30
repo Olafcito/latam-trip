@@ -5276,6 +5276,24 @@
   ]
  },
  {
+  "from": "VVI",
+  "to": "PTY",
+  "dkk": 4735,
+  "hours": 4.9,
+  "dep": "2026-12-26T01:10",
+  "arr": "2026-12-26T05:04",
+  "vias": [],
+  "carriers": [
+   "Copa"
+  ],
+  "notes": [],
+  "link": "https://kiwi.com/u/8mhf3y9",
+  "shows": [
+   "cheapest",
+   "fastest"
+  ]
+ },
+ {
   "from": "CTG",
   "to": "MGA",
   "dkk": 4773,
