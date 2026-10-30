@@ -1,32 +1,38 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { capped } from '@map/data/cardFacts'
+import type { MapData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
-import type { MapNode } from '../../data/types'
+import type { Hostel, MapNode } from '../../data/types'
 import { day, kr } from '../../lib/format'
 import { countryName } from '../../lib/colors'
 import { placeFinds, type FindRow, type PlaceFinds } from '../../lib/placeFinds'
-import { useStore } from '../../store'
+import { Modal } from '../Modal'
+import { FindPopup, HostelPopup } from './FindPopup'
 
 // The top of the route, after the 21st Hover Expand Gallery: its places as narrow panels with their
 // names, the one under the mouse or the Tab key opens to its photo. A click opens that place's
 // itinerary under the strip, after the 21st Expandable Card (id 35717): what to do there and where
 // to sleep. The panel stays mounted so it can open and close from wherever it is, its words fade
 // in once it has made room, Escape closes it and gives the focus back. On a phone the places are a
-// row to swipe instead. Its Experiences and Training rows open their window on the map.
+// row to swipe instead. Its hostels, Experiences and Training open a window over the trip, you stay
+// where you are. The trip's costs sit between the title and the strip.
 
 export interface HeadPlace { name: string; node: MapNode | undefined; days: number; inDay: string }
 
 const nightsOf = (n: number) => `${n} ${n === 1 ? 'night' : 'nights'}`
 const short = (name: string) => name.replace(/\s*\(.*\)$/, '')
 
-export function TripHead({ places }: { places: HeadPlace[] }) {
+export function TripHead({ places, costs }: { places: HeadPlace[]; costs: ReactNode }) {
   const [hover, setHover] = useState<number | null>(null)
   const [pick, setPick] = useState<number | null>(null)
   // what the panel shows, kept while it closes so its words fade out instead of vanishing
   const [shown, setShown] = useState(0)
-  const [read, setRead] = useState<((placeId: string) => PlaceFinds) | null>(null)
+  const [route, setRoute] = useState<MapData | null>(null)
+  const [find, setFind] = useState<FindRow | null>(null)
+  const [bed, setBed] = useState<Hostel | null>(null)
   const btns = useRef<(HTMLButtonElement | null)[]>([])
   const panelId = useId()
+  const read = useMemo(() => (route ? placeFinds(route) : null), [route])
   // the picked place holds the big panel while its itinerary is open, a hover only brightens the others
   const open = pick ?? hover ?? 0
 
@@ -52,13 +58,14 @@ export function TripHead({ places }: { places: HeadPlace[] }) {
   // the map's data comes the first time an itinerary opens. Without it the itinerary still has its own lines,
   // and the Map tab says when that data cannot load
   useEffect(() => {
-    if (pick == null || read) return
-    loadRouteData().then((data) => setRead(() => placeFinds(data)), () => {})
-  }, [pick, read])
+    if (pick == null || route) return
+    loadRouteData().then(setRoute, () => {})
+  }, [pick, route])
 
   return (
     <header className="tg">
       <h3 className="tg-title">Route<span>{places.length} {places.length === 1 ? 'place' : 'places'}</span></h3>
+      {costs}
       <ul
         className="tg-strip"
         style={{ '--n': places.length } as CSSProperties}
@@ -89,14 +96,24 @@ export function TripHead({ places }: { places: HeadPlace[] }) {
       </ul>
       <div id={panelId} className="tg-it" data-open={pick != null} inert={pick == null} role="region" aria-label={places[shown] ? `${short(places[shown].name)} itinerary` : undefined}>
         <div className="tg-it-in">
-          {places[shown] && <Itinerary key={shown} place={places[shown]} finds={read && places[shown].node ? read(places[shown].node.id) : null} onClose={close} />}
+          {places[shown] && <Itinerary key={shown} place={places[shown]} finds={read && places[shown].node ? read(places[shown].node.id) : null} onClose={close} onFind={setFind} onBed={setBed} />}
         </div>
       </div>
+      {find && route && <Modal label={find.name} className="fp-md" bare onClose={() => setFind(null)}>{(shut) => <FindPopup data={route} first={find.ref} onClose={shut} />}</Modal>}
+      {bed && <Modal label={bed.name} onClose={() => setBed(null)}>{() => <HostelPopup h={bed} place={short(places[shown].name)} />}</Modal>}
     </header>
   )
 }
 
-function Itinerary({ place, finds, onClose }: { place: HeadPlace; finds: PlaceFinds | null; onClose: () => void }) {
+interface ItineraryProps {
+  place: HeadPlace
+  finds: PlaceFinds | null
+  onClose: () => void
+  onFind: (r: FindRow) => void
+  onBed: (h: Hostel) => void
+}
+
+function Itinerary({ place, finds, onClose, onFind, onBed }: ItineraryProps) {
   const n = place.node
   const p = n?.profile
   const todo = p?.things_to_do ?? []
@@ -134,16 +151,18 @@ function Itinerary({ place, finds, onClose }: { place: HeadPlace; finds: PlaceFi
               <ul className="tg-beds">
                 {beds.map((h) => (
                   <li key={h.name} data-sus={h.price_suspect || undefined}>
-                    {h.source ? <a href={h.source} target="_blank" rel="noopener noreferrer" title={h.name}>{h.name}</a> : <span title={h.name}>{h.name}</span>}
-                    <span>{h.dorm_dkk != null && kr(h.dorm_dkk)}{h.price_suspect && h.dorm_dkk != null && <small>unsure</small>}</span>
-                    <span>{h.private_dkk != null && kr(h.private_dkk)}{h.price_suspect && h.private_dkk != null && <small>unsure</small>}</span>
+                    <button type="button" onClick={() => onBed(h)}>
+                      <span title={h.name}>{h.name}</span>
+                      <span>{h.dorm_dkk != null && kr(h.dorm_dkk)}{h.price_suspect && h.dorm_dkk != null && <small>unsure</small>}</span>
+                      <span>{h.private_dkk != null && kr(h.private_dkk)}{h.price_suspect && h.private_dkk != null && <small>unsure</small>}</span>
+                    </button>
                   </li>
                 ))}
               </ul>
             </section>
           )}
-          {!!exps.length && <Finds title="Experiences" rows={exps} />}
-          {!!training.length && <Finds title="Training" rows={training} />}
+          {!!exps.length && <Finds title="Experiences" rows={exps} onFind={onFind} />}
+          {!!training.length && <Finds title="Training" rows={training} onFind={onFind} />}
         </div>
       ) : (
         <p className="tg-none">Nothing gathered for this place yet.</p>
@@ -153,9 +172,8 @@ function Itinerary({ place, finds, onClose }: { place: HeadPlace; finds: PlaceFi
   )
 }
 
-/** A row names the thing and opens its window on the map, the detail stays there. */
-function Finds({ title, rows }: { title: string; rows: FindRow[] }) {
-  const openMapCard = useStore((s) => s.openMapCard)
+/** A row names the thing and opens its window, the detail stays there. */
+function Finds({ title, rows, onFind }: { title: string; rows: FindRow[]; onFind: (r: FindRow) => void }) {
   const [open, setOpen] = useState(false)
   const { shown, folded } = capped(rows, open)
   return (
@@ -164,7 +182,7 @@ function Finds({ title, rows }: { title: string; rows: FindRow[] }) {
       <ul className="tg-finds">
         {shown.map((r) => (
           <li key={r.ref.id}>
-            <button type="button" onClick={() => openMapCard(r.ref)}>
+            <button type="button" onClick={() => onFind(r)}>
               <span className="tg-find">
                 <b>{r.name}</b>
                 {r.sub && <small data-saved={r.saved || undefined}>{r.sub}</small>}

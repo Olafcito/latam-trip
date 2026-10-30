@@ -56,6 +56,10 @@
   .brand-dates { font-size: 11px; }
   .tab { padding: 0 10px; }
 }
+/* the narrowest phones: the dates give way, they stand on every trip */
+@media (max-width: 340px) {
+  .brand-dates { display: none; }
+}
 
 /* loading and the load error */
 .load-err { align-self: center; width: min(100%, 520px); margin-top: 60px; padding: 20px; display: flex; flex-direction: column; gap: 6px; }

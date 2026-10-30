@@ -16,14 +16,15 @@ export const MODE_TITLE: Record<MapMode, string> = { gyms: 'Gyms', experiences: 
 
 export type MapModeApi = ReturnType<typeof useMapMode>
 
-export function useMapMode(map: MLMap | null, data: MapData) {
+/** With no map it still runs the cards. `first` is the card a window opens on, so it has its size from the first frame. */
+export function useMapMode(map: MLMap | null, data: MapData, first?: CardRef) {
   const gyms = useMemo(() => gymWorld(data.experiences, data.places), [data.experiences, data.places])
   const exps = useMemo(() => experienceWorld(data.experiences, data.places, data.lists), [data.experiences, data.places, data.lists])
   const gymSpots = useMemo(() => spreadGyms(gyms.gyms), [gyms])
   const expSpots = useMemo(() => spreadGyms(exps.all), [exps])
 
   const [mode, setModeState] = useState<MapMode | null>(null)
-  const [stack, setStack] = useState<CardRef[]>([])
+  const [stack, setStack] = useState<CardRef[]>(first ? [first] : [])
   const [tab, setTab] = useState<GymTab>('gyms')
   // filters outlive a mode: coming back finds the map as it was left
   const [gymFilter, setGymFilter] = useState<GymFilter>(NO_FILTER)

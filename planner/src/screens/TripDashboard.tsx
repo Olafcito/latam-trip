@@ -1,14 +1,13 @@
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
 import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
-import { TotalsPanel } from '../components/TotalsPanel'
-import { MiniMap } from '../components/MiniMap'
+import { CostStrip } from '../components/CostStrip'
 import { Download, Pin, Warn } from '../components/icons'
 import { Story } from '../components/story/Story'
 import { TripHead } from '../components/story/TripHead'
 
-// The dashboard of one trip: the route as a story down a rail, from Copenhagen and back, with the
-// costs and the map beside it. Details rest behind a hover or a click.
+// The dashboard of one trip: its costs and places on top, then the route as a story down a rail,
+// from Copenhagen and back. Details rest behind a hover or a click.
 
 
 export function TripDashboard({ data, journey }: { data: AppData; journey: Journey }) {
@@ -75,22 +74,10 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
         </ul>
       )}
 
-      <div className="dash-grid">
-        <section className="card pad dash-route" aria-label="Route">
-          <TripHead places={heads} />
-          <Story data={data} journey={journey} sched={sched} wayIn={wi} wayHome={wh} />
-        </section>
-
-        <div className="dash-side">
-          <section className="card pad" aria-label="Costs">
-            <h3 className="h3">Costs</h3>
-            <TotalsPanel t={t} total={allIn} />
-          </section>
-          <section className="card pad" aria-label="Map">
-            <MiniMap data={inout} ways={[wi, wh]} onOpen={() => openSaved(journey)} />
-          </section>
-        </div>
-      </div>
+      <section className="card pad dash-route" aria-label="Route">
+        <TripHead places={heads} costs={<CostStrip t={t} total={allIn} />} />
+        <Story data={data} journey={journey} sched={sched} wayIn={wi} wayHome={wh} />
+      </section>
     </div>
   )
 }

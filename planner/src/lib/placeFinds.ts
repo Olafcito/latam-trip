@@ -1,4 +1,4 @@
-// What an itinerary lists beside its hostels: a place's Experiences and Training as rows that open a card on the map.
+// What an itinerary lists beside its hostels: a place's Experiences and Training as rows that open their card.
 // The detail stays in the card, as it does in the map's place panel.
 import { scoreText } from '@map/data/cardFacts'
 import { categoryLabel, experienceWorld } from '@map/data/experiences'
