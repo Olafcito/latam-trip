@@ -133,7 +133,6 @@
 .st-date[data-clash='true'] b { color: var(--err); }
 .st-clash { grid-column: 2; display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 4px 8px; margin: 0 0 12px var(--inset); font-size: var(--fs-small); font-weight: 500; color: var(--err); }
 .st-clash .btn { justify-self: start; margin-left: 4px; }
-.st-clash[data-level='warn'] { color: var(--flight); }
 
 /* ---- popovers: rise from their trigger ---- */
 .pop-wrap { position: relative; display: inline-flex; }

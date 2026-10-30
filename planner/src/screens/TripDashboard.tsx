@@ -48,7 +48,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const sched = schedule(journey, wi, wh, exitNode, nm)
   const t = totals(data, journey, sched)
   // a warning about one leg sits on that leg
-  const general = sched.warnings.filter((w) => w.leg == null && w.picked == null)
+  const general = sched.warnings.filter((w) => w.leg == null)
   const heads = journey.places.map((p, i) => ({ name: nm(p.node), node: map.nodes.find((n) => n.id === p.node), days: sched.places[i].days, inDay: sched.places[i].inDay }))
 
   return (

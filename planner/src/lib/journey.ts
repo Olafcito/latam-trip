@@ -15,6 +15,8 @@ export interface Hop {
   border: boolean
   /** a picked crawled flight; its price was seen for its own date */
   flight: CrawledFlight | null
+  /** the flight picked for this leg while the leg is on another day. It comes back when the leg does */
+  parked?: CrawledFlight
   /** an overland block of a planned trip: your own route, drawn as one dashed line; the note says how */
   overland?: string
   /** the countries an overland block passes through, in order, ends included */
@@ -103,9 +105,7 @@ export interface Warning {
   text: string
   /** the place index of the leg at fault, when one leg is */
   leg?: number
-  /** the place index of a leg whose picked flight leaves on another day */
-  picked?: number
-  /** the first day that leg can leave instead, or the day its picked flight leaves */
+  /** the first day that leg can leave instead */
   fix?: string
 }
 
@@ -195,9 +195,6 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
     const t = i > 0 && p.hop ? dated(p.hop) : null
     if (!t || !p.hop) return
     const f = p.hop.flight
-    if (p.hop.date && f && f.depart.slice(0, 10) !== p.hop.date) {
-      warnings.push({ level: 'warn', text: `The flight to ${names(p.node)} you picked leaves ${day(f.depart)}, not ${day(p.hop.date)}, so its price is for another day`, picked: i, fix: f.depart.slice(0, 10) })
-    }
     places[i - 1].depart = t.depart
     places[i].arrive = t.arrive
     share(i - 1, t.depart, i)
@@ -293,11 +290,9 @@ export function applyMove(j: Journey, m: NightMove): Journey {
   return { ...j, places, lastNights: m.lastNights }
 }
 
-/** Back to the day its flight leaves, for the leg into stop i and each later leg off its flight too, so the stops between keep their nights. */
-export function backToFlights(j: Journey, s: Schedule, i: number): NightMove | null {
-  const legs = s.warnings.flatMap((w) => (w.picked != null && w.picked >= i && w.fix ? [{ hop: w.picked, date: w.fix }] : []))
-  if (!legs.length) return null
-  return { legs, lastNights: j.lastNights ?? s.places[s.places.length - 1].days }
+/** Every leg with no day and no flight on the day it shows, so a day set by hand on one leg moves no other. */
+export function pinLegs(j: Journey, s: Schedule): Journey {
+  return { ...j, places: j.places.map((p, k) => (k > 0 && p.hop && !p.hop.date && !p.hop.flight ? { ...p, hop: { ...p.hop, date: s.places[k - 1].outDay } } : p)) }
 }
 
 // ---- totals
@@ -375,9 +370,9 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null): Total
   }
 }
 
-/** The trip's travel: tickets, regional flights, ground, the nights at the hubs and the bags. Stays at the stops are not in it. */
+/** The trip's travel: tickets, regional flights, ground, the nights at the hubs and the cabin bags. A checked bag is optional, so its fees are shown but not added. Stays at the stops are not in it. */
 export const travelTotal = (t: Totals) =>
-  t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0) + (t.checked_bag_dkk ?? 0)
+  t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
 
 /** Ground transport in words: what is priced, and how many hops are not. */
 export const groundCost = (t: Totals) => {
