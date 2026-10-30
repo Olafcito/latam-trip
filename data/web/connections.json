@@ -20745,6 +20745,283 @@
   ]
  },
  {
+  "id": "MVD-VVI",
+  "a": "MVD",
+  "b": "VVI",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Aerolineas Argentinas",
+     "Paranair"
+    ],
+    "duration_min": 265,
+    "price_dkk": {
+     "min": 1932,
+     "typical": 2429
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "AEP",
+      "ASU"
+     ],
+     "carriers": [
+      "Aerolineas Argentinas",
+      "Paranair"
+     ],
+     "oneway_dkk": {
+      "min": 1932,
+      "observed_at": "2026-10-30T09:45Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-21",
+      "2027-01-18"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-21",
+       "from": "MVD",
+       "to": "VVI",
+       "dkk": 2926,
+       "dep": "08:50",
+       "arr": "12:15",
+       "arr_days": 0,
+       "duration_min": 265,
+       "vias": [
+        "ASU"
+       ],
+       "carriers": [
+        "Paranair"
+       ],
+       "flights": [
+        "ZP845",
+        "ZP862"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-21",
+       "link": "https://kiwi.com/u/jcy9dqf"
+      },
+      {
+       "date": "2027-01-18",
+       "from": "MVD",
+       "to": "VVI",
+       "dkk": 1932,
+       "dep": "19:25",
+       "arr": "01:10",
+       "arr_days": 1,
+       "duration_min": 405,
+       "vias": [
+        "AEP"
+       ],
+       "carriers": [
+        "Aerolineas Argentinas"
+       ],
+       "flights": [
+        "AR1389",
+        "AR1368"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-18",
+       "link": "https://kiwi.com/u/tykm9t"
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1932,
+      "duration_min": 405,
+      "vias": [
+       "AEP"
+      ],
+      "carriers": [
+       "Aerolineas Argentinas"
+      ],
+      "date": "2027-01-18",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 2926,
+      "duration_min": 265,
+      "vias": [
+       "ASU"
+      ],
+      "carriers": [
+       "Paranair"
+      ],
+      "date": "2026-12-21"
+     },
+     "flags": [],
+     "quotes": 2
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T09:45Z",
+    "note": null,
+    "booking_url": "https://kiwi.com/u/tykm9t"
+   }
+  ]
+ },
+ {
+  "id": "MDE-MVD",
+  "a": "MDE",
+  "b": "MVD",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Avianca",
+     "Copa Airlines",
+     "JetSMART"
+    ],
+    "duration_min": 577,
+    "price_dkk": {
+     "min": 2281,
+     "typical": 2543
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [
+     {
+      "place_id": "PTY",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "BOG",
+      "PTY",
+      "SCL"
+     ],
+     "carriers": [
+      "Avianca",
+      "Copa Airlines",
+      "JetSMART"
+     ],
+     "oneway_dkk": {
+      "min": 2281,
+      "observed_at": "2026-10-30T09:45Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-22",
+      "2026-12-24",
+      "2027-01-18"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-22",
+       "from": "MVD",
+       "to": "MDE",
+       "dkk": 2543,
+       "dep": "02:08",
+       "arr": "09:45",
+       "arr_days": 0,
+       "duration_min": 577,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "CM124",
+        "CM756"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-22",
+       "link": "https://kiwi.com/u/4jczd7"
+      },
+      {
+       "date": "2026-12-24",
+       "from": "MVD",
+       "to": "MDE",
+       "dkk": 2623,
+       "dep": "07:20",
+       "arr": "17:15",
+       "arr_days": 0,
+       "duration_min": 715,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "AV110",
+        "AV9326"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-24",
+       "link": "https://kiwi.com/u/9m2pbj"
+      },
+      {
+       "date": "2027-01-18",
+       "from": "MVD",
+       "to": "MDE",
+       "dkk": 2281,
+       "dep": "20:05",
+       "arr": "06:28",
+       "arr_days": 1,
+       "duration_min": 743,
+       "vias": [
+        "SCL"
+       ],
+       "carriers": [
+        "JetSMART"
+       ],
+       "flights": [
+        "JA865",
+        "JA5839"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-18",
+       "link": "https://kiwi.com/u/wd26zmx"
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 2281,
+      "duration_min": 743,
+      "vias": [
+       "SCL"
+      ],
+      "carriers": [
+       "JetSMART"
+      ],
+      "date": "2027-01-18",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 2543,
+      "duration_min": 577,
+      "vias": [
+       "PTY"
+      ],
+      "carriers": [
+       "Copa Airlines"
+      ],
+      "date": "2026-12-22"
+     },
+     "flags": [],
+     "quotes": 3
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T09:45Z",
+    "note": null,
+    "booking_url": "https://kiwi.com/u/wd26zmx"
+   }
+  ]
+ },
+ {
   "id": "CTG-GUA",
   "a": "CTG",
   "b": "GUA",
