@@ -26628,8 +26628,8 @@
   "lat": 9.79,
   "lon": -75.85,
   "summary": "Beachfront eco-hostel on Tintipan with four 8-bed dorms, privates, a beach bar and restaurant, and shared seafood dinners. Solar powered with bucket showers and dry toilets. The best-rated budget bed on the islands and a short boat hop from Casa en el Agua.",
-  "price": "Booking.com 8 to 13 Dec 2026: US$157.81 for 5 nights (US$31.56 a night, cheapest bed). Hostelworld from EUR 21.56. Breakfast included; lunch and dinner extra.",
-  "price_dkk": 204,
+  "price": "Simon saw EUR 31.13 a night (about 232 DKK) for early December 2026, available. Booking.com 8 to 13 Dec 2026: US$31.56 a night. Hostelworld from EUR 21.56. Breakfast included; lunch and dinner extra.",
+  "price_dkk": 232,
   "details": {
    "on_the_water": true,
    "rooms": "Four 8-bed mixed dorms, one family room, six private doubles",
@@ -26693,8 +26693,8 @@
   "lat": 9.771,
   "lon": -75.645,
   "summary": "Three-storey beachfront house with dorms, privates and an on-site dive centre on Rincon's main beach. Top-rated cheap bed in the village and a good base for island and plankton trips.",
-  "price": "Hostelworld from EUR 9.97 dorm, EUR 10.36 private (2026). Booking.com 8 to 13 Dec 2026: US$178.51 for 5 nights (US$35.70 a night).",
-  "price_dkk": 74,
+  "price": "Own website: COP 73,500 a night for December 2026 (about 150 DKK at 490 COP per DKK), seen by Simon 30 Oct. Hostelworld from EUR 9.97 dorm. Booking.com 8 to 13 Dec 2026: US$35.70 a night.",
+  "price_dkk": 150,
   "details": {
    "on_the_water": true,
    "social": "Dive-centre crowd; no reviews describe it as a party hostel",
@@ -27522,7 +27522,7 @@
    "booking_channels": "Direct via Cloudbeds (hotels.cloudbeds.com/reservation/vKWw0h), islarootshostel@gmail.com, +57 314 636 5327. Booking.com listing seen on Kayak, but the connector did not find it for December 2026.",
    "transfer": "Boat only, from Cartagena, Tolu or Rincon del Mar (Cloudbeds). Repo edges: Cartagena COP 150,000 to 160,000 each way, Tolu day tour COP 80,000 to 120,000, Rincon day tour COP 70,000.",
    "what_people_say": [],
-   "note": "Only AI review summaries found (Kayak), no dated verbatim guest quotes."
+   "note": "Only AI review summaries found (Kayak), no dated verbatim guest quotes. Simon thinks it may have closed (30 Oct 2026), not verified."
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -27614,6 +27614,50 @@
    "h": 3216
   },
   "image_source": "category",
+  "saved_in": [
+   "want"
+  ]
+ },
+ {
+  "id": "stay-los-patios-medellin",
+  "name": "Los Patios hostel (Medellín, El Poblado)",
+  "category": "nightlife",
+  "tags": [
+   "stay",
+   "hostel",
+   "social"
+  ],
+  "places": [
+   "MDE"
+  ],
+  "area": "Medellín, El Poblado",
+  "country": "CO",
+  "lat": 6.208,
+  "lon": -75.567,
+  "summary": "Large design hostel in El Poblado that Simon liked (30 Oct 2026). Social, with rooftop and coworking; also has a sister hostel in Cartagena's Getsemaní rated 9.6 on Hostelworld.",
+  "season": "year round",
+  "dec_jan": null,
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "note": "Saved from Simon's own find. Prices and reviews not researched yet."
+  },
+  "researched": false,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.hostelworld.com/blog/cartagena-beaches-ranked-which-are-actually-worth-it/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Medellin-panorama.jpg/1280px-Medellin-panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Medellin-panorama.jpg",
+   "credit": "Yairlm.27",
+   "licence": "CC BY-SA 3.0",
+   "w": 1920,
+   "h": 1080
+  },
+  "image_source": "place",
   "saved_in": [
    "want"
   ]
