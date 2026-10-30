@@ -245,7 +245,7 @@ export function ModeSheet({ title, count, narrow, collapsed, cardOpen, panelRef,
             <div className="mhead">
               <div className="mhead-t">
                 <h2 className="pname">{title}</h2>
-                <p className="mcount">{count}</p>
+                <p className="mcount" aria-live="polite">{count}</p>
               </div>
               <div className="hbtns">
                 {!narrow && <button className="x" aria-label="Collapse panel" onClick={() => onCollapse(true)}><Chevron up /></button>}
