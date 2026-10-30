@@ -18085,7 +18085,7 @@
     "2027-01-30"
    ],
    "return_min_dkk": null,
-   "quotes": 45,
+   "quotes": 49,
    "flights": [
     {
      "quote_id": "Q:bc519ee046d2",
@@ -23868,13 +23868,15 @@
    "nonstop": false,
    "vias": [
     "BOG",
+    "LIM",
     "PTY"
    ],
    "carriers": [
     "Avianca",
     "COPA",
     "Copa",
-    "Copa Airlines"
+    "Copa Airlines",
+    "LATAM Airlines"
    ],
    "dates": [
     "2026-12-11",
@@ -23888,7 +23890,7 @@
     "2027-01-27"
    ],
    "return_min_dkk": null,
-   "quotes": 32,
+   "quotes": 38,
    "flights": [
     {
      "quote_id": "Q:25e1208d69d8",

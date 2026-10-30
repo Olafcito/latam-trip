@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-30T21:29:25Z",
+ "generated_at": "2026-10-30T21:40:41Z",
  "source": "data/sources/trips.jsonl",
  "trips": [
   {
@@ -2537,11 +2537,11 @@
   },
   {
    "id": "ctg-sal-xmas-cbb",
-   "version": 4,
+   "version": 5,
    "name": "Cartagena in, Christmas in Cochabamba, Guatemala City home",
-   "saved_at": "2026-10-30T21:28:56Z",
+   "saved_at": "2026-10-30T21:40:38Z",
    "by": "plan-trip",
-   "why": "Simon's Cartagena start with Christmas in Cochabamba. Version 4: home from Guatemala City on 3 Feb (KLM 13:09, lands 4 Feb 13:40, same 7,428 one ticket), ending with El Tunco and then Antigua by shuttle instead of San Salvador.",
+   "why": "Simon's Cartagena start with Christmas in Cochabamba, home from Guatemala City. Version 5: Cali to Santa Cruz on 20 Dec repriced, the Copa 12:02 flight rose from 2,355 to 2,937 on Momondo on 30 Oct.",
    "rank": null,
    "option_id": "CTG-GUA-ticket",
    "way_in": {
@@ -2815,19 +2815,19 @@
       "from": "CLO",
       "to": "VVI",
       "mode": "flight",
-      "operator": "Copa",
+      "operator": "Copa Airlines",
       "hours": 9.77,
-      "price_dkk": 2355,
+      "price_dkk": 2937.0,
       "overnight": false,
       "border": false,
       "flight": {
-       "quote_id": "Q:235b899a9952",
+       "quote_id": "Q:a3213f5ab038",
        "depart": "2026-12-20T12:02",
        "arrive": "2026-12-20T22:48",
        "hours": 9.77,
-       "price_dkk": 2355,
+       "price_dkk": 2937.0,
        "carriers": [
-        "Copa"
+        "Copa Airlines"
        ],
        "via": [
         "PTY"
@@ -2836,11 +2836,11 @@
         2.95
        ],
        "fare_brand": "Economy Basic",
-       "cabin_bag": null,
-       "source": "momondo-manual",
-       "observed_at": "2026-10-30T19:05Z"
+       "cabin_bag": "1 x håndbagage",
+       "source": "momondo",
+       "observed_at": "2026-10-30T21:36:17Z"
       },
-      "observed_at": "2026-10-30T19:05Z",
+      "observed_at": "2026-10-30T21:36:17Z",
       "date": "2026-12-20"
      }
     },
@@ -3017,6 +3017,12 @@
     }
    ],
    "history": [
+    {
+     "version": 4,
+     "saved_at": "2026-10-30T21:28:56Z",
+     "by": "plan-trip",
+     "why": "Simon's Cartagena start with Christmas in Cochabamba. Version 4: home from Guatemala City on 3 Feb (KLM 13:09, lands 4 Feb 13:40, same 7,428 one ticket), ending with El Tunco and then Antigua by shuttle instead of San Salvador."
+    },
     {
      "version": 3,
      "saved_at": "2026-10-30T21:07:43Z",

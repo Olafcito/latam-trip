@@ -15070,7 +15070,7 @@
       "long_layover",
       "self_transfer_unverified"
      ],
-     "quotes": 97
+     "quotes": 101
     },
     "source": "crawl",
     "observed_at": "2026-10-30T12:11:44Z",
@@ -18572,7 +18572,8 @@
       "COPA",
       "Copa",
       "Copa Airlines",
-      "LATAM"
+      "LATAM",
+      "LATAM Airlines"
      ],
      "oneway_dkk": {
       "min": 2088,
@@ -18873,7 +18874,7 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 39
+     "quotes": 45
     },
     "source": "crawl",
     "observed_at": "2026-10-28T19:05:05Z",
