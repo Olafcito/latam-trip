@@ -55,6 +55,8 @@ export interface RouteMapProps {
   /** A card the host asks the map to open, for example from a row outside the map. Told back on onCardOpen, so the host can clear it. */
   card?: CardRef | null
   onCardOpen?(): void
+  /** Where that card goes back to, while it is the first one open. `card` is the same object passed as the `card` prop. */
+  cardFrom?: { card: CardRef; label: string; onBack(): void } | null
   /** A pane the host renders on the right of the map; the camera keeps clear of it. */
   side?: ReactNode
   sideWidth?: number
@@ -92,7 +94,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, side = null, sideWidth = 360, sideMini = false, onMode }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, cardFrom = null, side = null, sideWidth = 360, sideMini = false, onMode }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -485,6 +487,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   /** What the first card covers when there is no room beside the panel. */
   const underCard = mm.mode ? MODE_TITLE[mm.mode] : (view.sel && model.byId.get(view.sel)?.short_name) || null
+  const hostBack = cardFrom && mm.stack.length === 1 && mm.stack[0] === cardFrom.card ? cardFrom : null
 
   // ---- map setup -------------------------------------------------------------------------
 
@@ -1103,8 +1106,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
               model={model}
               left={narrow ? null : cardEdge(dock, collapsed, mm.mode ? 'mode' : view.panel)}
               cardRef={cardRef}
-              backTo={mm.stack.length > 1 ? mm.titleOf(mm.stack.at(-2)!) : narrow || !dock ? underCard : null}
-              onBack={mm.popCard}
+              backTo={hostBack ? hostBack.label : mm.stack.length > 1 ? mm.titleOf(mm.stack.at(-2)!) : narrow || !dock ? underCard : null}
+              onBack={hostBack ? hostBack.onBack : mm.popCard}
               onClose={mm.closeCards}
               onOpen={mm.pushCard}
               onShow={showCard}

@@ -131,6 +131,8 @@ interface State {
   showOnMap: () => void
   /** a gym, city or experience the map opens when it next shows, from a row of an itinerary */
   mapCard: CardRef | null
+  /** the last card opened from Trips, so that card can go back there, until the screen changes */
+  mapCardFrom: CardRef | null
   openMapCard: (card: CardRef) => void
   clearMapCard: () => void
   /** a trip edit from the route map, read back into journeys */
@@ -142,7 +144,7 @@ export const useStore = create<State>((set, get) => ({
   setData: (data) => set({ data }),
   screen: 'trips',
   view: 'home',
-  go: (screen, view) => set(view ? { screen, view } : { screen }),
+  go: (screen, view) => set({ mapCardFrom: null, ...(view ? { screen, view } : { screen }) }),
 
   filters: { ...DEFAULT_FILTERS, ...read<Partial<Filters>>(FILTERS_KEY, {}) },
   setFilters: (f) => {
@@ -313,7 +315,8 @@ export const useStore = create<State>((set, get) => ({
   setPaneMini: (paneMini) => set({ paneMini }),
   showOnMap: () => set({ mapOpen: true, screen: 'map' }),
   mapCard: null,
-  openMapCard: (mapCard) => set({ mapCard, mapOpen: true, screen: 'map' }),
+  mapCardFrom: null,
+  openMapCard: (mapCard) => set({ mapCard, mapCardFrom: mapCard, mapOpen: true, screen: 'map' }),
   clearMapCard: () => set({ mapCard: null }),
   applyMapTrips: (after, facts) => {
     const { data, journey, saved, mapOpen, compare } = get()
