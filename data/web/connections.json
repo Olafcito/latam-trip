@@ -605,7 +605,7 @@
     "duration_min": 45,
     "price_dkk": {
      "min": 404,
-     "typical": 449
+     "typical": 471
     },
     "frequency": "several daily",
     "overnight": false,
@@ -627,12 +627,117 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-20",
+      "2026-12-21",
+      "2026-12-22",
+      "2026-12-25",
+      "2026-12-26",
       "2027-01-10",
       "2027-01-31",
       "2027-02-01",
       "2027-02-02"
      ],
      "by_date": [
+      {
+       "date": "2026-12-20",
+       "from": "VVI",
+       "to": "CBB",
+       "dkk": 471,
+       "dep": "17:50",
+       "arr": "18:35",
+       "arr_days": 0,
+       "duration_min": 45,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 649"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
+       "link": "https://www.momondo.dk/flight-search/VVI-CBB/2026-12-20"
+      },
+      {
+       "date": "2026-12-21",
+       "from": "VVI",
+       "to": "CBB",
+       "dkk": 441,
+       "dep": "05:35",
+       "arr": "06:20",
+       "arr_days": 0,
+       "duration_min": 45,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 631"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-21",
+       "link": "https://www.momondo.dk/flight-search/VVI-CBB/2026-12-21"
+      },
+      {
+       "date": "2026-12-22",
+       "from": "VVI",
+       "to": "CBB",
+       "dkk": 441,
+       "dep": "05:35",
+       "arr": "06:20",
+       "arr_days": 0,
+       "duration_min": 45,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 631"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-22",
+       "link": "https://www.momondo.dk/flight-search/VVI-CBB/2026-12-22"
+      },
+      {
+       "date": "2026-12-25",
+       "from": "CBB",
+       "to": "VVI",
+       "dkk": 471,
+       "dep": "22:25",
+       "arr": "23:15",
+       "arr_days": 0,
+       "duration_min": 50,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 656"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-25",
+       "link": "https://www.momondo.dk/flight-search/CBB-VVI/2026-12-25"
+      },
+      {
+       "date": "2026-12-26",
+       "from": "CBB",
+       "to": "VVI",
+       "dkk": 471,
+       "dep": "13:35",
+       "arr": "14:25",
+       "arr_days": 0,
+       "duration_min": 50,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "BoA 646"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-26",
+       "link": "https://www.momondo.dk/flight-search/CBB-VVI/2026-12-26"
+      },
       {
        "date": "2027-01-10",
        "from": "VVI",
@@ -738,10 +843,10 @@
       "self_transfer",
       "tight_connection"
      ],
-     "quotes": 12
+     "quotes": 17
     },
     "source": "crawl",
-    "observed_at": "2026-10-29T15:03:03Z",
+    "observed_at": "2026-10-30T19:48:51Z",
     "note": "Rome2rio fly+bus figure 1h25; the bus (6-10 h) is the usual choice and cheaper (US$2-9).",
     "booking_url": "https://www.momondo.dk/flight-search/CBB-VVI/2027-02-01",
     "source_url": "https://www.rome2rio.com/s/Cochabamba/Santa-Cruz-de-la-Sierra",
@@ -9027,14 +9132,16 @@
     "operators": [
      "Avianca",
      "JetSMART",
+     "Jetsmart",
      "Wingo",
+     "avianca",
      "LATAM",
      "JetSmart"
     ],
     "duration_min": 70,
     "price_dkk": {
-     "min": 385,
-     "typical": 456
+     "min": 191,
+     "typical": 327
     },
     "frequency": "4-5 daily, 33 nonstop weekly per Kiwi UK",
     "overnight": false,
@@ -9043,7 +9150,9 @@
     "geometry": null,
     "flight": {
      "nonstop": true,
-     "vias": [],
+     "vias": [
+      "BOG"
+     ],
      "carriers": [
       "Avianca",
       "JetSMART",
@@ -9052,14 +9161,101 @@
       "avianca"
      ],
      "oneway_dkk": {
-      "min": 385,
-      "observed_at": "2026-10-28T14:38:04Z"
+      "min": 191,
+      "observed_at": "2026-10-30T19:45:32Z"
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-08",
+      "2026-12-09",
+      "2026-12-10",
+      "2026-12-11",
       "2027-01-05"
      ],
      "by_date": [
+      {
+       "date": "2026-12-08",
+       "from": "CTG",
+       "to": "MDE",
+       "dkk": 480,
+       "dep": "07:20",
+       "arr": "08:39",
+       "arr_days": 0,
+       "duration_min": 79,
+       "vias": [],
+       "carriers": [
+        "JetSMART"
+       ],
+       "flights": [
+        "JetSMART 5429"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-08",
+       "link": "https://www.momondo.dk/flight-search/CTG-MDE/2026-12-08"
+      },
+      {
+       "date": "2026-12-09",
+       "from": "CTG",
+       "to": "MDE",
+       "dkk": 191,
+       "dep": "08:03",
+       "arr": "09:17",
+       "arr_days": 0,
+       "duration_min": 74,
+       "vias": [],
+       "carriers": [
+        "Wingo"
+       ],
+       "flights": [
+        "Wingo 7601"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-09",
+       "link": "https://www.momondo.dk/flight-search/CTG-MDE/2026-12-09"
+      },
+      {
+       "date": "2026-12-10",
+       "from": "CTG",
+       "to": "MDE",
+       "dkk": 191,
+       "dep": "19:59",
+       "arr": "21:13",
+       "arr_days": 0,
+       "duration_min": 74,
+       "vias": [],
+       "carriers": [
+        "Wingo"
+       ],
+       "flights": [
+        "Wingo 7603"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-10",
+       "link": "https://www.momondo.dk/flight-search/CTG-MDE/2026-12-10"
+      },
+      {
+       "date": "2026-12-11",
+       "from": "CTG",
+       "to": "MDE",
+       "dkk": 308,
+       "dep": "05:30",
+       "arr": "09:10",
+       "arr_days": 0,
+       "duration_min": 220,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 9541",
+        "Avianca 9260"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-11",
+       "link": "https://www.momondo.dk/flight-search/CTG-MDE/2026-12-11"
+      },
       {
        "date": "2027-01-05",
        "from": "CTG",
@@ -9101,31 +9297,33 @@
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 385,
-      "duration_min": 72,
+      "dkk": 191,
+      "duration_min": 74,
       "vias": [],
       "carriers": [
        "Wingo"
       ],
-      "date": "2027-01-05",
+      "date": "2026-12-09",
       "self_transfer": false
      },
      "fastest": {
-      "dkk": 485,
-      "duration_min": 70,
+      "dkk": 191,
+      "duration_min": 74,
       "vias": [],
       "carriers": [
-       "Avianca"
+       "Wingo"
       ],
-      "date": "2027-01-05"
+      "date": "2026-12-09"
      },
-     "flags": [],
-     "quotes": 6
+     "flags": [
+      "basic_fare"
+     ],
+     "quotes": 18
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T14:38:04Z",
+    "observed_at": "2026-10-30T19:48:33Z",
     "note": "Gecko Routes Nov 2025: COP 96-112k; Kiwi UK page from GBP 28 (Wingo). Peak Dec 20-Jan 6: expect roughly 1.5x (Medellin) to 2-4x (Cartagena, San Andres) the off-peak fare (La Republica Nov 2023: BOG-CTG return COP 0.60-1.1M, BOG-ADZ return COP 0.66-0.73M, BOG-MDE return COP 0.33-0.43M). price_dkk is the cheapest advertised off-peak one-way fare, not a Christmas fare.",
-    "booking_url": null,
+    "booking_url": "https://www.momondo.dk/flight-search/CTG-MDE/2026-12-09",
     "source_url": "https://geckoroutes.com/colombia/medellin-to-cartagena/",
     "researched": {
      "duration_min": 72,
@@ -13507,18 +13705,21 @@
      "vias": [
       "BOG",
       "CBB",
+      "CUZ",
       "GUA",
       "LIM",
       "LPB",
       "MDE",
       "PTY",
-      "SAL"
+      "SAL",
+      "SCL"
      ],
      "carriers": [
       "Avianca",
       "BoA",
       "Copa",
       "Copa Airlines",
+      "JetSMART",
       "LATAM",
       "LATAM Airlines",
       "avianca"
@@ -13535,10 +13736,13 @@
       "2026-12-06",
       "2026-12-10",
       "2026-12-20",
+      "2026-12-24",
+      "2026-12-25",
       "2026-12-26",
       "2026-12-27",
       "2026-12-28",
       "2026-12-29",
+      "2026-12-30",
       "2027-01-01",
       "2027-01-15",
       "2027-01-18",
@@ -13617,6 +13821,52 @@
        "link": null
       },
       {
+       "date": "2026-12-24",
+       "from": "VVI",
+       "to": "SJO",
+       "dkk": 2588,
+       "dep": "01:10",
+       "arr": "11:02",
+       "arr_days": 0,
+       "duration_min": 712,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 126",
+        "Copa Airlines 192"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-24",
+       "link": "https://www.momondo.dk/flight-search/VVI-SJO/2026-12-24"
+      },
+      {
+       "date": "2026-12-25",
+       "from": "VVI",
+       "to": "SJO",
+       "dkk": 2598,
+       "dep": "01:10",
+       "arr": "07:05",
+       "arr_days": 0,
+       "duration_min": 475,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 126",
+        "Copa Airlines 787"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-25",
+       "link": "https://www.momondo.dk/flight-search/VVI-SJO/2026-12-25"
+      },
+      {
        "date": "2026-12-26",
        "from": "VVI",
        "to": "SJO",
@@ -13689,24 +13939,50 @@
        "date": "2026-12-29",
        "from": "VVI",
        "to": "SJO",
-       "dkk": 14207,
-       "dep": "03:45",
-       "arr": "16:20",
-       "arr_days": 0,
-       "duration_min": 875,
+       "dkk": 4970,
+       "dep": "21:15",
+       "arr": "15:55",
+       "arr_days": 1,
+       "duration_min": 1240,
        "vias": [
-        "BOG"
+        "SCL",
+        "LIM"
        ],
        "carriers": [
-        "Avianca"
+        "BoA",
+        "LATAM Airlines"
        ],
        "flights": [
-        "AV166",
-        "AV698"
+        "BoA 1722",
+        "LATAM Airlines 2370",
+        "LATAM Airlines 2408"
        ],
-       "self_transfer": false,
+       "self_transfer": true,
        "searched": "2026-12-29",
-       "link": "https://kiwi.com/u/nffhj4h"
+       "link": "https://www.momondo.dk/flight-search/VVI-SJO/2026-12-29"
+      },
+      {
+       "date": "2026-12-30",
+       "from": "VVI",
+       "to": "SJO",
+       "dkk": 4025,
+       "dep": "01:10",
+       "arr": "07:05",
+       "arr_days": 0,
+       "duration_min": 475,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 126",
+        "Copa Airlines 787"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-30",
+       "link": "https://www.momondo.dk/flight-search/VVI-SJO/2026-12-30"
       },
       {
        "date": "2027-01-01",
@@ -14617,7 +14893,7 @@
       "long_layover",
       "self_transfer_unverified"
      ],
-     "quotes": 78
+     "quotes": 97
     },
     "source": "crawl",
     "observed_at": "2026-10-30T12:11:44Z",
@@ -17810,6 +18086,7 @@
      "nonstop": false,
      "vias": [
       "BOG",
+      "CLO",
       "GRU",
       "GUA",
       "LIM",
@@ -17841,6 +18118,7 @@
       "2026-12-26",
       "2026-12-27",
       "2026-12-28",
+      "2026-12-29",
       "2027-01-25",
       "2027-01-28",
       "2027-02-01"
@@ -17850,27 +18128,24 @@
        "date": "2026-12-26",
        "from": "VVI",
        "to": "MGA",
-       "dkk": 5906,
+       "dkk": 5284,
        "dep": "03:45",
-       "arr": "15:54",
-       "arr_days": 0,
-       "duration_min": 849,
+       "arr": "00:05",
+       "arr_days": 1,
+       "duration_min": 1340,
        "vias": [
         "BOG",
-        "MDE",
-        "PTY"
+        "SAL"
        ],
        "carriers": [
-        "Avianca",
-        "Copa Airlines"
+        "Avianca"
        ],
        "flights": [
         "Avianca 166",
-        "Avianca 9332",
-        "Copa Airlines 687",
-        "Copa Airlines 661"
+        "Avianca 384",
+        "Avianca 315"
        ],
-       "self_transfer": true,
+       "self_transfer": false,
        "searched": "2026-12-26",
        "link": "https://www.momondo.dk/flight-search/VVI-MGA/2026-12-26"
       },
@@ -17924,6 +18199,31 @@
        "self_transfer": true,
        "searched": "2026-12-28",
        "link": "https://www.momondo.dk/flight-search/VVI-MGA/2026-12-28"
+      },
+      {
+       "date": "2026-12-29",
+       "from": "VVI",
+       "to": "MGA",
+       "dkk": 5272,
+       "dep": "03:45",
+       "arr": "00:05",
+       "arr_days": 1,
+       "duration_min": 1340,
+       "vias": [
+        "BOG",
+        "SAL"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 166",
+        "Avianca 384",
+        "Avianca 315"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-29",
+       "link": "https://www.momondo.dk/flight-search/VVI-MGA/2026-12-29"
       },
       {
        "date": "2027-01-25",
@@ -18046,7 +18346,7 @@
       "tight_connection",
       "us_transit"
      ],
-     "quotes": 28
+     "quotes": 40
     },
     "source": "crawl",
     "observed_at": "2026-10-29T15:02:54Z",
@@ -18106,6 +18406,8 @@
       "2026-12-11",
       "2026-12-14",
       "2026-12-17",
+      "2026-12-18",
+      "2026-12-19",
       "2026-12-20",
       "2026-12-21",
       "2026-12-22",
@@ -18183,6 +18485,52 @@
        "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-17"
       },
       {
+       "date": "2026-12-18",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2633,
+       "dep": "22:30",
+       "arr": "02:40",
+       "arr_days": 2,
+       "duration_min": 1630,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 9220",
+        "Avianca 167"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-18",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-18"
+      },
+      {
+       "date": "2026-12-19",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2501,
+       "dep": "12:02",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 586,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 308",
+        "Copa Airlines 127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-19",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-19"
+      },
+      {
        "date": "2026-12-20",
        "from": "CLO",
        "to": "VVI",
@@ -18227,6 +18575,29 @@
        "self_transfer": false,
        "searched": "2026-12-21",
        "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-21?sort=price_a"
+      },
+      {
+       "date": "2026-12-22",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2382,
+       "dep": "12:02",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 586,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 308",
+        "Copa Airlines 127"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-22",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-22"
       },
       {
        "date": "2026-12-22",
@@ -18325,7 +18696,7 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 22
+     "quotes": 37
     },
     "source": "crawl",
     "observed_at": "2026-10-28T19:05:05Z",

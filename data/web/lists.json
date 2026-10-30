@@ -119,6 +119,30 @@
      "id": "sale-coffee-farm-tour-e-g-don-elias-finca-el-ocaso",
      "added": "2026-10-30",
      "note": "Coffee region route, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-bora-bora-beach-club-isla-grande",
+     "added": "2026-10-30",
+     "note": "Islas del Rosario, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-centro-ubuntu-isla-grande",
+     "added": "2026-10-30",
+     "note": "Islas del Rosario, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-el-hamaquero-isla-grande",
+     "added": "2026-10-30",
+     "note": "Islas del Rosario, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-orika-del-mar-isla-grande",
+     "added": "2026-10-30",
+     "note": "Islas del Rosario, 30 Oct"
     }
    ]
   }

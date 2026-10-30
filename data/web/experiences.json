@@ -27186,7 +27186,9 @@
    "h": 3216
   },
   "image_source": "category",
-  "saved_in": []
+  "saved_in": [
+   "want"
+  ]
  },
  {
   "id": "stay-secreto-hostel-isla-grande",
@@ -27428,10 +27430,10 @@
   "details": {
    "score": {
     "access": 9,
-    "water_and_lodging": 7,
-    "long_stay_crowd": 5,
-    "food_and_bars": 4,
-    "total": 25,
+    "water_and_lodging": 8,
+    "long_stay_crowd": 4,
+    "food_and_bars": 5,
+    "total": 6.5,
     "max": 40
    },
    "verdict": "Fastest and cheapest to reach, with good lodges on the water and the plankton lagoon. The crowd is mostly day-trippers and short stays, and eating out means a few simple places in Orika, hotel restaurants and beach clubs, so it suits 2 to 3 quiet nights more than a 5 night social base.",
@@ -27446,7 +27448,16 @@
      "date": "2025-11-01",
      "url": "https://geckoroutes.com/colombia/cartagena-to-isla-grande/"
     }
-   ]
+   ],
+   "score_previous": {
+    "access": 9,
+    "water_and_lodging": 7,
+    "long_stay_crowd": 5,
+    "food_and_bars": 4,
+    "total": 25,
+    "max": 40
+   },
+   "rescored": "30 Oct 2026: more good stays (Centro Ubuntu, El Hamaquero, Bora Bora Beach Club) and beach clubs (Bora Bora, Pao Pao, Pa'ue) raise water and lodging and food and bars a point each; evenings still quiet once day-trippers leave."
   },
   "researched": true,
   "checked_at": "2026-10-30",
@@ -27974,6 +27985,148 @@
    "licence": "CC BY 3.0",
    "w": 2039,
    "h": 2056
+  },
+  "image_source": "category",
+  "saved_in": [
+   "want"
+  ]
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "places": [
+   "ISGR"
+  ],
+  "season": "December to April is dry; Colombian holiday crowds mid-December to mid-January.",
+  "dec_jan": "Day-trippers fill Isla Grande beaches about 10:00 to 16:00; evenings quiet.",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "duration": "2 to 4 nights",
+  "id": "stay-bora-bora-beach-club-isla-grande",
+  "name": "Bora Bora Beach Club & Hotel, Isla Grande",
+  "tags": [
+   "stay",
+   "beach-club",
+   "water",
+   "luxury"
+  ],
+  "area": "Isla Grande, Rosario Islands",
+  "lat": 10.18,
+  "lon": -75.74,
+  "summary": "Adults-only beach club with a 6-room hotel on Isla Grande: private beach, bar with live music and DJ, spa. Lively with day guests 09:00 to 17:00, quiet for hotel guests after.",
+  "price": "From US$347 a night (about 2,238 DKK). Day pass 09:00 to 17:00, price not listed.",
+  "price_dkk": 2238,
+  "requirements": "18+. Book via Booking.com or Cloudbeds.",
+  "details": {
+   "rating": "9.2 from 439 reviews (Booking.com)",
+   "social": "Party feel in the day from day-pass guests; quiet evenings, one reviewer missed evening entertainment",
+   "on_the_water": true,
+   "day_pass": "Yes, 09:00 to 17:00",
+   "note": "Simon found it 30 Oct; also works as a day visit from a cheaper stay on Isla Grande."
+  },
+  "sources": [
+   "https://cartagenacaribbeantours.com/property/bora-bora-beach-club-cartagena/BC-8358073",
+   "https://m.booking.com/hotel/co/bora-bora-cartagena-islas-del-rosario.html"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": [
+   "want"
+  ]
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "places": [
+   "ISGR"
+  ],
+  "season": "December to April is dry; Colombian holiday crowds mid-December to mid-January.",
+  "dec_jan": "Day-trippers fill Isla Grande beaches about 10:00 to 16:00; evenings quiet.",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "duration": "2 to 4 nights",
+  "id": "stay-centro-ubuntu-isla-grande",
+  "name": "Centro Ubuntu, Isla Grande",
+  "tags": [
+   "stay",
+   "eco",
+   "water"
+  ],
+  "area": "Sector La Punta, Isla Grande",
+  "lat": 10.18,
+  "lon": -75.73,
+  "summary": "Eco and community-run beachfront guesthouse with 6 rooms, restaurant, yoga, snorkelling and the bioluminescent night tour. Rustic and peaceful.",
+  "price": "From US$146 a night (about 942 DKK); boat transfer not included.",
+  "price_dkk": 942,
+  "requirements": "18+.",
+  "details": {
+   "rating": "9.1 from 309 reviews",
+   "social": "Peaceful, small",
+   "on_the_water": true,
+   "watch_out": "Weak shower, some litter visible, long journey, pricey for some reviewers"
+  },
+  "sources": [
+   "https://www.casai.com/property/centro-ubuntu/BC-7988594"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
+  },
+  "image_source": "category",
+  "saved_in": [
+   "want"
+  ]
+ },
+ {
+  "category": "beach",
+  "country": "CO",
+  "places": [
+   "ISGR"
+  ],
+  "season": "December to April is dry; Colombian holiday crowds mid-December to mid-January.",
+  "dec_jan": "Day-trippers fill Isla Grande beaches about 10:00 to 16:00; evenings quiet.",
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "duration": "2 to 4 nights",
+  "id": "stay-orika-del-mar-isla-grande",
+  "name": "Orika del Mar, Isla Grande",
+  "tags": [
+   "stay",
+   "water"
+  ],
+  "area": "Caño Ratón, south Isla Grande",
+  "lat": 10.17,
+  "lon": -75.74,
+  "summary": "Six thatched bungalows with a pier on the south side of Isla Grande, near the beach bars Pao Pao, Pa'ue Beach Lounge and Sol y Papaya. Photos look lovely; the one review is poor.",
+  "price": "Not listed.",
+  "price_dkk": null,
+  "requirements": "18+.",
+  "details": {
+   "rating": "6.0 from 1 review (Hoteles.com, Aug 2026): dated, basic, pricey, no proper swimming area",
+   "on_the_water": true,
+   "nearby": "Pao Pao, Pa'ue Beach Lounge, Sol y Papaya"
+  },
+  "sources": [
+   "https://www.hoteles.com/ho4230577664/orika-del-mar/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/West_bay_avi_2012.JPG/1280px-West_bay_avi_2012.JPG",
+   "page": "https://commons.wikimedia.org/wiki/File:West_bay_avi_2012.JPG",
+   "credit": "Roatanavi",
+   "licence": "CC BY-SA 3.0",
+   "w": 4288,
+   "h": 3216
   },
   "image_source": "category",
   "saved_in": [

@@ -19,6 +19,27 @@
   ]
  },
  {
+  "from": "CTG",
+  "to": "MDE",
+  "dkk": 191,
+  "hours": 1.23,
+  "dep": "2026-12-09T08:03",
+  "arr": "2026-12-09T09:17",
+  "vias": [],
+  "carriers": [
+   "Wingo"
+  ],
+  "notes": [
+   "basic fare"
+  ],
+  "link": "https://www.momondo.dk/flight-search/CTG-MDE/2026-12-09",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "BOG",
   "to": "MDE",
   "dkk": 209,
@@ -186,6 +207,25 @@
   ],
   "link": null,
   "shows": [
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "CBB",
+  "dkk": 441,
+  "hours": 0.75,
+  "dep": "2026-12-21T05:35",
+  "arr": "2026-12-21T06:20",
+  "vias": [],
+  "carriers": [
+   "BoA"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/VVI-CBB/2026-12-21",
+  "shows": [
+   "cheapest",
    "fastest",
    "daytime landing"
   ]
@@ -522,23 +562,6 @@
   ]
  },
  {
-  "from": "VVI",
-  "to": "CBB",
-  "dkk": 645,
-  "hours": 0.75,
-  "dep": "2027-01-10T05:35",
-  "arr": "2027-01-10T06:20",
-  "vias": [],
-  "carriers": [],
-  "notes": [],
-  "link": null,
-  "shows": [
-   "cheapest",
-   "fastest",
-   "daytime landing"
-  ]
- },
- {
   "from": "MDE",
   "to": "SMR",
   "dkk": 712,
@@ -650,26 +673,6 @@
   "link": null,
   "shows": [
    "fastest"
-  ]
- },
- {
-  "from": "CTG",
-  "to": "MDE",
-  "dkk": 778,
-  "hours": 1.32,
-  "dep": "2027-01-05T07:20",
-  "arr": "2027-01-05T08:39",
-  "vias": [],
-  "carriers": [
-   "Jetsmart"
-  ],
-  "notes": [
-   "basic fare"
-  ],
-  "link": null,
-  "shows": [
-   "cheapest",
-   "daytime landing"
   ]
  },
  {
@@ -1437,25 +1440,6 @@
   "shows": [
    "cheapest",
    "daytime landing"
-  ]
- },
- {
-  "from": "CTG",
-  "to": "MDE",
-  "dkk": 1540,
-  "hours": 1.25,
-  "dep": "2027-01-05T20:30",
-  "arr": "2027-01-05T21:45",
-  "vias": [],
-  "carriers": [
-   "avianca"
-  ],
-  "notes": [
-   "basic fare"
-  ],
-  "link": null,
-  "shows": [
-   "fastest"
   ]
  },
  {
@@ -6163,29 +6147,6 @@
   ]
  },
  {
-  "from": "VVI",
-  "to": "MGA",
-  "dkk": 7351,
-  "hours": 13.92,
-  "dep": "2026-12-26T01:10",
-  "arr": "2026-12-26T13:05",
-  "vias": [
-   "PTY"
-  ],
-  "carriers": [
-   "Copa Airlines"
-  ],
-  "notes": [
-   "self transfer",
-   "basic fare",
-   "long layover"
-  ],
-  "link": "https://www.momondo.dk/flight-search/VVI-MGA/2026-12-26",
-  "shows": [
-   "fastest"
-  ]
- },
- {
   "from": "CTG",
   "to": "VVI",
   "dkk": 7380,
@@ -6240,6 +6201,29 @@
   ],
   "notes": [],
   "link": null,
+  "shows": [
+   "fastest"
+  ]
+ },
+ {
+  "from": "VVI",
+  "to": "MGA",
+  "dkk": 8746,
+  "hours": 12.53,
+  "dep": "2026-12-29T11:42",
+  "arr": "2026-12-29T22:14",
+  "vias": [
+   "PTY"
+  ],
+  "carriers": [
+   "Copa Airlines"
+  ],
+  "notes": [
+   "self transfer",
+   "basic fare",
+   "long layover"
+  ],
+  "link": "https://www.momondo.dk/flight-search/VVI-MGA/2026-12-29",
   "shows": [
    "fastest"
   ]

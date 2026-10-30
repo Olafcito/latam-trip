@@ -12223,11 +12223,12 @@
    "source": "crawl",
    "oneway_min_dkk": 5100.66,
    "oneway_min_hours": 16.75,
-   "fastest_hours": 13.92,
-   "fastest_price_dkk": 7351.0,
+   "fastest_hours": 12.53,
+   "fastest_price_dkk": 8746.0,
    "nonstop": false,
    "vias": [
     "BOG",
+    "CLO",
     "GUA",
     "LIM",
     "MDE",
@@ -12247,10 +12248,11 @@
     "2026-12-26",
     "2026-12-27",
     "2026-12-28",
+    "2026-12-29",
     "2027-02-01"
    ],
    "return_min_dkk": null,
-   "quotes": 16,
+   "quotes": 28,
    "flights": [
     {
      "quote_id": "Q:f1411cba3da8",
@@ -12276,11 +12278,11 @@
      "source": "expedia"
     },
     {
-     "quote_id": "Q:432967888d78",
-     "depart": "2026-12-27T03:45",
-     "arrive": "2026-12-28T00:05",
+     "quote_id": "Q:aa753316f6bc",
+     "depart": "2026-12-29T03:45",
+     "arrive": "2026-12-30T00:05",
      "hours": 22.33,
-     "price_dkk": 5394.0,
+     "price_dkk": 5272.0,
      "carriers": [
       "Avianca"
      ],
@@ -12325,11 +12327,11 @@
      "source": "momondo"
     },
     {
-     "quote_id": "Q:80c9e65039ce",
-     "depart": "2026-12-27T20:00",
-     "arrive": "2026-12-28T08:40",
+     "quote_id": "Q:b2e7f821a02a",
+     "depart": "2026-12-26T20:00",
+     "arrive": "2026-12-27T08:40",
      "hours": 14.67,
-     "price_dkk": 6124.0,
+     "price_dkk": 6085.0,
      "carriers": [
       "Avianca",
       "BoA"
@@ -12346,6 +12348,29 @@
      "cabin_bag": "1 x håndbagage",
      "checked_bag": "paid",
      "overnight_layover": true,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:b3603b510ffd",
+     "depart": "2026-12-26T03:45",
+     "arrive": "2026-12-26T18:40",
+     "hours": 16.92,
+     "price_dkk": 6408.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG",
+      "MIA"
+     ],
+     "layover_h": [
+      1.0,
+      5.25
+     ],
+     "fare_brand": "Light",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
      "source": "momondo"
     },
     {
@@ -12371,31 +12396,6 @@
      "fare_brand": "Light + Basic",
      "cabin_bag": "fee",
      "checked_bag": "paid",
-     "overnight_layover": false,
-     "source": "momondo"
-    },
-    {
-     "quote_id": "Q:d01f45bb6eaa",
-     "depart": "2026-12-28T03:45",
-     "arrive": "2026-12-28T18:30",
-     "hours": 16.75,
-     "price_dkk": 6852.0,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [
-      "BOG",
-      "GUA",
-      "SAL"
-     ],
-     "layover_h": [
-      4.0,
-      2.58,
-      1.08
-     ],
-     "fare_brand": "Light",
-     "cabin_bag": "1 x håndbagage",
-     "checked_bag": null,
      "overnight_layover": false,
      "source": "momondo"
     }
@@ -13320,55 +13320,140 @@
    "to": "MDE",
    "mode": "flight",
    "source": "crawl",
-   "oneway_min_dkk": 778.0,
-   "oneway_min_hours": 1.32,
-   "fastest_hours": 1.25,
-   "fastest_price_dkk": 1540.0,
+   "oneway_min_dkk": 191.0,
+   "oneway_min_hours": 1.23,
+   "fastest_hours": 1.23,
+   "fastest_price_dkk": 191.0,
    "nonstop": true,
-   "vias": [],
+   "vias": [
+    "BOG"
+   ],
    "carriers": [
+    "Avianca",
+    "JetSMART",
     "Jetsmart",
+    "Wingo",
     "avianca"
    ],
    "dates": [
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10",
+    "2026-12-11",
     "2027-01-05"
    ],
    "return_min_dkk": null,
-   "quotes": 2,
+   "quotes": 14,
    "flights": [
     {
-     "quote_id": "Q:65db639c63b7",
-     "depart": "2027-01-05T07:20",
-     "arrive": "2027-01-05T08:39",
-     "hours": 1.32,
-     "price_dkk": 778.0,
+     "quote_id": "Q:8b11cde7f7ff",
+     "depart": "2026-12-09T08:03",
+     "arrive": "2026-12-09T09:17",
+     "hours": 1.23,
+     "price_dkk": 191.0,
      "carriers": [
-      "Jetsmart"
+      "Wingo"
      ],
      "via": [],
      "layover_h": [],
-     "fare_brand": "BASIC",
-     "cabin_bag": "Personal item only; carry-on $60 fee (Expedia text says 'included' but category is FEE)",
+     "fare_brand": "Go Basic",
+     "cabin_bag": "fee",
      "checked_bag": "paid",
      "overnight_layover": false,
-     "source": "expedia"
+     "source": "momondo"
     },
     {
-     "quote_id": "Q:46205d84cf8f",
-     "depart": "2027-01-05T20:30",
-     "arrive": "2027-01-05T21:45",
-     "hours": 1.25,
-     "price_dkk": 1540.0,
+     "quote_id": "Q:ed4f69e8afd6",
+     "depart": "2026-12-10T19:59",
+     "arrive": "2026-12-10T21:13",
+     "hours": 1.23,
+     "price_dkk": 191.0,
      "carriers": [
-      "avianca"
+      "Wingo"
      ],
      "via": [],
      "layover_h": [],
-     "fare_brand": "BASIC",
-     "cabin_bag": "Personal item only; carry-on $15-27 fee (Expedia text says 'included' but category is FEE)",
+     "fare_brand": "Go Basic",
+     "cabin_bag": "fee",
      "checked_bag": "paid",
      "overnight_layover": false,
-     "source": "expedia"
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:a446038c70f2",
+     "depart": "2026-12-10T07:10",
+     "arrive": "2026-12-10T10:50",
+     "hours": 3.67,
+     "price_dkk": 307.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "layover_h": [
+      1.08
+     ],
+     "fare_brand": "Basic",
+     "cabin_bag": null,
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:cefdc39ccded",
+     "depart": "2026-12-11T05:30",
+     "arrive": "2026-12-11T09:10",
+     "hours": 3.67,
+     "price_dkk": 308.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "layover_h": [
+      1.08
+     ],
+     "fare_brand": "Basic",
+     "cabin_bag": null,
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:3db204dcd34a",
+     "depart": "2026-12-10T22:25",
+     "arrive": "2026-12-10T23:40",
+     "hours": 1.25,
+     "price_dkk": 311.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Basic",
+     "cabin_bag": null,
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:fccb9eea29f3",
+     "depart": "2026-12-09T20:30",
+     "arrive": "2026-12-09T21:49",
+     "hours": 1.32,
+     "price_dkk": 321.0,
+     "carriers": [
+      "JetSMART"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
     }
    ]
   },
@@ -17912,32 +17997,38 @@
    "vias": [
     "BOG",
     "CBB",
+    "CUZ",
     "LIM",
     "LPB",
     "MDE",
     "PTY",
-    "SAL"
+    "SAL",
+    "SCL"
    ],
    "carriers": [
     "Avianca",
     "BoA",
     "Copa",
     "Copa Airlines",
+    "JetSMART",
     "LATAM",
     "LATAM Airlines",
     "avianca"
    ],
    "dates": [
+    "2026-12-24",
+    "2026-12-25",
     "2026-12-26",
     "2026-12-27",
     "2026-12-28",
     "2026-12-29",
+    "2026-12-30",
     "2027-01-01",
     "2027-01-15",
     "2027-01-30"
    ],
    "return_min_dkk": null,
-   "quotes": 26,
+   "quotes": 45,
    "flights": [
     {
      "quote_id": "Q:bc519ee046d2",
@@ -18003,6 +18094,27 @@
      "source": "momondo"
     },
     {
+     "quote_id": "Q:782ba3b0b63b",
+     "depart": "2026-12-24T01:10",
+     "arrive": "2026-12-24T11:02",
+     "hours": 11.87,
+     "price_dkk": 2588.0,
+     "carriers": [
+      "Copa Airlines"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      5.5
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
      "quote_id": "Q:7d50fb250639",
      "depart": "2027-01-30T05:30",
      "arrive": "2027-01-30T12:35",
@@ -18024,46 +18136,24 @@
      "source": "expedia"
     },
     {
-     "quote_id": "Q:2b5de13aa924",
-     "depart": "2027-01-15T03:45",
-     "arrive": "2027-01-16T00:30",
-     "hours": 22.75,
-     "price_dkk": 3603.0,
+     "quote_id": "Q:7091add42fb4",
+     "depart": "2026-12-24T11:34",
+     "arrive": "2026-12-24T18:59",
+     "hours": 9.42,
+     "price_dkk": 2713.0,
      "carriers": [
-      "avianca"
+      "Copa Airlines"
      ],
      "via": [
-      "BOG"
+      "PTY"
      ],
      "layover_h": [
-      16.58
+      2.92
      ],
-     "fare_brand": "LIGHT",
-     "cabin_bag": "carry-on incl",
-     "checked_bag": "paid $22-120",
-     "overnight_layover": true,
-     "source": "expedia"
-    },
-    {
-     "quote_id": "Q:7187b45791fe",
-     "depart": "2026-12-26T20:00",
-     "arrive": "2026-12-27T12:35",
-     "hours": 18.58,
-     "price_dkk": 4071.0,
-     "carriers": [
-      "BoA",
-      "LATAM Airlines"
-     ],
-     "via": [
-      "LIM"
-     ],
-     "layover_h": [
-      12.17
-     ],
-     "fare_brand": "Economy + Basic",
+     "fare_brand": "Economy Basic",
      "cabin_bag": "1 x håndbagage",
-     "checked_bag": "incl",
-     "overnight_layover": true,
+     "checked_bag": "paid",
+     "overnight_layover": false,
      "source": "momondo"
     }
    ]
@@ -20617,21 +20707,59 @@
    "to": "CBB",
    "mode": "flight",
    "source": "crawl",
-   "oneway_min_dkk": 645.0,
+   "oneway_min_dkk": 441.0,
    "oneway_min_hours": 0.75,
    "fastest_hours": 0.75,
    "fastest_price_dkk": 645.0,
    "nonstop": true,
    "vias": [],
    "carriers": [
+    "BoA",
     "Boliviana de Aviacion"
    ],
    "dates": [
+    "2026-12-20",
+    "2026-12-21",
+    "2026-12-22",
     "2027-01-10"
    ],
    "return_min_dkk": null,
-   "quotes": 3,
+   "quotes": 6,
    "flights": [
+    {
+     "quote_id": "Q:475f402b670e",
+     "depart": "2026-12-21T05:35",
+     "arrive": "2026-12-21T06:20",
+     "hours": 0.75,
+     "price_dkk": 441.0,
+     "carriers": [
+      "BoA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:7ff9bf772b12",
+     "depart": "2026-12-20T17:50",
+     "arrive": "2026-12-20T18:35",
+     "hours": 0.75,
+     "price_dkk": 471.0,
+     "carriers": [
+      "BoA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
     {
      "quote_id": "Q:903f67b431d7",
      "depart": "2027-01-10T05:35",
@@ -23695,12 +23823,15 @@
     "2026-12-11",
     "2026-12-14",
     "2026-12-17",
+    "2026-12-18",
+    "2026-12-19",
     "2026-12-20",
     "2026-12-21",
+    "2026-12-22",
     "2027-01-27"
    ],
    "return_min_dkk": null,
-   "quotes": 15,
+   "quotes": 30,
    "flights": [
     {
      "quote_id": "Q:25e1208d69d8",
@@ -28655,12 +28786,14 @@
     "BoA"
    ],
    "dates": [
+    "2026-12-25",
+    "2026-12-26",
     "2027-01-31",
     "2027-02-01",
     "2027-02-02"
    ],
    "return_min_dkk": null,
-   "quotes": 9,
+   "quotes": 11,
    "flights": [
     {
      "quote_id": "Q:a39f1df5c9f5",
@@ -28712,6 +28845,23 @@
      "source": "momondo"
     },
     {
+     "quote_id": "Q:c2a3bdfa9d0f",
+     "depart": "2026-12-26T13:35",
+     "arrive": "2026-12-26T14:25",
+     "hours": 0.83,
+     "price_dkk": 471.0,
+     "carriers": [
+      "BoA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": "Economy",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "incl",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
      "quote_id": "Q:27d3a5b20762",
      "depart": "2027-02-01T22:20",
      "arrive": "2027-02-02T01:00",
@@ -28746,27 +28896,6 @@
      ],
      "layover_h": [
       2.08
-     ],
-     "fare_brand": null,
-     "cabin_bag": null,
-     "checked_bag": null,
-     "overnight_layover": false,
-     "source": "momondo"
-    },
-    {
-     "quote_id": "Q:4c24afe9471e",
-     "depart": "2027-02-02T10:40",
-     "arrive": "2027-02-02T13:05",
-     "hours": 2.42,
-     "price_dkk": 696.0,
-     "carriers": [
-      "BoA"
-     ],
-     "via": [
-      "LPB"
-     ],
-     "layover_h": [
-      0.58
      ],
      "fare_brand": null,
      "cabin_bag": null,
