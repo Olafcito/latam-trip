@@ -1,11 +1,11 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { Family } from '@map/data/types'
 import { Flag, hasFlag } from '@map/map/Flag'
 import type { AppData, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, hours, weekdayDay } from '../../lib/format'
-import { legDay, nightTrade, nodeForAirport, nodeName, type Journey, type Schedule, type Warning } from '../../lib/journey'
+import { giveNight, legDay, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { iataOf, pricesOn, type PairDates } from '../../lib/prices'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
@@ -19,16 +19,16 @@ import { LegCard, type LegEnds } from './LegCard'
 import { WhenPicker } from './WhenPicker'
 import { usePop } from './usePop'
 
-// The route as a story, read top to bottom. A plain rail runs down the left with the dates beside
-// it, from Copenhagen and back to it. Stops sit on the rail as their flag, the name and the nights.
-// Travel between two stops is a line with its mode and length. Click it for its ticket. The date a leg leaves sits in the gutter, and
-// a click on it opens the calendar. A stop reached the day its leg leaves does not say the date
-// again. A leg that leaves before you get there shows it on its own date, with the day to move it to.
+// The route as a story, read top to bottom, from Copenhagen and back to it. A stop is one line, its
+// flag, its name and at the right edge its nights. A leg is one line too, the day it leaves and then
+// its mode and length, and the rail beside it draws the leg in its mode the way the map does. So
+// every date sits on a leg, in one column, and they can only ever be evenly spaced. A click on the
+// day opens the calendar, a click on the mode opens the ticket. A leg says when it arrives only if
+// that is another day. A leg that leaves before you get there says so, with the day to move it to.
+// The earliest stop decides its nights: a night more comes from a later stop you choose, a night
+// less is a free night, shown as a line of its own before the flight home, and no stop gets it.
 
 const MODE: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Bus' }
-/** "Thu" for a date */
-const wd = (d: string) => weekdayDay(d).split(' ')[0]
-
 /** the cheapest fare known for a leg on each day of a window */
 function faresFor(pd: PairDates | null, from: string | null, to: string | null, days: string[]): Record<string, number> {
   const out: Record<string, number> = {}
@@ -48,9 +48,10 @@ function Disc({ country }: { country: string }) {
   )
 }
 
-/** The date beside the rail. None when the leg above has it. */
-function Gutter({ date, est }: { date: string | null; est: boolean }) {
-  return <span className="st-gut" data-est={est}>{date && <b>{day(date)}</b>}</span>
+/** "Wed 2 Dec" in three columns, so the dates down the route line up. */
+function When({ date }: { date: string }) {
+  const [wd, d, mon] = weekdayDay(date).split(' ')
+  return <><small>{wd}</small><b>{d}</b><b>{mon}</b></>
 }
 
 /** Shut a popover. Shown on a phone, where the popover is a sheet and there is no outside to click. */
@@ -58,35 +59,73 @@ function Shut({ on }: { on: () => void }) {
   return <button type="button" className="pop-x" aria-label="Close" onClick={on}><Close /></button>
 }
 
-/** A stop: flag on the rail, the city and the nights there, which you can change. Copenhagen has no nights. */
-function Stop({ id, name, node, country, inDay, days, exact, dated, onLess, onMore, home }: {
+/** Where a night can come from. take is null when it has none to give. */
+interface NightRow {
+  from: number | 'free'
+  name: string
+  nights: number
+  take: (() => void) | null
+}
+
+function Nights({ n }: { n: number }) {
+  return <><b>{n}</b> {n === 1 ? 'night' : 'nights'}</>
+}
+
+/**
+ * Where a night more comes from. It stays open, so several nights can move and the route behind
+ * follows. The rows are the ones that had a night when it opened, so none leaves from under the
+ * pointer: one that runs out stays, dimmed. The stop it fills is on top, in the same shape.
+ */
+function NightChooser({ name, days, rows }: { name: string; days: number; rows: NightRow[] }) {
+  const [shown] = useState(() => new Set(rows.filter((r) => r.take).map((r) => r.from)))
+  return (
+    <>
+      <p className="nf-to"><b>{name}</b><span className="st-nights"><Nights n={days} /></span></p>
+      <p className="nf-h">Take a night from</p>
+      <ul className="nf-list">
+        {rows.filter((r) => shown.has(r.from)).map((r) => (
+          <li key={r.from}>
+            <button type="button" className="nf-row" disabled={!r.take} aria-label={`Take a night from ${r.name}, it has ${r.nights}`} onClick={r.take ?? undefined}>
+              <span>{r.name}</span>
+              <span className="st-nights"><Nights n={r.nights} /></span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
+}
+
+/** A stop: flag on the rail, the city, and at the right edge the nights there, which you can change. Copenhagen has no nights. */
+function Stop({ id, name, node, country, days, exact, onLess, rows, home }: {
   id?: string
-  name: string; node: MapNode | undefined; country: string; inDay: string | null; days: number; exact: boolean
-  /** the date beside the rail: shown, shown and known, or left to the leg above */
-  dated: 'est' | 'known' | null
-  /** a night less or more here, traded with the stop beside, or null when no stop beside can trade */
+  name: string; node: MapNode | undefined; country: string; days: number; exact: boolean
+  /** a night less here, or null when it has none */
   onLess: (() => void) | null
-  onMore: (() => void) | null
+  /** where a night more can come from */
+  rows: NightRow[]
   /** Copenhagen, where the trip starts and ends */
   home?: 'start' | 'end'
 }) {
-  const est = !exact
+  const pop = usePop(false)
+  const less = `One night less in ${name}, it becomes a free night`
   return (
-    <li id={id} className="st-stop" data-home={home} style={{ '--nights': home ? 0 : Math.min(days, 12) } as CSSProperties}>
-      <Gutter date={dated ? inDay : null} est={dated === 'est'} />
+    <li id={id} className="st-stop" data-home={home}>
       <span className="st-rail"><Disc country={country} /></span>
-      <div className="st-body st-card">
-        <span className="st-nm"><b {...hoverProps(node)}>{name}</b></span>
+      <div className="st-card">
+        <b className="st-name" {...hoverProps(node)}>{name}</b>
         {!home && (
-          <span className="st-nights" data-est={est}>
-            {onLess || onMore ? (
-              <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
-                <button type="button" aria-label={`One night less in ${name}`} disabled={!onLess} onClick={onLess ?? undefined}><Minus /></button>
-                <b>{days}</b>
-                <button type="button" aria-label={`One night more in ${name}`} disabled={!onMore} onClick={onMore ?? undefined}><Plus /></button>
-              </span>
-            ) : <b>{days}</b>}
-            <small>{days === 1 ? 'night' : 'nights'}</small>
+          <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
+            <button type="button" className="st-n" aria-label={less} title={less} disabled={!onLess} onClick={onLess ?? undefined}><Minus /></button>
+            <span className="pop-wrap" {...pop.wrap}>
+              <button type="button" className="st-n" aria-label={`One night more in ${name}, choose where from`} disabled={!rows.some((r) => r.take)} {...pop.trigger}><Plus /></button>
+              {pop.open && <div className="pop nf" role="group" aria-label="Take a night from" {...pop.panel}><Shut on={pop.dismiss} /><NightChooser name={name} days={days} rows={rows} /></div>}
+            </span>
+          </span>
+        )}
+        {!home && (
+          <span className="st-nights" data-est={!exact} aria-live="polite">
+            {days ? <Nights n={days} /> : 'Passing through'}
           </span>
         )}
       </div>
@@ -95,20 +134,25 @@ function Stop({ id, name, node, country, inDay, days, exact, dated, onLess, onMo
 }
 
 /**
- * Travel between two stops. The date it leaves sits in the gutter, a button to the calendar when the
- * day can move. The body is the leg drawn, with its ticket behind it.
+ * Travel between two stops, one line: the day it leaves, a button to the calendar when the day can
+ * move, then its mode and length with its ticket behind them. The rail is the leg drawn.
  */
-function Leg({ fam, tone, route, date, set, known, picker, ribbon, card, aria, clash, fromName, onSet }: {
+function Leg({ fam, tone, route, date, arrives, set, known, picker, travel, card, aria, clash, stale, fromName, onSet }: {
   fam: Family
   tone?: 'in' | 'home'
   route: string
-  date: string; set: boolean; known: boolean
+  date: string
+  /** the day it gets there, when that is not the day it leaves */
+  arrives?: string | null
+  set: boolean; known: boolean
   /** the calendar, or null for a long-haul way whose day the ticket fixes */
   picker: ReactNode | null
-  ribbon: ReactNode; card: ReactNode
+  travel: ReactNode; card: ReactNode
   aria: string
   /** the warning when this leg leaves before you get there */
   clash?: Warning
+  /** the warning when the flight picked for this leg leaves on another day */
+  stale?: Warning
   fromName: string
   onSet?: (date: string) => void
 }) {
@@ -116,31 +160,36 @@ function Leg({ fam, tone, route, date, set, known, picker, ribbon, card, aria, c
   const pop = usePop(false)
   return (
     <li className="st-leg" data-f={fam} data-tone={tone}>
-      <span className="st-gut">
+      <span className="st-rail" />
+      <div className="st-line">
         {picker ? (
           <span className="pop-wrap" {...when.wrap}>
             <button type="button" className="st-date st-when" data-set={set} data-known={known} data-clash={!!clash} aria-label={`${route}, leaves ${weekdayDay(date)}${known ? '' : ', estimated'}${clash ? ', before you get there' : ''}. Change the day`} {...when.trigger}>
-              <b>{day(date)}</b>
-              <small>{wd(date)}</small>
+              <When date={date} />
             </button>
             {when.open && <div className="pop wide" role="dialog" aria-label={`When ${route} leaves`} {...when.panel}><Shut on={when.dismiss} />{picker}</div>}
           </span>
         ) : (
           <span className="st-when" aria-label={`Leaves ${weekdayDay(date)}`}>
-            <b>{day(date)}</b>
-            <small>{wd(date)}</small>
+            <When date={date} />
           </span>
         )}
-      </span>
-      <span className="st-rail" />
-      <div className="st-body pop-wrap" {...pop.wrap}>
-        <button type="button" className="st-hop" aria-label={aria} {...pop.trigger}>{ribbon}</button>
-        {pop.open && <div className={`pop${tone ? ' way' : ''}`} role="dialog" aria-label={route} {...pop.panel}><Shut on={pop.dismiss} />{card}</div>}
+        <span className="pop-wrap" {...pop.wrap}>
+          <button type="button" className="st-hop" aria-label={aria} {...pop.trigger}>{travel}</button>
+          {pop.open && <div className={`pop${tone ? ' way' : ''}`} role="dialog" aria-label={route} {...pop.panel}><Shut on={pop.dismiss} />{card}</div>}
+        </span>
+        {arrives && <span className="st-arrives">Arrives {day(arrives)}</span>}
       </div>
       {clash && (
         <p className="st-clash" role="alert">
-          <Warn />Leaves before you get to {fromName}
+          <Warn /><span>Leaves before you get to {fromName}</span>
           {clash.fix && onSet && <button type="button" className="btn small" onClick={() => onSet(clash.fix!)}>Move to {day(clash.fix)}</button>}
+        </p>
+      )}
+      {stale?.fix && (
+        <p className="st-clash" data-level="warn">
+          <Warn /><span>The flight you picked leaves {day(stale.fix)}</span>
+          {onSet && <button type="button" className="btn small" onClick={() => onSet(stale.fix!)}>Move to {day(stale.fix)}</button>}
         </p>
       )}
     </li>
@@ -160,18 +209,14 @@ function WayCard({ way, other, data }: { way: Way; other: Way; data: AppData }) 
 
 const ICON: Record<Family, (p: { s?: number }) => ReactNode> = { flight: Plane, boat: Boat, ground: Bus }
 
-/** A leg as a line with its mode and length in the middle. */
-function Line({ fam, dur, overnight }: { fam: Family; dur: number | null | undefined; overnight: boolean }) {
+/** A leg's mode and length. The word for the mode when the length is not known. */
+function Travel({ fam, dur, overnight }: { fam: Family; dur: number | null | undefined; overnight: boolean }) {
   const Icon = ICON[fam]
   return (
     <>
-      <i className="st-hl" />
-      <span className="st-hm">
-        <Icon s={14} />
-        {dur != null && <span>{hours(dur)}</span>}
-        {overnight && <span className="st-moon" title="Overnight"><Moon /></span>}
-      </span>
-      <i className="st-hl" />
+      <Icon s={14} />
+      <span>{dur != null ? hours(dur) : MODE[fam]}</span>
+      {overnight && <span className="st-moon" title="Overnight"><Moon /></span>}
     </>
   )
 }
@@ -180,11 +225,13 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const { inout, map } = data
   const pd = usePairDates()
   const setHopDate = useStore((s) => s.setHopDate)
-  const trade = (i: number, more: boolean) => {
-    const t = nightTrade(journey, sched, i, more)
-    return t ? () => t.forEach((c) => setHopDate(c.hop, c.date)) : null
-  }
+  const moveNights = useStore((s) => s.moveNights)
+  const press = (m: NightMove | null) => (m ? () => moveNights(m) : null)
   const nm = (id: string) => nodeName(map, inout, id)
+  const nightRows = (i: number): NightRow[] => [
+    { from: 'free', name: 'Free nights', nights: sched.free, take: press(takeNight(journey, sched, i, 'free')) },
+    ...sched.places.flatMap((sp, k) => (k > i ? [{ from: k, name: nm(sp.node), nights: sp.days, take: press(takeNight(journey, sched, i, k)) }] : [])),
+  ]
   const node = (id: string) => map.nodes.find((n) => n.id === id)
   const countryOf = (id: string) => node(id)?.country ?? inout.airports[id]?.country ?? ''
   const homeDay = sched.homeDepart.slice(0, 10)
@@ -192,20 +239,20 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const cph = { name: inout.airports[wayIn.from]?.name ?? 'Copenhagen', country: inout.airports[wayIn.from]?.country ?? 'DK' }
   const firstNode = ps[0]?.node
   const exitNode = nodeForAirport(inout, wayHome.from)
+  /** the day a leg gets there, when that is not the day it leaves */
+  const later = (leaves: string, reaches: string | null | undefined) => (reaches && reaches.slice(0, 10) !== leaves.slice(0, 10) ? reaches.slice(0, 10) : null)
   const wayAria = (w: Way, a: string, b: string) => `Flight ${a} to ${b}, leaves ${weekdayDay(w.depart)} ${clock(w.depart)}, ${hours(w.total_hours)}. Details`
 
   const items: ReactNode[] = [
-    <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} inDay={null} days={0} exact dated={null} onLess={null} onMore={null} home="start" />,
+    <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="start" />,
     <Leg
       key="in" fam="flight" tone="in" route={`${cph.name} to ${nm(firstNode)}`}
-      date={wayIn.depart.slice(0, 10)} set known picker={null} fromName={cph.name}
+      date={wayIn.depart.slice(0, 10)} arrives={later(wayIn.depart, sched.places[0]?.inDay)} set known picker={null} fromName={cph.name}
       aria={wayAria(wayIn, cph.name, nm(firstNode))}
-      ribbon={<Line fam="flight" dur={wayIn.total_hours} overnight={false} />}
+      travel={<Travel fam="flight" dur={wayIn.total_hours} overnight={false} />}
       card={<WayCard way={wayIn} other={wayHome} data={data} />}
     />,
   ]
-  // the day the last leg left, so the stop it reaches that day does not say the date again
-  let legDate: string = wayIn.depart.slice(0, 10)
   ps.forEach((p, i) => {
     if (p.hop && i > 0) {
       const h = p.hop
@@ -223,26 +270,35 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       const codes = fam === 'flight' && fromCode && toCode ? { from: fromCode, to: toCode } : null
       const dur = h.flight?.hours ?? h.hours
       const route = `${ends.fromName} to ${ends.toName}`
-      legDate = date
       items.push(
         <Leg
           key={`h${i}`}
           fam={fam}
           route={route}
           date={date}
+          arrives={later(date, sched.places[i].inDay)}
           set={!!h.date}
           known={!!(h.date || h.flight)}
           clash={sched.warnings.find((w) => w.leg === i)}
+          stale={sched.warnings.find((w) => w.picked === i)}
           fromName={ends.fromName}
           onSet={(d) => setHopDate(i, d)}
           aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${dur != null ? `, ${hours(dur)}` : ''}${h.overnight ? ', overnight' : ''}. Details`}
-          ribbon={<Line fam={fam} dur={h.flight?.hours ?? h.hours} overnight={!!h.overnight} />}
+          travel={<Travel fam={fam} dur={h.flight?.hours ?? h.hours} overnight={!!h.overnight} />}
           picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} onSet={(d) => setHopDate(i, d)} />}
           card={<LegCard h={h} ends={ends} family={fam} date={date} quotes={quotes} link={hopLink(h, inout)} />}
         />,
       )
     }
     const sp = sched.places[i]
+    if (!p.hop && i > 0) {
+      items.push(
+        <li key={`g${i}`} className="st-gap">
+          <span className="st-rail" />
+          <div className="st-line"><span className="st-when" aria-label={`Reaches ${nm(p.node)} ${weekdayDay(sp.inDay)}`}><When date={sp.inDay} /></span></div>
+        </li>,
+      )
+    }
     items.push(
       <Stop
         key={`s${i}`}
@@ -250,30 +306,33 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         name={nm(p.node)}
         node={node(p.node)}
         country={countryOf(p.node)}
-        inDay={sp.inDay}
         days={sp.days}
         exact={sp.exact}
-        dated={legDate === sp.inDay ? null : sp.exact ? 'known' : 'est'}
-        onLess={trade(i, false)}
-        onMore={trade(i, true)}
+        onLess={press(giveNight(journey, sched, i))}
+        rows={nightRows(i)}
       />,
     )
-    legDate = ''
   })
+  if (sched.free > 0) {
+    items.push(
+      <li key="free" className="st-free">
+        <span className="st-rail" />
+        <div className="st-card">
+          <span className="st-free-t">Free before the flight home</span>
+          <span className="st-nights" aria-live="polite"><Nights n={sched.free} /></span>
+        </div>
+      </li>,
+    )
+  }
   items.push(
     <Leg
       key="home" fam="flight" tone="home" route={`${nm(exitNode)} to ${cph.name}`}
-      date={homeDay} set known picker={null} fromName={nm(exitNode)}
+      date={homeDay} arrives={later(homeDay, wayHome.arrive)} set known picker={null} fromName={nm(exitNode)}
       aria={wayAria(wayHome, nm(exitNode), cph.name)}
-      ribbon={<Line fam="flight" dur={wayHome.total_hours} overnight={false} />}
+      travel={<Travel fam="flight" dur={wayHome.total_hours} overnight={false} />}
       card={<WayCard way={wayHome} other={wayIn} data={data} />}
     />,
-    <Stop
-      key="cph1" name={cph.name} node={undefined} country={cph.country}
-      inDay={wayHome.arrive ? wayHome.arrive.slice(0, 10) : null} days={0} exact
-      dated={wayHome.arrive && wayHome.arrive.slice(0, 10) !== homeDay ? 'known' : null}
-      onLess={null} onMore={null} home="end"
-    />,
+    <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />,
   )
 
   return <ol className="st">{items}</ol>

@@ -1,7 +1,8 @@
 import { create } from 'zustand'
-import type { AppData, Way } from './data/types'
+import type { AppData, CrawledFlight, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
-import { journeyIsValid, newJourney, type Journey, type Place } from './lib/journey'
+import { dayDiff } from './lib/format'
+import { journeyIsValid, newJourney, type Hop, type Journey, type NightMove, type Place } from './lib/journey'
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
 import type { TripLeg, TripState } from '@map/data/trips'
 import type { CardRef } from '@map/map/useMapMode'
@@ -93,7 +94,7 @@ interface State {
   idle: boolean
   /** a tap on a stop: build from it, or, when it is the stop already being built from, stop building */
   toggleCursor: (i: number) => void
-  /** a tap on a stop on the map: toggleCursor by its map place (the last visit when it appears twice) */
+  /** a tap on a stop on the map: build from it, by its map place (the last visit when it appears twice) */
   cursorTo: (node: string) => void
   /** the map's numbers for hops the planner's network lacks, set once the map has loaded */
   legFacts: LegFacts | null
@@ -105,6 +106,10 @@ interface State {
   moveStop: (from: number, to: number) => void
   /** set the day you set out on the leg to place i, "2026-12-13", or null to let it be estimated */
   setHopDate: (i: number, date: string | null) => void
+  /** pick a flight for the leg to place i: its day, times and price become the leg's. null goes back to the typical numbers and keeps the day */
+  setHopFlight: (i: number, flight: CrawledFlight | null) => void
+  /** a press on a night stepper: the legs it moves and the nights kept at the last stop, as one change */
+  moveNights: (m: NightMove) => void
 
   /** every trip in the list: the browser's own trips and the table trips it has no copy of */
   saved: Journey[]
@@ -209,7 +214,7 @@ export const useStore = create<State>((set, get) => ({
     const j = get().journey
     if (!j) return
     const i = j.places.map((p) => p.node).lastIndexOf(node)
-    if (i >= 0) get().toggleCursor(i)
+    if (i >= 0) get().setCursor(i)
   },
   legFacts: null,
   setLegFacts: (legFacts) => set({ legFacts }),
@@ -248,6 +253,32 @@ export const useStore = create<State>((set, get) => ({
     const { date: _, ...hop } = p.hop
     const places = j.places.map((q, k) => (k === i ? { ...q, hop: date ? { ...hop, date } : hop } : q))
     get().setJourney({ ...j, places })
+  },
+  moveNights: (m) => {
+    const j = get().journey
+    if (!j) return
+    const places = j.places.map((q, k) => {
+      const leg = m.legs.find((l) => l.hop === k)
+      return leg && q.hop ? { ...q, hop: { ...q.hop, date: leg.date } } : q
+    })
+    get().setJourney({ ...j, places, lastNights: m.lastNights })
+  },
+  setHopFlight: (i, flight) => {
+    const { journey: j, data, legFacts } = get()
+    const h = j?.places[i]?.hop
+    if (!j || !h) return
+    let hop: Hop
+    if (flight) {
+      hop = {
+        ...h, flight, price_dkk: flight.price_dkk, hours: flight.hours, date: flight.depart.slice(0, 10),
+        overnight: dayDiff(flight.depart, flight.arrive) > 0, observed_at: flight.observed_at ?? null,
+      }
+    } else {
+      const typical = data ? hopBetween(data.map, h.from, h.to, h.mode, legFacts ?? undefined) : null
+      const known = typical?.mode === h.mode ? typical : null
+      hop = { ...h, flight: null, price_dkk: known?.price_dkk ?? null, hours: known?.hours ?? null, overnight: known?.overnight ?? false, observed_at: null }
+    }
+    get().setJourney({ ...j, places: j.places.map((q, k) => (k === i ? { ...q, hop } : q)) })
   },
 
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),

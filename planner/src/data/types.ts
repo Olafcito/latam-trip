@@ -187,6 +187,12 @@ export interface CrawledFlight {
   source?: string
   /** when the price was seen */
   observed_at?: string | null
+  /** stops, when the airports of some are not known; else via tells */
+  stops?: number
+  /** the site selling it */
+  site?: string | null
+  self_transfer?: boolean
+  airport_change?: boolean
 }
 
 export interface MapEdge {

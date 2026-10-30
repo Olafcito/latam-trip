@@ -1,7 +1,8 @@
 /* Trip view: one trip, calm by default, details on a click. */
 @scope (:root) to (.rmap) {
 /* ---- Trip dashboard ------------------------------------------------------------------------- */
-.dash { display: flex; flex-direction: column; gap: 14px; }
+/* the route leads, costs and map are a narrow column beside it that stays in view while you change the route */
+.dash { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 980px; margin-inline: auto; }
 .dash-head { gap: 10px; }
 .dash-head .h2 { font-size: 20px; letter-spacing: -0.02em; }
 .dash .flag { flex: none; display: block; }
@@ -25,8 +26,8 @@
 .dash-warn li .btn { margin-left: auto; flex: none; }
 .dash-warn li.warn { color: var(--flight); }
 .dash-warn li.error { color: var(--err); }
-.dash-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr); gap: 14px; align-items: start; }
-.dash-side { display: flex; flex-direction: column; gap: 14px; }
+.dash-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+.dash-side { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 16px; }
 .dash-side .ways { display: flex; flex-direction: column; gap: 8px; }
 .dash-side .tot { font-size: var(--fs-small); }
 
@@ -143,7 +144,9 @@
 .dash-legend b { font-weight: 600; }
 
 @media (max-width: 900px) {
+  .dash { max-width: 640px; }
   .dash-grid { grid-template-columns: minmax(0, 1fr); }
+  .dash-side { position: static; }
 }
 
 /* totals */

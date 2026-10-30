@@ -47,6 +47,8 @@ export interface Journey {
   version?: number
   /** why the trip looks the way it does (a trip from the trips table) */
   why?: string
+  /** the nights planned at the last stop. The rest up to the flight home is free, and without it the last stop has them all */
+  lastNights?: number
 }
 
 export function nodeForAirport(inout: InOut, code: string): string {
@@ -101,7 +103,9 @@ export interface Warning {
   text: string
   /** the place index of the leg at fault, when one leg is */
   leg?: number
-  /** the first day that leg can leave instead */
+  /** the place index of a leg whose picked flight leaves on another day */
+  picked?: number
+  /** the first day that leg can leave instead, or the day its picked flight leaves */
   fix?: string
 }
 
@@ -111,6 +115,8 @@ export interface Schedule {
   homeDepart: string
   /** calendar days from the landing to the flight home */
   totalDays: number
+  /** the nights before the flight home that no stop has */
+  free: number
   warnings: Warning[]
 }
 
@@ -175,7 +181,7 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
     if (!t || !p.hop) return
     const f = p.hop.flight
     if (p.hop.date && f && f.depart.slice(0, 10) !== p.hop.date) {
-      warnings.push({ level: 'warn', text: `The flight to ${names(p.node)} you picked leaves ${day(f.depart)}, not ${day(p.hop.date)}, so its price is for another day` })
+      warnings.push({ level: 'warn', text: `The flight to ${names(p.node)} you picked leaves ${day(f.depart)}, not ${day(p.hop.date)}, so its price is for another day`, picked: i, fix: f.depart.slice(0, 10) })
     }
     places[i - 1].depart = t.depart
     places[i].arrive = t.arrive
@@ -192,33 +198,57 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
     share(places.length - 1, wayHome.depart, null)
   }
   const last = places[places.length - 1]
+  const free = last && j.lastNights != null ? Math.max(0, last.days - j.lastNights) : 0
+  if (last) last.days -= free
   if (last && last.node !== exitNode) warnings.push({ level: 'warn', text: `The journey has to end in ${names(exitNode)}, where the way home leaves` })
-  return { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), warnings }
+  return { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), free, warnings }
 }
 
-/**
- * One night more or less at stop i, traded with a stop beside it so nothing else moves. A night less
- * goes to the stop before, a night more comes from the stop after. The first and the last stop trade
- * the other way, having no stop on that side. Returns the leg days to set, or null when no stop beside
- * has a night to give.
- */
-export function nightTrade(j: Journey, s: Schedule, i: number, more: boolean): { hop: number; date: string }[] | null {
+/** What a press on a night stepper changes: the leg days to set, and the nights kept at the last stop. */
+export interface NightMove {
+  legs: { hop: number; date: string }[]
+  lastNights: number
+}
+
+/** The legs from stop i to stop end, a day later or earlier. Returns null when one of them does not exist. */
+function shiftLegs(j: Journey, s: Schedule, i: number, end: number, by: number): NightMove['legs'] | null {
   const n = j.places.length
   const hop = (k: number) => (k >= 1 && k < n ? j.places[k].hop : null)
   const dayOf = (k: number) => legDay(hop(k)!, s.places[k - 1].outDay)
   // a leg with no day and no flight floats on the even share, so it is pinned where it is
   const floats = (k: number) => { const h = hop(k); return !!h && !h.date && !h.flight }
-  /** leg k a day later (+1) or earlier (-1): the stop before it gains that, the stop after it pays */
-  const trade = (k: number, by: 1 | -1) => {
-    const payer = by > 0 ? k : k - 1
-    if (!hop(k) || !(s.places[payer]?.days > 0)) return null
-    const out = [{ hop: k, date: addDays(dayOf(k), by) }]
-    // pinning the leg before splits the share behind it, so every floating leg back to a dated one is pinned
-    for (let m = k - 1; floats(m); m--) out.push({ hop: m, date: dayOf(m) })
-    if (floats(k + 1)) out.push({ hop: k + 1, date: dayOf(k + 1) })
-    return out
+  const legs: NightMove['legs'] = []
+  for (let k = i + 1; k <= end; k++) {
+    if (!hop(k)) return null
+    legs.push({ hop: k, date: addDays(dayOf(k), by) })
   }
-  return more ? trade(i + 1, 1) ?? trade(i, -1) : trade(i, 1) ?? trade(i + 1, -1)
+  // pinning a leg splits the share around it, so every floating leg back to a dated one is pinned
+  for (let m = i; floats(m); m--) legs.push({ hop: m, date: dayOf(m) })
+  if (floats(end + 1)) legs.push({ hop: end + 1, date: dayOf(end + 1) })
+  return legs
+}
+
+/**
+ * The earliest stop decides. A night more at stop i comes from a later stop you choose, or from the
+ * free nights. The legs up to that stop leave a day later, the stops between keep their nights, and
+ * nothing before stop i changes. Returns null when there is no such night to take.
+ */
+export function takeNight(j: Journey, s: Schedule, i: number, from: number | 'free'): NightMove | null {
+  const last = j.places.length - 1
+  const fromFree = from === 'free'
+  if (fromFree ? !(s.free > 0) : !(from > i && s.places[from]?.days > 0)) return null
+  const legs = shiftLegs(j, s, i, fromFree ? last : from, 1)
+  if (!legs) return null
+  return { legs, lastNights: s.places[last].days + (i === last ? 1 : 0) - (from === last ? 1 : 0) }
+}
+
+/** A night less at stop i is a free night. It goes to no other stop: every later stop leaves a day earlier with its nights. */
+export function giveNight(j: Journey, s: Schedule, i: number): NightMove | null {
+  const last = j.places.length - 1
+  if (!(s.places[i]?.days > 0)) return null
+  const legs = shiftLegs(j, s, i, last, -1)
+  if (!legs) return null
+  return { legs, lastNights: s.places[last].days - (i === last ? 1 : 0) }
 }
 
 // ---- totals
@@ -257,7 +287,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null): Total
     const h = pl.hop
     if (!h) continue
     if (h.mode === 'flight') {
-      flights += 1 + (h.flight?.via.length ?? 0)
+      flights += 1 + (h.flight?.stops ?? h.flight?.via.length ?? 0)
       regional += h.price_dkk ?? 0
       air += h.hours ?? 0
     } else if (h.price_dkk == null) groundUnknown++
@@ -273,6 +303,9 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null): Total
   const days: Record<string, number> = {}
   const countryOf = (node: string) => map.nodes.find((n) => n.id === node)?.country ?? inout.airports[node]?.country ?? '?'
   if (sched) sched.places.forEach((sp) => { days[countryOf(sp.node)] = (days[countryOf(sp.node)] ?? 0) + sp.days })
+  // free nights are spent where the flight home leaves
+  const end = sched?.places[sched.places.length - 1]
+  if (end) days[countryOf(end.node)] += sched!.free
   for (const s of stops) if (s.nights) {
     const c = inout.airports[s.airport]?.country ?? '?'
     days[c] = (days[c] ?? 0) + s.nights

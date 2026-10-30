@@ -1,0 +1,89 @@
+/* The one window of the planner. A modal task: the scrim dims the page, so the edge is one quiet line and no shadow. */
+.md {
+  --md-w: 480px;
+  position: fixed;
+  inset: 0;
+  width: min(var(--md-w), calc(100vw - 32px));
+  max-width: none;
+  height: fit-content;
+  max-height: min(86dvh, 860px);
+  margin: auto;
+  padding: 0;
+  display: none;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  outline: none;
+  background: var(--surface);
+  color: var(--text);
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out), overlay var(--t-med) allow-discrete, display var(--t-med) allow-discrete;
+}
+.md[open] { display: flex; opacity: 1; transform: none; }
+@starting-style {
+  .md[open] { opacity: 0; transform: scale(0.96); }
+}
+.md[data-closing='true'] { opacity: 0; transform: scale(0.97); transition-duration: var(--t-fast); }
+.md::backdrop { background: rgb(5 11 16 / 0.62); opacity: 1; transition: opacity var(--t-med) var(--ease-out), overlay var(--t-med) allow-discrete, display var(--t-med) allow-discrete; }
+@starting-style {
+  .md[open]::backdrop { opacity: 0; }
+}
+.md[data-closing='true']::backdrop { opacity: 0; transition-duration: var(--t-fast); }
+html:has(.md[open]) { overflow: hidden; scrollbar-gutter: stable; }
+
+/* fills the window, so a click whose target is the dialog can only be the backdrop */
+.md-in { position: relative; flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.md-x {
+  position: absolute; z-index: 2; top: 10px; right: 10px;
+  width: 32px; height: 32px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; background: var(--surface-2); color: var(--muted); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) ease;
+}
+.md-x::after { content: ''; position: absolute; inset: calc((32px - var(--hit)) / 2); }
+.md-x:active { transform: scale(0.97); }
+.md-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .md-x:hover { background: var(--surface-3); color: var(--text); }
+}
+
+/* the same detail as a row of facts, for a hostel */
+.mdh { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+.mdh h3 { margin: 0; padding-right: 36px; font-size: var(--fs-title); font-weight: 650; line-height: 1.3; letter-spacing: -0.01em; overflow-wrap: anywhere; text-wrap: balance; }
+.mdh h3 + small { display: block; margin-top: 4px; font-size: var(--fs-small); color: var(--muted); }
+.mdh-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 12px 16px; margin: 0; }
+.mdh-facts > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.mdh-facts dt { font-size: var(--fs-small); color: var(--muted); }
+.mdh-facts dd { margin: 0; font-family: var(--font-num); font-size: var(--fs-title); font-weight: 600; font-variant-numeric: tabular-nums; }
+.mdh-facts dd.no { font-family: inherit; font-size: var(--fs-body); font-weight: 500; color: var(--muted); }
+.mdh-note { margin: 0; font-size: var(--fs-small); line-height: 1.45; color: var(--flight); }
+
+/* a card of the map in the window: the map's styles apply inside .rmap, so its map chrome is taken off here */
+.fp-md { --md-w: 440px; }
+.fp.rmap { position: static; flex: 1; width: auto; height: auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; container-type: normal; background: transparent; }
+.fp .panel.mcard { position: static; flex: 1; min-height: 0; width: auto; max-width: none; max-height: none; border: 0; border-radius: 0; box-shadow: none; background: transparent; animation: none; transition: none; }
+
+@media (max-width: 560px) {
+  .md {
+    inset: auto 0 0;
+    width: 100%;
+    max-height: 90dvh;
+    margin: 0;
+    border-width: 1px 0 0;
+    border-radius: 16px 16px 0 0;
+    transition-duration: var(--t-slow);
+  }
+  @starting-style {
+    .md[open] { opacity: 1; transform: translateY(100%); }
+  }
+  .md[data-closing='true'] { opacity: 1; transform: translateY(100%); transition-duration: var(--t-med); }
+  .md-in { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md, .md::backdrop { transition: opacity var(--t-med) ease, overlay var(--t-med) allow-discrete, display var(--t-med) allow-discrete; }
+  @starting-style {
+    .md[open] { opacity: 0; transform: none; }
+  }
+  .md[data-closing='true'] { opacity: 0; transform: none; }
+}

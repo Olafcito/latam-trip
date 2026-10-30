@@ -8,6 +8,11 @@ export function thousands(n: number): string {
   return (n < 0 ? '-' : '') + s.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
+/** "1.240" as "1,2k", so a price fits under a day */
+export function shortKr(p: number): string {
+  return p >= 10_000 ? `${Math.round(p / 1000)}k` : p >= 1000 ? `${(p / 1000).toFixed(1).replace('.', ',')}k` : thousands(p)
+}
+
 export function kr(dkk: number | null | undefined): string {
   return dkk == null || !Number.isFinite(dkk) ? 'no price' : `${thousands(dkk)} kr`
 }

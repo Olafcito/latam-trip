@@ -1023,7 +1023,9 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
 
     {"pairs": {"BOG-VVI": {"2027-01-28": [quote, ...]}}} where a quote is
     {"p": price kr, "d": local departure "06:10", "a": local arrival "12:40", "n": days later it lands (only when > 0),
-     "h": hours, "c": airlines, "s": stops, "src": source, "at": newest observed_at (UTC, "2026-10-28T10:00Z")}.
+     "h": hours, "c": airlines, "s": stops, "src": source, "at": newest observed_at (UTC, "2026-10-28T10:00Z")},
+    plus what the row knows beyond that, each key only when known: "v": airports it stops at, "w": hours waited at
+    each, "ag": the site selling it, "o": true for a night at a layover, "f": "self_transfer" and "airport_change".
     The same quote seen more than once (tripdb's quote key) is one entry with its newest observed_at."""
     newest = {}
     for q in quotes:
@@ -1061,11 +1063,12 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
             n = (dt.date.fromisoformat(arr[:10]) - dt.date.fromisoformat(dep[:10])).days
             if n > 0:
                 row["n"] = n
-        via = out.get("via") or []
+        via = [v for v in out.get("via") or [] if isinstance(v, str) and v]
         row.update({"h": round(float(out["hours"]), 2),
                     "c": [c.strip() for c in out.get("carriers") or [] if isinstance(c, str) and 0 < len(c.strip()) <= 20],
                     "s": out["stops"] if isinstance(out.get("stops"), int) else len(via),
                     "src": q.get("source"), "at": t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")})
+        row.update(_row_detail(q, out, via))
         pairs.setdefault(f"{leg['from']}-{leg['to']}", {}).setdefault(date, []).append(row)
     for dates in pairs.values():
         for date, rows in dates.items():
@@ -1073,6 +1076,28 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
             rows.sort(key=lambda r: (r["p"], r["h"], r["d"] or "", r["src"] or ""))
             dates[date] = rows
     return {"pairs": {k: dict(sorted(v.items())) for k, v in sorted(pairs.items())}}
+
+
+def _row_detail(q, out, via):
+    """The keys of a pair_dates row that only some quotes know, left out when unknown."""
+    d = {}
+    if via:
+        d["v"] = via
+    waits = [round(float(h), 2) if isinstance(h, (int, float)) else None for h in out.get("layover_h") or []]
+    if any(h is not None for h in waits):
+        d["w"] = waits
+    note = (q.get("notes") or "").split(";")[0].strip()
+    if note.startswith("site=") and note[5:].strip():
+        d["ag"] = note[5:].strip()
+    if out.get("overnight_layover"):
+        d["o"] = True
+    flags = set(q.get("flags") or [])
+    if q.get("self_transfer"):
+        flags.add("self_transfer")
+    marks = sorted(flags & {"self_transfer", "airport_change"})
+    if marks:
+        d["f"] = marks
+    return d
 
 
 def _drop_carrierless_twins(rows):
@@ -1090,6 +1115,9 @@ def _drop_carrierless_twins(rows):
             continue
         for n in named[twin(r)]:
             n["at"] = max(n["at"], r["at"])
+            for key in ("v", "w", "ag"):
+                if key in r:
+                    n.setdefault(key, r[key])
     return kept
 
 
