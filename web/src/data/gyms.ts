@@ -1,5 +1,6 @@
 // The training gyms and city scorecards from experiences.json: who belongs to what, what a month costs,
 // the filters and the ranking. No map and no React here, so the list, the cards and the map agree.
+import { km } from '../lib/geo'
 import type { CityRow, Experience, GymRow, Place, ScoreCard } from './types'
 
 export const DISCIPLINES = ['Muay Thai', 'Kickboxing', 'Boxing', 'MMA', 'BJJ'] as const
@@ -76,14 +77,6 @@ export interface GymWorld {
   gymsOf: (city: CityRow) => GymRow[]
   cityOfPlace: (placeId: string) => CityRow | null
   gymsAtPlace: (placeId: string) => GymRow[]
-}
-
-function km(aLat: number, aLon: number, bLat: number, bLon: number) {
-  const rad = Math.PI / 180
-  const dLat = (bLat - aLat) * rad
-  const dLon = (bLon - aLon) * rad
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(aLat * rad) * Math.cos(bLat * rad) * Math.sin(dLon / 2) ** 2
-  return 6371 * 2 * Math.asin(Math.sqrt(h))
 }
 
 /** A scorecard can come without a place id, so the closest place within this distance stands in for it. */
@@ -266,21 +259,22 @@ export function gymLinks(g: GymRow): GymLink[] {
 const SPREAD = 0.008
 
 /**
- * Where each gym sits on the map. Gyms that share a spot move apart on a small circle, or only the top
+ * Where each marker sits on the map. Rows that share a spot move apart on a small circle, or only the top
  * one could be tapped. The links keep the real coordinates.
  */
-export function spreadGyms(gyms: GymRow[]): Map<string, [number, number]> {
-  const groups = new Map<string, GymRow[]>()
-  for (const g of gyms) {
-    const key = `${g.lat!.toFixed(3)},${g.lon!.toFixed(3)}`
-    groups.set(key, [...(groups.get(key) ?? []), g])
+export function spreadGyms(rows: { id: string; lat: number | null; lon: number | null }[]): Map<string, [number, number]> {
+  const groups = new Map<string, typeof rows>()
+  for (const r of rows) {
+    if (r.lat == null || r.lon == null) continue
+    const key = `${r.lat.toFixed(3)},${r.lon.toFixed(3)}`
+    groups.set(key, [...(groups.get(key) ?? []), r])
   }
   const at = new Map<string, [number, number]>()
   for (const group of groups.values()) {
-    group.forEach((g, i) => {
-      if (group.length === 1) return at.set(g.id, [g.lon!, g.lat!])
+    group.forEach((r, i) => {
+      if (group.length === 1) return at.set(r.id, [r.lon!, r.lat!])
       const angle = (i / group.length) * 2 * Math.PI
-      at.set(g.id, [g.lon! + SPREAD * Math.cos(angle), g.lat! + SPREAD * Math.sin(angle)])
+      at.set(r.id, [r.lon! + SPREAD * Math.cos(angle), r.lat! + SPREAD * Math.sin(angle)])
     })
   }
   return at

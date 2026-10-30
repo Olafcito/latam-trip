@@ -12,14 +12,16 @@ async function getJson<T>(name: string, base: string): Promise<T> {
 }
 
 export async function loadMapData(base = BASE): Promise<MapData> {
-  const [places, connections, countries, flights, experiences] = await Promise.all([
+  const [places, connections, countries, flights, experiences, categories, lists] = await Promise.all([
     getJson<MapData['places']>('places', base),
     getJson<MapData['connections']>('connections', base),
     getJson<MapData['countries']>('countries', base),
     getJson<MapData['flights']>('flights', base).catch(() => []),
     getJson<MapData['experiences']>('experiences', base).catch(() => []),
+    getJson<MapData['categories']>('experience_categories', base).catch(() => []),
+    getJson<{ lists: MapData['lists'] }>('lists', base).then((r) => r.lists).catch(() => []),
   ])
-  return { places, connections, countries, flights: flights ?? [], experiences: experiences ?? [] }
+  return { places, connections, countries, flights: flights ?? [], experiences: experiences ?? [], categories: categories ?? [], lists: lists ?? [] }
 }
 
 export interface DashData {

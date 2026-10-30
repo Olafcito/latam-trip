@@ -1,5 +1,14 @@
 export type LonLat = [number, number]
 
+/** The distance in km between two points on the globe. */
+export function km(aLat: number, aLon: number, bLat: number, bLon: number) {
+  const rad = Math.PI / 180
+  const dLat = (bLat - aLat) * rad
+  const dLon = (bLon - aLon) * rad
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(aLat * rad) * Math.cos(bLat * rad) * Math.sin(dLon / 2) ** 2
+  return 6371 * 2 * Math.asin(Math.sqrt(h))
+}
+
 // Web Mercator in unit space, so arcs bend the same way they look on the map.
 function toMerc([lon, lat]: LonLat): [number, number] {
   const s = Math.sin((lat * Math.PI) / 180)
