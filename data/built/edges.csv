@@ -427,7 +427,7 @@ CTG,SAL,flight,,,,,,,,,2283.0,6.0,4.1,3015.0,False,BOG MDE PTY,Avianca Copa Airl
 CTG,MGA,flight,,,,,,,,,2610.0,10.25,4.83,4773.0,False,CLO MDE PTY,Avianca Copa Airlines JetSMART Wingo,2026-12-07 2026-12-09 2026-12-10,,crawl,,
 BOG,SAL,flight,,,,,,,,,2258.0,11.5,3.0,2968.0,True,CLO MDE PTY,Avianca Copa Airlines JetSMART LATAM Airlines Wingo,2026-12-06 2026-12-08 2026-12-10 2026-12-11 2026-12-12,,crawl,,
 MDE,PTY,flight,,,,,,,,,1341.0,1.33,1.33,1341.0,True,CLO,Copa Airlines JetSMART Wingo,2026-12-07 2026-12-08 2026-12-09 2026-12-11 2026-12-13,,crawl,,
-CLO,CBB,flight,,,,,,,,,2845.0,17.08,11.17,9488.0,False,BOG CUZ LIM LPB MDE PTY VVI,Avianca BoA Copa Airlines JetSMART,2026-12-14 2026-12-17,,crawl,,
+CLO,CBB,flight,,,,,,,,,2845.0,17.08,11.17,9488.0,False,BOG CUZ LIM LPB MDE PTY VVI,Avianca BoA Copa Airlines JetSMART LATAM Airlines Wingo,2026-12-14 2026-12-17 2026-12-20,,crawl,,
 CBB,VVI,flight,,,,,,,,,404.0,0.83,0.83,404.0,True,LPB,BoA,2026-12-25 2026-12-26 2027-01-31 2027-02-01 2027-02-02,,crawl,,
 MGA,MDE,flight,,,,,,,,,1696.0,3.98,3.98,1862.0,False,BOG PTY SAL SJO,Avianca Comalapa Intl. (SAL) - El Dorado Copa Airlines,2027-01-12 2027-01-14,,crawl,,
 MGA,CBB,flight,,,,,,,,,5110.0,26.45,16.78,6740.0,False,BOG GRU LIM LPB MIA PTY VVI,Avianca BoA Copa Airlines El Alto Intl (LPB) - J Wilsterman El Dorado (BOG) - El Alto Intl El Dorado (BOG) - Viru Viru Intl LATAM Airlines Tocumen Intl (PTY) - São Paulo Guarulhos Viru Viru Intl (VVI) - J Wilsterman,2027-01-24 2027-01-25,,crawl,,
