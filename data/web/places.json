@@ -1381,7 +1381,11 @@
    "gdl-tlaquepaque-and-tonala-craft-towns",
    "gdl-torta-ahogada-and-birria",
    "gdl-mercado-san-juan-de-dios",
-   "gdl-tequila-train-and-day-tours"
+   "gdl-tequila-train-and-day-tours",
+   "gym-guadalajara-lobo-gym",
+   "gym-guadalajara-black-martials",
+   "gym-guadalajara-mma-sportcenter",
+   "city-guadalajara-training"
   ],
   "stay_quotes": [],
   "hub": true
@@ -1558,7 +1562,8 @@
    "chap-ajijic-malecon-and-gallery-walk",
    "chap-chapala-pier-and-fish-restaurants",
    "chap-scorpion-island-and-mezcala-boat-trip",
-   "chap-jocotepec-hot-springs"
+   "chap-jocotepec-hot-springs",
+   "city-chapala-ajijic-training"
   ],
   "stay_quotes": [],
   "hub": false

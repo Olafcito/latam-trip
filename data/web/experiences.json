@@ -12318,5 +12318,375 @@
   },
   "image_source": "place",
   "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-lobo-gym",
+  "name": "Lobo Gym / Team Grasso (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma",
+   "kickboxing",
+   "bjj",
+   "fight-team"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Guadalajara, Tlajomulco (Santa Anita, Lopez Mateos Sur)",
+  "country": "MX",
+  "lat": 20.557,
+  "lon": -103.428,
+  "summary": "Francisco Grasso's fight team and the home of UFC fighters Alexa Grasso, Diego Lopes, Alessandro Costa, Loopy Godinez and Irene Aldana. Pro level striking, wrestling and BJJ, but the current address, price and whether paying amateur visitors get into sparring are not confirmed. Coordinates are approximate for the Tapology address.",
+  "season": "year round",
+  "dec_jan": "unknown. Fighters have bouts on 21 Nov and 12 Dec 2026 (Combat Edge), so the team is active in December.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Not published. Contact the gym first. A foreign visitor reported 3 weeks of training and being invited back, so visitors appear possible.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA",
+    "kickboxing",
+    "wrestling",
+    "BJJ"
+   ],
+   "coaches": "Francisco 'Pancho' Grasso head coach (uncle of Alexa Grasso). Luis Grasso also leads. Diego Lopes helps coach BJJ (EssentiallySports 2024).",
+   "fighters": "Alexa Grasso (UFC, 18-5-1), Diego Lopes (28-8, UFC 335 on 12 Dec 2026 vs Oliveira), Alessandro Costa (17-5), Loopy Godinez (15-6), Irene Aldana. Combat Edge rates 4 active fighters. Next-fight.com lists 29 fighters and 1 coach.",
+   "sessions_per_week": null,
+   "timetable": "A 2023 visitor trained 9 pm to 1 am and sometimes 2 or 3 sessions a day (Squamish Chief). No published timetable found.",
+   "sparring": "Team sparring with UFC level fighters is described (Aldana is Grasso's main sparring partner). Access for paying amateur visitors not confirmed.",
+   "visitors": "Not published. One Canadian female fighter trained 3 weeks and was invited back (Squamish Chief, undated 2023). Spanish helps.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "address_note": "Tapology (2026 page fetched 2026-10-30): Av. Lopez Mateos Sur 5565 Local D2, Plaza Provenza Santa Anita, Tlajomulco, CP 45645, phone 044 33 1094 2345. ESPN Deportes (Jan 2021) put the gym on Periferico Poniente in Zapopan, so it has moved or there are two sites. Current address NOT confirmed. Facebook page: TeamGrassoJalisco.",
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2026-10 Combat Edge roster page (fights 21 Nov and 12 Dec 2026)",
+   "what_people_say": [],
+   "neighbourhood": "If the Santa Anita address is right: Tlajomulco / Santa Anita on the road toward Lake Chapala, car or bus needed. Not verified.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "Lake Chapala is roughly 40 minutes by road from Santa Anita (general knowledge, not sourced).",
+   "score": {
+    "training": 9,
+    "evidence": 5,
+    "local_life": 4,
+    "cost": 6,
+    "water": 4,
+    "total": 6.5
+   },
+   "score_note": "Elite team but price, current address and visitor sparring unverified. Cost 6 is an estimate: Expatistan average gym is MXN 1,142 per month, about 410 DKK at 0.36 DKK per MXN. No room price found."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tapology.com/gyms/2363-lobo-gym",
+   "https://combat-edge.com/gym/lobo-gym-mma/",
+   "https://next-fight.com/en/fighters/gym/lobo-gym-mma",
+   "https://squamishchief.com/local-sports/from-guadalajara-to-squamish-mats-ufc-fighter-shares-lobo-gym-experience-7417173",
+   "https://espn.com.mx/mma/nota?_slug_=para-alexa-grassoel-lobo-gym-es-como-una-familia&id=3594884",
+   "https://www.essentiallysports.com/ufc-mma-news-who-does-alexa-grasso-train-with-ufc-champs-gym-coach-teammates-and-more/",
+   "https://expatistan.com/price/gym/guadalajara"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-black-martials",
+  "name": "Black Martials Blackbird (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "boxing",
+   "muay-thai",
+   "mma",
+   "kickboxing"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Zapopan, Periferico Poniente (Blackbird)",
+  "country": "MX",
+  "lat": 20.7,
+  "lon": -103.43,
+  "summary": "Gym listed on Wellhub with boxing, Muay Thai, MMA, kickboxing and strength training. No coach, fighter or review evidence found, so level is unknown. Coordinates approximate.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": "Wellhub Gold plan MXN 999.90 per month (aggregator price, not the gym's own)",
+  "price_dkk": 360,
+  "duration": "monthly membership",
+  "requirements": "Not published",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "boxing",
+    "Muay Thai",
+    "MMA",
+    "kickboxing"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": "Mon to Fri 9:00 to 12:00 on Wellhub, closed weekends (may be partial)",
+   "sparring": null,
+   "visitors": "Via Wellhub app. Walk-in terms not published.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": 360,
+   "private_dkk": null,
+   "address_note": "Av. Perif. Pte. Manuel Gomez Morin 3000A, Blackbird, 45079 Guadalajara. Wellhub lists weekday 9:00 to 12:00 only, which may be incomplete.",
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2026-10 Wellhub listing live",
+   "what_people_say": [],
+   "neighbourhood": "Zapopan, Periferico Poniente (Blackbird)",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No water nearby. Lake Chapala about 1 hour by road (general knowledge).",
+   "score": {
+    "training": 5,
+    "evidence": 2,
+    "local_life": 5,
+    "cost": 7,
+    "water": 2,
+    "total": 4.6
+   },
+   "score_note": "Only an aggregator listing found, no fighters, coaches or reviews. Rate used 0.36 DKK per MXN. Cost 7 is an estimate, no room price found."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://wellhub.com/es-mx/search/partners/black-martials-blackbird/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-guadalajara-mma-sportcenter",
+  "name": "MMA Sportcenter (Guadalajara)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "muay-thai",
+   "mma",
+   "bjj"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Zapopan, Hacienda del Sol",
+  "country": "MX",
+  "lat": 20.73,
+  "lon": -103.48,
+  "summary": "Gym listed on Wellhub with Muay Thai, self defence, MMA and jiu-jitsu. No coach, fighter or review evidence found, so level is unknown. Coordinates approximate.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": "Wellhub Silver plan from MXN 569.90 per month (aggregator price, not the gym's own)",
+  "price_dkk": 205,
+  "duration": "monthly membership",
+  "requirements": "Not published",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "Muay Thai",
+    "self defence",
+    "MMA",
+    "BJJ"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": "Not usable, Wellhub hours show an error",
+   "sparring": null,
+   "visitors": "Via Wellhub app. Walk-in terms not published.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": 205,
+   "private_dkk": null,
+   "address_note": "Calz. de las Flores 1188-A, Hacienda del Sol, 45130 Zapopan. Wellhub hours look like an error, confirm with the gym.",
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2026-10 Wellhub listing live",
+   "what_people_say": [],
+   "neighbourhood": "Zapopan, Hacienda del Sol",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "No water nearby. Lake Chapala about 1 hour by road (general knowledge).",
+   "score": {
+    "training": 5,
+    "evidence": 2,
+    "local_life": 5,
+    "cost": 7,
+    "water": 2,
+    "total": 4.6
+   },
+   "score_note": "Only an aggregator listing found, no fighters, coaches or reviews. Rate used 0.36 DKK per MXN. Cost 7 is an estimate, no room price found."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://wellhub.com/es-mx/search/partners/mma-sportcenter-hacienda-del-sol/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-guadalajara-training",
+  "name": "Guadalajara: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "GDL"
+  ],
+  "area": "Guadalajara",
+  "country": "MX",
+  "lat": 20.67,
+  "lon": -103.35,
+  "summary": "Guadalajara has one elite striking and MMA address in Lobo Gym / Team Grasso, home to several UFC fighters, but its current address, price and visitor policy are unconfirmed and it sits in Tlajomulco, outside the city core. Other gyms found (Black Martials, MMA Sportcenter) have only aggregator listings. Samurai Gym and the Reynoso boxing gym could not be verified, so Simon should message Lobo Gym before committing.",
+  "season": "year round",
+  "dec_jan": "Dry and mild, daytime about 24 to 26 C and cool nights (general knowledge, not sourced).",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-guadalajara-lobo-gym",
+    "gym-guadalajara-black-martials",
+    "gym-guadalajara-mma-sportcenter"
+   ],
+   "best_gym": "gym-guadalajara-lobo-gym",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not verified. Near Lobo Gym's Santa Anita address that would be Tlajomulco or the Chapala road. Zapopan for Black Martials and MMA Sportcenter.",
+   "safety": "Not researched.",
+   "water_note": "Lake Chapala and Ajijic are roughly 45 to 60 minutes from Guadalajara by bus or car (general knowledge).",
+   "local_life": "Big Mexican city with strong fight culture (boxing, lucha, MMA) but the best gym is a suburban plaza.",
+   "what_people_say": [],
+   "score": {
+    "training": 9,
+    "evidence": 4,
+    "local_life": 6,
+    "cost": 6,
+    "water": 3,
+    "total": 6.6
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tapology.com/gyms/2363-lobo-gym",
+   "https://combat-edge.com/gym/lobo-gym-mma/",
+   "https://wellhub.com/es-mx/search/partners/black-martials-blackbird/",
+   "https://wellhub.com/es-mx/search/partners/mma-sportcenter-hacienda-del-sol/",
+   "https://expatistan.com/price/gym/guadalajara"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg/1280px-Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_esf%C3%A9rico_de_Guadalajara_desde_el_Hospicio_Caba%C3%B1as.jpg",
+   "credit": "ProtoplasmaKid",
+   "licence": "CC BY-SA 4.0",
+   "w": 12000,
+   "h": 6000
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-chapala-ajijic-training",
+  "name": "Lake Chapala / Ajijic: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "CHAP"
+  ],
+  "area": "Lake Chapala / Ajijic",
+  "country": "MX",
+  "lat": 20.29,
+  "lon": -103.19,
+  "summary": "No striking or MMA gym was verified in Chapala or Ajijic, because the research ran out of search budget before this town was covered. Ajijic is an expat town on the lake, so it is a water bonus but probably a foreigner bubble. Best use is living there and commuting to Lobo Gym, whose Santa Anita address is on the way, which is unverified.",
+  "season": "year round",
+  "dec_jan": "Dry season, mild days (general knowledge).",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched",
+   "safety": "Not researched",
+   "water_note": "Lake Chapala is on the doorstep.",
+   "local_life": "Expat dominated in Ajijic (general knowledge).",
+   "what_people_say": [],
+   "score": {
+    "training": null,
+    "evidence": 1,
+    "local_life": null,
+    "cost": null,
+    "water": 9,
+    "total": null
+   }
+  },
+  "researched": false,
+  "checked_at": "2026-10-30",
+  "sources": [],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Lago_de_Chapala._Panor%C3%A1mica.jpeg/1280px-Lago_de_Chapala._Panor%C3%A1mica.jpeg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lago_de_Chapala._Panor%C3%A1mica.jpeg",
+   "credit": "CarlosFDZ krskt",
+   "licence": "CC BY-SA 4.0",
+   "w": 8405,
+   "h": 2202
+  },
+  "image_source": "place",
+  "saved_in": []
  }
 ]
