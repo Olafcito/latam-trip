@@ -1679,6 +1679,25 @@
   ]
  },
  {
+  "from": "GUA",
+  "to": "RTB",
+  "dkk": 1723,
+  "hours": 1.33,
+  "dep": "2027-01-10T09:30",
+  "arr": "2027-01-10T10:50",
+  "vias": [],
+  "carriers": [
+   "TAG Airlines"
+  ],
+  "notes": [],
+  "link": "https://www.momondo.dk/flight-search/GUA-RTB/2027-01-10",
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "RTB",
   "to": "GUA",
   "dkk": 1731,
@@ -1781,25 +1800,6 @@
    "basic fare"
   ],
   "link": null,
-  "shows": [
-   "cheapest",
-   "fastest",
-   "daytime landing"
-  ]
- },
- {
-  "from": "GUA",
-  "to": "RTB",
-  "dkk": 1794,
-  "hours": 1.33,
-  "dep": "2026-12-15T12:30",
-  "arr": "2026-12-15T13:50",
-  "vias": [],
-  "carriers": [
-   "TAG Airlines"
-  ],
-  "notes": [],
-  "link": "https://www.momondo.dk/flight-search/GUA-RTB/2026-12-15",
   "shows": [
    "cheapest",
    "fastest",
