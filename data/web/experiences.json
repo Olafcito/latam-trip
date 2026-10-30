@@ -13495,5 +13495,1267 @@
   },
   "image_source": "place",
   "saved_in": []
+ },
+ {
+  "id": "gym-managua-xtreme-kombat",
+  "name": "Xtreme Kombat Academy (Managua)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "mma"
+  ],
+  "places": [
+   "MGA"
+  ],
+  "area": "Managua, Zona Hippos (as Tapology spells it)",
+  "country": "NI",
+  "lat": 12.13,
+  "lon": -86.25,
+  "summary": "MMA gym in Managua listed on Tapology as founded in 2013. A pro fighter listed with the team, Michael Perez, fought at Nicaraguan Fighting Championship 95 in Managua in December 2024 and abroad in July 2025, so the team is active in the local MMA scene.",
+  "season": "year round",
+  "dec_jan": "Team fighter competed at NFC 95 in Managua on 2024-12-14, so the local scene runs in December. Gym timetable for December unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. No public timetable, price or visitor policy found.",
+  "details": {
+   "gym_kind": "fight team",
+   "disciplines": [
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": "Michael Perez, Nicaraguan pro 3-4 per Combat Reg, listed under team Xtreme Kombat Managua, last NFC fight 2024-12-14 (win), Costa Rica fight 2025-07-26 (loss). Tapology gym page has no roster.",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Unknown. Contact is only via a phone number on Tapology (+505 8476 5063). Spanish needed.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2025-07 Combat Reg (fighter record), 2024-12 NFC 95",
+   "what_people_say": [],
+   "neighbourhood": "Managua, Zona Hippos area per Tapology. Coordinates here are the Managua city centre, not the gym.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "Lake Managua (Xolotlan) is within a few km but is not a swimming lake. Real beaches are 1 to 2 hours away.",
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 7,
+    "cost": 6,
+    "water": 3,
+    "total": 5.1
+   },
+   "score_note": "Training 5 is a cautious guess from one active pro and a 2013 founding, no sparring or coach evidence. Cost 6 is an estimate, no room or gym price found."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tapology.com/gyms/2778-xtreme-kombat-managua",
+   "https://combatreg.com/fighters/Michael-Perez:A0710CC7CCD5758C"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg/1280px-Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Managua,_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "credit": "Department of Commerce. Bureau of Public Roads. 8/20/1949-4/1/1967",
+   "licence": "Public domain",
+   "w": 7019,
+   "h": 5100
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-managua-arte-suave",
+  "name": "Arte Suave Nicaragua (Managua)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "bjj",
+   "mma"
+  ],
+  "places": [
+   "MGA"
+  ],
+  "area": "Managua, Bello Horizonte (in front of Iglesia Pio X)",
+  "country": "NI",
+  "lat": 12.13,
+  "lon": -86.25,
+  "summary": "Jiu-jitsu and MMA gym on Tapology, founded 2017, in the Bello Horizonte barrio of east Managua. The name points to a BJJ focus, and no striking coach, fighters or timetable were found.",
+  "season": "year round",
+  "dec_jan": "Unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "BJJ",
+    "MMA"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Unknown. Tapology lists phone +50577021203.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": null,
+   "what_people_say": [],
+   "neighbourhood": "Bello Horizonte, Managua. Coordinates here are the Managua city centre, not the gym.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "Lake Managua within a few km, not for swimming.",
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 6,
+    "cost": 6,
+    "water": 3,
+    "total": 4.3
+   },
+   "score_note": "Training 4 because striking content is unconfirmed and nothing but a Tapology stub exists. Only one source, no activity date."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tapology.com/gyms/7893-arte-suave-nicaragua"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg/1280px-Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Managua,_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "credit": "Department of Commerce. Bureau of Public Roads. 8/20/1949-4/1/1967",
+   "licence": "Public domain",
+   "w": 7019,
+   "h": 5100
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-managua-pesas-miguel-nino",
+  "name": "Gimnasio Pesas Miguel Nino (Managua)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "boxing"
+  ],
+  "places": [
+   "MGA"
+  ],
+  "area": "Managua",
+  "country": "NI",
+  "lat": 12.13,
+  "lon": -86.25,
+  "summary": "Managua gym that hosted the Noche de Boxeo card promoted by Gemelo Promotions on 2025-06-21, listed on Tapology. It is a local boxing venue, and whether it runs daily classes or takes visitors is unknown.",
+  "season": "year round",
+  "dec_jan": "Unknown.",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "boxing"
+   ],
+   "coaches": null,
+   "fighters": "Local boxers fought on the 2025-06-21 card, no names verified.",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Unknown.",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2025-06 Tapology forum (event venue)",
+   "what_people_say": [],
+   "neighbourhood": "Managua, exact barrio not found. Coordinates here are the city centre.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "Lake Managua within a few km, not for swimming.",
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 8,
+    "cost": 6,
+    "water": 3,
+    "total": 4.7
+   },
+   "score_note": "Single mention as an event venue, so evidence is thin and training is a guess. Local life 8 because it is a Nicaraguan boxing scene venue."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tapology.com/forum/threads/89633"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg/1280px-Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Managua,_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "credit": "Department of Commerce. Bureau of Public Roads. 8/20/1949-4/1/1967",
+   "licence": "Public domain",
+   "w": 7019,
+   "h": 5100
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-sjds-fight-club",
+  "name": "Fight Club Gym (San Juan del Sur)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "boxing",
+   "mma",
+   "bjj"
+  ],
+  "places": [
+   "SJDS"
+  ],
+  "area": "San Juan del Sur, three blocks from the beach, past the bus stop",
+  "country": "NI",
+  "lat": 11.2536,
+  "lon": -85.8691,
+  "summary": "The town's main gym with a real boxing ring, free weights, and boxing, MMA and Ju Jitsu classes next to CrossFit and bootcamp. It is a fitness-first gym with combat classes, and the only organised fight events nearby were three Pacific Coast Fight League cards in San Juan del Sur from 2022 to 2023.",
+  "season": "year round",
+  "dec_jan": "Unknown. Dec 8 2022 PCFL 2 fight card was held in San Juan del Sur, so the town has fight activity in December.",
+  "price": "March 2020: visitors US$5 drop-in, US$15 week, US$30 month. Nicaraguans US$20 month.",
+  "price_dkk": 194,
+  "duration": "monthly membership",
+  "requirements": "None stated. Class schedule was published as an image in March 2020, current times need a message.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "boxing",
+    "MMA",
+    "BJJ",
+    "CrossFit",
+    "bootcamp"
+   ],
+   "coaches": null,
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": "Not readable from text. Schedule image dated March 2020. Gym has no air conditioning, mornings or near sunset suggested.",
+   "sparring": "Unknown. Ring is on site, no sparring days found.",
+   "visitors": "Drop-in, weekly and monthly rates for visitors (2020 prices). English and Spanish unknown.",
+   "price_dropin_dkk": 32,
+   "price_week_dkk": 97,
+   "price_month_dkk": 194,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [
+    {
+     "site": "Airbnb things-to-do",
+     "rating": null,
+     "count": 12
+    }
+   ],
+   "last_activity": "2023-08 centralamerica.com article still lists MMA and boxing ring",
+   "what_people_say": [
+    {
+     "quote": "Only gym in town, if you need to pump some iron or hit the boxing ring, then this is...well the only place.",
+     "site": "Airbnb things-to-do guest tip",
+     "date": "undated",
+     "url": "https://www.airbnb.com.ni/things-to-do/places/1913317"
+    },
+    {
+     "quote": "a boxing gym with some workout equipment",
+     "site": "melonthego.com",
+     "date": "2017-02, updated 2022-10",
+     "url": "https://melonthego.com/getting-some-exercise-in-san-juan-del-sur/"
+    },
+    {
+     "quote": "Fight Club Gym is simply the best. It's a must try for those interested in physical activity while in SJDS.",
+     "site": "Airbnb things-to-do guest tip",
+     "date": "undated",
+     "url": "https://www.airbnb.com.ni/things-to-do/places/1913317"
+    }
+   ],
+   "neighbourhood": "Town centre of San Juan del Sur, walkable to the beach. A surf and tourist town with a foreigner presence.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": 0.3,
+   "water_note": "Gym is about three blocks from the bay beach per a March 2020 post. Bay is swimmable, surf beaches north and south by shuttle.",
+   "score": {
+    "training": 4,
+    "evidence": 4,
+    "local_life": 5,
+    "cost": 8,
+    "water": 10,
+    "total": 5.4
+   },
+   "score_note": "Training 4 because combat classes sit inside a general gym and no coaches, fighters or sparring were found. Price 2020 USD x 6.45. No room price found, cost 8 is an estimate from the low gym fee."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://joel-stottjess-a3by.squarespace.com/blog/fitness-in-san-juan-del-sur?format=amp",
+   "https://melonthego.com/getting-some-exercise-in-san-juan-del-sur/",
+   "https://www.airbnb.com.ni/things-to-do/places/1913317",
+   "https://www.centralamerica.com/living/daily-life/13-ways-keep-fit-san-juan-del-sur-nicaragua",
+   "https://arnelbanawa.blogspot.com/search/label/Gym%20San%20Juan%20Del%20Sur",
+   "https://www.bjjglobetrotters.com/?p=15071",
+   "https://sherdog.com/organizations/Pacific-Coast-Fight-League-17517",
+   "https://www.tapology.com/fightcenter/events/97114-pcfl-1"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/24/Panorama_of_Malecon_%28Seawalk%29_-_San_Juan_del_Sur_-_Nicaragua_%2831796546196%29.jpg/1280px-Panorama_of_Malecon_%28Seawalk%29_-_San_Juan_del_Sur_-_Nicaragua_%2831796546196%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Malecon_(Seawalk)_-_San_Juan_del_Sur_-_Nicaragua_(31796546196).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-managua-training",
+  "name": "Managua: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "MGA"
+  ],
+  "area": "Managua",
+  "country": "NI",
+  "lat": 12.13,
+  "lon": -86.25,
+  "summary": "Managua has a real fight scene (Nicaraguan Fighting Championship reached event 100 in October 2025 at Plaza Maya) and a boxing culture, but this round found only thin gym evidence: Xtreme Kombat Academy for MMA, an Arte Suave BJJ and MMA gym, and a boxing venue gym. No Muay Thai or kickboxing gym, price, timetable or visitor review was found, so Managua needs a local follow up (Facebook, Instagram, asking in person) before it is a base. The city is big, hot and spread out, with no usable swimming water.",
+  "season": "year round",
+  "dec_jan": "December to February is the dry season in Nicaragua (general knowledge, not sourced this round). NFC 95 was held in Managua on 2024-12-14.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-managua-xtreme-kombat",
+    "gym-managua-arte-suave",
+    "gym-managua-pesas-miguel-nino"
+   ],
+   "best_gym": "gym-managua-xtreme-kombat",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Unverified. Bello Horizonte and Zona Hippos are where two gyms are listed.",
+   "safety": "Not researched this round.",
+   "water_note": "Lake Managua is polluted and not for swimming. Beaches are 1 to 2 hours by road.",
+   "local_life": "Strong boxing tradition and an active local MMA circuit (NFC 100 on 2025-10-04, Mauricio Espinoza from Ciudad Sandino won the flyweight title). Boxing venue Polideportivo Alexis Arguello is the national boxing home but is a venue, not a gym.",
+   "what_people_say": [],
+   "score": {
+    "training": 5,
+    "evidence": 3,
+    "local_life": 7,
+    "cost": 6,
+    "water": 3,
+    "total": 5.1
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.tapology.com/gyms/2778-xtreme-kombat-managua",
+   "https://www.tapology.com/gyms/7893-arte-suave-nicaragua",
+   "https://www.tapology.com/gyms/4880-alfa-y-omega",
+   "https://www.tapology.com/forum/threads/89633",
+   "https://www.sherdog.com/events/NFC-100-Nicaraguan-Fighting-Championship-100-109839",
+   "https://www.sherdog.com/fighter/Mauricio-Espinoza-381873",
+   "https://combatreg.com/fighters/Michael-Perez:A0710CC7CCD5758C",
+   "https://wbaboxing.com/es/noticias-de-boxeo/polideportivo-alexis-arguello-la-casa-del-boxeo-en-managua"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg/1280px-Managua%2C_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Managua,_Nicaragua_-_DPLA_-_525dfe93b0a171902f2d62f72992d77f.jpg",
+   "credit": "Department of Commerce. Bureau of Public Roads. 8/20/1949-4/1/1967",
+   "licence": "Public domain",
+   "w": 7019,
+   "h": 5100
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-leon-training",
+  "name": "Leon: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "LEON"
+  ],
+  "area": "Leon",
+  "country": "NI",
+  "lat": 12.44,
+  "lon": -86.88,
+  "summary": "No striking or MMA gym was found for Leon in this round, only retreat directories listing yoga and fitness. The city is a student town with local life and a hostel scene, and the Pacific beach at Las Penitas is a bus ride away. As a training base it is unproven, so use it only as a stop and train in Managua or San Juan del Sur.",
+  "season": "year round",
+  "dec_jan": "December to February is the dry season in Nicaragua (general knowledge, not sourced this round).",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched for gyms. Hostels are central, near the cathedral per Hostelz.",
+   "safety": "Not researched this round.",
+   "water_note": "Las Penitas beach is about 35 minutes by bus from Leon per the route data in this repo.",
+   "local_life": "University city with student life. No combat gym evidence found.",
+   "what_people_say": [],
+   "score": {
+    "training": 1,
+    "evidence": 1,
+    "local_life": 7,
+    "cost": 7,
+    "water": 5,
+    "total": 3.5
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.hostelz.com/hostels/Nicaragua/Le%C3%B3n"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_%2831462520932%29.jpg/1280px-Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_%2831462520932%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Cerro_Negro_Volcano_-_Near_Leon_-_Nicaragua_-_03_(31462520932).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-granada-training",
+  "name": "Granada: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "GRAN"
+  ],
+  "area": "Granada",
+  "country": "NI",
+  "lat": 11.93,
+  "lon": -85.96,
+  "summary": "No boxing, Muay Thai or MMA gym was found for Granada in this round, and the search only returned unrelated gym listings. Granada is a tourist colonial city on Lake Nicaragua, so local training options may exist but are unverified. It is better treated as a stop than a training base.",
+  "season": "year round",
+  "dec_jan": "December to February is the dry season in Nicaragua (general knowledge, not sourced this round).",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched.",
+   "safety": "Not researched this round.",
+   "water_note": "Lake Nicaragua is next to the old town, a short walk or taxi to the lakefront. Swimming quality not checked.",
+   "local_life": "Tourist-heavy colonial centre. No combat gym evidence found.",
+   "what_people_say": [],
+   "score": {
+    "training": 1,
+    "evidence": 1,
+    "local_life": 5,
+    "cost": 7,
+    "water": 8,
+    "total": 3.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Granada%2C_Nicaragua_panorama.jpg/1280px-Granada%2C_Nicaragua_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Granada,_Nicaragua_panorama.jpg",
+   "credit": "Mark Larson",
+   "licence": "CC BY-SA 2.0",
+   "w": 2035,
+   "h": 499
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-sjds-training",
+  "name": "San Juan del Sur: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "SJDS"
+  ],
+  "area": "San Juan del Sur",
+  "country": "NI",
+  "lat": 11.25,
+  "lon": -85.87,
+  "summary": "San Juan del Sur has one real option, Fight Club Gym, with a boxing ring, MMA and Ju Jitsu classes and visitor rates of US$30 a month in 2020. It sits three blocks from the beach, which suits the swim and surf side of the trip, but it is a fitness-style gym with no verified coach, sparring or fighter record. It would work as a light maintenance base for a few weeks, not a serious camp, and the town is a gringo surf and party stop.",
+  "season": "year round",
+  "dec_jan": "December to February is the dry season in Nicaragua (general knowledge, not sourced this round). PCFL 2 fight card took place in San Juan del Sur on 2022-12-08.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-sjds-fight-club"
+   ],
+   "best_gym": "gym-sjds-fight-club",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Town centre near the beach and bus stop.",
+   "safety": "Not researched this round.",
+   "water_note": "Bay beach walkable. Surf breaks nearby by shuttle.",
+   "local_life": "Surf and party town with a large foreigner community. Locals pay US$20 a month at the gym, visitors US$30 (2020).",
+   "what_people_say": [
+    {
+     "quote": "Only gym in town, if you need to pump some iron or hit the boxing ring, then this is...well the only place.",
+     "site": "Airbnb things-to-do guest tip",
+     "date": "undated",
+     "url": "https://www.airbnb.com.ni/things-to-do/places/1913317"
+    }
+   ],
+   "score": {
+    "training": 4,
+    "evidence": 4,
+    "local_life": 5,
+    "cost": 8,
+    "water": 10,
+    "total": 5.4
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://joel-stottjess-a3by.squarespace.com/blog/fitness-in-san-juan-del-sur?format=amp",
+   "https://melonthego.com/getting-some-exercise-in-san-juan-del-sur/",
+   "https://www.airbnb.com.ni/things-to-do/places/1913317",
+   "https://www.centralamerica.com/living/daily-life/13-ways-keep-fit-san-juan-del-sur-nicaragua",
+   "https://arnelbanawa.blogspot.com/search/label/Gym%20San%20Juan%20Del%20Sur",
+   "https://www.bjjglobetrotters.com/?p=15071",
+   "https://sherdog.com/organizations/Pacific-Coast-Fight-League-17517",
+   "https://www.tapology.com/fightcenter/events/97114-pcfl-1"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/24/Panorama_of_Malecon_%28Seawalk%29_-_San_Juan_del_Sur_-_Nicaragua_%2831796546196%29.jpg/1280px-Panorama_of_Malecon_%28Seawalk%29_-_San_Juan_del_Sur_-_Nicaragua_%2831796546196%29.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panorama_of_Malecon_(Seawalk)_-_San_Juan_del_Sur_-_Nicaragua_(31796546196).jpg",
+   "credit": "Adam Jones from Kelowna, BC, Canada",
+   "licence": "CC BY-SA 2.0",
+   "w": 4912,
+   "h": 1080
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-popoyo-training",
+  "name": "Popoyo / Playa Guasacate: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "POPO"
+  ],
+  "area": "Popoyo / Playa Guasacate",
+  "country": "NI",
+  "lat": 11.47,
+  "lon": -86.11,
+  "summary": "No boxing, Muay Thai, kickboxing or MMA gym was found at Popoyo or Guasacate. It is a spread-out surf strip with beachfront hostels and no town centre, so training would be bag work and conditioning on your own. Good for a recovery week by the sea, not for fight training.",
+  "season": "year round",
+  "dec_jan": "December to February is the dry season in Nicaragua (general knowledge, not sourced this round).",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Beachfront hostels along the Guasacate and Popoyo strip.",
+   "safety": "Not researched this round.",
+   "water_note": "Beach at the door. Hostelz 2026 dorm beds from about 52 DKK a night at Marumar, private rooms from about 152 DKK.",
+   "local_life": "Mostly surfers, yoga-minded expats and nomads, a foreigner bubble.",
+   "what_people_say": [],
+   "score": {
+    "training": 1,
+    "evidence": 1,
+    "local_life": 3,
+    "cost": 5,
+    "water": 10,
+    "total": 2.9
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.hostelz.com/best-hostels-popoyo"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "city-esteli-training",
+  "name": "Esteli: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "ESTE"
+  ],
+  "area": "Esteli",
+  "country": "NI",
+  "lat": 13.09,
+  "lon": -86.35,
+  "summary": "No boxing, Muay Thai or MMA gym was found for Esteli in this round, and the search returned only football and basketball. It is a working northern city with very few tourists and a strong local feel, but there is no water at all nearby. Treat it as a cultural stop, and a local boxing gym may exist that web sources do not show.",
+  "season": "year round",
+  "dec_jan": "Highland city at about 800 m, cooler evenings than the coast. December to February is the dry season in Nicaragua (general knowledge, not sourced this round).",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not researched.",
+   "safety": "Not researched this round.",
+   "water_note": "No beach or lake. Rivers and the Miraflor reserve are day trips.",
+   "local_life": "Working city with locals, students and few tourists per the repo profile.",
+   "what_people_say": [],
+   "score": {
+    "training": 1,
+    "evidence": 1,
+    "local_life": 9,
+    "cost": 7,
+    "water": 1,
+    "total": 3.5
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "gym-panama-city-pedro-alcazar",
+  "name": "Gimnasio Pedro 'El Rockero' Alcazar (Panama City)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "boxing"
+  ],
+  "places": [
+   "PTY"
+  ],
+  "area": "Panama City, Curundu",
+  "country": "PA",
+  "lat": 8.971,
+  "lon": -79.55,
+  "summary": "Long-running neighbourhood boxing gym in Curundu named after the former champion Pedro Alcazar, where local amateurs from the capital's poorer barrios train. Real local boxing culture, but no current timetable, price, sparring info or visitor report was found.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. No visitor policy found.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "boxing"
+   ],
+   "coaches": "Carlos Cruz (retired boxer, 37 fights) and Rigoberto Garibaldi (says he is the only international medalist in Panamanian amateur boxing), per chiriqui.life and La Prensa Latina (both undated).",
+   "fighters": "Youths from the capital's neighbourhoods. Promoters from Colombia, Nicaragua and the US visit (chiriqui.life, undated). About 300 amateurs aim to turn pro nationally (La Prensa Latina, EFE).",
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": null,
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "undated (chiriqui.life and La Prensa Latina articles, year not stated). No 2025 or 2026 evidence found.",
+   "what_people_say": [],
+   "neighbourhood": "Curundu is a rough working-class barrio. A safer base would be Bella Vista, El Cangrejo or San Francisco, with a bus or taxi to the gym (not verified).",
+   "room_month_dkk": 3000,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "Bay of Panama and the Cinta Costera are in the city. Distance from the gym not measured.",
+   "score": {
+    "training": 5,
+    "evidence": 2,
+    "local_life": 8,
+    "cost": 6,
+    "water": 5,
+    "total": 5.3
+   },
+   "score_note": "Provisional. Only two undated articles, no Google or Tapology data, price unknown. Coordinates approximate for the Curundu barrio. Room estimate: Hostelworld private rooms in Panama City 79 to 136 DKK a night (repo profile, 2026, EUR x 7.46), median 101 x 30 = about 3,000."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://chiriqui.life/blogs/entry/271-boxing-finding-a-way-out-of-poverty/",
+   "https://www.laprensalatina.com/panama-struggling-to-recapture-past-boxing-glory/"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Panama_Casco_Antiguo_panorama.jpg/1280px-Panama_Casco_Antiguo_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panama_Casco_Antiguo_panorama.jpg",
+   "credit": "Ivo Kruusamägi",
+   "licence": "CC BY-SA 4.0",
+   "w": 13683,
+   "h": 3989
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-panama-city-shogun-bjj",
+  "name": "Shogun Panama BJJ (Panama City)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "bjj",
+   "kickboxing"
+  ],
+  "places": [
+   "PTY"
+  ],
+  "area": "Panama City, La Alameda",
+  "country": "PA",
+  "lat": 9.003,
+  "lon": -79.529,
+  "summary": "Central BJJ academy with kickboxing and kids classes, about 50 members, run by black belt Ivan Quintanar since 2015. It is a grappling-first school, so the striking side is probably small, and the only write-up is from 2021.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown. People regularly come to try classes (BJJ Globetrotters, 2021).",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "BJJ",
+    "kickboxing"
+   ],
+   "coaches": "Ivan Quintanar (first-degree black belt, owner) and Stephen Martinez (first-degree black belt). Six active black belts in the academy (BJJ Globetrotters, June 2021).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Drop-in policy not stated. Prices kept accessible for the local economy (BJJ Globetrotters, 2021).",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2021-06 BJJ Globetrotters feature. Facebook page facebook.com/shogunpty not opened.",
+   "what_people_say": [],
+   "neighbourhood": "Via Ricardo J. Alfaro, Plaza Belair second floor, La Alameda. Central, reachable by local bus or taxi.",
+   "room_month_dkk": 3000,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "Bay of Panama and the Cinta Costera in the city. Distance not measured.",
+   "score": {
+    "training": 4,
+    "evidence": 3,
+    "local_life": 6,
+    "cost": 6,
+    "water": 5,
+    "total": 4.7
+   },
+   "score_note": "Provisional. One 2021 article, no ratings or price, kickboxing depth unknown. Coordinates approximate. Room estimate: Hostelworld private rooms in Panama City 79 to 136 DKK a night (repo profile, 2026, EUR x 7.46), median 101 x 30 = about 3,000."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://bjjglobetrotters.com/?p=56138"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Panama_Casco_Antiguo_panorama.jpg/1280px-Panama_Casco_Antiguo_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panama_Casco_Antiguo_panorama.jpg",
+   "credit": "Ivo Kruusamägi",
+   "licence": "CC BY-SA 4.0",
+   "w": 13683,
+   "h": 3989
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-panama-city-panama-knock-out",
+  "name": "Panama Knock Out (Panama City)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "boxing"
+  ],
+  "places": [
+   "PTY"
+  ],
+  "area": "Panama City, Centro Bancario",
+  "country": "PA",
+  "lat": 8.983,
+  "lon": -79.52,
+  "summary": "Boxing fitness gym and Roberto Duran museum in an office building, co-owned by Duran's son Robin Duran. About 80 percent of clients are women and the 2019 article describes hour-long classes, so this is fitness boxing and not a fight team.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": null,
+  "price_dkk": null,
+  "duration": "monthly membership",
+  "requirements": "Unknown.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "boxing (fitness)"
+   ],
+   "coaches": "Not named. Owners are Robin Duran and Giovanni Dorati (La Estrella, Aug 2019).",
+   "fighters": null,
+   "sessions_per_week": null,
+   "timetable": null,
+   "sparring": null,
+   "visitors": "Not stated. Presented as open to aficionados (La Estrella, 2019).",
+   "price_dropin_dkk": null,
+   "price_week_dkk": null,
+   "price_month_dkk": null,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "2019-08 La Estrella article. Nothing newer found.",
+   "what_people_say": [
+    {
+     "quote": "80% of clients are women (owners' estimate)",
+     "site": "laestrella.com.pa",
+     "date": "2019-08",
+     "url": "https://www.laestrella.com.pa/deportes/boxeo/manos-ensenan-noquear-gimnasio-panameno-BJLE2164"
+    }
+   ],
+   "neighbourhood": "Centro Bancario is the banking district. Nearby residential options: Bella Vista, El Cangrejo, Obarrio.",
+   "room_month_dkk": 3000,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": null,
+   "water_note": "Bay of Panama and the Cinta Costera are a short ride away. Distance not measured.",
+   "score": {
+    "training": 3,
+    "evidence": 2,
+    "local_life": 3,
+    "cost": 5,
+    "water": 5,
+    "total": 3.4
+   },
+   "score_note": "Provisional. Single 2019 article, fitness style, corporate district. Coordinates approximate. Room estimate: Hostelworld private rooms in Panama City 79 to 136 DKK a night (repo profile, 2026, EUR x 7.46), median 101 x 30 = about 3,000."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.laestrella.com.pa/deportes/boxeo/manos-ensenan-noquear-gimnasio-panameno-BJLE2164"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Panama_Casco_Antiguo_panorama.jpg/1280px-Panama_Casco_Antiguo_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panama_Casco_Antiguo_panorama.jpg",
+   "credit": "Ivo Kruusamägi",
+   "licence": "CC BY-SA 4.0",
+   "w": 13683,
+   "h": 3989
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "gym-bocas-del-toro-bocas-fight-gym",
+  "name": "Bocas Fight Gym (Bocas del Toro)",
+  "category": "training",
+  "tags": [
+   "gym",
+   "bjj",
+   "muay-thai"
+  ],
+  "places": [],
+  "area": "Bocas del Toro, Bocas Town (Isla Colon)",
+  "country": "PA",
+  "lat": 9.34,
+  "lon": -82.242,
+  "summary": "The only martial arts academy found on the island: BJJ under Professor Ray Quintana (Megaton Team) plus a daily one-hour Muay Thai class and strength training, with tourists and locals mixing. Sources date from 2016 to about 2019, so it must be confirmed that it is still open and that Muay Thai still runs.",
+  "season": "year round",
+  "dec_jan": "unknown",
+  "price": "US$50 a month for Muay Thai, US$60 for Muay Thai plus BJJ, US$5 drop-in (bocasdeltoro.travel, Feb 2016)",
+  "price_dkk": 322,
+  "duration": "monthly membership",
+  "requirements": "Unknown. Sparring not described. BJJ visitors bring a gi and contact the gym on Facebook first.",
+  "details": {
+   "gym_kind": "local gym",
+   "disciplines": [
+    "BJJ",
+    "Muay Thai",
+    "strength and conditioning"
+   ],
+   "coaches": "Ray Quintana, BJJ professor and black belt under Wellington 'Megaton' Dias. Muay Thai instructor not named.",
+   "fighters": null,
+   "sessions_per_week": 6,
+   "timetable": "Muay Thai Mon to Sat 11:00 to 12:00. BJJ no-gi Mon, Wed, Fri 18:00 to 20:00, open mat Sat 16:00 to 17:00. Strength and conditioning mornings (2016 timetable).",
+   "sparring": "Not described.",
+   "visitors": "Drop-ins welcome, tourists and long-term members train together. English page, Spanish not mentioned.",
+   "price_dropin_dkk": 32,
+   "price_week_dkk": null,
+   "price_month_dkk": 322,
+   "private_dkk": null,
+   "google_rating": null,
+   "google_reviews": null,
+   "other_ratings": [],
+   "last_activity": "about 2019-06 Steemit BJJ post (date inferred from image filenames). Gym moved from a spot behind the gas station to 4th Street between Bocas Yoga and Banco Nacional.",
+   "what_people_say": [
+    {
+     "quote": "currently the only martial arts academy in Bocas del Toro offering Brazilian Jiu Jitsu classes",
+     "site": "bocasdeltoro.travel",
+     "date": "2016-02-19",
+     "url": "https://bocasdeltoro.travel/bocas-fight-gym/"
+    }
+   ],
+   "neighbourhood": "Bocas Town on Isla Colon. Rooms not researched.",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "water_km": 0.3,
+   "water_note": "Caribbean waterfront in Bocas Town, a few blocks from 4th Street (estimated from the street description). Beaches such as Bluff and Red Frog by boat or bus.",
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 5,
+    "cost": 6,
+    "water": 10,
+    "total": 4.8
+   },
+   "score_note": "Provisional. No ratings, no sparring info, newest source about 2019. Cost score is a guess because no Bocas room price was found. USD x 6.45."
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://bocasdeltoro.travel/bocas-fight-gym/",
+   "https://steemit.steemapps.com/steemitbjj/@el-cr/brazilian-jiu-jitsu-and-island-life-the-caribbean-bocas-del-toro",
+   "https://steemit.steemapps.com/life/@el-cr/bocas-fight-gym-under-megaton-team"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "city-panama-city-training",
+  "name": "Panama City: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [
+   "PTY"
+  ],
+  "area": "Panama City",
+  "country": "PA",
+  "lat": 8.98,
+  "lon": -79.52,
+  "summary": "Panama has a real boxing tradition (Duran, Curundu and El Chorrillo gyms), but online evidence for any current striking or MMA gym that takes visitors for weeks is thin. The best lead is the Pedro Alcazar boxing gym in Curundu, with Shogun BJJ in La Alameda as a grappling and kickboxing option. This city needs a gym visit or direct messages on Facebook and Instagram before it can be trusted as a base.",
+  "season": "year round",
+  "dec_jan": "General knowledge, not sourced: December is the start of the dry season.",
+  "price": null,
+  "price_dkk": 3000,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-panama-city-pedro-alcazar",
+    "gym-panama-city-shogun-bjj",
+    "gym-panama-city-panama-knock-out"
+   ],
+   "best_gym": "gym-panama-city-pedro-alcazar",
+   "room_month_dkk": 3000,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Not verified. Bella Vista, El Cangrejo, San Francisco or Casco Viejo hostels are likely, with taxi or bus to the gym.",
+   "safety": "Curundu and El Chorrillo are rough barrios. Not researched further.",
+   "water_note": "Bay of Panama and the Cinta Costera in the city. Real swimming beaches are an hour or more away.",
+   "local_life": "Boxing is a local sport with gyms in working-class barrios, but the gyms found have little visitor evidence.",
+   "what_people_say": [],
+   "score": {
+    "training": 5,
+    "evidence": 2,
+    "local_life": 7,
+    "cost": 6,
+    "water": 5,
+    "total": 5.1
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://chiriqui.life/blogs/entry/271-boxing-finding-a-way-out-of-poverty/",
+   "https://www.laprensalatina.com/panama-struggling-to-recapture-past-boxing-glory/",
+   "https://bjjglobetrotters.com/?p=56138",
+   "https://www.laestrella.com.pa/deportes/boxeo/manos-ensenan-noquear-gimnasio-panameno-BJLE2164",
+   "https://www.laestrella.com.pa/deportes/panama-cultiva-un-semillero-de-boxeadores-para-proyectar-talento-juvenil-al-mundo-GK18304112"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Panama_Casco_Antiguo_panorama.jpg/1280px-Panama_Casco_Antiguo_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Panama_Casco_Antiguo_panorama.jpg",
+   "credit": "Ivo Kruusamägi",
+   "licence": "CC BY-SA 4.0",
+   "w": 13683,
+   "h": 3989
+  },
+  "image_source": "place",
+  "saved_in": []
+ },
+ {
+  "id": "city-bocas-del-toro-training",
+  "name": "Bocas del Toro: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [],
+  "area": "Bocas del Toro",
+  "country": "PA",
+  "lat": 9.34,
+  "lon": -82.24,
+  "summary": "Bocas Town has one martial arts academy found, Bocas Fight Gym, with BJJ and a daily Muay Thai hour at roughly 322 DKK a month in 2016 prices. It is a Caribbean island town, so water is perfect, but expect a casual level with no evidence of real sparring. Good for staying fit and in touch with the sport, not a fight-camp base.",
+  "season": "year round",
+  "dec_jan": "General knowledge, not sourced: the Caribbean side can be rainy at any time of year.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [
+    "gym-bocas-del-toro-bocas-fight-gym"
+   ],
+   "best_gym": "gym-bocas-del-toro-bocas-fight-gym",
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": "Bocas Town on Isla Colon. Not researched.",
+   "safety": "Not researched.",
+   "water_note": "Caribbean sea in town, beaches by boat or bus.",
+   "local_life": "Mixed tourist and local town. The gym has a kids class with over 20 local children (2019 post).",
+   "what_people_say": [],
+   "score": {
+    "training": 4,
+    "evidence": 2,
+    "local_life": 5,
+    "cost": 6,
+    "water": 10,
+    "total": 4.8
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://bocasdeltoro.travel/bocas-fight-gym/",
+   "https://steemit.steemapps.com/steemitbjj/@el-cr/brazilian-jiu-jitsu-and-island-life-the-caribbean-bocas-del-toro"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "city-boquete-training",
+  "name": "Boquete: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [],
+  "area": "Boquete",
+  "country": "PA",
+  "lat": 8.78,
+  "lon": -82.44,
+  "summary": "No striking or MMA gym was found for Boquete in the sources reachable in this session. The only Boquete hit was a 2009 blog about a Saturday boxing night, which is not a gym. Treat it as no known option until someone checks locally.",
+  "season": "year round",
+  "dec_jan": "Not researched.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": null,
+   "safety": null,
+   "water_note": "Mountain town, no sea or lake nearby. Not researched further.",
+   "local_life": "Not researched.",
+   "what_people_say": [],
+   "score": {
+    "training": null,
+    "evidence": 1,
+    "local_life": null,
+    "cost": null,
+    "water": 1,
+    "total": null
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://jerechica-in-boquete.blogspot.com/2009/04/saturday-night-boxing-in-boquete.html"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
+ },
+ {
+  "id": "city-david-training",
+  "name": "David: training base scorecard",
+  "category": "training",
+  "tags": [
+   "city-scorecard"
+  ],
+  "places": [],
+  "area": "David, Chiriqui",
+  "country": "PA",
+  "lat": 8.43,
+  "lon": -82.43,
+  "summary": "No named gym was found for David. There is an active pro boxing scene with cards on 29 Nov 2025 and 1 Aug 2026 (promoter High Level Boxing, venue La Basita), so gyms exist, but none are named in the sources. Needs a local search.",
+  "season": "year round",
+  "dec_jan": "Not researched.",
+  "price": null,
+  "price_dkk": null,
+  "duration": null,
+  "requirements": null,
+  "details": {
+   "gyms": [],
+   "best_gym": null,
+   "room_month_dkk": null,
+   "studio_month_dkk": null,
+   "food_day_dkk": null,
+   "monthly_total_dkk": null,
+   "neighbourhoods": null,
+   "safety": null,
+   "water_note": "Inland city, Pacific beaches are a drive away. Not researched.",
+   "local_life": "Local boxing cards run in David (La Prensa, 2025 and 2026).",
+   "what_people_say": [],
+   "score": {
+    "training": null,
+    "evidence": 2,
+    "local_life": null,
+    "cost": null,
+    "water": 1,
+    "total": null
+   }
+  },
+  "researched": true,
+  "checked_at": "2026-10-30",
+  "sources": [
+   "https://www.prensa.com/deportes/boxing-challenge-80-sacude-la-feria-de-david-con-seis-explosivas-peleas/",
+   "https://www.prensa.com/deportes/chiriqui-se-prepara-para-una-gran-velada-de-boxeo-en-la-basita/"
+  ],
+  "image": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Lace_Up_Boxing_Gloves.jpg/1280px-Lace_Up_Boxing_Gloves.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Lace_Up_Boxing_Gloves.jpg",
+   "credit": "Danielaarceo123",
+   "licence": "CC BY-SA 4.0",
+   "w": 5184,
+   "h": 3456
+  },
+  "image_source": "category",
+  "saved_in": []
  }
 ]

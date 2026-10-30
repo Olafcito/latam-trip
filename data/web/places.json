@@ -1172,7 +1172,11 @@
    "pty-casco-viejo-old-town",
    "pty-miraflores-locks-on-the-panama-canal",
    "pty-amador-causeway-bike-ride",
-   "pty-cinta-costera-and-mercado-de-mariscos"
+   "pty-cinta-costera-and-mercado-de-mariscos",
+   "gym-panama-city-pedro-alcazar",
+   "gym-panama-city-shogun-bjj",
+   "gym-panama-city-panama-knock-out",
+   "city-panama-city-training"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2702,7 +2706,11 @@
   "saved_in": [],
   "experience_ids": [
    "mga-loma-de-tiscapa-viewpoint",
-   "mga-old-cathedral-ruins-and-plaza-de-la-revolucion"
+   "mga-old-cathedral-ruins-and-plaza-de-la-revolucion",
+   "gym-managua-xtreme-kombat",
+   "gym-managua-arte-suave",
+   "gym-managua-pesas-miguel-nino",
+   "city-managua-training"
   ],
   "stay_quotes": [],
   "hub": true
@@ -2777,7 +2785,8 @@
    "leon-rooftop-of-the-cathedral-of-leon",
    "leon-revolution-murals-and-museums",
    "leon-day-trip-to-las-penitas-beach",
-   "leon-cerro-negro-overnight-hike"
+   "leon-cerro-negro-overnight-hike",
+   "city-leon-training"
   ],
   "stay_quotes": [],
   "hub": false
@@ -2852,7 +2861,8 @@
    "gran-mombacho-volcano-or-canopy-tour",
    "gran-isletas-boat-trip-on-lake-nicaragua",
    "gran-masaya-volcano-at-night",
-   "gran-climb-the-cathedral-or-la-merced-tower"
+   "gran-climb-the-cathedral-or-la-merced-tower",
+   "city-granada-training"
   ],
   "stay_quotes": [],
   "hub": false
@@ -2926,7 +2936,9 @@
    "sjds-sunday-funday-pool-crawl",
    "sjds-cristo-de-la-misericordia-viewpoint",
    "sjds-sunset-sailing-trip",
-   "sjds-beach-hopping-to-playa-remanso"
+   "sjds-beach-hopping-to-playa-remanso",
+   "gym-sjds-fight-club",
+   "city-sjds-training"
   ],
   "stay_quotes": [],
   "hub": false
@@ -5036,7 +5048,9 @@
   ],
   "hostel_note": null,
   "saved_in": [],
-  "experience_ids": [],
+  "experience_ids": [
+   "city-popoyo-training"
+  ],
   "stay_quotes": [],
   "hub": false
  },
@@ -5098,7 +5112,9 @@
   ],
   "hostel_note": null,
   "saved_in": [],
-  "experience_ids": [],
+  "experience_ids": [
+   "city-esteli-training"
+  ],
   "stay_quotes": [],
   "hub": false
  },
