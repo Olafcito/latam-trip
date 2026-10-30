@@ -4038,18 +4038,18 @@
   "airport_transfer_min": null,
   "why": "Colourful coffee-region village at the gate of Cocora Valley",
   "reason": "Coffee-region village and gateway to Valle de Cocora wax palms",
-  "summary": "A pretty bahareque village of balconies and craft shops, famous for the 60 m wax palms of the Cocora Valley a jeep ride away. Packed at weekends and holidays, calm mid-week.",
+  "summary": "A pretty bahareque village of balconies and craft shops, famous for the wax palms of the Cocora Valley 30 min away by Willys jeep. The most touristy stop in the coffee region with the best social hostels. Packed at weekends, on holiday Mondays and from mid December to mid January, calm mid-week. December to March are the driest months (about 15 to 25 C), but afternoon showers still happen.",
   "categories": [
    "Food",
-   "Nature",
    "Nightlife"
   ],
   "things_to_do": [
-   "Valle de Cocora wax palm hike",
-   "Coffee farm tour (e.g. Don Elias, Finca el Ocaso)",
+   "Valle de Cocora wax palm loop (12 km, 5 to 7 h, fees about COP 26,000 plus jeep COP 10,000 return)",
+   "Coffee farm tour (Don Elias COP 35,000, El Ocaso COP 40,000, Buenos Aires COP 50,000)",
    "Alto de la Cruz viewpoint",
    "Trout and patacon on the plaza",
-   "Tejo and local bars"
+   "Tejo and local bars",
+   "Day trip to Filandia by Willys jeep (40 min, COP 7,500)"
   ],
   "touristy": 5,
   "altitude_m": 1996,
@@ -4063,28 +4063,44 @@
   },
   "hostels": [
    {
-    "name": "Posada Aguanile Finca La Diana",
-    "dorm_dkk": 63,
-    "private_dkk": null,
-    "rating": null,
+    "name": "Viajero Salento Hostel",
+    "dorm_dkk": 178,
+    "private_dkk": 189,
+    "rating": 9.7,
     "price_suspect": false,
-    "url": "https://www.hostelz.com/best-hostels-salento"
+    "url": "https://www.hostelworld.com/hostels/p/267788/viajero-salento-hostel/"
+   },
+   {
+    "name": "Bindi",
+    "dorm_dkk": 97,
+    "private_dkk": 193,
+    "rating": 8.9,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/salento/"
    },
    {
     "name": "Yambolombia Hostel",
-    "dorm_dkk": null,
-    "private_dkk": null,
-    "rating": null,
+    "dorm_dkk": 54,
+    "private_dkk": 118,
+    "rating": 9.6,
     "price_suspect": false,
-    "url": "https://www.hostelz.com/best-hostels-salento"
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/salento/"
    },
    {
-    "name": "Hostel Tralala",
-    "dorm_dkk": null,
-    "private_dkk": null,
-    "rating": null,
+    "name": "Hostel Tralala Salento",
+    "dorm_dkk": 54,
+    "private_dkk": 64,
+    "rating": 9.5,
     "price_suspect": false,
-    "url": "https://www.hostelz.com/best-hostels-salento"
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/salento/"
+   },
+   {
+    "name": "Posada Aguanile Finca La Diana",
+    "dorm_dkk": 124,
+    "private_dkk": 75,
+    "rating": 9.7,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/south-america/colombia/salento/"
    }
   ],
   "hostel_note": null,
@@ -4094,7 +4110,8 @@
    "sale-coffee-farm-tour-e-g-don-elias-finca-el-ocaso",
    "sale-alto-de-la-cruz-viewpoint",
    "sale-trout-and-patacon-on-the-plaza",
-   "sale-tejo-and-local-bars"
+   "sale-tejo-and-local-bars",
+   "stay-viajero-salento-hostel"
   ],
   "stay_quotes": [],
   "hub": false
@@ -6367,6 +6384,190 @@
    "Lancha on to Capurgana"
   ],
   "touristy": 1,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
+  "id": "JARD",
+  "name": "Jardin",
+  "short_name": "Jardin",
+  "country": "CO",
+  "lat": 5.5986,
+  "lon": -75.8197,
+  "tier": "destination",
+  "type": "city",
+  "popularity": 2,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Flower-balcony coffee town with cable cars over the ravines",
+  "reason": "Colonial coffee town in south-west Antioquia, 3 h by bus from Medellin Terminal Sur, with cable cars, waterfalls and a lively local plaza",
+  "summary": "Colonial pueblo in south-west Antioquia, 3 hours by bus from Medellin, with a big plaza where farmers drink tinto, steep coffee hills, waterfalls and a cave waterfall. Mostly Colombian visitors. UN Tourism named it a top rural destination in 2024. Calm on weekdays, busy on holiday weekends and over Christmas, when Medellin families come down.",
+  "categories": [
+   "Nature",
+   "Food",
+   "Colonial"
+  ],
+  "things_to_do": [
+   "Cueva del Esplendor waterfall in a cave (tour COP 80,000)",
+   "La Garrucha cable car over Quebrada Volcanes to the Filo de Oro viewpoint (COP 5,000 each way)",
+   "Cerro Cristo Rey hike (2 km) and Cascada La Escalera (3 km)",
+   "Swim at Charco Corazon river pool",
+   "Coffee farm visit (Finca Milena or tours from town)",
+   "Saturday night on the plaza, Basilica de la Inmaculada Concepcion"
+  ],
+  "touristy": 2,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "Magic Jardin Hostel",
+    "dorm_dkk": 58,
+    "private_dkk": 95,
+    "rating": 9.2,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/321060/magic-jardin/"
+   },
+   {
+    "name": "Charco Corazon Hostel",
+    "dorm_dkk": 64,
+    "private_dkk": 84,
+    "rating": 9.3,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/findabed.php/ChosenCity.Jardin/ChosenCountry.Colombia"
+   },
+   {
+    "name": "Sgt Pepper's Hostel",
+    "dorm_dkk": 54,
+    "private_dkk": null,
+    "rating": 8.5,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/275734/sgt-pepper-s-hostel/"
+   },
+   {
+    "name": "La Tangara Hostal Rural",
+    "dorm_dkk": 60,
+    "private_dkk": 82,
+    "rating": 9.9,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/findabed.php/ChosenCity.Jardin/ChosenCountry.Colombia"
+   },
+   {
+    "name": "Candileja Hostel",
+    "dorm_dkk": 53,
+    "private_dkk": null,
+    "rating": 9.0,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/312345/candileja-hostel/"
+   }
+  ],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "jard-cueva-del-esplendor",
+   "jard-garrucha-cable-car-and-plaza",
+   "stay-magic-jardin-hostel"
+  ],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
+  "id": "FILA",
+  "name": "Filandia",
+  "short_name": "Filandia",
+  "country": "CO",
+  "lat": 4.6747,
+  "lon": -75.6584,
+  "tier": "town",
+  "type": "city",
+  "popularity": 3,
+  "iata": null,
+  "airport_transfer_min": null,
+  "why": "Salento's quieter, more local neighbour",
+  "reason": "Quieter coffee town 40 min from Salento by Willys jeep, colourful bahareque houses and the Colina Iluminada lookout tower",
+  "summary": "Small Quindio coffee town of colourful bahareque houses around Parque Bolivar, far less touristy than Salento and 40 minutes from it by Willys jeep. Cafes on the Calle del Tiempo Detenido, the 27 m Colina Iluminada wooden lookout tower and howler monkeys in the Barbas Bremen cloud forest. Few hostels, so book ahead for weekends and the Christmas weeks.",
+  "categories": [
+   "Food",
+   "Nature",
+   "Ruins"
+  ],
+  "things_to_do": [
+   "Mirador Colina Iluminada lookout tower (COP 8,000, 09:00 to 18:00)",
+   "Coffee and pastries on the Calle del Tiempo Detenido",
+   "Guided hike in Barbas Bremen reserve for red howler monkeys (about 3 h)",
+   "Finca La Divisa coffee farm",
+   "Day trip to Salento and Cocora by Willys jeep"
+  ],
+  "touristy": 3,
+  "altitude_m": null,
+  "image": null,
+  "hostels": [
+   {
+    "name": "Tukawa Hostel",
+    "dorm_dkk": 86,
+    "private_dkk": 134,
+    "rating": 9.9,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/312674/tukawa-hostel/"
+   },
+   {
+    "name": "Bidea Hostel",
+    "dorm_dkk": 54,
+    "private_dkk": 64,
+    "rating": 9.1,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/hostels/p/263281/bidea-hostel/"
+   },
+   {
+    "name": "Three House Hostel Boutique",
+    "dorm_dkk": 43,
+    "private_dkk": 86,
+    "rating": 9.8,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/de/jugendherbergen/sudamerika/kolumbien/filandia/"
+   },
+   {
+    "name": "Rancho Akila",
+    "dorm_dkk": 118,
+    "private_dkk": 121,
+    "rating": null,
+    "price_suspect": false,
+    "url": "https://www.hostelworld.com/de/jugendherbergen/sudamerika/kolumbien/filandia/"
+   }
+  ],
+  "hostel_note": null,
+  "saved_in": [],
+  "experience_ids": [
+   "stay-tukawa-hostel-filandia"
+  ],
+  "stay_quotes": [],
+  "hub": false
+ },
+ {
+  "id": "AXM",
+  "name": "Armenia",
+  "short_name": "Armenia",
+  "country": "CO",
+  "lat": 4.53,
+  "lon": -75.68,
+  "tier": "town",
+  "type": "hub",
+  "popularity": 3,
+  "iata": "AXM",
+  "airport_transfer_min": null,
+  "why": "Quindio capital and bus hub: minibuses to Salento every 20 min, about 83 buses a day to Cali, El Eden airport (AXM)",
+  "reason": "Quindio capital and bus hub: minibuses to Salento every 20 min, about 83 buses a day to Cali, El Eden airport (AXM)",
+  "summary": null,
+  "categories": [
+   "Transit hub"
+  ],
+  "things_to_do": [],
+  "touristy": null,
   "altitude_m": null,
   "image": null,
   "hostels": [],
