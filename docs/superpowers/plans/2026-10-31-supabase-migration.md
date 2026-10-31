@@ -470,7 +470,7 @@ Every planner task runs `cd planner; npm test; npx tsc --noEmit`. New behaviour 
 **Interfaces:**
 - Produces: `action: build`, `action: backup`. SSM parameter `/latam-trip/supabase-secret-key`. Bucket `latam-trip-backups`, private with a 90 day expiry. `tripdb status` shows `worker_version`.
 
-- [ ] **Step 1: Extend `deploy.sh`.** Create the bucket with a suffix if the name is taken, public access blocked. The SSM parameter comes from `.env` for the target named on the command line. The role gets SSM read on that path, and S3 write on that bucket. Add both schedules, disabled unless `--enable-schedules` is given. `version.txt` becomes `worker_version`.
+- [ ] **Step 1: Extend `deploy.sh`.** Create the bucket with a suffix if the name is taken, public access blocked. The SSM parameter comes from `.env` for the target named on the command line. The role gets SSM read on that path, and S3 write on that bucket. Add both schedules, disabled unless `--enable-schedules` is given. They run as role `latam-trip-scheduler`, which trusts `scheduler.amazonaws.com` and may only invoke the worker. Phase 0 created that role by hand, so `deploy.sh` must keep it and retry for a few seconds when it is new. `version.txt` becomes `worker_version`.
 
 - [ ] **Step 2: Add the `CLAUDE.md` note** that a change to `tripdb.py` or the pipeline reaches the worker only through `deploy.sh`.
 

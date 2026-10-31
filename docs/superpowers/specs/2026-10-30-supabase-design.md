@@ -568,14 +568,18 @@ This is not a second home for the data. It is a dated archive that nothing reads
 
 ## 15. Not verified
 
-These came up while writing and could not be confirmed. Check each in phase 0 or 1.
+Checked in phase 0 on 31 Oct 2026:
+
+- The unchanged pipeline runs in Lambda, with `subprocess` and `sys.executable`, on Python 3.14 with 1024 MB. With the public `data/sources` bundled, the build took 5.72 s cold and 5.68 s warm, against 2.47 s on this PC. A whole invocation took 5.9 s and used 131 MB at most. Reading from and uploading to Supabase come on top and are not measured yet.
+- Web output is 5.30 MB in Lambda and 5.49 MB on this PC. All of the gap is CRLF line endings, so compare file hashes only between runs on the same system.
+- The account allows `eu-west-1` and EventBridge Scheduler. A disabled schedule was created and removed. It needs its own role that `scheduler.amazonaws.com` can assume, `latam-trip-scheduler`, because the worker role only trusts Lambda.
+- Lambda reaches Supabase with no extra network setup. REST answered 401 in 0.09 s cold and 0.02 s warm.
+
+Still open. These came up while writing and could not be confirmed. Check each in phase 0 or 1.
 
 - Whether Claude desktop reaches `*.supabase.co`. This PC does, checked on 31 Oct 2026.
 - Whether cloud Claude sessions reach it once the host is allowed. A run in the Default cloud environment on 31 Oct 2026 failed: its proxy answered `CONNECT tunnel failed, response 403` for REST, Storage and `urllib`, so the request never reached Supabase. Step 4 of section 10 must be done first, and the check run again.
 - Whether Storage accepts an upload with the new `sb_secret_` key.
-- Whether the Python pipeline runs as is in Lambda, with `subprocess` and `sys.executable`, and how long a full run takes. About 15 seconds is an estimate from 2.2 s of steps on this PC.
-- Whether the organisation that owns the AWS account allows `eu-west-1` and EventBridge Scheduler. Other work there runs in `eu-north-1`.
-- Whether Lambda reaches Supabase with no extra network setup.
 - Whether PostgREST caps a page at 1000 rows on this plan. The paging rule in section 5 works either way.
 - How Storage sets `cacheControl`, whether it serves gzip, and whether the CDN treats a file stored under a new hash as new.
 - Egress on the free plan. The pricing page says 5 GB plus 5 GB cached, and the bandwidth docs say 10 GB in total. Also whether a gzip pull counts its compressed size.
