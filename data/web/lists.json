@@ -1,6 +1,6 @@
 {
  "about": "Saved lists. Items are places (map ids) or experiences (experience ids). The app adds to these through a claude-task issue of type lists_update; Claude applies it here.",
- "updated": "2026-10-30",
+ "updated": "2026-10-31",
  "lists": [
   {
    "id": "want",
@@ -143,6 +143,12 @@
      "id": "stay-orika-del-mar-isla-grande",
      "added": "2026-10-30",
      "note": "Islas del Rosario, 30 Oct"
+    },
+    {
+     "type": "experience",
+     "id": "stay-hostel-de-boca-en-boca-granada",
+     "added": "2026-10-31",
+     "note": "New Year's Eve base for the Treehouse party shuttle"
     }
    ]
   }
