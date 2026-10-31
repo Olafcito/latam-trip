@@ -1,0 +1,66 @@
+/* The trip as a clean map: the window you open it in and the strip laid back on top of a trip. Its
+   strokes keep their width whatever size the map is drawn at, its text sizes come from routeLive. */
+.rs-map { display: block; width: 100%; height: auto; font-family: var(--font-word); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.rs-map text { user-select: none; -webkit-user-select: none; font-variant-numeric: tabular-nums; }
+.rs-land { fill: var(--surface-2); }
+.rs-lit { fill: var(--line-2); }
+.rs-borders { fill: none; stroke: color-mix(in srgb, var(--line-2), var(--muted) 16%); stroke-width: 0.75px; vector-effect: non-scaling-stroke; }
+.rs-line, .rs-chev, .rs-from, .rs-to { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.rs-line { stroke: var(--text); stroke-width: 2.25px; }
+.rs-chev { stroke: var(--text); stroke-width: 2.5px; }
+.rs-from, .rs-to { stroke: var(--muted); stroke-width: 1.75px; stroke-dasharray: 0.1 6; }
+.rs-way { fill: var(--muted); font-weight: 500; }
+.rs-dot { fill: var(--flight); stroke: var(--ground); }
+.rs-pass { fill: var(--text); }
+.rs-blank { fill: var(--surface-3); }
+.rs-ring { fill: none; stroke: var(--ground); stroke-width: 4; }
+.rs-code { fill: var(--text); font-weight: 600; }
+.rs-name, .rs-stop, .rs-nights { stroke: var(--ground); paint-order: stroke; stroke-linejoin: round; }
+.rs-name { fill: var(--text); font-weight: 600; }
+.rs-stop { fill: var(--text); font-weight: 500; }
+.rs-nights { fill: var(--muted); font-weight: 500; }
+
+/* the window */
+.md.rs-md { --md-w: min(calc(min(86dvh, 860px) * 0.8), 688px); background: var(--ground); }
+.rs { position: relative; background: var(--ground); }
+.rs-wait { aspect-ratio: 4 / 5; background: var(--ground); }
+.rs-head { position: absolute; top: 16px; left: 20px; max-width: calc(100% - 76px); pointer-events: none; }
+.rs-head h3 { margin: 0; font-size: var(--fs-head); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; color: var(--text); text-wrap: balance; }
+.rs-head p { margin: 4px 0 0; font-size: var(--fs-small); font-variant-numeric: tabular-nums; color: var(--muted); }
+.rs-hint { position: absolute; left: 20px; bottom: 16px; margin: 0; font-size: var(--fs-small); line-height: 1.3; color: var(--muted); pointer-events: none; transition: opacity var(--t-med) ease-out; }
+.rs-hint.gone { opacity: 0; }
+.rs-flag, .rs-lab[data-t], .rs-dot[data-t] { cursor: pointer; outline: none; }
+.rs-disc { transition: transform var(--t-fast) var(--ease-out); transform-box: fill-box; transform-origin: center; }
+.rs-flag[data-t]:active .rs-disc { transform: scale(0.94); }
+.rs-flag:focus-visible .rs-ring { stroke: var(--flight); }
+.rs-lab[data-t]:focus-visible text { fill: var(--flight); }
+
+/* the strip on top of a trip: laid back, its far edge fades into the distance */
+.rs-strip {
+  display: block; width: 100%; aspect-ratio: 1000 / 250; margin-top: 14px; padding: 0; overflow: hidden;
+  border: 0; border-radius: var(--radius); background: var(--ground); color: inherit; cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.rs-strip .rs-map { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 38%); mask-image: linear-gradient(to bottom, transparent, #000 38%); }
+.rs-strip:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.rs-strip:active { transform: scale(0.99); }
+
+@media (hover: hover) and (pointer: fine) {
+  .rs-flag[data-t]:hover .rs-disc { transform: scale(1.05); }
+  .rs-lab[data-t]:hover text { fill: var(--flight); }
+  .rs-strip:hover .rs-line { stroke: var(--flight); }
+}
+
+@media (max-width: 560px) {
+  .md.rs-md { --md-w: 100%; }
+  .rs-wait { aspect-ratio: 2 / 3; }
+  .rs-strip { aspect-ratio: 1000 / 460; }
+  .rs-head { left: 16px; top: 14px; }
+  .rs-head h3 { font-size: var(--fs-lead); }
+  .rs-hint { left: 16px; bottom: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rs-disc, .rs-hint, .rs-strip { transition: none; }
+  .rs-strip:active, .rs-flag[data-t]:active .rs-disc { transform: none; }
+}

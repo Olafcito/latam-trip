@@ -1,106 +1,24 @@
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { capped } from '@map/data/cardFacts'
-import type { MapData } from '@map/data/types'
-import { loadRouteData } from '../../data/routeMap'
 import type { Hostel, MapNode } from '../../data/types'
 import { day, kr, shortPlace as short } from '../../lib/format'
 import { countryName } from '../../lib/colors'
-import { placeFinds, type FindRow, type PlaceFinds } from '../../lib/placeFinds'
-import { Modal } from '../Modal'
-import { FindPopup, HostelPopup } from './FindPopup'
+import type { FindRow, PlaceFinds } from '../../lib/placeFinds'
 
-// The top of the route, after the 21st Hover Expand Gallery: its places as narrow panels with their
-// names, the one under the mouse or the Tab key opens to its photo. A click opens that place's
-// itinerary under the strip, after the 21st Expandable Card (id 35717): what to do there and where
-// to sleep. The panel stays mounted so it can open and close from wherever it is, its words fade
-// in once it has made room, Escape closes it and gives the focus back. On a phone the places are a
-// row to swipe instead. Its hostels, Experiences and Training open a window over the trip, you stay
-// where you are. The trip's costs sit between the title and the strip.
+// The top of the route: its title, its costs and the trip as a small map. What to do and where to
+// sleep in a place sits in its city card, which opens from the place in the story below.
 
 export interface HeadPlace { name: string; node: MapNode | undefined; days: number; inDay: string }
 
 const nightsOf = (n: number) => (n ? `${n} ${n === 1 ? 'night' : 'nights'}` : 'Passing through')
 const fromDay = (p: HeadPlace) => `${p.days ? 'from' : 'on'} ${day(p.inDay)}`
 
-export function TripHead({ places, costs }: { places: HeadPlace[]; costs: ReactNode }) {
-  const [hover, setHover] = useState<number | null>(null)
-  const [pick, setPick] = useState<number | null>(null)
-  // what the panel shows, kept while it closes so its words fade out instead of vanishing
-  const [shown, setShown] = useState(0)
-  const [route, setRoute] = useState<MapData | null>(null)
-  const [find, setFind] = useState<FindRow | null>(null)
-  const [bed, setBed] = useState<Hostel | null>(null)
-  const btns = useRef<(HTMLButtonElement | null)[]>([])
-  const panelId = useId()
-  const read = useMemo(() => (route ? placeFinds(route) : null), [route])
-  // the picked place holds the big panel while its itinerary is open, a hover only brightens the others
-  const open = pick ?? hover ?? 0
-
-  const choose = (i: number) => {
-    const next = pick === i ? null : i
-    setPick(next)
-    if (next == null) return
-    setShown(next)
-    btns.current[i]?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
-  }
-  const close = () => {
-    if (pick == null) return
-    btns.current[pick]?.focus()
-    setHover(null)
-    setPick(null)
-  }
-  useEffect(() => {
-    if (pick == null) return
-    const onKey = (e: globalThis.KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); close() } }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  })
-  // the map's data comes the first time an itinerary opens. Without it the itinerary still has its own lines,
-  // and the Map tab says when that data cannot load
-  useEffect(() => {
-    if (pick == null || route) return
-    loadRouteData().then(setRoute, () => {})
-  }, [pick, route])
-
+export function TripHead({ count, costs, map }: { count: number; costs: ReactNode; map: ReactNode }) {
   return (
     <header className="tg">
-      <h3 className="tg-title">Route<span>{places.length} {places.length === 1 ? 'place' : 'places'}</span></h3>
+      <h3 className="tg-title">Route<span>{count} {count === 1 ? 'place' : 'places'}</span></h3>
       {costs}
-      <ul
-        className="tg-strip"
-        style={{ '--n': places.length } as CSSProperties}
-        onPointerLeave={() => setHover(null)}
-        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setHover(null) }}
-      >
-        {places.map((p, i) => {
-          const img = p.node?.profile?.image?.url
-          return (
-            <li key={i} className="tg-p" data-open={i === open || undefined} data-pick={i === pick || undefined}>
-              <button
-                ref={(el) => { btns.current[i] = el }}
-                type="button"
-                aria-expanded={i === pick}
-                aria-controls={panelId}
-                aria-label={`${p.name}, ${nightsOf(p.days).toLowerCase()} ${fromDay(p)}`}
-                onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHover(i) }}
-                onFocus={() => setHover(i)}
-                onClick={() => choose(i)}
-              >
-                {img && <img src={img} alt="" loading="lazy" decoding="async" draggable={false} />}
-                <span className="tg-name">{short(p.name)}</span>
-                <span className="tg-meta">{nightsOf(p.days)}<span className="tg-from">, {fromDay(p)}</span></span>
-              </button>
-            </li>
-          )
-        })}
-      </ul>
-      <div id={panelId} className="tg-it" data-open={pick != null} inert={pick == null} role="region" aria-label={places[shown] ? `${short(places[shown].name)} itinerary` : undefined}>
-        <div className="tg-it-in">
-          {places[shown] && <Itinerary key={shown} place={places[shown]} finds={read && places[shown].node ? read(places[shown].node.id) : null} onClose={close} onFind={setFind} onBed={setBed} />}
-        </div>
-      </div>
-      {find && route && <Modal label={find.name} className="fp-md" bare onClose={() => setFind(null)}>{(shut) => <FindPopup data={route} first={find.ref} onClose={shut} />}</Modal>}
-      {bed && <Modal label={bed.name} onClose={() => setBed(null)}>{() => <HostelPopup h={bed} place={short(places[shown].name)} />}</Modal>}
+      {map}
     </header>
   )
 }
