@@ -97,7 +97,7 @@ The Momondo userscript saves what Simon finds by hand as `data/sources/inbox/man
 
 ### pair_dates.json
 
-Every known price for every regional flight pair, in both directions, grouped by the local departure date. The long-haul tickets are left out: any quote from or to a European airport, the home airports and the alt origins in `trip.json`. Quotes flagged `incomplete`, `ad_offer` or `over_30h` and quotes over the hour limit are left out too. The same quote seen more than once is one entry with its newest `observed_at`. Each date lists its quotes cheapest first. The keys are short to keep the file small:
+Every known price for every regional flight pair, in both directions, grouped by the local departure date. The long-haul tickets are left out: any quote from or to a European airport, the home airports and the alt origins in `trip.json`. Quotes flagged `incomplete`, `ad_offer` or `over_30h` and quotes over the hour limit are left out too. The same quote seen more than once is one entry with its newest `observed_at`, and its flags are the ones of that newest copy. So a quote found to be wrong is retracted by adding it again with a newer `observed_at` and the flag `retracted`. Each date lists its quotes cheapest first. The keys are short to keep the file small:
 
     {"pairs": {"GUA-SAP": {"2026-12-21": [
       {"p": 1359, "d": "15:40", "a": "18:50", "h": 3.17, "c": ["Avianca"], "s": 1, "src": "momondo-manual", "at": "2026-10-29T13:13Z"}

@@ -15419,6 +15419,357 @@
   ]
  },
  {
+  "id": "CLO-VVI",
+  "a": "CLO",
+  "b": "VVI",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Avianca",
+     "Copa Airlines",
+     "LATAM"
+    ],
+    "duration_min": 420,
+    "price_dkk": {
+     "min": 2088,
+     "typical": 2377
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [
+     {
+      "place_id": "BOG",
+      "type": "layover",
+      "wait_min": null
+     }
+    ],
+    "geometry": null,
+    "flight": {
+     "nonstop": false,
+     "vias": [
+      "BOG",
+      "LIM",
+      "PTY"
+     ],
+     "carriers": [
+      "Avianca",
+      "COPA",
+      "Copa",
+      "Copa Airlines",
+      "LATAM",
+      "LATAM Airlines"
+     ],
+     "oneway_dkk": {
+      "min": 2088,
+      "observed_at": "2026-10-28T15:32Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2026-12-11",
+      "2026-12-14",
+      "2026-12-17",
+      "2026-12-18",
+      "2026-12-19",
+      "2026-12-20",
+      "2026-12-21",
+      "2026-12-22",
+      "2027-01-27",
+      "2027-02-01"
+     ],
+     "by_date": [
+      {
+       "date": "2026-12-11",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2331,
+       "dep": "18:05",
+       "arr": "03:42",
+       "arr_days": 1,
+       "duration_min": 517,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 370",
+        "Copa Airlines 221"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-11",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-11"
+      },
+      {
+       "date": "2026-12-14",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2356,
+       "dep": "13:50",
+       "arr": "02:40",
+       "arr_days": 1,
+       "duration_min": 710,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 9726",
+        "Avianca 167"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-14",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-14"
+      },
+      {
+       "date": "2026-12-17",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2356,
+       "dep": "17:50",
+       "arr": "02:40",
+       "arr_days": 1,
+       "duration_min": 470,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 9202",
+        "Avianca 167"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-17",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-17"
+      },
+      {
+       "date": "2026-12-18",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2633,
+       "dep": "22:30",
+       "arr": "02:40",
+       "arr_days": 2,
+       "duration_min": 1630,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 9220",
+        "Avianca 167"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-18",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-18"
+      },
+      {
+       "date": "2026-12-19",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2501,
+       "dep": "12:02",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 586,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 308",
+        "Copa Airlines 127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-19",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-19"
+      },
+      {
+       "date": "2026-12-20",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2353,
+       "dep": "18:05",
+       "arr": "03:42",
+       "arr_days": 1,
+       "duration_min": 517,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 370",
+        "Copa Airlines 221"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-20",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-20"
+      },
+      {
+       "date": "2026-12-21",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2299,
+       "dep": "12:02",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 586,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa"
+       ],
+       "flights": [
+        "CM308",
+        "CM127"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-21",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-21?sort=price_a"
+      },
+      {
+       "date": "2026-12-22",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2382,
+       "dep": "12:02",
+       "arr": "22:48",
+       "arr_days": 0,
+       "duration_min": 586,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "Copa Airlines"
+       ],
+       "flights": [
+        "Copa Airlines 308",
+        "Copa Airlines 127"
+       ],
+       "self_transfer": true,
+       "searched": "2026-12-22",
+       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-22"
+      },
+      {
+       "date": "2026-12-22",
+       "from": "VVI",
+       "to": "CLO",
+       "dkk": 2377,
+       "dep": "03:45",
+       "arr": "09:45",
+       "arr_days": 0,
+       "duration_min": 420,
+       "vias": [
+        "BOG"
+       ],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "Avianca 166",
+        "Avianca 8465"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-22",
+       "link": "https://www.momondo.dk/flight-search/VVI-CLO/2026-12-22"
+      },
+      {
+       "date": "2027-01-27",
+       "from": "CLO",
+       "to": "VVI",
+       "dkk": 2888,
+       "dep": "18:09",
+       "arr": "03:44",
+       "arr_days": 1,
+       "duration_min": 515,
+       "vias": [
+        "PTY"
+       ],
+       "carriers": [
+        "COPA"
+       ],
+       "flights": [],
+       "self_transfer": false,
+       "searched": "2027-01-27",
+       "link": null
+      },
+      {
+       "date": "2027-02-01",
+       "from": "VVI",
+       "to": "CLO",
+       "dkk": 2088,
+       "dep": "05:30",
+       "arr": "15:15",
+       "arr_days": 0,
+       "duration_min": 645,
+       "vias": [
+        "LIM",
+        "BOG"
+       ],
+       "carriers": [
+        "LATAM"
+       ],
+       "flights": [
+        "LATAM 2407",
+        "LATAM 4901",
+        "LATAM 4071"
+       ],
+       "self_transfer": false,
+       "searched": "2027-02-01",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 2088,
+      "duration_min": 645,
+      "vias": [
+       "LIM",
+       "BOG"
+      ],
+      "carriers": [
+       "LATAM"
+      ],
+      "date": "2027-02-01",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 2377,
+      "duration_min": 420,
+      "vias": [
+       "BOG"
+      ],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2026-12-22"
+     },
+     "flags": [
+      "basic_fare"
+     ],
+     "quotes": 64
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-28T19:05:05Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
   "id": "CTG-SAP",
   "a": "CTG",
   "b": "SAP",
@@ -18622,357 +18973,6 @@
     "observed_at": "2026-10-29T15:02:54Z",
     "note": null,
     "booking_url": "https://www.momondo.dk/flight-search/MGA-VVI/2027-01-25"
-   }
-  ]
- },
- {
-  "id": "CLO-VVI",
-  "a": "CLO",
-  "b": "VVI",
-  "options": [
-   {
-    "mode": "flight",
-    "operators": [
-     "Avianca",
-     "Copa Airlines",
-     "LATAM"
-    ],
-    "duration_min": 420,
-    "price_dkk": {
-     "min": 2088,
-     "typical": 2377
-    },
-    "frequency": null,
-    "overnight": false,
-    "border": true,
-    "stops": [
-     {
-      "place_id": "BOG",
-      "type": "layover",
-      "wait_min": null
-     }
-    ],
-    "geometry": null,
-    "flight": {
-     "nonstop": false,
-     "vias": [
-      "BOG",
-      "LIM",
-      "PTY"
-     ],
-     "carriers": [
-      "Avianca",
-      "COPA",
-      "Copa",
-      "Copa Airlines",
-      "LATAM",
-      "LATAM Airlines"
-     ],
-     "oneway_dkk": {
-      "min": 2088,
-      "observed_at": "2026-10-28T15:32Z"
-     },
-     "return_dkk": null,
-     "dates_searched": [
-      "2026-12-11",
-      "2026-12-14",
-      "2026-12-17",
-      "2026-12-18",
-      "2026-12-19",
-      "2026-12-20",
-      "2026-12-21",
-      "2026-12-22",
-      "2027-01-27",
-      "2027-02-01"
-     ],
-     "by_date": [
-      {
-       "date": "2026-12-11",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2331,
-       "dep": "18:05",
-       "arr": "03:42",
-       "arr_days": 1,
-       "duration_min": 517,
-       "vias": [
-        "PTY"
-       ],
-       "carriers": [
-        "Copa Airlines"
-       ],
-       "flights": [
-        "Copa Airlines 370",
-        "Copa Airlines 221"
-       ],
-       "self_transfer": false,
-       "searched": "2026-12-11",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-11"
-      },
-      {
-       "date": "2026-12-14",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2356,
-       "dep": "13:50",
-       "arr": "02:40",
-       "arr_days": 1,
-       "duration_min": 710,
-       "vias": [
-        "BOG"
-       ],
-       "carriers": [
-        "Avianca"
-       ],
-       "flights": [
-        "Avianca 9726",
-        "Avianca 167"
-       ],
-       "self_transfer": true,
-       "searched": "2026-12-14",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-14"
-      },
-      {
-       "date": "2026-12-17",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2356,
-       "dep": "17:50",
-       "arr": "02:40",
-       "arr_days": 1,
-       "duration_min": 470,
-       "vias": [
-        "BOG"
-       ],
-       "carriers": [
-        "Avianca"
-       ],
-       "flights": [
-        "Avianca 9202",
-        "Avianca 167"
-       ],
-       "self_transfer": false,
-       "searched": "2026-12-17",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-17"
-      },
-      {
-       "date": "2026-12-18",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2633,
-       "dep": "22:30",
-       "arr": "02:40",
-       "arr_days": 2,
-       "duration_min": 1630,
-       "vias": [
-        "BOG"
-       ],
-       "carriers": [
-        "Avianca"
-       ],
-       "flights": [
-        "Avianca 9220",
-        "Avianca 167"
-       ],
-       "self_transfer": false,
-       "searched": "2026-12-18",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-18"
-      },
-      {
-       "date": "2026-12-19",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2501,
-       "dep": "12:02",
-       "arr": "22:48",
-       "arr_days": 0,
-       "duration_min": 586,
-       "vias": [
-        "PTY"
-       ],
-       "carriers": [
-        "Copa Airlines"
-       ],
-       "flights": [
-        "Copa Airlines 308",
-        "Copa Airlines 127"
-       ],
-       "self_transfer": false,
-       "searched": "2026-12-19",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-19"
-      },
-      {
-       "date": "2026-12-20",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2353,
-       "dep": "18:05",
-       "arr": "03:42",
-       "arr_days": 1,
-       "duration_min": 517,
-       "vias": [
-        "PTY"
-       ],
-       "carriers": [
-        "Copa Airlines"
-       ],
-       "flights": [
-        "Copa Airlines 370",
-        "Copa Airlines 221"
-       ],
-       "self_transfer": false,
-       "searched": "2026-12-20",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-20"
-      },
-      {
-       "date": "2026-12-21",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2299,
-       "dep": "12:02",
-       "arr": "22:48",
-       "arr_days": 0,
-       "duration_min": 586,
-       "vias": [
-        "PTY"
-       ],
-       "carriers": [
-        "Copa"
-       ],
-       "flights": [
-        "CM308",
-        "CM127"
-       ],
-       "self_transfer": false,
-       "searched": "2026-12-21",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-21?sort=price_a"
-      },
-      {
-       "date": "2026-12-22",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2382,
-       "dep": "12:02",
-       "arr": "22:48",
-       "arr_days": 0,
-       "duration_min": 586,
-       "vias": [
-        "PTY"
-       ],
-       "carriers": [
-        "Copa Airlines"
-       ],
-       "flights": [
-        "Copa Airlines 308",
-        "Copa Airlines 127"
-       ],
-       "self_transfer": true,
-       "searched": "2026-12-22",
-       "link": "https://www.momondo.dk/flight-search/CLO-VVI/2026-12-22"
-      },
-      {
-       "date": "2026-12-22",
-       "from": "VVI",
-       "to": "CLO",
-       "dkk": 2377,
-       "dep": "03:45",
-       "arr": "09:45",
-       "arr_days": 0,
-       "duration_min": 420,
-       "vias": [
-        "BOG"
-       ],
-       "carriers": [
-        "Avianca"
-       ],
-       "flights": [
-        "Avianca 166",
-        "Avianca 8465"
-       ],
-       "self_transfer": false,
-       "searched": "2026-12-22",
-       "link": "https://www.momondo.dk/flight-search/VVI-CLO/2026-12-22"
-      },
-      {
-       "date": "2027-01-27",
-       "from": "CLO",
-       "to": "VVI",
-       "dkk": 2888,
-       "dep": "18:09",
-       "arr": "03:44",
-       "arr_days": 1,
-       "duration_min": 515,
-       "vias": [
-        "PTY"
-       ],
-       "carriers": [
-        "COPA"
-       ],
-       "flights": [],
-       "self_transfer": false,
-       "searched": "2027-01-27",
-       "link": null
-      },
-      {
-       "date": "2027-02-01",
-       "from": "VVI",
-       "to": "CLO",
-       "dkk": 2088,
-       "dep": "05:30",
-       "arr": "15:15",
-       "arr_days": 0,
-       "duration_min": 645,
-       "vias": [
-        "LIM",
-        "BOG"
-       ],
-       "carriers": [
-        "LATAM"
-       ],
-       "flights": [
-        "LATAM 2407",
-        "LATAM 4901",
-        "LATAM 4071"
-       ],
-       "self_transfer": false,
-       "searched": "2027-02-01",
-       "link": null
-      }
-     ],
-     "round_trips": [],
-     "cheapest": {
-      "dkk": 2088,
-      "duration_min": 645,
-      "vias": [
-       "LIM",
-       "BOG"
-      ],
-      "carriers": [
-       "LATAM"
-      ],
-      "date": "2027-02-01",
-      "self_transfer": false
-     },
-     "fastest": {
-      "dkk": 2377,
-      "duration_min": 420,
-      "vias": [
-       "BOG"
-      ],
-      "carriers": [
-       "Avianca"
-      ],
-      "date": "2026-12-22"
-     },
-     "flags": [
-      "basic_fare"
-     ],
-     "quotes": 60
-    },
-    "source": "crawl",
-    "observed_at": "2026-10-28T19:05:05Z",
-    "note": null,
-    "booking_url": null
    }
   ]
  },
