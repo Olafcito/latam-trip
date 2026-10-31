@@ -8,7 +8,7 @@ export const countryColor = (c: string) => COUNTRY_COLOR[c] ?? '#8a8f96'
 
 export const COUNTRY_NAME: Record<string, string> = {
   NI: 'Nicaragua', HN: 'Honduras', SV: 'El Salvador', GT: 'Guatemala', CR: 'Costa Rica', PA: 'Panama', CO: 'Colombia',
-  BO: 'Bolivia', MX: 'Mexico', PE: 'Peru', EC: 'Ecuador', ES: 'Spain', DK: 'Denmark', US: 'USA', BR: 'Brazil',
+  BO: 'Bolivia', MX: 'Mexico', PE: 'Peru', EC: 'Ecuador', UY: 'Uruguay', ES: 'Spain', DK: 'Denmark', US: 'USA', BR: 'Brazil',
   NL: 'Netherlands', FR: 'France', DE: 'Germany', GB: 'United Kingdom', PT: 'Portugal', CA: 'Canada',
 }
 export const countryName = (c: string) => COUNTRY_NAME[c] ?? c
