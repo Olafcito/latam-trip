@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-31T15:16:32Z",
+ "generated_at": "2026-10-31T15:26:43Z",
  "source": "data/sources/trips.jsonl",
  "trips": [
   {
@@ -2537,11 +2537,11 @@
   },
   {
    "id": "ctg-sal-xmas-cbb",
-   "version": 5,
+   "version": 6,
    "name": "Cartagena in, Christmas in Cochabamba, Guatemala City home",
-   "saved_at": "2026-10-30T21:40:38Z",
+   "saved_at": "2026-10-31T15:26:35Z",
    "by": "plan-trip",
-   "why": "Simon's Cartagena start with Christmas in Cochabamba, home from Guatemala City. Version 5: Cali to Santa Cruz on 20 Dec repriced, the Copa 12:02 flight rose from 2,355 to 2,937 on Momondo on 30 Oct.",
+   "why": "Simon's Cartagena start with Christmas in Cochabamba, home from Guatemala City. Version 6: a week in Cochabamba until Monday 28 Dec, then Copa CM126 + CM787 Santa Cruz 01:10 on 29 Dec to San José 07:05 through Travellink (3,356), straight on to San Juan del Sur with Easy Ride, no night in San José.",
    "rank": null,
    "option_id": "CTG-GUA-ticket",
    "way_in": {
@@ -2881,13 +2881,13 @@
       "from": "CBB",
       "to": "VVI",
       "mode": "flight",
-      "operator": "BoA (471 is the 25 and 26 Dec fare, 27 Dec not seen yet)",
+      "operator": "BoA, an evening flight landing in Santa Cruz by about 21:30 (471 is the 25 and 26 Dec fare)",
       "hours": 0.83,
       "price_dkk": 471,
       "overnight": false,
       "border": false,
       "flight": null,
-      "date": "2026-12-27"
+      "date": "2026-12-28"
      }
     },
     {
@@ -2896,33 +2896,33 @@
       "from": "VVI",
       "to": "SJO",
       "mode": "flight",
-      "operator": "LATAM Airlines",
-      "hours": 9.08,
-      "price_dkk": 2968.0,
+      "operator": "Copa Airlines (booked through Travellink)",
+      "hours": 7.92,
+      "price_dkk": 3356.08,
       "overnight": false,
       "border": false,
       "flight": {
-       "quote_id": "Q:be24141ca253",
-       "depart": "2026-12-28T05:30",
-       "arrive": "2026-12-28T12:35",
-       "hours": 9.08,
-       "price_dkk": 2968.0,
+       "quote_id": "Q:4dd3e1d5d6a3",
+       "depart": "2026-12-29T01:10",
+       "arrive": "2026-12-29T07:05",
+       "hours": 7.92,
+       "price_dkk": 3356.08,
        "carriers": [
-        "LATAM Airlines"
+        "Copa Airlines"
        ],
        "via": [
-        "LIM"
+        "PTY"
        ],
        "layover_h": [
-        2.5
+        1.6
        ],
-       "fare_brand": "Basic",
+       "fare_brand": "Economy Basic",
        "cabin_bag": "1 x håndbagage",
        "source": "momondo",
-       "observed_at": "2026-10-30T11:59:28Z"
+       "observed_at": "2026-10-31T15:25Z"
       },
-      "observed_at": "2026-10-30T11:59:28Z",
-      "date": "2026-12-28"
+      "observed_at": "2026-10-31T15:25Z",
+      "date": "2026-12-29"
      }
     },
     {
@@ -2931,9 +2931,9 @@
       "from": "SJO",
       "to": "SJDS",
       "mode": "shuttle",
-      "operator": "Caribe Shuttle (shared minivan, door to door)",
-      "hours": 7.5,
-      "price_dkk": 464,
+      "operator": "Easy Ride (shared minivan, SJO airport pickup 07:30 to 08:30)",
+      "hours": 8.5,
+      "price_dkk": 590,
       "overnight": false,
       "border": true,
       "flight": null,
@@ -3017,6 +3017,12 @@
     }
    ],
    "history": [
+    {
+     "version": 5,
+     "saved_at": "2026-10-30T21:40:38Z",
+     "by": "plan-trip",
+     "why": "Simon's Cartagena start with Christmas in Cochabamba, home from Guatemala City. Version 5: Cali to Santa Cruz on 20 Dec repriced, the Copa 12:02 flight rose from 2,355 to 2,937 on Momondo on 30 Oct."
+    },
     {
      "version": 4,
      "saved_at": "2026-10-30T21:28:56Z",

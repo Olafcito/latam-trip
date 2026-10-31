@@ -14167,7 +14167,7 @@
        "date": "2026-12-29",
        "from": "VVI",
        "to": "SJO",
-       "dkk": 3357,
+       "dkk": 3356,
        "dep": "01:10",
        "arr": "07:05",
        "arr_days": 0,
@@ -14176,7 +14176,7 @@
         "PTY"
        ],
        "carriers": [
-        "Copa"
+        "Copa Airlines"
        ],
        "flights": [
         "CM126",
@@ -14184,7 +14184,7 @@
        ],
        "self_transfer": false,
        "searched": "2026-12-29",
-       "link": "https://www.momondo.dk/flight-search/VVI-SJO/2026-12-29"
+       "link": "https://www.momondo.dk/flight-search/VVI-SJO/2026-12-29?ucs=1bc48aj&sort=price_a#dialog"
       },
       {
        "date": "2026-12-30",
@@ -15118,7 +15118,7 @@
       "long_layover",
       "self_transfer_unverified"
      ],
-     "quotes": 103
+     "quotes": 104
     },
     "source": "crawl",
     "observed_at": "2026-10-30T12:11:44Z",
