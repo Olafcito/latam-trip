@@ -11811,8 +11811,8 @@
    "dates": [
     "2027-01-20"
    ],
-   "return_min_dkk": null,
-   "quotes": 2,
+   "return_min_dkk": 2911.0,
+   "quotes": 3,
    "flights": [
     {
      "quote_id": "Q:4decc424bc20",
@@ -25351,8 +25351,8 @@
    "vias": [],
    "carriers": [],
    "dates": [],
-   "return_min_dkk": 2224.0,
-   "quotes": 3,
+   "return_min_dkk": 1979.0,
+   "quotes": 4,
    "flights": []
   },
   {
