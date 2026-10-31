@@ -4939,6 +4939,27 @@
   ]
  },
  {
+  "from": "PTY",
+  "to": "VVI",
+  "dkk": 3515,
+  "hours": 7.5,
+  "dep": "2026-12-20T18:10",
+  "arr": "2026-12-21T02:40",
+  "vias": [
+   "BOG"
+  ],
+  "carriers": [
+   "Avianca"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/PTY-VVI/2026-12-20",
+  "shows": [
+   "cheapest"
+  ]
+ },
+ {
   "from": "MGA",
   "to": "SJO",
   "dkk": 3535,
@@ -5133,25 +5154,6 @@
   "link": null,
   "shows": [
    "fastest"
-  ]
- },
- {
-  "from": "PTY",
-  "to": "VVI",
-  "dkk": 3787,
-  "hours": 7.5,
-  "dep": "2027-01-20T18:10",
-  "arr": "2027-01-21T02:40",
-  "vias": [
-   "BOG"
-  ],
-  "carriers": [
-   "Avianca"
-  ],
-  "notes": [],
-  "link": null,
-  "shows": [
-   "cheapest"
   ]
  },
  {
@@ -5356,6 +5358,30 @@
   ]
  },
  {
+  "from": "PTY",
+  "to": "VVI",
+  "dkk": 4218,
+  "hours": 17.0,
+  "dep": "2026-12-20T02:30",
+  "arr": "2026-12-20T20:30",
+  "vias": [
+   "BOG",
+   "LPB",
+   "CBB"
+  ],
+  "carriers": [
+   "Avianca",
+   "BoA"
+  ],
+  "notes": [
+   "self transfer"
+  ],
+  "link": "https://www.momondo.dk/flight-search/PTY-VVI/2026-12-20",
+  "shows": [
+   "daytime landing"
+  ]
+ },
+ {
   "from": "LPB",
   "to": "SAP",
   "dkk": 4253,
@@ -5500,39 +5526,20 @@
  {
   "from": "PTY",
   "to": "VVI",
-  "dkk": 4408,
-  "hours": 4.98,
-  "dep": "2027-01-20T21:45",
-  "arr": "2027-01-21T03:44",
+  "dkk": 4410,
+  "hours": 4.95,
+  "dep": "2026-12-20T21:45",
+  "arr": "2026-12-21T03:42",
   "vias": [],
   "carriers": [
-   "Copa"
+   "Copa Airlines"
   ],
   "notes": [
    "basic fare"
   ],
-  "link": null,
+  "link": "https://www.momondo.dk/flight-search/PTY-VVI/2026-12-20",
   "shows": [
    "fastest"
-  ]
- },
- {
-  "from": "PTY",
-  "to": "VVI",
-  "dkk": 4408,
-  "hours": 5.1,
-  "dep": "2027-01-20T16:40",
-  "arr": "2027-01-20T22:46",
-  "vias": [],
-  "carriers": [
-   "Copa"
-  ],
-  "notes": [
-   "basic fare"
-  ],
-  "link": null,
-  "shows": [
-   "daytime landing"
   ]
  },
  {
