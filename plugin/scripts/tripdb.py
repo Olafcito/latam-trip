@@ -1015,7 +1015,9 @@ def load_tables(paths):
 # Airports whose flights are the long-haul tickets, not regional hops. The trip's home airports and alt origins
 # from trip.json are added to these.
 LONG_HAUL = {"CPH", "MAD", "BCN", "LIS", "CDG", "AMS", "FRA", "LGW", "LHR", "IST", "ALC", "VLC", "RMU", "ZRH", "MUC", "BRU"}
-PAIR_DATES_SKIP = {"over_30h", "incomplete", "ad_offer"}
+# "retracted": a quote found to be wrong. Adding the same quote again (same tripdb quote key) with a newer
+# observed_at and this flag takes it off the price lists, since the newest sighting of a quote is the one that counts.
+PAIR_DATES_SKIP = {"over_30h", "incomplete", "ad_offer", "retracted"}
 
 
 def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
@@ -1039,14 +1041,6 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
         a, b = legs[0].get("from"), legs[0].get("to")
         if not a or not b or a in long_haul or b in long_haul:
             continue
-        flags = set(q.get("flags") or [])
-        stopover = "stopover" in flags
-        if PAIR_DATES_SKIP & (flags - {"over_30h"} if stopover else flags):
-            continue
-        if not isinstance(out.get("hours"), (int, float)) or (out["hours"] > max_hours and not stopover):
-            continue
-        if (q.get("notes") or "").split(";")[0].replace("site=", "").strip() in ("Sponsoreret", "Annonce"):
-            continue
         t = parse_time(q.get("observed_at"))
         if not t:
             continue
@@ -1056,6 +1050,15 @@ def pair_dates(quotes, long_haul=LONG_HAUL, max_hours=30):
 
     pairs = {}
     for t, q in newest.values():
+        out = q["out"]
+        flags = set(q.get("flags") or [])
+        stopover = "stopover" in flags
+        if PAIR_DATES_SKIP & (flags - {"over_30h"} if stopover else flags):
+            continue
+        if not isinstance(out.get("hours"), (int, float)) or (out["hours"] > max_hours and not stopover):
+            continue
+        if (q.get("notes") or "").split(";")[0].replace("site=", "").strip() in ("Sponsoreret", "Annonce"):
+            continue
         leg, out = q["legs_requested"][0], q["out"]
         dep, arr = out.get("dep") or "", out.get("arr") or ""
         date = dep[:10] if DATE_RE.match(dep[:10]) else leg.get("date")

@@ -10260,6 +10260,170 @@
    ]
   },
   {
+   "from": "CLO",
+   "to": "VVI",
+   "mode": "flight",
+   "source": "crawl",
+   "oneway_min_dkk": 2299.0,
+   "oneway_min_hours": 9.77,
+   "fastest_hours": 7.0,
+   "fastest_price_dkk": 3577.0,
+   "nonstop": false,
+   "vias": [
+    "BOG",
+    "LIM",
+    "PTY"
+   ],
+   "carriers": [
+    "Avianca",
+    "COPA",
+    "Copa",
+    "Copa Airlines",
+    "LATAM Airlines"
+   ],
+   "dates": [
+    "2026-12-11",
+    "2026-12-14",
+    "2026-12-17",
+    "2026-12-18",
+    "2026-12-19",
+    "2026-12-20",
+    "2026-12-21",
+    "2026-12-22",
+    "2027-01-27"
+   ],
+   "return_min_dkk": null,
+   "quotes": 57,
+   "flights": [
+    {
+     "quote_id": "Q:25e1208d69d8",
+     "depart": "2026-12-21T12:02",
+     "arrive": "2026-12-21T22:48",
+     "hours": 9.77,
+     "price_dkk": 2299.0,
+     "carriers": [
+      "Copa"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      2.95
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo-manual"
+    },
+    {
+     "quote_id": "Q:046a07e4f49f",
+     "depart": "2026-12-21T12:02",
+     "arrive": "2026-12-21T22:48",
+     "hours": 9.77,
+     "price_dkk": 2329.0,
+     "carriers": [
+      "Copa Airlines"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      2.95
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "airline:CM"
+    },
+    {
+     "quote_id": "Q:608d46e1483f",
+     "depart": "2026-12-11T18:05",
+     "arrive": "2026-12-12T03:42",
+     "hours": 8.62,
+     "price_dkk": 2331.0,
+     "carriers": [
+      "Copa Airlines"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      1.93
+     ],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:21dcc65598b9",
+     "depart": "2026-12-20T15:12",
+     "arrive": "2026-12-21T03:42",
+     "hours": 11.5,
+     "price_dkk": 2353.0,
+     "carriers": [
+      "Copa Airlines"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      4.88
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:d46ee0138831",
+     "depart": "2026-12-20T08:40",
+     "arrive": "2026-12-20T22:48",
+     "hours": 13.13,
+     "price_dkk": 2353.0,
+     "carriers": [
+      "Copa Airlines"
+     ],
+     "via": [
+      "PTY"
+     ],
+     "layover_h": [
+      6.33
+     ],
+     "fare_brand": "Economy Basic",
+     "cabin_bag": "1 x håndbagage",
+     "checked_bag": "paid",
+     "overnight_layover": false,
+     "source": "momondo"
+    },
+    {
+     "quote_id": "Q:f46fc04dd9d1",
+     "depart": "2026-12-11T18:40",
+     "arrive": "2026-12-12T02:40",
+     "hours": 7.0,
+     "price_dkk": 2356.0,
+     "carriers": [
+      "Avianca"
+     ],
+     "via": [
+      "BOG"
+     ],
+     "layover_h": [
+      1.83
+     ],
+     "fare_brand": null,
+     "cabin_bag": null,
+     "checked_bag": null,
+     "overnight_layover": false,
+     "source": "momondo"
+    }
+   ]
+  },
+  {
    "from": "CTG",
    "to": "SAP",
    "mode": "flight",
@@ -23905,170 +24069,6 @@
      "checked_bag": null,
      "overnight_layover": false,
      "source": "google_flights"
-    }
-   ]
-  },
-  {
-   "from": "CLO",
-   "to": "VVI",
-   "mode": "flight",
-   "source": "crawl",
-   "oneway_min_dkk": 2299.0,
-   "oneway_min_hours": 9.77,
-   "fastest_hours": 7.0,
-   "fastest_price_dkk": 3577.0,
-   "nonstop": false,
-   "vias": [
-    "BOG",
-    "LIM",
-    "PTY"
-   ],
-   "carriers": [
-    "Avianca",
-    "COPA",
-    "Copa",
-    "Copa Airlines",
-    "LATAM Airlines"
-   ],
-   "dates": [
-    "2026-12-11",
-    "2026-12-14",
-    "2026-12-17",
-    "2026-12-18",
-    "2026-12-19",
-    "2026-12-20",
-    "2026-12-21",
-    "2026-12-22",
-    "2027-01-27"
-   ],
-   "return_min_dkk": null,
-   "quotes": 53,
-   "flights": [
-    {
-     "quote_id": "Q:25e1208d69d8",
-     "depart": "2026-12-21T12:02",
-     "arrive": "2026-12-21T22:48",
-     "hours": 9.77,
-     "price_dkk": 2299.0,
-     "carriers": [
-      "Copa"
-     ],
-     "via": [
-      "PTY"
-     ],
-     "layover_h": [
-      2.95
-     ],
-     "fare_brand": "Economy Basic",
-     "cabin_bag": null,
-     "checked_bag": null,
-     "overnight_layover": false,
-     "source": "momondo-manual"
-    },
-    {
-     "quote_id": "Q:608d46e1483f",
-     "depart": "2026-12-11T18:05",
-     "arrive": "2026-12-12T03:42",
-     "hours": 8.62,
-     "price_dkk": 2331.0,
-     "carriers": [
-      "Copa Airlines"
-     ],
-     "via": [
-      "PTY"
-     ],
-     "layover_h": [
-      1.93
-     ],
-     "fare_brand": null,
-     "cabin_bag": null,
-     "checked_bag": null,
-     "overnight_layover": false,
-     "source": "momondo"
-    },
-    {
-     "quote_id": "Q:a1bc282e95d5",
-     "depart": "2026-12-20T12:02",
-     "arrive": "2026-12-20T22:48",
-     "hours": 9.77,
-     "price_dkk": 2353.0,
-     "carriers": [
-      "Copa Airlines"
-     ],
-     "via": [
-      "PTY"
-     ],
-     "layover_h": [
-      2.95
-     ],
-     "fare_brand": "Economy Basic",
-     "cabin_bag": "1 x håndbagage",
-     "checked_bag": "paid",
-     "overnight_layover": false,
-     "source": "momondo"
-    },
-    {
-     "quote_id": "Q:21dcc65598b9",
-     "depart": "2026-12-20T15:12",
-     "arrive": "2026-12-21T03:42",
-     "hours": 11.5,
-     "price_dkk": 2353.0,
-     "carriers": [
-      "Copa Airlines"
-     ],
-     "via": [
-      "PTY"
-     ],
-     "layover_h": [
-      4.88
-     ],
-     "fare_brand": "Economy Basic",
-     "cabin_bag": "1 x håndbagage",
-     "checked_bag": "paid",
-     "overnight_layover": false,
-     "source": "momondo"
-    },
-    {
-     "quote_id": "Q:d46ee0138831",
-     "depart": "2026-12-20T08:40",
-     "arrive": "2026-12-20T22:48",
-     "hours": 13.13,
-     "price_dkk": 2353.0,
-     "carriers": [
-      "Copa Airlines"
-     ],
-     "via": [
-      "PTY"
-     ],
-     "layover_h": [
-      6.33
-     ],
-     "fare_brand": "Economy Basic",
-     "cabin_bag": "1 x håndbagage",
-     "checked_bag": "paid",
-     "overnight_layover": false,
-     "source": "momondo"
-    },
-    {
-     "quote_id": "Q:f46fc04dd9d1",
-     "depart": "2026-12-11T18:40",
-     "arrive": "2026-12-12T02:40",
-     "hours": 7.0,
-     "price_dkk": 2356.0,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [
-      "BOG"
-     ],
-     "layover_h": [
-      1.83
-     ],
-     "fare_brand": null,
-     "cabin_bag": null,
-     "checked_bag": null,
-     "overnight_layover": false,
-     "source": "momondo"
     }
    ]
   },

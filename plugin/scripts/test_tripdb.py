@@ -439,6 +439,17 @@ class PairDatesTest(Base):
         self.assertEqual(tripdb.pair_dates([self.regional(flags=["stopover", "incomplete"], out=long)])["pairs"], {})
         self.assertEqual(tripdb.pair_dates([self.regional(flags=["stopover"], out={"hours": None})])["pairs"], {})
 
+    def test_a_newer_retracted_copy_takes_a_wrong_price_off_the_list(self):
+        wrong = self.regional(observed_at="2026-10-31T12:00Z")
+        retracted = self.regional(observed_at="2026-10-31T16:00Z", flags=["retracted"])
+        other = self.regional(price_dkk=2900, price=2900, observed_at="2026-10-31T12:00Z")
+        rows = tripdb.pair_dates([wrong, retracted, other])["pairs"]["BOG-VVI"]["2027-01-28"]
+        self.assertEqual([r["p"] for r in rows], [2900])
+        # an older retracted copy does not hide a newer sighting of the same quote
+        seen_again = self.regional(observed_at="2026-11-01T09:00Z")
+        rows = tripdb.pair_dates([wrong, retracted, seen_again])["pairs"]["BOG-VVI"]["2027-01-28"]
+        self.assertEqual(len(rows), 1)
+
     def test_a_named_twin_takes_the_stops_and_site_of_a_row_read_without_airlines(self):
         named = self.regional(price_dkk=404, price=404, out={"via": []})
         bare = self.regional(price_dkk=404, price=404, notes="site=Kiwi.com", out={"carriers": [], "layover_h": [1.5]})

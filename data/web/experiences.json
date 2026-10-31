@@ -24756,8 +24756,8 @@
   "summary": "The Treehouse is a jungle hostel 150 m up Mombacho volcano just outside Granada, known for its parties (reviewers mention a rave), zip-lines, a canopy bridge, bar, hammocks and big views. Simon heard it recommended as the Granada party to go to.",
   "season": "year round",
   "dec_jan": "Dry season, busy with backpackers",
-  "price": "Dorm from US$13 a night (hostelz 2025); party entry not published",
-  "price_dkk": 84,
+  "price": "NYE 31 Dec 2026: US$50 + US$1 fee incl. shuttle from Granada (Weeztix). Dorm from US$13 a night (hostelz 2025)",
+  "price_dkk": 329,
   "duration": "an evening, or stay a night",
   "requirements": null,
   "details": {
@@ -24765,10 +24765,11 @@
    "party_day": "Not confirmed by a source; check the hostel's Instagram or Hostelworld page",
    "rating": "9.3 on hostelz",
    "hostelworld": "https://www.hostelworld.com/hostels/p/287881/treehouse/",
-   "new_year": "Simon's idea (30 Oct 2026): New Year's Eve at the Treehouse, party and maybe stay. Book a bed early, the holidays fill up."
+   "new_year": "Simon's idea (30 Oct 2026): New Year's Eve at the Treehouse. The 31 Dec 2026 party (17:00 to 03:00) sells on Weeztix: ticket with shuttle from Hostel de Boca en Boca in Granada at 16:30, 17:30, 18:30 or 19:30 for US$50 + US$1 fee; Popoyo ticket with transport from Big Surf House at 15:30 US$55; returning guest US$40; Nicaraguan ticket with transport US$20. Seen 31 Oct 2026.",
+   "stay_option": "Simon would stay at Hostel De Boca en Boca in Granada, where the NYE shuttles leave (see stay-hostel-de-boca-en-boca-granada)."
   },
   "researched": true,
-  "checked_at": "2026-10-30",
+  "checked_at": "2026-10-31",
   "sources": [
    "https://www.hostelz.com/best-hostels-granada-nicaragua",
    "https://www.hostelz.com/l/de/hostel/+416536-The-Treehouse",
@@ -28129,6 +28130,52 @@
    "h": 3216
   },
   "image_source": "category",
+  "saved_in": [
+   "want"
+  ]
+ },
+ {
+  "id": "stay-hostel-de-boca-en-boca-granada",
+  "name": "Hostel De Boca en Boca, Granada",
+  "category": "nightlife",
+  "tags": [
+   "stay",
+   "hostel",
+   "new-year"
+  ],
+  "places": [
+   "GRAN"
+  ],
+  "area": "Calle 14 de Septiembre, about 300 m from the centre of Granada (map point is approximate)",
+  "country": "NI",
+  "lat": 11.9305,
+  "lon": -85.9558,
+  "summary": "Granada hostel with a bar, pool table, darts, game room and terrace, rated 9.1 on Booking. The Treehouse New Year's Eve shuttles leave from here.",
+  "season": "Year round",
+  "dec_jan": "New Year is the busiest week, book early",
+  "price": "Not seen yet for 31 Dec. Cash only on site",
+  "price_dkk": null,
+  "duration": "around New Year's Eve",
+  "requirements": "Cash only",
+  "details": {
+   "why": "Simon's New Year option (31 Oct 2026): stay here and take the Treehouse party shuttle.",
+   "rating": "Booking 9.1, breakfast 6.9"
+  },
+  "researched": true,
+  "checked_at": "2026-10-31",
+  "sources": [
+   "https://maddysavenue.com/hostel-de-boca-en-boca",
+   "https://m.booking.com/hotel/ni/hostel-de-boca-en-boca-granada.en-gb.html"
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Granada%2C_Nicaragua_panorama.jpg/1280px-Granada%2C_Nicaragua_panorama.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Granada,_Nicaragua_panorama.jpg",
+   "credit": "Mark Larson",
+   "licence": "CC BY-SA 2.0",
+   "w": 2035,
+   "h": 499
+  },
+  "image_source": "place",
   "saved_in": [
    "want"
   ]
