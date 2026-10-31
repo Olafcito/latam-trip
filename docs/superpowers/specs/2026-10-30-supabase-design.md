@@ -570,7 +570,8 @@ This is not a second home for the data. It is a dated archive that nothing reads
 
 These came up while writing and could not be confirmed. Check each in phase 0 or 1.
 
-- Whether cloud Claude sessions and Claude desktop reach `*.supabase.co`. This PC does, checked on 31 Oct 2026.
+- Whether Claude desktop reaches `*.supabase.co`. This PC does, checked on 31 Oct 2026.
+- Whether cloud Claude sessions reach it once the host is allowed. A run in the Default cloud environment on 31 Oct 2026 failed: its proxy answered `CONNECT tunnel failed, response 403` for REST, Storage and `urllib`, so the request never reached Supabase. Step 4 of section 10 must be done first, and the check run again.
 - Whether Storage accepts an upload with the new `sb_secret_` key.
 - Whether the Python pipeline runs as is in Lambda, with `subprocess` and `sys.executable`, and how long a full run takes. About 15 seconds is an estimate from 2.2 s of steps on this PC.
 - Whether the organisation that owns the AWS account allows `eu-west-1` and EventBridge Scheduler. Other work there runs in `eu-north-1`.
