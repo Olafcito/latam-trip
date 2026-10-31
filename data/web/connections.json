@@ -14167,25 +14167,22 @@
        "date": "2026-12-29",
        "from": "VVI",
        "to": "SJO",
-       "dkk": 4970,
-       "dep": "21:15",
-       "arr": "15:55",
-       "arr_days": 1,
-       "duration_min": 1240,
+       "dkk": 3357,
+       "dep": "01:10",
+       "arr": "07:05",
+       "arr_days": 0,
+       "duration_min": 475,
        "vias": [
-        "SCL",
-        "LIM"
+        "PTY"
        ],
        "carriers": [
-        "BoA",
-        "LATAM Airlines"
+        "Copa"
        ],
        "flights": [
-        "BoA 1722",
-        "LATAM Airlines 2370",
-        "LATAM Airlines 2408"
+        "CM126",
+        "CM787"
        ],
-       "self_transfer": true,
+       "self_transfer": false,
        "searched": "2026-12-29",
        "link": "https://www.momondo.dk/flight-search/VVI-SJO/2026-12-29"
       },
@@ -15121,7 +15118,7 @@
       "long_layover",
       "self_transfer_unverified"
      ],
-     "quotes": 101
+     "quotes": 103
     },
     "source": "crawl",
     "observed_at": "2026-10-30T12:11:44Z",
