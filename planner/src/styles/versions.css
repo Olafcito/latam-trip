@@ -1,0 +1,55 @@
+/* The version control: the quiet tag of a trip, with its older versions in a small list. */
+@scope (:root) to (.rmap) {
+.vers { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+.vers-btn {
+  min-height: 24px; padding: 0 6px; margin: 0 -6px; border: 0; border-radius: 6px; background: none;
+  cursor: pointer; transition: color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.vers-btn:active { transform: scale(0.97); }
+.vers-back {
+  min-height: 24px; padding: 0 4px; border: 0; background: none;
+  font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; color: var(--muted);
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  .vers-btn:hover, .vers-back:hover { color: var(--text); }
+}
+
+.vers-pop {
+  position: absolute; top: calc(100% + 6px); left: -6px; z-index: 60;
+  display: none; width: max-content; min-width: 220px; max-width: min(340px, calc(100vw - 32px)); max-height: min(50vh, 360px); overflow: auto;
+  overscroll-behavior: contain; padding: 4px 12px 6px;
+  background: var(--surface); border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--line-2), 0 16px 40px -12px #000000A0;
+  transform-origin: top left; opacity: 0; transform: scale(0.97);
+  transition: opacity 100ms var(--ease-out), transform 100ms var(--ease-out), display 100ms allow-discrete;
+}
+.vers-pop[data-open] { display: block; opacity: 1; transform: none; transition-duration: 150ms; }
+@starting-style {
+  .vers-pop[data-open] { opacity: 0; transform: scale(0.97); }
+}
+:root[data-input='key'] .vers-pop { transition: none; }
+.vers-note { margin: 8px 0; font-size: var(--fs-small); color: var(--muted); }
+.vers-list { list-style: none; margin: 0; padding: 0; }
+.vers-list li + li { border-top: 1px solid var(--line); }
+.vers-item {
+  display: grid; grid-template-columns: auto 1fr auto; column-gap: 12px; align-items: baseline; width: 100%;
+  min-height: var(--hit); padding: 8px 0; border: 0; background: none; text-align: left;
+  font-family: var(--font-num); font-size: var(--fs-small); font-variant-numeric: tabular-nums; color: var(--muted); cursor: pointer;
+}
+.vers-n { font-weight: 600; color: var(--text); }
+.vers-by { color: var(--faint); }
+.vers-title { grid-column: 1 / -1; font-family: var(--font-word); color: var(--text); overflow-wrap: anywhere; }
+.vers-item[aria-current='true'] .vers-n { color: var(--flight); }
+@media (hover: hover) and (pointer: fine) {
+  .vers-item:hover .vers-when { color: var(--text); }
+}
+
+/* a row of the Trips list lifts above the rows after it while its list is open */
+.tt-row:has(.vers-pop[data-open]) { z-index: 6; }
+
+/* the phone: the list rises from the bottom edge, as the other popovers do */
+@media (max-width: 560px) {
+  .vers-pop { position: fixed; left: 16px; right: 16px; top: auto; bottom: 16px; max-width: none; transform-origin: bottom center; }
+}
+}

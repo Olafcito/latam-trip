@@ -136,6 +136,12 @@ interface State {
   setRepoTrips: (repo: Journey[]) => void
   /** with Supabase: the latest stored row of each trip, by id */
   rows: Record<string, TripRow>
+  /** an older version of a stored trip is open: which, and how many versions the trip has. The row is what a Save builds on */
+  viewing: { id: string; version: number; latest: number; row: TripRow } | null
+  /** open one stored version of a trip in the trip view */
+  openVersion: (row: TripRow, latest: number) => void
+  /** leave the older version for the latest one */
+  backToLatest: () => void
   /** the trips table changed, or was read: list its trips, and tell the user when the open trip moved under unsaved edits */
   /** `deleted` names ids deleted elsewhere, so a copy held only in this browser goes too */
   applyRemote: (rows: TripRow[], deleted?: string[]) => void
@@ -228,14 +234,14 @@ export const useStore = create<State>((set, get) => ({
   openSaved: (next) => {
     const journey = settled(next, get())
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
+    set({ journey, viewing: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
   },
   openTrip: (next) => {
     const journey = settled(next, get())
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
+    set({ journey, viewing: null, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
   },
-  closeTrip: () => set({ mapOpen: false, screen: 'trips', view: 'home', cursor: null, idle: false }),
+  closeTrip: () => set({ viewing: null, mapOpen: false, screen: 'trips', view: 'home', cursor: null, idle: false }),
 
   cursor: null,
   idle: false,
@@ -384,6 +390,25 @@ export const useStore = create<State>((set, get) => ({
     set({ repo, hidden, journey, saved: mergeTrips(local, repo, hidden) })
   },
   rows: {},
+  viewing: null,
+  openVersion: (row, latest) => {
+    const d = get().data
+    // the journey is not written as the open draft: looking at an old version leaves nothing behind in this browser
+    set({
+      journey: rowToJourney(row),
+      viewing: { id: row.id, version: row.version, latest, row },
+      ...(d ? { data: { ...d, inout: withTripWays(d.inout, [row]) } } : {}),
+      mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null,
+    })
+  },
+  backToLatest: () => {
+    const { viewing, rows, data: d } = get()
+    const row = viewing && rows[viewing.id]
+    if (!row) return set({ viewing: null })
+    const journey = rowToJourney(row)
+    write(CURRENT_KEY, journey)
+    set({ journey, viewing: null, cursor: null, notice: null, ...(d ? { data: { ...d, inout: withTripWays(d.inout, [row]) } } : {}) })
+  },
   applyRemote: (list, deleted = []) => {
     const was = get()
     const rows = Object.fromEntries(list.map((r) => [r.id, r]))
@@ -393,7 +418,11 @@ export const useStore = create<State>((set, get) => ({
     let journey = was.journey
     let notice = was.notice
     const open = journey
-    if (open) {
+    let viewing = was.viewing
+    if (viewing && rows[viewing.id]) viewing = { ...viewing, latest: rows[viewing.id].version }
+    if (open && viewing?.id === open.id) {
+      // an older version stays as it is while the table moves on
+    } else if (open) {
       const next = rows[open.id]
       const base = was.rows[open.id]
       // unsaved edits: the journey differs from the row it was opened from
@@ -414,7 +443,7 @@ export const useStore = create<State>((set, get) => ({
     }
     // a trip the browser holds only locally stays in the list, a stored trip comes from the table
     const merged = mergeTrips(local, repo)
-    set({ rows, repo, journey, notice, saved: merged })
+    set({ rows, repo, journey, notice, viewing, saved: merged })
     const d = was.data
     if (d) set({ data: { ...d, inout: withTripWays(d.inout, list) } })
   },
@@ -501,7 +530,7 @@ async function saveRemote(copy: Journey, get: () => State, set: (p: Partial<Stat
   if (!data) return s.setNotice('The data has not loaded yet, so nothing was saved.')
   let row: TripRow
   try {
-    row = journeyToRow(copy, s.rows[copy.id] ?? null, data.inout, totals(data, copy, scheduleOf(copy, data)))
+    row = journeyToRow(copy, (s.viewing?.id === copy.id ? s.viewing.row : s.rows[copy.id]) ?? null, data.inout, totals(data, copy, scheduleOf(copy, data)))
   } catch (e) {
     return s.setNotice(e instanceof Error ? e.message : String(e))
   }
@@ -510,7 +539,7 @@ async function saveRemote(copy: Journey, get: () => State, set: (p: Partial<Stat
   const waits = (reason: 'offline' | 'session') => {
     const open = isOpen()
     if (open) write(CURRENT_KEY, copy)
-    set({ ...(open ? { journey: copy } : {}), saved: [...get().saved.filter((x) => x.id !== copy.id), copy] })
+    set({ viewing: null, ...(open ? { journey: copy } : {}), saved: [...get().saved.filter((x) => x.id !== copy.id), copy] })
     noteQueued(get, reason)
   }
   // the earlier waiting saves go first, so versions keep the order of the presses
@@ -520,7 +549,7 @@ async function saveRemote(copy: Journey, get: () => State, set: (p: Partial<Stat
     if (outbox.size()) return waits(rep?.stalled ?? 'offline')
     const open = isOpen()
     if (open) write(CURRENT_KEY, copy)
-    set({ ...(open ? { journey: copy } : {}), saved: [...get().saved.filter((x) => x.id !== copy.id), copy] })
+    set({ viewing: null, ...(open ? { journey: copy } : {}), saved: [...get().saved.filter((x) => x.id !== copy.id), copy] })
     return
   }
   const r = await saveTrip(row)
@@ -533,7 +562,7 @@ async function saveRemote(copy: Journey, get: () => State, set: (p: Partial<Stat
     const open = isOpen()
     if (open) write(CURRENT_KEY, mine)
     const d = get().data
-    set({ rows, saved, ...(open ? { journey: mine } : {}), ...(d ? { data: { ...d, inout: withTripWays(d.inout, Object.values(rows)) } } : {}) })
+    set({ rows, saved, viewing: null, ...(open ? { journey: mine } : {}), ...(d ? { data: { ...d, inout: withTripWays(d.inout, Object.values(rows)) } } : {}) })
   } else if (r.status === 'queued') {
     outbox.enqueue(row)
     waits(r.reason)

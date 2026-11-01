@@ -12,6 +12,8 @@ import { Download, Pin, Plus, Trash } from '../components/icons'
 import { PickScreen } from './PickScreen'
 import { Notice } from '../components/Notice'
 import { Unresolved } from '../components/Unresolved'
+import { VersionMenu } from '../components/VersionMenu'
+import { remoteEnabled } from '../lib/supabase'
 import { TripDashboard } from './TripDashboard'
 
 // The Trips tab. Its home is a list: one row per trip with its name, its route as flags from the
@@ -210,6 +212,7 @@ interface RowProps {
 function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps) {
   const { j, s, route, draft } = row
   const name = j.name
+  const versioned = remoteEnabled() && (j.version ?? 0) > 1
   // the whole row opens the trip, except a click on a control in it or one that ends a text selection
   const onRowClick = (e: MouseEvent<HTMLLIElement>) => {
     if (!s) return
@@ -227,8 +230,9 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
         <span className="tt-tagline">
           {draft ? <span className="tag draft">not saved</span>
             : j.rank != null ? <span className="tag" title="Rank among the planned trips">#{j.rank}</span>
-              : j.version != null ? <span className="tag" title={`Version ${j.version} in the trips table`}>v{j.version}</span>
+              : j.version != null ? (versioned ? null : <span className="tag" title={`Version ${j.version} in the trips table`}>v{j.version}</span>)
                 : <span className="tag mine">mine</span>}
+          {!draft && versioned && <VersionMenu id={j.id} version={j.version!} />}
         </span>
       </div>
 

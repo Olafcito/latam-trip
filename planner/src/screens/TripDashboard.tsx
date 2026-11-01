@@ -10,6 +10,7 @@ import { Modal } from '../components/Modal'
 import { Notice } from '../components/Notice'
 import { Story } from '../components/story/Story'
 import { TripHead } from '../components/story/TripHead'
+import { VersionMenu } from '../components/VersionMenu'
 
 const RouteSummary = lazy(() => import('../components/story/RouteSummary'))
 
@@ -64,6 +65,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
         <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
         <h2 className="h2">{journey.name}</h2>
         {journey.rank != null && <span className="rank" title="Rank among the planned trips">#{journey.rank}</span>}
+        {journey.version != null && <VersionMenu id={journey.id} version={journey.version} />}
         <span className="spacer" />
         {stops.length > 0 && <button className="btn small" onClick={() => setOnMap(true)}>View on map</button>}
         <button className="btn small" onClick={() => openSaved(journey)}><Pin />Build on the map</button>

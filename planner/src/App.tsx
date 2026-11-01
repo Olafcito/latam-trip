@@ -3,7 +3,8 @@ import { dataBase } from '@map/data/remoteFiles'
 import { factLine, loadData } from './data/load'
 import { loadRepoTrips } from './data/routeMap'
 import { pickedLeg, readPick, withoutPick, type Pick } from './lib/pickLink'
-import { resolveDeepLink, rowToJourney, urlWithTrip, withTripWays } from './lib/repoTrips'
+import { resolveDeepLink, rowToJourney, withTripWays } from './lib/repoTrips'
+import { urlWithVersion, versionParam } from './lib/versions'
 import { CURRENT_KEY, useStore, type Screen } from './store'
 import { clock, weekdayDay } from './lib/format'
 import { nodeName } from './lib/journey'
@@ -16,7 +17,7 @@ import { remoteEnabled, useSession } from './lib/supabase'
 import { dataChanged } from './data/rev'
 import { clearRouteData } from './data/routeMap'
 import { clearPairDates } from './data/pairDates'
-import { loadDeletedIds, loadTrips, subscribeTrips } from './lib/remoteTrips'
+import { loadDeletedIds, loadTrips, loadVersions, subscribeTrips } from './lib/remoteTrips'
 import { loadDeriveState, refresh, subscribeBuilds, type DeriveState } from './lib/remoteFiles'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
@@ -101,8 +102,33 @@ function openDeepLink() {
     return s.setNotice(`There is no trip with the id ${link.id}. These are the trips there are.`)
   }
   if (link) s.openTrip(link.journey)
+  if (link) void openLinkedVersion(link.journey.id, versionParam(window.location.search))
   if (pick) return landPick(pick)
   if (!link) syncAddress()
+}
+
+// &v=<n> while that version is being read, so the address keeps it
+let pendingVersion: number | null = null
+
+/** /?trip=<id>&v=<n> opens version n of the trip. A version the trip does not have leaves the latest open, with a note. */
+async function openLinkedVersion(id: string, version: number | null) {
+  if (version == null || !remoteEnabled()) return
+  const s = useStore.getState()
+  const latest = s.rows[id]?.version
+  if (latest == null || version === latest) return
+  pendingVersion = version
+  try {
+    const row = (await loadVersions(id)).find((r) => r.version === version)
+    const now = useStore.getState()
+    if (now.journey?.id !== id) return
+    if (row) now.openVersion(row, Math.max(latest, now.rows[id]?.version ?? latest))
+    else now.setNotice(`This trip has no version ${version}, so the latest is open.`)
+  } catch {
+    useStore.getState().setNotice(`Version ${version} could not be read, so the latest is open.`)
+  } finally {
+    pendingVersion = null
+    syncAddress()
+  }
 }
 
 /** &pick=<flight> puts the flight chosen on Momondo on its leg of the open trip. */
@@ -129,7 +155,8 @@ function syncAddress() {
   if (!linkRead) return
   const s = useStore.getState()
   const id = s.view === 'trip' && s.journey ? s.journey.id : null
-  const next = urlWithTrip(window.location.href, id)
+  const v = s.viewing && s.viewing.id === id ? s.viewing.version : pendingVersion
+  const next = urlWithVersion(window.location.href, id, v)
   if (next !== window.location.pathname + window.location.search + window.location.hash) {
     window.history.replaceState(window.history.state, '', next)
   }

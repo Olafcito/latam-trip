@@ -227,3 +227,61 @@ describe('what a save leaves on the screen', () => {
     expect(useStore.getState().saved).toEqual([])
   })
 })
+
+describe('an older version of a trip', () => {
+  const latest = () => ({ ...stored(3, 'Latest name'), places: [{ node: 'GUA', hop: null }] }) as unknown as TripRow
+  const old = () => stored(2, 'Old name')
+
+  beforeEach(() => {
+    useStore.getState().applyRemote([latest()])
+    useStore.getState().openTrip(useStore.getState().saved.find((j) => j.id === 'trip-a')!)
+  })
+
+  it('opens in the trip view and remembers which version of how many', () => {
+    useStore.getState().openVersion(old(), 3)
+    const s = useStore.getState()
+    expect(s.view).toBe('trip')
+    expect(s.journey).toMatchObject({ id: 'trip-a', name: 'Old name', version: 2 })
+    expect(s.viewing).toMatchObject({ id: 'trip-a', version: 2, latest: 3 })
+  })
+
+  it('does not write the old version as the open draft of this browser', () => {
+    const before = localStorage.getItem('latam-planner.current')
+    useStore.getState().openVersion(old(), 3)
+    expect(localStorage.getItem('latam-planner.current')).toBe(before)
+  })
+
+  it('goes back to the latest', () => {
+    useStore.getState().openVersion(old(), 3)
+    useStore.getState().backToLatest()
+    const s = useStore.getState()
+    expect(s.viewing).toBeNull()
+    expect(s.journey).toMatchObject({ name: 'Latest name', version: 3 })
+  })
+
+  it('stays on the old version when the table changes under it', () => {
+    useStore.getState().openVersion(old(), 3)
+    useStore.getState().applyRemote([{ ...latest(), version: 4 } as TripRow])
+    const s = useStore.getState()
+    expect(s.journey?.version).toBe(2)
+    expect(s.viewing).toMatchObject({ version: 2, latest: 4 })
+    expect(s.rows['trip-a'].version).toBe(4)
+  })
+
+  it('is left by opening a trip', () => {
+    useStore.getState().openVersion(old(), 3)
+    useStore.getState().openTrip(useStore.getState().saved.find((j) => j.id === 'trip-a')!)
+    expect(useStore.getState().viewing).toBeNull()
+  })
+
+  it('Save stores it as the next version, built on that version, and ends the old view', async () => {
+    useStore.getState().openVersion(old(), 3)
+    saveTrip.mockResolvedValue({ status: 'saved', id: 'trip-a', version: 4, skipped: false })
+    await useStore.getState().saveJourney('Old name')
+    expect(saveTrip.mock.calls[0][0]).toMatchObject({ id: 'trip-a', name: 'Old name', version: 3 })
+    const s = useStore.getState()
+    expect(s.viewing).toBeNull()
+    expect(s.journey?.version).toBe(4)
+    expect(s.rows['trip-a'].version).toBe(4)
+  })
+})
