@@ -13913,7 +13913,7 @@
    "to": "ADZ",
    "mode": "flight",
    "source": "crawl",
-   "oneway_min_dkk": 768.0,
+   "oneway_min_dkk": 261.0,
    "oneway_min_hours": 1.42,
    "fastest_hours": 1.42,
    "fastest_price_dkk": 768.0,
@@ -13922,69 +13922,125 @@
     "MDE"
    ],
    "carriers": [
+    "LA",
     "LATAM",
+    "P5",
     "avianca"
    ],
    "dates": [
+    "2026-12-04",
+    "2026-12-05",
+    "2026-12-06",
+    "2026-12-07",
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10",
     "2027-01-05"
    ],
    "return_min_dkk": null,
-   "quotes": 3,
+   "quotes": 10,
    "flights": [
     {
-     "quote_id": "Q:a43151535e54",
-     "depart": "2027-01-05T19:27",
-     "arrive": "2027-01-05T20:52",
+     "quote_id": "Q:4601956278fe",
+     "depart": "2026-12-09T08:42",
+     "arrive": "2026-12-09T10:09",
      "hours": 1.42,
-     "price_dkk": 768.0,
+     "price_dkk": 261.0,
      "carriers": [
-      "LATAM"
+      "P5"
      ],
      "via": [],
      "layover_h": [],
-     "fare_brand": "BASIC",
-     "cabin_bag": "Personal item only; carry-on $15.86-39.72 fee (Expedia text says 'included' but category is FEE)",
-     "checked_bag": "paid",
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
      "overnight_layover": false,
-     "source": "expedia"
+     "source": "kiwi"
     },
     {
-     "quote_id": "Q:75aeea40fabe",
-     "depart": "2027-01-05T11:37",
-     "arrive": "2027-01-05T13:02",
+     "quote_id": "Q:71d9d94f3c78",
+     "depart": "2026-12-06T08:33",
+     "arrive": "2026-12-06T09:58",
      "hours": 1.42,
-     "price_dkk": 832.0,
+     "price_dkk": 430.0,
      "carriers": [
-      "LATAM"
+      "LA"
      ],
      "via": [],
      "layover_h": [],
-     "fare_brand": "BASIC",
-     "cabin_bag": "Personal item only; carry-on $15.86-39.72 fee (Expedia text says 'included' but category is FEE)",
-     "checked_bag": "paid",
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
      "overnight_layover": false,
-     "source": "expedia"
+     "source": "kiwi"
     },
     {
-     "quote_id": "Q:ff3ef8fc4ce1",
-     "depart": "2027-01-05T14:35",
-     "arrive": "2027-01-05T19:25",
-     "hours": 4.83,
-     "price_dkk": 1637.0,
+     "quote_id": "Q:64274153ca75",
+     "depart": "2026-12-05T11:37",
+     "arrive": "2026-12-05T13:02",
+     "hours": 1.42,
+     "price_dkk": 436.0,
      "carriers": [
-      "avianca"
+      "LA"
      ],
-     "via": [
-      "MDE"
-     ],
-     "layover_h": [
-      1.75
-     ],
-     "fare_brand": "BASIC",
-     "cabin_bag": "Personal item only; carry-on $15-27 fee (Expedia text says 'included' but category is FEE)",
-     "checked_bag": "paid",
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
      "overnight_layover": false,
-     "source": "expedia"
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:00996aaefe74",
+     "depart": "2026-12-08T09:08",
+     "arrive": "2026-12-08T10:35",
+     "hours": 1.42,
+     "price_dkk": 520.0,
+     "carriers": [
+      "P5"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:2fdf1988e5f6",
+     "depart": "2026-12-04T19:33",
+     "arrive": "2026-12-04T20:58",
+     "hours": 1.42,
+     "price_dkk": 551.0,
+     "carriers": [
+      "LA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:8f9de9a11b70",
+     "depart": "2026-12-07T11:27",
+     "arrive": "2026-12-07T12:52",
+     "hours": 1.42,
+     "price_dkk": 556.0,
+     "carriers": [
+      "LA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
+     "overnight_layover": false,
+     "source": "kiwi"
     }
    ]
   },
@@ -24381,23 +24437,61 @@
    "to": "CTG",
    "mode": "flight",
    "source": "crawl",
-   "oneway_min_dkk": 385.0,
-   "oneway_min_hours": 1.2,
+   "oneway_min_dkk": 332.0,
+   "oneway_min_hours": 1.23,
    "fastest_hours": 1.17,
    "fastest_price_dkk": 485.0,
-   "nonstop": false,
+   "nonstop": true,
    "vias": [],
    "carriers": [
     "Avianca",
+    "JA",
     "JetSMART",
     "Wingo"
    ],
    "dates": [
+    "2026-12-03",
+    "2026-12-05",
+    "2026-12-06",
     "2027-01-05"
    ],
    "return_min_dkk": null,
-   "quotes": 4,
+   "quotes": 7,
    "flights": [
+    {
+     "quote_id": "Q:05a5c1d90aea",
+     "depart": "2026-12-03T16:55",
+     "arrive": "2026-12-03T18:09",
+     "hours": 1.23,
+     "price_dkk": 332.0,
+     "carriers": [
+      "JA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
+    {
+     "quote_id": "Q:9f761bab3780",
+     "depart": "2026-12-06T10:32",
+     "arrive": "2026-12-06T11:46",
+     "hours": 1.23,
+     "price_dkk": 370.0,
+     "carriers": [
+      "JA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
+     "overnight_layover": false,
+     "source": "kiwi"
+    },
     {
      "quote_id": "Q:ef3fcc1cf337",
      "depart": "2027-01-05T20:10",
@@ -24414,6 +24508,23 @@
      "checked_bag": "paid",
      "overnight_layover": false,
      "source": "google_flights"
+    },
+    {
+     "quote_id": "Q:4ac045ebb2b6",
+     "depart": "2026-12-05T19:54",
+     "arrive": "2026-12-05T21:08",
+     "hours": 1.23,
+     "price_dkk": 395.0,
+     "carriers": [
+      "JA"
+     ],
+     "via": [],
+     "layover_h": [],
+     "fare_brand": null,
+     "cabin_bag": "personal item only (Kiwi baggage: personalItem 1, cabinBag 0)",
+     "checked_bag": "none",
+     "overnight_layover": false,
+     "source": "kiwi"
     },
     {
      "quote_id": "Q:45f9002adcd3",
@@ -24446,23 +24557,6 @@
      "fare_brand": null,
      "cabin_bag": "1 free carry-on",
      "checked_bag": "none",
-     "overnight_layover": false,
-     "source": "google_flights"
-    },
-    {
-     "quote_id": "Q:730159007b95",
-     "depart": "2027-01-05T05:00",
-     "arrive": "2027-01-05T06:10",
-     "hours": 1.17,
-     "price_dkk": 590.0,
-     "carriers": [
-      "Avianca"
-     ],
-     "via": [],
-     "layover_h": [],
-     "fare_brand": null,
-     "cabin_bag": null,
-     "checked_bag": null,
      "overnight_layover": false,
      "source": "google_flights"
     }

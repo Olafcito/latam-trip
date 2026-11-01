@@ -99,6 +99,25 @@
   ]
  },
  {
+  "from": "CTG",
+  "to": "ADZ",
+  "dkk": 261,
+  "hours": 1.42,
+  "dep": "2026-12-09T08:42",
+  "arr": "2026-12-09T10:09",
+  "vias": [],
+  "carriers": [
+   "P5"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "MDE",
   "to": "ADZ",
   "dkk": 292,
@@ -117,15 +136,15 @@
   ]
  },
  {
-  "from": "BOG",
+  "from": "MDE",
   "to": "CTG",
-  "dkk": 380,
-  "hours": 1.53,
-  "dep": "2027-01-05T17:25",
-  "arr": "2027-01-05T18:57",
+  "dkk": 332,
+  "hours": 1.23,
+  "dep": "2026-12-03T16:55",
+  "arr": "2026-12-03T18:09",
   "vias": [],
   "carriers": [
-   "Wingo"
+   "JA"
   ],
   "notes": [],
   "link": null,
@@ -135,12 +154,12 @@
   ]
  },
  {
-  "from": "MDE",
+  "from": "BOG",
   "to": "CTG",
-  "dkk": 385,
-  "hours": 1.2,
-  "dep": "2027-01-05T20:10",
-  "arr": "2027-01-05T21:22",
+  "dkk": 380,
+  "hours": 1.53,
+  "dep": "2027-01-05T17:25",
+  "arr": "2027-01-05T18:57",
   "vias": [],
   "carriers": [
    "Wingo"
@@ -642,27 +661,6 @@
   "vias": [],
   "carriers": [],
   "notes": [],
-  "link": null,
-  "shows": [
-   "cheapest",
-   "fastest",
-   "daytime landing"
-  ]
- },
- {
-  "from": "CTG",
-  "to": "ADZ",
-  "dkk": 768,
-  "hours": 1.42,
-  "dep": "2027-01-05T19:27",
-  "arr": "2027-01-05T20:52",
-  "vias": [],
-  "carriers": [
-   "LATAM"
-  ],
-  "notes": [
-   "basic fare"
-  ],
   "link": null,
   "shows": [
    "cheapest",
