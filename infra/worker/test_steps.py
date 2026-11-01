@@ -262,6 +262,18 @@ class RunTest(unittest.TestCase):
         self.assertEqual(st["failed_dirty_at"], st["dirty_at"])
         self.assertTrue(st["last_error"].startswith(steps.TIMED_OUT))
 
+    def test_new_data_after_two_timeouts_builds_again(self):
+        rest = FakeRest(derive_state=[{"id": 1, **state(last_started=ago(700), last_error=steps.TIMED_OUT)}],
+                        leases=[{"name": "build", "holder": "dead", "expires_at": ago(100)}])
+        self.assertFalse(steps.run_once(rest, self.work, "new", NOW, "v1")["built"])
+        st = rest.tables["derive_state"][0]
+        self.assertIsNotNone(st["last_finished"])
+        st["dirty_at"] = ago(100)  # a write after the data that was given up on
+        self.start()
+        out = steps.run_once(rest, self.work, "new", NOW, "v1")
+        self.assertTrue(out["built"], out)
+        self.assertIsNone(rest.tables["derive_state"][0]["last_error"])
+
     def test_a_held_lease_runs_nothing(self):
         rest = FakeRest(derive_state=[{"id": 1, **state()}],
                         leases=[{"name": "build", "holder": "other", "expires_at": (NOW + dt.timedelta(seconds=300)).isoformat()}])
@@ -388,6 +400,25 @@ class FilesTest(unittest.TestCase):
         rest.made[f"by-hash/{h}-{name}"] = NOW - dt.timedelta(hours=5)
         steps.upload(rest, self.tmp, now=NOW)
         self.assertIn(f"by-hash/{h}-{name}", rest.files)
+
+
+class BuildPulledTest(unittest.TestCase):
+    def test_a_build_with_every_trip_dropped_is_refused(self):
+        root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, root, True)
+        src = os.path.join(root, "data", "sources")
+        nl = chr(10)
+        for table, name in steps.store.FILES.items():
+            if table in steps.REQUIRED:
+                write(os.path.join(src, name), json.dumps({"id": "x"}) + nl)
+        write(os.path.join(src, "quotes", "all.jsonl"), json.dumps({"quote_id": "q"}) + nl)
+        write(os.path.join(src, "trips.jsonl"), json.dumps({"id": "only", "version": 1}) + nl)
+        built = []
+        bad = ["data/sources/trips.jsonl:1: places is empty"]
+        with mock.patch.object(steps.tripdb, "run_check", lambda *a, **k: (bad, 0)),                 mock.patch.object(steps.tripdb, "cmd_build", lambda *a, **k: built.append(1)),                 mock.patch.object(steps.store, "FileStore", lambda p: None):
+            with self.assertRaisesRegex(steps.Refused, "trips"):
+                steps.build_pulled(root)
+        self.assertEqual(built, [])
 
 
 class RefuseEmptyTest(unittest.TestCase):

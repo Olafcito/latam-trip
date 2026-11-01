@@ -150,6 +150,8 @@ def build_pulled(root):
     paths = tripdb.Paths(root)
     errors, _ = tripdb.run_check(paths, quiet=True, st=store.FileStore(paths))
     dropped = drop_bad_trips(errors, root) if errors else []
+    if dropped:
+        refuse_empty_pull(root)  # every trip may have been the bad one, and an empty build must not go live
     tripdb.cmd_build(paths, sync=False)
     return dropped
 
@@ -322,7 +324,7 @@ def run_once(rest, work_dir, holder, now=None, version=None):
         if started is not None and (finished is None or finished < started):
             # the run before this one never wrote its end
             if (state.get("last_error") or "").startswith(TIMED_OUT):
-                set_state(rest, failed_dirty_at=state.get("dirty_at"))
+                set_state(rest, failed_dirty_at=state.get("dirty_at"), last_finished=iso(now))
                 return {"built": False, "error": "the build timed out twice, waiting for new data"}
             set_state(rest, last_error=TIMED_OUT)
         return run_build(rest, work_dir, version, now)
