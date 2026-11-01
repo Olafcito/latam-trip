@@ -40,11 +40,10 @@ sys.path.insert(0, HERE)
 from quote_rules import quote_key  # noqa: E402
 import tripdb_cols as cols  # noqa: E402
 import tripdb_store as store  # noqa: E402
+from tripdb_store import (Refused, RestError, Lock, TIME_RE, TRIP_META, USAGE_COLS, parse_time, now_utc, read_jsonl, rows_of,  # noqa: E402,F401
+                          read_input, read_input_text, append_rows, write_atomic, known_quotes, sort_quotes, latest_trips,
+                          get_store, trip_content as _trip_content)
 DEFAULT_ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
-
-
-class Refused(Exception):
-    pass
 
 
 # ---- paths --------------------------------------------------------------------------------------
@@ -71,7 +70,6 @@ class Paths:
 # (2 capitals) tid (trip id) enum:a,b,c and const:x. Fields not listed are allowed.
 
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
-TIME_RE = re.compile(r"(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?$")
 PATTERNS = {"iata": re.compile(r"[A-Z]{3}$"), "pid": re.compile(r"[A-Z][A-Z0-9_]{1,9}$"),
             "slug": re.compile(r"[a-z0-9][a-z0-9_-]*$"), "cc": re.compile(r"[A-Z]{2}$"),
             "tid": re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")}
@@ -99,18 +97,6 @@ def _valid_date(s):
         return True
     except ValueError:
         return False
-
-
-def parse_time(s):
-    """ISO 8601 date and time (seconds and zone optional, zone-less is UTC) as an aware datetime, else None."""
-    m = TIME_RE.match(s or "") if isinstance(s, str) else None
-    if not m:
-        return None
-    try:
-        t = dt.datetime.fromisoformat(s.replace(" ", "T").replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    return t if t.tzinfo else t.replace(tzinfo=dt.timezone.utc)
 
 
 def check_fields(row, schema):
@@ -193,7 +179,6 @@ TABLES = {
 }
 DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "scenarios.json",
         "experience_categories.json", "lists.json", "elevation.json", "image_queries.json")
-USAGE_COLS = ["round", "agent", "model", "tool", "searches", "tokens", "tool_uses", "seconds", "rows"]
 
 
 def quote_errors(q):
@@ -274,158 +259,21 @@ def row_errors(table, row):
 
 # ---- files --------------------------------------------------------------------------------------
 
-def read_jsonl(path):
-    """[(line number, row or None, error or None)] for every non-empty line."""
-    out = []
-    if not os.path.exists(path):
-        return out
-    with open(path, encoding="utf-8") as fh:
-        for n, line in enumerate(fh, 1):
-            if not line.strip():
-                continue
-            try:
-                out.append((n, json.loads(line), None))
-            except json.JSONDecodeError as e:
-                out.append((n, None, f"not JSON ({e.msg})"))
-    return out
-
-
-def rows_of(path):
-    return [r for _, r, e in read_jsonl(path) if e is None]
-
-
-def read_input(path):
-    if path == "-":
-        text = sys.stdin.read()
-    else:
-        with open(path, encoding="utf-8") as fh:
-            text = fh.read()
-    return read_input_text(text)
-
-
-def read_input_text(text):
-    out = []
-    for n, line in enumerate(text.splitlines(), 1):
-        if not line.strip():
-            continue
-        try:
-            out.append((n, json.loads(line), None))
-        except json.JSONDecodeError as e:
-            out.append((n, None, f"not JSON ({e.msg})"))
-    return out
-
-
-def append_rows(path, rows):
-    """Append rows to a JSONL file in one O_APPEND write, so concurrent writers never interleave lines."""
-    if not rows:
-        return
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    data = "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows).encode("utf-8")
-    if os.path.exists(path) and os.path.getsize(path):
-        with open(path, "rb") as fh:
-            fh.seek(-1, os.SEEK_END)
-            if fh.read(1) != b"\n":
-                data = b"\n" + data
-    fd = os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT | getattr(os, "O_BINARY", 0), 0o644)
-    try:
-        view = memoryview(data)
-        while view:
-            view = view[os.write(fd, view):]
-    finally:
-        os.close(fd)
-
-
-def write_atomic(path, text):
-    tmp = f"{path}.{os.getpid()}.tmp"
-    with open(tmp, "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(text)
-    os.replace(tmp, path)
-
-
-class Lock:
-    """A lock file next to the sources. A lock older than STALE seconds is taken over."""
-    STALE = 600
-
-    def __init__(self, paths, timeout=120):
-        self.path, self.timeout = paths.lock, timeout
-
-    def __enter__(self):
-        os.makedirs(os.path.dirname(self.path), exist_ok=True)
-        start = time.time()
-        while True:
-            try:
-                fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                os.write(fd, f"{os.getpid()} {dt.datetime.now(dt.timezone.utc).isoformat()}\n".encode())
-                os.close(fd)
-                return self
-            except FileExistsError:
-                try:
-                    if time.time() - os.path.getmtime(self.path) > self.STALE:
-                        os.remove(self.path)
-                        continue
-                except OSError:
-                    continue
-                if time.time() - start > self.timeout:
-                    raise Refused(f"{self.path} is held by another tripdb run, try again or remove it if no run is active")
-                time.sleep(0.1)
-
-    def __exit__(self, *exc):
-        try:
-            os.remove(self.path)
-        except OSError:
-            pass
-
-
-def now_utc():
-    return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def load_doc(paths, name, default=None):
-    p = paths.src(name)
-    if not os.path.exists(p):
-        return default
-    with open(p, encoding="utf-8") as fh:
-        return json.load(fh)
+def load_doc(st, name, default=None):
+    """The document NAME of a store, or default when it is not there. A Paths object stands for the files."""
+    if not isinstance(st, store.Store):
+        st = store.FileStore(st)
+    data, _ = st.doc(name)
+    return default if data is None else data
 
 
 # ---- quotes -------------------------------------------------------------------------------------
-
-def known_quotes(paths):
-    """quote key: newest observed_at over every quote file."""
-    seen = {}
-    if not os.path.isdir(paths.quotes):
-        return seen
-    for f in sorted(os.listdir(paths.quotes)):
-        if f.endswith(".jsonl"):
-            for q in rows_of(os.path.join(paths.quotes, f)):
-                if isinstance(q, dict):
-                    k, t = quote_key(q), parse_time(q.get("observed_at"))
-                    if t and (k not in seen or t > seen[k]):
-                        seen[k] = t
-    return seen
-
-
-def sort_quotes(rows, seen):
-    """Split checked rows into (to append, duplicates). Within the batch the newest observation of a quote is
-    kept. A quote already stored is appended again only when this observation is newer."""
-    newest = {}
-    for q in rows:
-        k = quote_key(q)
-        if k not in newest or parse_time(q["observed_at"]) > parse_time(newest[k]["observed_at"]):
-            newest[k] = q
-    keep, dups = [], len(rows) - len(newest)
-    for k, q in newest.items():
-        if k in seen and seen[k] >= parse_time(q["observed_at"]):
-            dups += 1
-        else:
-            keep.append(q)
-    return keep, dups
-
 
 def cmd_add_quotes(paths, file, name=None, stamp=True):
     name = name or os.path.basename(file if file != "-" else "stdin.jsonl")
     if not re.match(r"[A-Za-z0-9][A-Za-z0-9._-]*\.jsonl$", name):
         raise Refused(f"quote file name {name!r} must look like <agent>.jsonl")
+    st = get_store(paths)
     dest = os.path.join(paths.quotes, name)
     if file != "-" and os.path.abspath(file) == os.path.abspath(dest):
         raise Refused(f"{file} is already a source file")
@@ -437,47 +285,38 @@ def cmd_add_quotes(paths, file, name=None, stamp=True):
             stamped += 1
         errs = [err] if err else quote_errors(q)
         (bad.append((n, "; ".join(errs))) if errs else good.append(q))
-    with Lock(paths):
-        keep, dups = sort_quotes(good, known_quotes(paths))
-        append_rows(dest, keep)
+    res = st.add_quotes(good, name)
     for n, why in bad:
         print(f"refused line {n}: {why}")
-    print(f"quotes: added {len(keep)}, duplicates {dups}, refused {len(bad)}" + (f", stamped observed_at on {stamped}" if stamped else "")
-          + f" -> {os.path.relpath(dest, paths.root)}")
+    print(f"quotes: added {res.added}, duplicates {res.duplicates}, refused {len(bad)}" + (f", stamped observed_at on {stamped}" if stamped else "")
+          + f" -> {st.dest('quotes', name)}")
     return 1 if bad else 0
 
 
-def cmd_ingest_inbox(paths):
-    files = sorted(f for f in os.listdir(paths.inbox) if f.endswith(".jsonl")) if os.path.isdir(paths.inbox) else []
-    if not files:
+def cmd_ingest_inbox(paths, st=None):
+    st = st or get_store(paths)
+    entries = st.inbox_new()
+    if not entries:
         print("inbox: empty")
         return 0
     total_bad = 0
-    with Lock(paths):
-        seen = known_quotes(paths)
-        for f in files:
-            src = os.path.join(paths.inbox, f)
-            good, bad = [], []
-            for n, q, err in read_input(src):
-                errs = [err] if err else quote_errors(q)
-                if not errs and q.get("source") != "momondo-manual":
-                    errs = [f"source is {q.get('source')!r}, inbox rows must say momondo-manual"]
-                if not errs and "trip_name" in q and not isinstance(q["trip_name"], str):
-                    errs = ["trip_name is not text"]
-                (bad.append({"line": n, "reason": "; ".join(errs), "row": q}) if errs else good.append(q))
-            keep, dups = sort_quotes(good, seen)
-            append_rows(os.path.join(paths.quotes, f), keep)
-            for q in keep:
-                seen[quote_key(q)] = parse_time(q["observed_at"])
-            if bad:
-                append_rows(os.path.join(paths.rejected, f), bad)
-            os.makedirs(paths.processed, exist_ok=True)
-            os.replace(src, os.path.join(paths.processed, f))
-            total_bad += len(bad)
-            print(f"inbox {f}: added {len(keep)}, duplicates {dups}, rejected {len(bad)}"
-                  + (f" -> {os.path.relpath(os.path.join(paths.rejected, f), paths.root)}" if bad else ""))
-            for b in bad:
-                print(f"  rejected line {b['line']}: {b['reason']}")
+    for e in entries:
+        f = e["file"]
+        good, bad = [], []
+        for n, q, err in e["lines"]:
+            errs = [err] if err else quote_errors(q)
+            if not errs and q.get("source") != "momondo-manual":
+                errs = [f"source is {q.get('source')!r}, inbox rows must say momondo-manual"]
+            if not errs and "trip_name" in q and not isinstance(q["trip_name"], str):
+                errs = ["trip_name is not text"]
+            (bad.append({"line": n, "reason": "; ".join(errs), "row": q}) if errs else good.append(q))
+        res = st.add_quotes(good, f)
+        status = "rejected" if bad and not good else "added"
+        where = st.inbox_mark(e["id"], status, bad[0]["reason"] if bad else None, bad)
+        total_bad += len(bad)
+        print(f"inbox {f}: added {res.added}, duplicates {res.duplicates}, rejected {len(bad)}" + (f" -> {where}" if bad else ""))
+        for b in bad:
+            print(f"  rejected line {b['line']}: {b['reason']}")
     return 1 if total_bad else 0
 
 
@@ -487,62 +326,50 @@ def _origin_of(file, origin):
     return origin or (os.path.splitext(os.path.basename(file))[0] if file != "-" else "tripdb")
 
 
-def _add_rows(paths, table, file, kinds, same, replace=False, origin=None, extra_check=None):
-    """Append rows of the given kinds to a table. same(row) is the identity: a row whose identity is stored
-    already is skipped, or appended after it with --replace (the later row wins in the build)."""
-    fname = TABLES[table][0]
-    dest = paths.src(fname)
-    good, bad, skipped, other = [], [], [], {}
-    with Lock(paths):
-        stored = {}
-        for r in rows_of(dest):
-            if isinstance(r, dict) and r.get("kind") in kinds:
-                stored[same(r)] = r
-        for n, r, err in read_input(file):
-            if err:
-                bad.append((n, err)); continue
-            if isinstance(r, dict) and "kind" not in r and len(kinds) == 1:
-                r["kind"] = kinds[0]
-            if isinstance(r, dict) and r.get("kind") not in kinds:
-                other[r.get("kind")] = other.get(r.get("kind"), 0) + 1; continue
-            if origin is not False and isinstance(r, dict) and "origin" not in r:
-                r["origin"] = _origin_of(file, origin)
-            errs = row_errors(table, r) + (extra_check(r) if extra_check and isinstance(r, dict) else [])
-            if errs:
-                bad.append((n, "; ".join(errs))); continue
-            k = same(r)
-            if k in stored and not replace:
-                old = {x: y for x, y in stored[k].items() if x != "origin"}
-                new = {x: y for x, y in r.items() if x != "origin"}
-                skipped.append((n, k, "identical" if old == new else "differs, add --replace to supersede it"))
-                continue
-            stored[k] = r
-            good.append(r)
-        append_rows(dest, good)
+def _add_rows(paths, table, file, kinds, same, replace=False, origin=None, extra_check=None, st=None):
+    """Hand rows of the given kinds to a table. same(row) is the label of a row in the messages. A row whose key is stored
+    already is skipped, or replaces the stored one with --replace (the later row wins in the build)."""
+    st = st or get_store(paths)
+    good, nums, bad, other = [], [], [], {}
+    for n, r, err in read_input(file):
+        if err:
+            bad.append((n, err)); continue
+        if isinstance(r, dict) and "kind" not in r and len(kinds) == 1:
+            r["kind"] = kinds[0]
+        if isinstance(r, dict) and r.get("kind") not in kinds:
+            other[r.get("kind")] = other.get(r.get("kind"), 0) + 1; continue
+        if origin is not False and isinstance(r, dict) and "origin" not in r:
+            r["origin"] = _origin_of(file, origin)
+        errs = row_errors(table, r) + (extra_check(r) if extra_check and isinstance(r, dict) else [])
+        if errs:
+            bad.append((n, "; ".join(errs))); continue
+        good.append(r)
+        nums.append(n)
+    res = st.add(table, good, cols.COLS[table].key, replace=replace)
     for n, why in bad:
         print(f"refused line {n}: {why}")
-    for n, k, why in skipped:
-        print(f"skipped line {n}: {k} is stored already ({why})")
+    for i, _, why in res.skips:
+        print(f"skipped line {nums[i]}: {same(good[i])} is stored already ({why})")
     for k, c in other.items():
         print(f"ignored {c} rows of kind {k!r} (another add- command takes them)")
-    print(f"{table}: added {len(good)}, skipped {len(skipped)}, refused {len(bad)} -> {os.path.relpath(dest, paths.root)}")
+    print(f"{table}: added {res.added}, skipped {res.skipped}, refused {len(bad)} -> {st.dest(table)}")
     return 1 if bad else 0
 
 
-def place_ids(paths):
-    return {r["id"] for r in rows_of(paths.src("places.jsonl")) if isinstance(r, dict) and r.get("kind") == "node"}
+def place_ids(st):
+    return st.ids("places")
 
 
-def experience_ids(paths):
-    return {r["id"] for r in rows_of(paths.src("experiences.jsonl")) if isinstance(r, dict) and r.get("kind") == "experience"}
+def experience_ids(st):
+    return st.ids("experiences")
 
 
-def category_ids(paths):
-    return {c["id"] for c in (load_doc(paths, "experience_categories.json", {}) or {}).get("categories", [])}
+def category_ids(st):
+    return {c["id"] for c in (load_doc(st, "experience_categories.json", {}) or {}).get("categories", [])}
 
 
-def warn_unknown_places(paths, ids, what):
-    known = place_ids(paths)
+def warn_unknown_places(st, ids, what):
+    known = place_ids(st)
     missing = sorted(set(ids) - known)
     if missing:
         print(f"note: {what} names places that are not in places.jsonl: {', '.join(missing)}")
@@ -555,10 +382,11 @@ def cmd_add_place(paths, file, origin=None):
 def cmd_add_connection(paths, file, origin=None):
     def same(r):
         return f"{r.get('from')}>{r.get('to')} {r.get('mode')} {r.get('operator')}"
-    rc = _add_rows(paths, "connections", file, ["edge"], same, origin=origin)
+    st = get_store(paths)
+    rc = _add_rows(paths, "connections", file, ["edge"], same, origin=origin, st=st)
     ends = [x for _, r, e in read_input(file) if not e and isinstance(r, dict) and r.get("kind", "edge") == "edge"
             for x in (r.get("from"), r.get("to")) if x] if file != "-" else []
-    warn_unknown_places(paths, ends, "a connection")
+    warn_unknown_places(st, ends, "a connection")
     return rc
 
 
@@ -571,9 +399,9 @@ def cmd_add_image(paths, file, origin=None, replace=False):
     return _add_rows(paths, "place_images", file, ["profile_image"], lambda r: r.get("id"), replace=replace, origin=origin)
 
 
-def _experience_check(paths):
-    cats = category_ids(paths)
-    known = place_ids(paths)
+def _experience_check(st):
+    cats = category_ids(st)
+    known = place_ids(st)
 
     def check(r):
         errs = []
@@ -587,8 +415,9 @@ def _experience_check(paths):
 
 
 def cmd_add_experience(paths, file):
+    st = get_store(paths)
     return _add_rows(paths, "experiences", file, ["experience"], lambda r: r.get("id"), origin=False,
-                     extra_check=_experience_check(paths))
+                     extra_check=_experience_check(st), st=st)
 
 
 def cmd_update_experience(paths, eid, sets=(), json_file=None):
@@ -608,21 +437,12 @@ def cmd_update_experience(paths, eid, sets=(), json_file=None):
         raise Refused("nothing to change: give --set FIELD=VALUE or --json FILE")
     if {"id", "kind"} & set(patch):
         raise Refused("id and kind cannot be changed")
-    dest = paths.src("experiences.jsonl")
-    with Lock(paths):
-        with open(dest, encoding="utf-8") as fh:
-            lines = fh.read().splitlines()
-        hits = [i for i, l in enumerate(lines) if l.strip() and json.loads(l).get("id") == eid]
-        if not hits:
-            raise Refused(f"no experience {eid!r}")
-        i = hits[-1]
-        old = json.loads(lines[i])
-        new = {**old, **patch}
-        errs = row_errors("experiences", new) + _experience_check(paths)(new)
-        if errs:
-            raise Refused(f"{eid}: " + "; ".join(errs))
-        lines[i] = json.dumps(new, ensure_ascii=False)
-        write_atomic(dest, "\n".join(lines) + "\n")
+    st = get_store(paths)
+    check = _experience_check(st)
+    hit = st.update("experiences", eid, patch, lambda new: row_errors("experiences", new) + check(new))
+    if hit is None:
+        raise Refused(f"no experience {eid!r}")
+    old, new = hit
     for k in patch:
         if old.get(k) != new[k]:
             print(f"{eid}.{k}: {json.dumps(old.get(k), ensure_ascii=False)[:80]} -> {json.dumps(new[k], ensure_ascii=False)[:80]}")
@@ -631,12 +451,13 @@ def cmd_update_experience(paths, eid, sets=(), json_file=None):
 
 
 def cmd_add_experience_image(paths, file, replace=False):
-    exp, cats = experience_ids(paths), {c.get("image_id") for c in (load_doc(paths, "experience_categories.json", {}) or {}).get("categories", [])}
+    st = get_store(paths)
+    exp, cats = experience_ids(st), {c.get("image_id") for c in (load_doc(st, "experience_categories.json", {}) or {}).get("categories", [])}
 
     def check(r):
         return [] if r.get("id") in exp | cats else [f"id {r.get('id')!r} is neither an experience nor a category image_id"]
     return _add_rows(paths, "experience_images", file, ["experience_image"], lambda r: r.get("id"), replace=replace,
-                     origin=False, extra_check=check)
+                     origin=False, extra_check=check, st=st)
 
 
 def _num(v):
@@ -652,61 +473,60 @@ def _str_id(v):
 def cmd_add_stays(paths, file, usd=6.45, eur=7.46):
     """Stay-price-worker rows (price_per_night in DKK, USD or EUR) as stay quotes in DKK per night."""
     rate = {"DKK": 1.0, "USD": usd, "EUR": eur}
-    dest = paths.src("stays.jsonl")
-    good, bad, dup = [], [], 0
-    with Lock(paths):
-        seen = {(r.get("place"), r.get("site"), r.get("name"), r.get("room"), r.get("check_in"), r.get("check_out"))
-                for r in rows_of(dest) if isinstance(r, dict)}
-        for n, r, err in read_input(file):
-            if err:
-                bad.append((n, err)); continue
-            cur = (r.get("currency") or "DKK").upper()
-            if cur not in rate:
-                bad.append((n, f"currency {cur} is not DKK, USD or EUR")); continue
-            ci, co = r.get("check_in"), r.get("check_out")
-            nights = (dt.date.fromisoformat(co) - dt.date.fromisoformat(ci)).days if _is(ci, "date") and _is(co, "date") else None
-            # Booking.com gives the total for the stay, so a row with only a total is priced per night here
-            if r.get("price_per_night") is None and _num(r.get("total")) and nights and nights > 0:
-                r = {**r, "price_per_night": r["total"] / nights}
-            if not _num(r.get("price_per_night")):
-                bad.append((n, f"price_per_night is {r.get('price_per_night')!r}")); continue
-            row = {"kind": "stay_quote", "place": r.get("place"), "site": r.get("site"), "name": r.get("name"),
-                   "type": r.get("kind"), "room": r.get("room"), "dkk_per_night": round(r["price_per_night"] * rate[cur]), "nights": nights,
-                   "rating": r.get("rating"), "reviews": r.get("reviews"), "check_in": ci, "check_out": co,
-                   "url": r.get("url"), "property_id": _str_id(r.get("property_id")), "observed_at": r.get("observed_at") or now_utc(), "task_id": r.get("task_id"),
-                   "notes": r.get("notes")}
-            errs = row_errors("stays", row)
-            if errs:
-                bad.append((n, "; ".join(errs))); continue
-            k = (row["place"], row["site"], row["name"], row["room"], ci, co)
-            if k in seen:
-                dup += 1; continue
-            seen.add(k)
-            good.append(row)
-        append_rows(dest, good)
+    st = get_store(paths)
+    good, bad = [], []
+    for n, r, err in read_input(file):
+        if err:
+            bad.append((n, err)); continue
+        cur = (r.get("currency") or "DKK").upper()
+        if cur not in rate:
+            bad.append((n, f"currency {cur} is not DKK, USD or EUR")); continue
+        ci, co = r.get("check_in"), r.get("check_out")
+        nights = (dt.date.fromisoformat(co) - dt.date.fromisoformat(ci)).days if _is(ci, "date") and _is(co, "date") else None
+        # Booking.com gives the total for the stay, so a row with only a total is priced per night here
+        if r.get("price_per_night") is None and _num(r.get("total")) and nights and nights > 0:
+            r = {**r, "price_per_night": r["total"] / nights}
+        if not _num(r.get("price_per_night")):
+            bad.append((n, f"price_per_night is {r.get('price_per_night')!r}")); continue
+        row = {"kind": "stay_quote", "place": r.get("place"), "site": r.get("site"), "name": r.get("name"),
+               "type": r.get("kind"), "room": r.get("room"), "dkk_per_night": round(r["price_per_night"] * rate[cur]), "nights": nights,
+               "rating": r.get("rating"), "reviews": r.get("reviews"), "check_in": ci, "check_out": co,
+               "url": r.get("url"), "property_id": _str_id(r.get("property_id")), "observed_at": r.get("observed_at") or now_utc(), "task_id": r.get("task_id"),
+               "notes": r.get("notes")}
+        errs = row_errors("stays", row)
+        if errs:
+            bad.append((n, "; ".join(errs))); continue
+        good.append(row)
+    res = st.add("stays", good, cols.COLS["stays"].key)
     for n, why in bad:
         print(f"refused line {n}: {why}")
-    warn_unknown_places(paths, [r["place"] for r in good], "a stay")
-    print(f"stays: added {len(good)}, duplicates {dup}, refused {len(bad)} -> {os.path.relpath(dest, paths.root)}")
+    skipped = {i for i, _, _ in res.skips}
+    warn_unknown_places(st, [r["place"] for i, r in enumerate(good) if i not in skipped], "a stay")
+    print(f"stays: added {res.added}, duplicates {res.skipped}, refused {len(bad)} -> {st.dest('stays')}")
     return 1 if bad else 0
 
 
 # ---- lists, task log, usage ---------------------------------------------------------------------
 
-def _lists_change(paths, fn):
-    with Lock(paths):
-        doc = load_doc(paths, "lists.json", {"lists": []})
+def _lists_change(paths, fn, st=None):
+    """Read lists.json, apply fn and write it back only if nobody changed it meanwhile. Tries again when somebody did."""
+    st = st or get_store(paths)
+    for _ in range(20):
+        doc, version = st.doc("lists.json")
+        doc = doc if doc is not None else {"lists": []}
         msg = fn(doc)
         doc["updated"] = dt.date.today().isoformat()
-        write_atomic(paths.src("lists.json"), json.dumps(doc, ensure_ascii=False, indent=1) + "\n")
-    print(msg)
-    return 0
+        if st.put_doc("lists.json", doc, version):
+            print(msg)
+            return 0
+    raise Refused("lists.json keeps changing under this run, try again")
 
 
 def cmd_list_add(paths, list_id, typ, item_id, note=None, name=None):
     if typ not in ("place", "experience"):
         raise Refused(f"type must be place or experience, not {typ!r}")
-    known = place_ids(paths) if typ == "place" else experience_ids(paths)
+    st = get_store(paths)
+    known = place_ids(st) if typ == "place" else experience_ids(st)
     if item_id not in known:
         raise Refused(f"no {typ} {item_id!r}")
 
@@ -724,7 +544,7 @@ def cmd_list_add(paths, list_id, typ, item_id, note=None, name=None):
             item["note"] = note
         lst["items"].append(item)
         return f"lists: added {typ} {item_id} to {list_id}"
-    return _lists_change(paths, change)
+    return _lists_change(paths, change, st)
 
 
 def cmd_list_remove(paths, list_id, typ, item_id):
@@ -750,8 +570,7 @@ def cmd_log_task(paths, issue, typ, summary, outputs=(), task_file=None, done_at
     errs = row_errors("task_log", row)
     if errs:
         raise Refused("; ".join(errs))
-    with Lock(paths):
-        append_rows(paths.src("task_log.jsonl"), [row])
+    get_store(paths).append("task_log", row)
     print(f"task_log: logged issue #{issue}")
     return 0
 
@@ -763,30 +582,12 @@ def cmd_log_usage(paths, values):
     missing = [c for c in USAGE_COLS if values.get(c) in (None, "")]
     if missing:
         raise Refused("missing " + ", ".join("--" + c.replace("_", "-") for c in missing))
-    buf = io.StringIO()
-    csv.writer(buf, lineterminator="\n").writerow([values[c] for c in USAGE_COLS])
-    dest = paths.src("agent_usage.csv")
-    with Lock(paths):
-        if not os.path.exists(dest):
-            with open(dest, "w", encoding="utf-8", newline="") as fh:
-                fh.write(",".join(USAGE_COLS) + "\n")
-        fd = os.open(dest, os.O_WRONLY | os.O_APPEND | getattr(os, "O_BINARY", 0))
-        try:
-            os.write(fd, buf.getvalue().encode("utf-8"))
-        finally:
-            os.close(fd)
+    get_store(paths).append("agent_usage", {c: values[c] for c in USAGE_COLS})
     print(f"agent_usage: logged {values['agent']}")
     return 0
 
 
 # ---- trips --------------------------------------------------------------------------------------
-
-TRIP_META = ("version", "saved_at", "by")
-
-
-def _trip_content(t):
-    return {k: v for k, v in t.items() if k not in TRIP_META}
-
 
 def _trip_slug(name):
     s = re.sub(r"[^a-z0-9]+", "-", (name or "").lower()).strip("-")
@@ -808,80 +609,53 @@ def read_trips(path):
     return [(f"trip {i + 1}", t, None) for i, t in enumerate(items)]
 
 
-def latest_trips(rows):
-    """{id: latest row} plus {id: [every row, oldest first]} from the rows of trips.jsonl."""
-    every = {}
-    for r in rows:
-        if isinstance(r, dict) and isinstance(r.get("id"), str):
-            every.setdefault(r["id"], []).append(r)
-    for vs in every.values():
-        vs.sort(key=lambda r: r.get("version") if isinstance(r.get("version"), int) else 0)
-    return {k: vs[-1] for k, vs in every.items()}, every
-
-
 def cmd_save_trip(paths, file, by="plan-trip"):
     """Save each trip in FILE as the next version of its id (a new id starts at version 1). A trip the same
     as its latest version is skipped. Without an id the trip gets one from its name."""
-    dest = paths.src(TABLES["trips"][0])
+    st = get_store(paths)
     saved, skipped, bad = [], [], []
-    with Lock(paths):
-        latest, _ = latest_trips(rows_of(dest))
-        for label, t, err in read_trips(file):
-            if err or not isinstance(t, dict):
-                bad.append((label, err or "not a JSON object")); continue
-            t = dict(t)
-            if not t.get("id"):
-                base = _trip_slug(t.get("name"))
-                t["id"], k = base, 2
-                while t["id"] in latest:
-                    t["id"], k = f"{base}-{k}", k + 1
-            if not isinstance(t["id"], str):
-                bad.append((label, f"id is {json.dumps(t['id'])[:40]}, expected a string")); continue
-            label = t["id"]
-            prev = latest.get(t["id"])
-            if prev is not None and _trip_content(prev) == _trip_content(t):
-                skipped.append((label, prev["version"])); continue
-            t["version"] = (prev["version"] if prev else 0) + 1
-            t["saved_at"] = now_utc()
-            t["by"] = t.get("by") or by
-            errs = row_errors("trips", t)
-            if errs:
-                bad.append((label, "; ".join(errs))); continue
-            row = {k: t[k] for k in ("id", "version", "name", "saved_at", "by", "why") if k in t}
-            row.update({k: v for k, v in t.items() if k not in row})
-            latest[row["id"]] = row
-            saved.append(row)
-        append_rows(dest, saved)
+    ids = set(st.trip_ids())
+    for label, t, err in read_trips(file):
+        if err or not isinstance(t, dict):
+            bad.append((label, err or "not a JSON object")); continue
+        t = dict(t)
+        if not t.get("id"):
+            base = _trip_slug(t.get("name"))
+            t["id"], k = base, 2
+            while t["id"] in ids:
+                t["id"], k = f"{base}-{k}", k + 1
+        if not isinstance(t["id"], str):
+            bad.append((label, f"id is {json.dumps(t['id'])[:40]}, expected a string")); continue
+        label = t["id"]
+        t["version"] = 1
+        t["saved_at"] = now_utc()
+        t["by"] = t.get("by") or by
+        errs = row_errors("trips", t)
+        if errs:
+            bad.append((label, "; ".join(errs))); continue
+        res = st.save_trip(t)
+        ids.add(res["id"])
+        (skipped if res["skipped"] else saved).append((res["id"], res["version"]))
     for label, why in bad:
         print(f"refused {label}: {why}")
     for label, v in skipped:
         print(f"skipped {label}: same as version {v}")
-    for r in saved:
-        print(f"saved {r['id']} version {r['version']} (open it at /?trip={r['id']})")
-    print(f"trips: saved {len(saved)}, skipped {len(skipped)}, refused {len(bad)} -> {os.path.relpath(dest, paths.root)}")
+    for tid, v in saved:
+        print(f"saved {tid} version {v} (open it at /?trip={tid})")
+    print(f"trips: saved {len(saved)}, skipped {len(skipped)}, refused {len(bad)} -> {st.dest('trips')}")
     return 1 if bad else 0
 
 
 def cmd_delete_trip(paths, ids):
-    """Remove every version of each trip id from trips.jsonl. Git keeps the old rows."""
-    dest = paths.src(TABLES["trips"][0])
-    with Lock(paths):
-        lines = read_jsonl(dest)
-        found = {}
-        keep = []
-        for _, r, err in lines:
-            if err is None and isinstance(r, dict) and r.get("id") in ids:
-                found[r["id"]] = found.get(r["id"], 0) + 1
-            elif err is None:
-                keep.append(r)
-        if found:
-            write_atomic(dest, "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in keep))
+    """Remove every version of each trip id. Git keeps the old rows of the files."""
+    st = get_store(paths)
+    found = st.delete_trip(set(ids))
     for tid in ids:
         if tid in found:
             print(f"deleted {tid} ({found[tid]} version{'s' if found[tid] != 1 else ''})")
         else:
             print(f"unknown trip {tid}")
-    print(f"trips: deleted {len(found)}, kept {len({r.get('id') for r in keep})} -> {os.path.relpath(dest, paths.root)}")
+    print(f"trips: deleted {len(found)}, kept {len({t['id'] for t in st.trips()})} -> {st.dest('trips')}")
     return 0 if len(found) == len(set(ids)) else 1
 
 
@@ -903,66 +677,54 @@ def export_trips(paths):
 
 # ---- check --------------------------------------------------------------------------------------
 
-def run_check(paths, quiet=False):
+def run_check(paths, quiet=False, st=None):
     """(errors, warnings) over every source."""
+    st = st or get_store(paths)
     errors, warnings = [], []
-    rel = lambda p: os.path.relpath(p, paths.root).replace(os.sep, "/")
     for name in DOCS:
-        p = paths.src(name)
-        if not os.path.exists(p):
-            if name in ("trip.json", "bag_rules.json"):
-                errors.append(f"{rel(p)}: missing")
-            continue
         try:
-            with open(p, encoding="utf-8") as fh:
-                json.load(fh)
-        except (json.JSONDecodeError, UnicodeDecodeError) as e:
-            errors.append(f"{rel(p)}: not valid JSON ({e})")
-    lists = load_doc(paths, "lists.json", {"lists": []}) or {}
-    cats = load_doc(paths, "experience_categories.json", {"categories": []}) or {}
+            data, _ = st.doc(name)
+        except ValueError as e:
+            errors.append(f"{st.label(name)}: not valid JSON ({e})")
+            continue
+        if data is None and name in ("trip.json", "bag_rules.json"):
+            errors.append(f"{st.label(name)}: missing")
+    lists = load_doc(st, "lists.json", {"lists": []}) or {}
+    cats = load_doc(st, "experience_categories.json", {"categories": []}) or {}
     for c in cats.get("categories", []):
-        errors += [f"data/sources/experience_categories.json {c.get('id')}: {e}" for e in
+        errors += [f"{st.label('experience_categories.json')} {c.get('id')}: {e}" for e in
                    check_fields(c, {"id": "!slug", "name": "!str", "place_categories": "!list", "image_id": "str|null"})]
     counts = {}
-    for table, (fname, _) in TABLES.items():
-        p = paths.src(fname)
+    for table in TABLES:
         n = 0
-        for line, r, err in read_jsonl(p):
+        for label, r, err in st.check_rows(table):
             n += 1
             errs = [err] if err else row_errors(table, r)
-            errors += [f"{rel(p)}:{line}: {e}" for e in errs]
+            errors += [f"{label}: {e}" for e in errs]
         counts[table] = n
-    _, every = latest_trips(rows_of(paths.src(TABLES["trips"][0])))
-    for tid, vs in every.items():
-        got = [r.get("version") for r in vs]
-        if got != list(range(1, len(vs) + 1)):
-            errors.append(f"data/sources/trips.jsonl {tid}: versions {got}, expected 1 to {len(vs)} once each")
-    places, exps = place_ids(paths), experience_ids(paths)
-    for r in rows_of(paths.src("experiences.jsonl")):
-        if isinstance(r, dict):
-            for e in _experience_check(paths)(r):
-                errors.append(f"data/sources/experiences.jsonl {r.get('id')}: {e}")
+    for tid, got in st.trip_versions().items():
+        if got != list(range(1, len(got) + 1)):
+            errors.append(f"{st.label('trips')} {tid}: versions {got}, expected 1 to {len(got)} once each")
+    places, exps = place_ids(st), experience_ids(st)
+    for r in st.rows("experiences"):
+        for e in _experience_check(st)(r):
+            errors.append(f"{st.label('experiences')} {r.get('id')}: {e}")
     for l in lists.get("lists", []):
         for i in l.get("items", []):
-            if (i.get("type") == "place" and i.get("id") not in places) or (i.get("type") == "experience" and i.get("id") not in exps) \
-                    or i.get("type") not in ("place", "experience"):
-                errors.append(f"data/sources/lists.json {l.get('id')}: unknown {i.get('type')} {i.get('id')}")
-    for kind_file, what in (("profiles.jsonl", "profile"), ("place_images.jsonl", "place image")):
-        for r in rows_of(paths.src(kind_file)):
-            if isinstance(r, dict) and r.get("id") not in places:
+            if (i.get("type") == "place" and i.get("id") not in places) or (i.get("type") == "experience" and i.get("id") not in exps)                     or i.get("type") not in ("place", "experience"):
+                errors.append(f"{st.label('lists.json')} {l.get('id')}: unknown {i.get('type')} {i.get('id')}")
+    for table, what in (("profiles", "profile"), ("place_images", "place image")):
+        for r in st.rows(table):
+            if r.get("id") not in places:
                 warnings.append(f"{what} {r.get('id')} has no place")
-    nq, files = 0, 0
-    if os.path.isdir(paths.quotes):
-        for f in sorted(os.listdir(paths.quotes)):
-            if not f.endswith(".jsonl"):
-                continue
-            files += 1
-            for line, q, err in read_jsonl(os.path.join(paths.quotes, f)):
-                nq += 1
-                errs = [err] if err else quote_errors(q)
-                errors += [f"data/sources/quotes/{f}:{line}: {e}" for e in errs]
+    nq, groups = 0, set()
+    for label, q, err in st.check_quotes():
+        nq += 1
+        groups.add(label.rsplit(":", 1)[0])
+        errs = [err] if err else quote_errors(q)
+        errors += [f"{label}: {e}" for e in errs]
     if not quiet:
-        print("sources: " + ", ".join(f"{t} {n}" for t, n in counts.items()) + f", quotes {nq} in {files} files")
+        print("sources: " + ", ".join(f"{t} {n}" for t, n in counts.items()) + f", quotes {nq} in {len(groups)} files")
     return errors, warnings
 
 
@@ -1159,8 +921,9 @@ def _run(paths, script, extra=()):
 
 
 def cmd_build(paths, fetch_elevation=False, sync=True):
-    rc = cmd_ingest_inbox(paths)
-    errors, _ = run_check(paths)
+    fs = store.FileStore(paths)
+    rc = cmd_ingest_inbox(paths, fs)
+    errors, _ = run_check(paths, st=fs)
     if errors:
         for e in errors[:40]:
             print("error:", e)
