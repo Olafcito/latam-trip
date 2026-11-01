@@ -576,8 +576,8 @@ Checked in phase 0 on 31 Oct 2026:
 
 Still open. These came up while writing and could not be confirmed. Check each in phase 0 or 1.
 
-- Whether Claude desktop reaches `*.supabase.co`. This PC does, checked on 31 Oct 2026.
-- Whether cloud Claude sessions reach it once the host is allowed. A run in the Default cloud environment on 31 Oct 2026 failed: its proxy answered `CONNECT tunnel failed, response 403` for REST, Storage and `urllib`, so the request never reached Supabase. Step 3 of section 10 must be done first, and the check run again.
+- Claude desktop reaches `*.supabase.co` from a Code session on this PC: HTTP 401 with no key, checked on 1 Nov 2026. A plain Claude chat cannot, as its proxy refuses the host, but a chat does not run `tripdb`, so that does not matter.
+- The Default cloud environment reaches it now that the host is allowed: HTTP 401 on REST with `curl` and `urllib`, and HTTP 400 on Storage, about 0.4 s each, checked on 1 Nov 2026. The same run failed on 31 Oct 2026 before the host was allowed.
 - Whether Storage accepts an upload with the new `sb_secret_` key.
 - Whether PostgREST caps a page at 1000 rows on this plan. The paging rule in section 5 works either way.
 - How Storage sets `cacheControl`, whether it serves gzip, and whether the CDN treats a file stored under a new hash as new.
