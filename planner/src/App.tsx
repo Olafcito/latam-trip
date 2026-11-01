@@ -90,11 +90,12 @@ function Tabs({ screen, go }: { screen: Screen; go: (s: Screen) => void }) {
 let linkRead = false
 
 /** /?trip=<id> opens that trip, as a click in the Trips list does. An unknown id shows the list with a note. */
-function openDeepLink() {
+export function openDeepLink() {
   if (linkRead) return
   linkRead = true
   const s = useStore.getState()
   const pick = readPick(window.location.search)
+  const linkedVersion = versionParam(window.location.search)
   if (pick) window.history.replaceState(window.history.state, '', withoutPick(window.location.href))
   const link = resolveDeepLink(window.location.search, s.saved, s.journey)
   if (link?.kind === 'unknown') {
@@ -102,7 +103,7 @@ function openDeepLink() {
     return s.setNotice(`There is no trip with the id ${link.id}. These are the trips there are.`)
   }
   if (link) s.openTrip(link.journey)
-  if (link) void openLinkedVersion(link.journey.id, versionParam(window.location.search))
+  if (link) void openLinkedVersion(link.journey.id, linkedVersion)
   if (pick) return landPick(pick)
   if (!link) syncAddress()
 }
@@ -151,7 +152,7 @@ function landPick(pick: Pick | 'bad') {
 }
 
 /** ?trip=<id> while a trip is open, nothing when none is. */
-function syncAddress() {
+export function syncAddress() {
   if (!linkRead) return
   const s = useStore.getState()
   const id = s.view === 'trip' && s.journey ? s.journey.id : null
