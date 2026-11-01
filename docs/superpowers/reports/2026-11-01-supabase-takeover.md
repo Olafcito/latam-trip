@@ -62,6 +62,6 @@ The first worker test invocation used a module import form that failed to locate
 
 ## Skills and next actions
 
-The migration plan names `superpowers:executing-plans` or `superpowers:subagent-driven-development`. Neither skill is present in the active Codex skill catalog. The project UI design skills were not applied because this change does not alter the interface. No skill installation or UI work was done.
+The migration plan names `superpowers:executing-plans` or `superpowers:subagent-driven-development`. The execution skill was installed from `obra/superpowers` into the user Codex skills folder and will be available next turn. The project UI design skills were not applied because this change does not alter the interface. No UI work was done.
 
 Remaining work is to deploy the build to the existing preview prefix with an AWS identity that can list or invalidate the distribution, then repeat the fresh version deep link check. Verify the data bucket and map round trip, task insertion and result display, live `tripdb` save and Realtime, and MCP connector round trip. Clean up only records confirmed to be E2E fixtures. Keep Task 27 and the site bucket root untouched.
