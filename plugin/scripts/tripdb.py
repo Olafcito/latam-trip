@@ -17,6 +17,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   list-remove LIST TYPE ID             take it out again
   save-trip FILE [--by plan-trip|migration|planner]  a trip into trips.jsonl as its next version (prints id and version)
   delete-trip ID [ID ...]              remove every version of those trips from trips.jsonl
+  query TABLE [--eq COL=VAL] [--in COL=A,B] [--gte COL=VAL] [--select COLS] [--limit N]  rows as JSON lines
   doc-get NAME [FILE]   doc-put NAME FILE   read or replace a document (trip.json, lists.json, ...)
   log-task --issue N --type TYPE --summary TEXT [--outputs a,b] [--task FILE] [--done-at TIME]
   log-usage --round R --agent A --model M --tool T --searches N --tokens N --tool-uses N --seconds N --rows N
@@ -592,6 +593,16 @@ def cmd_log_usage(paths, values):
         raise Refused("missing " + ", ".join("--" + c.replace("_", "-") for c in missing))
     get_store(paths).append("agent_usage", {c: values[c] for c in USAGE_COLS})
     print(f"agent_usage: logged {values['agent']}")
+    return 0
+
+
+# ---- query --------------------------------------------------------------------------------------
+
+def cmd_query(paths, table, eq=(), in_=(), gte=(), select=None, limit=None):
+    """Print the matching rows of a table as JSON lines, in the shape of the database columns."""
+    rows = get_store(paths).query(table, eq, in_, gte, select, limit)
+    for r in rows:
+        print(json.dumps(r, ensure_ascii=False, default=str))
     return 0
 
 
@@ -1315,6 +1326,16 @@ def main(argv=None):
             if not a:
                 raise Refused("delete-trip needs at least one trip id")
             return cmd_delete_trip(paths, a)
+        if cmd == "query":
+            multi = {}
+            for flag in ("--eq", "--in", "--gte"):
+                multi[flag] = []
+                while flag in a:
+                    multi[flag].append(_opt(a, flag))
+            sel, lim = _opt(a, "--select"), _opt(a, "--limit")
+            if len(a) != 1:
+                raise Refused("query needs a table name")
+            return cmd_query(paths, a[0], multi["--eq"], multi["--in"], multi["--gte"], sel, lim)
         if cmd == "doc-get":
             return cmd_doc_get(paths, a[0], a[1] if len(a) > 1 else "-")
         if cmd == "doc-put":

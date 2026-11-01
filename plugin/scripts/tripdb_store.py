@@ -389,6 +389,59 @@ def classify(keys, items, stored, same, replace):
     return res, pending
 
 
+QUERY_TABLES = ("airports", "places", "connections", "profiles", "place_images", "experiences", "experience_images", "stays",
+                "quotes", "trips", "trips_latest", "documents", "inbox", "tasks", "task_log", "agent_usage", "leases",
+                "derive_state", "derived_options")
+COL_RE = re.compile("[a-z_][a-z0-9_]*")
+
+
+def query_args(table, eq, in_, gte, select, limit):
+    """Check a query and split it: ([(col, val)], [(col, [vals])], [(col, val)], [cols] or None, limit or None)."""
+    if table not in QUERY_TABLES:
+        raise Refused(f"unknown table {table!r}, expected one of {', '.join(QUERY_TABLES)}")
+
+    def pairs(items, flag):
+        out = []
+        for it in items or ():
+            col, eqs, val = str(it).partition("=")
+            if not eqs or not COL_RE.fullmatch(col):
+                raise Refused(f"{flag} wants COL=VALUE with a plain column name, not {it!r}")
+            out.append((col, val))
+        return out
+    wanted = [(c, [x for x in v.split(",") if x != ""]) for c, v in pairs(in_, "--in")]
+    sel = None
+    if select:
+        sel = [c.strip() for c in select.split(",")]
+        bad = [c for c in sel if not COL_RE.fullmatch(c)]
+        if bad:
+            raise Refused(f"--select wants plain column names, not {bad[0]!r}")
+    if limit is not None and (not str(limit).isdigit() or int(limit) < 1):
+        raise Refused("--limit must be a whole number above 0")
+    return pairs(eq, "--eq"), wanted, pairs(gte, "--gte"), sel, None if limit is None else int(limit)
+
+
+def _text(v):
+    return "true" if v is True else "false" if v is False else "" if v is None else str(v)
+
+
+def _atleast(cell, val):
+    try:
+        return float(cell) >= float(val)
+    except (TypeError, ValueError):
+        return cell is not None and _text(cell) >= val
+
+
+def query_rows(rows, eq, in_, gte, select, limit):
+    """The rows that pass the tests, cut to the columns of select and to limit rows. Rows are database shaped dicts."""
+    out = []
+    for r in rows:
+        if all(_text(r.get(c)) == v for c, v in eq) and all(_text(r.get(c)) in vs for c, vs in in_)                 and all(_atleast(r.get(c), v) for c, v in gte):
+            out.append({c: r.get(c) for c in select} if select else r)
+            if limit is not None and len(out) >= limit:
+                break
+    return out
+
+
 class Store:
     kind = None
 
@@ -398,6 +451,9 @@ class Store:
     def recompute_quotes(self, cfg):
         """Bring build_qid and usable of the stored quotes in line with a changed trip.json. The files hold neither."""
         return 0
+
+    def query(self, table, eq=(), in_=(), gte=(), select=None, limit=None):
+        raise NotImplementedError
 
 
 class FileStore(Store):
@@ -539,6 +595,27 @@ class FileStore(Store):
                 return False
             write_atomic(self.paths.src(name), json.dumps(data, ensure_ascii=False, indent=1) + "\n")
         return True
+
+    # ---- query ----
+    def query(self, table, eq=(), in_=(), gte=(), select=None, limit=None):
+        """Rows as the database would hold them, filtered here. A column the table lacks matches nothing."""
+        eq, in_, gte, select, limit = query_args(table, eq, in_, gte, select, limit)
+        if table == "quotes":
+            rows = []
+            for f in sorted(os.listdir(self.paths.quotes)) if os.path.isdir(self.paths.quotes) else []:
+                if f.endswith(".jsonl"):
+                    rows += [{**q, "agent": q.get("agent") or f[:-6]} for q in rows_of(os.path.join(self.paths.quotes, f))
+                             if isinstance(q, dict)]
+            cfg = self.doc("trip.json")[0] or {}
+            rows = cols.fold_quotes(rows, cfg)
+        elif table in ("trips", "trips_latest"):
+            recs = self.rows("trips") if table == "trips" else self.trips()
+            rows = [cols.trip_row(r) for r in recs]
+        elif table in FILES and table in cols.COLS:
+            rows = [cols.to_row(table, r) for r in self.rows(table)]
+        else:
+            raise Refused(f"{table} is kept in the project only, run with TRIPDB_STORE=supabase")
+        return query_rows(rows, eq, in_, gte, select, limit)
 
     # ---- trips ----
     def save_trip(self, t):
@@ -796,6 +873,18 @@ class SupabaseStore(Store):
         got = self.rest.patch("documents", {"name": "eq." + dn, "version": "eq." + str(version)},
                               {"version": version + 1, "updated_at": now_utc(), "data": data}, returning="name")
         return len(got) == 1
+
+    def query(self, table, eq=(), in_=(), gte=(), select=None, limit=None):
+        eq, in_, gte, select, limit = query_args(table, eq, in_, gte, select, limit)
+        order = {"airports": "code", "trips": "id,version", "trips_latest": "id", "derived_options": "rank", "documents": "name",
+                 "inbox": "id", "tasks": "id", "leases": "name", "derive_state": "dirty_at"}.get(table, ORDER.get(table, "seq"))
+        params = {"select": ",".join(select) if select else "*", "order": order}
+        tests = [(c, "eq." + v) for c, v in eq] + [(c, "in.(" + ",".join(quoted(x) for x in vs) + ")") for c, vs in in_]             + [(c, "gte." + v) for c, v in gte]
+        for c, t in tests:
+            if c in params:
+                raise Refused(f"{c} has two tests, a query takes one test per column")
+            params[c] = t
+        return self.rest.get_all(table, params, limit=limit)
 
     def recompute_quotes(self, cfg):
         """Patch build_qid and usable on every quote whose value changes under cfg. Returns how many were patched."""

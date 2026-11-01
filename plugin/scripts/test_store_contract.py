@@ -176,6 +176,113 @@ class ContractTest(T.Base):
         self.assertEqual(after["usable"], 0)
 
 
+    # ---- query ----
+    def q(self, *args, **kw):
+        rc, out = self.run_quiet(tripdb.cmd_query, *args, **kw)
+        self.assertEqual(rc, 0)
+        return [json.loads(l) for l in out.splitlines()]
+
+    def test_query_eq_in_gte_select_limit(self):
+        self.add([place("QA", popularity=1), place("QB", popularity=3), place("QC", popularity=5, country="PA")])
+        self.assertEqual([r["id"] for r in self.q("places", eq=["country=PA"])], ["QC"])
+        got = self.q("places", in_=["id=QA,QC"], select="id,popularity")
+        self.assertEqual(got, [{"id": "QA", "popularity": 1}, {"id": "QC", "popularity": 5}])
+        self.assertEqual([r["id"] for r in self.q("places", gte=["popularity=3"], select="id")], ["SJO", "QB", "QC"])
+        self.assertEqual(len(self.q("places", limit="2")), 2)
+
+    def test_query_prints_json_lines(self):
+        self.add([place("QA"), place("QB")])
+        rc, out = self.run_quiet(tripdb.cmd_query, "places", select="id", gte=["popularity=1"])
+        self.assertEqual(out.splitlines()[-2:], ['{"id": "QA"}', '{"id": "QB"}'])
+
+    def test_query_finds_quotes_by_build_qid(self):
+        self.s.add_quotes([T.quote(), T.quote(price=6100, price_dkk=6100)], "a.jsonl")
+        every = self.q("quotes", select="build_qid,price_dkk,usable")
+        self.assertEqual(sorted(r["price_dkk"] for r in every), [5200, 6100])
+        one = self.q("quotes", in_=["build_qid=" + every[0]["build_qid"]], select="price_dkk")
+        self.assertEqual(len(one), 1)
+
+    def test_query_trips_latest(self):
+        self.s.save_trip(self.trip())
+        self.s.save_trip(self.trip(why="second"))
+        got = self.q("trips_latest", select="id,version")
+        self.assertEqual(got, [{"id": "t1", "version": 2}])
+
+    def test_query_rejects_an_unknown_table_and_a_bad_column(self):
+        for args, kw in ((("owners",), {}), (("places",), {"eq": ["id;drop=1"]}), (("places",), {"select": "id,(x)"}),
+                         (("places",), {"limit": "0"})):
+            with self.assertRaises(tripdb.Refused):
+                tripdb.cmd_query(self.paths, *args, **kw)
+
+    # ---- the inbox ----
+    def manual(self, **over):
+        return T.quote(**{"source": "momondo-manual", "agent": "momondo-manual", **over})
+
+    def put_inbox(self, name, rows):
+        if self.kind == "file":
+            self.write(os.path.join(self.paths.inbox, name), rows)
+        else:
+            self.s.rest.insert("inbox", [{"file": name, "status": "new", "rows": rows}])
+
+    def test_ingest_inbox_marks_added_and_rejected(self):
+        name = "manual-1.jsonl"
+        self.put_inbox(name, [self.manual(), self.manual(source="momondo", price_dkk=4100, price=4100)])
+        rc, out = self.run_quiet(tripdb.cmd_ingest_inbox)
+        self.assertEqual(rc, 1)
+        self.assertIn("added 1, duplicates 0, rejected 1", out)
+        self.assertEqual(self.s.inbox_new(), [])
+        if self.kind == "file":
+            rejected = tripdb.rows_of(os.path.join(self.paths.rejected, name))
+        else:
+            got = self.s.rest.get_all("inbox", {"select": "status,reason,rejected"})
+            self.assertEqual([g["status"] for g in got], ["added"])
+            self.assertIn("momondo-manual", got[0]["reason"])
+            rejected = got[0]["rejected"]
+        self.assertEqual([(r["line"], r["row"]["source"]) for r in rejected], [(2, "momondo")])
+        self.assertIn("must say momondo-manual", rejected[0]["reason"])
+
+    def test_ingest_inbox_of_only_bad_rows_is_rejected(self):
+        self.put_inbox("manual-2.jsonl", [self.manual(source="momondo")])
+        rc, out = self.run_quiet(tripdb.cmd_ingest_inbox)
+        self.assertEqual(rc, 1)
+        if self.kind == "supabase":
+            self.assertEqual([g["status"] for g in self.s.rest.get_all("inbox", {"select": "status"})], ["rejected"])
+
+    # ---- check and the logs ----
+    def test_check_reports_table_key(self):
+        self.s.add_quotes([T.quote(), T.quote(price=5, price_dkk=-5)], "w.jsonl")
+        errors, _ = tripdb.run_check(self.paths, quiet=True)
+        self.assertEqual(len(errors), 1, errors)
+        self.assertIn("price_dkk -5 is not above 0", errors[0])
+        self.assertTrue(errors[0].startswith("data/sources/quotes/w.jsonl:2" if self.kind == "file" else "quotes:"), errors)
+
+    def test_log_task(self):
+        rc, out = self.run_quiet(tripdb.cmd_log_task, 12, "research", "did it", ["a.json"], None, "2026-10-30T10:00+00:00")
+        self.assertIn("logged issue #12", out)
+        rows = self.s.rows("task_log")
+        self.assertEqual([(r["issue"], r["summary"], r["outputs"]) for r in rows], [(12, "did it", ["a.json"])])
+
+    def test_log_usage(self):
+        vals = {"round": "r1", "agent": "a", "model": "m", "tool": "t", "searches": "2", "tokens": "300", "tool_uses": "4",
+                "seconds": "50", "rows": "7"}
+        rc, out = self.run_quiet(tripdb.cmd_log_usage, vals)
+        self.assertIn("logged a", out)
+        if self.kind == "file":
+            self.assertIn("r1,a,m,t,2,300,4,50,7", self.text(self.paths.src("agent_usage.csv")))
+        else:
+            got = self.s.rest.get_all("agent_usage", {"select": "round,tokens,rows"})
+            self.assertEqual(got, [{"round": "r1", "tokens": 300, "rows": 7}])
+
+    def test_update_experience(self):
+        exp = {"kind": "experience", "id": "hike", "name": "Hike", "category": "nature", "tags": [], "places": ["SJO"],
+               "area": None, "country": "CR", "lat": 10.4, "lon": -84.7, "researched": False, "checked_at": "2026-10-28"}
+        self.add([exp], table="experiences")
+        rc, out = self.run_quiet(tripdb.cmd_update_experience, "hike", ["price_dkk=350", "researched=true"])
+        self.assertIn("hike.price_dkk: null -> 350", out)
+        got = self.s.rows("experiences")[0]
+        self.assertEqual((got["price_dkk"], got["researched"]), (350, True))
+
+
 class Handler(http.server.BaseHTTPRequestHandler):
     seen = []
 
