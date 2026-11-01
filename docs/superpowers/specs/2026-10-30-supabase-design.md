@@ -576,6 +576,13 @@ Checked in phase 0 on 31 Oct 2026:
 - The account allows `eu-west-1` and EventBridge Scheduler. A disabled schedule was created and removed. It needs its own role that `scheduler.amazonaws.com` can assume, `latam-trip-scheduler`, because the worker role only trusts Lambda.
 - Lambda reaches Supabase with no extra network setup. REST answered 401 in 0.09 s cold and 0.02 s warm.
 
+Measured in phase 4 on 1 Nov 2026:
+
+- From a write to a changed public file took 249 s in one run and about 2 minutes in a typical one, as the 5 minute gap can hold a build back. A whole build took about 11 to 20 s.
+- A row the check refused set `last_error` and started no retry loop. A refused trip left `last_warning` naming it, `last_error` cleared and new data built.
+- Writing every 45 s for 11 minutes gave builds at 13:32, 13:38 and 13:44 UTC, so one every 6 minutes at most.
+- A backup of 14 tables, 638 KB, restored with `--wipe` into the project gave dumps identical to those before.
+
 Still open. These came up while writing and could not be confirmed. Check each in phase 0 or 1.
 
 - Claude desktop reaches `*.supabase.co` from a Code session on this PC: HTTP 401 with no key, checked on 1 Nov 2026. A plain Claude chat cannot, as its proxy refuses the host, but a chat does not run `tripdb`, so that does not matter.

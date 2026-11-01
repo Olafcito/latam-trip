@@ -23,6 +23,8 @@ The data under `data/` is the trip's single source of truth and is the same on e
 
     python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_*.py"
 
+The build worker runs its own copy of tripdb.py and the pipeline scripts. A change to them reaches the worker only through `bash infra/deploy.sh`, and `tripdb status` shows the worker version next to the local git sha.
+
 Planned trips live in the trips table. `tripdb save-trip FILE` saves a trip as its next version and prints its id. The planner opens it at `/?trip=<id>`.
 
 ## Layout
