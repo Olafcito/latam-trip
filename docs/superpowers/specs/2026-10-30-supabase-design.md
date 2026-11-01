@@ -578,7 +578,10 @@ Still open. These came up while writing and could not be confirmed. Check each i
 
 - Claude desktop reaches `*.supabase.co` from a Code session on this PC: HTTP 401 with no key, checked on 1 Nov 2026. A plain Claude chat cannot, as its proxy refuses the host, but a chat does not run `tripdb`, so that does not matter.
 - The Default cloud environment reaches it now that the host is allowed: HTTP 401 on REST with `curl` and `urllib`, and HTTP 400 on Storage, about 0.4 s each, checked on 1 Nov 2026. The same run failed on 31 Oct 2026 before the host was allowed.
-- Whether Storage accepts an upload with the new `sb_secret_` key.
+- Secret key from this PC: REST 200, Storage 200 and the auth admin API 200, checked on 1 Nov 2026.
+- Storage accepts an upload with the new `sb_secret_` key from this PC. Creating the bucket `gate`, the upload, a byte equal read back and both deletes all answered 200 on 1 Nov 2026, and no bucket is left.
+- Secret key from a cloud session: not proven. `SUPABASE_SECRET_KEY` is set there with the right prefix, but on 1 Nov 2026 the auto mode classifier of an unattended routine refused the `curl` calls as data exfiltration, because they send the key to an outside host. Nothing was sent, so there is no status. `tripdb` makes the same kind of request, so an unattended cloud session may not be able to run it.
+- Secret key from a Claude desktop Code session: not checked yet.
 - Whether PostgREST caps a page at 1000 rows on this plan. The paging rule in section 5 works either way.
 - How Storage sets `cacheControl`, whether it serves gzip, and whether the CDN treats a file stored under a new hash as new.
 - Egress on the free plan. The pricing page says 5 GB plus 5 GB cached, and the bandwidth docs say 10 GB in total. Also whether a gzip pull counts its compressed size.
