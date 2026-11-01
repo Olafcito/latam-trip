@@ -14,7 +14,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "scripts"))
 import tripdb_store  # noqa: E402
 
-TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh"}
+TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh",
+         "fix_parser", "import_quotes"}
 
 
 def rest_of(root):

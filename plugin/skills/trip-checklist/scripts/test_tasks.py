@@ -77,6 +77,22 @@ class TasksTest(unittest.TestCase):
         self.assertIn("--outputs", args)
         self.assertEqual(args[args.index("--type") + 1], "flight_prices")
 
+    def test_the_userscript_task_types_can_be_shown_and_closed(self):
+        for kind in ("fix_parser", "import_quotes"):
+            r = {"id": 20000, "type": kind, "status": "open", "title": "u", "data": {"type": kind, "from": "userscript"}}
+            rest = FakeRest([r])
+            self.assertEqual(json.loads(out(tasks.cmd_show, rest, "20000"))["type"], kind)
+            self.assertIn(f"#20000	{kind}	open	u", out(tasks.cmd_list, rest))
+            calls = []
+            tasks.run_tripdb = lambda root, args: calls.append(args)
+            with tempfile.TemporaryDirectory() as d:
+                f = os.path.join(d, "s.md")
+                with open(f, "w", encoding="utf-8") as fh:
+                    fh.write("# Fixed" + chr(10))
+                out(tasks.cmd_done, rest, "20000", f, [], d)
+            self.assertEqual(rest.rows[0]["status"], "done")
+            self.assertEqual(calls[0][calls[0].index("--type") + 1], kind)
+
 
 if __name__ == "__main__":
     unittest.main()
