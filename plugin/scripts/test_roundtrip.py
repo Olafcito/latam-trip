@@ -237,6 +237,32 @@ class LiveTest(unittest.TestCase):
         finally:
             shutil.rmtree(base, ignore_errors=True)
 
+    def test_dump_restore_dump(self):
+        tripdb.cmd_import(SRC, rest=self.rest)
+        self.rest.patch("trips", {"id": "eq." + read(os.path.join(SRC, "trips.jsonl"))[0]["id"]}, {"deleted_at": "2026-11-01T10:00:00+00:00"})
+        self.rest.patch("quotes", {"seq": "eq.1"}, {"seen_count": 7})
+        with tempfile.TemporaryDirectory() as d1, tempfile.TemporaryDirectory() as d2:
+            n1 = tripdb.cmd_dump(d1, rest=self.rest)
+            self.rest.rpc("test_reset")
+            tripdb.cmd_restore(d1, rest=self.rest)
+            n2 = tripdb.cmd_dump(d2, rest=self.rest)
+            self.assertEqual(n1, n2)
+            for table, _, _ in tripdb.DUMP_TABLES:
+                self.assertEqual(read(os.path.join(d1, table + ".jsonl")), read(os.path.join(d2, table + ".jsonl")), table)
+            self.assertTrue(any(r["deleted_at"] for r in read(os.path.join(d2, "trips.jsonl"))))
+            self.assertEqual(read(os.path.join(d2, "quotes.jsonl"))[0]["seen_count"], 7)
+        before = max(r["seq"] for r in self.rest.get_all("agent_usage", {"select": "seq"}))
+        got = self.rest.insert("agent_usage", [{"round": "new", "agent": "a", "model": "m", "tool": "t"}], returning="seq")
+        self.assertGreater(got[0]["seq"], before)
+
+    def test_restore_refuses_when_rows_exist(self):
+        self.rest.insert("airports", [{"code": "ZZZ"}])
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(tripdb.Refused) as cm:
+                tripdb.cmd_restore(d, rest=self.rest)
+            self.assertIn("airports 1", str(cm.exception))
+        self.assertEqual(len(self.rest.get_all("airports")), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

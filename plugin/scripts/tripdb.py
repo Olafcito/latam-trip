@@ -23,6 +23,8 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   check                                validate every source against its schema
   import --from DIR [--wipe]           load a data/sources folder into an empty Supabase project (SUPABASE_URL and SUPABASE_SECRET_KEY)
   pull --to DIR                        write the project out as the files of data/sources, quotes in quotes/all.jsonl
+  dump --to DIR                        write every table as it stands, one JSON lines file per table
+  restore --from DIR [--wipe]          load a dump into an empty project and reset the identity sequences
   way-map --old OLD_INOUT --new NEW_INOUT  document way_id_map: old way id to new way id, matched on direction, type, tickets and depart
   build [--fetch-elevation] [--no-sync]  ingest-inbox, check, then rebuild data/built, data/web and .claude
                                        (data/web/pair_dates.json: every regional quote by pair and departure date)
@@ -1369,6 +1371,58 @@ def cmd_pull(to_dir, rest=None, root=None):
     return 0
 
 
+# ---- Supabase: dump and restore -----------------------------------------------------------------
+# table, order column, identity column. Foreign key order, so a table never comes before the one it points to.
+DUMP_TABLES = [("airports", "code", None), ("places", "seq", "seq"), ("connections", "id", "id"), ("profiles", "seq", "seq"),
+               ("place_images", "seq", "seq"), ("experiences", "seq", "seq"), ("experience_images", "seq", "seq"),
+               ("stays", "id", "id"), ("quotes", "seq", "seq"), ("trips", "seq", "seq"), ("documents", "name", None),
+               ("inbox", "id", "id"), ("tasks", "id", "id"), ("task_log", "seq", "seq"), ("agent_usage", "seq", "seq")]
+
+
+def cmd_dump(to_dir, rest=None, root=None):
+    """Every table as it stands, one JSON lines file per table with all columns. Nothing is shaped or dropped."""
+    to_dir = os.path.abspath(to_dir)
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    counts = {}
+    try:
+        for table, order, _ in DUMP_TABLES:
+            rows = rest.get_all(table, {"select": "*", "order": order + ".asc"})
+            _jsonl(os.path.join(to_dir, table + ".jsonl"), rows)
+            counts[table] = len(rows)
+    except store.RestError as e:
+        raise Refused(f"dump stopped: {e}")
+    print("dump: " + ", ".join(f"{t} {n}" for t, n in counts.items()) + f" into {to_dir}")
+    return counts
+
+
+def cmd_restore(from_dir, wipe=False, rest=None, root=None):
+    """Load a dump into an empty project and move the identity sequences past the loaded rows."""
+    from_dir = os.path.abspath(from_dir)
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    counts = {}
+    try:
+        held = {t: n for t, _, _ in reversed(DUMP_TABLES) if (n := _count(rest, t))}
+        if held and not wipe:
+            raise Refused("the project holds rows (" + ", ".join(f"{t} {n}" for t, n in held.items()) + "), use --wipe to clear them")
+        if held:
+            if rest.get_all("documents", {"select": "name", "name": "eq.cutover_done"}):
+                raise Refused("cutover_done exists, --wipe refused")
+            for t, order, _ in reversed(DUMP_TABLES):
+                if t in held:
+                    rest.delete(t, {order: "not.is.null"})
+        for table, order, ident in DUMP_TABLES:
+            path = os.path.join(from_dir, table + ".jsonl")
+            rows = [r for r in rows_of(path) if isinstance(r, dict)] if os.path.exists(path) else []
+            rest.insert(table, rows)
+            counts[table] = len(rows)
+            if ident:
+                rest.rpc("reset_identity", {"tbl": table, "col": ident})
+    except store.RestError as e:
+        raise Refused(f"restore stopped: {e}")
+    print("restore: " + ", ".join(f"{t} {n}" for t, n in counts.items()))
+    return counts
+
+
 # ---- command line -------------------------------------------------------------------------------
 
 def _opt(a, name, default=None):
@@ -1454,6 +1508,18 @@ def main(argv=None):
             if not src:
                 raise Refused("import needs --from DIR")
             cmd_import(src, wipe)
+            return 0
+        if cmd == "dump":
+            dest = _opt(a, "--to")
+            if not dest:
+                raise Refused("dump needs --to DIR")
+            cmd_dump(dest, root=paths.root)
+            return 0
+        if cmd == "restore":
+            wipe, src = _flag(a, "--wipe"), _opt(a, "--from")
+            if not src:
+                raise Refused("restore needs --from DIR")
+            cmd_restore(src, wipe, root=paths.root)
             return 0
         if cmd == "pull":
             dest = _opt(a, "--to")
