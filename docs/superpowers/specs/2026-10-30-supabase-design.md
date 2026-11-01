@@ -421,7 +421,7 @@ as $$ select exists (select 1 from public.owners where user_id = auth.uid()) $$;
 
 New keys from day one, as the legacy `anon` and `service_role` keys are being deprecated. Default execute on `add_quotes` is revoked from `public`, `anon` and `authenticated`.
 
-Redirect URLs list `http://localhost:5198` and the `web` dev URL. Hosting the planner for the phone is a separate follow up, as Supabase does not provide it, and it adds one more redirect URL.
+Redirect URLs list `http://localhost:5198`, the `web` dev URL and the hosted planner at `https://d15amu9hjiumbd.cloudfront.net`.
 
 Never commit a key. Keys go in `.env` at the root, which is git ignored, in the Claude environment settings, and in SSM for the worker. The repo is public, so this matters. `.env` was added to `.gitignore` on 31 Oct 2026.
 
@@ -500,7 +500,7 @@ Claude cannot create accounts or read keys from the dashboard, so these come fir
 Done on 31 Oct 2026: the project `nwwhaxodxkhvadnpkppt` in `eu-west-1`, on Postgres 17, and the database password in `.env`. The project was checked and is empty.
 
 1. Copy the publishable key and the secret key from Project Settings, API Keys, into `.env` as `SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY`.
-2. On both projects, turn off public sign ups, add the one user, and add `http://localhost:5198` and the `web` dev URL to the redirect URLs. Phases 3 to 5 test on the second project.
+2. On both projects, turn off public sign ups, add the one user, and add `http://localhost:5198`, the `web` dev URL and `https://d15amu9hjiumbd.cloudfront.net` to the redirect URLs. Phases 3 to 5 test on the second project.
 3. Create a second free project in `eu-west-1`, for tests and the restore test, so the same pooler host applies. Put its URL, secret key and database password in `.env` as `SUPABASE_TEST_URL`, `SUPABASE_TEST_SECRET_KEY` and `SUPABASE_TEST_PASSWORD`. REST cannot run migrations, so the password is needed.
 4. Add the first two keys and `SUPABASE_URL` to the Claude environment settings used by cloud sessions and Claude desktop, and allow `*.supabase.co` if the cloud environment limits network access.
 5. Run the one line reachability check in a Claude desktop session and in a cloud session. Claude cannot test those from this PC.
@@ -554,8 +554,7 @@ This is not a second home for the data. It is a dated archive that nothing reads
 
 ## 14. Not in this spec
 
-- Hosting the planner for the phone. Until then the app runs on this PC, and the first thing a phone needs is a hosted copy. Worth doing before 2 Dec 2026, as a separate piece of work.
-- Deploying the worker from a cloud session. It deploys from this PC only, so a pipeline fix made from the phone during the trip would not reach the worker. Worth settling alongside hosting.
+- Deploying the worker from a cloud session. It deploys from this PC only, so a pipeline fix made from the phone during the trip would not reach the worker. The planner no longer has this problem: since 1 Nov 2026 it is hosted on S3 and CloudFront, and a push to main deploys it through `.github/workflows/site.yml`. Until the cutover the hosted copy reads data from `raw.githubusercontent.com`, and trips saved there stay in that browser.
 - Starting Claude from the app.
 - Moving `pair_dates`, `inout` or other built files into tables.
 - Porting any pipeline logic to SQL or Edge Functions.
