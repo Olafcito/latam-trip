@@ -1,0 +1,42 @@
+# Deploys the planner when its code changes. Data does not need this: the app reads it when it opens.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - planner/**
+      - web/**
+      - infra/site_upload.sh
+      - .github/workflows/site.yml
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+        working-directory: web
+      - run: npm ci
+        working-directory: planner
+      - run: npm run build
+        working-directory: planner
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: eu-west-1
+      - run: bash infra/site_upload.sh
+        env:
+          SITE_DISTRIBUTION_ID: ${{ vars.SITE_DISTRIBUTION_ID }}
