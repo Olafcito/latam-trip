@@ -155,17 +155,13 @@ class LiveTest(unittest.TestCase):
                     self.assertEqual(parsed(table, g), parsed(table, w), (table, i))
             trips = read(os.path.join(SRC, "trips.jsonl"))
             self.assertEqual(read(os.path.join(out, "trips.jsonl")), trips)
-            # quotes: one row per quote_id, in the order of first appearance, with the newest copy's content
+            # quotes: one row per quote_id, in the order of first appearance, with the first copy's content
             groups = {}
             for q in raw_quotes():
                 groups.setdefault(C.qr.quote_id(q), []).append(q)
             want = []
             for g in groups.values():
-                best = g[0]
-                for q in g[1:]:
-                    if C.parse_ts(q["observed_at"]) > C.parse_ts(best["observed_at"]):
-                        best = q
-                want.append(dict(best, observed_at=max((q["observed_at"] for q in g), key=C.parse_ts)))
+                want.append(dict(g[0], observed_at=max((q["observed_at"] for q in g), key=C.parse_ts)))
             got = read(os.path.join(out, "quotes", "all.jsonl"))
             self.assertEqual(len(got), len(want))
             self.assertEqual(counts["quotes"], len(want))
@@ -190,6 +186,56 @@ class LiveTest(unittest.TestCase):
         counts = tripdb.cmd_import(SRC, rest=self.rest)
         self.assertGreater(counts["connections"], 0)
         self.assertEqual(len(self.rest.get_all("quotes", {"select": "quote_id"})), counts["quotes"])
+
+    def test_golden_compare(self):
+        """data/web built from a pull of the project against data/web built from the files in git. Only build stamps and
+        the known differences may differ (19 in connections, 57 in inout.json, 3 in pair_dates)."""
+        import shutil
+        base = tempfile.mkdtemp()
+        roots = {}
+        try:
+            for name in ("git", "pull"):
+                d = os.path.join(base, name)
+                shutil.copytree(os.path.join(REPO, "plugin"), os.path.join(d, "plugin"),
+                                ignore=shutil.ignore_patterns("__pycache__", "node_modules"))
+                shutil.copytree(os.path.join(REPO, "data", "raw"), os.path.join(d, "data", "raw"))
+                roots[name] = d
+            shutil.copytree(SRC, os.path.join(roots["git"], "data", "sources"))
+            tripdb.cmd_import(SRC, rest=self.rest)
+            tripdb.cmd_pull(os.path.join(roots["pull"], "data", "sources"), rest=self.rest)
+            for d in roots.values():
+                self.assertEqual(tripdb.main(["--root", d, "build", "--no-sync"]), 0)
+            stamps = {"built_at", "generated_at"}
+            diffs = {}
+
+            def walk(a, b, path, f):
+                if isinstance(a, dict) and isinstance(b, dict):
+                    for k in sorted(set(a) | set(b)):
+                        if k in stamps:
+                            continue
+                        walk(a.get(k), b.get(k), path + "/" + k, f)
+                elif isinstance(a, list) and isinstance(b, list) and len(a) == len(b):
+                    for i, (x, y) in enumerate(zip(a, b)):
+                        walk(x, y, f"{path}[{i}]", f)
+                elif a != b:
+                    diffs.setdefault(f, []).append(path)
+            web = os.path.join(roots["git"], "data", "web")
+            for f in sorted(os.listdir(web)):
+                if f.endswith(".json"):
+                    with open(os.path.join(web, f), encoding="utf-8") as fa, \
+                            open(os.path.join(roots["pull"], "data", "web", f), encoding="utf-8") as fb:
+                        walk(json.load(fa), json.load(fb), "", f)
+            # the differences the spec expects (section 4.2 and the golden compare row): a folded quote shows its newest
+            # observed_at as a ticket time in inout.json (57 at most), and 3 pair_dates values
+            import re
+            for f, cap in (("inout.json", 57), ("connections.json", 19)):
+                left = [x for x in diffs.get(f, []) if not re.fullmatch(r"/(tickets/TQ:\w+|options\[\d+\])/observed_at|.*/observed_at", x)]
+                self.assertEqual(left, [], f)
+                self.assertLessEqual(len(diffs.pop(f, [])), cap, f)
+            self.assertEqual(len(diffs.pop("pair_dates.json", [])), 3)
+            self.assertEqual({f: len(v) for f, v in diffs.items()}, {}, {f: v[:5] for f, v in diffs.items()})
+        finally:
+            shutil.rmtree(base, ignore_errors=True)
 
 
 if __name__ == "__main__":

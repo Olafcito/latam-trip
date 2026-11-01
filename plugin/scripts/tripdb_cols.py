@@ -119,7 +119,10 @@ def from_row(table, row):
         if v is None and m.drop_nulls(f, row):
             continue
         rec[f] = z(v) if f in m.stamps and v is not None else v
-    rec.update(row.get("extra") or {})
+    extra = dict(row.get("extra") or {})
+    if extra.pop("obs_fmt", None) == "min" and rec.get("observed_at"):
+        rec["observed_at"] = rec["observed_at"][:16] + "Z"
+    rec.update(extra)
     return rec
 
 
@@ -171,6 +174,8 @@ def quote_row(rec, cfg):
     p = qr.prepared(rec, cfg)
     L = p.get("legs_requested") or []
     row = to_row("quotes", rec)
+    if not re.fullmatch(r".*T\d\d:\d\d:\d\d.*", str(rec.get("observed_at") or "")):
+        row["extra"]["obs_fmt"] = "min"
     first_date, last_date = qr.leg_dates(p)
     last_from, last_to = _end_of(p)
     stamp = row["last_seen"]
@@ -188,7 +193,7 @@ class QuoteIdConflict(Exception):
 
 def fold_quotes(rows, cfg):
     """Database rows of quote records, one per quote_id, in the order of first appearance. A row takes the content of the
-    copy with the newest observed_at (the first of equals), first_seen and last_seen are the oldest and newest, and
+    first copy, as ingest.py keeps the first row of a qid (spec 4.2), first_seen and last_seen are the oldest and newest, and
     seen_count is the size of the group. One quote_id with two build_qid values is an error, unless the only difference
     is a price of 9337 against 9337.0, which float() makes equal."""
     groups = {}
@@ -200,13 +205,17 @@ def fold_quotes(rows, cfg):
         qids = {r["build_qid"] for r in g}
         if len(qids) > 1 and len({None if r["price_dkk"] is None else float(r["price_dkk"]) for r in g}) > 1:
             raise QuoteIdConflict(f"{qid} has build_qid values {sorted(qids)}")
-        best = g[0]
+        newest = g[0]
         for r in g[1:]:
-            if parse_ts(r["last_seen"]) > parse_ts(best["last_seen"]):
-                best = r
-        row = dict(best)
+            if parse_ts(r["last_seen"]) > parse_ts(newest["last_seen"]):
+                newest = r
+        row = dict(g[0])
+        row["extra"] = dict(row["extra"])
+        row["extra"].pop("obs_fmt", None)
+        if newest["extra"].get("obs_fmt"):
+            row["extra"]["obs_fmt"] = newest["extra"]["obs_fmt"]
         row["first_seen"] = min((r["last_seen"] for r in g), key=parse_ts)
-        row["last_seen"] = max((r["last_seen"] for r in g), key=parse_ts)
+        row["last_seen"] = newest["last_seen"]
         row["seen_count"] = len(g)
         out.append(row)
     return out
