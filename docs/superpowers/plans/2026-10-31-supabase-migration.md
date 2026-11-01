@@ -54,6 +54,7 @@
 | `infra/worker/steps.py` | `should_build`, the build run, upload, backup. Testable without AWS |
 | `infra/worker/test_steps.py` | Tests of `steps.py` |
 | `infra/deploy.sh`, `infra/build_zip.py` | Packages and deploys, using `AWS_PROFILE` when set |
+| `latam_trip_mcp/`, `infra/mcp/` | The `latam-trip-mcp` connector and its deploy |
 | `planner/src/lib/supabase.ts` | The one client, sign in, the feature flag |
 | `planner/src/lib/tripRow.ts` | `journeyToRow`, `tripRowErrors` |
 | `planner/src/lib/outbox.ts` | Offline saves |
@@ -335,6 +336,30 @@ Expected: PASS.
 - [ ] **Step 3: Implement.** Accepted names in `query` are the tables of 4.1, `trips_latest` and `derived_options`.
 
 - [ ] **Step 4: Run both stores, then commit**
+
+### Task 13A: `latam-trip-mcp`
+
+Spec section 17 is the source for this task. The server holds the secret key, so every Claude can save as a connector. A save from Simon's phone replaces the cloud check of phase 0, and Task 14 waits on that save.
+
+**Files:**
+- Create: `latam_trip_mcp/core.py`, `latam_trip_mcp/server.py`, `latam_trip_mcp/oauth.py`, `latam_trip_mcp/test_core.py`, `infra/mcp/template.yaml`, `infra/mcp/deploy.sh`
+- Copy the pattern from: `../arte-suave-mcp/arte_suave_mcp/oauth.py`, `../arte-suave-mcp/infra/template.yaml`
+
+**Interfaces:**
+- Consumes: `SupabaseStore` and the `tripdb` checks from Tasks 10 to 13, and the date rules in `planner/src/lib/journey.ts`.
+- Produces: `TYPES`, one table of trips, flights, buses and other connections, stays, experiences, places and tasks. List, get, add, update and delete tools are generated from it for each type, and add takes a batch. `set_leg_date` and `shift_leg` write trip dates.
+
+- [ ] **Step 1: Write the failing tests.** `test_types_table_generates_five_tools_per_type`, `test_add_batch_refuses_a_bad_row_by_number_and_keeps_the_good_rows`, `test_chat_flight_needs_only_from_to_date_price`, `test_chat_flight_has_source_chat`, `test_chat_flight_shows_in_the_planner_build_without_a_departure_time`, `test_trip_update_makes_a_new_version`, `test_delete_is_soft_and_can_be_undone`, `test_set_leg_date_moves_no_other_leg_and_keeps_its_flight`, `test_shift_leg_moves_that_leg_and_every_later_leg`, `test_shift_leg_never_changes_an_earlier_leg`, `test_date_clash_is_saved_and_named_in_the_reply`, `test_leg_off_its_flight_day_is_saved_and_the_reply_names_the_real_day`, `test_no_tool_searches_the_web`, `test_a_call_with_no_token_is_refused`.
+
+- [ ] **Step 2: Run.** Expected: FAIL.
+
+- [ ] **Step 3: Implement `core.py`.** CRUD only, reading what is stored. Writes keep the `tripdb` checks. Tool schemas tell each client which fields to send.
+
+- [ ] **Step 4: Add `server.py`, `oauth.py` and the template, copying the Arte Suave pattern.** FastMCP on Lambda behind API Gateway, with no public Function URL. Stack `latam-trip-mcp` in `eu-west-1`, tagged `project=latam-trip`. The secret key and the OAuth secrets live in SSM, never in the template or the repo.
+
+- [ ] **Step 5: Run the tests, deploy, and check that the deployed URL refuses a call with no token. Commit.**
+
+- [ ] **Step 6: Simon connects the server in Claude and saves a flight from the phone.** The flight must show in the table and in the planner build.
 
 ---
 
