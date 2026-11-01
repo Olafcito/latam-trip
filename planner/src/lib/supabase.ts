@@ -41,12 +41,17 @@ export function useSession(): SessionState {
   return state
 }
 
+/** The page's own address without query or hash, and no trailing slash when it is the root. */
+export function signInRedirect(loc: { origin: string; pathname: string } = window.location): string {
+  return loc.origin + (loc.pathname === '/' ? '' : loc.pathname)
+}
+
 /** Sends the magic link. Public sign ups are off, so only the owner's address gets one. */
 export async function sendMagicLink(email: string): Promise<string | null> {
   if (!supabase) return 'Sign in is not set up.'
   const { error } = await supabase.auth.signInWithOtp({
     email: email.trim(),
-    options: { emailRedirectTo: window.location.origin + '/', shouldCreateUser: false },
+    options: { emailRedirectTo: signInRedirect(), shouldCreateUser: false },
   })
   return error ? error.message : null
 }

@@ -33,3 +33,15 @@ describe('remoteEnabled', () => {
     expect(m.supabase).not.toBeNull()
   })
 })
+
+describe('signInRedirect', () => {
+  it.each([
+    ['https://d15amu9hjiumbd.cloudfront.net', '/', 'https://d15amu9hjiumbd.cloudfront.net'],
+    ['http://localhost:5198', '/', 'http://localhost:5198'],
+    ['https://d15amu9hjiumbd.cloudfront.net', '/preview/', 'https://d15amu9hjiumbd.cloudfront.net/preview/'],
+    ['https://d15amu9hjiumbd.cloudfront.net', '/preview/index.html', 'https://d15amu9hjiumbd.cloudfront.net/preview/index.html'],
+  ])('%s%s comes back to itself', async (origin, pathname, want) => {
+    const m = await load()
+    expect(m.signInRedirect({ origin, pathname })).toBe(want)
+  })
+})
