@@ -216,7 +216,7 @@ It is `security invoker`, and execute is revoked from `public` and `anon`, so ro
 
 The other documents are edited by hand today. Two new commands cover that: `tripdb doc-get NAME` writes the document to a file, and `tripdb doc-put NAME FILE` checks it is valid JSON and stores it with the same version condition.
 
-`web` app trips go to one `documents` row named `web_trips`, last write wins.
+`web` app trips go to one `documents` row named `web_trips`, last write wins. The `web` app reads the row on open and writes it on every save, and the import of its old `latam-trip.trips` key runs on the web origin and sets its marker only after the rows have landed.
 
 ## 5. tripdb
 
@@ -283,7 +283,7 @@ The planner subscribes to Realtime changes on `trips`. A change reloads `trips_l
 
 `followTab` and the `storage` listener go away for trips, as Realtime covers other tabs.
 
-Both apps also subscribe to `derive_state`. When a build finishes, an open app fetches `meta.json` and swaps in the changed files, so new prices appear with no reload and no waiting for focus. If `last_error` is set, the app shows a strip that says the data has stopped updating. This strip is required, as an automatic build fails with nobody watching.
+The planner subscribes to `derive_state`. The `web` app has no Supabase client, so it polls `meta.json` on open and on focus instead. When a build finishes, an open app fetches `meta.json` and swaps in the changed files, so new prices appear with no reload and no waiting for focus. If `last_error` is set, the app shows a strip that says the data has stopped updating. This strip is required, as an automatic build fails with nobody watching.
 
 ### 6.3 Cache and offline
 
@@ -482,13 +482,14 @@ The import runs after cutover, on port 5198, as the journeys live in that browse
 
 1. Stop agents. No Claude session writes during this.
 2. Merge `main` into the branch, then run `tripdb ingest-inbox` and a last build from git.
+2b. `tripdb way-map` writes `way_id_map.json` into `data/sources`. `tripdb import --wipe` refuses to run without it.
 3. `tripdb import --from data/sources --wipe`. This clears every test row, and `owners` stays.
 4. Verify with the round trip test, the golden compare and `tripdb check`.
 5. Move the open `claude-task` issues into `tasks`, see 8.3.
 6. Point the worker and the apps at the real project: `SUPABASE_URL`, the SSM secret, `VITE_SUPABASE_URL`, the publishable key and `VITE_DATA_BASE`. Set `TRIPDB_STORE=supabase` everywhere.
-7. Run the backup once by hand. With agents still stopped, restore that archive over the same project with `tripdb restore --wipe`, then dump and compare every table with the archive. Drop `test_reset()`, write the `cutover_done` document and enable both worker schedules.
-8. Remove `data/sources`, `data/built`, `data/web`, `planner/public/data` and `planner/scripts/sync-data.mjs`, and add `data/` to `.gitignore`, keeping `data/README.md`.
-9. Update `CLAUDE.md`, `data/README.md`, `docs/momondo-save.md`, `docs/claude-tasks.md`, `plugin/README.md`, `plugin/skills/latam-trips/SKILL.md`, and the publish steps in `plugin/skills/trip-checklist/SKILL.md` and `plugin/skills/plan-trip/SKILL.md`. `CLAUDE.md` must stop saying that `data/` is the truth, and must say how the worker is deployed.
+7. Run the backup once by hand. With agents still stopped, restore that archive over the same project with `tripdb restore --wipe`, then dump and compare every table with the archive. Drop `test_reset()`, write the `cutover_done` document with `tripdb cutover-done` and enable both worker schedules.
+8. Remove `data/sources`, `data/built`, `data/web`, `planner/public/data` `planner/scripts/sync-data.mjs`, the `sync-data` script in `planner/package.json`, the error text in `planner/src/App.tsx` that points at it, and the `/data` middleware in `planner/vite.config.ts` and `web/vite.config.ts`, and add `data/` to `.gitignore`, keeping `data/README.md`.
+9. Update `CLAUDE.md`, `data/README.md`, `docs/momondo-save.md`, `docs/claude-tasks.md`, `README.md`, `planner/README.md`, `plugin/README.md`, `plugin/skills/latam-trips/SKILL.md`, and the publish steps in `plugin/skills/trip-checklist/SKILL.md` and `plugin/skills/plan-trip/SKILL.md`. `CLAUDE.md` must stop saying that `data/` is the truth, and must say how the worker is deployed.
 10. Merge `supabase-migration` into `main`, push, confirm `git log main..supabase-migration` is empty, and delete the branch.
 
 To roll back before step 8, set `TRIPDB_STORE` back and disable the schedules. After step 8, git history and the backup both hold the data, but the history is not rewritten, so the old files stay visible there.
