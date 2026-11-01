@@ -20,6 +20,9 @@ export interface RowPlace {
   hop: (Hop & { observed_at?: string | null }) | null
   why?: string | null
   nights?: number | null
+  arrive?: string | null
+  depart?: string | null
+  stay?: Record<string, unknown> | null
 }
 
 /** One trip of trips.json: the latest version of a row of data/sources/trips.jsonl. */
@@ -36,6 +39,10 @@ export interface TripRow {
   way_home: Partial<Way> & { from: string; to: string; timeline: Way['timeline'] }
   tickets?: Record<string, Partial<Ticket> & { id: string; price_dkk: number }> | null
   places: RowPlace[]
+  /** the planner's totals at save time (or the shape an older tool wrote) */
+  totals?: Record<string, unknown> | null
+  /** the nights planned at the last stop */
+  lastNights?: number | null
   history?: TripVersion[]
 }
 
@@ -121,6 +128,7 @@ export function rowToJourney(r: TripRow): Journey {
   }
   if (r.rank != null) j.rank = r.rank
   if (r.why) j.why = r.why
+  if (r.lastNights != null) j.lastNights = r.lastNights
   return j
 }
 
