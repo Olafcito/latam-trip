@@ -8,7 +8,7 @@ Base commit: `45b1f09`
 
 The branch was synced with `origin/supabase-migration` at the start of the takeover. The tracked tree was clean. Two pre-existing untracked paths were present: `.claude/settings.local.json` and `Microsoft/`. They were preserved. No cutover, merge to `main`, or deployment to the site bucket root occurred.
 
-The migration plan labels Task 27 as the cutover and requires an explicit yes before running it. Task 27 remains untouched. The permitted preview deployment was attempted after the fix, but AWS denied `cloudfront:ListDistributions` before any upload. The bucket was not changed.
+The migration plan labels Task 27 as the cutover and requires an explicit yes before running it. Task 27 remains untouched. An initial preview attempt used a restricted AWS profile and stopped before upload. A second configured profile successfully deployed the build to the existing `preview/` prefix and invalidated only `/preview/*`.
 
 ## Claude handoff
 
@@ -29,13 +29,15 @@ The interrupted E2E run stopped when its agent hit a weekly API limit. It had si
 | Signed-out row security | Passed. The publishable key could not read trips or call `add_quotes`. |
 | Local storage separation | Passed with valid legacy storage fixtures. The preview left the legacy app keys unchanged. |
 | Small screen layout samples | Lists, map, dashboard, and version history showed no horizontal overflow or visible question marks in the captured checks. |
-| Deep link to an older version after a fresh load | Failed against the hosted preview. Opening a trip synchronously updated the address and removed `v` before the handler read it. A regression test reproduced the failure. The fix now captures `v` before opening the trip. The regression test passes, and a local production build opened v3 of 6 from a fresh URL with no page errors. The hosted preview still needs this fix deployed and retested. |
-| Data bucket refresh and map edit round trip | Not verified in the surviving E2E artifacts. |
-| Ask Claude task insert and result display | Not verified. The tasks table was empty during the baseline query. |
-| Live `tripdb` write and browser Realtime update | Not verified by this takeover. Existing two-browser E2E evidence did show cross-window trip sync. |
-| MCP connector round trip | Not verified. The Codex session has no connected Latam Trip MCP tool. |
+| Deep link to an older version after a fresh load | Failed against the old hosted preview and reproduced in a regression test. The fix captures `v` before opening the trip. After deployment, a fresh phone browser URL opened v3 of 6, retained `v=3`, had no horizontal overflow or question marks, and produced no page errors. |
+| Data bucket reads and map | Passed. Eight Storage data files returned HTTP 200. The phone map rendered with one canvas, two test stops, no horizontal overflow, and no question marks. |
+| Cache with Storage unavailable | Passed. After warming Cache API, Storage requests were blocked and the phone reopened the trip and map without page errors. |
+| Map-tab save reaches Supabase | Passed on a disposable E2E trip. Renaming it in the Map tab saved version 3 with the new name. |
+| Live `tripdb` save and browser Realtime | Passed on a synthetic E2E trip. tripdb saved versions 1 and 2. The signed-in phone list showed the new trip without a reload. The trip was later soft-deleted, with all three versions preserved. |
+| Ask Claude task insert and result display | Passed on the E2E trip. The app inserted one `flight_prices` task with the trip id and version, showed “Sent to Claude,” and displayed the result after the row changed to done. The test task was then deleted. |
+| MCP deployment and unauthenticated guard | Passed. Created the three required SSM parameters without printing their values, deployed the `latam-trip-mcp` stack, and confirmed its MCP endpoint returns HTTP 401 without a bearer. The protected resource metadata returned HTTP 200. |
 
-The scratchpad also includes a new-trip picker attempt that used the wrong navigation path. It did not establish a product failure. A malformed local-storage fixture also caused a test-only error and passed when retried with a valid array fixture.
+The scratchpad also includes a new-trip picker attempt that used the wrong navigation path. It did not establish a product failure. A malformed local-storage fixture also caused a test-only error and passed when retried with a valid array fixture. An initial attempt to open the test bus leg opened its expected details popover rather than a flight sheet; the E2E fixture was then changed to an explicit flight leg for the task flow.
 
 ## Code change and regression test
 
@@ -56,7 +58,7 @@ The regression test failed before the behavior change because version 2 did not 
 | Trip checklist task suite | Passed, 5 tests. Python emitted existing ResourceWarnings in `tasks.py`. |
 | MCP Python suite | Passed, 28 tests. |
 | Local production build | Passed. Vite reported the existing large chunk warning. |
-| Preview deployment | Blocked before upload because the available AWS identity lacks `cloudfront:ListDistributions`. |
+| Preview deployment | Passed with a configured AWS profile that has the required preview prefix and CloudFront access. The production bucket root was not touched. |
 
 The first worker test invocation used a module import form that failed to locate `infra`. Rerunning with unittest discovery rooted at `infra/worker` passed.
 
@@ -64,4 +66,4 @@ The first worker test invocation used a module import form that failed to locate
 
 The migration plan names `superpowers:executing-plans` or `superpowers:subagent-driven-development`. The execution skill was installed from `obra/superpowers` into the user Codex skills folder and will be available next turn. The project UI design skills were not applied because this change does not alter the interface. No UI work was done.
 
-Remaining work is to deploy the build to the existing preview prefix with an AWS identity that can list or invalidate the distribution, then repeat the fresh version deep link check. Verify the data bucket and map round trip, task insertion and result display, live `tripdb` save and Realtime, and MCP connector round trip. Clean up only records confirmed to be E2E fixtures. Keep Task 27 and the site bucket root untouched.
+The planner is available at `https://d15amu9hjiumbd.cloudfront.net/preview/index.html` for phone browser use. The MCP endpoint is `https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp`. Its OAuth passphrase is held in SSM at `/latam-trip-mcp/signin-passphrase`; an authenticated MCP client call and Simon's client connection remain to be verified. Task 27 and the site bucket root remain untouched. E2E fixtures from the interrupted Claude run were confirmed by name and soft-deleted. No real trip was changed or deleted.
