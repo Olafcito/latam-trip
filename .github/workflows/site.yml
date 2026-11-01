@@ -1,4 +1,5 @@
 # Deploys the planner when its code changes. Data does not need this: the app reads it when it opens.
+# The three VITE_ repo variables are the project URL, the publishable key and the data base. Without them the build has no Supabase.
 name: Deploy site
 
 on:
@@ -33,6 +34,10 @@ jobs:
         working-directory: planner
       - run: npm run build
         working-directory: planner
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_KEY: ${{ vars.VITE_SUPABASE_KEY }}
+          VITE_DATA_BASE: ${{ vars.VITE_DATA_BASE }}
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}

@@ -9,3 +9,4 @@ data/raw/
 .env
 .env.*
 data/crawl.db
+.mcp.json

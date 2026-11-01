@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Uploads a built planner/dist to the site bucket and clears what must not stay cached.
-# Hashed assets stay cached for a year. index.html and data are checked on every open.
+# Hashed assets stay cached for a year. index.html is checked on every open. The data lives in Supabase and not in the build.
 # Usage: SITE_DISTRIBUTION_ID=... bash infra/site_upload.sh
 set -euo pipefail
 export MSYS_NO_PATHCONV=1
@@ -13,10 +13,9 @@ REGION="${AWS_REGION:-eu-west-1}"
 AWS=(aws --region "$REGION")
 
 "${AWS[@]}" s3 sync "$DIST_DIR" "$BUCKET" --only-show-errors \
-  --exclude index.html --exclude 'data/*' --cache-control 'public,max-age=31536000,immutable'
-"${AWS[@]}" s3 sync "$DIST_DIR/data" "$BUCKET/data" --only-show-errors --cache-control no-cache
+  --exclude index.html --cache-control 'public,max-age=31536000,immutable'
 "${AWS[@]}" s3 cp "$DIST_DIR/index.html" "$BUCKET/index.html" --only-show-errors --cache-control no-cache
 # old assets go last, so a page open during the upload still finds its files
 "${AWS[@]}" s3 sync "$DIST_DIR" "$BUCKET" --only-show-errors --delete --size-only
 "${AWS[@]}" cloudfront create-invalidation --distribution-id "$SITE_DISTRIBUTION_ID" \
-  --paths /index.html '/data/*' --query Invalidation.Id --output text
+  --paths /index.html --query Invalidation.Id --output text

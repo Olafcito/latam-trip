@@ -81,6 +81,10 @@ fi
 ROLE_ARN="$("${AWS[@]}" iam get-role --role-name "$ROLE" --query Role.Arn --output text | text)"
 printf '%s' "$ROLE_ARN" | gh secret set AWS_DEPLOY_ROLE_ARN --repo "$REPO"
 gh variable set SITE_DISTRIBUTION_ID --repo "$REPO" --body "$DIST"
+# the build needs these three, so pass them in the environment when you run this script
+for v in VITE_SUPABASE_URL VITE_SUPABASE_KEY VITE_DATA_BASE; do
+  [ -n "${!v:-}" ] && gh variable set "$v" --repo "$REPO" --body "${!v}"
+done
 
 echo "distribution $DIST"
 echo "site https://$DOMAIN"
