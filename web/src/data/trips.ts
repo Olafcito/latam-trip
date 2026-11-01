@@ -1,3 +1,4 @@
+import { ownKey, readOwn } from './ownKey'
 import type { Model } from './model'
 import type { Connection, Mode, RouteOption } from './types'
 
@@ -119,7 +120,7 @@ export interface TripState {
   active: string | null // the trip drawn on the map and added to, if any
 }
 
-// also read by the one import into Supabase (planner/src/lib/importBrowser.ts), so the key must not change
+// also read by the one import into Supabase (planner/src/lib/importBrowser.ts), so the key must not change. The Supabase build keeps its own copy under ownKey
 export const TRIPS_KEY = 'latam-trip.trips'
 const OLD_JOURNEY_KEY = 'latam-trip.journey'
 
@@ -178,9 +179,9 @@ export function fromOldJourney(keys: string[]): Trip | null {
 
 export function readTrips(): TripState {
   try {
-    const raw = localStorage.getItem(TRIPS_KEY)
+    const raw = readOwn(TRIPS_KEY)
     if (raw) return parseTrips(JSON.parse(raw))
-    const old = localStorage.getItem(OLD_JOURNEY_KEY)
+    const old = readOwn(OLD_JOURNEY_KEY)
     const parsed: unknown = old ? JSON.parse(old) : []
     const trip = Array.isArray(parsed) ? fromOldJourney(parsed.filter((x): x is string => typeof x === 'string')) : null
     return trip ? { trips: [trip], active: null } : EMPTY_TRIPS
@@ -191,8 +192,9 @@ export function readTrips(): TripState {
 
 export function writeTrips(state: TripState) {
   try {
-    localStorage.setItem(TRIPS_KEY, JSON.stringify(state))
-    localStorage.removeItem(OLD_JOURNEY_KEY)
+    localStorage.setItem(ownKey(TRIPS_KEY), JSON.stringify(state))
+    // the Supabase build leaves the old key to the file based build
+    if (ownKey(OLD_JOURNEY_KEY) === OLD_JOURNEY_KEY) localStorage.removeItem(OLD_JOURNEY_KEY)
   } catch {
     // storage blocked: trips still work for this session
   }

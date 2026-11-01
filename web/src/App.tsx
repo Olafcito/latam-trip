@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { loadDash, loadMapData, type DashData } from './data/load'
+import { ownKey, readOwn } from './data/ownKey'
 import { files } from './data/remoteFiles'
 import { readTrips, writeTrips, type TripState } from './data/trips'
 import type { MapData } from './data/types'
@@ -12,7 +13,7 @@ const OPTIONS_KEY = 'latam-web.options'
 /** The pane starts open on a wide window and closed on a phone, then remembers the last choice. */
 function readOptionsOpen(): boolean {
   try {
-    const v = localStorage.getItem(OPTIONS_KEY)
+    const v = readOwn(OPTIONS_KEY)
     if (v === '1' || v === '0') return v === '1'
   } catch { /* private window or blocked storage: fall through to the default */ }
   return typeof window !== 'undefined' && window.innerWidth >= 1024
@@ -51,7 +52,7 @@ export function App() {
   const { showSignIn } = useWebTrips(trips, setTrips)
   useEffect(() => writeTrips(trips), [trips])
   useEffect(() => {
-    try { localStorage.setItem(OPTIONS_KEY, optionsOpen ? '1' : '0') } catch { /* nothing to remember into */ }
+    try { localStorage.setItem(ownKey(OPTIONS_KEY), optionsOpen ? '1' : '0') } catch { /* nothing to remember into */ }
   }, [optionsOpen])
 
   if (error) {

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { ownKey, readOwn } from '@map/data/ownKey'
 import type { AppData, CrawledFlight, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
 import { dayDiff } from './lib/format'
@@ -29,7 +30,7 @@ const sameContent = (a: Journey, b: Journey) => sameJourney({ ...a, version: 0 }
 
 function read<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(key)
+    const raw = readOwn(key)
     return raw ? (JSON.parse(raw) as T) : fallback
   } catch {
     return fallback
@@ -38,7 +39,7 @@ function read<T>(key: string, fallback: T): T {
 
 function write(key: string, value: unknown) {
   try {
-    localStorage.setItem(key, JSON.stringify(value))
+    localStorage.setItem(ownKey(key), JSON.stringify(value))
   } catch {
     // storage blocked or full: the app keeps working for this session
   }
@@ -46,7 +47,7 @@ function write(key: string, value: unknown) {
 
 function forget(key: string) {
   try {
-    localStorage.removeItem(key)
+    localStorage.removeItem(ownKey(key))
   } catch {
     // storage blocked: nothing to forget
   }

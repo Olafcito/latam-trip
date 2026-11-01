@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { ownKey, readOwn } from '@map/data/ownKey'
 import { day, dayDiff, kr, shortKr, weekdayDay } from '../../lib/format'
 import { momondoUrl } from '../../lib/prices'
 import { addDays } from '../../lib/time'
@@ -16,10 +17,10 @@ const WD = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 const MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 function readLens(): Lens {
-  try { return localStorage.getItem(KEY) === 'day' ? 'day' : 'date' } catch { return 'date' }
+  try { return readOwn(KEY) === 'day' ? 'day' : 'date' } catch { return 'date' }
 }
 function saveLens(l: Lens) {
-  try { localStorage.setItem(KEY, l) } catch { /* private window */ }
+  try { localStorage.setItem(ownKey(KEY), l) } catch { /* private window */ }
 }
 /** 0 for Monday */
 const weekday = (d: string) => (new Date(d + 'T00:00:00Z').getUTCDay() + 6) % 7
