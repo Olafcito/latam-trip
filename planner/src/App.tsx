@@ -8,6 +8,8 @@ import { clock, observed, weekdayDay } from './lib/format'
 import { nodeName } from './lib/journey'
 import { Warn } from './components/icons'
 import { Freshness } from './components/Freshness'
+import { SignIn } from './components/SignIn'
+import { remoteEnabled, useSession } from './lib/supabase'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
 
@@ -131,6 +133,7 @@ export function App() {
   const screen = useStore((s) => s.screen)
   const go = useStore((s) => s.go)
   const [error, setError] = useState<string | null>(null)
+  const auth = useSession()
 
   const setRepoTrips = useStore((s) => s.setRepoTrips)
   useInputMode()
@@ -158,6 +161,8 @@ export function App() {
     return () => window.removeEventListener('storage', follow)
   }, [])
 
+  if (remoteEnabled() && !auth.ready) return <div className="app"><main className="main" /></div>
+  if (remoteEnabled() && !auth.session) return <SignIn />
   if (error) {
     return (
       <div className="app">
