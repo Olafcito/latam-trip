@@ -1,0 +1,132 @@
+"""Live tests of the database functions. They need TRIPDB_LIVE_TESTS=1 and the project keys in the environment or in .env.
+They empty the project first, and test_reset refuses once the cutover_done document exists.
+Run: TRIPDB_LIVE_TESTS=1 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_db_functions.py"
+"""
+import json, os, re, threading, unittest, urllib.error, urllib.request
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+LIVE = os.environ.get("TRIPDB_LIVE_TESTS") == "1"
+
+
+def load_env():
+    env = dict(os.environ)
+    path = os.path.join(ROOT, ".env")
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as fh:
+            for line in fh:
+                m = re.match(r"\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*?)\s*$", line)
+                if m and m.group(1) not in env:
+                    env[m.group(1)] = m.group(2).strip("'\"")
+    return env
+
+
+def call(env, method, path, body=None, key="SUPABASE_SECRET_KEY"):
+    """(status, parsed body). key None sends no apikey at all."""
+    headers = {"Content-Type": "application/json"}
+    if key:
+        headers["apikey"] = env[key]
+    req = urllib.request.Request(env["SUPABASE_URL"].rstrip("/") + "/rest/v1/" + path, method=method, headers=headers,
+                                 data=None if body is None else json.dumps(body).encode())
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            text = r.read().decode()
+            return r.status, (json.loads(text) if text else None)
+    except urllib.error.HTTPError as e:
+        text = e.read().decode()
+        e.close()
+        try:
+            return e.code, json.loads(text)
+        except ValueError:
+            return e.code, text
+
+
+def quote_row(qid, **over):
+    row = {"quote_id": qid, "build_qid": "Q:" + qid[-6:], "agent": "t", "source": "momondo", "structure": "one_way",
+           "first_seen": "2026-10-20T10:00:00Z", "last_seen": "2026-10-20T10:00:00Z",
+           "first_from": "CPH", "first_to": "SJO", "last_from": "CPH", "last_to": "SJO",
+           "first_date": "2026-12-03", "last_date": "2026-12-03", "price": 5200, "currency": "DKK", "price_dkk": 5200,
+           "usable": 1, "flags": [], "legs_requested": [{"from": "CPH", "to": "SJO", "date": "2026-12-03"}],
+           "out_leg": {"dep": "2026-12-03T06:00"}}
+    row.update(over)
+    return row
+
+
+@unittest.skipUnless(LIVE, "set TRIPDB_LIVE_TESTS=1 to run against the project")
+class AddQuotesTest(unittest.TestCase):
+    def setUp(self):
+        self.env = load_env()
+        code, body = call(self.env, "POST", "rpc/test_reset", {})
+        self.assertIn(code, (200, 204), body)
+
+    def add(self, rows, key="SUPABASE_SECRET_KEY"):
+        return call(self.env, "POST", "rpc/add_quotes", {"rows": rows}, key)
+
+    def stored(self, qid):
+        code, rows = call(self.env, "GET", f"quotes?quote_id=eq.{qid}&select=quote_id,seen_count,first_seen,last_seen,price_dkk")
+        self.assertEqual(code, 200, rows)
+        return rows
+
+    def test_same_batch_twice(self):
+        batch = [quote_row("Q2:a1")]
+        self.assertEqual(self.add(batch), (200, {"added": 1, "seen_again": 0}))
+        self.assertEqual(self.add(batch), (200, {"added": 0, "seen_again": 1}))
+        rows = self.stored("Q2:a1")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["seen_count"], 2)
+
+    def test_batch_repeats_a_quote(self):
+        batch = [quote_row("Q2:b1", last_seen="2026-10-20T10:00:00Z", price_dkk=111),
+                 quote_row("Q2:b1", last_seen="2026-10-22T10:00:00Z", price_dkk=222),
+                 quote_row("Q2:b1", last_seen="2026-10-21T10:00:00Z", price_dkk=333)]
+        self.assertEqual(self.add(batch), (200, {"added": 1, "seen_again": 0}))
+        rows = self.stored("Q2:b1")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["seen_count"], 3)
+        self.assertTrue(rows[0]["last_seen"].startswith("2026-10-22T10:00:00"))
+        self.assertEqual(float(rows[0]["price_dkk"]), 222)
+
+    def test_older_sighting_does_not_move_last_seen_back(self):
+        self.add([quote_row("Q2:c1", last_seen="2026-10-25T10:00:00Z")])
+        self.add([quote_row("Q2:c1", last_seen="2026-10-21T10:00:00Z")])
+        rows = self.stored("Q2:c1")
+        self.assertTrue(rows[0]["last_seen"].startswith("2026-10-25T10:00:00"))
+        self.assertEqual(rows[0]["seen_count"], 2)
+
+    def test_new_airport_makes_a_stub(self):
+        self.assertEqual(self.add([quote_row("Q2:d1", first_to="ZZZ", last_to="ZZZ")])[0], 200)
+        code, rows = call(self.env, "GET", "airports?code=eq.ZZZ&select=code,name")
+        self.assertEqual((code, rows), (200, [{"code": "ZZZ", "name": None}]))
+
+    def test_two_writers_at_once(self):
+        results = []
+
+        def writer():
+            results.append(self.add([quote_row("Q2:e1")]))
+        threads = [threading.Thread(target=writer) for _ in range(2)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        self.assertTrue(all(code == 200 for code, _ in results), results)
+        rows = self.stored("Q2:e1")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["seen_count"], 2)
+
+    def test_publishable_key_cannot_call_add_quotes(self):
+        code, _ = self.add([quote_row("Q2:f1")], key="SUPABASE_PUBLISHABLE_KEY")
+        self.assertIn(code, (401, 403))
+        self.assertEqual(self.stored("Q2:f1"), [])
+
+    def test_no_key_reads_nothing(self):
+        self.add([quote_row("Q2:g1")])
+        for key in (None, "SUPABASE_PUBLISHABLE_KEY"):
+            for table in ("quotes", "trips", "documents", "inbox_tokens", "owners", "tasks"):
+                code, body = call(self.env, "GET", table + "?select=*", key=key)
+                self.assertTrue(code in (401, 403) or body == [], (key, table, code, body))
+        code, _ = call(self.env, "POST", "quotes", [quote_row("Q2:g2")], key="SUPABASE_PUBLISHABLE_KEY")
+        self.assertIn(code, (401, 403))
+        self.assertEqual(self.stored("Q2:g2"), [])
+
+
+if __name__ == "__main__":
+    unittest.main()
