@@ -14,7 +14,7 @@ export interface Queued {
 /** How a send ended. `queued` means it could not be tried now and must stay. */
 export type SendOutcome =
   | { status: 'saved' }
-  | { status: 'queued' }
+  | { status: 'queued'; reason?: 'offline' | 'session' }
   | { status: 'deleted' }
   | { status: 'failed'; message: string }
 
@@ -24,6 +24,8 @@ export interface FlushReport {
   dropped: { row: TripRow; reason: string }[]
   /** saves still waiting */
   left: number
+  /** why the run stopped on a save that has to wait, when it did */
+  stalled?: 'offline' | 'session'
 }
 
 function read(): Queued[] {
@@ -74,7 +76,10 @@ export const outbox = {
           } catch {
             break
           }
-          if (out.status === 'queued') break
+          if (out.status === 'queued') {
+            report.stalled = out.reason ?? 'offline'
+            break
+          }
           // the send is over, so the head leaves. Saves queued while it ran sit behind it
           write(read().slice(1))
           if (out.status === 'saved') report.sent++

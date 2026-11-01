@@ -57,6 +57,14 @@ export async function loadTrips(): Promise<TripRow[]> {
   return rows
 }
 
+/** The ids of trips deleted in some window, so a copy this browser still holds can go too. */
+export async function loadDeletedIds(): Promise<string[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase.from('trips').select('id').not('deleted_at', 'is', null)
+  if (error) throw new Error(error.message)
+  return [...new Set((data ?? []).map((r: { id: string }) => r.id))]
+}
+
 /** Every version of one trip, oldest first. */
 export async function loadVersions(id: string): Promise<TripRow[]> {
   if (!supabase) return []
@@ -90,7 +98,7 @@ export async function saveTrip(row: TripRow): Promise<SaveResult> {
 export async function sendQueued(row: TripRow): Promise<SendOutcome> {
   const r = await saveTrip(row)
   if (r.status === 'saved') return { status: 'saved' }
-  if (r.status === 'queued') return { status: 'queued' }
+  if (r.status === 'queued') return { status: 'queued', reason: r.reason }
   if (r.status === 'deleted') return { status: 'deleted' }
   return { status: 'failed', message: r.message }
 }

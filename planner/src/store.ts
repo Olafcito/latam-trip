@@ -10,8 +10,8 @@ import type { Mode } from './data/types'
 import { localOnly, mergeTrips, retireSeeds, rowToJourney, sameJourney, withTripWays, type TripRow } from './lib/repoTrips'
 import { remoteEnabled } from './lib/supabase'
 import { deleteTrip, loadTrips, projectRef, readDoc, saveTrip, sendQueued, writeDoc } from './lib/remoteTrips'
-import { importBrowser, importWebTrips } from './lib/importBrowser'
-import { outbox } from './lib/outbox'
+import { importBrowser } from './lib/importBrowser'
+import { outbox, type FlushReport } from './lib/outbox'
 import { journeyToRow } from './lib/tripRow'
 
 const FILTERS_KEY = 'latam-planner.filters'
@@ -23,6 +23,9 @@ const HIDDEN_KEY = 'latam-planner.hidden'
 /** the old seed import: which seeded trips this browser was given. Read once when the table trips arrive */
 const SEEDED_KEY = 'latam-planner.seeded'
 const SEED_FILE_KEY = 'latam-planner.seed-file'
+
+/** The same trip content, whatever version or save time each holds. */
+const sameContent = (a: Journey, b: Journey) => sameJourney({ ...a, version: 0 }, { ...b, version: 0 })
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -134,9 +137,10 @@ interface State {
   /** with Supabase: the latest stored row of each trip, by id */
   rows: Record<string, TripRow>
   /** the trips table changed, or was read: list its trips, and tell the user when the open trip moved under unsaved edits */
-  applyRemote: (rows: TripRow[]) => void
+  /** `deleted` names ids deleted elsewhere, so a copy held only in this browser goes too */
+  applyRemote: (rows: TripRow[], deleted?: string[]) => void
   /** send the saves waiting in the outbox, in order */
-  flushOutbox: () => Promise<void>
+  flushOutbox: () => Promise<FlushReport | null>
   /** the one import of this browser, which runs only after cutover. Returns whether it saved anything */
   runImport: () => Promise<boolean>
   /** a one-line message on the Trips list, such as a link to a trip that does not exist */
@@ -336,16 +340,7 @@ export const useStore = create<State>((set, get) => ({
       const stored = !!get().rows[id]
       write(SAVED_KEY, localOnly(saved, get().repo))
       set({ saved, compare: get().compare.filter((c) => c !== id) })
-      if (stored) {
-        void deleteTrip(id).then((r) => {
-          if (r.ok) set({ rows: Object.fromEntries(Object.entries(get().rows).filter(([k]) => k !== id)) })
-          else {
-            // the delete did not happen, so the trip comes back to the list
-            get().applyRemote(Object.values(get().rows))
-            get().setNotice(`The trip could not be deleted, so it stays. ${r.message}`)
-          }
-        })
-      }
+      if (stored) removeRemote(id, get, set)
       return
     }
     write(SAVED_KEY, localOnly(saved, get().repo))
@@ -389,12 +384,12 @@ export const useStore = create<State>((set, get) => ({
     set({ repo, hidden, journey, saved: mergeTrips(local, repo, hidden) })
   },
   rows: {},
-  applyRemote: (list) => {
+  applyRemote: (list, deleted = []) => {
     const was = get()
     const rows = Object.fromEntries(list.map((r) => [r.id, r]))
     const repo = list.map(rowToJourney)
     // trips held only on this device stay, a trip the table had comes from the table
-    const local = was.saved.filter((j) => !was.rows[j.id] && !was.repo.some((r) => r.id === j.id) && !rows[j.id])
+    const local = was.saved.filter((j) => !was.rows[j.id] && !was.repo.some((r) => r.id === j.id) && !rows[j.id] && !deleted.includes(j.id))
     let journey = was.journey
     let notice = was.notice
     const open = journey
@@ -404,7 +399,11 @@ export const useStore = create<State>((set, get) => ({
       // unsaved edits: the journey differs from the row it was opened from
       const edited = !!base && !sameJourney(rowToJourney(base), open)
       if (next && base && next.version > base.version) {
-        if (edited) notice = 'This trip has a newer saved version from another window. Your edits are still here and nothing was replaced.'
+        // a row with the content this window holds is its own save coming back, not another window's
+        if (sameContent(rowToJourney(next), open)) {
+          journey = rowToJourney(next)
+          write(CURRENT_KEY, journey)
+        } else if (edited) notice = 'This trip has a newer saved version from another window. Your edits are still here and nothing was replaced.'
         else {
           journey = rowToJourney(next)
           write(CURRENT_KEY, journey)
@@ -436,19 +435,19 @@ export const useStore = create<State>((set, get) => ({
     }
     try {
       const a = await importBrowser(deps)
-      await importWebTrips(deps)
       return a.imported.length > 0 || a.deleted.length > 0
     } catch {
       return false
     }
   },
   flushOutbox: async () => {
-    if (!remoteEnabled() || !outbox.size()) return
+    if (!remoteEnabled() || !outbox.size()) return null
     const rep = await outbox.flush(sendQueued)
     if (rep.dropped.length) {
       const names = rep.dropped.map((d) => d.row.name).join(', ')
       get().setNotice(`Saves that waited could not be stored: ${names}. ${rep.dropped[0].reason === 'deleted' ? 'The trip was deleted in another window.' : rep.dropped[0].reason}`)
     } else if (rep.sent) get().setNotice(null)
+    return rep
   },
   notice: null,
   setNotice: (notice) => set({ notice }),
@@ -476,11 +475,19 @@ export const useStore = create<State>((set, get) => ({
     if (r.current) write(CURRENT_KEY, r.current)
     else write(CURRENT_KEY, null)
     const gone = saved.filter((s) => !r.saved.some((x) => x.id === s.id)).map((s) => s.id)
-    if (remoteEnabled()) for (const id of gone) if (get().rows[id]) void deleteTrip(id)
     set({
       journey: r.current, saved: r.saved, hidden: hide(get(), gone), mapOpen: r.open, cursor: null, idle: false,
       compare: compare.filter((c) => r.saved.some((s) => s.id === c)),
     })
+    if (!remoteEnabled()) return
+    for (const id of gone) if (get().rows[id]) removeRemote(id, get, set)
+    // every trip the map added or changed goes to the table, so the button does not say Saved for a trip only this browser holds
+    const before = (id: string) => saved.find((s) => s.id === id) ?? (journey?.id === id ? journey : undefined)
+    const touched = r.saved.filter((j) => {
+      const b = before(j.id)
+      return !b || !sameJourney(b, j)
+    })
+    void touched.reduce((p, j) => p.then(() => saveRemote(j, get, set)), Promise.resolve())
   },
 }))
 
@@ -498,28 +505,52 @@ async function saveRemote(copy: Journey, get: () => State, set: (p: Partial<Stat
   } catch (e) {
     return s.setNotice(e instanceof Error ? e.message : String(e))
   }
+  // only the trip that is open on the screen changes the screen. A trip saved from the map stays out of it
+  const isOpen = () => get().journey?.id === copy.id
+  const waits = (reason: 'offline' | 'session') => {
+    const open = isOpen()
+    if (open) write(CURRENT_KEY, copy)
+    set({ ...(open ? { journey: copy } : {}), saved: [...get().saved.filter((x) => x.id !== copy.id), copy] })
+    noteQueued(get, reason)
+  }
   // the earlier waiting saves go first, so versions keep the order of the presses
   if (outbox.size()) {
     outbox.enqueue(row)
-    await get().flushOutbox()
-    if (outbox.size()) return noteQueued(get, 'offline')
+    const rep = await get().flushOutbox()
+    if (outbox.size()) return waits(rep?.stalled ?? 'offline')
+    const open = isOpen()
+    if (open) write(CURRENT_KEY, copy)
+    set({ ...(open ? { journey: copy } : {}), saved: [...get().saved.filter((x) => x.id !== copy.id), copy] })
     return
   }
   const r = await saveTrip(row)
   if (r.status === 'saved') {
     const stored: TripRow = { ...row, version: r.version }
-    const saved = [...get().saved.filter((x) => x.id !== copy.id), rowToJourney(stored)]
-    const mine = { ...copy, version: r.version }
-    write(CURRENT_KEY, mine)
-    set({ rows: { ...get().rows, [copy.id]: r.skipped && get().rows[copy.id] ? get().rows[copy.id] : stored }, saved, journey: mine })
+    const rows = { ...get().rows, [copy.id]: r.skipped && get().rows[copy.id] ? get().rows[copy.id] : stored }
+    // the screen holds the trip as the table does, so it is not left changed against its own save
+    const mine = rowToJourney(rows[copy.id])
+    const saved = [...get().saved.filter((x) => x.id !== copy.id), mine]
+    const open = isOpen()
+    if (open) write(CURRENT_KEY, mine)
+    const d = get().data
+    set({ rows, saved, ...(open ? { journey: mine } : {}), ...(d ? { data: { ...d, inout: withTripWays(d.inout, Object.values(rows)) } } : {}) })
   } else if (r.status === 'queued') {
     outbox.enqueue(row)
-    write(CURRENT_KEY, copy)
-    set({ journey: copy, saved: [...get().saved.filter((x) => x.id !== copy.id), copy] })
-    noteQueued(get, r.reason)
+    waits(r.reason)
   } else if (r.status === 'deleted') {
     get().setNotice('This trip was deleted in another window, so this save was not stored. Nothing was brought back.')
   } else get().setNotice(r.message)
+}
+
+/** Delete a stored trip. The trip leaves the list at once, and comes back with a notice when the delete did not happen. */
+function removeRemote(id: string, get: () => State, set: (p: Partial<State>) => void): void {
+  void deleteTrip(id).then((r) => {
+    if (r.ok) set({ rows: Object.fromEntries(Object.entries(get().rows).filter(([k]) => k !== id)) })
+    else {
+      get().applyRemote(Object.values(get().rows))
+      get().setNotice(`The trip could not be deleted, so it stays. ${r.message}`)
+    }
+  })
 }
 
 function noteQueued(get: () => State, reason: 'offline' | 'session') {

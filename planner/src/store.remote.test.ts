@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { AppData } from './data/types'
 import type { Hop, Journey } from './lib/journey'
 import type { TripRow } from './lib/repoTrips'
-import { resolveDeepLink } from './lib/repoTrips'
+import { resolveDeepLink, sameJourney } from './lib/repoTrips'
+import { toTripState } from './lib/mapTrips'
 
 const saveTrip = vi.fn()
 const deleteTrip = vi.fn()
@@ -11,8 +12,8 @@ vi.mock('./lib/remoteTrips', () => ({
   saveTrip: (...a: unknown[]) => saveTrip(...a),
   deleteTrip: (...a: unknown[]) => deleteTrip(...a),
   sendQueued: async (row: TripRow) => {
-    const r = (await saveTrip(row)) as { status: string }
-    return r.status === 'saved' ? { status: 'saved' } : r.status === 'queued' ? { status: 'queued' } : { status: 'deleted' }
+    const r = (await saveTrip(row)) as { status: string; reason?: 'offline' | 'session' }
+    return r.status === 'saved' ? { status: 'saved' } : r.status === 'queued' ? { status: 'queued', reason: r.reason } : { status: 'deleted' }
   },
 }))
 
@@ -128,5 +129,101 @@ describe('a change from another window', () => {
     useStore.getState().applyRemote([stored(1), { ...stored(3, 'Other'), id: 'other-trip' }])
     const link = resolveDeepLink('?trip=other-trip', useStore.getState().saved, null)
     expect(link).toMatchObject({ kind: 'open', journey: { id: 'other-trip', name: 'Other' } })
+  })
+})
+
+describe('edits made on the map reach the table', () => {
+  const flushAll = () => new Promise((r) => setTimeout(r, 0))
+  const addLeg = (state: ReturnType<typeof toTripState>, id: string) => ({
+    ...state,
+    trips: state.trips.map((t) => (t.id === id ? { ...t, legs: [...t.legs, { cid: 'SAL-SJO', from: 'SAL', to: 'SJO', mode: 'bus' as const }] } : t)),
+  })
+
+  it('sends a trip edited on the map and leaves the button on Save trip until it is stored', async () => {
+    saveTrip.mockResolvedValue({ status: 'saved', id: 'trip-a', version: 2, skipped: false })
+    useStore.getState().applyRemote([stored(1)])
+    useStore.getState().openTrip(useStore.getState().saved[0])
+    const s = useStore.getState()
+    s.applyMapTrips(addLeg(toTripState(s.journey, s.saved, true), 'trip-a'))
+    await flushAll()
+    expect(saveTrip).toHaveBeenCalledTimes(1)
+    const sent = saveTrip.mock.calls[0][0] as TripRow
+    expect(sent.id).toBe('trip-a')
+    expect(sent.places.map((p) => p.node)).toEqual(['GUA', 'SAL', 'SJO'])
+    expect(useStore.getState().rows['trip-a'].version).toBe(2)
+    // a later reload brings back the same trip, so the edit is still there
+    useStore.getState().applyRemote([useStore.getState().rows['trip-a']])
+    expect(useStore.getState().saved.find((j) => j.id === 'trip-a')?.places).toHaveLength(3)
+  })
+
+  it('stores the trip left behind when the map switches to another trip, and keeps the other one open', async () => {
+    saveTrip.mockResolvedValue({ status: 'saved', id: 'trip-a', version: 2, skipped: false })
+    useStore.getState().applyRemote([stored(1), { ...stored(1, 'Other'), id: 'other-trip' }])
+    useStore.getState().openTrip(useStore.getState().saved.find((j) => j.id === 'trip-a')!)
+    useStore.getState().setJourney({ ...useStore.getState().journey!, name: 'Edited on the map' })
+    const s = useStore.getState()
+    s.applyMapTrips({ ...toTripState(s.journey, s.saved, true), active: 'other-trip' })
+    await flushAll()
+    const names = saveTrip.mock.calls.map((c) => (c[0] as TripRow).name)
+    expect(names).toEqual(['Edited on the map'])
+    expect(useStore.getState().journey?.id).toBe('other-trip')
+    useStore.getState().applyRemote(Object.values(useStore.getState().rows))
+    expect(useStore.getState().saved.find((j) => j.id === 'trip-a')?.name).toBe('Edited on the map')
+  })
+
+  it('stores a trip that was made on the map', async () => {
+    saveTrip.mockImplementation(async (row: TripRow) => ({ status: 'saved', id: row.id, version: 1, skipped: false }))
+    useStore.getState().applyRemote([stored(1)])
+    useStore.getState().openTrip(useStore.getState().saved[0])
+    const s = useStore.getState()
+    const state = toTripState(s.journey, s.saved, true)
+    s.applyMapTrips({ trips: [...state.trips, { id: 'new-1', name: 'From the map', legs: [], updated: 1 }], active: 'new-1' })
+    await flushAll()
+    const sent = saveTrip.mock.calls.map((c) => (c[0] as TripRow).id)
+    expect(sent).toContain('new-1')
+    expect(useStore.getState().rows['new-1']).toBeDefined()
+  })
+
+  it('tells the user when a trip deleted on the map could not be deleted', async () => {
+    deleteTrip.mockResolvedValue({ ok: false, message: 'No connection.' })
+    useStore.getState().applyRemote([stored(1)])
+    const s = useStore.getState()
+    s.applyMapTrips({ trips: [], active: null })
+    await flushAll()
+    expect(useStore.getState().notice).toMatch(/could not be deleted/i)
+    expect(useStore.getState().saved.some((j) => j.id === 'trip-a')).toBe(true)
+  })
+})
+
+describe('what a save leaves on the screen', () => {
+  it('a first save leaves the trip with no changes against its own row', async () => {
+    saveTrip.mockResolvedValue({ status: 'saved', id: 'trip-a', version: 1, skipped: false })
+    await useStore.getState().saveJourney('Mine')
+    const s = useStore.getState()
+    expect(sameJourney(s.journey!, s.saved.find((j) => j.id === 'trip-a')!)).toBe(true)
+  })
+
+  it('a save of another window that is the same content raises no notice', () => {
+    useStore.getState().applyRemote([stored(1)])
+    useStore.getState().openTrip(useStore.getState().saved[0])
+    useStore.getState().setJourney({ ...useStore.getState().journey!, name: 'Same text' })
+    useStore.getState().applyRemote([stored(2, 'Same text')])
+    expect(useStore.getState().notice).toBeNull()
+    expect(useStore.getState().journey?.version).toBe(2)
+  })
+
+  it('a save behind waiting saves keeps the screen on the trip and says why it waits', async () => {
+    outbox.enqueue(stored(1, 'Earlier'))
+    saveTrip.mockResolvedValue({ status: 'queued', reason: 'session' })
+    await useStore.getState().saveJourney('Later')
+    expect(useStore.getState().notice).toMatch(/signed out/i)
+    expect(useStore.getState().journey?.name).toBe('Later')
+    expect(useStore.getState().saved.some((j) => j.name === 'Later')).toBe(true)
+  })
+
+  it('a trip deleted in another window leaves the list at start', () => {
+    useStore.setState({ saved: [trip] })
+    useStore.getState().applyRemote([], ['trip-a'])
+    expect(useStore.getState().saved).toEqual([])
   })
 })
