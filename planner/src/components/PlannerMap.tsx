@@ -4,6 +4,7 @@ import { buildModel } from '@map/data/model'
 import type { TripState } from '@map/data/trips'
 import type { Family, MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../data/routeMap'
+import { useDataRev } from '../data/rev'
 import { legFactsFrom, toTripState } from '../lib/mapTrips'
 import { useStore } from '../store'
 import { MapSide } from './TripPanel'
@@ -47,9 +48,10 @@ export function PlannerMap() {
   )
   const model =useMemo(() => (data ? buildModel(data) : null), [data])
 
+  const rev = useDataRev()
   useEffect(() => {
     loadRouteData().then(setData, (e: unknown) => setError(e instanceof Error ? e.message : String(e)))
-  }, [])
+  }, [rev])
 
   const trips = useMemo(() => toTripState(journey, saved, mapOpen, inout), [journey, saved, mapOpen, inout])
   const facts = useMemo(() => (data ? legFactsFrom(data.connections) : undefined), [data])

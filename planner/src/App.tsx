@@ -13,7 +13,10 @@ import { Freshness } from './components/Freshness'
 import { QuoteSheet } from './components/QuoteSheet'
 import { SignIn } from './components/SignIn'
 import { remoteEnabled, useSession } from './lib/supabase'
-import { loadTrips, subscribeTrips } from './lib/remoteTrips'
+import { dataChanged } from './data/rev'
+import { clearRouteData } from './data/routeMap'
+import { clearPairDates } from './data/pairDates'
+import { loadDeletedIds, loadTrips, subscribeTrips } from './lib/remoteTrips'
 import { loadDeriveState, refresh, subscribeBuilds, type DeriveState } from './lib/remoteFiles'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
@@ -153,10 +156,11 @@ export function App() {
     if (remoteEnabled() && !userId) return
     // the table trips bring their own ways in and home, so they load with the data
     const rowsFrom = remoteEnabled() ? loadTrips() : loadRepoTrips()
-    Promise.all([loadData(), rowsFrom]).then(
-      ([d, rows]) => {
+    const deletedFrom = remoteEnabled() ? loadDeletedIds().catch(() => []) : Promise.resolve([])
+    Promise.all([loadData(), rowsFrom, deletedFrom]).then(
+      ([d, rows, deleted]) => {
         setData({ ...d, inout: withTripWays(d.inout, rows) })
-        if (remoteEnabled()) applyRemote(rows)
+        if (remoteEnabled()) applyRemote(rows, deleted)
         else setRepoTrips(rows.map(rowToJourney))
         openDeepLink()
         void flushOutbox()
@@ -194,6 +198,8 @@ export function App() {
     if (!dataBase() || !remoteEnabled() || !userId) return
     const swapIn = async () => {
       if (!(await refresh()).length) return
+      // the route map and the pair prices hold their own copy, so they read the new build too
+      dataChanged([clearRouteData, clearPairDates])
       const [d, rows] = await Promise.all([loadData(), loadTrips()])
       setData({ ...d, inout: withTripWays(d.inout, rows) })
     }
@@ -233,7 +239,7 @@ export function App() {
           <div className="card load-err" role="alert">
             <p className="load-err-t"><Warn s={16} /> Could not load the trip data</p>
             <p className="mono small">{error}</p>
-            <p className="small muted">Check the connection, or run <code>npm run sync-data</code> for an offline copy.</p>
+            <p className="small muted">Check the connection and open the page again.</p>
           </div>
         </main>
       </div>

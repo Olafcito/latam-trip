@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Flag, hasFlag } from '@map/map/Flag'
 import type { MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
+import { useDataRev } from '../../data/rev'
 import type { AppData, Hostel, MapData, MapNode } from '../../data/types'
 import { useStore } from '../../store'
 import { nodeName, type Journey, type Schedule } from '../../lib/journey'
@@ -93,9 +94,10 @@ export function CityCard({ data, journey, sched, i, close, onDelete }: {
   const [find, setFind] = useState<FindRow | null>(null)
   const [bed, setBed] = useState<Hostel | null>(null)
   const read = useMemo(() => (route ? placeFinds(route) : null), [route])
+  const rev = useDataRev()
   useEffect(() => {
     loadRouteData().then(setRoute, () => {})
-  }, [])
+  }, [rev])
 
   const p = journey.places[i]
   const sp = sched.places[i]

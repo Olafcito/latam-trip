@@ -9,6 +9,11 @@ import { LOCAL_BASE, REMOTE_BASE } from './load'
 let cache: Promise<RouteData> | null = null
 
 /** The route map's places and connections: the repo's data/web in dev, else GitHub, else the offline copy. */
+/** Forget the route data, so the next read fetches the build that was swapped in. */
+export function clearRouteData(): void {
+  cache = null
+}
+
 export function loadRouteData(): Promise<RouteData> {
   cache ??= (async () => {
     if (dataBase()) return loadMapData()

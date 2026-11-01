@@ -3,6 +3,7 @@ import type { PairDates } from '../lib/prices'
 import { dataBase } from '@map/data/remoteFiles'
 import { getFile } from '../lib/remoteFiles'
 import { LOCAL_BASE, REMOTE_BASE } from './load'
+import { useDataRev } from './rev'
 
 // data/web/pair_dates.json: the repo's file in dev, else GitHub, else the offline copy. Optional:
 // without it the trip hero shows no prices and offers a search instead.
@@ -16,6 +17,11 @@ async function get(url: string): Promise<PairDates> {
   const doc = (await res.json()) as PairDates
   if (!doc || typeof doc.pairs !== 'object' || doc.pairs === null) throw new Error('pair_dates.json: no pairs')
   return doc
+}
+
+/** Forget the prices, so the next read fetches the build that was swapped in. */
+export function clearPairDates(): void {
+  cache = null
 }
 
 export function loadPairDates(): Promise<PairDates | null> {
@@ -44,12 +50,13 @@ export function loadPairDates(): Promise<PairDates | null> {
 /** The prices by date, null while loading or when no copy could be read. */
 export function usePairDates(): PairDates | null {
   const [pd, setPd] = useState<PairDates | null>(null)
+  const rev = useDataRev()
   useEffect(() => {
     let live = true
     loadPairDates().then((d) => live && setPd(d))
     return () => {
       live = false
     }
-  }, [])
+  }, [rev])
   return pd
 }
