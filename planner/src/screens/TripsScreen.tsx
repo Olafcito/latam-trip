@@ -11,6 +11,7 @@ import { RouteLine } from '../components/RouteLine'
 import { Download, Pin, Plus, Trash } from '../components/icons'
 import { PickScreen } from './PickScreen'
 import { Notice } from '../components/Notice'
+import { Unresolved } from '../components/Unresolved'
 import { TripDashboard } from './TripDashboard'
 
 // The Trips tab. Its home is a list: one row per trip with its name, its route as flags from the
@@ -110,6 +111,7 @@ function Timetable({ data }: { data: AppData }) {
       <div className="tt tt-empty">
         <h2 className="sr">Trips</h2>
         <Notice />
+        <Unresolved />
         <p>No trips yet. Start with the way in and the way home.</p>
         {newTrip}
         {io}
@@ -121,6 +123,7 @@ function Timetable({ data }: { data: AppData }) {
     <div className="tt">
       <h2 className="sr">Trips</h2>
       <Notice />
+      <Unresolved />
       <div className="tt-bar">
         <SortSeg value={sort} onChange={setSort} />
         <span className="tt-count mono">{rows.length} {rows.length === 1 ? 'trip' : 'trips'}</span>

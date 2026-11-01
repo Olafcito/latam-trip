@@ -111,3 +111,35 @@ export function subscribeTrips(cb: () => void): () => void {
     void client.removeChannel(channel)
   }
 }
+
+/** The project ref of the Supabase URL, which marks a browser as imported for this project only. */
+export function projectRef(): string {
+  try {
+    return new URL((import.meta.env as Record<string, string | undefined>).VITE_SUPABASE_URL ?? '').hostname.split('.')[0]
+  } catch {
+    return ''
+  }
+}
+
+export async function readDoc(name: string): Promise<unknown> {
+  if (!supabase) return null
+  const { data, error } = await supabase.from('documents').select('data').eq('name', name).maybeSingle()
+  if (error) throw new Error(error.message)
+  return data ? (data as { data: unknown }).data : null
+}
+
+export async function writeDoc(name: string, data: unknown): Promise<void> {
+  if (!supabase) return
+  const { error } = await supabase.from('documents').upsert({ name, data, updated_at: new Date().toISOString() })
+  if (error) throw new Error(error.message)
+}
+
+/** The journeys the browser import could not turn into rows. The planner lists them so they can be rebuilt by hand. */
+export async function loadUnresolved(): Promise<{ id: string; name: string }[]> {
+  try {
+    const d = await readDoc('unresolved_journeys')
+    return Array.isArray(d) ? (d as { id: string; name: string }[]).filter((j) => j && typeof j.id === 'string') : []
+  } catch {
+    return []
+  }
+}

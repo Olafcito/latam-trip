@@ -119,7 +119,8 @@ export interface TripState {
   active: string | null // the trip drawn on the map and added to, if any
 }
 
-const TRIPS_KEY = 'latam-trip.trips'
+// also read by the one import into Supabase (planner/src/lib/importBrowser.ts), so the key must not change
+export const TRIPS_KEY = 'latam-trip.trips'
 const OLD_JOURNEY_KEY = 'latam-trip.journey'
 
 export const EMPTY_TRIPS: TripState = { trips: [], active: null }

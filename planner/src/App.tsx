@@ -142,6 +142,7 @@ export function App() {
   const userId = auth.session?.user.id ?? null
   const applyRemote = useStore((s) => s.applyRemote)
   const flushOutbox = useStore((s) => s.flushOutbox)
+  const runImport = useStore((s) => s.runImport)
 
   useEffect(() => {
     // with Supabase the trips need the signed in session, and wait for it
@@ -155,10 +156,15 @@ export function App() {
         else setRepoTrips(rows.map(rowToJourney))
         openDeepLink()
         void flushOutbox()
+        if (remoteEnabled()) {
+          void runImport().then(async (did) => {
+            if (did) applyRemote(await loadTrips())
+          })
+        }
       },
       (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
     )
-  }, [setData, setRepoTrips, applyRemote, flushOutbox, userId])
+  }, [setData, setRepoTrips, applyRemote, flushOutbox, runImport, userId])
 
   // Realtime on trips: a change reloads trips_latest. Saves that waited are sent when the connection is back
   useEffect(() => {

@@ -9,7 +9,8 @@ import type { CardRef } from '@map/map/useMapMode'
 import type { Mode } from './data/types'
 import { localOnly, mergeTrips, retireSeeds, rowToJourney, sameJourney, withTripWays, type TripRow } from './lib/repoTrips'
 import { remoteEnabled } from './lib/supabase'
-import { deleteTrip, saveTrip, sendQueued } from './lib/remoteTrips'
+import { deleteTrip, loadTrips, projectRef, readDoc, saveTrip, sendQueued, writeDoc } from './lib/remoteTrips'
+import { importBrowser, importWebTrips } from './lib/importBrowser'
 import { outbox } from './lib/outbox'
 import { journeyToRow } from './lib/tripRow'
 
@@ -136,6 +137,8 @@ interface State {
   applyRemote: (rows: TripRow[]) => void
   /** send the saves waiting in the outbox, in order */
   flushOutbox: () => Promise<void>
+  /** the one import of this browser, which runs only after cutover. Returns whether it saved anything */
+  runImport: () => Promise<boolean>
   /** a one-line message on the Trips list, such as a link to a trip that does not exist */
   notice: string | null
   setNotice: (notice: string | null) => void
@@ -415,6 +418,29 @@ export const useStore = create<State>((set, get) => ({
     set({ rows, repo, journey, notice, saved: merged })
     const d = was.data
     if (d) set({ data: { ...d, inout: withTripWays(d.inout, list) } })
+  },
+  runImport: async () => {
+    const data = get().data
+    if (!remoteEnabled() || !data) return false
+    const deps = {
+      storage: localStorage,
+      projectRef: projectRef(),
+      inout: data.inout,
+      cutoverDone: async () => (await readDoc('cutover_done')) != null,
+      readDoc,
+      writeDoc,
+      latest: loadTrips,
+      save: saveTrip,
+      remove: async (id: string) => ({ ok: (await deleteTrip(id)).ok }),
+      totals: (j: Journey) => totals(data, j, scheduleOf(j, data)),
+    }
+    try {
+      const a = await importBrowser(deps)
+      await importWebTrips(deps)
+      return a.imported.length > 0 || a.deleted.length > 0
+    } catch {
+      return false
+    }
   },
   flushOutbox: async () => {
     if (!remoteEnabled() || !outbox.size()) return
