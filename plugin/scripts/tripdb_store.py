@@ -395,6 +395,10 @@ class Store:
     def lock(self):
         return contextlib.nullcontext()
 
+    def recompute_quotes(self, cfg):
+        """Bring build_qid and usable of the stored quotes in line with a changed trip.json. The files hold neither."""
+        return 0
+
 
 class FileStore(Store):
     """The files of data/sources. paths says where they are. Every write holds the lock file next to them."""
@@ -414,7 +418,11 @@ class FileStore(Store):
 
     def dest(self, table, name=None):
         """Where a table lives, for the line a command prints."""
-        return self._rel(os.path.join(self.paths.quotes, name)) if table == "quotes" else self._rel(self._file(table))
+        if table == "quotes":
+            return self._rel(os.path.join(self.paths.quotes, name))
+        if table == "documents":
+            return self._rel(self.paths.src(name))
+        return self._rel(self._file(table))
 
     # ---- reads ----
     def rows(self, table):
@@ -788,6 +796,17 @@ class SupabaseStore(Store):
         got = self.rest.patch("documents", {"name": "eq." + dn, "version": "eq." + str(version)},
                               {"version": version + 1, "updated_at": now_utc(), "data": data}, returning="name")
         return len(got) == 1
+
+    def recompute_quotes(self, cfg):
+        """Patch build_qid and usable on every quote whose value changes under cfg. Returns how many were patched."""
+        n = 0
+        for raw in self._raw("quotes"):
+            now = cols.quote_row(cols.from_row("quotes", raw), cfg)
+            patch = {c: now[c] for c in ("build_qid", "usable") if now[c] != raw.get(c)}
+            if patch:
+                self.rest.patch("quotes", {"quote_id": "eq." + raw["quote_id"]}, patch)
+                n += 1
+        return n
 
     # ---- trips ----
     def save_trip(self, t):

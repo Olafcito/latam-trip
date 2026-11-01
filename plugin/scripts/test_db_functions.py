@@ -128,5 +128,56 @@ class AddQuotesTest(unittest.TestCase):
         self.assertEqual(self.stored("Q2:g2"), [])
 
 
+@unittest.skipUnless(LIVE, "set TRIPDB_LIVE_TESTS=1 to run against the project")
+class SaveTripTest(unittest.TestCase):
+    def setUp(self):
+        self.env = load_env()
+        code, body = call(self.env, "POST", "rpc/test_reset", {})
+        self.assertIn(code, (200, 204), body)
+
+    def save(self, trip, key="SUPABASE_SECRET_KEY"):
+        return call(self.env, "POST", "rpc/save_trip", {"trip": trip}, key)
+
+    def test_save_trip_two_at_once(self):
+        results = []
+
+        def writer(n):
+            results.append(self.save({"id": "t9", "name": "x", "why": str(n), "by": "t"}))
+        threads = [threading.Thread(target=writer, args=(n,)) for n in (1, 2)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        self.assertTrue(all(code == 200 for code, _ in results), results)
+        self.assertEqual(sorted(b["version"] for _, b in results), [1, 2])
+        code, rows = call(self.env, "GET", "trips?id=eq.t9&select=version,saved_by,data&order=version")
+        self.assertEqual([r["version"] for r in rows], [1, 2])
+        self.assertEqual([r["data"]["version"] for r in rows], [1, 2])
+        self.assertEqual(rows[0]["saved_by"], "t")
+
+    def test_same_content_skipped(self):
+        self.save({"id": "t8", "name": "x", "by": "a", "version": 1, "saved_at": "2026-10-20T10:00:00Z"})
+        code, body = self.save({"id": "t8", "name": "x", "by": "b", "version": 7, "saved_at": "2026-11-01T10:00:00Z"})
+        self.assertEqual((code, body["version"], body["skipped"]), (200, 1, True))
+        code, body = self.save({"id": "t8", "name": "y"})
+        self.assertEqual((body["version"], body["skipped"]), (2, False))
+
+    def test_soft_delete_hides_every_version(self):
+        self.save({"id": "t7", "name": "x"})
+        self.save({"id": "t7", "name": "y"})
+        code, _ = call(self.env, "PATCH", "trips?id=eq.t7&version=eq.2", {"deleted_at": "2026-11-01T10:00:00Z"})
+        self.assertIn(code, (200, 204))
+        code, rows = call(self.env, "GET", "trips_latest?id=eq.t7&select=id")
+        self.assertEqual((code, rows), (200, []))
+        code, body = self.save({"id": "t7", "name": "z"})
+        self.assertEqual(code, 400, body)
+
+    def test_publishable_key_cannot_call_save_trip(self):
+        code, _ = self.save({"id": "t6", "name": "x"}, key="SUPABASE_PUBLISHABLE_KEY")
+        self.assertIn(code, (401, 403))
+        code, rows = call(self.env, "GET", "trips?id=eq.t6&select=id")
+        self.assertEqual(rows, [])
+
+
 if __name__ == "__main__":
     unittest.main()

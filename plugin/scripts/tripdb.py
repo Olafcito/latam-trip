@@ -17,6 +17,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   list-remove LIST TYPE ID             take it out again
   save-trip FILE [--by plan-trip|migration|planner]  a trip into trips.jsonl as its next version (prints id and version)
   delete-trip ID [ID ...]              remove every version of those trips from trips.jsonl
+  doc-get NAME [FILE]   doc-put NAME FILE   read or replace a document (trip.json, lists.json, ...)
   log-task --issue N --type TYPE --summary TEXT [--outputs a,b] [--task FILE] [--done-at TIME]
   log-usage --round R --agent A --model M --tool T --searches N --tokens N --tool-uses N --seconds N --rows N
   ingest-inbox                         validate data/sources/inbox/*.jsonl (Momondo userscript), add the good rows
@@ -591,6 +592,65 @@ def cmd_log_usage(paths, values):
         raise Refused("missing " + ", ".join("--" + c.replace("_", "-") for c in missing))
     get_store(paths).append("agent_usage", {c: values[c] for c in USAGE_COLS})
     print(f"agent_usage: logged {values['agent']}")
+    return 0
+
+
+# ---- documents ----------------------------------------------------------------------------------
+
+def _doc_name(name):
+    if name not in IMPORT_DOCS:
+        raise Refused(f"{name!r} is not a document, expected one of {', '.join(IMPORT_DOCS)}")
+    return name
+
+
+def cmd_doc_get(paths, name, file="-"):
+    """Write the document to FILE, or to stdout for -."""
+    st = get_store(paths)
+    try:
+        data, _ = st.doc(_doc_name(name))
+    except ValueError as e:
+        raise Refused(f"{name} is not valid JSON ({e})")
+    if data is None:
+        raise Refused(f"no document {name}")
+    text = json.dumps(data, ensure_ascii=False, indent=1) + chr(10)
+    if file == "-":
+        sys.stdout.write(text)
+    else:
+        write_atomic(file, text)
+    return 0
+
+
+def cmd_doc_put(paths, name, file):
+    """Replace the document with the JSON in FILE. It is written only if nobody changed the document since it was read,
+    and read again if somebody did. A new trip.json brings build_qid and usable of the stored quotes in line."""
+    _doc_name(name)
+    if file == "-":
+        text = sys.stdin.read()
+    else:
+        with open(file, encoding="utf-8") as fh:
+            text = fh.read()
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as e:
+        raise Refused(f"{file} is not valid JSON ({e})")
+    if store.has_nul(data):
+        raise Refused(NUL_WHY)
+    st = get_store(paths)
+    for _ in range(20):
+        try:
+            version = st.doc(name)[1]
+            done = st.put_doc(name, data, version)
+        except ValueError as e:
+            raise Refused(f"{name} is stored as invalid JSON ({e}), repair it by hand")
+        if done:
+            break
+    else:
+        raise Refused(f"{name} keeps changing under this run, try again")
+    print(f"doc: wrote {name} -> {st.dest('documents', name)}")
+    if name == "trip.json":
+        n = st.recompute_quotes(data)
+        if n:
+            print(f"quotes: {n} changed build_qid or usable")
     return 0
 
 
@@ -1255,6 +1315,10 @@ def main(argv=None):
             if not a:
                 raise Refused("delete-trip needs at least one trip id")
             return cmd_delete_trip(paths, a)
+        if cmd == "doc-get":
+            return cmd_doc_get(paths, a[0], a[1] if len(a) > 1 else "-")
+        if cmd == "doc-put":
+            return cmd_doc_put(paths, a[0], a[1])
         if cmd == "log-task":
             issue = _opt(a, "--issue")
             if not issue or not issue.isdigit():
