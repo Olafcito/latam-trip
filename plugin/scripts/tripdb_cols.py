@@ -41,10 +41,11 @@ class TableMap:
     drop_nulls says which null fields are left out when a record is read back: a set of file fields, or a function
     (field, row) that answers for each. kind is the value of the record's kind field, or None where kind is a column."""
 
-    def __init__(self, table, field_to_col, key, kind=None, drop_nulls=(), stamps=(), computed=()):
+    def __init__(self, table, field_to_col, key, kind=None, drop_nulls=(), stamps=(), computed=(), track_absent=False):
         self.table, self.field_to_col, self.key, self.kind = table, field_to_col, key, kind
         self.drop_nulls = drop_nulls if callable(drop_nulls) else (lambda f, row, s=frozenset(drop_nulls): f in s)
         self.stamps, self.computed = set(stamps), tuple(computed)
+        self.track_absent = track_absent
         self.col_to_field = {c: f for f, c in field_to_col.items()}
 
 
@@ -81,7 +82,7 @@ COLS = {
                                           "changeable", "link", "notes", "trip_name", "legs_requested"),
                                   "observed_at": "last_seen", "out": "out_leg", "mid": "mid_legs", "home": "home_leg"},
                        ("source", "legs_requested"), drop_nulls=("mid", "trip_name"), stamps=("observed_at",),
-                       computed=("quote_id", "build_qid", "first_seen", "seen_count", "first_from", "first_to", "last_from",
+                       track_absent=True, computed=("quote_id", "build_qid", "first_seen", "seen_count", "first_from", "first_to", "last_from",
                                  "last_to", "first_date", "last_date", "out_hours", "home_hours", "usable")),
     "task_log": TableMap("task_log", _same("issue", "type", "done_at", "summary", "task", "outputs"), ("issue", "done_at"),
                          stamps=("done_at",)),
@@ -102,6 +103,11 @@ def to_row(table, rec):
                 extra["kind"] = v
         else:
             extra[f] = v
+    if m.track_absent:
+        # A column is null for a field the file left out and for a field it wrote as null. Which one it was is kept, so a read back is the same record.
+        gone = sorted(f for f in m.field_to_col if f not in rec and f != "kind" and not m.drop_nulls(f, row))
+        if gone:
+            extra["absent"] = gone
     row["extra"] = extra
     return row
 
@@ -120,6 +126,9 @@ def from_row(table, row):
             continue
         rec[f] = z(v) if f in m.stamps and v is not None else v
     extra = dict(row.get("extra") or {})
+    for f in extra.pop("absent", None) or []:
+        if rec.get(f) is None:
+            rec.pop(f, None)
     if extra.pop("obs_fmt", None) == "min" and rec.get("observed_at"):
         rec["observed_at"] = rec["observed_at"][:16] + "Z"
     rec.update(extra)

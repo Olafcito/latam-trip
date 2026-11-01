@@ -167,3 +167,17 @@ class ColsTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AbsentFieldTest(unittest.TestCase):
+    base = {"agent": "a", "source": "kiwi", "structure": "one_way", "legs_requested": [], "out": {}}
+
+    def test_a_missing_field_stays_missing_and_a_null_stays_null(self):
+        for rec in ({**base_rec} for base_rec in (self.base,)):
+            back = C.from_row("quotes", C.to_row("quotes", rec))
+            self.assertNotIn("home", back)
+            self.assertNotIn("fare_brand", back)
+        rec = {**self.base, "home": None, "fare_brand": None}
+        back = C.from_row("quotes", C.to_row("quotes", rec))
+        self.assertIsNone(back["home"])
+        self.assertIsNone(back["fare_brand"])
