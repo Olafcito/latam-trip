@@ -1,15 +1,11 @@
 // Pure logic of the Momondo save userscript: URL to legs, parsed dialog to rows,
-// the self-check, the inbox file, the GitHub issue links and the link a Pick opens. No DOM and no GM_* here,
+// the self-check, the inbox file, the Supabase requests and the link a Pick opens. No DOM and no GM_* here,
 // so Node tests can load it. build.js puts it into momondo-save.user.js.
 var MomondoSave = (function () {
   'use strict';
 
-  var REPO = 'Olafcito/latam-trip';
-  var BRANCH = 'main';
-  var INBOX_DIR = 'data/sources/inbox';
   var SOURCE = 'momondo-manual';
-  var MAX_URL = 7500;          // GitHub refuses new-issue links much longer than about 8 KB
-  var MAX_BODY = 60000;        // GitHub issue bodies stop at 65536 characters
+  var MAX_DIALOG = 200000;     // a fix_parser task carries at most this much dialog text
   var US = ['MIA', 'JFK', 'EWR', 'ATL', 'IAH', 'DFW', 'ORD', 'LAX', 'FLL', 'MCO', 'IAD', 'BOS', 'CLT', 'PHL'];
   var VIEWS = { price_a: 'Billigst', bestflight_a: 'Bedst', duration_a: 'Hurtigst' };
   var PLANNER = 'http://localhost:5198/';
@@ -189,133 +185,64 @@ var MomondoSave = (function () {
     return PLANNER + '?' + (trip ? 'trip=' + encodeURIComponent(trip) + '&' : '') + 'pick=' + encodeURIComponent(JSON.stringify(pick));
   }
 
-  function inboxPath(d) {
-    return INBOX_DIR + '/manual-' + stamp(d) + '.jsonl';
+  function inboxFile(d) {
+    return 'manual-' + stamp(d) + '.jsonl';
   }
 
   function inboxContent(rows) {
-    return rows.map(function (r) { return JSON.stringify(r); }).join('\n') + '\n';
+    return rows.map(function (r) { return JSON.stringify(r); }).join(String.fromCharCode(10)) + String.fromCharCode(10);
   }
 
-  function base64Utf8(s) {
-    if (typeof Buffer !== 'undefined') return Buffer.from(s, 'utf8').toString('base64');
-    var bytes = new TextEncoder().encode(s), bin = '';
-    for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-    return btoa(bin);
-  }
-
-  function apiHeaders(token) {
-    return {
-      'Authorization': 'Bearer ' + token,
-      'Accept': 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'Content-Type': 'application/json'
-    };
-  }
-
-  function contentsRequest(path, content, token, message) {
-    return {
-      method: 'PUT',
-      url: 'https://api.github.com/repos/' + REPO + '/contents/' + path,
-      headers: apiHeaders(token),
-      data: JSON.stringify({ message: message, content: base64Utf8(content), branch: BRANCH })
-    };
-  }
-
-  function issueRequest(issue, token) {
+  // cfg: {url, key, token}. The key is the publishable key, which only lets the two functions be called.
+  function rpcRequest(cfg, name, body) {
     return {
       method: 'POST',
-      url: 'https://api.github.com/repos/' + REPO + '/issues',
-      headers: apiHeaders(token),
-      data: JSON.stringify({ title: issue.title, body: issue.body, labels: ['claude-task'] })
+      url: String(cfg.url).replace(/\/+$/, '') + '/rest/v1/rpc/' + name,
+      headers: { 'apikey': cfg.key, 'Content-Type': 'application/json' },
+      data: JSON.stringify(body)
     };
   }
 
-  // Same format as docs/claude-tasks.md: one human line, then exactly one fenced json block.
-  function issueBody(line, task) {
-    return line + '\n\n```json\n' + JSON.stringify(task) + '\n```\n';
+  function inboxRequest(cfg, file, rows) {
+    return rpcRequest(cfg, 'submit_inbox', { token: cfg.token, file: file, rows: rows });
   }
 
-  function issueUrl(title, body) {
-    return 'https://github.com/' + REPO + '/issues/new?labels=claude-task&title=' +
-      encodeURIComponent(title) + '&body=' + encodeURIComponent(body);
+  function taskRequest(cfg, task) {
+    return rpcRequest(cfg, 'submit_task', { token: cfg.token, task: task });
   }
 
-  function routeText(legs) {
-    return legs.map(function (l) { return l.from + ' to ' + l.to + ' ' + l.date; }).join(', ');
+  // True when the three settings are there. A host that is not a Supabase address is refused, as @connect only allows those.
+  function configured(cfg) {
+    return !!(cfg && cfg.token && cfg.key && /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(String(cfg.url || '')));
   }
 
-  function shortRoute(legs) {
-    return legs.map(function (l) { return l.from + ' to ' + l.to; }).join(', ');
+  // What a failed answer means to the person pressing the button.
+  function answerText(status) {
+    if (status === 401 || status === 403 || status === 400) return 'Supabase answered ' + status + ', check the token and the project in the Tampermonkey menu';
+    return 'Supabase answered ' + (status || 'nothing');
   }
 
-  // {title, body, url, clipboard}. clipboard is null when the whole body fits in the link.
-  function importIssue(rows, ctx) {
-    var trip = ctx.tripName;
-    var title = '[import_quotes] ' + (trip ? 'Momondo trip "' + trip + '", ' + shortRoute(ctx.legs)
-      : rows.length + (rows.length === 1 ? ' Momondo price, ' : ' Momondo prices, ') + shortRoute(ctx.legs));
-    var line = (trip ? 'Trip "' + trip + '" saved' : rows.length + ' prices saved') +
-      ' from Momondo (' + routeText(ctx.legs) + '). Put the rows in the inbox and run tripdb build.';
-    var task = { type: 'import_quotes', source: SOURCE, count: rows.length, legs: ctx.legs, page: ctx.page, rows: rows, from: 'userscript' };
-    if (trip) task.trip_name = trip;
-    var body = issueBody(line, task);
-    var url = issueUrl(title, body);
-    if (url.length <= MAX_URL) return { title: title, body: body, url: url, clipboard: null };
-    var shortTask = Object.assign({}, task, { rows: [], rows_on_clipboard: rows.length });
-    var shortBody = issueBody(line + ' The rows were too long for a link and are on your clipboard: select all of this text and paste over it before you press Submit.', shortTask);
-    return { title: title, body: shortBody, url: issueUrl(title, shortBody), clipboard: body };
-  }
-
-  // Keeps the start of the legs and the start of the booking offers, cuts the middle.
-  function cutText(text, max) {
-    if (text.length <= max) return text;
-    var k = text.indexOf('Bookingmuligheder');
-    var marker = function (n) { return '\n[... ' + n + ' characters cut ...]\n'; };
-    if (k > 0 && k < text.length - 1) {
-      var tailLen = Math.min(text.length - k, Math.floor(max * 0.3));
-      var headLen = Math.max(0, max - tailLen - 40);
-      var head = text.slice(0, Math.min(headLen, k));
-      var tail = text.slice(k, k + tailLen);
-      return head + marker(text.length - head.length - tail.length) + tail;
-    }
-    var h = text.slice(0, Math.max(0, max - 40));
-    return h + marker(text.length - h.length);
-  }
-
-  // ctx: {reason, legs, page, view, action, parserVersion, dialogText}
-  function fixIssue(ctx) {
-    var title = '[fix_parser] Momondo dialog not parsed (parser ' + ctx.parserVersion + ')';
-    var line = 'The Momondo save button could not read this page: ' + ctx.reason +
-      '. Reproduce with the dialog text below, fix parseDlg in momondo_crawler.js, bump PARSER_VERSION and report here.';
+  // ctx: {reason, legs, page, view, action, parserVersion, dialogText}. The task JSON of docs/claude-tasks.md, with a title for the table.
+  function fixTask(ctx) {
     var full = String(ctx.dialogText || '');
-    var mk = function (text, cut) {
-      var task = {
-        type: 'fix_parser', parser_version: ctx.parserVersion, reason: ctx.reason, action: ctx.action,
-        view: ctx.view || null, page: ctx.page, legs: ctx.legs || [], dialog_chars: full.length,
-        dialog_text: text, from: 'userscript'
-      };
-      if (cut) task.dialog_cut = true;
-      return task;
+    var task = {
+      type: 'fix_parser', title: '[fix_parser] Momondo dialog not parsed (parser ' + ctx.parserVersion + ')',
+      parser_version: ctx.parserVersion, reason: ctx.reason, action: ctx.action,
+      view: ctx.view || null, page: ctx.page, legs: ctx.legs || [], dialog_chars: full.length,
+      dialog_text: full.length > MAX_DIALOG ? full.slice(0, MAX_DIALOG) : full, from: 'userscript'
     };
-    var fullBody = issueBody(line, mk(cutText(full, MAX_BODY - 3000), full.length > MAX_BODY - 3000));
-    var url = issueUrl(title, fullBody);
-    if (url.length <= MAX_URL) return { title: title, body: fullBody, url: url, clipboard: null };
-    var max = 4000, body;
-    do {
-      body = issueBody(line + ' The dialog text was cut to fit the link. The full text is on your clipboard: select all of this text and paste over it to attach all of it.', mk(cutText(full, max), true));
-      url = issueUrl(title, body);
-      max = Math.floor(max * 0.8);
-    } while (url.length > MAX_URL && max > 100);
-    return { title: title, body: body, url: url, clipboard: fullBody };
+    if (full.length > MAX_DIALOG) task.dialog_cut = true;
+    task.note = 'The Momondo save button could not read this page: ' + ctx.reason +
+      '. Reproduce with the dialog text, fix parseDlg in momondo_crawler.js, bump PARSER_VERSION and report in the result.';
+    return task;
   }
 
   return {
-    REPO: REPO, BRANCH: BRANCH, SOURCE: SOURCE, MAX_URL: MAX_URL, VIEWS: VIEWS,
+    SOURCE: SOURCE, VIEWS: VIEWS,
     parseSearchUrl: parseSearchUrl, structureOf: structureOf, linkOf: linkOf, isoNow: isoNow, stamp: stamp,
     buildRow: buildRow, buildPriceRows: buildPriceRows, usable: usable, selfCheck: selfCheck,
-    inboxPath: inboxPath, inboxContent: inboxContent, base64Utf8: base64Utf8,
-    contentsRequest: contentsRequest, issueRequest: issueRequest, issueBody: issueBody, issueUrl: issueUrl,
-    importIssue: importIssue, fixIssue: fixIssue, cutText: cutText,
+    inboxFile: inboxFile, inboxContent: inboxContent, rpcRequest: rpcRequest, inboxRequest: inboxRequest, taskRequest: taskRequest,
+    configured: configured, answerText: answerText, fixTask: fixTask,
     tripOf: tripOf, pickOf: pickOf, pickMatches: pickMatches, pickUrl: pickUrl
   };
 })();

@@ -435,6 +435,30 @@ class SaveTripTest(Base):
         self.assertEqual(tripdb.run_check(self.paths, quiet=True)[0], [])
 
 
+class InboxTokenTest(unittest.TestCase):
+    class Rest:
+        def __init__(self):
+            self.calls = []
+
+        def insert(self, table, rows, **kw):
+            self.calls.append((table, rows, kw))
+
+    def test_prints_the_token_once_and_stores_only_its_hash(self):
+        rest, out = self.Rest(), io.StringIO()
+        tripdb.cmd_inbox_token("phone", rest=rest, out=out)
+        token = out.getvalue().strip()
+        self.assertTrue(token.startswith("mmk_") and len(token) > 30)
+        (table, rows, kw), = rest.calls
+        self.assertEqual(table, "inbox_tokens")
+        self.assertEqual(rows, [{"name": "phone", "token_hash": tripdb.token_hash(token)}])
+        self.assertNotIn(token, json.dumps(rows))
+        self.assertEqual(kw["on_conflict"], "name")
+
+    def test_refuses_a_bad_name(self):
+        with self.assertRaises(tripdb.Refused):
+            tripdb.cmd_inbox_token("a b", rest=self.Rest(), out=io.StringIO())
+
+
 if __name__ == "__main__":
     unittest.main()
 

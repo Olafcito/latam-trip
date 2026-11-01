@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Builds momondo-save.user.js from three sources:
 //   ../skills/momondo-search/scripts/momondo_crawler.js  (the parser the browser workers use)
-//   momondo-save.core.js  (rows, self-check, inbox file, issue links)
-//   momondo-save.ui.js    (buttons, page reading, GitHub calls)
+//   momondo-save.core.js  (rows, self-check, inbox file, Supabase requests)
+//   momondo-save.ui.js    (buttons, page reading, Supabase calls)
 // Usage: node plugin/userscripts/build.js          writes the userscript
 //        node plugin/userscripts/build.js --check  exits 1 if the userscript is out of date
 'use strict';
@@ -33,7 +33,7 @@ function build() {
     '// @name         Momondo save (latam-trip)',
     '// @namespace    https://github.com/Olafcito/latam-trip',
     '// @version      ' + version,
-    '// @description  Save Momondo prices or one opened trip into the latam-trip repo, or pick a flight for a leg in the planner',
+    '// @description  Save Momondo prices or one opened trip into the latam-trip inbox, or pick a flight for a leg in the planner',
     '// @match        https://www.momondo.dk/flight-search/*',
     '// @match        https://momondo.dk/flight-search/*',
     '// @grant        GM_getValue',
@@ -43,7 +43,7 @@ function build() {
     '// @grant        GM_xmlhttpRequest',
     '// @grant        GM_setClipboard',
     '// @grant        GM_openInTab',
-    '// @connect      api.github.com',
+    '// @connect      *.supabase.co',
     '// @run-at       document-idle',
     '// @noframes',
     '// @updateURL    ' + RAW,

@@ -23,7 +23,7 @@ test('the userscript embeds the crawler file verbatim and its version', () => {
 test('header: matches the flight search, grants and connects what the script uses', () => {
   const head = SRC().split('// ==/UserScript==')[0];
   assert.match(head, /@match +https:\/\/www\.momondo\.dk\/flight-search\/\*/);
-  assert.match(head, /@connect +api\.github\.com/);
+  assert.match(head, /@connect +\*\.supabase\.co/);
   for (const g of ['GM_getValue', 'GM_setValue', 'GM_deleteValue', 'GM_registerMenuCommand', 'GM_xmlhttpRequest', 'GM_setClipboard', 'GM_openInTab']) {
     assert.match(head, new RegExp('@grant +' + g + '\\n'));
   }
@@ -39,10 +39,10 @@ function fakeElement() {
   };
 }
 
-function browser({ dialogText, token, promptAnswer, putStatus = 201, issueStatus = 403, url = OPEN_JAW_URL, card }) {
+function browser({ dialogText, token, promptAnswer, answer = 200, url = OPEN_JAW_URL, card }) {
   const els = { p: fakeElement(), t: fakeElement(), s: fakeElement(), k: fakeElement() };
   const calls = { menu: [], requests: [], opened: [], clipboard: null };
-  const store = token ? { github_token: token } : {};
+  const store = token ? { supabase_url: 'https://abcd.supabase.co', supabase_key: 'sb_publishable_x', inbox_token: token } : {};
   const opened = { className: 'dlg', innerText: dialogText, querySelectorAll: () => [] };
   // a card opens its dialog when it is pressed, the Save trip tests start with it open
   const dlg = dialogText == null || card ? [] : [opened];
@@ -80,8 +80,7 @@ function browser({ dialogText, token, promptAnswer, putStatus = 201, issueStatus
     GM_openInTab: (url) => calls.opened.push(url),
     GM_xmlhttpRequest: (spec) => {
       calls.requests.push(spec);
-      const status = spec.method === 'PUT' ? putStatus : issueStatus;
-      setTimeout(() => spec.onload({ status, responseText: status === 201 ? '{"number": 7}' : '{}' }), 0);
+      setTimeout(() => spec.onload({ status: answer, responseText: answer === 200 ? '7' : '{}' }), 0);
     }
   };
   vm.createContext(ctx);
@@ -135,9 +134,9 @@ test('a search with more than one leg has no Pick', () => {
   assert.equal(b.els.s.textContent, '');
 });
 
-test('starts with two buttons and three menu entries', () => {
+test('starts with two buttons and four menu entries', () => {
   const b = browser({});
-  assert.deepEqual(b.calls.menu, ['Set GitHub token', 'Check GitHub token', 'Remove GitHub token']);
+  assert.deepEqual(b.calls.menu, ['Set Supabase project', 'Set inbox token', 'Check inbox token', 'Remove inbox token']);
 });
 
 test('Save trip without an opened result says so', async () => {
@@ -145,49 +144,52 @@ test('Save trip without an opened result says so', async () => {
   assert.equal(await pressTrip(b), 'Not saved: open a result first, then press Save trip');
 });
 
-test('Save trip with a token commits one row with trip_name to the inbox', async () => {
-  const b = browser({ dialogText: fixture('dialog-open-jaw.txt'), token: 'github_pat_x', promptAnswer: 'Panama stopover' });
+test('Save trip with settings sends one row with trip_name to submit_inbox', async () => {
+  const b = browser({ dialogText: fixture('dialog-open-jaw.txt'), token: 'mmk_x', promptAnswer: 'Panama stopover' });
   assert.equal(await pressTrip(b), 'Saved trip "Panama stopover"');
   assert.equal(b.calls.requests.length, 1);
-  const put = b.calls.requests[0];
-  assert.equal(put.method, 'PUT');
-  assert.match(put.url, /\/contents\/data\/sources\/inbox\/manual-\d{8}T\d{6}Z\.jsonl$/);
-  const rows = Buffer.from(JSON.parse(put.data).content, 'base64').toString('utf8').trim().split('\n').map(JSON.parse);
-  assert.equal(rows.length, 1);
-  assert.equal(rows[0].trip_name, 'Panama stopover');
-  assert.equal(rows[0].source, 'momondo-manual');
-  assert.equal(rows[0].price_dkk, 10029);
+  const post = b.calls.requests[0];
+  assert.equal(post.method, 'POST');
+  assert.equal(post.url, 'https://abcd.supabase.co/rest/v1/rpc/submit_inbox');
+  const body = JSON.parse(post.data);
+  assert.match(body.file, /^manual-\d{8}T\d{6}Z\.jsonl$/);
+  assert.equal(body.token, 'mmk_x');
+  assert.equal(body.rows.length, 1);
+  assert.equal(body.rows[0].trip_name, 'Panama stopover');
+  assert.equal(body.rows[0].source, 'momondo-manual');
+  assert.equal(body.rows[0].price_dkk, 10029);
   assert.equal(b.calls.opened.length, 0);
 });
 
-test('Save trip without a token opens a prefilled import_quotes issue', async () => {
+test('Save trip without settings puts the rows on the clipboard and sends nothing', async () => {
   const b = browser({ dialogText: fixture('dialog-open-jaw.txt'), promptAnswer: 'Panama stopover' });
   const st = await pressTrip(b);
-  assert.match(st, /^Ready: trip "Panama stopover" is in a new GitHub issue/);
+  assert.match(st, /^Not saved: Supabase is not set up in the Tampermonkey menu\. The rows are on the clipboard/);
   assert.equal(b.calls.requests.length, 0);
-  assert.equal(b.calls.opened.length, 1);
-  assert.match(new URL(b.calls.opened[0]).searchParams.get('title'), /^\[import_quotes\]/);
+  assert.equal(JSON.parse(b.calls.clipboard.trim()).trip_name, 'Panama stopover');
 });
 
-test('a bad token falls back to the issue and says Not saved', async () => {
-  const b = browser({ dialogText: fixture('dialog-open-jaw.txt'), token: 'bad', promptAnswer: 'x', putStatus: 401 });
-  assert.match(await pressTrip(b), /^Not saved: GitHub answered 401, check the token/);
-  assert.equal(b.calls.opened.length, 1);
-});
-
-test('an unreadable dialog is not saved and opens a fix_parser issue with the text', async () => {
-  const b = browser({ dialogText: fixture('dialog-broken.txt'), token: 'github_pat_x', promptAnswer: 'x' });
-  const st = await pressTrip(b);
-  assert.match(st, /^Not saved: 1 of 1 rows have empty legs\. A fix_parser issue is open in a new tab/);
-  assert.equal(b.calls.requests.length, 1);
-  assert.equal(b.calls.requests[0].method, 'POST');
-  const url = new URL(b.calls.opened[0]);
-  assert.match(url.searchParams.get('title'), /^\[fix_parser\]/);
-  assert.match(url.searchParams.get('body'), /Booking options/);
-});
-
-test('with a token that may write issues the fix_parser issue is filed directly', async () => {
-  const b = browser({ dialogText: fixture('dialog-broken.txt'), token: 'github_pat_x', promptAnswer: 'x', issueStatus: 201 });
-  assert.match(await pressTrip(b), /A fix_parser issue was filed \(#7\)\./);
+test('a refused token says Not saved and keeps the rows on the clipboard', async () => {
+  const b = browser({ dialogText: fixture('dialog-open-jaw.txt'), token: 'bad', promptAnswer: 'x', answer: 401 });
+  assert.match(await pressTrip(b), /^Not saved: Supabase answered 401, check the token/);
+  assert.ok(b.calls.clipboard);
   assert.equal(b.calls.opened.length, 0);
+});
+
+test('an unreadable dialog is not saved and files a fix_parser task with the text', async () => {
+  const b = browser({ dialogText: fixture('dialog-broken.txt'), token: 'mmk_x', promptAnswer: 'x' });
+  const st = await pressTrip(b);
+  assert.match(st, /^Not saved: 1 of 1 rows have empty legs\. A fix_parser task was filed \(#7\)\./);
+  assert.equal(b.calls.requests.length, 1);
+  assert.match(b.calls.requests[0].url, /\/rpc\/submit_task$/);
+  const task = JSON.parse(b.calls.requests[0].data).task;
+  assert.equal(task.type, 'fix_parser');
+  assert.match(task.dialog_text, /Booking options/);
+  assert.equal(b.calls.opened.length, 0);
+});
+
+test('an unreadable dialog without settings puts the fix_parser task on the clipboard', async () => {
+  const b = browser({ dialogText: fixture('dialog-broken.txt'), promptAnswer: 'x' });
+  assert.match(await pressTrip(b), /The fix_parser task is on the clipboard/);
+  assert.equal(JSON.parse(b.calls.clipboard).type, 'fix_parser');
 });

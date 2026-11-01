@@ -18,31 +18,25 @@ https://raw.githubusercontent.com/Olafcito/latam-trip/main/plugin/userscripts/mo
 
 Tampermonkey shows an install page. Press Install. Tampermonkey checks the same address for updates, so a parser fix in the repo reaches your browser by itself.
 
-## 3. Create a GitHub token
+## 3. Make an inbox token
 
-The token lets the script write a file to this repo. Give it as little as possible.
+The script saves through two Supabase functions that check a token, so the token is the only secret in your browser. It cannot read or change anything else. Make one on this PC with the repo checked out and its .env in place.
 
-1. On github.com, open your picture at the top right, then Settings.
-2. At the bottom of the left menu, open Developer settings.
-3. Open Personal access tokens, then Fine-grained tokens, then Generate new token.
-4. Token name: momondo save. Expiration: pick a date after the trip, for example 90 days.
-5. Resource owner: Olafcito.
-6. Repository access: Only select repositories, then pick latam-trip. Do not choose All repositories.
-7. Permissions: open Repository permissions and set Contents to Read and write. GitHub adds Metadata as read only by itself. Leave everything else at No access.
-8. Press Generate token and copy it. GitHub shows it only once.
+1. Run python plugin/scripts/tripdb.py inbox-token --name browser
+2. Copy the token it prints (it starts with mmk_). It is shown once, and only its hash is stored. Running the command again for the same name replaces the token.
 
 Never paste the token into a chat, an issue or a file in the repo.
 
-## 4. Give the token to the script
+## 4. Give the settings to the script
 
 1. Open any Momondo flight search, for example https://www.momondo.dk/flight-search/CPH-GUA/2026-12-03/VVI-CPH/2027-02-03?sort=price_a
-2. Click the Tampermonkey icon. Under Momondo save (latam-trip), choose Set GitHub token.
-3. Paste the token and press OK. The status line says Token saved.
-4. Choose Check GitHub token to test it. The status line says Token works for Olafcito/latam-trip.
+2. Click the Tampermonkey icon. Under Momondo save (latam-trip), choose Set Supabase project. Enter the project URL (https://something.supabase.co) and then the publishable key. The publishable key can only call the two functions.
+3. Choose Set inbox token and paste the token.
+4. Choose Check inbox token to test it. The status line says Token works.
 
-The token stays inside Tampermonkey in this browser. Remove GitHub token in the same menu deletes it.
+The settings stay inside Tampermonkey in this browser. Remove inbox token in the same menu deletes the token.
 
-You can also skip the token. The buttons then open a filled in GitHub issue instead, and Claude imports the prices from there. See section 6.
+Without the settings the buttons copy the rows to the clipboard instead, so nothing is lost.
 
 ## 5. The buttons
 
@@ -58,13 +52,13 @@ Route and dates come from the address of the search page, so the saved prices al
 
 ## 6. What the status line means
 
-**Saved 14 prices** or **Saved trip "name"**: the rows are in the repo, in a new file under data/sources/inbox.
+**Saved 14 prices** or **Saved trip "name"**: the rows are in the inbox table of the database, and the next tripdb build ingests them.
 
-**Ready: 14 prices are in a new GitHub issue**: you have no token, so a new tab shows a filled in GitHub issue. Press Submit there. When there are too many rows for one link, the script copies them to the clipboard and the issue asks you to paste the clipboard over its text before you press Submit.
+**Not saved: Supabase is not set up in the Tampermonkey menu**: the settings are missing. The rows are on the clipboard, so nothing was lost. Set the project and the token as in section 4, then press the button again.
 
-**Not saved: GitHub answered 401, check the token**: the token is wrong, has expired or lacks Contents write. Nothing was lost. The rows went into a new GitHub issue instead, so press Submit there. Then make a new token as in section 3.
+**Not saved: Supabase answered 401, check the token**: the token or the project is wrong. Nothing was lost, because the rows are on the clipboard. Make a new token as in section 3.
 
-**Not saved: no rows were read from the page**, **Not saved: 3 of 14 rows have empty legs** or **Not saved: 2 of 14 rows have no price**: the script could not read Momondo's details. That usually means Momondo changed its page. The script saves nothing rather than half a price. It opens a GitHub issue of type fix_parser with the text of the result it could not read and the parser version. Press Submit, and Claude fixes the parser from that text. The fixed script then installs itself through the update in section 2.
+**Not saved: no rows were read from the page**, **Not saved: 3 of 14 rows have empty legs** or **Not saved: 2 of 14 rows have no price**: the script could not read Momondo's details. That usually means Momondo changed its page. The script saves nothing rather than half a price. It files a task of type fix_parser with the text of the result it could not read and the parser version, and Claude fixes the parser from that text. Without the settings the task JSON is on the clipboard instead. The fixed script then installs itself through the update in section 2.
 
 **Not saved: open a result first, then press Save trip**: open a result card before you press Save trip.
 
@@ -74,19 +68,19 @@ Route and dates come from the address of the search page, so the saved prices al
 
 **Not picked: this result could not be opened**: Momondo did not open the details of that result. Nothing was picked, so press Pick again or pick another departure.
 
-**Not picked** followed by a reason: the script could not read the flight. That usually means Momondo changed its page. It opens a GitHub issue of type fix_parser in the same way as a failed save, so press Submit there.
+**Not picked** followed by a reason: the script could not read the flight. That usually means Momondo changed its page. It files a fix_parser task in the same way as a failed save.
 
 ## 7. How the prices reach the app
 
-Each save adds one file named like data/sources/inbox/manual-20261029T143012Z.jsonl on the main branch. Each line is one price in the same format the browser workers use, with source momondo-manual, the time of the save in UTC and, for a trip, its name.
+Each save adds one row to the inbox table, named like manual-20261029T143012Z.jsonl, holding the prices of that save. Each price is in the same format the browser workers use, with source momondo-manual, the time of the save in UTC and, for a trip, its name.
 
-The next tripdb build reads the inbox, adds the rows to the price data and empties the inbox. The app shows them with the label saved by you. Prices that came in as a GitHub issue reach the inbox when Claude handles the issue.
+The next tripdb build reads the new inbox rows and adds the prices to the price data. The app shows them with the label saved by you. A fix_parser task is a row in the tasks table, which Claude lists with tasks.py.
 
 ## For developers
 
 The script is generated. Do not edit plugin/userscripts/momondo-save.user.js by hand.
 
-The parser is the crawler in plugin/skills/momondo-search/scripts/momondo_crawler.js. That file is the one source of truth. The build puts it into the userscript word for word, next to momondo-save.core.js (rows, checks, issue text) and momondo-save.ui.js (buttons and page clicks). The script version is SCRIPT_VERSION in build.js plus the parser version, so bumping either one makes Tampermonkey update the script. A change to the parser bumps PARSER_VERSION in the crawler, any other change bumps SCRIPT_VERSION.
+The parser is the crawler in plugin/skills/momondo-search/scripts/momondo_crawler.js. That file is the one source of truth. The build puts it into the userscript word for word, next to momondo-save.core.js (rows, checks, Supabase requests) and momondo-save.ui.js (buttons and page clicks). The script version is SCRIPT_VERSION in build.js plus the parser version, so bumping either one makes Tampermonkey update the script. A change to the parser bumps PARSER_VERSION in the crawler, any other change bumps SCRIPT_VERSION.
 
 After any change to the crawler, the core or the UI:
 

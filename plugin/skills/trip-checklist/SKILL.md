@@ -29,10 +29,10 @@ The app writes tasks; you do them. Contract and task types: `docs/claude-tasks.m
 4. Rebuild and publish on `main` (the only branch): `python -I -X utf8 plugin/scripts/tripdb.py --root . build` (it also refreshes the .claude copies of plugin/), commit and push.
 5. Tell Simon in a few lines what was done, with the key prices, and anything blocked.
 
-## Momondo save issues
-Issues from the Momondo userscript (docs/momondo-save.md) come as `import_quotes` or `fix_parser`. Run `node plugin/skills/momondo-search/scripts/canary.js` first, and `canary_live.js` when a browser is available.
-- `fix_parser`: save `dialog_text` as a new fixture in `plugin/skills/momondo-search/scripts/fixtures/`, reproduce the failure with `parseDlg` from `momondo_crawler.js`, fix the parser and bump `PARSER_VERSION`. Add the `.expected.json` for the fixture, run `node plugin/userscripts/build.js` and `node --test "plugin/userscripts/**/*.test.js"`, push, comment the new parser version and close the issue.
-- `import_quotes`: write `rows` (or the json block Simon pasted when `rows_on_clipboard` is set) unchanged to `data/sources/inbox/manual-<UTC timestamp>.jsonl`, run `tripdb build`, comment the number of rows added and close the issue.
+## Momondo save tasks
+Tasks from the Momondo userscript (docs/momondo-save.md) arrive in the tasks table as `fix_parser`. Saved prices go straight to the inbox table and the next `tripdb build` ingests them. Run `node plugin/skills/momondo-search/scripts/canary.js` first, and `canary_live.js` when a browser is available.
+- `fix_parser`: save `dialog_text` as a new fixture in `plugin/skills/momondo-search/scripts/fixtures/`, reproduce the failure with `parseDlg` from `momondo_crawler.js`, fix the parser and bump `PARSER_VERSION`. Add the `.expected.json` for the fixture, run `node plugin/userscripts/build.js` and `node --test "plugin/userscripts/**/*.test.js"`, push, then close the task with `tasks.py done` and the new parser version in the summary.
+- `import_quotes`: only filed by hand. Write `rows` unchanged to the inbox table with a row of status `new`, run `tripdb build`, then close the task with the number of rows added.
 
 ## Experience row (data/sources/experiences.jsonl, one JSON per line)
 `{"kind": "experience", "id": "kebab-id", "name": "...", "category": "<category id>", "tags": [], "places": ["<map ids>"], "area": "<name when no map place>", "country": "XX", "lat": 0.0, "lon": 0.0, "summary": "...", "season": "...", "dec_jan": "...", "price": "as published", "price_dkk": 0, "duration": "...", "requirements": "...", "details": {}, "researched": true, "checked_at": "YYYY-MM-DD", "sources": ["..."]}`

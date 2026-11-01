@@ -2,7 +2,7 @@
 They empty the project first, and test_reset refuses once the cutover_done document exists.
 Run: TRIPDB_LIVE_TESTS=1 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_db_functions.py"
 """
-import json, os, re, threading, unittest, urllib.error, urllib.request
+import hashlib, json, os, re, threading, unittest, urllib.error, urllib.request
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 LIVE = os.environ.get("TRIPDB_LIVE_TESTS") == "1"
@@ -241,6 +241,81 @@ class DirtyTriggerTest(unittest.TestCase):
         self.assertEqual(code, 200, body)
         self.put("tasks", {"type": "t", "status": "open", "title": "x"})
         self.assertIsNone(self.state()["dirty_at"])
+
+
+@unittest.skipUnless(LIVE, "set TRIPDB_LIVE_TESTS=1 to run against the project")
+class UserscriptTest(unittest.TestCase):
+    """Spec 8.2: submit_inbox and submit_task check a token and are the only way in for the publishable key."""
+    TOKEN = "mmk_test_token_for_the_suite"
+
+    def setUp(self):
+        self.env = load_env()
+        code, body = call(self.env, "POST", "rpc/test_reset", {})
+        self.assertIn(code, (200, 204), body)
+        h = hashlib.sha256(self.TOKEN.encode("utf-8")).hexdigest()
+        code, body = call(self.env, "POST", "inbox_tokens?on_conflict=name", [{"name": "suite", "token_hash": h}])
+        self.assertIn(code, (200, 201, 204), body)
+
+    def tearDown(self):
+        call(self.env, "DELETE", "inbox_tokens?name=eq.suite")
+
+    def rows(self, table):
+        code, body = call(self.env, "GET", table + "?select=*")
+        self.assertEqual(code, 200, body)
+        return body
+
+    def inbox(self, token, rows=None, key="SUPABASE_PUBLISHABLE_KEY"):
+        return call(self.env, "POST", "rpc/submit_inbox", {"token": token, "file": "manual-1.jsonl", "rows": [{"a": 1}, {"a": 2}] if rows is None else rows}, key)
+
+    def task(self, token, task=None, key="SUPABASE_PUBLISHABLE_KEY"):
+        return call(self.env, "POST", "rpc/submit_task", {"token": token, "task": task or {"type": "fix_parser", "title": "[fix_parser] x"}}, key)
+
+    def test_wrong_token_writes_nothing(self):
+        for token in ("nope", "", self.TOKEN + "x"):
+            code, _ = self.inbox(token)
+            self.assertGreaterEqual(code, 400)
+            code, _ = self.task(token)
+            self.assertGreaterEqual(code, 400)
+        self.assertEqual(self.rows("inbox"), [])
+        self.assertEqual(self.rows("tasks"), [])
+
+    def test_right_token_inserts_new(self):
+        self.assertEqual(self.inbox(self.TOKEN), (200, 2))
+        rows = self.rows("inbox")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual((rows[0]["status"], rows[0]["file"], rows[0]["rows"]), ("new", "manual-1.jsonl", [{"a": 1}, {"a": 2}]))
+        code, tid = self.task(self.TOKEN)
+        self.assertEqual(code, 200)
+        self.assertGreaterEqual(tid, 10000)
+        t = self.rows("tasks")
+        self.assertEqual((t[0]["type"], t[0]["status"], t[0]["title"]), ("fix_parser", "open", "[fix_parser] x"))
+
+    def test_empty_rows_check_the_token_and_write_nothing(self):
+        self.assertEqual(self.inbox(self.TOKEN, []), (200, 0))
+        self.assertEqual(self.rows("inbox"), [])
+        self.assertGreaterEqual(self.inbox("wrong", [])[0], 400)
+
+    def test_a_userscript_task_has_one_of_two_types(self):
+        code, _ = self.task(self.TOKEN, {"type": "flight_prices"})
+        self.assertGreaterEqual(code, 400)
+        self.assertEqual(self.rows("tasks"), [])
+
+    def test_publishable_key_signed_out_reaches_no_table(self):
+        self.inbox(self.TOKEN)
+        for table in ("inbox", "tasks", "inbox_tokens", "quotes", "trips", "documents", "owners"):
+            code, body = call(self.env, "GET", table + "?select=*", key="SUPABASE_PUBLISHABLE_KEY")
+            self.assertTrue(code in (401, 403) or body == [], (table, code, body))
+        for table, row in (("inbox", {"file": "x"}), ("tasks", {"type": "question"}), ("inbox_tokens", {"name": "z", "token_hash": "z"})):
+            code, _ = call(self.env, "POST", table, [row], key="SUPABASE_PUBLISHABLE_KEY")
+            self.assertIn(code, (401, 403))
+        self.assertEqual(len(self.rows("inbox")), 1)
+        self.assertEqual(self.rows("tasks"), [])
+
+    def test_inbox_tokens_is_unreadable(self):
+        code, body = call(self.env, "GET", "inbox_tokens?select=*", key="SUPABASE_PUBLISHABLE_KEY")
+        self.assertTrue(code in (401, 403) or body == [], (code, body))
+        code, body = call(self.env, "GET", "rpc/submit_inbox", key="SUPABASE_PUBLISHABLE_KEY")
+        self.assertNotEqual(code, 200)
 
 
 if __name__ == "__main__":

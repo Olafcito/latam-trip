@@ -1,10 +1,10 @@
 // Browser side of the Momondo save userscript: the two buttons, Pick on each result, reading the page
-// with the crawler (CR.parseDlg and CR.crawl), and writing to GitHub. build.js puts it into momondo-save.user.js.
+// with the crawler (CR.parseDlg and CR.crawl), and writing to Supabase. build.js puts it into momondo-save.user.js.
 /* global CR, MomondoSave, MutationObserver, sessionStorage, GM_getValue, GM_setValue, GM_deleteValue, GM_registerMenuCommand, GM_xmlhttpRequest, GM_setClipboard, GM_openInTab */
 var MomondoSaveUI = (function () {
   'use strict';
   var M = MomondoSave;
-  var TOKEN_KEY = 'github_token';
+  var KEYS = { url: 'supabase_url', key: 'supabase_key', token: 'inbox_token' };
   var TRIP_KEY = 'latam-trip';
   var MAX_CARDS = 40;
   var busy = false;
@@ -66,9 +66,8 @@ var MomondoSaveUI = (function () {
     });
   }
 
-  function openIssue(issue) {
-    if (issue.clipboard) GM_setClipboard(issue.clipboard, 'text');
-    GM_openInTab(issue.url, { active: true });
+  function settings() {
+    return { url: GM_getValue(KEYS.url, ''), key: GM_getValue(KEYS.key, ''), token: GM_getValue(KEYS.token, '') };
   }
 
   function context() {
@@ -200,40 +199,35 @@ var MomondoSaveUI = (function () {
   }
 
   async function reportFix(ctx, action, view, reason, text) {
-    var issue = M.fixIssue({
+    var task = M.fixTask({
       reason: reason, legs: ctx.legs, page: ctx.page, view: view, action: action,
       parserVersion: ctx.parserVersion, dialogText: text
     });
-    var token = GM_getValue(TOKEN_KEY, '');
-    if (token) {
-      var res = await request(M.issueRequest(issue, token));
-      if (res.status === 201) {
-        var num = (/"number":\s*(\d+)/.exec(res.text) || [])[1];
-        return 'A fix_parser issue was filed' + (num ? ' (#' + num + ')' : '') + '.';
+    var cfg = settings();
+    if (M.configured(cfg)) {
+      var res = await request(M.taskRequest(cfg, task));
+      if (res.status === 200) {
+        var id = (/(\d+)/.exec(res.text) || [])[1];
+        return 'A fix_parser task was filed' + (id ? ' (#' + id + ')' : '') + '.';
       }
+      GM_setClipboard(JSON.stringify(task), 'text');
+      return M.answerText(res.status) + '. The fix_parser task is on the clipboard.';
     }
-    openIssue(issue);
-    return 'A fix_parser issue is open in a new tab, press Submit there' + (issue.clipboard ? ' after pasting the clipboard over the text.' : '.');
+    GM_setClipboard(JSON.stringify(task), 'text');
+    return 'Supabase is not set up in the Tampermonkey menu. The fix_parser task is on the clipboard.';
   }
 
   async function write(rows, ctx, what) {
-    var token = GM_getValue(TOKEN_KEY, '');
-    var failed = '';
-    if (token) {
-      var content = M.inboxContent(rows);
-      var path = M.inboxPath(ctx.now);
-      var msg = 'Momondo manual save: ' + what + ', ' + ctx.legs.map(function (l) { return l.from + ' to ' + l.to; }).join(', ');
-      var res = await request(M.contentsRequest(path, content, token, msg));
-      if (res.status === 422) res = await request(M.contentsRequest(path.replace(/\.jsonl$/, '-2.jsonl'), content, token, msg));
-      if (res.status === 201 || res.status === 200) return { ok: true, text: 'Saved ' + what };
-      failed = 'GitHub answered ' + (res.status || 'nothing') + (res.status === 401 || res.status === 403 || res.status === 404 ? ', check the token in the Tampermonkey menu' : '');
+    var cfg = settings();
+    var content = M.inboxContent(rows);
+    var failed = 'Supabase is not set up in the Tampermonkey menu';
+    if (M.configured(cfg)) {
+      var res = await request(M.inboxRequest(cfg, M.inboxFile(ctx.now), rows));
+      if (res.status === 200) return { ok: true, text: 'Saved ' + what };
+      failed = M.answerText(res.status);
     }
-    var issue = M.importIssue(rows, ctx);
-    openIssue(issue);
-    var verb = rows.length === 1 ? ' is' : ' are';
-    var paste = issue.clipboard ? ' Paste the clipboard over its text, then press Submit.' : ' Press Submit there.';
-    if (failed) return { ok: false, text: 'Not saved: ' + failed + '. The ' + what + verb + ' in a new GitHub issue instead.' + paste };
-    return { ok: true, text: 'Ready: ' + what + verb + ' in a new GitHub issue.' + paste };
+    GM_setClipboard(content, 'text');
+    return { ok: false, text: 'Not saved: ' + failed + '. The rows are on the clipboard.' };
   }
 
   async function savePrices() {
@@ -378,23 +372,37 @@ var MomondoSaveUI = (function () {
   }
 
   function menu() {
-    GM_registerMenuCommand('Set GitHub token', function () {
-      var t = window.prompt('Paste a fine-grained GitHub token for Olafcito/latam-trip with Contents read and write. Leave empty to remove the saved token.');
+    function ask(label, id, current) {
+      var v = window.prompt(label, current);
+      if (v == null) return null;
+      return v.trim();
+    }
+    GM_registerMenuCommand('Set Supabase project', function () {
+      var cur = settings();
+      var u = ask('Supabase project URL, like https://abcd.supabase.co', KEYS.url, cur.url);
+      if (u == null) return;
+      var k = ask('Supabase publishable key', KEYS.key, '');
+      if (k == null) return;
+      if (u) GM_setValue(KEYS.url, u); else GM_deleteValue(KEYS.url);
+      if (k) GM_setValue(KEYS.key, k);
+      status(M.configured(settings()) ? 'Project saved.' : 'Project saved, the token is still missing.', 'ok');
+    });
+    GM_registerMenuCommand('Set inbox token', function () {
+      var t = ask('Paste the inbox token from tripdb inbox-token. Leave empty to remove it.', KEYS.token, '');
       if (t == null) return;
-      t = t.trim();
-      if (!t) { GM_deleteValue(TOKEN_KEY); status('Token removed. Saves open a GitHub issue instead.'); return; }
-      GM_setValue(TOKEN_KEY, t);
-      status('Token saved. Saves now go straight to the repo.', 'ok');
+      if (!t) { GM_deleteValue(KEYS.token); status('Token removed. Saves go to the clipboard.'); return; }
+      GM_setValue(KEYS.token, t);
+      status('Token saved.', 'ok');
     });
-    GM_registerMenuCommand('Check GitHub token', function () {
-      var t = GM_getValue(TOKEN_KEY, '');
-      if (!t) { status('No token saved. Saves open a GitHub issue instead.'); return; }
-      request({ method: 'GET', url: 'https://api.github.com/repos/' + M.REPO, headers: { 'Authorization': 'Bearer ' + t, 'Accept': 'application/vnd.github+json' } })
-        .then(function (r) { status(r.status === 200 ? 'Token works for ' + M.REPO + '.' : 'Token failed: GitHub answered ' + (r.status || 'nothing') + '.', r.status === 200 ? 'ok' : 'bad'); });
+    GM_registerMenuCommand('Check inbox token', function () {
+      var cfg = settings();
+      if (!M.configured(cfg)) { status('Set the project and the token first.'); return; }
+      request(M.inboxRequest(cfg, 'check', []))
+        .then(function (r) { status(r.status === 200 ? 'Token works.' : 'Token failed: ' + M.answerText(r.status) + '.', r.status === 200 ? 'ok' : 'bad'); });
     });
-    GM_registerMenuCommand('Remove GitHub token', function () {
-      GM_deleteValue(TOKEN_KEY);
-      status('Token removed. Saves open a GitHub issue instead.');
+    GM_registerMenuCommand('Remove inbox token', function () {
+      GM_deleteValue(KEYS.token);
+      status('Token removed. Saves go to the clipboard.');
     });
   }
 

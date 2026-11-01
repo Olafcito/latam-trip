@@ -30,13 +30,14 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   way-map --old OLD_INOUT --new NEW_INOUT  document way_id_map: old way id to new way id, matched on direction, type, tickets and depart
   file NAME                            print one built file from the bucket, for example places.json or built/routes.json
   run SCRIPT [ARGS]                    run evaluate, frontier, scenarios, usage_report or report_md on the project's derived data
+  inbox-token --name NAME              make a token for the Momondo userscript, print it once and store only its hash
   status                               print derive_state, the worker version and the local git sha
   build [--fetch-elevation] [--no-sync]  ingest-inbox, check, then rebuild data/built, data/web and .claude
                                        (data/web/pair_dates.json: every regional quote by pair and departure date)
 FILE may be - for stdin. Every row is checked against its schema and a bad row is refused with the reason.
 Nothing is overwritten without --replace. Writes hold data/sources/.tripdb.lock and append in one write.
 """
-import csv, datetime as dt, io, json, os, re, shutil, sqlite3, subprocess, sys, tempfile, time
+import csv, datetime as dt, hashlib, io, json, os, re, secrets, shutil, sqlite3, subprocess, sys, tempfile, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPELINE = os.path.join(HERE, "..", "skills", "flight-crawl-orchestrator", "scripts")
@@ -1379,6 +1380,26 @@ def cmd_status(rest=None, root=None):
     return 0
 
 
+def token_hash(token):
+    """What inbox_tokens stores and submit_inbox compares: the SHA-256 of the token as UTF-8, in lower case hex."""
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
+def cmd_inbox_token(name, rest=None, root=None, out=None):
+    """A new token for the userscript. It is printed once and only its hash is kept, so a lost token is replaced, not read.
+    Running it again with the same name replaces the token."""
+    if not name or not re.fullmatch(r"[A-Za-z0-9._-]{1,40}", name):
+        raise Refused("inbox-token needs --name with letters, digits, dot, dash or underscore")
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    token = "mmk_" + secrets.token_urlsafe(32)
+    try:
+        rest.insert("inbox_tokens", [{"name": name, "token_hash": token_hash(token)}], on_conflict="name", resolution="merge-duplicates")
+    except RestError as e:
+        raise Refused(f"inbox-token stopped: {e}")
+    (out or sys.stdout).write(token + chr(10))
+    return 0
+
+
 def _opt(a, name, default=None):
     if name in a:
         i = a.index(name)
@@ -1502,6 +1523,8 @@ def main(argv=None):
             if not a:
                 raise Refused("run needs a script name")
             return cmd_run(a[0], a[1:], root=paths.root)
+        if cmd == "inbox-token":
+            return cmd_inbox_token(_opt(a, "--name"), root=paths.root)
         if cmd == "status":
             return cmd_status(root=paths.root)
         if cmd == "build":
