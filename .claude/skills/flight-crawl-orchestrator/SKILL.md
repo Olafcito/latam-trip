@@ -9,12 +9,12 @@ You are the orchestrator. Workers do the browsing; you plan, dispatch, ingest, s
 
 ## Project layout (ROOT, the user's crawl folder)
 Every write goes through tripdb (`PLUGIN/scripts/tripdb.py`, see ROOT/data/README.md). Workers write their raw rows to `data/raw/` and add them with tripdb. Nothing else writes under data/.
-- `data/sources/trip.json`: travellers, home airports, alternative origins, main dates, hard limits (max hours one way), scoring weights. Copy `templates/trip.example.json` and fill it in with the user.
+- The `trip.json` document (`tripdb doc-get trip.json`): travellers, home airports, alternative origins, main dates, hard limits (max hours one way), scoring weights. Copy `templates/trip.example.json` and fill it in with the user.
 - `briefs/scenarios.md`: the trip scenarios (L0), written with the user.
-- `data/raw/<agent>.jsonl`: a worker's raw output (scratch, not committed). `tripdb add-quotes` copies the good rows into `data/sources/quotes/<agent>.jsonl`, the quote table.
+- `data/raw/<agent>.jsonl`: a worker's raw output (scratch, not committed). `tripdb add-quotes` copies the good rows into the quotes table.
 - `data/sources/known_prices.json`: prices the user or earlier rounds found, for price-movement checks.
 - `data/sources/agent_usage.csv`: round, agent, model, tool, searches, tokens, tool_uses, seconds, rows. Written by `tripdb log-usage`.
-- `data/built/trip.db`: built by `tripdb build` (it runs `scripts/ingest.py` for the quotes table, then loads every other table). `data/built/` holds the other generated files, `data/web/` what the apps read.
+- The generated files are built by the worker and read with `tripdb file NAME`. The quotes table is `tripdb query quotes`.
 
 ## Method (details in references/method.md)
 Route tree: L0 scenario, L1 pattern `P:{start}>{entry}/{exit}>{end}` (multi-city `M:a>b+c>d+...`, regional `R:a>b`), L2 variant (vias, tickets, stopover), L3 date pair, L4 quote.
@@ -40,8 +40,8 @@ Priority = gain x novelty x gap / cost. A branch is saturated after 8 tasks with
 - Never let a worker book, pay, enter personal data, accept consent, or create scheduled tasks.
 
 ## After each round
-1. Check that every worker ran `tripdb add-quotes` (its RESULT says what was added and refused). If one did not, run `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT add-quotes ROOT/data/raw/<agent>.jsonl` yourself. Then `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT build`: it takes in the Momondo inbox, checks every source and rebuilds trip.db, chains, routes, inout, itineraries, the map, the dashboard data, data/web and the trips table export (data/web/trips.json).
-2. What the build made: data/built/itineraries.json (whole trips: every option x region order incl. revisits), data/built/inout.csv (city in x city out table, three types, rated, `inout.py --root ROOT --md FILE` for a Markdown copy), data/built/chains.json (self-built ways in/home), data/built/routes.json (every region order for every main ticket and chain pair). `evaluate.py --root ROOT` scores the named scenarios with bags when you need it.
-3. Dashboard (Simon's main view, https://claude.ai/artifact/6uswkG2eQzuiwAVESHxKjA, type Dashboard): `tripdb build` wrote data/web/dash_trips.json, dash_journeys.json and dash_flights.json. Upload each with the Artifact tool (`url` = the dashboard, `asset: true`, `file_path`), then ArtifactData `update` of `datasets/trips`, `datasets/journeys` and `datasets/flights` (`source.url` = the new `/_blob/...`, `updated.at`), pinned to their version. The page (`files/index.html`) only changes when its columns change; the doc keeps prose and links, never the generated tables.
+1. Check that every worker ran `tripdb add-quotes` (its RESULT says what was added and refused). If one did not, run `python -I -X utf8 PLUGIN/scripts/tripdb.py --root ROOT add-quotes ROOT/data/raw/<agent>.jsonl` yourself. The worker then takes in the Momondo inbox and rebuilds chains, routes, inout, itineraries, the map and the dashboard data within 1 to 3 minutes. Nobody runs a build.
+2. What the build makes, read with `tripdb file built/<name>`: built/itineraries.json (whole trips: every option x region order incl. revisits), data/built/inout.csv (city in x city out table, three types, rated, `inout.py --root ROOT --md FILE` for a Markdown copy), data/built/chains.json (self-built ways in/home), data/built/routes.json (every region order for every main ticket and chain pair). `evaluate.py --root ROOT` scores the named scenarios with bags when you need it.
+3. Dashboard (Simon's main view, https://claude.ai/artifact/6uswkG2eQzuiwAVESHxKjA, type Dashboard): the worker wrote dash_trips.json, dash_journeys.json and dash_flights.json. Upload each with the Artifact tool (`url` = the dashboard, `asset: true`, `file_path`), then ArtifactData `update` of `datasets/trips`, `datasets/journeys` and `datasets/flights` (`source.url` = the new `/_blob/...`, `updated.at`), pinned to their version. The page (`files/index.html`) only changes when its columns change; the doc keeps prose and links, never the generated tables.
 4. Update `briefs/scenarios.md` and the plan doc with what changed; fold worker `next:` and `problems:` lines into the agent files and references/lessons.md.
 5. Pick the next round by the priority rule. Tell the user only what changed their options.

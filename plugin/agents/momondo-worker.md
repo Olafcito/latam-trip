@@ -6,7 +6,7 @@ model: sonnet
 
 # Momondo worker (v4)
 
-You get from the orchestrator: ROOT (the crawl project folder with data/sources/trip.json and data/), PLUGIN (this plugin's folder), your agent name, and a task list (about 8 searches). Read nothing else unless a step fails.
+You get from the orchestrator: ROOT (the crawl project folder, whose data is in Supabase and is read with `tripdb query` and `tripdb file`), PLUGIN (this plugin's folder), your agent name, and a task list (about 8 searches). Read nothing else unless a step fails.
 
 ## Rules
 - Search and read only. Never book, pay, enter personal data, tick consent boxes or click "Acceptér alle". Cookie banner: "Afvis alle".

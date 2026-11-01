@@ -9,16 +9,16 @@ The planner at planner/ is a two tab React app (Map and Trips) that runs on http
 
 ## Where the data lives
 
-| File | What it is |
+| Read with | What it is |
 |---|---|
-| data/web/inout.json | Long haul ways in and home. `ways` is a map of id to way with direction, from, to, depart, arrive, total_hours, airports, tickets, hub_nights, extras. `options` pairs a way in and a way home with a rating. `airports` maps IATA codes to name and country. |
-| data/web/places.json | Map nodes (id, name, country, lat, lon, iata, profile with tagline and hostels). |
-| data/web/connections.json | Map edges between nodes with mode, hours, price, operator. |
-| data/web/flights.json | Crawled regional one way flights, a list of {from, to, dkk, hours, dep, arr, vias, carriers, notes, shows}. |
-| data/sources/trips.jsonl | The trips table: one row per version of a planned trip, with id, version, name, saved_at, by, why, its way in and way home, tickets and places (each with a why). Written only by `tripdb save-trip`. |
-| data/web/trips.json | The latest version of every trip in the table plus a short history. Built by `tripdb build`. The planner lists these next to the trips kept in the browser. |
+| `tripdb file inout.json` | Long haul ways in and home. `ways` is a map of id to way with direction, from, to, depart, arrive, total_hours, airports, tickets, hub_nights, extras. `options` pairs a way in and a way home with a rating. `airports` maps IATA codes to name and country. |
+| `tripdb file places.json` | Map nodes (id, name, country, lat, lon, iata, profile with tagline and hostels). |
+| `tripdb file connections.json` | Map edges between nodes with mode, hours, price, operator. |
+| `tripdb file flights.json` | Crawled regional one way flights, a list of {from, to, dkk, hours, dep, arr, vias, carriers, notes, shows}. |
+| `tripdb query trips` | The trips table: one row per version of a planned trip, with id, version, name, saved_at, by, why, its way in and way home, tickets and places (each with a why). Written only by `tripdb save-trip`. |
+| `tripdb query trips_latest` | The latest version of every trip in the table. The planner lists these next to the trips kept in the browser. |
 
-The app copies data into planner/public with `npm run sync-data` in planner/. Run it after `tripdb build` changed anything under data/web/.
+Every read goes through `tripdb query TABLE` or `tripdb file NAME`, and the worker rebuilds the files within 1 to 3 minutes of a write. Nobody runs a build.
 
 ## The journey shape
 
@@ -52,7 +52,7 @@ Three ways, from least to most invasive:
 
 1. **In the app.** Trips tab, New trip, pick a way in and a way home (the Pick screen filters by price, hours, hub nights, US transit), then build the route on the map: click a lit city to add it, pick a flight in the city panel, drag the grip to reorder, Save trip in the pane. The Trips tab then opens the dashboard of that trip.
 2. **Import a JSON file.** Trips tab, Import trips, with a file holding a journey or a list of journeys in the shape above. Playwright can do it with `setInputFiles` on the hidden file input.
-3. **Save it to the trips table.** Write the trip as a row of the trips table (see data/README.md, the way in and way home are copied in full) and run `python -I -X utf8 plugin/scripts/tripdb.py --root . save-trip FILE`. It prints the id and the version. Saving the same id again adds the next version, and the same content is skipped. Then run `python -I -X utf8 plugin/scripts/tripdb.py --root . build` and open `/?trip=<id>` in the planner. In dev the planner reads data/ directly, otherwise run `npm run sync-data` in planner/. An unknown id opens the Trips list with a notice. A trip edited in the app is saved in the browser only, never back to the table.
+3. **Save it to the trips table.** Write the trip as a row of the trips table (see data/README.md, the way in and way home are copied in full) and run `python -I -X utf8 plugin/scripts/tripdb.py --root . save-trip FILE`. It prints the id and the version. Saving the same id again adds the next version, and the same content is skipped. The app shows it within a few minutes, so open `/?trip=<id>` in the planner then. An unknown id opens the Trips list with a notice. A trip edited in the app is saved in the browser only, never back to the table.
 
 With Playwright or the browser console, the saved trips live in localStorage under `latam-planner.journeys` (a list) and the open trip under `latam-planner.current`. Writing those and reloading is the fastest way to put a trip into the UI.
 
