@@ -2,7 +2,7 @@
 
 There is one owner. The sign in page asks for a passphrase, which is compared in constant time with the SecureString
 parameter named by LATAMTRIP_PASSPHRASE_PARAM. A client registers, sends Simon to /authorize, gets a code with PKCE,
-and trades it at /token for a bearer. Codes and tokens live hashed in a DynamoDB table with a ttl. Nothing here logs
+and trades it at /token for a bearer. Codes, tokens and refresh tokens live hashed in a DynamoDB table with a ttl. Nothing here logs
 or returns a secret.
 """
 from __future__ import annotations
@@ -97,17 +97,17 @@ def get_client(cid):
 
 def create_code(cid, redirect_uri, challenge):
     code = CODE_PREFIX + secrets.token_urlsafe(24)
-    _put({"pk": f"oauth:code:{code}", "client_id": cid, "redirect_uri": redirect_uri, "code_challenge": challenge, "ttl": _now() + CODE_TTL})
+    _put({"pk": f"oauth:code:{_sha(code)}", "client_id": cid, "redirect_uri": redirect_uri, "code_challenge": challenge, "ttl": _now() + CODE_TTL})
     return code
 
 
 def consume_code(code):
     if not code:
         return None
-    item = _get(f"oauth:code:{code}")
+    item = _get(f"oauth:code:{_sha(code)}")
     if not item:
         return None
-    _delete(f"oauth:code:{code}")
+    _delete(f"oauth:code:{_sha(code)}")
     return item if int(item.get("ttl", 0)) >= _now() else None
 
 
@@ -117,19 +117,25 @@ def _new_access():
     return access
 
 
-def issue_tokens():
+def issue_tokens(client_id=""):
     refresh = REFRESH_PREFIX + secrets.token_urlsafe(32)
-    _put({"pk": f"oauth:refresh:{_sha(refresh)}", "ttl": _now() + REFRESH_TTL})
+    _put({"pk": f"oauth:refresh:{_sha(refresh)}", "client_id": client_id, "ttl": _now() + REFRESH_TTL})
     return _new_access(), refresh, ACCESS_TTL
 
 
-def refresh_access(refresh):
+def refresh_access(refresh, client_id=""):
+    """Trade a refresh token for a new access token and a new refresh token. The old one stops working, and it only
+    works for the client it was issued to."""
     if not refresh or not refresh.startswith(REFRESH_PREFIX):
         return None
     item = _get(f"oauth:refresh:{_sha(refresh)}")
     if not item or int(item.get("ttl", 0)) < _now():
         return None
-    return _new_access(), ACCESS_TTL
+    if item.get("client_id") and item["client_id"] != client_id:
+        return None
+    _delete(f"oauth:refresh:{_sha(refresh)}")
+    access, new_refresh, exp = issue_tokens(item.get("client_id", ""))
+    return access, exp, new_refresh
 
 
 def resolve_access_token(token):
@@ -266,10 +272,10 @@ async def _token(receive, send):
     nocache = {"cache-control": "no-store"}
     grant = f("grant_type")
     if grant == "refresh_token":
-        got = refresh_access(f("refresh_token"))
+        got = refresh_access(f("refresh_token"), f("client_id"))
         if not got:
             return await _json(send, 400, {"error": "invalid_grant"})
-        return await _json(send, 200, {"access_token": got[0], "token_type": "Bearer", "expires_in": got[1], "scope": "mcp"}, nocache)
+        return await _json(send, 200, {"access_token": got[0], "token_type": "Bearer", "expires_in": got[1], "refresh_token": got[2], "scope": "mcp"}, nocache)
     if grant != "authorization_code":
         return await _json(send, 400, {"error": "unsupported_grant_type"})
     bad = lambda d: _json(send, 400, {"error": "invalid_grant", "error_description": d})
@@ -282,7 +288,7 @@ async def _token(receive, send):
         return await bad("redirect_uri mismatch")
     if not verify_pkce(f("code_verifier"), data["code_challenge"]):
         return await bad("PKCE verification failed")
-    access, refresh, exp = issue_tokens()
+    access, refresh, exp = issue_tokens(data["client_id"])
     await _json(send, 200, {"access_token": access, "token_type": "Bearer", "expires_in": exp, "refresh_token": refresh, "scope": "mcp"}, nocache)
 
 
@@ -293,6 +299,7 @@ def esc(v):
 def login_page(params, error=None):
     hidden = "".join(f'<input type="hidden" name="{esc(k)}" value="{esc(params.get(k, ""))}">' for k in FORWARD)
     err = f'<p class="error">{esc(error)}</p>' if error else ""
+    host = urllib.parse.urlsplit(params.get("redirect_uri", "")).netloc
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign in</title>
@@ -308,6 +315,7 @@ button{{width:100%;margin-top:24px;padding:12px;border:0;border-radius:10px;back
 </style></head><body>
 <form class="card" method="post" action="/authorize">
 <h1>Latam trip</h1><p class="sub">Enter your passphrase to connect Claude.</p>
+<p class="sub">Sends you back to {esc(host)}</p>
 {err}{hidden}
 <label for="p">Passphrase</label>
 <input id="p" name="passphrase" type="password" required autofocus autocomplete="current-password">

@@ -299,7 +299,7 @@ class Rest:
         return out
 
     def _insert_batch(self, table, batch, on_conflict, returning, resolution, a, b):
-        prefer = ["return=representation" if returning else "return=minimal"]
+        prefer = ["return=representation" if returning else "return=minimal", "missing=default"]
         if resolution:
             prefer.append(f"resolution={resolution}")
         q = {}

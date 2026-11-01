@@ -176,5 +176,14 @@ class IngestNulTest(unittest.TestCase):
         json.dumps(rejected)
 
 
+class InsertPreferTest(unittest.TestCase):
+    def test_a_batch_insert_asks_for_column_defaults_for_missing_keys(self):
+        seen = []
+        rest = S.Rest("https://x.test", "k")
+        rest._call = lambda method, path, body=None, headers=None, **kw: seen.append(headers) or (201, {}, b"")
+        rest.insert("tasks", [{"title": "a"}, {"title": "b", "status": "done"}])
+        self.assertIn("missing=default", seen[0]["Prefer"])
+
+
 if __name__ == "__main__":
     unittest.main()

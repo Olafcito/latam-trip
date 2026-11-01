@@ -91,7 +91,7 @@ def guard(inner, resolve, base_url_fn, oauth_on=True):
 
 
 def build_asgi():
-    return guard(build_mcp().http_app(path="/mcp"), oauth.resolve_access_token, base_url)
+    return guard(build_mcp().http_app(path="/mcp", stateless_http=True), oauth.resolve_access_token, base_url)
 
 
 def __getattr__(name):

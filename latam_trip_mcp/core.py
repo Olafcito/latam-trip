@@ -367,8 +367,7 @@ class Core:
         if tname == "flight":
             return self.chat_flight(row)
         if tname == "task":
-            errs = tripdb.check_fields(row, TASK_FIELDS)
-            return ({"status": "open", **row}, errs)
+            return {"status": "open", **row}, self.task_errors(row)
         r = dict(row)
         if tname == "trip":
             r = self.new_trip(r)
@@ -381,6 +380,18 @@ class Core:
         if not errs:
             errs = self.extra_checks(tname, r)
         return r, errs
+
+    @staticmethod
+    def task_errors(row):
+        """Reasons to refuse a task row: a field the table lacks, a value the database cannot hold, or a bad field."""
+        unknown = [k for k in row if k not in TASK_FIELDS]
+        if unknown:
+            return ["unknown field " + ", ".join(sorted(unknown)) + ", the fields are " + ", ".join(TASK_FIELDS)]
+        if tripdb.store.has_nul(row):
+            return [tripdb.NUL_WHY]
+        if tripdb.store.has_unstorable(row):
+            return [tripdb.BAD_WHY]
+        return tripdb.check_fields(row, TASK_FIELDS)
 
     def extra_checks(self, tname, r):
         known = self.store.ids("places")
@@ -481,6 +492,10 @@ class Core:
             return self.update_flight(i, old, patch)
         if tname == "task":
             self.need_project()
+            errs = self.task_errors({**{k: v for k, v in old.items() if k in TASK_FIELDS and v is not None}, **patch})
+            if errs:
+                raise Refused(f"{i}: " + "; ".join(errs))
+            self.keep("task", i, [old], "update")
             self.store.rest.patch("tasks", {"id": "eq." + i}, patch)
             return {"updated": i}
         if {"id", "kind"} & set(patch):
@@ -489,12 +504,14 @@ class Core:
         errs = tripdb.row_errors(t.table, new) or self.extra_checks(tname, new)
         if errs:
             raise Refused(f"{i}: " + "; ".join(errs))
-        self.keep(tname, i, [old], "update")
+        self.keep(tname, i, [old], "update", replaced_by=self.ident(tname, new))
         if t.table in ("places", "experiences"):
             self.store.update(t.table, i, patch, None)
         else:
-            self.store.remove(t.table, {k: old.get(k) for k in t.keys})
-            self.store.add(t.table, [new], cols.COLS[t.table].key)
+            # the new row goes in first, so a failure between the two steps leaves two rows and never none
+            self.store.add(t.table, [new], cols.COLS[t.table].key, replace=True)
+            if {k: new.get(k) for k in t.keys} != {k: old.get(k) for k in t.keys}:
+                self.store.remove(t.table, {k: old.get(k) for k in t.keys})
         return {"updated": self.ident(tname, new)}
 
     def update_trip(self, id, patch):
@@ -503,7 +520,15 @@ class Core:
             raise Refused("id, version and saved_at cannot be changed, a save makes the next version")
         new = {**copy.deepcopy(old), **patch}
         new["by"] = patch.get("by") or "plan-trip"
-        return self.save_trip(new)
+        self.keep("trip", id, [old], "update")
+        try:
+            out = self.save_trip(new)
+        except Refused:
+            self.drop_last("trip", id)
+            raise
+        if out["skipped"]:
+            self.drop_last("trip", id)
+        return out
 
     def save_trip(self, t):
         errs = tripdb.row_errors("trips", t)
@@ -513,17 +538,24 @@ class Core:
         return {"id": res["id"], "version": res["version"], "skipped": bool(res["skipped"])}
 
     def update_flight(self, id, old, patch):
+        if old.get("source") != "chat":
+            raise Refused(f"{id} is a {old.get('source')} quote, only flights saved from chat can be changed here")
         flat = {"from": old["legs_requested"][0]["from"], "to": old["legs_requested"][0]["to"], "date": old["legs_requested"][0]["date"],
                 "price": old["price_dkk"], **{k: v for k, v in (old["out"] or {}).items() if k in CHAT_FLIGHT}}
-        flat["notes"] = old.get("notes")
+        flat["notes"] = re.sub(r"^site=chat(; )?", "", old.get("notes") or "") or None
         flat.update(patch)
         new, errs = self.chat_flight({k: v for k, v in flat.items() if v is not None})
         if errs:
             raise Refused(f"{id}: " + "; ".join(errs))
-        self.keep("flight", id, [old], "update")
-        self.store.remove("quotes", {"quote_id": id})
-        self.store.add_quotes([new], "chat.jsonl")
-        return {"updated": cols.qr.quote_id(new)}
+        new_id = cols.qr.quote_id(new)
+        self.keep("flight", id, [old], "update", replaced_by=new_id)
+        if new_id == id:
+            self.store.remove("quotes", {"quote_id": id})  # the same quote again would count as a duplicate
+            self.store.add_quotes([new], "chat.jsonl")
+        else:
+            self.store.add_quotes([new], "chat.jsonl")
+            self.store.remove("quotes", {"quote_id": id})
+        return {"updated": new_id}
 
     def delete(self, tname, id):
         t = TYPES[tname]
@@ -554,9 +586,12 @@ class Core:
         found = self.store.delete_trip({id})
         return {"deleted": id, "versions": found.get(id, 0), "restore": "update_trip with restore true"}
 
-    def keep(self, tname, id, rows, action):
-        """Put the rows a write is about to lose into the trash, so the write can be undone."""
+    def keep(self, tname, id, rows, action, replaced_by=None):
+        """Put the rows a write is about to lose into the trash, so the write can be undone. replaced_by is the id the
+        row has after an update, so a restore can take the new row away."""
         entry = {"type": tname, "id": id, "action": action, "deleted_at": self.now(), "rows": rows}
+        if replaced_by is not None:
+            entry["replaced_by"] = replaced_by
         self.edit_trash(lambda entries: entries.append(entry))
 
     def drop_last(self, tname, id):
@@ -584,16 +619,17 @@ class Core:
         t = TYPES[tname]
         picked = {}
 
-        def take(entries):
+        def peek(entries):
             for k in range(len(entries) - 1, -1, -1):
                 if entries[k]["type"] == tname and entries[k]["id"] == str(id):
-                    picked.update(entries.pop(k))
+                    picked.update(entries[k])
                     return
 
-        self.edit_trash(take)
+        self.edit_trash(peek)
         if not picked:
             raise Refused(f"nothing to restore for {t.label} {id!r}")
         rows, action = picked["rows"], picked["action"]
+        now_id = picked.get("replaced_by") or str(id)
         if tname == "trip":
             if action == "delete":
                 self.store.restore_trip(id, rows)
@@ -601,16 +637,30 @@ class Core:
                 self.store.save_trip(rows[-1])
         elif tname == "task":
             self.need_project()
-            self.store.rest.insert("tasks", rows)
+            if action == "update":
+                self.store.rest.patch("tasks", {"id": "eq." + str(id)}, {k: v for k, v in rows[0].items() if k in TASK_FIELDS})
+            else:
+                self.store.rest.insert("tasks", rows)
         elif tname == "flight":
-            if action == "update":
-                for q in self.pairs("flight", {"id": id}):
-                    self.store.remove("quotes", {"quote_id": q[0]})
+            if action == "update" and now_id == str(id):
+                self.store.remove("quotes", {"quote_id": now_id})
             self.store.add_quotes(rows, "chat.jsonl")
+            if action == "update" and now_id != str(id):
+                self.store.remove("quotes", {"quote_id": now_id})
         else:
-            if action == "update":
-                self.store.remove(t.table, {k: self.find(tname, id)[1].get(k) for k in t.keys})
+            # the old row goes back first and the changed one goes after, so a failure never leaves nothing
             self.store.add(t.table, rows, cols.COLS[t.table].key, replace=True)
+            if action == "update" and now_id != str(id) and t.table not in ("places", "experiences"):
+                current = self.find(tname, now_id)[1]
+                self.store.remove(t.table, {k: current.get(k) for k in t.keys})
+
+        def drop(entries):
+            for k in range(len(entries) - 1, -1, -1):
+                if entries[k] == picked:
+                    del entries[k]
+                    return
+
+        self.edit_trash(drop)  # only now, so a restore that failed halfway can be tried again
         return {"restored": str(id), "action_undone": action}
 
     # ---- dates ------------------------------------------------------------------------------------------------
