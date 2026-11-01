@@ -9206,6 +9206,7 @@
      ],
      "carriers": [
       "Avianca",
+      "JA",
       "JetSMART",
       "Jetsmart",
       "Wingo",
@@ -9217,6 +9218,9 @@
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-03",
+      "2026-12-05",
+      "2026-12-06",
       "2026-12-08",
       "2026-12-09",
       "2026-12-10",
@@ -9224,6 +9228,66 @@
       "2027-01-05"
      ],
      "by_date": [
+      {
+       "date": "2026-12-03",
+       "from": "MDE",
+       "to": "CTG",
+       "dkk": 332,
+       "dep": "16:55",
+       "arr": "18:09",
+       "arr_days": 0,
+       "duration_min": 74,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5416"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-03",
+       "link": null
+      },
+      {
+       "date": "2026-12-05",
+       "from": "MDE",
+       "to": "CTG",
+       "dkk": 395,
+       "dep": "19:54",
+       "arr": "21:08",
+       "arr_days": 0,
+       "duration_min": 74,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5414"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      },
+      {
+       "date": "2026-12-06",
+       "from": "MDE",
+       "to": "CTG",
+       "dkk": 370,
+       "dep": "10:32",
+       "arr": "11:46",
+       "arr_days": 0,
+       "duration_min": 74,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5410"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-06",
+       "link": null
+      },
       {
        "date": "2026-12-08",
        "from": "CTG",
@@ -9369,7 +9433,7 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 18
+     "quotes": 21
     },
     "source": "crawl",
     "observed_at": "2026-10-30T19:48:33Z",
@@ -10100,15 +10164,17 @@
    {
     "mode": "flight",
     "operators": [
+     "LA",
      "LATAM",
+     "P5",
      "avianca",
      "Wingo",
      "Avianca"
     ],
     "duration_min": 84,
     "price_dkk": {
-     "min": 768,
-     "typical": 832
+     "min": 261,
+     "typical": 536
     },
     "frequency": "5 nonstop weekly per Kiwi (LATAM)",
     "overnight": false,
@@ -10121,18 +10187,167 @@
       "MDE"
      ],
      "carriers": [
+      "LA",
       "LATAM",
+      "P5",
       "avianca"
      ],
      "oneway_dkk": {
-      "min": 768,
-      "observed_at": "2026-10-28T15:35:00Z"
+      "min": 261,
+      "observed_at": "2026-11-01T14:20:00Z"
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-04",
+      "2026-12-05",
+      "2026-12-06",
+      "2026-12-07",
+      "2026-12-08",
+      "2026-12-09",
+      "2026-12-10",
       "2027-01-05"
      ],
      "by_date": [
+      {
+       "date": "2026-12-04",
+       "from": "CTG",
+       "to": "ADZ",
+       "dkk": 551,
+       "dep": "19:33",
+       "arr": "20:58",
+       "arr_days": 0,
+       "duration_min": 85,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4369"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-04",
+       "link": null
+      },
+      {
+       "date": "2026-12-05",
+       "from": "CTG",
+       "to": "ADZ",
+       "dkk": 436,
+       "dep": "11:37",
+       "arr": "13:02",
+       "arr_days": 0,
+       "duration_min": 85,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4392"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      },
+      {
+       "date": "2026-12-06",
+       "from": "CTG",
+       "to": "ADZ",
+       "dkk": 430,
+       "dep": "08:33",
+       "arr": "09:58",
+       "arr_days": 0,
+       "duration_min": 85,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4365"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-06",
+       "link": null
+      },
+      {
+       "date": "2026-12-07",
+       "from": "CTG",
+       "to": "ADZ",
+       "dkk": 556,
+       "dep": "11:27",
+       "arr": "12:52",
+       "arr_days": 0,
+       "duration_min": 85,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4392"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-07",
+       "link": null
+      },
+      {
+       "date": "2026-12-08",
+       "from": "CTG",
+       "to": "ADZ",
+       "dkk": 520,
+       "dep": "09:08",
+       "arr": "10:35",
+       "arr_days": 0,
+       "duration_min": 85,
+       "vias": [],
+       "carriers": [
+        "P5"
+       ],
+       "flights": [
+        "P57212"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-08",
+       "link": null
+      },
+      {
+       "date": "2026-12-09",
+       "from": "CTG",
+       "to": "ADZ",
+       "dkk": 261,
+       "dep": "08:42",
+       "arr": "10:09",
+       "arr_days": 0,
+       "duration_min": 85,
+       "vias": [],
+       "carriers": [
+        "P5"
+       ],
+       "flights": [
+        "P57212"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-09",
+       "link": null
+      },
+      {
+       "date": "2026-12-10",
+       "from": "CTG",
+       "to": "ADZ",
+       "dkk": 436,
+       "dep": "08:33",
+       "arr": "09:58",
+       "arr_days": 0,
+       "duration_min": 85,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4365"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-10",
+       "link": null
+      },
       {
        "date": "2027-01-05",
        "from": "CTG",
@@ -10156,31 +10371,31 @@
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 768,
+      "dkk": 261,
       "duration_min": 85,
       "vias": [],
       "carriers": [
-       "LATAM"
+       "P5"
       ],
-      "date": "2027-01-05",
+      "date": "2026-12-09",
       "self_transfer": false
      },
      "fastest": {
-      "dkk": 768,
+      "dkk": 261,
       "duration_min": 85,
       "vias": [],
       "carriers": [
-       "LATAM"
+       "P5"
       ],
-      "date": "2027-01-05"
+      "date": "2026-12-09"
      },
      "flags": [
       "basic_fare"
      ],
-     "quotes": 3
+     "quotes": 10
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T15:35:00Z",
+    "observed_at": "2026-11-01T14:20:00Z",
     "note": "Few frequencies; book early for Christmas. Peak Dec 20-Jan 6: expect roughly 1.5x (Medellin) to 2-4x (Cartagena, San Andres) the off-peak fare (La Republica Nov 2023: BOG-CTG return COP 0.60-1.1M, BOG-ADZ return COP 0.66-0.73M, BOG-MDE return COP 0.33-0.43M). price_dkk is the cheapest advertised off-peak one-way fare, not a Christmas fare.",
     "booking_url": null,
     "source_url": "https://www.kiwi.com/us/cheap-flights/cartagena-colombia/san-andres-colombia/",
