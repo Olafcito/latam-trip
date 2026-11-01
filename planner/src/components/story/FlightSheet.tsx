@@ -5,6 +5,7 @@ import { fareNotes, fareRows, sameFlight, seller, sortFares, stopsOf, timed, typ
 import type { FlightLink } from '../../lib/links'
 import { checkedAgo, momondoUrl, nearestDay, newestSeen, pricesOn, type PairDates } from '../../lib/prices'
 import { flightPricesTask } from '../../lib/tasks'
+import { AskClaude } from '../AskClaude'
 import { Caret, Check, External, Plane } from '../icons'
 import { stopsText } from './LegCard'
 
@@ -208,7 +209,7 @@ function DayList({ rows, name, nextDay, now, onPick }: { rows: FareRow[]; name: 
   )
 }
 
-export function FlightSheet({ from, to, typical, picked, date, days, fares, stay, pd, link, tripId, airportName, onPick, close }: {
+export function FlightSheet({ from, to, typical, picked, date, days, fares, stay, pd, link, tripId, tripVersion, airportName, onPick, close }: {
   from: { code: string; name: string }
   to: { code: string; name: string }
   /** the usual price of the route, or null */
@@ -223,6 +224,8 @@ export function FlightSheet({ from, to, typical, picked, date, days, fares, stay
   pd: PairDates | null
   link: FlightLink | null
   tripId: string
+  /** the version of the trip the sheet was opened from */
+  tripVersion?: number
   airportName: (code: string) => string
   onPick: (f: CrawledFlight | null) => void
   close: () => void
@@ -289,7 +292,7 @@ export function FlightSheet({ from, to, typical, picked, date, days, fares, stay
       </div>
       <footer className="fl-foot">
         {rows.length > 0 && <a className="btn small" href={open.href} target="_blank" rel="noopener noreferrer">{open.label}<External /></a>}
-        <a className="btn small link" href={task.url} target="_blank" rel="noopener noreferrer" title="A prefilled task. Claude checks every flight this day and 3 days either side">Ask Claude to check</a>
+        <AskClaude draft={task} tripId={tripId} version={tripVersion ?? null} title="Claude checks every flight this day and 3 days either side" />
       </footer>
     </div>
   )

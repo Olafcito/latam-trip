@@ -74,12 +74,7 @@ describe('searching again', () => {
     const t = flightPricesTask({ from: 'BOG', to: 'VVI', date: '2027-01-28', fromName: 'Bogotá', toName: 'Santa Cruz' })
     expect(t.task).toEqual({ type: 'flight_prices', legs: [{ from: 'BOG', to: 'VVI', date: '2027-01-28', flex_days: 3 }], all_flights: true, from: 'app' })
     expect(t.title).toBe('[flight_prices] BOG to VVI 28 Jan')
-    const url = new URL(t.url)
-    expect(url.origin + url.pathname).toBe('https://github.com/Olafcito/latam-trip/issues/new')
-    expect(url.searchParams.get('labels')).toBe('claude-task')
-    const body = url.searchParams.get('body')!
-    expect(body.startsWith('Every one-way flight from Bogotá to Santa Cruz on 28 Jan and 3 days either side.')).toBe(true)
-    expect(JSON.parse(body.match(/```json\n(.*)\n```/)![1])).toEqual(t.task)
+    expect(t.line).toBe('Every one-way flight from Bogotá to Santa Cruz on 28 Jan and 3 days either side.')
   })
 
   it('maps a map place to its airport code', () => {

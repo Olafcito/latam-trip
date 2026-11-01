@@ -337,6 +337,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
               pd={pd}
               link={hopLink(h, inout)}
               tripId={journey.id}
+              tripVersion={journey.version}
               airportName={airportName}
               onPick={(x) => setHopFlight(i, x)}
               close={close}

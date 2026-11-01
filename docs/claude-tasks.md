@@ -2,37 +2,15 @@
 
 The app never runs searches itself. It writes a task, and Claude does the work with the plugin (Sonnet browser workers for prices, web research for experiences and places), then writes the results back into the data.
 
-## Two ways to hand a task over
+## How a task is handed over
 
-1. **Add to checklist.** The app opens a prefilled GitHub issue in `Olafcito/latam-trip` with the label `claude-task`. Simon presses Submit. Later he tells Claude "check the checklist", and Claude runs the `trip-checklist` skill, which works through every open `claude-task` issue.
-2. **Ask Claude now.** The app builds the same task as a ready prompt (below) that Simon pastes into, or opens directly in, a Claude chat with the repo attached.
+The app inserts one row into the `tasks` table. Its `data` column holds the task JSON below, `title` is `[<type>] <short summary>`, and `trip_id` and `trip_version` say which trip it was asked from. Simon later tells Claude "check the checklist", and Claude runs the `trip-checklist` skill, which works through every open row.
 
-Prefilled issue link (URL-encode title and body):
+Claude uses `tasks.py`: `list` shows the open and working rows, `show N` prints the task JSON, `start N` sets `working`, and `done N SUMMARY_FILE` writes the result, sets `done` and logs it with `tripdb log-task`. The result is markdown and shows in the app next to the button within seconds.
 
-    https://github.com/Olafcito/latam-trip/issues/new?labels=claude-task&title=<title>&body=<body>
+Example `data`:
 
-Open tasks can be read without a token from the public REST API, so the app can show the checklist live:
-
-    https://api.github.com/repos/Olafcito/latam-trip/issues?labels=claude-task&state=all&per_page=100
-
-## Issue format
-
-Title: `[<type>] <short summary>`, for example `[stay_prices] Utila 10 to 14 Dec, dorm`.
-
-Body: one human line, then exactly one fenced `json` block with the task:
-
-    Hostel prices in Utila for 10 to 14 Dec, dorm or private.
-
-    ```json
-    {"type": "stay_prices", "place": "UTIL", "check_in": "2026-12-10", "check_out": "2026-12-14", "kinds": ["hostel"], "room": "any"}
-    ```
-
-The "Ask Claude now" prompt is:
-
-    In the repo Olafcito/latam-trip, run the trip-checklist skill on this task now and write the results back:
-    ```json
-    {...the task...}
-    ```
+    {"type": "stay_prices", "place": "UTIL", "check_in": "2026-12-10", "check_out": "2026-12-14", "kinds": ["hostel"], "room": "any", "note": "Hostel prices in Utila for 10 to 14 Dec, dorm or private."}
 
 ## Task types
 
@@ -45,14 +23,14 @@ All tasks may also carry `"note"` (free text from Simon) and `"from"` (`"app"`).
 | `experience_research` | `experience` (id) or `place` + `question`; optional `dates` | Web research; the experience row in `data/sources/experiences.jsonl` (written with `tripdb add-experience` or `update-experience`) gets price, season, Dec/Jan conditions, booking and sources, and `researched: true`. A new experience gets a new row. |
 | `place_research` | `name`, `country`, optional `question` | `place-profiler` and `network-researcher`: a new map place with profile, things to do and connections. |
 | `lists_update` | `list` (id), `add` and `remove`: lists of `{type: place or experience, id, note}` | Applied to `data/sources/lists.json` with `tripdb list-add` and `list-remove`. |
-| `question` | `text` | Answered in an issue comment. |
+| `question` | `text` | Answered in the result of the row. |
 | `refresh` | `scope`: `all`, `flights`, `stays` or `experiences`; optional `item` (a connection pair, place id, experience id or itinerary name); `older_than_days` (default 3) | Re-runs the searches behind everything in scope that was last checked more than `older_than_days` ago: the top whole trips and long-haul tickets, the regional pairs they use and any self-built itineraries for flights; the latest dates asked for stays; researched experiences. The app's update button sends this. |
 | `import_quotes` | `rows`: price rows in the worker format with `source: "momondo-manual"`, `observed_at` in UTC and, for a saved trip, `trip_name`. Also `count`, `legs`, `page` (the Momondo address), `from: "userscript"` and optional `trip_name`. When `rows_on_clipboard` is set, `rows` is empty and Simon pasted the full block over the issue text, so use the json block that has the rows. | Writes the rows unchanged to `data/sources/inbox/manual-<UTC timestamp>.jsonl`, one JSON row per line, and runs `tripdb build`, which ingests the inbox. The prices show in the app as saved by you. |
-| `fix_parser` | `parser_version`, `reason` (for example `3 of 14 rows have empty legs`), `action` (`save_prices` or `save_trip`), `view`, `page`, `legs`, `dialog_text`, `dialog_chars` and optional `dialog_cut` | Reproduces the failure by running `parseDlg` from `momondo_crawler.js` on `dialog_text`, fixes the parser and bumps `PARSER_VERSION`. Saves the text as a new fixture with an expected file, runs `node plugin/userscripts/build.js` and `node --test "plugin/userscripts/**/*.test.js"`, then pushes. Tampermonkey updates the script by itself. Reports the new parser version in the issue. |
+| `fix_parser` | `parser_version`, `reason` (for example `3 of 14 rows have empty legs`), `action` (`save_prices` or `save_trip`), `view`, `page`, `legs`, `dialog_text`, `dialog_chars` and optional `dialog_cut` | Reproduces the failure by running `parseDlg` from `momondo_crawler.js` on `dialog_text`, fixes the parser and bumps `PARSER_VERSION`. Saves the text as a new fixture with an expected file, runs `node plugin/userscripts/build.js` and `node --test "plugin/userscripts/**/*.test.js"`, then pushes. Tampermonkey updates the script by itself. Reports the new parser version in the result. |
 
 ## When a task is done
 
-Claude comments the result on the issue (a short table with prices, local clock times and sources), closes it, logs it in `data/sources/task_log.jsonl` with `tripdb log-task` (`issue`, `type`, `done_at`, `summary`, `outputs`) and rebuilds `data/web/` with `tripdb build`. The app shows done tasks from the issues or from `data/web/task_log.json`.
+Claude writes the result with `tasks.py done`, which marks the row `done`, stores the markdown in `result` (a short table with prices, local clock times and sources), and logs it in `task_log` with `tripdb log-task` (`issue` holds the task id, `type`, `done_at`, `summary`, `outputs`). Then it rebuilds with `tripdb build`.
 
 ## Last checked
 

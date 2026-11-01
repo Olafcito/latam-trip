@@ -119,3 +119,9 @@
     .fl-sort { flex: 1 0 100%; margin-left: 0; }
   }
 }
+
+.ask-error { font-size: var(--fs-small); color: var(--muted); }
+.ask-list { flex-basis: 100%; list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ask-list li { display: grid; gap: 2px; font-size: var(--fs-small); }
+.ask-list li span { color: var(--muted); }
+.ask-list li p { margin: 0; white-space: pre-wrap; }
