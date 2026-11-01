@@ -31,6 +31,8 @@ import csv, datetime as dt, io, json, os, re, shutil, sqlite3, subprocess, sys, 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPELINE = os.path.join(HERE, "..", "skills", "flight-crawl-orchestrator", "scripts")
+sys.path.insert(0, PIPELINE)
+from quote_rules import quote_key  # noqa: E402
 DEFAULT_ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 
 
@@ -380,16 +382,6 @@ def load_doc(paths, name, default=None):
 
 
 # ---- quotes -------------------------------------------------------------------------------------
-
-def quote_key(q):
-    """Same route, dates, departure and arrival times, carriers, price and source: the same quote."""
-    legs = [q.get("out")] + list(q.get("mid") or []) + ([q["home"]] if q.get("home") else [])
-    price = q.get("price_dkk")
-    return json.dumps([q.get("source"),
-                       [[l.get("from"), l.get("to"), l.get("date"), l.get("return_date")] for l in q.get("legs_requested") or []],
-                       [[(d or {}).get("dep"), (d or {}).get("arr"), (d or {}).get("carriers") or []] for d in legs],
-                       None if price is None else float(price)])
-
 
 def known_quotes(paths):
     """quote key: newest observed_at over every quote file."""

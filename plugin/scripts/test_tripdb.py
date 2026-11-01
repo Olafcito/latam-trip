@@ -523,6 +523,38 @@ class WayIdTest(unittest.TestCase):
             self.assertEqual(json.load(fh), {"I0001": "Iaaaaaaaaaa", "H0002": "Hbbbbbbbbbb"})
 
 
+class QuoteRulesTest(unittest.TestCase):
+    def test_rules_match_ingest(self):
+        import sqlite3
+        import quote_rules
+        tmp = tempfile.mkdtemp(prefix="tripdb-rules-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        shutil.copytree(os.path.join(REPO, "data", "sources"), os.path.join(tmp, "data", "sources"))
+        os.makedirs(os.path.join(tmp, "data", "built"))
+        ingest = os.path.join(tripdb.PIPELINE, "ingest.py")
+        subprocess.run([sys.executable, "-I", "-X", "utf8", ingest, "--root", tmp], capture_output=True, check=True)
+        with open(os.path.join(tmp, "data", "sources", "trip.json"), encoding="utf-8") as fh:
+            cfg = json.load(fh)
+        con = sqlite3.connect(os.path.join(tmp, "data", "built", "trip.db"))
+        rows = con.execute("SELECT quote_id, ok, out_date, home_date, raw FROM quotes ORDER BY quote_id").fetchall()
+        con.close()
+        sample = rows[::max(1, len(rows) // 200)]
+        self.assertGreaterEqual(len(sample), 200)
+        for qid, ok, out_date, home_date, raw in sample:
+            q = json.loads(raw)
+            self.assertEqual(quote_rules.build_qid(q, cfg), qid)
+            self.assertEqual(quote_rules.usable(q, cfg), ok)
+            self.assertEqual(quote_rules.leg_dates(quote_rules.prepared(q, cfg)), (out_date, home_date))
+
+    def test_quote_id_tells_flight_numbers_apart(self):
+        import quote_rules
+        a, b = quote(), quote()
+        b["out"] = dict(b["out"], flights=["IB1111", "IB2222"])
+        self.assertEqual(quote_rules.quote_id(a), quote_rules.quote_id(dict(a)))
+        self.assertNotEqual(quote_rules.quote_id(a), quote_rules.quote_id(b))
+        self.assertTrue(quote_rules.quote_id(a).startswith("Q2:"))
+
+
 class MomondoLinesTest(unittest.TestCase):
     """The converter in momondo-search: the same airline later the same day is another flight to the planner."""
     SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "skills", "momondo-search", "scripts", "momondo_lines.py")
