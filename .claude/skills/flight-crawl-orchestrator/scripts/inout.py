@@ -20,7 +20,7 @@ Rating /10 (long-haul only) = 2 x (0.5 price + 0.3 way home + 0.2 way in):
   -1 if flying time > 20 h, another -1 if > 23 h (min 1).
 Writes data/built/inout.json (airports, tickets, ways, options), data/built/inout.csv (options) and, with --md, a table.
 """
-import csv, datetime as dt, importlib.util, json, os, sqlite3, sys
+import csv, datetime as dt, hashlib, importlib.util, json, os, sqlite3, sys
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
 MD = args[args.index("--md") + 1] if "--md" in args else None
@@ -167,13 +167,17 @@ def finish_way(w):
 WAYS = {}
 
 
+def way_key(w):
+    return (w["direction"], w["type"], tuple(w["tickets"]), w["depart"])
+
+
 def add_way(w, shared=None):
     w = finish_way(w)
-    key = (w["direction"], w["type"], tuple(w["tickets"]), w["depart"])
-    for v in WAYS.values():
-        if (v["direction"], v["type"], tuple(v["tickets"]), v["depart"]) == key:
-            return v["id"]
-    w["id"] = f"{'I' if w['direction'] == 'in' else 'H'}{len(WAYS) + 1:04d}"
+    key = way_key(w)
+    wid = f"{'I' if w['direction'] == 'in' else 'H'}{hashlib.sha1(json.dumps(key).encode()).hexdigest()[:10]}"
+    if wid in WAYS:
+        return wid
+    w["id"] = wid
     own = [t for t in w["tickets"] if t != shared]
     st = [x for x in w["timeline"] if x["kind"] != "flight"]
     w["shared_ticket"] = shared

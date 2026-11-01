@@ -5,7 +5,9 @@ Usage: python3 -I ingest.py [--root DIR] [--top N]
 Writes DIR/data/built/trip.db (table quotes). tripdb build runs it and then loads the other tables.
 Scoring (effective cost, DKK-equivalent) is read from trip.json "scoring"; see references/scoring.md.
 """
-import glob, json, os, re, sqlite3, sys, hashlib
+import glob, json, os, re, sqlite3, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import quote_rules as qr
 
 args = sys.argv[1:]
 ROOT = os.path.abspath(args[args.index("--root") + 1]) if "--root" in args else os.getcwd()
@@ -17,62 +19,9 @@ W = dict(tight_connection=700, tight_connection_h=1.0, per_hour=150, soft_hours=
          us_transit=500, airport_change=1000, no_changes=300, missing_side_hours=24)
 W.update(CFG.get("scoring", {}))
 US = set(CFG.get("us_airports", ["MIA", "JFK", "EWR", "ATL", "IAH", "DFW", "ORD", "LAX", "FLL", "MCO", "IAD"]))
-ORIGINS = set(CFG.get("home_airports", ["CPH"])) | set(CFG.get("alt_origins", []))
-MAXH = CFG.get("max_hours_one_way", 30)
 
-
-def legs_of(q):
-    return [q.get("out")] + list(q.get("mid") or []) + ([q.get("home")] if q.get("structure") != "one_way" else [])
-
-
-def pattern_of(q):
-    L = q.get("legs_requested") or []
-    s = q.get("structure")
-    if s == "return" and L:
-        a, b = L[0]["from"], L[0]["to"]
-        return f"{'P' if a in ORIGINS else 'RR'}:{a}>{b}/{b}>{a}"
-    if s == "open_jaw" and len(L) >= 2:
-        return f"{'P' if L[0]['from'] in ORIGINS or L[1]['to'] in ORIGINS else 'RR'}:{L[0]['from']}>{L[0]['to']}/{L[1]['from']}>{L[1]['to']}"
-    if s == "multi_city":
-        return "M:" + "+".join(f"{l['from']}>{l['to']}" for l in L)
-    if len(L) == 1:
-        l = L[0]
-        if l["from"] in ORIGINS: return f"P:{l['from']}>{l['to']}/*"
-        if l["to"] in ORIGINS: return f"P:*/{l['from']}>{l['to']}"
-        return f"R:{l['from']}>{l['to']}"   # regional one-way
-    return "P:?"
-
-
-def via(d):
-    return "-".join(d.get("via") or []) if d else ""
-
-
-SELF_FIX_BEFORE = "2026-10-28T11:35:00Z"   # Momondo crawler v4 detects self-transfer per leg from then on
-
-
-def clean(q):
-    """Older Momondo rows flagged self_transfer from page-wide text. Single-carrier legs on a
-    non-OTA site are almost certainly one ticket: drop the flag and mark the row."""
-    if q.get("source") == "momondo" and q.get("self_transfer") and (q.get("observed_at") or "") < SELF_FIX_BEFORE:
-        site = (q.get("notes") or "").split(";")[0].lower()
-        legs = [d for d in legs_of(q) if d]
-        if legs and all(len(d.get("carriers") or []) <= 1 for d in legs) and not any(
-                x in site for x in ("kiwi", "mytrip", "gotogate", "trip.com", "flightnetwork", "budgetair")):
-            q["self_transfer"] = False
-            q["tickets"] = None
-            q["flags"] = [f for f in (q.get("flags") or []) if f != "self_transfer"] + ["self_transfer_unverified"]
-    return q
-
-
-def normalise(q):
-    """Fix a common worker slip: the home leg of an open jaw/return written as ORIGIN->X instead of X->ORIGIN."""
-    L = q.get("legs_requested") or []
-    if len(L) == 2 and L[1]["from"] == L[0]["from"] and L[1]["to"] != L[0]["from"]:
-        L[1]["from"], L[1]["to"] = L[1]["to"], L[1]["from"]
-        q["flags"] = (q.get("flags") or []) + ["legs_fixed"]
-        if L[1]["from"] == L[0]["to"]:
-            q["structure"] = "return"
-    return q
+legs_of = qr.legs_of
+via = qr.via
 
 
 def eff_cost(q):
@@ -118,7 +67,7 @@ def main():
             if not line:
                 continue
             try:
-                q = normalise(clean(json.loads(line)))
+                q = qr.prepared(json.loads(line), CFG)
                 if any(x < W["tight_connection_h"] for d in legs_of(q) if d for x in (d.get("layover_h") or []) if isinstance(x, (int, float))):
                     q["flags"] = sorted(set((q.get("flags") or []) + ["tight_connection"]))
             except json.JSONDecodeError:
@@ -126,19 +75,15 @@ def main():
             L = q.get("legs_requested") or []
             o, h = q.get("out") or {}, q.get("home") or {}
             mids = q.get("mid") or []
-            pid = pattern_of(q)
-            var = f"{pid}:{via(o)}/{'|'.join(via(m) for m in mids)}/{via(h)}:{q.get('tickets') or '?'}T"
-            out_date = L[0]["date"] if L else None
-            home_date = L[-1]["date"] if len(L) > 1 else (L[0].get("return_date") if L else None)
-            key = json.dumps([q.get("source"), var, [l.get("date") for l in L], q.get("price_dkk"),
-                              o.get("flights") or [], h.get("flights") or []], sort_keys=True)
-            qid = "Q:" + hashlib.sha1(key.encode()).hexdigest()[:12]
+            pid, var = qr.variant(q, CFG)
+            out_date, home_date = qr.leg_dates(q)
+            qid = qr.qid_of(q, CFG)
             hrs = [d.get("hours") for d in legs_of(q) if d and d.get("hours")]
             flags = q.get("flags") or []
             site = (q.get("notes") or "").split(";")[0].replace("site=", "").strip()
             if site in ("Sponsoreret", "Annonce"):
                 flags = list(flags) + ["ad_offer"]
-            ok = int(not ({"over_30h", "incomplete", "ad_offer"} & set(flags)) and all(x <= MAXH for x in hrs))
+            ok = qr.usable_of(q, CFG)
             mid_h = sum((m or {}).get("hours") or 0 for m in mids) or None
             seen_at = obs_key(q.get("observed_at"))
             if qid in newest:
