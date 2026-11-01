@@ -10,6 +10,7 @@ import { Warn } from './components/icons'
 import { Freshness } from './components/Freshness'
 import { SignIn } from './components/SignIn'
 import { remoteEnabled, useSession } from './lib/supabase'
+import { loadTrips, subscribeTrips } from './lib/remoteTrips'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
 
@@ -138,22 +139,51 @@ export function App() {
   const setRepoTrips = useStore((s) => s.setRepoTrips)
   useInputMode()
 
+  const userId = auth.session?.user.id ?? null
+  const applyRemote = useStore((s) => s.applyRemote)
+  const flushOutbox = useStore((s) => s.flushOutbox)
+
   useEffect(() => {
+    // with Supabase the trips need the signed in session, and wait for it
+    if (remoteEnabled() && !userId) return
     // the table trips bring their own ways in and home, so they load with the data
-    Promise.all([loadData(), loadRepoTrips()]).then(
+    const rowsFrom = remoteEnabled() ? loadTrips() : loadRepoTrips()
+    Promise.all([loadData(), rowsFrom]).then(
       ([d, rows]) => {
         setData({ ...d, inout: withTripWays(d.inout, rows) })
-        setRepoTrips(rows.map(rowToJourney))
+        if (remoteEnabled()) applyRemote(rows)
+        else setRepoTrips(rows.map(rowToJourney))
         openDeepLink()
+        void flushOutbox()
       },
       (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
     )
-  }, [setData, setRepoTrips])
+  }, [setData, setRepoTrips, applyRemote, flushOutbox, userId])
+
+  // Realtime on trips: a change reloads trips_latest. Saves that waited are sent when the connection is back
+  useEffect(() => {
+    if (!remoteEnabled() || !userId) return
+    const reload = () => {
+      loadTrips().then(applyRemote, () => {})
+    }
+    const stop = subscribeTrips(reload)
+    const online = () => {
+      void flushOutbox()
+      reload()
+    }
+    window.addEventListener('online', online)
+    return () => {
+      stop()
+      window.removeEventListener('online', online)
+    }
+  }, [userId, applyRemote, flushOutbox])
 
   useEffect(() => useStore.subscribe(syncAddress), [])
 
   // a flight picked on Momondo lands in a new tab, and a tab already on the trip follows
   useEffect(() => {
+    // with Supabase, Realtime covers other tabs
+    if (remoteEnabled()) return
     const follow = (e: StorageEvent) => {
       if (e.key === CURRENT_KEY) useStore.getState().followTab(e.newValue)
     }

@@ -1,0 +1,113 @@
+import type { PostgrestError } from '@supabase/supabase-js'
+import type { SendOutcome } from './outbox'
+import { parseTripsFile, type TripRow } from './repoTrips'
+import { supabase } from './supabase'
+import { tripRowErrors } from './tripRow'
+
+// Trips through Supabase (spec 6.1 and 6.2). The planner reads trips_latest, saves through save_trip,
+// deletes by setting deleted_at, and listens to Realtime on trips.
+
+const CACHE_KEY = 'latam-planner.trips-latest'
+
+export type SaveResult =
+  | { status: 'saved'; id: string; version: number; skipped: boolean }
+  /** it could not reach the database now. The caller keeps it in the outbox */
+  | { status: 'queued'; reason: 'offline' | 'session' }
+  /** the trip was deleted in another window, so the save was not made */
+  | { status: 'deleted' }
+  | { status: 'failed'; message: string }
+
+type Failure = Pick<PostgrestError, 'message' | 'code'> & { status?: number }
+
+/** What an error of a call means for a save. */
+export function classify(e: Failure, online = typeof navigator === 'undefined' || navigator.onLine !== false): 'offline' | 'session' | 'deleted' | 'other' {
+  if (/was deleted/i.test(e.message)) return 'deleted'
+  if (e.status === 401 || e.status === 403 || e.code === '42501' || e.code === 'PGRST301' || e.code === 'PGRST303' || /jwt/i.test(e.message)) return 'session'
+  if (!online || e.status === 0 || e.status === 502 || e.status === 503 || e.status === 504 || !e.code || /fetch|network|failed to load/i.test(e.message)) return 'offline'
+  return 'other'
+}
+
+function cacheRows(rows: TripRow[]) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ trips: rows }))
+  } catch {
+    // storage blocked: the list is fetched again next time
+  }
+}
+
+function cachedRows(): TripRow[] {
+  try {
+    return parseTripsFile(JSON.parse(localStorage.getItem(CACHE_KEY) ?? 'null'))
+  } catch {
+    return []
+  }
+}
+
+/** The latest version of every trip that is not deleted. When the database cannot be reached, the last list read. */
+export async function loadTrips(): Promise<TripRow[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase.from('trips_latest').select('data').order('id')
+  if (error) {
+    const cached = cachedRows()
+    if (cached.length) return cached
+    throw new Error(error.message)
+  }
+  const rows = parseTripsFile({ trips: (data ?? []).map((r: { data: TripRow }) => r.data) })
+  cacheRows(rows)
+  return rows
+}
+
+/** Every version of one trip, oldest first. */
+export async function loadVersions(id: string): Promise<TripRow[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase.from('trips').select('data').eq('id', id).order('version')
+  if (error) throw new Error(error.message)
+  return parseTripsFile({ trips: (data ?? []).map((r: { data: TripRow }) => r.data) })
+}
+
+/** One press of Save is one version. A row `tripdb check` would refuse is not sent. */
+export async function saveTrip(row: TripRow): Promise<SaveResult> {
+  const errs = tripRowErrors(row)
+  if (errs.length) return { status: 'failed', message: `The trip cannot be stored: ${errs[0]}.` }
+  if (!supabase) return { status: 'queued', reason: 'offline' }
+  let res
+  try {
+    res = await supabase.rpc('save_trip', { trip: row })
+  } catch {
+    return { status: 'queued', reason: 'offline' }
+  }
+  if (!res.error) {
+    const r = res.data as { id: string; version: number; skipped: boolean }
+    return { status: 'saved', id: r.id, version: r.version, skipped: !!r.skipped }
+  }
+  const kind = classify({ message: res.error.message, code: res.error.code, status: res.status })
+  if (kind === 'deleted') return { status: 'deleted' }
+  if (kind === 'other') return { status: 'failed', message: res.error.message }
+  return { status: 'queued', reason: kind }
+}
+
+/** The outbox sends through this. */
+export async function sendQueued(row: TripRow): Promise<SendOutcome> {
+  const r = await saveTrip(row)
+  if (r.status === 'saved') return { status: 'saved' }
+  if (r.status === 'queued') return { status: 'queued' }
+  if (r.status === 'deleted') return { status: 'deleted' }
+  return { status: 'failed', message: r.message }
+}
+
+/** A delete is a soft delete on every version of the id, so the trip is gone from every window and can be restored. */
+export async function deleteTrip(id: string): Promise<{ ok: true } | { ok: false; message: string }> {
+  if (!supabase) return { ok: false, message: 'Not connected.' }
+  const { error } = await supabase.from('trips').update({ deleted_at: new Date().toISOString() }).eq('id', id).is('deleted_at', null)
+  return error ? { ok: false, message: error.message } : { ok: true }
+}
+
+/** Calls cb on every change of trips. Returns the way to stop listening. */
+export function subscribeTrips(cb: () => void): () => void {
+  if (!supabase) return () => {}
+  const client = supabase
+  const channel = client.channel('trips-changes').on('postgres_changes', { event: '*', schema: 'public', table: 'trips' }, cb).subscribe()
+  return () => {
+    void client.removeChannel(channel)
+  }
+}
