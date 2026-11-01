@@ -112,6 +112,7 @@
 .st-hop > svg { flex: none; color: var(--tone); }
 .st-hop:active { background: var(--surface-2); transform: scale(0.97); }
 .st-moon { display: inline-flex; color: var(--faint); }
+.flight-off { color: var(--flight); font-size: var(--fs-small); font-weight: 500; white-space: nowrap; }
 .st-hop[aria-expanded='true'] { color: var(--text); }
 .st-arrives { font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .st-date:focus-visible, .st-hop:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }

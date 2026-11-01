@@ -5,7 +5,7 @@ import type { AppData, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
-import { giveNight, legDay, legTime, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
+import { flightOffDay, giveNight, legDay, legTime, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
 import { legWindow } from '../../lib/legDates'
 import { familyOf } from '../../lib/route'
@@ -235,13 +235,14 @@ function WayCard({ way, other, data }: { way: Way; other: Way; data: AppData }) 
 const ICON: Record<Family, (p: { s?: number }) => ReactNode> = { flight: Plane, boat: Boat, ground: Bus }
 
 /** A leg's mode and length. The word for the mode when the length is not known. */
-function Travel({ fam, time, overnight }: { fam: Family; time: string | null; overnight: boolean }) {
+function Travel({ fam, time, overnight, off }: { fam: Family; time: string | null; overnight: boolean; off?: string | null }) {
   const Icon = ICON[fam]
   return (
     <>
       <Icon s={14} />
       <span>{time ?? MODE[fam]}</span>
       {overnight && <span className="st-moon" title="Overnight"><Moon /></span>}
+      {off && <span className="flight-off" title={`The picked flight leaves ${day(off)}`}>Flight {day(off)}</span>}
     </>
   )
 }
@@ -313,7 +314,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           fromName={ends.fromName}
           onSet={(d) => setHopDate(i, d)}
           aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${took ? `, ${took}` : ''}${h.overnight ? ', overnight' : ''}. Details`}
-          travel={<Travel fam={fam} time={took} overnight={!!h.overnight} />}
+          travel={<Travel fam={fam} time={took} overnight={!!h.overnight} off={flightOffDay(h)} />}
           picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} onSet={(d) => setHopDate(i, d)} />}
           card={<LegCard h={h} ends={ends} family={fam} date={date} time={time} points={fam === 'flight' ? null : pointsOf([h.from, ...time.via, h.to])} link={hopLink(h, inout)} />}
           sheet={codes ? (close) => (

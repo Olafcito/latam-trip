@@ -1,6 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import type { MapData, Way } from '../data/types'
-import { applyMove, giveNight, legTime, pinLegs, schedule, stopGoes, takeNight, type Hop, type Journey, type NightMove } from './journey'
+import { applyMove, flightOffDay, giveNight, legTime, pinLegs, schedule, stopGoes, takeNight, type Hop, type Journey, type NightMove } from './journey'
+
+describe('flightOffDay', () => {
+  const flown = { ...({ from: 'A', to: 'B', mode: 'flight', operator: null, hours: 1, price_dkk: 100, overnight: false, border: false } as const), flight: { depart: '2026-12-29T01:10', arrive: '2026-12-29T07:05' } } as unknown as Hop
+
+  it('gives the real day when the leg has moved off its flight', () => {
+    expect(flightOffDay({ ...flown, date: '2026-12-30' })).toBe('2026-12-29')
+  })
+  it('stays quiet when the day matches, or there is no day or no flight', () => {
+    expect(flightOffDay({ ...flown, date: '2026-12-29' })).toBeNull()
+    expect(flightOffDay(flown)).toBeNull()
+    expect(flightOffDay({ ...flown, flight: null, date: '2026-12-30' })).toBeNull()
+  })
+})
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'A', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
