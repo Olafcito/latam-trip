@@ -328,11 +328,29 @@ class Rest:
         return self._json(raw)
 
     # ---- storage ----
-    def storage_put(self, bucket, path, data, content_type="application/json", upsert=True):
+    def storage_put(self, bucket, path, data, content_type="application/json", upsert=True, cache_control=None):
         if isinstance(data, str):
             data = data.encode("utf-8")
-        self._call("POST", f"/storage/v1/object/{bucket}/{urllib.parse.quote(path)}", raw=data,
-                   headers={"Content-Type": content_type, "x-upsert": "true" if upsert else "false"})
+        headers = {"Content-Type": content_type, "x-upsert": "true" if upsert else "false"}
+        if cache_control:
+            headers["Cache-Control"] = cache_control
+        self._call("POST", f"/storage/v1/object/{bucket}/{urllib.parse.quote(path)}", raw=data, headers=headers)
+
+    def storage_list(self, bucket, prefix):
+        """Every object directly below prefix, as the Storage list call gives them: name, created_at and updated_at."""
+        out, offset = [], 0
+        while True:
+            _, _, raw = self._call("POST", f"/storage/v1/object/list/{bucket}", retry=True, body={
+                "prefix": prefix, "limit": 1000, "offset": offset, "sortBy": {"column": "name", "order": "asc"}})
+            got = self._json(raw) or []
+            out += got
+            if len(got) < 1000:
+                return out
+            offset += len(got)
+
+    def storage_delete(self, bucket, paths):
+        for i in range(0, len(paths), 100):
+            self._call("DELETE", f"/storage/v1/object/{bucket}", body={"prefixes": paths[i:i + 100]})
 
     def storage_get(self, bucket, path):
         _, _, raw = self._call("GET", f"/storage/v1/object/{bucket}/{urllib.parse.quote(path)}", retry=True)
