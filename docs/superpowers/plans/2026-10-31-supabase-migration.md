@@ -18,7 +18,7 @@
 - AWS: region `eu-west-1`, resources prefixed `latam-trip-`, tagged `project=latam-trip`. No public Function URL.
 - `main` stays the truth until 9.3. Merge `main` into the branch at the start of each phase, taking either side of generated data as `CLAUDE.md` says.
 - Do not run the cutover or merge to `main` without asking Simon.
-- Phases 1 to 5 test only against the second project. The real project stays empty until cutover.
+- There is one Supabase project, by Simon's decision of 1 Nov 2026. It is the test bed until cutover. Live suites need `TRIPDB_LIVE_TESTS=1` and refuse once the `cutover_done` document exists.
 - `tripdb.py` and everything it imports use the standard library only and run under `python -I`, which leaves the script's folder off `sys.path`. Add the folder explicitly.
 - `add_quotes` is never reachable with the publishable key.
 - UI: never show a question mark and no prose recap lines. Build new UI from 21st components, not Claude Design's look.
@@ -45,10 +45,10 @@
 | `plugin/scripts/tripdb_store.py` | `FileStore`, `SupabaseStore`, the REST client, `load_env` |
 | `plugin/scripts/tripdb_cols.py` | Column maps, null rules, `to_row`, `from_row`, folding of repeats |
 | `plugin/scripts/test_tripdb.py` | Existing suite, run on both stores through a fixture layer |
-| `plugin/scripts/test_cols.py`, `test_store_contract.py`, `test_db_functions.py`, `test_roundtrip.py` | New suites. The last three skip unless `SUPABASE_TEST_URL` is set |
+| `plugin/scripts/test_cols.py`, `test_store_contract.py`, `test_db_functions.py`, `test_roundtrip.py` | New suites. The last three skip unless `TRIPDB_LIVE_TESTS` is set |
 | `plugin/skills/flight-crawl-orchestrator/scripts/quote_rules.py` | `clean`, `normalise`, `pattern_of`, `via`, `build_qid`, `usable`, from `ingest.py`, no module state |
 | `supabase/migrations/NNNN_*.sql` | Schema, functions, policies, triggers |
-| `supabase/test_helpers.sql` | `test_reset()`. Applied to the second project only |
+| `supabase/test_helpers.sql` | `test_reset()`. Dropped at cutover, see 9.3 step 7 |
 | `supabase/migrate.py` | Applies migrations through the pooler. Run with `uv run --no-project --with "psycopg[binary]"` |
 | `infra/worker/handler.py` | Lambda entry, one `action` per schedule |
 | `infra/worker/steps.py` | `should_build`, the build run, upload, backup. Testable without AWS |
@@ -79,7 +79,7 @@
 
 - [ ] **Step 2: List which names from section 10 are missing**
 
-Run a script that prints only names and present or missing for `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `SUPABASE_TEST_URL`, `SUPABASE_TEST_SECRET_KEY`, `SUPABASE_TEST_PASSWORD`. It must never print a value.
+Run a script that prints only names and present or missing for `SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY`. It must never print a value.
 
 - [ ] **Step 3: Record the reachability result of each environment in section 15 of the spec**
 
@@ -177,7 +177,7 @@ git add infra/worker/handler.py infra/build_zip.py infra/deploy.sh docs/superpow
 - Test: `plugin/scripts/test_db_functions.py`
 
 **Interfaces:**
-- Produces: every table of 4.1 and 4.2 with the names shown there. `is_owner()`. `add_quotes(rows jsonb) returns jsonb` with `{"added": n, "seen_again": n}`. `test_reset()`. `migrate.py --target test|real [--helpers]`, where `real` needs a typed `--yes-real`, reads `SUPABASE_TEST_PASSWORD` or `SUPABASE_PASSWORD`, takes the project ref from the URL, records applied files in `public.schema_migrations`, and never prints the password.
+- Produces: every table of 4.1 and 4.2 with the names shown there. `is_owner()`. `add_quotes(rows jsonb) returns jsonb` with `{"added": n, "seen_again": n}`. `test_reset()`. `migrate.py [--helpers]`, which reads `SUPABASE_PASSWORD`, takes the project ref from the URL, records applied files in `public.schema_migrations`, refuses `--helpers` once the `cutover_done` document exists, and never prints the password.
 
 - [ ] **Step 1: Write `0001_schema.sql` from 4.1 and 4.2.** `tasks` and `inbox_tokens` land here too, so the policy file covers all of them. `connections` uses `nulls not distinct`. `tasks.id` starts at 10000. `structure` has its check. Foreign keys and the indexes in 4.1 get created. `seen_count int not null default 1`.
 
@@ -187,11 +187,11 @@ git add infra/worker/handler.py infra/build_zip.py infra/deploy.sh docs/superpow
 
 - [ ] **Step 4: Write the failing tests in `test_db_functions.py`**
 
-`test_same_batch_twice` (`seen_count` is 2, row count 1), `test_batch_repeats_a_quote` (`seen_count` is the group size), `test_new_airport_makes_a_stub`, `test_two_writers_at_once` (two threads, one row, right count), `test_publishable_key_cannot_call_add_quotes` (401 or 403, and needs `SUPABASE_TEST_PUBLISHABLE_KEY`, skipped until set), `test_no_key_reads_nothing`.
+`test_same_batch_twice` (`seen_count` is 2, row count 1), `test_batch_repeats_a_quote` (`seen_count` is the group size), `test_new_airport_makes_a_stub`, `test_two_writers_at_once` (two threads, one row, right count), `test_publishable_key_cannot_call_add_quotes` (401 or 403), `test_no_key_reads_nothing`.
 
 - [ ] **Step 5: Apply and run**
 
-Run: `uv run --quiet --no-project --with "psycopg[binary]" python -X utf8 supabase/migrate.py --target test --helpers`, then `python -I -X utf8 -m unittest plugin/scripts/test_db_functions.py`.
+Run: `uv run --quiet --no-project --with "psycopg[binary]" python -X utf8 supabase/migrate.py --helpers`, then `TRIPDB_LIVE_TESTS=1 python -I -X utf8 -m unittest plugin/scripts/test_db_functions.py`.
 Expected: PASS.
 
 - [ ] **Step 6: Commit**
@@ -299,7 +299,7 @@ Expected: PASS.
 
 - [ ] **Step 3: Implement.** `add` reads the batch's keys with `in` in one call, and then upserts with `on_conflict`, asking for key columns only. `add_quotes` reads `trip.json`, computes the fields with `quote_rules`, and calls the function. Refuse `\u0000` in the shared row checks, so both stores behave alike.
 
-- [ ] **Step 4: Run all of `test_tripdb.py` with `TRIPDB_STORE=supabase` against the second project.** Expected: PASS.
+- [ ] **Step 4: Run all of `test_tripdb.py` with `TRIPDB_STORE=supabase` and `TRIPDB_LIVE_TESTS=1`.** Expected: PASS.
 
 - [ ] **Step 5: Commit**
 
@@ -389,7 +389,7 @@ Every planner task runs `cd planner; npm test; npx tsc --noEmit`. New behaviour 
 
 - [ ] **Step 3: Implement.** `saveJourney` calls `saveTrip` when `remoteEnabled()`. Realtime on `trips` reloads `trips_latest`. `followTab` and the `storage` listener go for trips. `hidden` stops being written. `.current` stays.
 
-- [ ] **Step 4: Run, then try two windows on the second project with `playwright`.** Expected: a save in one shows in the other within seconds.
+- [ ] **Step 4: Run, then try two windows with `playwright`.** Expected: a save in one shows in the other within seconds.
 
 - [ ] **Step 5: Commit**
 
@@ -402,7 +402,7 @@ Every planner task runs `cd planner; npm test; npx tsc --noEmit`. New behaviour 
 **Interfaces:**
 - Produces: `importBrowser(deps): Promise<ImportReport>`.
 
-- [ ] **Step 1: Write the failing tests** for each line of 9.2: `translates way ids with the map`, `a wrong first or last node goes to unresolved_journeys`, `a local edit of an old version imports as a new id`, `hidden soft deletes only with no newer version`, `the marker holds the project ref`, `a second run does nothing`, `a test import does not block the real one`, `web trips import once into web_trips`.
+- [ ] **Step 1: Write the failing tests** for each line of 9.2: `translates way ids with the map`, `a wrong first or last node goes to unresolved_journeys`, `a local edit of an old version imports as a new id`, `hidden soft deletes only with no newer version`, `the marker holds the project ref`, `a second run does nothing`, `no import runs before cutover_done`, `web trips import once into web_trips`.
 
 - [ ] **Step 2: Run.** Expected: FAIL.
 
@@ -470,11 +470,11 @@ Every planner task runs `cd planner; npm test; npx tsc --noEmit`. New behaviour 
 **Interfaces:**
 - Produces: `action: build`, `action: backup`. SSM parameter `/latam-trip/supabase-secret-key`. Bucket `latam-trip-backups`, private with a 90 day expiry. `tripdb status` shows `worker_version`.
 
-- [ ] **Step 1: Extend `deploy.sh`.** Create the bucket with a suffix if the name is taken, public access blocked. The SSM parameter comes from `.env` for the target named on the command line. The role gets SSM read on that path, and S3 write on that bucket. Add both schedules, disabled unless `--enable-schedules` is given. They run as role `latam-trip-scheduler`, which trusts `scheduler.amazonaws.com` and may only invoke the worker. Phase 0 created that role by hand, so `deploy.sh` must keep it and retry for a few seconds when it is new. `version.txt` becomes `worker_version`.
+- [ ] **Step 1: Extend `deploy.sh`.** Create the bucket with a suffix if the name is taken, public access blocked. The SSM parameter comes from `.env`. The role gets SSM read on that path, and S3 write on that bucket. Add both schedules, disabled unless `--enable-schedules` is given. They run as role `latam-trip-scheduler`, which trusts `scheduler.amazonaws.com` and may only invoke the worker. Phase 0 created that role by hand, so `deploy.sh` must keep it and retry for a few seconds when it is new. `version.txt` becomes `worker_version`.
 
 - [ ] **Step 2: Add the `CLAUDE.md` note** that a change to `tripdb.py` or the pipeline reaches the worker only through `deploy.sh`.
 
-- [ ] **Step 3: Deploy against the second project, enable, and write a row.** Expected: the file in the bucket changes with nobody running anything. Time it and put the delay in section 15.
+- [ ] **Step 3: Deploy, enable, and write a row.** Expected: the file in the bucket changes with nobody running anything. Time it and put the delay in section 15.
 
 - [ ] **Step 4: Run the worker row of section 13.** Row the check refuses. Trip the check refuses. A burst with no quiet minute. Run the backup and restore it into an empty test state.
 
@@ -508,7 +508,7 @@ Every planner task runs `cd planner; npm test; npx tsc --noEmit`. New behaviour 
 
 - [ ] **Step 3: Implement.** `/data` middleware and the `DEV` branches go when the flag is on. `sync-data.mjs` and `planner/public/data` stay until cutover.
 
-- [ ] **Step 4: Run both apps.** Expected: a row in the second project reaches an open planner with nobody running anything, the planner opens with the network off, and a failed build shows the strip.
+- [ ] **Step 4: Run both apps.** Expected: a row in the project reaches an open planner with nobody running anything, the planner opens with the network off, and a failed build shows the strip.
 
 - [ ] **Step 5: Commit**
 
@@ -542,7 +542,7 @@ Every planner task runs `cd planner; npm test; npx tsc --noEmit`. New behaviour 
 
 - [ ] **Step 2: Run, implement, run.** `@connect` becomes the Supabase host. The GitHub token and the issue calls leave the script.
 
-- [ ] **Step 3: Check a save end to end on the second project.** It lands in `inbox` and reaches the app by itself.
+- [ ] **Step 3: Check a save end to end.** It lands in `inbox` and reaches the app by itself.
 
 - [ ] **Step 4: Commit**
 

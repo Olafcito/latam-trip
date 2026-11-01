@@ -456,11 +456,11 @@ All phases happen on `supabase-migration`, and each ends with something that wor
 | 1. Schema and import | Stable way ids from 7.4. Migrations in `supabase/migrations`, `add_quotes`, column maps, `build_qid` and `usable`, `tripdb import`, `pull`, `dump`, `restore` | Round trip test, restore test and golden compare pass on real data and can be rerun at will |
 | 2. Store layer | `FileStore`, `SupabaseStore`, upserts, `save_trip`, `tripdb query`, `doc-get`, `doc-put`, contract tests | Every `tripdb` test passes on both stores |
 | 3. Planner | Sign in, row writer, Realtime, outbox, one off import, behind a flag | Save in one window shows in another within seconds |
-| 4. Worker and cache | Triggers, `derive_state`, the worker and its schedule, upload, `derived_options`, `tripdb file`, `tripdb run`, `tripdb status`, reader changes, the cache in 6.3, the error strip | A row written to the test project reaches an open planner with nobody running anything, the planner opens from cache with no network, and a failed build shows the strip |
+| 4. Worker and cache | Triggers, `derive_state`, the worker and its schedule, upload, `derived_options`, `tripdb file`, `tripdb run`, `tripdb status`, reader changes, the cache in 6.3, the error strip | A row written to the project reaches an open planner with nobody running anything, the planner opens from cache with no network, and a failed build shows the strip |
 | 5. Tasks and userscript | `tasks`, `tasks.py`, Ask Claude in the app, database functions, token, script update | One press in the app shows up in `tasks.py list`, its result shows in the app, and a Momondo save lands in `inbox` and reaches the app by itself |
 | 6. Cutover | See 9.3 | Agents write only to Supabase, data is gone from `main`, and a daily backup runs |
 
-Phases 1 to 5 test only against the second project. The real project stays empty until cutover.
+Simon decided on 1 Nov 2026 to use one Supabase project, with no second project. Until cutover it is the test bed and nothing relies on it, as `main` stays the truth. The live test suites need `TRIPDB_LIVE_TESTS=1` and refuse once the `cutover_done` document exists, so they can never touch real data.
 
 If phase 0 fails for an environment, stop. An environment that cannot reach Supabase cannot run `tripdb`, and the plan needs a rethink before any code is written. Network access from cloud sessions is the likeliest place for this.
 
@@ -468,7 +468,7 @@ If phase 0 fails for an environment, stop. An environment that cannot reach Supa
 
 ### 9.2 Importing browsers
 
-The import runs after cutover, on port 5198, as the journeys live in that browser. On first sign in, each browser runs one import, once, marked by a `latam-planner.imported` key that holds the project ref, so a test import can never block the real one.
+The import runs after cutover, on port 5198, as the journeys live in that browser. On first sign in, each browser runs one import, once, marked by a `latam-planner.imported` key that holds the project ref. It runs only when the `cutover_done` document exists, and tests call it directly in their own browser profile, so a test import can never block the real one.
 
 - Way ids are translated with `way_id_map` first, see 7.4, and the first and last nodes of each journey are then compared with its way. There is no lookup in older builds.
 - Each entry of `latam-planner.journeys` goes through the row writer and `save_trip`, keeping its id. A local edit of an old version imports as a new id, so it cannot overwrite a newer stored version.
@@ -482,11 +482,11 @@ The import runs after cutover, on port 5198, as the journeys live in that browse
 
 1. Stop agents. No Claude session writes during this.
 2. Merge `main` into the branch, then run `tripdb ingest-inbox` and a last build from git.
-3. `tripdb import --from data/sources --wipe`.
+3. `tripdb import --from data/sources --wipe`. This clears every test row, and `owners` stays.
 4. Verify with the round trip test, the golden compare and `tripdb check`.
 5. Move the open `claude-task` issues into `tasks`, see 8.3.
-6. Point the worker and the apps at the real project: `SUPABASE_URL`, the SSM secret, `VITE_SUPABASE_URL`, the publishable key and `VITE_DATA_BASE`. Set `TRIPDB_STORE=supabase` everywhere. Enable both worker schedules.
-7. Run the backup once by hand. Restore that archive into the second project with `tripdb restore` and compare every table with the real project.
+6. Point the worker and the apps at the real project: `SUPABASE_URL`, the SSM secret, `VITE_SUPABASE_URL`, the publishable key and `VITE_DATA_BASE`. Set `TRIPDB_STORE=supabase` everywhere.
+7. Run the backup once by hand. With agents still stopped, restore that archive over the same project with `tripdb restore --wipe`, then dump and compare every table with the archive. Drop `test_reset()`, write the `cutover_done` document and enable both worker schedules.
 8. Remove `data/sources`, `data/built`, `data/web`, `planner/public/data` and `planner/scripts/sync-data.mjs`, and add `data/` to `.gitignore`, keeping `data/README.md`.
 9. Update `CLAUDE.md`, `data/README.md`, `docs/momondo-save.md`, `docs/claude-tasks.md`, `plugin/README.md`, `plugin/skills/latam-trips/SKILL.md`, and the publish steps in `plugin/skills/trip-checklist/SKILL.md` and `plugin/skills/plan-trip/SKILL.md`. `CLAUDE.md` must stop saying that `data/` is the truth, and must say how the worker is deployed.
 10. Merge `supabase-migration` into `main`, push, confirm `git log main..supabase-migration` is empty, and delete the branch.
@@ -500,11 +500,10 @@ Claude cannot create accounts or read keys from the dashboard, so these come fir
 Done on 31 Oct 2026: the project `nwwhaxodxkhvadnpkppt` in `eu-west-1`, on Postgres 17, and the database password in `.env`. The project was checked and is empty.
 
 1. Copy the publishable key and the secret key from Project Settings, API Keys, into `.env` as `SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_SECRET_KEY`.
-2. On both projects, turn off public sign ups, add the one user, and add `http://localhost:5198`, the `web` dev URL and `https://d15amu9hjiumbd.cloudfront.net` to the redirect URLs. Phases 3 to 5 test on the second project.
-3. Create a second free project in `eu-west-1`, for tests and the restore test, so the same pooler host applies. Put its URL, secret key and database password in `.env` as `SUPABASE_TEST_URL`, `SUPABASE_TEST_SECRET_KEY` and `SUPABASE_TEST_PASSWORD`. REST cannot run migrations, so the password is needed.
-4. Add the first two keys and `SUPABASE_URL` to the Claude environment settings used by cloud sessions and Claude desktop, and allow `*.supabase.co` if the cloud environment limits network access.
-5. Run the one line reachability check in a Claude desktop session and in a cloud session. Claude cannot test those from this PC.
-6. Install the updated userscript and paste the new token into Tampermonkey in phase 5.
+2. Turn off public sign ups, add the one user, and add `http://localhost:5198`, `http://localhost:5173` and `https://d15amu9hjiumbd.cloudfront.net` to the redirect URLs.
+3. Add the first two keys and `SUPABASE_URL` to the Claude environment settings used by cloud sessions and Claude desktop, and allow `*.supabase.co` if the cloud environment limits network access.
+4. Run the one line reachability check in a Claude desktop session and in a cloud session. Claude cannot test those from this PC.
+5. Install the updated userscript and paste the new token into Tampermonkey in phase 5.
 
 Claude writes the SSM parameters from `.env` and deploys the worker from this PC. Signing in to the Supabase MCP with `/mcp` is useful for looking at data in a session, but nothing in this spec depends on it. The database password is enough to apply migrations through the `aws-0-eu-west-1` pooler on port 5432. The direct host `db.nwwhaxodxkhvadnpkppt.supabase.co` does not resolve from this PC.
 
@@ -523,13 +522,14 @@ The worker should cost about nothing. Polling each minute is about 43,200 Lambda
 | The worker runs old code | `worker_version` shows in `tripdb status`. It can only be deployed from this PC, see section 14 |
 | The public bucket exposes built data | Same exposure as today, as the repo is public. `trip.json` was checked and holds no personal details |
 | A session in an environment with no route to Supabase can do nothing, as no copy exists in the repo | Phase 0 checks each environment. This is the price of one home for the data |
+| With one project, nothing can be tested on a copy after cutover | The live suites stop at cutover. If a risky schema change comes up later, make a second free project then, as the plan allows 2 |
 | A Supabase outage | The planner opens from its cache and queues saves. `tripdb` fails with a clear message and agents wait |
 
 ## 12. Backup
 
 The worker's daily schedule runs `tripdb dump` into `/tmp`, packs it into one `.tar.gz` and stores it in the private S3 bucket `latam-trip-backups`, with public access blocked and a 90 day expiry rule. The bucket name gets a suffix if the name is taken. It commits nothing.
 
-This is not a second home for the data. It is a dated archive that nothing reads but a restore: download it, unpack it and run `tripdb restore --from DIR --wipe`. One restore is tested in phase 6 against the second project.
+This is not a second home for the data. It is a dated archive that nothing reads but a restore: download it, unpack it and run `tripdb restore --from DIR --wipe`. One restore is tested in phase 6, before agents and apps start using the project.
 
 ## 13. Tests
 
@@ -537,9 +537,9 @@ This is not a second home for the data. It is a dated archive that nothing reads
 |---|---|
 | Round trip: import real `data/sources`, pull, compare parsed rows and order per table | Nothing is lost. Repeats and superseded rows fold as designed, and the counts are recorded |
 | Golden compare: `data/web` from a build on `pull` against a build from the same data in git. Every difference must be explained | The pipeline is unchanged. Expected differences, measured on 31 Oct 2026: 19 in connections, 57 in `inout.json` and 3 in `pair_dates`, all from folded quotes, plus build stamps. `at` keeps its minute format |
-| Store contract: the same suite on `FileStore`, and on `SupabaseStore` when `SUPABASE_TEST_URL` is set | The stores behave alike, including skipped, refused and replaced rows |
+| Store contract: the same suite on `FileStore`, and on `SupabaseStore` when `TRIPDB_LIVE_TESTS` is set | The stores behave alike, including skipped, refused and replaced rows |
 | `add_quotes`: two writers at once, the same batch twice, a batch that repeats a quote, a new airport | One row per quote, `seen_count` is right, and no crawl is blocked |
-| Dump and restore: dump the test project, restore into an empty one, dump again, then add a row | The two dumps match, including soft deletes and `seen_count`, and the new row gets a fresh identity |
+| Dump and restore: dump the project, empty it, restore, dump again, then add a row | The two dumps match, including soft deletes and `seen_count`, and the new row gets a fresh identity |
 | Foreign keys on real data | Any row today only a note in `check` that a key would refuse is found at import, not during a crawl |
 | `save_trip`: two saves at once, same content, next version | Versions stay 1, 2, 3 |
 | Row level security: no key, publishable key signed out, a signed in non owner | None can read or write. `add_quotes` cannot be called with the publishable key |
@@ -577,7 +577,7 @@ Checked in phase 0 on 31 Oct 2026:
 Still open. These came up while writing and could not be confirmed. Check each in phase 0 or 1.
 
 - Whether Claude desktop reaches `*.supabase.co`. This PC does, checked on 31 Oct 2026.
-- Whether cloud Claude sessions reach it once the host is allowed. A run in the Default cloud environment on 31 Oct 2026 failed: its proxy answered `CONNECT tunnel failed, response 403` for REST, Storage and `urllib`, so the request never reached Supabase. Step 4 of section 10 must be done first, and the check run again.
+- Whether cloud Claude sessions reach it once the host is allowed. A run in the Default cloud environment on 31 Oct 2026 failed: its proxy answered `CONNECT tunnel failed, response 403` for REST, Storage and `urllib`, so the request never reached Supabase. Step 3 of section 10 must be done first, and the check run again.
 - Whether Storage accepts an upload with the new `sb_secret_` key.
 - Whether PostgREST caps a page at 1000 rows on this plan. The paging rule in section 5 works either way.
 - How Storage sets `cacheControl`, whether it serves gzip, and whether the CDN treats a file stored under a new hash as new.
