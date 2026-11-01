@@ -4,6 +4,27 @@ import contextlib, datetime as dt, io, json, os, re, shutil, subprocess, sys, te
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tripdb  # noqa: E402
+import tripdb_store  # noqa: E402
+
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+WANT = os.environ.get("TRIPDB_STORE") or "file"
+LIVE = os.environ.get("TRIPDB_LIVE_TESTS") == "1"
+TABLE_OF = {f: t for t, f in tripdb_store.FILES.items() if t not in ("task_log", "trips")}
+
+
+def file_only(obj):
+    """A test about the files themselves: it runs on FileStore whatever TRIPDB_STORE says."""
+    obj.file_only = True
+    return obj
+
+
+class PinFile(unittest.TestCase):
+    """For tests that are not built on Base: the commands they call work on the files."""
+
+    def setUp(self):
+        old = os.environ.get("TRIPDB_STORE")
+        os.environ["TRIPDB_STORE"] = "file"
+        self.addCleanup(lambda: os.environ.pop("TRIPDB_STORE", None) if old is None else os.environ.__setitem__("TRIPDB_STORE", old))
 
 
 def quote(**over):
@@ -18,25 +39,65 @@ def quote(**over):
 
 
 class Base(unittest.TestCase):
+    FILE_ONLY = False
+
     def setUp(self):
+        pinned = self.FILE_ONLY or getattr(getattr(self, self._testMethodName), "file_only", False)
+        self.kind = "file" if pinned else WANT
+        if self.kind == "supabase" and not LIVE:
+            self.skipTest("set TRIPDB_LIVE_TESTS=1 to run on the project")
+        old = os.environ.get("TRIPDB_STORE")
+        os.environ["TRIPDB_STORE"] = self.kind
+        self.addCleanup(lambda: os.environ.pop("TRIPDB_STORE", None) if old is None else os.environ.__setitem__("TRIPDB_STORE", old))
         self.root = tempfile.mkdtemp(prefix="tripdb-test-")
         self.paths = tripdb.Paths(self.root)
         for d in (self.paths.quotes, self.paths.inbox, self.paths.processed, self.paths.rejected):
             os.makedirs(d)
+        self.st = None
+        if self.kind == "supabase":
+            for k, v in tripdb_store.load_env(REPO).items():
+                if k.startswith("SUPABASE_"):
+                    os.environ.setdefault(k, v)
+            self.st = tripdb.get_store(self.paths)
+            self.st.rest.rpc("test_reset")
         self.write(self.paths.src("places.jsonl"), [
             {"kind": "node", "id": "SJO", "name": "San Jose", "country": "CR", "lat": 9.93, "lon": -84.08, "type": "city",
              "iata": "SJO", "popularity": 3, "why": None, "source": None, "origin": "net-ca"}])
         self.write(self.paths.src("experiences.jsonl"), [])
-        with open(self.paths.src("experience_categories.json"), "w", encoding="utf-8") as fh:
-            json.dump({"categories": [{"id": "nature", "name": "Nature", "place_categories": [], "image_id": "cat-nature"}]}, fh)
+        self.doc("experience_categories.json",
+                 {"categories": [{"id": "nature", "name": "Nature", "place_categories": [], "image_id": "cat-nature"}]})
         for name, doc in (("trip.json", {"home": ["CPH"]}), ("bag_rules.json", [])):
-            with open(self.paths.src(name), "w", encoding="utf-8") as fh:
-                json.dump(doc, fh)
+            self.doc(name, doc)
 
     def tearDown(self):
         shutil.rmtree(self.root, ignore_errors=True)
 
+    def doc(self, name, data):
+        if self.st:
+            self.assertTrue(self.st.put_doc(name, data, self.st.doc(name)[1]))
+            return
+        with open(self.paths.src(name), "w", encoding="utf-8") as fh:
+            json.dump(data, fh)
+
+    def _src(self, path):
+        """The path below data/sources, or None, when the store keeps it."""
+        if not self.st:
+            return None
+        rel = os.path.relpath(path, self.paths.sources).replace(os.sep, "/")
+        return None if rel.startswith("..") else rel
+
+    def _quote_agent(self, rel):
+        m = re.fullmatch(r"quotes/([^/]+)\.jsonl", rel or "")
+        return m.group(1) if m else None
+
     def write(self, path, rows):
+        rel = self._src(path)
+        if rel in TABLE_OF:
+            self.st.add(TABLE_OF[rel], [r for r in rows if isinstance(r, dict)], tripdb.cols.COLS[TABLE_OF[rel]].key)
+            return path
+        if self._quote_agent(rel):
+            self.st.add_quotes([r for r in rows if isinstance(r, dict)], self._quote_agent(rel) + ".jsonl")
+            return path
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as fh:
             for r in rows:
@@ -44,9 +105,18 @@ class Base(unittest.TestCase):
         return path
 
     def rows(self, path):
+        rel = self._src(path)
+        if rel in TABLE_OF:
+            return self.st.rows(TABLE_OF[rel])
+        if self._quote_agent(rel):
+            got = self.st.rest.get_all("quotes", {"select": "*", "agent": "eq." + self._quote_agent(rel), "order": "seq"})
+            return [tripdb.cols.from_row("quotes", r) for r in got]
         return tripdb.rows_of(path)
 
     def text(self, path):
+        rel = self._src(path)
+        if rel in TABLE_OF:
+            return "".join(json.dumps(r) + chr(10) for r in self.rows(path))
         with open(path, encoding="utf-8") as fh:
             return fh.read()
 
@@ -101,6 +171,7 @@ class SchemaTest(Base):
         self.assertIn("skipped line 1: SJO is stored already (differs", out)
         self.assertEqual(len(self.rows(self.paths.src("places.jsonl"))), 1)
 
+    @file_only
     def test_check_reports_bad_source_row(self):
         self.write(os.path.join(self.paths.quotes, "w.jsonl"), [quote(), quote(price_dkk=-5), "{not json"])
         errors, _ = tripdb.run_check(self.paths, quiet=True)
@@ -135,7 +206,8 @@ class AddQuotesTest(Base):
         self.write(os.path.join(self.paths.quotes, "mom-1.jsonl"), [quote()])
         f = self.write(os.path.join(self.root, "mom-2.jsonl"), [quote(observed_at="2026-10-25T10:00:00+00:00")])
         rc, out = self.run_quiet(tripdb.cmd_add_quotes, f)
-        self.assertIn("added 1, duplicates 0", out)
+        # a file keeps a newer sighting as a row, the project folds it into last_seen and seen_count
+        self.assertIn("added 1, duplicates 0" if self.kind == "file" else "added 0, duplicates 1", out)
 
     def test_stamps_observed_at_and_refuses_bad_rows(self):
         q = quote()
@@ -150,6 +222,8 @@ class AddQuotesTest(Base):
 
 
 class InboxTest(Base):
+    FILE_ONLY = True
+
     def manual(self, **over):
         return quote(**{"agent": "momondo-userscript", "source": "momondo-manual", "task_id": None, **over})
 
@@ -200,6 +274,8 @@ class InboxTest(Base):
 
 
 class WriteSafetyTest(Base):
+    FILE_ONLY = True
+
     def test_concurrent_appends_keep_every_line(self):
         dest = os.path.join(self.root, "x.jsonl")
 
@@ -277,6 +353,8 @@ def trip(**over):
 
 
 class SaveTripTest(Base):
+    FILE_ONLY = True
+
     def save(self, *trips, by="plan-trip"):
         f = os.path.join(self.root, "trip.json")
         with open(f, "w", encoding="utf-8") as fh:
@@ -362,6 +440,8 @@ if __name__ == "__main__":
 
 
 class PairDatesTest(Base):
+    FILE_ONLY = True
+
     def regional(self, a="BOG", b="VVI", date="2027-01-28", **over):
         leg = {"dep": f"{date}T06:10", "arr": f"{date}T12:40", "hours": 5.5, "stops": 1, "via": ["LIM"],
                "carriers": ["Avianca"], "flights": None}
@@ -461,7 +541,7 @@ class PairDatesTest(Base):
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 
-class WayIdTest(unittest.TestCase):
+class WayIdTest(PinFile):
     """Way ids are a hash of the way's key, so they hold across builds. These build a scratch copy of the real sources."""
     @classmethod
     def build_in(cls, root):

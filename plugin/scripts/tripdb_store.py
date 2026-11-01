@@ -589,3 +589,234 @@ def get_store(paths, kind=None):
     if kind == "supabase":
         return SupabaseStore(paths)
     raise Refused(f"TRIPDB_STORE is {kind!r}, expected file or supabase")
+
+
+BS = chr(92)
+ORDER = {"stays": "id", "connections": "id", "task_log": "seq"}
+
+
+def quoted(v):
+    """A value for an in.(...) filter: double quoted, with the quote and the backslash escaped."""
+    return '"' + str(v).replace(BS, BS + BS).replace('"', BS + '"') + '"'
+
+
+def has_nul(v):
+    """True when a string anywhere in v, or a key of a dict in it, holds a NUL character. PostgreSQL cannot store one."""
+    if isinstance(v, str):
+        return chr(0) in v
+    if isinstance(v, dict):
+        return any(has_nul(k) or has_nul(x) for k, x in v.items())
+    if isinstance(v, list):
+        return any(has_nul(x) for x in v)
+    return False
+
+
+class SupabaseStore(Store):
+    """The same rows in the Supabase project, through the secret key. Without SUPABASE_URL and SUPABASE_SECRET_KEY the
+    constructor stops, so nothing is written."""
+    kind = "supabase"
+    IN_CHUNK = 100
+
+    def __init__(self, paths):
+        self.paths = paths
+        env = load_env(paths.root)
+        self.rest = Rest(env.get("SUPABASE_URL"), env.get("SUPABASE_SECRET_KEY"))
+
+    # ---- names ----
+    @staticmethod
+    def _dn(name):
+        """The name a document has in the documents table: the file name, but way_id_map without .json."""
+        return name[:-5] if name == "way_id_map.json" else name
+
+    def label(self, name):
+        return name[:-6] if name.endswith(".jsonl") else name
+
+    def dest(self, table, name=None):
+        return f"supabase {table}"
+
+    @staticmethod
+    def _keycols(table):
+        m = cols.COLS[table]
+        return [m.field_to_col[k] for k in m.key]
+
+    # ---- reads ----
+    def _raw(self, table, extra=None):
+        params = {"select": "*", "order": ORDER.get(table, "seq")}
+        params.update(extra or {})
+        return self.rest.get_all(table, params)
+
+    def rows(self, table):
+        return [cols.from_row(table, r) for r in self._raw(table)]
+
+    def ids(self, table):
+        return {r["id"] for r in self.rest.get_all(table, {"select": "id", "order": "id"})}
+
+    def doc(self, name):
+        got = self.rest.get_all("documents", {"select": "version,data", "name": "eq." + self._dn(name)})
+        return (got[0]["data"], got[0]["version"]) if got else (None, None)
+
+    def _trip_rows(self):
+        return self.rest.get_all("trips", {"select": "id,version,data", "deleted_at": "is.null", "order": "id,version"})
+
+    def trips(self):
+        latest = {}
+        for r in self._trip_rows():
+            latest[r["id"]] = r["data"]
+        return list(latest.values())
+
+    def trip_ids(self):
+        return {r["id"] for r in self.rest.get_all("trips", {"select": "id", "order": "id"})}
+
+    def trip_versions(self):
+        out = {}
+        for r in self._trip_rows():
+            out.setdefault(r["id"], []).append(r["version"])
+        return out
+
+    def check_rows(self, table):
+        if table == "trips":
+            return [(f"trips:{r['id']}", r["data"], None) for r in self._trip_rows()]
+        keys = cols.COLS[table].key
+        out = []
+        for raw in self._raw(table):
+            rec = cols.from_row(table, raw)
+            out.append((f"{table}:" + " ".join(str(rec.get(k)) for k in keys), rec, None))
+        return out
+
+    def check_quotes(self):
+        return [(f"quotes:{raw['quote_id']}", cols.from_row("quotes", raw), None) for raw in self._raw("quotes")]
+
+    # ---- add ----
+    def _stored(self, table, rows):
+        """{key tuple: comparable stored row} for the keys of these rows. The first key column picks the rows in chunks,
+        the whole key is matched here."""
+        kc = self._keycols(table)
+        first = sorted({str(r[kc[0]]) for r in rows if r[kc[0]] is not None})
+        want = {tuple(r[c] for c in kc) for r in rows}
+        out = {}
+        for i in range(0, len(first), self.IN_CHUNK):
+            part = first[i:i + self.IN_CHUNK]
+            for raw in self.rest.get_all(table, {"select": "*", "order": ORDER.get(table, "seq"),
+                                                 kc[0]: "in.(" + ",".join(quoted(v) for v in part) + ")"}):
+                k = tuple(raw.get(c) for c in kc)
+                if k in want:
+                    out[k] = cols.to_row(table, cols.from_row(table, raw))
+        return out
+
+    def add(self, table, rows, keys, replace=False):
+        """Write the rows whose key is not stored. With replace a stored row is superseded: places and profiles merge as
+        build_map.py does (a later value that is not null wins), the other tables take the new row."""
+        if not rows:
+            return AddResult()
+        kc = self._keycols(table)
+        new = [cols.to_row(table, r) for r in rows]
+        keyf = lambda row: tuple(row[c] for c in kc)
+        strip = lambda row: {k: v for k, v in row.items() if k != "origin"}
+        stored = self._stored(table, new)
+        res, pending = classify([keyf(r) for r in new], new, stored, lambda a, b: strip(a) == strip(b), replace)
+        if replace and table in ("places", "profiles"):
+            fold = cols.fold_places if table == "places" else cols.fold_profiles
+            for k, i in list(pending.items()):
+                copies = [rows[j] for j in range(len(rows)) if keyf(new[j]) == k]
+                pre = [cols.from_row(table, stored[k])] if k in stored else []
+                new[i] = cols.to_row(table, fold(pre + copies)[0])
+        write = [new[i] for i in pending.values()]
+        conflict = ",".join(kc)
+        if table == "places":
+            self._stubs(write)
+        if replace:
+            self.rest.insert(table, write, on_conflict=conflict, resolution="merge-duplicates")
+            return res
+        got = self.rest.insert(table, write, on_conflict=conflict, returning=conflict, resolution="ignore-duplicates")
+        if len(got) < len(write):
+            won = {tuple(g.get(c) for c in kc) for g in got}
+            for k, i in pending.items():
+                if k not in won:
+                    res.skips.append((i, k, "stored by another writer"))
+            res.skips.sort(key=lambda s: s[0])
+            res.added = len(got)
+        return res
+
+    def _stubs(self, places):
+        codes = sorted({p["airport_code"] for p in places if p.get("airport_code")})
+        if codes:
+            self.rest.insert("airports", [{"code": c} for c in codes], on_conflict="code", resolution="ignore-duplicates")
+
+    def add_quotes(self, rows, name):
+        """Hand the quotes to the add_quotes function with their computed fields. A quote that is stored already moves only
+        last_seen and seen_count, so it counts as a duplicate here."""
+        res = AddResult()
+        if not rows:
+            return res
+        cfg = self.doc("trip.json")[0] or {}
+        stem = name[:-6] if name.endswith(".jsonl") else name
+        built = [cols.quote_row({**r, "agent": stem}, cfg) for r in rows]
+        step = self.rest.BATCH_ROWS
+        for a in range(0, len(built), step):
+            b = min(a + step, len(built))
+            try:
+                out = self.rest.rpc("add_quotes", {"rows": built[a:b]})
+            except RestError as e:
+                raise RestError(f"quotes rows {a} to {b - 1} refused: {e}")
+            res.added += out["added"]
+        res.duplicates = len(rows) - res.added
+        return res
+
+    # ---- single rows ----
+    def append(self, table, rec):
+        row = cols.usage_row(rec) if table == "agent_usage" else cols.to_row(table, rec)
+        self.rest.insert(table, [row])
+
+    def update(self, table, key, patch, check=None):
+        raw = self.rest.get_all(table, {"select": "*", "id": "eq." + str(key)})
+        if not raw:
+            return None
+        old = cols.from_row(table, raw[0])
+        new = {**old, **patch}
+        errs = check(new) if check else []
+        if errs:
+            raise Refused(f"{key}: " + "; ".join(errs))
+        self.rest.patch(table, {"id": "eq." + str(key)}, cols.to_row(table, new))
+        return old, new
+
+    def put_doc(self, name, data, version):
+        dn = self._dn(name)
+        if version is None:
+            got = self.rest.insert("documents", [{"name": dn, "version": 1, "data": data}], on_conflict="name",
+                                   returning="name", resolution="ignore-duplicates")
+            return len(got) == 1
+        got = self.rest.patch("documents", {"name": "eq." + dn, "version": "eq." + str(version)},
+                              {"version": version + 1, "updated_at": now_utc(), "data": data}, returning="name")
+        return len(got) == 1
+
+    # ---- trips ----
+    def save_trip(self, t):
+        return self.rest.rpc("save_trip", {"trip": t})
+
+    def delete_trip(self, ids):
+        found = {}
+        for tid in sorted(ids):
+            got = self.rest.patch("trips", {"id": "eq." + tid, "deleted_at": "is.null"}, {"deleted_at": now_utc()}, returning="version")
+            if got:
+                found[tid] = len(got)
+        return found
+
+    # ---- the inbox ----
+    def inbox_new(self):
+        out = []
+        for e in self.rest.get_all("inbox", {"select": "id,file,rows", "status": "eq.new", "order": "id"}):
+            lines = []
+            for n, r in enumerate(e["rows"] or [], 1):
+                if isinstance(r, str):
+                    try:
+                        r = json.loads(r)
+                    except json.JSONDecodeError as ex:
+                        lines.append((n, None, f"not JSON ({ex.msg})"))
+                        continue
+                lines.append((n, r, None))
+            out.append({"id": e["id"], "file": e["file"] or f"inbox-{e['id']}.jsonl", "lines": lines})
+        return out
+
+    def inbox_mark(self, entry_id, status, reason, rejected):
+        self.rest.patch("inbox", {"id": "eq." + str(entry_id)}, {"status": status, "reason": reason, "rejected": rejected or None})
+        return f"inbox row {entry_id}"

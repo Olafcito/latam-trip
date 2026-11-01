@@ -181,7 +181,12 @@ DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "scenarios.json",
         "experience_categories.json", "lists.json", "elevation.json", "image_queries.json")
 
 
+NUL_WHY = "contains a NUL character (U+0000), which the database cannot hold"
+
+
 def quote_errors(q):
+    if store.has_nul(q):
+        return [NUL_WHY]
     errs = check_fields(q, QUOTE)
     if errs:
         return errs
@@ -239,6 +244,8 @@ def trip_errors(t):
 
 def row_errors(table, row):
     schemas = TABLES[table][1]
+    if store.has_nul(row):
+        return [NUL_WHY]
     if not isinstance(row, dict):
         return ["row is not a JSON object"]
     kind = row.get("kind") if None not in schemas else None
