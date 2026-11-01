@@ -616,6 +616,7 @@ A builder review on 31 Oct 2026 ran the pipeline and the column maps against the
 - **`tripdb run` and built files in the bucket.** `trip.db` is uploaded and `tripdb run` copies it to a temp folder for the analysis scripts. This touches "no pull", but it copies only derived output, and those scripts otherwise stop working at cutover.
 - **A bad trip does not stop builds.** A trip that `check` refuses is left out of the build with a warning, so one row from a planner save cannot freeze prices. Other refusals still fail the build.
 - **Worker pace under load.** `dirty_since` builds through a burst every 5 minutes, because a long crawl has no quiet minute and the spec as written would show nothing until it ended.
+- **No API layer or MCP for now.** On 1 Nov 2026 Simon chose to roll out this spec as it stands and leave both for a later refactor. Unattended cloud routines were refused the secret key, so phase 0 passes with that gap open, and writes run from the PC until an MCP exists.
 - **Backup is a full dump.** `dump` and `restore` are added because `pull` is shaped for the pipeline and loses `first_seen`, `seen_count`, soft deletes and `tasks`, so it could not meet the success line on rebuilding from a backup.
 - **Browser import after cutover.** It runs on 5198 once the real project holds data, with the safety checks in 9.2. No test import can block it.
 - **`tasks.id` is an integer from 10000.** `log-task` and the `issue` field stay as they are.
