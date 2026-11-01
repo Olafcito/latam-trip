@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { PairDates } from '../lib/prices'
+import { dataBase } from '@map/data/remoteFiles'
+import { getFile } from '../lib/remoteFiles'
 import { LOCAL_BASE, REMOTE_BASE } from './load'
 
 // data/web/pair_dates.json: the repo's file in dev, else GitHub, else the offline copy. Optional:
@@ -18,6 +20,14 @@ async function get(url: string): Promise<PairDates> {
 
 export function loadPairDates(): Promise<PairDates | null> {
   cache ??= (async () => {
+    if (dataBase()) {
+      try {
+        const doc = await getFile<PairDates>('pair_dates.json')
+        return doc && typeof doc.pairs === 'object' && doc.pairs !== null ? doc : null
+      } catch {
+        return null
+      }
+    }
     const bases = import.meta.env.DEV ? ['/'] : [REMOTE_BASE, LOCAL_BASE]
     for (const base of bases) {
       try {

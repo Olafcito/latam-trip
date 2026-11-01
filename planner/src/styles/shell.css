@@ -164,3 +164,10 @@ tr[data-state='unknown'] :is(.fresh-when, .fresh-ago) { color: var(--faint); }
   .fresh-btn { margin-right: -6px; padding: 0 6px; gap: 6px; }
 }
 }
+
+.data-strip { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 12px; padding: 10px 12px; border-radius: var(--radius); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); font-size: var(--fs-num); color: var(--muted); }
+.data-strip.bad { color: var(--err); box-shadow: inset 0 0 0 1px var(--err); }
+.data-strip p { margin: 0; overflow-wrap: anywhere; }
+.quote-sheet { display: flex; flex-direction: column; gap: 8px; padding: 20px; min-width: min(100%, 320px); }
+.quote-sheet h2 { margin: 0; font-size: var(--fs-title); }
+.quote-sheet ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }

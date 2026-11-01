@@ -1,16 +1,20 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { loadData } from './data/load'
+import { dataBase } from '@map/data/remoteFiles'
+import { factLine, loadData } from './data/load'
 import { loadRepoTrips } from './data/routeMap'
 import { pickedLeg, readPick, withoutPick, type Pick } from './lib/pickLink'
 import { resolveDeepLink, rowToJourney, urlWithTrip, withTripWays } from './lib/repoTrips'
 import { CURRENT_KEY, useStore, type Screen } from './store'
-import { clock, observed, weekdayDay } from './lib/format'
+import { clock, weekdayDay } from './lib/format'
 import { nodeName } from './lib/journey'
 import { Warn } from './components/icons'
+import { DataStrip } from './components/DataStrip'
 import { Freshness } from './components/Freshness'
+import { QuoteSheet } from './components/QuoteSheet'
 import { SignIn } from './components/SignIn'
 import { remoteEnabled, useSession } from './lib/supabase'
 import { loadTrips, subscribeTrips } from './lib/remoteTrips'
+import { loadDeriveState, refresh, subscribeBuilds, type DeriveState } from './lib/remoteFiles'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
 
@@ -184,6 +188,29 @@ export function App() {
     }
   }, [userId, applyRemote, flushOutbox])
 
+  // a finished build swaps the changed files in with no reload. The strip says when builds have stopped
+  const [build, setBuild] = useState<DeriveState | null>(null)
+  useEffect(() => {
+    if (!dataBase() || !remoteEnabled() || !userId) return
+    const swapIn = async () => {
+      if (!(await refresh()).length) return
+      const [d, rows] = await Promise.all([loadData(), loadTrips()])
+      setData({ ...d, inout: withTripWays(d.inout, rows) })
+    }
+    const check = () => void swapIn().catch(() => {})
+    void loadDeriveState().then(setBuild)
+    const stop = subscribeBuilds((s) => {
+      setBuild(s)
+      check()
+    })
+    check()
+    window.addEventListener('focus', check)
+    return () => {
+      stop()
+      window.removeEventListener('focus', check)
+    }
+  }, [userId, setData])
+
   useEffect(() => useStore.subscribe(syncAddress), [])
 
   // a flight picked on Momondo lands in a new tab, and a tab already on the trip follows
@@ -220,7 +247,7 @@ export function App() {
     )
   }
 
-  const fact = `Data from ${data.source === 'github' ? 'GitHub' : 'the offline copy'}, built ${observed(data.inout.generated_at)}`
+  const fact = factLine(data.source, data.inout, data.meta)
   return (
     <div className={'app' + (screen === 'map' ? ' wide' : '')}>
       <a className="skip" href="#main">Skip to content</a>
@@ -236,9 +263,11 @@ export function App() {
         </div>
       </header>
       <main className="main" id="main" tabIndex={-1}>
+        <DataStrip state={build} />
         {screen === 'map' && <MapScreen />}
         {screen === 'trips' && <TripsScreen data={data} />}
       </main>
+      <QuoteSheet />
     </div>
   )
 }

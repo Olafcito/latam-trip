@@ -1,6 +1,9 @@
 import { loadMapData } from '@map/data/load'
 import { parseTripsFile, type TripRow } from '../lib/repoTrips'
 import type { MapData as RouteData } from '@map/data/types'
+import { dataBase } from '@map/data/remoteFiles'
+import { loadTrips } from '../lib/remoteTrips'
+import { remoteEnabled } from '../lib/supabase'
 import { LOCAL_BASE, REMOTE_BASE } from './load'
 
 let cache: Promise<RouteData> | null = null
@@ -8,6 +11,7 @@ let cache: Promise<RouteData> | null = null
 /** The route map's places and connections: the repo's data/web in dev, else GitHub, else the offline copy. */
 export function loadRouteData(): Promise<RouteData> {
   cache ??= (async () => {
+    if (dataBase()) return loadMapData()
     if (import.meta.env.DEV) return loadMapData('/data')
     try {
       return await loadMapData(REMOTE_BASE + 'data')
@@ -39,6 +43,8 @@ async function fetchTrips(base: string): Promise<unknown> {
  * is kept, so table trips keep their ways when the file cannot be reached.
  */
 export async function loadRepoTrips(): Promise<TripRow[]> {
+  // with Supabase the table is read live, as trips has no trigger and a file would go stale
+  if (remoteEnabled()) return loadTrips().catch(() => [])
   const bases = import.meta.env.DEV ? ['/data'] : [REMOTE_BASE + 'data', LOCAL_BASE + 'data']
   for (const base of bases) {
     const raw = await fetchTrips(base)

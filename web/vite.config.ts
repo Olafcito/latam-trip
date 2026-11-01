@@ -25,7 +25,7 @@ function serveRepoData(): Plugin {
 
 export default defineConfig({
   base: './',
-  plugins: [react(), serveRepoData()],
+  plugins: [react(), ...(process.env.VITE_DATA_BASE ? [] : [serveRepoData()])],
   // maplibre finds its worker next to its own module, which pre-bundling would move
   optimizeDeps: { exclude: ['maplibre-gl'] },
   test: { environment: 'node' },

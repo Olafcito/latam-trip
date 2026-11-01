@@ -1,11 +1,14 @@
 import type { DashFlight, DashJourney, DashTrip } from './dash'
+import { files } from './remoteFiles'
 import type { MapData } from './types'
 
 // Dev: the Vite middleware serves the repo's data/ folder at /data.
-// Build: set VITE_DATA_BASE, e.g. https://raw.githubusercontent.com/Olafcito/latam-trip/main/data
-const BASE = (import.meta.env.VITE_DATA_BASE as string | undefined)?.replace(/\/$/, '') ?? '/data'
+// Build: set VITE_DATA_BASE to the bucket URL and the files come through the cache of remoteFiles.ts.
+const BASE = '/data'
 
 async function getJson<T>(name: string, base: string): Promise<T> {
+  const shared = base === BASE ? files() : null
+  if (shared) return shared.getFile<T>(`${name}.json`)
   const res = await fetch(`${base}/web/${name}.json`)
   if (!res.ok) throw new Error(`${name}.json: HTTP ${res.status}`)
   return res.json() as Promise<T>

@@ -27,7 +27,7 @@ function serveRepoData(): Plugin {
 // base './' so the build works from any GitHub Pages sub path.
 export default defineConfig({
   base: './',
-  plugins: [react(), serveRepoData()],
+  plugins: [react(), ...(process.env.VITE_DATA_BASE ? [] : [serveRepoData()])],
   // one React and one maplibre for both apps' code
   resolve: { alias: { '@map': WEB_SRC }, dedupe: ['react', 'react-dom', 'maplibre-gl'] },
   server: {
