@@ -1,6 +1,6 @@
 """What a store must do the same way on the files and on the project. Run it with TRIPDB_STORE=file and again with
 TRIPDB_STORE=supabase TRIPDB_LIVE_TESTS=1. Where the two differ by design the test says so."""
-import contextlib, http.server, io, json, os, sys, tempfile, threading, unittest
+import contextlib, csv, http.server, io, json, os, shutil, sys, tempfile, threading, unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import test_tripdb as T  # noqa: E402
@@ -281,6 +281,127 @@ class ContractTest(T.Base):
         self.assertIn("hike.price_dkk: null -> 350", out)
         got = self.s.rows("experiences")[0]
         self.assertEqual((got["price_dkk"], got["researched"]), (350, True))
+
+
+class FakeStorageRest:
+    """Stands in for Rest: a bucket of files, and the tables the three commands read."""
+    def __init__(self, files=None, tables=None):
+        self.files, self.tables, self.asked = files or {}, tables or {}, []
+
+    def storage_get(self, bucket, path):
+        self.asked.append((bucket, path))
+        if (bucket, path) not in self.files:
+            raise tripdb_store.RestError(f"404 {path} not found")
+        return self.files[(bucket, path)]
+
+    def get_all(self, table, params=None):
+        return self.tables.get(table, [])
+
+
+class ReadBuiltTest(unittest.TestCase):
+    """file, run and status work on what the worker uploaded. A real build of the committed sources stands in for it."""
+    REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.mkdtemp(prefix="tripdb-built-")
+        shutil.copytree(os.path.join(cls.REPO, "data", "sources"), os.path.join(cls.tmp, "data", "sources"))
+        with contextlib.redirect_stdout(io.StringIO()):
+            tripdb.cmd_build(tripdb.Paths(cls.tmp), sync=False)
+        cls.files, cls.tables = {}, {"documents": [], "agent_usage": []}
+        for name in os.listdir(os.path.join(cls.tmp, "data", "built")):
+            with open(os.path.join(cls.tmp, "data", "built", name), "rb") as fh:
+                cls.files[("web", "built/" + name)] = fh.read()
+        for name in os.listdir(os.path.join(cls.tmp, "data", "web")):
+            with open(os.path.join(cls.tmp, "data", "web", name), "rb") as fh:
+                cls.files[("web", "data/web/" + name)] = fh.read()
+        for name in tripdb.IMPORT_DOCS:
+            p = os.path.join(cls.tmp, "data", "sources", name)
+            if os.path.exists(p):
+                with open(p, encoding="utf-8") as fh:
+                    cls.tables["documents"].append({"name": name[:-5] if name == "way_id_map.json" else name, "data": json.load(fh)})
+        with open(os.path.join(cls.tmp, "data", "sources", "agent_usage.csv"), encoding="utf-8", newline="") as fh:
+            for i, r in enumerate(csv.DictReader(fh)):
+                r["seq"] = i
+                for c in ("searches", "tokens", "tool_uses", "seconds", "rows"):
+                    r[c] = float(r[c]) if r[c] else None
+                cls.tables["agent_usage"].append(r)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def rest(self, **tables):
+        return FakeStorageRest(dict(self.files), {**self.tables, **tables})
+
+    def printed(self, fn, *a, **kw):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            rc = fn(*a, **kw)
+        return rc, out.getvalue(), err.getvalue()
+
+    def test_file_prints_places(self):
+        rest = self.rest()
+        rc, out, _ = self.printed(tripdb.cmd_file, "places.json", rest=rest)
+        self.assertEqual(rc, 0)
+        self.assertEqual(out, self.files[("web", "data/web/places.json")].decode("utf-8"))
+        self.assertEqual(rest.asked, [("web", "data/web/places.json")])
+
+    def test_file_built_prefix(self):
+        rest = self.rest()
+        rc, out, _ = self.printed(tripdb.cmd_file, "built/routes.json", rest=rest)
+        self.assertEqual(json.loads(out), json.loads(self.files[("web", "built/routes.json")]))
+        self.assertEqual(rest.asked, [("web", "built/routes.json")])
+
+    def test_file_unknown_name_says_so(self):
+        with self.assertRaises(tripdb.Refused) as cm:
+            self.printed(tripdb.cmd_file, "nothing.json", rest=self.rest())
+        self.assertIn("no file nothing.json in the bucket", str(cm.exception))
+
+    def run_script(self, script, *args, **tables):
+        rc, out, err = self.printed(tripdb.cmd_run, script, list(args), rest=self.rest(**tables))
+        self.assertEqual(rc, 0, err)
+        return out
+
+    def test_run_evaluate_on_temp_root(self):
+        self.assertIn("total", self.run_script("evaluate"))
+
+    def test_run_frontier_on_temp_root(self):
+        self.assertTrue(self.run_script("frontier", "--kind", "main", "--limit", "3").strip())
+
+    def test_run_scenarios_on_temp_root(self):
+        self.assertTrue(self.run_script("scenarios", "--top", "3").strip())
+
+    def test_run_usage_report_on_temp_root(self):
+        self.assertTrue(self.run_script("usage_report").strip())
+
+    def test_run_report_md_on_temp_root(self):
+        self.assertIn("|", self.run_script("report_md"))
+
+    def test_run_leaves_no_temp_root_behind(self):
+        before = set(os.listdir(tempfile.gettempdir()))
+        self.run_script("usage_report")
+        self.assertEqual({n for n in os.listdir(tempfile.gettempdir()) if n.startswith("tripdb-run-")} - before, set())
+
+    def test_run_rejects_an_unknown_script(self):
+        with self.assertRaises(tripdb.Refused) as cm:
+            self.printed(tripdb.cmd_run, "rm", [], rest=self.rest())
+        self.assertIn("run knows evaluate", str(cm.exception))
+
+    def test_run_names_a_missing_document(self):
+        docs = [d for d in self.tables["documents"] if d["name"] != "trip.json"]
+        with self.assertRaises(tripdb.Refused) as cm:
+            self.printed(tripdb.cmd_run, "frontier", [], rest=self.rest(documents=docs))
+        self.assertIn("trip.json", str(cm.exception))
+
+    def test_status_prints_worker_version_and_local_sha(self):
+        state = {"id": 1, "dirty_at": None, "last_error": "check: boom", "worker_version": "abc1234"}
+        rc, out, _ = self.printed(tripdb.cmd_status, rest=self.rest(derive_state=[state]), root=self.REPO)
+        self.assertEqual(rc, 0)
+        self.assertIn("worker_version: abc1234", out)
+        self.assertIn("last_error: check: boom", out)
+        self.assertRegex(out, r"local_sha: (?:[0-9a-f]{7}|unknown)")
+        self.assertIn("deploy.sh", out)
 
 
 class Handler(http.server.BaseHTTPRequestHandler):

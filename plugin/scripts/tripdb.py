@@ -28,12 +28,15 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   dump --to DIR                        write every table as it stands, one JSON lines file per table
   restore --from DIR [--wipe]          load a dump into an empty project and reset the identity sequences
   way-map --old OLD_INOUT --new NEW_INOUT  document way_id_map: old way id to new way id, matched on direction, type, tickets and depart
+  file NAME                            print one built file from the bucket, for example places.json or built/routes.json
+  run SCRIPT [ARGS]                    run evaluate, frontier, scenarios, usage_report or report_md on the project's derived data
+  status                               print derive_state, the worker version and the local git sha
   build [--fetch-elevation] [--no-sync]  ingest-inbox, check, then rebuild data/built, data/web and .claude
                                        (data/web/pair_dates.json: every regional quote by pair and departure date)
 FILE may be - for stdin. Every row is checked against its schema and a bad row is refused with the reason.
 Nothing is overwritten without --replace. Writes hold data/sources/.tripdb.lock and append in one write.
 """
-import csv, datetime as dt, io, json, os, re, shutil, sqlite3, subprocess, sys, time
+import csv, datetime as dt, io, json, os, re, shutil, sqlite3, subprocess, sys, tempfile, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPELINE = os.path.join(HERE, "..", "skills", "flight-crawl-orchestrator", "scripts")
@@ -1180,6 +1183,25 @@ def _usage_cell(v):
     return "" if v is None else (str(int(v)) if float(v) == int(v) else str(v))
 
 
+def _pull_usage(rest, to_dir):
+    usage = rest.get_all("agent_usage", {"select": "*", "order": "seq.asc"})
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\n")
+    w.writerow(USAGE_COLS)
+    for r in usage:
+        w.writerow([_usage_cell(r[c]) if c in ("searches", "tokens", "tool_uses", "seconds", "rows") else r[c] for c in USAGE_COLS])
+    write_atomic(os.path.join(to_dir, "agent_usage.csv"), buf.getvalue())
+
+
+def _pull_docs(rest, to_dir, only=None):
+    """Writes the documents (all, or those named in only) as files of data/sources. Returns the rows written."""
+    names = {(n[:-5] if n == "way_id_map.json" else n): n for n in IMPORT_DOCS}
+    docs = [d for d in rest.get_all("documents", {"select": "name,data"}) if d["name"] in names and (only is None or d["name"] in only)]
+    for d in docs:
+        write_atomic(os.path.join(to_dir, names[d["name"]]), json.dumps(d["data"], indent=1, ensure_ascii=False) + "\n")
+    return docs
+
+
 def cmd_pull(to_dir, rest=None, root=None):
     """Write the project out as the files of data/sources. Quotes go to one file, in seq order. Nothing is folded."""
     to_dir = os.path.abspath(to_dir)
@@ -1195,17 +1217,8 @@ def cmd_pull(to_dir, rest=None, root=None):
         log = rest.get_all("task_log", {"select": "*", "order": "seq.asc"})
         if log:
             _jsonl(os.path.join(to_dir, "task_log.jsonl"), [cols.from_row("task_log", r) for r in log])
-        usage = rest.get_all("agent_usage", {"select": "*", "order": "seq.asc"})
-        buf = io.StringIO()
-        w = csv.writer(buf, lineterminator="\n")
-        w.writerow(USAGE_COLS)
-        for r in usage:
-            w.writerow([_usage_cell(r[c]) if c in ("searches", "tokens", "tool_uses", "seconds", "rows") else r[c] for c in USAGE_COLS])
-        write_atomic(os.path.join(to_dir, "agent_usage.csv"), buf.getvalue())
-        names = {(n[:-5] if n == "way_id_map.json" else n): n for n in IMPORT_DOCS}
-        docs = [d for d in rest.get_all("documents", {"select": "name,data"}) if d["name"] in names]
-        for d in docs:
-            write_atomic(os.path.join(to_dir, names[d["name"]]), json.dumps(d["data"], indent=1, ensure_ascii=False) + "\n")
+        _pull_usage(rest, to_dir)
+        docs = _pull_docs(rest, to_dir)
     except store.RestError as e:
         raise Refused(f"pull stopped: {e}")
     print(f"pull: {len(quotes)} quotes, {len(trips)} trips and {len(docs)} documents into {to_dir}")
@@ -1265,6 +1278,106 @@ def cmd_restore(from_dir, wipe=False, rest=None, root=None):
 
 
 # ---- command line -------------------------------------------------------------------------------
+
+# ---- Supabase: reading what the worker built ---------------------------------------------------
+
+BUCKET = "web"
+# what each analysis script reads: files of the bucket under built/, documents, and the usage table
+RUN_NEEDS = {"evaluate": {"built": ("trip.db",), "docs": ("scenarios.json", "bag_rules.json")},
+             "frontier": {"built": ("trip.db",), "docs": ("trip.json",)},
+             "scenarios": {"built": ("trip.db",), "docs": ("trip.json",)},
+             "usage_report": {"usage": True},
+             "report_md": {"built": ("routes.json",), "docs": ("trip.json",)}}
+
+
+def _bucket_path(name):
+    """places.json is a web file, built/routes.json is a built one."""
+    name = name.strip().lstrip("/")
+    if not name or ".." in name.split("/"):
+        raise Refused("file needs a name, for example places.json or built/routes.json")
+    return name if name.startswith(("built/", "data/web/")) else "data/web/" + name
+
+
+def _fetch(rest, path, shown=None):
+    try:
+        return rest.storage_get(BUCKET, path)
+    except RestError as e:
+        raise Refused(f"no file {shown or path} in the bucket ({e})")
+
+
+def cmd_file(name, rest=None, root=None, out=None):
+    """Print one file from the bucket. Text goes to stdout as it is, a binary file such as trip.db as bytes."""
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    data = _fetch(rest, _bucket_path(name), name)
+    out = out or sys.stdout
+    try:
+        out.write(data.decode("utf-8"))
+    except UnicodeDecodeError:
+        getattr(out, "buffer", out).write(data)
+    return 0
+
+
+def cmd_run(script, args=(), rest=None, root=None, keep=None):
+    """Fetch the derived files a script needs into a temp folder and run the script from the pipeline on it, unchanged."""
+    script = (script or "").removesuffix(".py")
+    if script not in RUN_NEEDS:
+        raise Refused(f"run knows {', '.join(sorted(RUN_NEEDS))}, not {script!r}")
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    need = RUN_NEEDS[script]
+    tmp = keep or tempfile.mkdtemp(prefix="tripdb-run-")
+    try:
+        built, src = os.path.join(tmp, "data", "built"), os.path.join(tmp, "data", "sources")
+        os.makedirs(built, exist_ok=True)
+        os.makedirs(src, exist_ok=True)
+        for fname in need.get("built", ()):
+            with open(os.path.join(built, fname), "wb") as fh:
+                fh.write(_fetch(rest, "built/" + fname))
+        try:
+            if need.get("docs"):
+                got = {d["name"] for d in _pull_docs(rest, src, only=set(need["docs"]))}
+                missing = [d for d in need["docs"] if d not in got and d != "bag_rules.json"]
+                if missing:
+                    raise Refused("the project has no document " + ", ".join(missing))
+            if need.get("usage"):
+                _pull_usage(rest, src)
+        except RestError as e:
+            raise Refused(f"run stopped: {e}")
+        proc = subprocess.run([sys.executable, "-I", "-X", "utf8", os.path.join(PIPELINE, script + ".py"), "--root", tmp, *args],
+                              capture_output=True)
+        sys.stdout.write(proc.stdout.decode("utf-8", "replace"))
+        sys.stderr.write(proc.stderr.decode("utf-8", "replace"))
+        return proc.returncode
+    finally:
+        if keep is None:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _git_sha(root):
+    try:
+        out = subprocess.run(["git", "-C", root, "rev-parse", "--short=7", "HEAD"], capture_output=True, text=True, timeout=20)
+        return out.stdout.strip() or "unknown"
+    except (OSError, subprocess.SubprocessError):
+        return "unknown"
+
+
+def cmd_status(rest=None, root=None):
+    """derive_state, so a session can see whether its data has reached the app, and the worker next to the local code."""
+    root = root or DEFAULT_ROOT
+    rest = rest or _rest(root)
+    try:
+        rows = rest.get_all("derive_state", {"select": "*", "id": "eq.1"})
+    except RestError as e:
+        raise Refused(f"status stopped: {e}")
+    state = rows[0] if rows else {}
+    for k, v in state.items():
+        print(f"{k}: {v if v is not None else 'none'}")
+    local = _git_sha(root)
+    worker = state.get("worker_version")
+    print(f"local_sha: {local}")
+    if worker and local != "unknown" and worker != local:
+        print("The worker runs other code than this checkout. bash infra/deploy.sh brings it up to date.")
+    return 0
+
 
 def _opt(a, name, default=None):
     if name in a:
@@ -1381,6 +1494,16 @@ def main(argv=None):
             if not dest:
                 raise Refused("pull needs --to DIR")
             return cmd_pull(dest, root=paths.root)
+        if cmd == "file":
+            if len(a) != 1:
+                raise Refused("file needs one name")
+            return cmd_file(a[0], root=paths.root)
+        if cmd == "run":
+            if not a:
+                raise Refused("run needs a script name")
+            return cmd_run(a[0], a[1:], root=paths.root)
+        if cmd == "status":
+            return cmd_status(root=paths.root)
         if cmd == "build":
             fetch, nosync = _flag(a, "--fetch-elevation"), _flag(a, "--no-sync")
             return cmd_build(paths, fetch, not nosync)
