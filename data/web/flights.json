@@ -99,6 +99,24 @@
   ]
  },
  {
+  "from": "MDE",
+  "to": "ADZ",
+  "dkk": 292,
+  "hours": 1.88,
+  "dep": "2026-12-07T20:20",
+  "arr": "2026-12-07T22:10",
+  "vias": [],
+  "carriers": [
+   "LA"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "BOG",
   "to": "CTG",
   "dkk": 380,
@@ -271,6 +289,25 @@
   ]
  },
  {
+  "from": "ADZ",
+  "to": "CLO",
+  "dkk": 461,
+  "hours": 2.1,
+  "dep": "2026-12-16T08:16",
+  "arr": "2026-12-16T10:22",
+  "vias": [],
+  "carriers": [
+   "JA"
+  ],
+  "notes": [],
+  "link": null,
+  "shows": [
+   "cheapest",
+   "fastest",
+   "daytime landing"
+  ]
+ },
+ {
   "from": "MDE",
   "to": "BOG",
   "dkk": 472,
@@ -407,29 +444,6 @@
   "arr": "2027-01-06T06:30",
   "vias": [
    "BOG"
-  ],
-  "carriers": [
-   "LATAM"
-  ],
-  "notes": [
-   "basic fare",
-   "long layover"
-  ],
-  "link": null,
-  "shows": [
-   "cheapest",
-   "daytime landing"
-  ]
- },
- {
-  "from": "MDE",
-  "to": "ADZ",
-  "dkk": 537,
-  "hours": 24.63,
-  "dep": "2027-01-05T06:00",
-  "arr": "2027-01-06T06:38",
-  "vias": [
-   "CLO"
   ],
   "carriers": [
    "LATAM"
