@@ -1,6 +1,6 @@
 """Tests for tripdb. Run from the repo root: python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_*.py"
 Every test works in its own temporary root, so the real data is never touched."""
-import contextlib, io, json, os, shutil, subprocess, sys, tempfile, threading, unittest
+import contextlib, datetime as dt, io, json, os, re, shutil, subprocess, sys, tempfile, threading, unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tripdb  # noqa: E402
@@ -456,6 +456,71 @@ class PairDatesTest(Base):
         row = tripdb.pair_dates([named, bare])["pairs"]["BOG-VVI"]["2027-01-28"]
         self.assertEqual(len(row), 1)
         self.assertEqual((row[0]["c"], row[0]["v"], row[0]["w"], row[0]["ag"]), (["Avianca"], ["LIM"], [1.5], "Kiwi.com"))
+
+
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+
+
+class WayIdTest(unittest.TestCase):
+    """Way ids are a hash of the way's key, so they hold across builds. These build a scratch copy of the real sources."""
+    @classmethod
+    def build_in(cls, root):
+        os.makedirs(os.path.join(root, "data"), exist_ok=True)
+        if not os.path.isdir(os.path.join(root, "data", "sources")):
+            shutil.copytree(os.path.join(REPO, "data", "sources"), os.path.join(root, "data", "sources"))
+        with contextlib.redirect_stdout(io.StringIO()):
+            tripdb.cmd_build(tripdb.Paths(root), sync=False)
+        with open(os.path.join(root, "data", "built", "inout.json"), encoding="utf-8") as fh:
+            return json.load(fh)
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="tripdb-ways-")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def test_way_ids_stable_across_builds(self):
+        a = self.build_in(os.path.join(self.tmp, "a"))
+        b = self.build_in(os.path.join(self.tmp, "b"))
+        self.assertTrue(a["ways"])
+        self.assertEqual(set(a["ways"]), set(b["ways"]))
+        self.assertTrue(all(re.fullmatch(r"[IH][0-9a-f]{10}", i) for i in a["ways"]))
+
+    def test_way_ids_stable_with_one_new_quote(self):
+        root = os.path.join(self.tmp, "r")
+        before = self.build_in(root)
+        src = os.path.join(root, "data", "sources", "quotes")
+        name = sorted(f for f in os.listdir(src) if f.endswith(".jsonl"))[0]
+        q = tripdb.rows_of(os.path.join(src, name))[0]
+        day = lambda t: (dt.date.fromisoformat(t[:10]) + dt.timedelta(days=1)).isoformat() + t[10:]
+        q["legs_requested"][0]["date"] = day(q["legs_requested"][0]["date"])
+        q["out"]["dep"], q["out"]["arr"] = day(q["out"]["dep"]), day(q["out"]["arr"])
+        out = io.StringIO()
+        path = os.path.join(self.tmp, "new.jsonl")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(json.dumps(q) + "\n")
+        with contextlib.redirect_stdout(out):
+            tripdb.cmd_add_quotes(tripdb.Paths(root), path, "extra-quote.jsonl")
+        self.assertIn("added 1", out.getvalue())
+        after = self.build_in(root)
+        self.assertLessEqual(set(before["ways"]), set(after["ways"]))
+
+    def test_way_map_matches_on_key(self):
+        def way(d, tickets, depart, **kw):
+            return {"direction": d, "type": "ticket", "tickets": tickets, "depart": depart, **kw}
+        old = {"ways": {"I0001": way("in", ["TQ:a"], "2026-12-03T06:00"), "H0002": way("home", ["TQ:b"], "2027-02-01T08:00"),
+                        "I0003": way("in", ["TQ:gone"], "2026-12-04T06:00")}}
+        new = {"ways": {"Iaaaaaaaaaa": way("in", ["TQ:a"], "2026-12-03T06:00"), "Hbbbbbbbbbb": way("home", ["TQ:b"], "2027-02-01T08:00"),
+                        "Icccccccccc": way("in", ["TQ:other"], "2026-12-04T06:00")}}
+        tmp = tempfile.mkdtemp(prefix="tripdb-waymap-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        paths = tripdb.Paths(tmp)
+        os.makedirs(paths.sources)
+        for n, doc in (("old.json", old), ("new.json", new)):
+            with open(os.path.join(tmp, n), "w", encoding="utf-8") as fh:
+                json.dump(doc, fh)
+        with contextlib.redirect_stdout(io.StringIO()):
+            tripdb.cmd_way_map(paths, os.path.join(tmp, "old.json"), os.path.join(tmp, "new.json"))
+        with open(paths.src("way_id_map.json"), encoding="utf-8") as fh:
+            self.assertEqual(json.load(fh), {"I0001": "Iaaaaaaaaaa", "H0002": "Hbbbbbbbbbb"})
 
 
 class MomondoLinesTest(unittest.TestCase):

@@ -21,6 +21,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   log-usage --round R --agent A --model M --tool T --searches N --tokens N --tool-uses N --seconds N --rows N
   ingest-inbox                         validate data/sources/inbox/*.jsonl (Momondo userscript), add the good rows
   check                                validate every source against its schema
+  way-map --old OLD_INOUT --new NEW_INOUT  document way_id_map: old way id to new way id, matched on direction, type, tickets and depart
   build [--fetch-elevation] [--no-sync]  ingest-inbox, check, then rebuild data/built, data/web and .claude
                                        (data/web/pair_dates.json: every regional quote by pair and departure date)
 FILE may be - for stdin. Every row is checked against its schema and a bad row is refused with the reason.
@@ -1189,6 +1190,29 @@ def cmd_build(paths, fetch_elevation=False, sync=True):
     return rc
 
 
+def _way_key(w):
+    return json.dumps([w["direction"], w["type"], list(w["tickets"]), w["depart"]])
+
+
+def cmd_way_map(paths, old, new):
+    """Write the document way_id_map, old way id to new way id, matching on the key inout.py uses for its ids."""
+    def ways(path):
+        try:
+            with open(path, encoding="utf-8") as fh:
+                return json.load(fh)["ways"]
+        except (OSError, ValueError, KeyError) as e:
+            raise Refused(f"cannot read the ways of {path}: {e}")
+    by_key = {_way_key(w): wid for wid, w in ways(new).items()}
+    out = {}
+    for wid, w in ways(old).items():
+        hit = by_key.get(_way_key(w))
+        if hit:
+            out[wid] = hit
+    write_atomic(paths.src("way_id_map.json"), json.dumps(out, indent=1, ensure_ascii=False) + "\n")
+    print(f"way-map: {len(out)} of {len(ways(old))} old ways found in the new build")
+    return 0
+
+
 # ---- command line -------------------------------------------------------------------------------
 
 def _opt(a, name, default=None):
@@ -1264,6 +1288,11 @@ def main(argv=None):
             return cmd_ingest_inbox(paths)
         if cmd == "check":
             return cmd_check(paths)
+        if cmd == "way-map":
+            o, n = _opt(a, "--old"), _opt(a, "--new")
+            if not o or not n:
+                raise Refused("way-map needs --old and --new")
+            return cmd_way_map(paths, o, n)
         if cmd == "build":
             fetch, nosync = _flag(a, "--fetch-elevation"), _flag(a, "--no-sync")
             return cmd_build(paths, fetch, not nosync)
