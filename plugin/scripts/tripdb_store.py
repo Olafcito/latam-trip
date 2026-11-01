@@ -650,6 +650,49 @@ class FileStore(Store):
                 write_atomic(dest, "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in keep))
         return found
 
+    def remove(self, table, match):
+        """Take the rows out whose fields equal match, and return them. For quotes match is {"quote_id": id}. Nothing else
+        is touched, and a line that is not JSON stays where it is."""
+        gone = []
+        with self.lock():
+            if table == "quotes":
+                d = self.paths.quotes
+                for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+                    if f.endswith(".jsonl"):
+                        gone += self._cut(os.path.join(d, f), lambda r: cols.qr.quote_id(r) == match["quote_id"])
+            else:
+                gone = self._cut(self._file(table), lambda r: all(r.get(k) == v for k, v in match.items()))
+        return gone
+
+    @staticmethod
+    def _cut(dest, hit):
+        gone, keep = [], []
+        if not os.path.exists(dest):
+            return gone
+        with open(dest, encoding="utf-8") as fh:
+            lines = fh.read().splitlines()
+        for line in lines:
+            try:
+                r = json.loads(line) if line.strip() else None
+            except json.JSONDecodeError:
+                r = None
+            if isinstance(r, dict) and hit(r):
+                gone.append(r)
+            else:
+                keep.append(line)
+        if gone:
+            write_atomic(dest, "".join(l + chr(10) for l in keep))
+        return gone
+
+    def restore_trip(self, tid, versions):
+        """Bring a deleted trip back. versions are its rows as they were, oldest first. Returns how many came back."""
+        dest = self._file("trips")
+        with self.lock():
+            have = {r.get("version") for r in rows_of(dest) if isinstance(r, dict) and r.get("id") == tid}
+            back = [v for v in versions if v.get("version") not in have]
+            append_rows(dest, back)
+        return len(back)
+
     # ---- the inbox ----
     def inbox_new(self):
         """The inbox files waiting: [{id, file, lines: [(line number, row or None, error or None)]}]."""
@@ -908,6 +951,24 @@ class SupabaseStore(Store):
             if got:
                 found[tid] = len(got)
         return found
+
+    def remove(self, table, match):
+        """Delete the rows whose fields equal match. Returns the rows that were there."""
+        if table == "quotes":
+            raw = self.rest.get_all("quotes", {"select": "*", "quote_id": "eq." + match["quote_id"]})
+            params = {"quote_id": "eq." + match["quote_id"]}
+        else:
+            m = cols.COLS[table]
+            params = {m.field_to_col[k]: ("is.null" if v is None else "eq." + str(v)) for k, v in match.items()}
+            raw = self.rest.get_all(table, {"select": "*", **params})
+        if raw:
+            self.rest.delete(table, params)
+        return [cols.from_row(table, r) for r in raw]
+
+    def restore_trip(self, tid, versions):
+        """Undo delete_trip: the versions come back with deleted_at null. Returns how many came back."""
+        got = self.rest.patch("trips", {"id": "eq." + tid, "deleted_at": "not.is.null"}, {"deleted_at": None}, returning="version")
+        return len(got)
 
     # ---- the inbox ----
     def inbox_new(self):
