@@ -62,10 +62,12 @@ DOMAIN="$("${AWS[@]}" cloudfront get-distribution --id "$DIST" --query Distribut
 
 ACCOUNT="$("${AWS[@]}" sts get-caller-identity --query Account --output text | text)"
 OIDC="arn:aws:iam::$ACCOUNT:oidc-provider/token.actions.githubusercontent.com"
+# GitHub's token may name the repo with its ids as well, so ask GitHub rather than build this from REPO
+SUB="$(gh api "repos/$REPO/actions/oidc/customization/sub" --jq .sub_claim_prefix | text):ref:refs/heads/main"
 TRUST="{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Federated\":\"$OIDC\"},
   \"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Condition\":{\"StringEquals\":{
   \"token.actions.githubusercontent.com:aud\":\"sts.amazonaws.com\",
-  \"token.actions.githubusercontent.com:sub\":\"repo:$REPO:ref:refs/heads/main\"}}}]}"
+  \"token.actions.githubusercontent.com:sub\":\"$SUB\"}}}]}"
 if "${AWS[@]}" iam get-role --role-name "$ROLE" >/dev/null 2>&1; then
   "${AWS[@]}" iam update-assume-role-policy --role-name "$ROLE" --policy-document "$TRUST"
 else
