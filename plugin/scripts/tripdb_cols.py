@@ -83,6 +83,8 @@ COLS = {
                        ("source", "legs_requested"), drop_nulls=("mid", "trip_name"), stamps=("observed_at",),
                        computed=("quote_id", "build_qid", "first_seen", "seen_count", "first_from", "first_to", "last_from",
                                  "last_to", "first_date", "last_date", "out_hours", "home_hours", "usable")),
+    "task_log": TableMap("task_log", _same("issue", "type", "done_at", "summary", "task", "outputs"), ("issue", "done_at"),
+                         stamps=("done_at",)),
     "agent_usage": TableMap("agent_usage", _same("round", "agent", "model", "tool", "searches", "tokens", "tool_uses", "seconds", "rows"),
                             ("round", "agent", "model", "tool")),
 }
@@ -207,4 +209,25 @@ def fold_quotes(rows, cfg):
         row["last_seen"] = max((r["last_seen"] for r in g), key=parse_ts)
         row["seen_count"] = len(g)
         out.append(row)
+    return out
+
+
+def trip_row(rec):
+    """A trips row: the whole record stays in data, as the version, the time and the writer are columns too."""
+    return {"id": rec["id"], "version": rec["version"], "saved_at": z(rec["saved_at"]) if rec.get("saved_at") else None,
+            "saved_by": rec.get("by"), "deleted_at": None, "data": rec}
+
+
+def trip_rec(row):
+    return row["data"]
+
+
+def usage_row(rec):
+    """A row of agent_usage.csv: the four names stay text, the five measures become numbers."""
+    out = {}
+    for c in ("round", "agent", "model", "tool"):
+        out[c] = rec.get(c)
+    for c in ("searches", "tokens", "tool_uses", "seconds", "rows"):
+        v = rec.get(c)
+        out[c] = None if v in (None, "") else (int(v) if re.fullmatch(r"-?\d+", str(v)) else float(v))
     return out

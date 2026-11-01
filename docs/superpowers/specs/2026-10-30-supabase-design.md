@@ -552,6 +552,8 @@ This is not a second home for the data. It is a dated archive that nothing reads
 | Worker: write a row, wait. Write a row the check refuses, wait. Save a trip the check refuses, wait. Keep writing with no quiet minute | The file updates with nobody running anything, the strip shows and no retry loop starts, a bad trip leaves a warning and new prices still arrive, and a long burst builds at most every 5 minutes |
 | End to end: two windows, save in one | The other shows the trip within seconds |
 
+Import counts, recorded by the round trip test on 1 Nov 2026 against the real `data/sources`: places 98 rows fold to 88, profiles 123 to 118, connections 250, place images 67, experiences 505, experience images 25, stays 35, trips 13, agent usage 96, documents 8. The 3,885 quote lines fold to 3,718 quotes. The import makes 58 airports, 14 of them stubs that only quotes name. Two quote ids carry two `build_qid` values, 9337 against 9337.0 and 9767 against 9767.0, and the import keeps the newest copy's value for each. `experiences.price` is free text in the data, so the column is `text` and not `numeric`. When a `profile_hostels` row repeats, the earlier hostels that the later list lacks are kept, as `build_map.py` does when it applies the rows one after the other.
+
 ## 14. Not in this spec
 
 - Deploying the worker from a cloud session. It deploys from this PC only, so a pipeline fix made from the phone during the trip would not reach the worker. The planner no longer has this problem: since 1 Nov 2026 it is hosted on S3 and CloudFront, and a push to main deploys it through `.github/workflows/site.yml`. Until the cutover the hosted copy reads data from `raw.githubusercontent.com`, and trips saved there stay in that browser.

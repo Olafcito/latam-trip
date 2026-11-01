@@ -21,6 +21,8 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   log-usage --round R --agent A --model M --tool T --searches N --tokens N --tool-uses N --seconds N --rows N
   ingest-inbox                         validate data/sources/inbox/*.jsonl (Momondo userscript), add the good rows
   check                                validate every source against its schema
+  import --from DIR [--wipe]           load a data/sources folder into an empty Supabase project (SUPABASE_URL and SUPABASE_SECRET_KEY)
+  pull --to DIR                        write the project out as the files of data/sources, quotes in quotes/all.jsonl
   way-map --old OLD_INOUT --new NEW_INOUT  document way_id_map: old way id to new way id, matched on direction, type, tickets and depart
   build [--fetch-elevation] [--no-sync]  ingest-inbox, check, then rebuild data/built, data/web and .claude
                                        (data/web/pair_dates.json: every regional quote by pair and departure date)
@@ -32,7 +34,10 @@ import csv, datetime as dt, io, json, os, re, shutil, sqlite3, subprocess, sys, 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPELINE = os.path.join(HERE, "..", "skills", "flight-crawl-orchestrator", "scripts")
 sys.path.insert(0, PIPELINE)
+sys.path.insert(0, HERE)
 from quote_rules import quote_key  # noqa: E402
+import tripdb_cols as cols  # noqa: E402
+import tripdb_store as store  # noqa: E402
 DEFAULT_ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 
 
@@ -1205,6 +1210,165 @@ def cmd_way_map(paths, old, new):
     return 0
 
 
+# ---- Supabase: import and pull ------------------------------------------------------------------
+
+IMPORT_DOCS = DOCS + ("way_id_map.json",)
+# table, file, order column. Foreign key order, so a table never comes before the one it points to.
+SB_TABLES = [("places", "places.jsonl", "seq"), ("connections", "connections.jsonl", "id"), ("profiles", "profiles.jsonl", "seq"),
+             ("place_images", "place_images.jsonl", "seq"), ("experiences", "experiences.jsonl", "seq"),
+             ("experience_images", "experience_images.jsonl", "seq"), ("stays", "stays.jsonl", "id")]
+WIPE_KEY = {"quotes": "seq", "trips": "seq", "stays": "id", "connections": "id", "profiles": "seq", "place_images": "seq",
+            "experience_images": "seq", "experiences": "seq", "task_log": "seq", "agent_usage": "seq", "places": "seq",
+            "airports": "code", "documents": "name"}
+WIPE_ORDER = list(WIPE_KEY)
+
+
+def _rest(root):
+    env = store.load_env(root)
+    try:
+        return store.Rest(env.get("SUPABASE_URL"), env.get("SUPABASE_SECRET_KEY"))
+    except store.RestError as e:
+        raise Refused(str(e))
+
+
+def _sources_dir(arg):
+    """(the sources folder, the repo root) for a Paths, a repo root or a sources folder."""
+    if isinstance(arg, Paths):
+        return arg.sources, arg.root
+    d = os.path.abspath(arg)
+    nested = os.path.join(d, "data", "sources")
+    if os.path.isdir(nested):
+        return nested, d
+    return d, os.path.abspath(os.path.join(d, "..", ".."))
+
+
+def _count(rest, table):
+    _, hdr, _ = rest._call("GET", f"/rest/v1/{table}?select=*&limit=1", retry=True,
+                           headers={"Prefer": "count=exact", "Range-Unit": "items", "Range": "0-0"})
+    m = re.search(r"/(\d+)$", hdr.get("Content-Range") or "")
+    return int(m.group(1)) if m else 0
+
+
+def quote_files(src):
+    d = os.path.join(src, "quotes")
+    return [os.path.join(d, f) for f in sorted(os.listdir(d)) if f.endswith(".jsonl")] if os.path.isdir(d) else []
+
+
+def cmd_import(paths_or_dir, wipe=False, rest=None):
+    """Load a data/sources folder into an empty project. Repeated places, profiles and quotes fold, and the airports
+    are made from the places and the quotes. Returns the counts, table by table."""
+    src, root = _sources_dir(paths_or_dir)
+    rest = rest or _rest(root)
+    counts = {}
+    try:
+        held = {t: n for t in WIPE_ORDER if (n := _count(rest, t))}
+        if held and not wipe:
+            raise Refused("the project holds rows (" + ", ".join(f"{t} {n}" for t, n in held.items()) + "), use --wipe to clear them")
+        if held:
+            if rest.get_all("documents", {"select": "name", "name": "eq.cutover_done"}):
+                raise Refused("cutover_done exists, --wipe refused")
+            for t in WIPE_ORDER:
+                if t in held:
+                    rest.delete(t, {WIPE_KEY[t]: "not.is.null"})
+
+        def rows(path):
+            return [r for r in rows_of(path) if isinstance(r, dict)]
+        cfg = {}
+        if os.path.exists(os.path.join(src, "trip.json")):
+            with open(os.path.join(src, "trip.json"), encoding="utf-8") as fh:
+                cfg = json.load(fh)
+        places = cols.fold_places(rows(os.path.join(src, "places.jsonl")))
+        raw_quotes = [q for f in quote_files(src) for q in rows(f)]
+        try:
+            quotes = cols.fold_quotes(raw_quotes, cfg)
+        except cols.QuoteIdConflict as e:
+            raise Refused(f"import stopped: {e}")
+        place_codes = {p["iata"] for p in places if p.get("iata")}
+        quote_codes = {r[c] for r in quotes for c in ("first_from", "first_to", "last_from", "last_to") if r.get(c)}
+        rest.insert("airports", [{"code": c} for c in sorted(place_codes | quote_codes)])
+        counts["airports"] = len(place_codes | quote_codes)
+        counts["airport_stubs_from_quotes"] = len(quote_codes - place_codes)
+        for table, fname, _ in SB_TABLES:
+            recs = rows(os.path.join(src, fname))
+            counts[table + "_in_file"] = len(recs)
+            if table == "places":
+                recs = places
+            elif table == "profiles":
+                recs = cols.fold_profiles(recs)
+            counts[table] = len(recs)
+            rest.insert(table, [cols.to_row(table, r) for r in recs])
+        counts["quotes_in_files"] = len(raw_quotes)
+        counts["quotes"] = len(quotes)
+        rest.insert("quotes", quotes)
+        trips = rows(os.path.join(src, "trips.jsonl"))
+        counts["trips"] = len(trips)
+        rest.insert("trips", [cols.trip_row(t) for t in trips])
+        log = rows(os.path.join(src, "task_log.jsonl"))
+        counts["task_log"] = len(log)
+        rest.insert("task_log", [cols.to_row("task_log", r) for r in log])
+        usage = []
+        up = os.path.join(src, "agent_usage.csv")
+        if os.path.exists(up):
+            with open(up, encoding="utf-8", newline="") as fh:
+                usage = [cols.usage_row(r) for r in csv.DictReader(fh)]
+        counts["agent_usage"] = len(usage)
+        rest.insert("agent_usage", usage)
+        docs = []
+        for name in IMPORT_DOCS:
+            p = os.path.join(src, name)
+            if os.path.exists(p):
+                with open(p, encoding="utf-8") as fh:
+                    docs.append({"name": name[:-5] if name == "way_id_map.json" else name, "version": 1, "data": json.load(fh)})
+        counts["documents"] = len(docs)
+        rest.insert("documents", docs)
+    except store.RestError as e:
+        raise Refused(f"import stopped: {e}")
+    for k, v in counts.items():
+        print(f"import: {k} {v}")
+    return counts
+
+
+def _jsonl(path, recs):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    write_atomic(path, "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in recs))
+
+
+def _usage_cell(v):
+    return "" if v is None else (str(int(v)) if float(v) == int(v) else str(v))
+
+
+def cmd_pull(to_dir, rest=None, root=None):
+    """Write the project out as the files of data/sources. Quotes go to one file, in seq order. Nothing is folded."""
+    to_dir = os.path.abspath(to_dir)
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    try:
+        for table, fname, order in SB_TABLES:
+            rows = rest.get_all(table, {"select": "*", "order": order + ".asc"})
+            _jsonl(os.path.join(to_dir, fname), [cols.from_row(table, r) for r in rows])
+        quotes = rest.get_all("quotes", {"select": "*", "order": "seq.asc"})
+        _jsonl(os.path.join(to_dir, "quotes", "all.jsonl"), [cols.from_row("quotes", r) for r in quotes])
+        trips = [r for r in rest.get_all("trips", {"select": "*", "order": "seq.asc"}) if not r.get("deleted_at")]
+        _jsonl(os.path.join(to_dir, "trips.jsonl"), [cols.trip_rec(r) for r in trips])
+        log = rest.get_all("task_log", {"select": "*", "order": "seq.asc"})
+        if log:
+            _jsonl(os.path.join(to_dir, "task_log.jsonl"), [cols.from_row("task_log", r) for r in log])
+        usage = rest.get_all("agent_usage", {"select": "*", "order": "seq.asc"})
+        buf = io.StringIO()
+        w = csv.writer(buf, lineterminator="\n")
+        w.writerow(USAGE_COLS)
+        for r in usage:
+            w.writerow([_usage_cell(r[c]) if c in ("searches", "tokens", "tool_uses", "seconds", "rows") else r[c] for c in USAGE_COLS])
+        write_atomic(os.path.join(to_dir, "agent_usage.csv"), buf.getvalue())
+        names = {(n[:-5] if n == "way_id_map.json" else n): n for n in IMPORT_DOCS}
+        docs = [d for d in rest.get_all("documents", {"select": "name,data"}) if d["name"] in names]
+        for d in docs:
+            write_atomic(os.path.join(to_dir, names[d["name"]]), json.dumps(d["data"], indent=1, ensure_ascii=False) + "\n")
+    except store.RestError as e:
+        raise Refused(f"pull stopped: {e}")
+    print(f"pull: {len(quotes)} quotes, {len(trips)} trips and {len(docs)} documents into {to_dir}")
+    return 0
+
+
 # ---- command line -------------------------------------------------------------------------------
 
 def _opt(a, name, default=None):
@@ -1285,6 +1449,17 @@ def main(argv=None):
             if not o or not n:
                 raise Refused("way-map needs --old and --new")
             return cmd_way_map(paths, o, n)
+        if cmd == "import":
+            wipe, src = _flag(a, "--wipe"), _opt(a, "--from")
+            if not src:
+                raise Refused("import needs --from DIR")
+            cmd_import(src, wipe)
+            return 0
+        if cmd == "pull":
+            dest = _opt(a, "--to")
+            if not dest:
+                raise Refused("pull needs --to DIR")
+            return cmd_pull(dest, root=paths.root)
         if cmd == "build":
             fetch, nosync = _flag(a, "--fetch-elevation"), _flag(a, "--no-sync")
             return cmd_build(paths, fetch, not nosync)
