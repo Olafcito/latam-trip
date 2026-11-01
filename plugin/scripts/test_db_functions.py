@@ -179,5 +179,69 @@ class SaveTripTest(unittest.TestCase):
         self.assertEqual(rows, [])
 
 
+@unittest.skipUnless(LIVE, "set TRIPDB_LIVE_TESTS=1 to run against the project")
+class DirtyTriggerTest(unittest.TestCase):
+    """Spec 7.2 step 1: a write to a table the pipeline reads moves derive_state.dirty_at."""
+    WRITES = {
+        "quotes": lambda: ("rpc/add_quotes", {"rows": [quote_row("Q3:t1")]}),
+        "places": lambda: ("places", {"id": "ZT1", "name": "Test", "country": "CR", "type": "city"}),
+        "task_log": lambda: ("task_log", {"issue": 1, "type": "t", "summary": "x"}),
+        "inbox": lambda: ("inbox", {"file": "t.jsonl", "rows": []}),
+    }
+
+    def setUp(self):
+        self.env = load_env()
+        code, body = call(self.env, "POST", "rpc/test_reset", {})
+        self.assertIn(code, (200, 204), body)
+
+    def state(self):
+        code, rows = call(self.env, "GET", "derive_state?select=dirty_at,dirty_since&id=eq.1")
+        self.assertEqual(code, 200, rows)
+        return rows[0]
+
+    def put(self, path, body):
+        code, out = call(self.env, "POST", path, body)
+        self.assertIn(code, (200, 201, 204), out)
+
+    def test_each_table_sets_dirty(self):
+        for table in ("quotes", "places", "task_log", "inbox"):
+            call(self.env, "POST", "rpc/test_reset", {})
+            self.assertIsNone(self.state()["dirty_at"])
+            path, body = self.WRITES[table]()
+            self.put(path, body)
+            st = self.state()
+            self.assertIsNotNone(st["dirty_at"], table)
+            self.assertIsNotNone(st["dirty_since"], table)
+
+    def test_documents_set_dirty(self):
+        self.put("documents", {"name": "lists.json", "data": {"lists": []}})
+        self.assertIsNotNone(self.state()["dirty_at"])
+
+    def test_dirty_since_set_only_when_empty(self):
+        self.put("documents", {"name": "lists.json", "data": {"lists": []}})
+        first = self.state()
+        self.put("documents", {"name": "bag_rules.json", "data": {}})
+        second = self.state()
+        self.assertEqual(second["dirty_since"], first["dirty_since"])
+        self.assertGreater(second["dirty_at"], first["dirty_at"])
+
+    def test_web_trips_doc_is_ignored(self):
+        for name in ("web_trips", "way_id_map", "unresolved_journeys"):
+            self.put("documents", {"name": name, "data": {}})
+            self.assertIsNone(self.state()["dirty_at"], name)
+            code, _ = call(self.env, "PATCH", f"documents?name=eq.{name}", {"data": {"a": 1}})
+            self.assertIn(code, (200, 204))
+            self.assertIsNone(self.state()["dirty_at"], name)
+            code, _ = call(self.env, "DELETE", f"documents?name=eq.{name}")
+            self.assertIn(code, (200, 204))
+            self.assertIsNone(self.state()["dirty_at"], name)
+
+    def test_trips_and_tasks_do_not_set_dirty(self):
+        code, body = call(self.env, "POST", "rpc/save_trip", {"trip": {"id": "tt1", "name": "x", "by": "t"}})
+        self.assertEqual(code, 200, body)
+        self.put("tasks", {"type": "t", "status": "open", "title": "x"})
+        self.assertIsNone(self.state()["dirty_at"])
+
+
 if __name__ == "__main__":
     unittest.main()
