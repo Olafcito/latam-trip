@@ -6,8 +6,8 @@ import { TRIP_COLORS } from '@map/data/trips'
 import type { AppData } from '../data/types'
 import { usePairDates } from '../data/pairDates'
 import { useStore } from '../store'
-import { hours, kr, legHours, weekdayDay } from '../lib/format'
-import { groundCost, legTime, nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from '../lib/journey'
+import { day, hours, kr, legHours, weekdayDay } from '../lib/format'
+import { flightOffDay, groundCost, legTime, nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from '../lib/journey'
 import { legWindow, type LegWindow } from '../lib/legDates'
 import { countryName } from '../lib/colors'
 import { Flag } from '@map/map/Flag'
@@ -266,6 +266,10 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                       {took && <span>{took}</span>}
                       {h.price_dkk != null && <span>{kr(h.price_dkk)}</span>}
                     </span>
+                    {(() => {
+                      const off = flightOffDay(h)
+                      return off && <span className="flight-off" title={`The picked flight leaves ${day(off)}`}>Flight {day(off)}</span>
+                    })()}
                     {h.overnight && <Moon />}
                     {(() => {
                       const l = hopLink(h, inout)

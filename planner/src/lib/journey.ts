@@ -140,6 +140,12 @@ export function legDay(h: Hop, estimate: string): string {
   return h.date ?? h.flight?.depart.slice(0, 10) ?? estimate
 }
 
+/** The day a leg's picked flight really leaves, when the leg has been moved off that day. */
+export function flightOffDay(h: Hop): string | null {
+  const flown = h.flight?.depart.slice(0, 10)
+  return flown && h.date && flown !== h.date ? flown : null
+}
+
 /** How long a leg takes. A bus or boat leg with no hours of its own is added up from the map's ground legs, so it is an estimate. */
 export interface LegTime {
   hours: number | null
