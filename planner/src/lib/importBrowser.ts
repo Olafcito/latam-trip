@@ -6,11 +6,11 @@ import { journeyToRow, tripRowErrors } from './tripRow'
 
 // Moves what one browser holds into Supabase (spec 9.2). It runs after cutover, once per browser and project,
 // on the port where the journeys live. Nothing here runs before the cutover_done document exists.
+// The web app imports its own trips on its own origin, see web/src/data/webTrips.ts.
 
 export const IMPORTED_KEY = 'latam-planner.imported'
 const SAVED_KEY = 'latam-planner.journeys'
 const HIDDEN_KEY = 'latam-planner.hidden'
-const WEB_TRIPS_KEY = 'latam-trip.trips'
 
 export interface ImportDeps {
   storage: Pick<Storage, 'getItem' | 'setItem'>
@@ -112,6 +112,8 @@ export async function importBrowser(deps: ImportDeps): Promise<ImportReport> {
     }
     const out = await deps.save(row).catch((): SaveResult => ({ status: 'failed', message: 'save threw' }))
     if (out.status === 'saved') report.imported.push(id)
+    // a trip deleted in another window is settled, so it must not hold the marker back
+    else if (out.status === 'deleted') report.deleted.push(id)
     else report.failed.push(j.id)
   }
 
@@ -129,15 +131,4 @@ export async function importBrowser(deps: ImportDeps): Promise<ImportReport> {
   // a failure leaves the marker unset, so the next start tries again. Saves of the same content are skipped
   if (!report.failed.length) deps.storage.setItem(IMPORTED_KEY, deps.projectRef)
   return report
-}
-
-/** The trips of the web app, once, into the document web_trips. A document that is already stored is kept. */
-export async function importWebTrips(deps: ImportDeps): Promise<ImportReport> {
-  const marker = IMPORTED_KEY + '.web'
-  if (deps.storage.getItem(marker) === deps.projectRef) return none('already imported')
-  if (!(await deps.cutoverDone())) return none('before cutover')
-  const mine = read<unknown>(deps, WEB_TRIPS_KEY, null)
-  if (mine && !(await deps.readDoc('web_trips'))) await deps.writeDoc('web_trips', mine)
-  deps.storage.setItem(marker, deps.projectRef)
-  return { ran: true, imported: mine ? ['web_trips'] : [], unresolved: [], failed: [], deleted: [] }
 }

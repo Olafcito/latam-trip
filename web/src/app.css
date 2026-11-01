@@ -48,3 +48,9 @@ body { background: #0A141C; color: #EAF0F2; font-family: Inter, system-ui, -appl
   .app-options { animation: none; }
   .bar-toggle { transition: none; }
 }
+
+/* ---- sign in strip, only when trips are kept in Supabase */
+.signin { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 16px; background: #0F1F29; border-bottom: 1px solid #24404D; font-size: 13px; color: #93A7B2; }
+.signin input { font: inherit; font-size: 16px; padding: 4px 8px; border-radius: 6px; border: 1px solid #24404D; background: #0A141C; color: #EAF0F2; min-width: 0; }
+.signin button { font: inherit; padding: 4px 10px; border-radius: 6px; border: 1px solid #24404D; background: #17303D; color: #EAF0F2; }
+.signin [role="alert"] { color: #E99AC0; }

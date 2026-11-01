@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { InOut } from '../data/types'
 import type { Hop, Journey, Totals } from './journey'
-import { importBrowser, importWebTrips, IMPORTED_KEY, type ImportDeps } from './importBrowser'
+import { importBrowser, IMPORTED_KEY, type ImportDeps } from './importBrowser'
 import type { TripRow } from './repoTrips'
 import type { SaveResult } from './remoteTrips'
 
@@ -141,6 +141,15 @@ describe('importBrowser', () => {
     expect(storage.getItem(IMPORTED_KEY)).toBeNull()
   })
 
+  it('a trip deleted in another window counts as settled and does not hold the marker back', async () => {
+    const storage = withJourneys([journey('a')])
+    const d = deps(storage)
+    d.save = vi.fn(async () => ({ status: 'deleted' }) as SaveResult)
+    const rep = await importBrowser(d)
+    expect(rep.failed).toEqual([])
+    expect(storage.getItem(IMPORTED_KEY)).toBe('projref')
+  })
+
   it('a save that failed leaves the marker unset so the next start tries again', async () => {
     const storage = withJourneys([journey('a')])
     const d = deps(storage)
@@ -148,33 +157,5 @@ describe('importBrowser', () => {
     const rep = await importBrowser(d)
     expect(rep.failed).toEqual(['a'])
     expect(storage.getItem(IMPORTED_KEY)).toBeNull()
-  })
-})
-
-describe('importWebTrips', () => {
-  const raw = JSON.stringify({ trips: [{ id: 'w1', name: 'Web', legs: [], updated: 1 }], active: null })
-
-  it('web trips import once into web_trips', async () => {
-    const storage = fakeStorage({ 'latam-trip.trips': raw })
-    const d = deps(storage)
-    const first = await importWebTrips(d)
-    expect(first.ran).toBe(true)
-    expect(docs.web_trips).toEqual(JSON.parse(raw))
-    expect(storage.getItem(IMPORTED_KEY + '.web')).toBe('projref')
-    docs.web_trips = 'changed'
-    const second = await importWebTrips(d)
-    expect(second.ran).toBe(false)
-    expect(docs.web_trips).toBe('changed')
-  })
-
-  it('does not run before cutover_done and does not overwrite stored web_trips', async () => {
-    cutover = false
-    const storage = fakeStorage({ 'latam-trip.trips': raw })
-    expect((await importWebTrips(deps(storage))).ran).toBe(false)
-    expect(docs.web_trips).toBeUndefined()
-    cutover = true
-    docs.web_trips = { trips: [], active: null, mine: true }
-    expect((await importWebTrips(deps(storage))).ran).toBe(true)
-    expect(docs.web_trips).toEqual({ trips: [], active: null, mine: true })
   })
 })

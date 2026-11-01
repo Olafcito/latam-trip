@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { loadDash, loadMapData, type DashData } from './data/load'
+import { files } from './data/remoteFiles'
 import { readTrips, writeTrips, type TripState } from './data/trips'
 import type { MapData } from './data/types'
 import { RouteMap } from './map/RouteMap'
 import { OptionsPane } from './options/OptionsPane'
+import { SignInStrip, useWebTrips } from './WebSync'
 
 const OPTIONS_KEY = 'latam-web.options'
 
@@ -30,6 +32,23 @@ export function App() {
     loadMapData().then(setData, (e: unknown) => setError(e instanceof Error ? e.message : String(e)))
     loadDash().then(setDash)
   }, [])
+  // a build that finished after the page opened shows on the next open or when the window gets focus again.
+  // Without Supabase there is no Realtime here, so this check replaces the derive_state subscription (spec 6.2)
+  useEffect(() => {
+    const f = files()
+    if (!f) return
+    const check = () => {
+      void f.refresh().then((names) => {
+        if (!names.length) return
+        loadMapData().then(setData, () => {})
+        loadDash().then(setDash, () => {})
+      })
+    }
+    check()
+    window.addEventListener('focus', check)
+    return () => window.removeEventListener('focus', check)
+  }, [])
+  const { showSignIn } = useWebTrips(trips, setTrips)
   useEffect(() => writeTrips(trips), [trips])
   useEffect(() => {
     try { localStorage.setItem(OPTIONS_KEY, optionsOpen ? '1' : '0') } catch { /* nothing to remember into */ }
@@ -65,6 +84,7 @@ export function App() {
           Options
         </button>
       </header>
+      {showSignIn && <SignInStrip />}
       <div className="app-body">
         <section className="app-map" aria-label="Route map">
           <RouteMap data={data} trips={trips} onTrips={setTrips} highlight={picked?.airports} />
