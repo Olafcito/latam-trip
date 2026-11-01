@@ -25,6 +25,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   check                                validate every source against its schema
   import --from DIR [--wipe]           load a data/sources folder into an empty Supabase project (SUPABASE_URL and SUPABASE_SECRET_KEY)
   pull --to DIR                        write the project out as the files of data/sources, quotes in quotes/all.jsonl
+  cutover-done                         write the cutover_done document, spec 9.3 step 7, after which every --wipe refuses
   dump --to DIR                        write every table as it stands, one JSON lines file per table
   restore --from DIR [--wipe]          load a dump into an empty project and reset the identity sequences
   way-map --old OLD_INOUT --new NEW_INOUT  document way_id_map: old way id to new way id, matched on direction, type, tickets and depart
@@ -37,7 +38,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
 FILE may be - for stdin. Every row is checked against its schema and a bad row is refused with the reason.
 Nothing is overwritten without --replace. Writes hold data/sources/.tripdb.lock and append in one write.
 """
-import csv, datetime as dt, hashlib, io, json, os, re, secrets, shutil, sqlite3, subprocess, sys, tempfile, time
+import csv, datetime as dt, hashlib, io, json, math, os, re, secrets, shutil, sqlite3, subprocess, sys, tempfile, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPELINE = os.path.join(HERE, "..", "skills", "flight-crawl-orchestrator", "scripts")
@@ -84,7 +85,7 @@ PATTERNS = {"iata": re.compile(r"[A-Z]{3}$"), "pid": re.compile(r"[A-Z][A-Z0-9_]
 def _is(v, t):
     if t == "str": return isinstance(v, str)
     if t == "int": return isinstance(v, int) and not isinstance(v, bool)
-    if t == "num": return isinstance(v, (int, float)) and not isinstance(v, bool)
+    if t == "num": return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
     if t == "bool": return isinstance(v, bool)
     if t == "list": return isinstance(v, list)
     if t == "dict": return isinstance(v, dict)
@@ -188,11 +189,14 @@ DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "scenarios.json",
 
 
 NUL_WHY = "contains a NUL character (U+0000), which the database cannot hold"
+BAD_WHY = "contains a NaN, an Infinity or a lone surrogate, which the database cannot hold"
 
 
 def quote_errors(q):
     if store.has_nul(q):
         return [NUL_WHY]
+    if store.has_unstorable(q):
+        return [BAD_WHY]
     errs = check_fields(q, QUOTE)
     if errs:
         return errs
@@ -252,6 +256,8 @@ def row_errors(table, row):
     schemas = TABLES[table][1]
     if store.has_nul(row):
         return [NUL_WHY]
+    if store.has_unstorable(row):
+        return [BAD_WHY]
     if not isinstance(row, dict):
         return ["row is not a JSON object"]
     kind = row.get("kind") if None not in schemas else None
@@ -650,6 +656,8 @@ def cmd_doc_put(paths, name, file):
         raise Refused(f"{file} is not valid JSON ({e})")
     if store.has_nul(data):
         raise Refused(NUL_WHY)
+    if store.has_unstorable(data):
+        raise Refused(BAD_WHY)
     st = get_store(paths)
     for _ in range(20):
         try:
@@ -1066,7 +1074,7 @@ SB_TABLES = [("places", "places.jsonl", "seq"), ("connections", "connections.jso
              ("experience_images", "experience_images.jsonl", "seq"), ("stays", "stays.jsonl", "id")]
 WIPE_KEY = {"quotes": "seq", "trips": "seq", "stays": "id", "connections": "id", "profiles": "seq", "place_images": "seq",
             "experience_images": "seq", "experiences": "seq", "task_log": "seq", "agent_usage": "seq", "places": "seq",
-            "airports": "code", "documents": "name"}
+            "airports": "code", "documents": "name", "tasks": "id", "inbox": "id", "derived_options": "id"}
 WIPE_ORDER = list(WIPE_KEY)
 
 
@@ -1105,6 +1113,9 @@ def cmd_import(paths_or_dir, wipe=False, rest=None):
     """Load a data/sources folder into an empty project. Repeated places, profiles and quotes fold, and the airports
     are made from the places and the quotes. Returns the counts, table by table."""
     src, root = _sources_dir(paths_or_dir)
+    if wipe and not os.path.exists(os.path.join(src, "way_id_map.json")):
+        raise Refused("way_id_map.json is missing in " + src + ", run tripdb way-map first (spec 9.3 step 2b), "
+                      "or the browser journeys all go to unresolved")
     rest = rest or _rest(root)
     counts = {}
     try:
@@ -1231,7 +1242,21 @@ def cmd_pull(to_dir, rest=None, root=None):
 DUMP_TABLES = [("airports", "code", None), ("places", "seq", "seq"), ("connections", "id", "id"), ("profiles", "seq", "seq"),
                ("place_images", "seq", "seq"), ("experiences", "seq", "seq"), ("experience_images", "seq", "seq"),
                ("stays", "id", "id"), ("quotes", "seq", "seq"), ("trips", "seq", "seq"), ("documents", "name", None),
-               ("inbox", "id", "id"), ("tasks", "id", "id"), ("task_log", "seq", "seq"), ("agent_usage", "seq", "seq")]
+               ("inbox", "id", "id"), ("tasks", "id", "id"), ("task_log", "seq", "seq"), ("agent_usage", "seq", "seq"),
+               ("owners", "user_id", None), ("inbox_tokens", "name", None)]
+
+
+def cmd_cutover_done(rest=None, root=None):
+    """Write the cutover_done document (spec 9.3 step 7). From then on the live test suites and every --wipe refuse, and
+    the browser import runs. Writing it twice leaves the first one."""
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    try:
+        got = rest.insert("documents", [{"name": "cutover_done", "version": 1, "data": {"at": now_utc()}}], on_conflict="name",
+                          returning="name", resolution="ignore-duplicates")
+    except store.RestError as e:
+        raise Refused(f"cutover-done stopped: {e}")
+    print("cutover-done: written" if got else "cutover-done: already written, left as it was")
+    return bool(got)
 
 
 def cmd_dump(to_dir, rest=None, root=None):
@@ -1497,6 +1522,9 @@ def main(argv=None):
             if not src:
                 raise Refused("import needs --from DIR")
             cmd_import(src, wipe)
+            return 0
+        if cmd == "cutover-done":
+            cmd_cutover_done(root=paths.root)
             return 0
         if cmd == "dump":
             dest = _opt(a, "--to")

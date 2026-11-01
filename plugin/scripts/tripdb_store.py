@@ -6,7 +6,7 @@ Rest(url, key) talks to PostgREST and Storage with the secret key on the apikey 
 Content-Range total is reached, so a read that fails halfway raises and never returns part of a table.
 The key is never printed and never put in a message.
 """
-import contextlib, csv, datetime as dt, hashlib, io, json, os, re, sys, time, urllib.error, urllib.parse, urllib.request
+import contextlib, csv, datetime as dt, hashlib, io, json, math, os, re, sys, time, urllib.error, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPELINE = os.path.join(HERE, "..", "skills", "flight-crawl-orchestrator", "scripts")
@@ -237,7 +237,10 @@ class Rest:
         if body is not None:
             h["Content-Type"] = "application/json"
         h.update(headers or {})
-        data = raw if raw is not None else (None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8"))
+        try:
+            data = raw if raw is not None else (None if body is None else json.dumps(body, ensure_ascii=False, allow_nan=False).encode("utf-8"))
+        except (UnicodeEncodeError, ValueError) as e:
+            raise RestError(f"the body cannot be sent, it holds a NaN, an Infinity or a lone surrogate ({e})")
         for attempt in (0, 1):
             req = urllib.request.Request(self.url + path, method=method, headers=h, data=data)
             try:
@@ -754,6 +757,20 @@ def has_nul(v):
         return any(has_nul(k) or has_nul(x) for k, x in v.items())
     if isinstance(v, list):
         return any(has_nul(x) for x in v)
+    return False
+
+
+def has_unstorable(v):
+    """True when v holds a NaN or an Infinity, or a string with a lone surrogate. PostgREST refuses the first, and the
+    utf-8 encode of the body raises on the second."""
+    if isinstance(v, float):
+        return not math.isfinite(v)
+    if isinstance(v, str):
+        return any(0xD800 <= ord(c) <= 0xDFFF for c in v)
+    if isinstance(v, dict):
+        return any(has_unstorable(k) or has_unstorable(x) for k, x in v.items())
+    if isinstance(v, list):
+        return any(has_unstorable(x) for x in v)
     return False
 
 
