@@ -9544,15 +9544,17 @@
    {
     "mode": "flight",
     "operators": [
+     "JA",
      "Jetsmart",
+     "LA",
      "LATAM",
      "Avianca",
      "JetSmart"
     ],
     "duration_min": 108,
     "price_dkk": {
-     "min": 537,
-     "typical": 775
+     "min": 292,
+     "typical": 497
     },
     "frequency": "19 nonstop weekly",
     "overnight": false,
@@ -9565,18 +9567,188 @@
       "CLO"
      ],
      "carriers": [
+      "JA",
       "Jetsmart",
+      "LA",
       "LATAM"
      ],
      "oneway_dkk": {
-      "min": 537,
-      "observed_at": "2026-10-28T15:35:00Z"
+      "min": 292,
+      "observed_at": "2026-11-01T14:05:00Z"
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-04",
+      "2026-12-05",
+      "2026-12-06",
+      "2026-12-07",
+      "2026-12-08",
+      "2026-12-09",
+      "2026-12-10",
+      "2026-12-11",
       "2027-01-05"
      ],
      "by_date": [
+      {
+       "date": "2026-12-04",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 497,
+       "dep": "19:37",
+       "arr": "21:30",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5452"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-04",
+       "link": null
+      },
+      {
+       "date": "2026-12-05",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 497,
+       "dep": "05:07",
+       "arr": "07:00",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5450"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-05",
+       "link": null
+      },
+      {
+       "date": "2026-12-06",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 497,
+       "dep": "17:22",
+       "arr": "19:15",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5452"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-06",
+       "link": null
+      },
+      {
+       "date": "2026-12-07",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 292,
+       "dep": "20:20",
+       "arr": "22:10",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4322"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-07",
+       "link": null
+      },
+      {
+       "date": "2026-12-08",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 409,
+       "dep": "20:20",
+       "arr": "22:10",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4322"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-08",
+       "link": null
+      },
+      {
+       "date": "2026-12-09",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 502,
+       "dep": "15:24",
+       "arr": "17:17",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5452"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-09",
+       "link": null
+      },
+      {
+       "date": "2026-12-10",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 454,
+       "dep": "20:20",
+       "arr": "22:10",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "LA"
+       ],
+       "flights": [
+        "LA4322"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-10",
+       "link": null
+      },
+      {
+       "date": "2026-12-11",
+       "from": "MDE",
+       "to": "ADZ",
+       "dkk": 502,
+       "dep": "19:37",
+       "arr": "21:30",
+       "arr_days": 0,
+       "duration_min": 113,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5452"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-11",
+       "link": null
+      },
       {
        "date": "2027-01-05",
        "from": "MDE",
@@ -9603,15 +9775,13 @@
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 537,
-      "duration_min": 1478,
-      "vias": [
-       "CLO"
-      ],
+      "dkk": 292,
+      "duration_min": 113,
+      "vias": [],
       "carriers": [
-       "LATAM"
+       "LA"
       ],
-      "date": "2027-01-05",
+      "date": "2026-12-07",
       "self_transfer": false
      },
      "fastest": {
@@ -9627,10 +9797,10 @@
       "basic_fare",
       "long_layover"
      ],
-     "quotes": 3
+     "quotes": 11
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T15:35:00Z",
+    "observed_at": "2026-11-01T14:05:00Z",
     "note": " Peak Dec 20-Jan 6: expect roughly 1.5x (Medellin) to 2-4x (Cartagena, San Andres) the off-peak fare (La Republica Nov 2023: BOG-CTG return COP 0.60-1.1M, BOG-ADZ return COP 0.66-0.73M, BOG-MDE return COP 0.33-0.43M). price_dkk is the cheapest advertised off-peak one-way fare, not a Christmas fare.",
     "booking_url": null,
     "source_url": "https://www.kiwi.com/us/cheap-flights/medellin-colombia/san-andres-colombia/",
@@ -10276,43 +10446,207 @@
    {
     "mode": "flight",
     "operators": [
+     "JA",
      "LATAM",
      "JetSmart",
      "Avianca (seasonal)"
     ],
-    "duration_min": 240,
+    "duration_min": 126,
     "price_dkk": {
-     "min": 644,
-     "typical": 977
+     "min": 461,
+     "typical": 608
     },
     "frequency": "unknown",
     "overnight": false,
     "border": false,
-    "stops": [
-     {
-      "place_id": "BOG",
-      "type": "layover",
-      "wait_min": null
-     }
-    ],
+    "stops": [],
     "geometry": null,
     "flight": {
-     "nonstop": false,
+     "nonstop": true,
      "vias": [
       "BOG"
      ],
      "carriers": [
+      "JA",
       "LATAM"
      ],
      "oneway_dkk": {
-      "min": 644,
-      "observed_at": "2026-10-28T15:34:53Z"
+      "min": 461,
+      "observed_at": "2026-11-01T14:05:00Z"
      },
      "return_dkk": null,
      "dates_searched": [
+      "2026-12-08",
+      "2026-12-09",
+      "2026-12-10",
+      "2026-12-11",
+      "2026-12-12",
+      "2026-12-14",
+      "2026-12-15",
+      "2026-12-16",
       "2027-01-05"
      ],
      "by_date": [
+      {
+       "date": "2026-12-08",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 638,
+       "dep": "10:17",
+       "arr": "12:23",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5591"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-08",
+       "link": null
+      },
+      {
+       "date": "2026-12-09",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 618,
+       "dep": "08:16",
+       "arr": "10:22",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5593"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-09",
+       "link": null
+      },
+      {
+       "date": "2026-12-10",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 608,
+       "dep": "08:03",
+       "arr": "10:09",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5595"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-10",
+       "link": null
+      },
+      {
+       "date": "2026-12-11",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 608,
+       "dep": "10:07",
+       "arr": "12:13",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5591"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-11",
+       "link": null
+      },
+      {
+       "date": "2026-12-12",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 616,
+       "dep": "07:40",
+       "arr": "09:46",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5593"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-12",
+       "link": null
+      },
+      {
+       "date": "2026-12-14",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 589,
+       "dep": "19:42",
+       "arr": "21:48",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5593"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-14",
+       "link": null
+      },
+      {
+       "date": "2026-12-15",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 587,
+       "dep": "10:17",
+       "arr": "12:23",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5591"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-15",
+       "link": null
+      },
+      {
+       "date": "2026-12-16",
+       "from": "ADZ",
+       "to": "CLO",
+       "dkk": 461,
+       "dep": "08:16",
+       "arr": "10:22",
+       "arr_days": 0,
+       "duration_min": 126,
+       "vias": [],
+       "carriers": [
+        "JA"
+       ],
+       "flights": [
+        "JA5593"
+       ],
+       "self_transfer": false,
+       "searched": "2026-12-16",
+       "link": null
+      },
       {
        "date": "2027-01-05",
        "from": "CLO",
@@ -10339,37 +10673,29 @@
      ],
      "round_trips": [],
      "cheapest": {
-      "dkk": 644,
-      "duration_min": 1120,
-      "vias": [
-       "BOG"
-      ],
+      "dkk": 461,
+      "duration_min": 126,
+      "vias": [],
       "carriers": [
-       "LATAM"
+       "JA"
       ],
-      "date": "2027-01-05",
+      "date": "2026-12-16",
       "self_transfer": false
      },
      "fastest": {
-      "dkk": 977,
-      "duration_min": 240,
-      "vias": [
-       "BOG"
-      ],
+      "dkk": 461,
+      "duration_min": 126,
+      "vias": [],
       "carriers": [
-       "LATAM"
+       "JA"
       ],
-      "date": "2027-01-05"
+      "date": "2026-12-16"
      },
-     "flags": [
-      "basic_fare",
-      "long_layover",
-      "tight_connection"
-     ],
-     "quotes": 3
+     "flags": [],
+     "quotes": 11
     },
     "source": "crawl",
-    "observed_at": "2026-10-28T15:34:53Z",
+    "observed_at": "2026-11-01T14:05:00Z",
     "note": "Route exists on Wikipedia airport tables; price/duration unknown from sources read.",
     "booking_url": null,
     "source_url": "https://en.wikipedia.org/wiki/Alfonso_Bonilla_Arag%C3%B3n_International_Airport",
@@ -15454,6 +15780,7 @@
       "PTY"
      ],
      "carriers": [
+      "AV",
       "Avianca",
       "COPA",
       "Copa",
@@ -15760,7 +16087,7 @@
      "flags": [
       "basic_fare"
      ],
-     "quotes": 64
+     "quotes": 66
     },
     "source": "crawl",
     "observed_at": "2026-10-28T19:05:05Z",
