@@ -26,8 +26,22 @@ test('inbox request: one POST to submit_inbox with the key as apikey only', () =
   assert.equal(spec.url, 'https://abcd.supabase.co/rest/v1/rpc/submit_inbox');
   assert.deepEqual(Object.keys(spec.headers).sort(), ['Content-Type', 'apikey']);
   assert.equal(spec.headers.apikey, CFG.key);
-  assert.deepEqual(JSON.parse(spec.data), { token: 'mmk_x', file: 'manual-x.jsonl', rows });
+  const sent = JSON.parse(spec.data);
+  assert.deepEqual(sent, { token: 'mmk_x', file: 'manual-x.jsonl', rows: rows.map((r) => JSON.stringify(r)) });
+  assert.deepEqual(sent.rows.map((r) => JSON.parse(r)), rows);
   assert.match(spec.data, /håndbagage/);
+});
+
+test('inbox request: a NUL in a row stays inside its string so the array is still valid jsonb', () => {
+  const bad = { ...row(), notes: 'a' + String.fromCharCode(0) + 'b' };
+  const sent = JSON.parse(core.inboxRequest(CFG, 'manual-x.jsonl', [row(), bad]).data);
+  assert.equal(sent.rows.length, 2);
+  assert.ok(sent.rows.every((r) => typeof r === 'string'));
+  assert.equal(JSON.parse(sent.rows[1]).notes.charCodeAt(1), 0);
+});
+
+test('an empty rows array stays an array, so the token check still works', () => {
+  assert.deepEqual(JSON.parse(core.inboxRequest(CFG, 'check', []).data).rows, []);
 });
 
 test('task request: a POST to submit_task with the token and the task', () => {
@@ -47,6 +61,12 @@ test('configured needs the token, the key and a supabase.co address', () => {
 test('answerText names the status and points at the menu for a refusal', () => {
   assert.match(core.answerText(401), /^Supabase answered 401, check the token/);
   assert.equal(core.answerText(0), 'Supabase answered nothing');
+});
+
+test('answerText does not blame the token for a 400', () => {
+  assert.doesNotMatch(core.answerText(400), /check the token/);
+  assert.match(core.answerText(400), /400/);
+  assert.match(core.answerText(403), /check the token/);
 });
 
 test('fix_parser task carries the parser version and a cut dialog text', () => {

@@ -155,9 +155,11 @@ test('Save trip with settings sends one row with trip_name to submit_inbox', asy
   assert.match(body.file, /^manual-\d{8}T\d{6}Z\.jsonl$/);
   assert.equal(body.token, 'mmk_x');
   assert.equal(body.rows.length, 1);
-  assert.equal(body.rows[0].trip_name, 'Panama stopover');
-  assert.equal(body.rows[0].source, 'momondo-manual');
-  assert.equal(body.rows[0].price_dkk, 10029);
+  assert.equal(typeof body.rows[0], 'string');
+  const saved = JSON.parse(body.rows[0]);
+  assert.equal(saved.trip_name, 'Panama stopover');
+  assert.equal(saved.source, 'momondo-manual');
+  assert.equal(saved.price_dkk, 10029);
   assert.equal(b.calls.opened.length, 0);
 });
 

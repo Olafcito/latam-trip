@@ -328,7 +328,9 @@ def cmd_ingest_inbox(paths, st=None):
                 errs = [f"source is {q.get('source')!r}, inbox rows must say momondo-manual"]
             if not errs and "trip_name" in q and not isinstance(q["trip_name"], str):
                 errs = ["trip_name is not text"]
-            (bad.append({"line": n, "reason": "; ".join(errs), "row": q}) if errs else good.append(q))
+            # a row with a NUL or a lone surrogate cannot be stored as jsonb, so the rejected copy keeps its text only
+            shown = json.dumps(q) if store.has_nul(q) or store.has_unstorable(q) else q
+            (bad.append({"line": n, "reason": "; ".join(errs), "row": shown}) if errs else good.append(q))
         res = st.add_quotes(good, f)
         status = "rejected" if bad and not good else "added"
         where = st.inbox_mark(e["id"], status, bad[0]["reason"] if bad else None, bad)

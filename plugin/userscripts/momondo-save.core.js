@@ -203,8 +203,10 @@ var MomondoSave = (function () {
     };
   }
 
+  // Each row goes as a JSON string. A row with a NUL in a text would make Postgres refuse the whole array as jsonb, but as a
+  // string it arrives, and tripdb ingest-inbox then rejects that one row with its line number.
   function inboxRequest(cfg, file, rows) {
-    return rpcRequest(cfg, 'submit_inbox', { token: cfg.token, file: file, rows: rows });
+    return rpcRequest(cfg, 'submit_inbox', { token: cfg.token, file: file, rows: rows.map(function (r) { return JSON.stringify(r); }) });
   }
 
   function taskRequest(cfg, task) {
@@ -218,7 +220,8 @@ var MomondoSave = (function () {
 
   // What a failed answer means to the person pressing the button.
   function answerText(status) {
-    if (status === 401 || status === 403 || status === 400) return 'Supabase answered ' + status + ', check the token and the project in the Tampermonkey menu';
+    if (status === 401 || status === 403) return 'Supabase answered ' + status + ', check the token and the project in the Tampermonkey menu';
+    if (status === 400) return 'Supabase refused the rows (400), the token is fine';
     return 'Supabase answered ' + (status || 'nothing');
   }
 

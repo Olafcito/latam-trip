@@ -146,5 +146,35 @@ class UnstorableTest(unittest.TestCase):
                 rest._call("POST", "/rest/v1/x", body=body)
 
 
+class IngestNulTest(unittest.TestCase):
+    """A userscript row with a NUL is rejected on its own line, and the rejected copy can be stored."""
+
+    class St:
+        def __init__(self, lines):
+            self.lines, self.marked = lines, None
+
+        def inbox_new(self):
+            return [{"id": 7, "file": "manual-x.jsonl", "lines": self.lines}]
+
+        def add_quotes(self, good, f):
+            self.good = good
+            return type("R", (), {"added": len(good), "duplicates": 0})()
+
+        def inbox_mark(self, entry_id, status, reason, rejected):
+            self.marked = (status, reason, rejected)
+            return "inbox row 7"
+
+    def test_the_bad_row_is_rejected_and_its_copy_holds_no_nul(self):
+        row = {"source": "momondo-manual", "notes": "a" + chr(0) + "b"}
+        st = self.St([(1, row, None)])
+        code = run(tripdb.cmd_ingest_inbox, None, st)
+        self.assertEqual(code, 1)
+        status, reason, rejected = st.marked
+        self.assertEqual(status, "rejected")
+        self.assertEqual(rejected[0]["line"], 1)
+        self.assertFalse(S.has_nul(rejected[0]["row"]))
+        json.dumps(rejected)
+
+
 if __name__ == "__main__":
     unittest.main()
