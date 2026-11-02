@@ -26,6 +26,8 @@ MCP endpoint: <https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp>
 
 The deployed MCP server passed an authenticated OAuth 2.1 authorization-code flow with PKCE, MCP initialization, and `tools/list`. The server returned 37 tools. The temporary verification client and its access and refresh token records were removed immediately after the check. No trip or research data was read or changed by this check.
 
+Claude Code's user configuration now includes the `latam-trip` MCP server. It completed OAuth authentication, and `claude mcp list` reports it as connected. The 37 tools are available in Claude Code.
+
 ## Final checks
 
 | Check | Result |
@@ -51,3 +53,4 @@ The local ignored `planner/public/data` snapshot was preserved. Vite now disable
 - `c101900 Preserve live Supabase trips for cutover`
 - `ec2c7c6 Drop Supabase test reset at cutover`
 - `754f50e Finish Supabase repository cutover`
+- `15bc733 Document Supabase cutover release`
