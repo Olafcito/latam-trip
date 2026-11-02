@@ -67,3 +67,28 @@ The first worker test invocation used a module import form that failed to locate
 The migration plan names `superpowers:executing-plans` or `superpowers:subagent-driven-development`. The execution skill was installed from `obra/superpowers` into the user Codex skills folder and will be available next turn. The project UI design skills were not applied because this change does not alter the interface. No UI work was done.
 
 The planner is available at `https://d15amu9hjiumbd.cloudfront.net/preview/index.html` for phone browser use. The MCP endpoint is `https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp`. Its OAuth passphrase is held in SSM at `/latam-trip-mcp/signin-passphrase`; an authenticated MCP client call and Simon's client connection remain to be verified. Task 27 and the site bucket root remain untouched. E2E fixtures from the interrupted Claude run were confirmed by name and soft-deleted. No real trip was changed or deleted.
+
+## Continuation on 2 Nov 2026
+
+Simon confirmed that a phone and PC sync when both use the `/preview/index.html` app and the same account. The site root still serves the previous file-based build, and browser-held trips have not been imported. This is a verified preview result, not completion of the cutover.
+
+The migration branch already contains the latest `origin/main` commits at the start of this continuation; `git merge-base --is-ancestor origin/main HEAD` passed, so no merge was needed. The pre-existing untracked `Microsoft/` path remains untouched.
+
+Completed Task 26 preparation by updating the remaining stale instructions in the plugin's `map-data`, `momondo-search`, and flight-crawl map schema docs, then synchronizing `.claude/` with `python -I plugin/scripts/sync_claude_dir.py --root .`. Commit: `6103505 Prepare skills for Supabase cutover`.
+
+Fresh verification on the branch:
+
+| Check | Result |
+|---|---|
+| Planner TypeScript | Passed (`npm.cmd run typecheck`). |
+| Planner tests | 305 passed across 35 files. |
+| Web TypeScript | Passed (`npm.cmd run typecheck`). |
+| Web tests | 218 passed across 16 files. |
+| tripdb Python suite | 146 passed, 29 skipped by default. |
+| Worker suite | 37 passed. |
+| Checklist task suite | 5 passed. |
+| MCP suite | 28 passed. |
+| Userscript suite | 46 passed. |
+| `git diff --check` | Passed. |
+
+Worker and checklist Python tests still emit existing `ResourceWarning` messages about unclosed files. No Supabase cutover, production-root deployment, or merge to `main` occurred during this continuation.
