@@ -46,6 +46,8 @@ Claude Code's user configuration now includes the `latam-trip` MCP server. It co
 
 The local ignored `planner/public/data` snapshot was preserved. Vite now disables `publicDir`, so this old local copy is not used by the app or included in production builds. The `Microsoft/` untracked directory was also preserved.
 
+The plan's quiet-week follow-up is still due around 9 November 2026: confirm that Supabase remained active and review project egress. It is not due on release day.
+
 ## Commit history
 
 - `6103505 Prepare skills for Supabase cutover`
