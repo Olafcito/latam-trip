@@ -1,25 +1,30 @@
 # flight-crawler
 
-A Claude plugin that searches flights like a crawler instead of like a person. An orchestrator expands a route tree (returns, open jaws, multi-city, hub stopovers, alternative origins, neighbouring dates), cheap Sonnet browser workers run batches of about 8 searches on Momondo and Google Flights, and every quote lands in one long table scored on price, hours and conditions.
+A Claude plugin that researches flights, stays, places and experiences for Simon's Latin America trip. Research rows and planned trips are stored in the shared Supabase project.
 
-Built for one real trip (Copenhagen to Latin America, Dec 2026 to Feb 2027) and written so the trip-specific parts live in `data/sources/trip.json` and `briefs/scenarios.md`.
+## Requirements
 
-## What you need
-- Claude with the built-in browser (desktop app pane) or a cloud session linked to a computer with it.
-- Python 3 and Node in the workspace.
+- Claude with a browser tool for flight research, or a cloud session linked to a computer with one.
+- Python 3 and Node.
+- The configured Supabase environment for `tripdb` commands.
 
-## Start a crawl
-1. Make a folder (ROOT) with `data/raw/` (workers' scratch output) and `data/sources/`, copy `templates/trip.example.json` to `ROOT/data/sources/trip.json` and fill it in: home airports, alternative origins, main dates, the hard limit on hours, scoring weights, the region visited last.
-2. Write `ROOT/briefs/scenarios.md`: the 2 to 4 shapes the trip could take.
-3. Ask Claude to run the `flight-crawl-orchestrator` skill. It dispatches `momondo-worker` and `gflights-worker` jobs, then:
-   - each worker adds its rows with `python -I -X utf8 scripts/tripdb.py --root ROOT add-quotes ROOT/data/raw/<agent>.jsonl`, and `python -I -X utf8 scripts/tripdb.py --root ROOT build` builds `data/built/trip.db` and everything else
-   - `python3 -I skills/flight-crawl-orchestrator/scripts/scenarios.py --root ROOT` prints scenario totals and the regional legs still missing.
+## Run a crawl
+
+Ask Claude to use `flight-crawl-orchestrator`. It expands a route tree into browser searches, dispatches the Momondo and Google Flights workers, checks their results and writes accepted rows using `tripdb`. The scheduled worker ingests inbox rows and builds the files read by the app. Nobody runs a local build for normal research.
+
+`tripdb query TABLE` reads rows. `tripdb doc-get NAME` reads documents, and `tripdb file NAME` reads built app files. Use the matching `tripdb` command to save research and `tripdb status` to check the worker. See the Supabase data and table descriptions in `../data/README.md`.
 
 ## Contents
-- `agents/`: worker definitions (Sonnet). Each is the complete brief a worker needs.
-- `scripts/tripdb.py`: the only writer of data (see `data/README.md` in the trip repo), with its tests in `scripts/test_tripdb.py`.
-- `skills/flight-crawl-orchestrator/`: the method, scoring, schema, lessons, ingest and scenario scripts.
-- `skills/momondo-search/`, `skills/gflights-search/`: page crawlers, URL builders, converters.
+
+- `agents/`: browser worker instructions.
+- `scripts/tripdb.py`: validated interface to the shared data store.
+- `skills/flight-crawl-orchestrator/`: search expansion, review, ingest and scenario tools.
+- `skills/momondo-search/`, `skills/gflights-search/`: page crawlers, URL builders and converters.
+
+## Worker deployment
+
+Changes to `tripdb.py` or the data pipeline reach the scheduled worker only through `bash infra/deploy.sh --enable-schedules`. The worker has daily build and backup schedules. Do not run live tests that call `test_reset()` against the cutover project.
 
 ## Safety
-Workers only search and read. They never book, pay, enter personal data, accept consent banners, or create scheduled tasks.
+
+Workers search and read. They never book, pay, enter personal data, accept consent banners or create scheduled tasks.

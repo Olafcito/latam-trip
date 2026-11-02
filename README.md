@@ -1,44 +1,35 @@
 # latam-trip
 
-Simon's Latin America trip (Dec 2026 to Feb 2027): a crawled flight and ground-transport dataset, the crawler plugin that produces it, and the brief for an interactive map + scenario builder.
+Simon's Latin America trip planner and research tools. The planner works on desktop and mobile browsers, and Supabase is the shared source of truth for trips and researched data.
 
-- `data/`: `sources/` (quotes, places, connections, profiles, experiences, stays and the hand-edited documents such as `trip.json` and `bag_rules.json`), `built/` (`trip.db` with every table, `map.json` and the other derived files) and `web/` (what the apps read). `data/README.md` describes every table.
-- `plugin/`: the flight-crawler Claude plugin (agents, skills, scripts), with `plugin/scripts/tripdb.py`, the one tool that writes data.
+## Apps
 
-Refresh derived data: `python -I -X utf8 plugin/scripts/tripdb.py --root . build`
+- `planner/` is the trip planner. Sign in with the configured account to save trips and keep them in sync across devices.
+- `web/` is the route map and flight options view.
+- `plugin/` contains the Claude research skills, workers and `tripdb` commands.
 
-## Route map
+The planner reads its built map and pricing data from the Supabase `web` storage bucket through the worker's hash-aware cache. Trips are read and written in Supabase directly. The worker rebuilds derived files after database changes and runs scheduled builds and backups.
 
-The map tab lives in `web/` (React, Vite and MapLibre on OpenFreeMap tiles). The design is in `docs/route-map/MAP_DESIGN_HANDOFF.md`, and `docs/route-map/route-map-prototype.dc.html` is the clickable prototype it was built from.
+## Local development
 
-The app reads three files in `data/web/`. Rebuild them after any change to the network or the quotes:
+Configure `VITE_SUPABASE_URL`, `VITE_SUPABASE_KEY` and `VITE_DATA_BASE` in the local environment before starting an app. These values are also configured as GitHub Actions repository variables for deployment. Never commit secret keys or `.env` files.
 
-    python -I -X utf8 plugin/scripts/tripdb.py --root . build
+```bash
+cd planner
+npm ci
+npm run dev
+```
 
-For crawled flights the exporter also reads `data/built/trip.db` and keeps the cheapest fare per departure date and direction, with the real departure time. A search for one date returns flights on the days around it, so these dates can differ from the date that was searched. Flights that were only researched have no dates. Regional return quotes are listed one by one with both legs.
+The repo keeps only `data/README.md`. Live tables and documents are stored in Supabase and inspected with `tripdb query`, `tripdb doc-get`, `tripdb file` and `tripdb status`.
 
-The map shows only quotes the crawler accepted (`ok = 1`). Ad offers, incomplete results and trips over 30 hours stay in the DB but off the map. If an accepted regional quote has no flight edge in `data/built/map.json`, the exporter prints a warning, so anything missing on the map is missing from the data.
+## Checks
 
-Add `--fetch-elevation` to `tripdb build` to look up altitudes for new places. The result is cached in `data/sources/elevation.json`.
+```bash
+cd planner && npm run typecheck && npm test
+cd web && npm run typecheck && npm test
+python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_*.py"
+```
 
-### Options pane
+## Deploy
 
-The Options button in the top bar opens a third pane beside the map with the flight option tables: whole trips, long-haul tickets, regional flights and a note on how the ratings work. Clicking a whole trip or a long-haul ticket rings its arrival and home airports on the map. The pane reads three more files in `data/web/`, `dash_trips.json`, `dash_journeys.json` and `dash_flights.json`, and shows them as they are. Nothing is recomputed in the browser. If one file is missing, that tab says so and the others keep working. The same build makes them:
-
-    python -I -X utf8 plugin/scripts/tripdb.py --root . build
-
-Run the app locally:
-
-    cd web
-    npm install
-    npm run dev
-
-The dev server reads `data/web/` straight from the repo, so a rerun of `tripdb build` shows up on reload. A production build reads its data from `VITE_DATA_BASE`, for example `https://raw.githubusercontent.com/Olafcito/latam-trip/main/data`. Checks are `npm run typecheck` and `npm test`.
-
-Known data gaps the map shows as they are:
-
-- Ground routes have no middle stops yet, so bus lines are drawn straight.
-- `airport_transfer_min` is empty everywhere.
-- Puno, Cusco and Lima have no tagline or summary, so their panel is thin and they get no "More about" page.
-- Some flights have neither a nonstop flag nor vias, which shows as "No stop data" and Routing "?".
-- Connections to Mexico City are left out, because it is only a layover airport on the map and has no panel.
+Site builds run from `.github/workflows/site.yml` when `main` changes. They use the three `VITE_*` repository variables and publish the planner build to the site bucket. Worker code and schedules are deployed with `bash infra/deploy.sh --enable-schedules`. Changes to `tripdb.py` or the build pipeline reach the worker only through that deployment script.

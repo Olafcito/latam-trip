@@ -18,7 +18,7 @@ How to fill it (keep it small: it is a hover card):
 - hostels: the 2 to 3 most popular hostels (Hostelworld rankings, backpacker guides 2024 to 2026) with dorm and private price per night in DKK (USD x 6.45, EUR x 7.46), source and year.
 Never guess a number: null.
 
-When all records are written, add them: `python -I -X utf8 ROOT/plugin/scripts/tripdb.py --root ROOT add-profile ROOT/data/raw/<agent>.jsonl --origin <agent>`. A place that has a profile already is skipped unless you add `--replace`, which is only for a deliberate refresh. Never write to data/sources yourself.
+When all records are written, add them to Supabase: `python -I -X utf8 ROOT/plugin/scripts/tripdb.py --root ROOT add-profile ROOT/data/raw/<agent>.jsonl --origin <agent>`. A place that has a profile already is skipped unless you add `--replace`, which is only for a deliberate refresh. Never write directly to Supabase.
 
 Final reply (strict):
 ```

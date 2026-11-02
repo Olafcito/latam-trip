@@ -1,14 +1,9 @@
-import { existsSync, readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { InOut } from '../data/types'
 import type { Totals } from './journey'
-import { parseTripsFile, rowToJourney, withTripWays, type TripRow } from './repoTrips'
+import { rowToJourney, withTripWays, type TripRow } from './repoTrips'
 import { journeyToRow, tripRowErrors } from './tripRow'
 
-const file = resolve(import.meta.dirname, '../../../data/web/trips.json')
-const has = existsSync(file)
-const rows: TripRow[] = has ? parseTripsFile(JSON.parse(readFileSync(file, 'utf8'))) : []
 const bare = { generated_at: '', currency: 'DKK', home: ['CPH'], airports: {}, tickets: {}, ways: {}, options: [] } as unknown as InOut
 const zero: Totals = {
   tickets_dkk: 1, regional_flights_dkk: 2, cabin_bag_dkk: null, checked_bag_dkk: null, hub_nights: 0, hub_stay_dkk: 0,
@@ -21,7 +16,25 @@ const content = (r: TripRow) => {
   return JSON.parse(JSON.stringify(rest))
 }
 
-describe.runIf(has)('the stored trips', () => {
+const way = (from: string, to: string): TripRow['way_in'] => ({
+  from, to, depart: '2026-12-02T09:55', arrive: '2026-12-02T22:10', price_dkk: 3900,
+  tickets: ['TQ:abc'], airports: [from, to],
+  timeline: [{ kind: 'flight', from, to, depart: '2026-12-02T09:55', arrive: '2026-12-02T22:10' }] as unknown as TripRow['way_in']['timeline'],
+})
+const sample: TripRow = {
+  id: 'test-trip', version: 1, name: 'Test trip', saved_at: '2026-10-29T10:00:00Z', by: 'plan-trip',
+  why: 'synthetic fixture', rank: 1, option_id: 'GUA-BOG-ticket',
+  way_in: way('CPH', 'GUA'), way_home: way('BOG', 'CPH'),
+  tickets: { 'TQ:abc': { id: 'TQ:abc', price_dkk: 7850, observed_at: '2026-10-28T17:18:27Z' } },
+  places: [
+    { node: 'GUA', hop: null, why: 'the way in lands here' },
+    { node: 'BOG', hop: { from: 'GUA', to: 'BOG', mode: 'flight', operator: null, hours: 3, price_dkk: 1200,
+      overnight: false, border: true, flight: null, observed_at: '2026-10-28T16:55:00Z', date: '2026-12-05' } },
+  ],
+}
+const rows = [sample]
+
+describe('stored trips', () => {
   const io = withTripWays(bare, rows)
 
   it('opening and saving every stored trip makes the same content', () => {

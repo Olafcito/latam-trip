@@ -1,6 +1,6 @@
 # Save Momondo prices from your own browser
 
-The Momondo save script adds two buttons to a Momondo flight search and a Pick button to each result. One press stores the prices you are looking at in this repo, the same way the browser workers store theirs. The app then shows them next to the crawled prices, marked as saved by you.
+The Momondo save script adds two buttons to a Momondo flight search and a Pick button to each result. One press stores the prices you are looking at in the shared Supabase project, alongside the browser workers' prices. The app then shows them next to the crawled prices, marked as saved by you.
 
 The script never books, signs in or pays anywhere. It only reads the page and writes to this repo.
 
@@ -52,7 +52,7 @@ Route and dates come from the address of the search page, so the saved prices al
 
 ## 6. What the status line means
 
-**Saved 14 prices** or **Saved trip "name"**: the rows are in the inbox table of the database, and the next tripdb build ingests them.
+**Saved 14 prices** or **Saved trip "name"**: the rows are in the Supabase inbox. The scheduled worker ingests them during its next build.
 
 **Not saved: Supabase is not set up in the Tampermonkey menu**: the settings are missing. The rows are on the clipboard, so nothing was lost. Set the project and the token as in section 4, then press the button again.
 
@@ -72,9 +72,9 @@ Route and dates come from the address of the search page, so the saved prices al
 
 ## 7. How the prices reach the app
 
-Each save adds one row to the inbox table, named like manual-20261029T143012Z.jsonl, holding the prices of that save. Each price is in the same format the browser workers use, with source momondo-manual, the time of the save in UTC and, for a trip, its name.
+Each save adds one row to the Supabase inbox, named like manual-20261029T143012Z.jsonl, holding the prices of that save. Each price is in the same format the browser workers use, with source momondo-manual, the time of the save in UTC and, for a trip, its name.
 
-The next tripdb build reads the new inbox rows and adds the prices to the price data. The app shows them with the label saved by you. A fix_parser task is a row in the tasks table, which Claude lists with tasks.py.
+The scheduled worker reads new inbox rows and adds the prices to the shared quote table. The app shows them with the label saved by you. A fix_parser task is a row in the tasks table, which Claude lists with tasks.py.
 
 ## For developers
 

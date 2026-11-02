@@ -1,33 +1,17 @@
 import { defineConfig } from 'vitest/config'
-import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { createReadStream, existsSync, statSync } from 'node:fs'
-import { normalize, resolve } from 'node:path'
+import { resolve } from 'node:path'
 
 // The Map tab is the route map from ../web, imported as @map. In dev it reads ../data/web
 // straight from the repo, like the web app does.
 const WEB_SRC = resolve(import.meta.dirname, '../web/src')
-const DATA_DIR = resolve(import.meta.dirname, '../data')
-
-function serveRepoData(): Plugin {
-  return {
-    name: 'serve-repo-data',
-    configureServer(server) {
-      server.middlewares.use('/data', (req, res, next) => {
-        const path = normalize(resolve(DATA_DIR, '.' + decodeURIComponent((req.url ?? '/').split('?')[0])))
-        if (!path.startsWith(DATA_DIR) || !existsSync(path) || !statSync(path).isFile()) return next()
-        res.setHeader('Content-Type', path.endsWith('.json') ? 'application/json' : 'application/octet-stream')
-        res.setHeader('Cache-Control', 'no-store')
-        createReadStream(path).pipe(res)
-      })
-    },
-  }
-}
 
 // base './' so the build works from any GitHub Pages sub path.
 export default defineConfig({
   base: './',
-  plugins: [react(), ...(process.env.VITE_DATA_BASE ? [] : [serveRepoData()])],
+  // The old ignored offline snapshot may exist in a developer checkout. Never ship public files.
+  publicDir: false,
+  plugins: [react()],
   // one React and one maplibre for both apps' code
   resolve: { alias: { '@map': WEB_SRC }, dedupe: ['react', 'react-dom', 'maplibre-gl'] },
   server: {

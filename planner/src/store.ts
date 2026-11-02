@@ -129,7 +129,7 @@ interface State {
   saveJourney: (name: string) => Promise<void>
   deleteSaved: (id: string) => void
   importJourneys: (list: unknown) => number
-  /** the trips table of the repo (data/web/trips.json), latest version of each */
+  /** Latest version of each shared trip row. */
   repo: Journey[]
   /** table trips deleted in this browser: id to the version deleted */
   hidden: Record<string, number>

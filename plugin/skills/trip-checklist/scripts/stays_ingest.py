@@ -1,4 +1,4 @@
-"""Kept for old instructions: hands stay-price-worker rows to tripdb add-stays, which writes data/sources/stays.jsonl.
+"""Hands stay-price-worker rows to tripdb add-stays, which writes to the configured shared store.
 
 Usage: python -I -X utf8 plugin/skills/trip-checklist/scripts/stays_ingest.py FILE [--root DIR] [--usd 6.45] [--eur 7.46]
 Prefer: python -I -X utf8 plugin/scripts/tripdb.py --root . add-stays FILE [--usd 6.45] [--eur 7.46]

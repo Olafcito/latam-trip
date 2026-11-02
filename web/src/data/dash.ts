@@ -1,6 +1,6 @@
 /**
  * The flight option tables: whole trips, long-haul tickets and regional one-ways, as written by
- * src/dashboard_data.py into data/web/dash_*.json. Prices, ratings and times come ready made and
+ * src/dashboard_data.py into the worker's built files. Prices, ratings and times come ready made and
  * are never recomputed here. Everything below is a pure function over those rows.
  */
 

@@ -32,7 +32,6 @@ const TABS: { id: OptionsTab; label: string }[] = [
   { id: 'method', label: 'How ratings work' },
 ]
 
-const REBUILD = 'python3 src/dashboard_data.py --root .'
 
 interface Props {
   dash: DashData | null
@@ -45,7 +44,7 @@ interface Props {
 function Missing({ what, file }: { what: string; file: string }) {
   return (
     <p className="opt-missing">
-      The {what} file (data/web/{file}.json) is missing. Rebuild it with <code>{REBUILD}</code>
+      The {what} data ({file}) is not available yet. It will appear after the next successful data build.
     </p>
   )
 }

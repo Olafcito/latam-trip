@@ -31,7 +31,7 @@ Edge (one per direction only if they differ; otherwise "both":true):
 2. For each node, find its connections; write edges as you go (so partial work survives).
 3. Cross-border edges between the countries of your region, and into the neighbouring regions named by the orchestrator.
 4. Stop at about 25 nodes and 60 edges, or when every node has its main connections.
-5. Add your file to the data: `python -I -X utf8 ROOT/plugin/scripts/tripdb.py --root ROOT add-place ROOT/data/raw/<agent>.jsonl --origin <agent>`, then the same with `add-connection`. Each command takes its own kind of row, checks it and skips what is stored already. Fix and rerun any line it refuses. Never write to data/sources yourself.
+5. Add your file to Supabase: `python -I -X utf8 ROOT/plugin/scripts/tripdb.py --root ROOT add-place ROOT/data/raw/<agent>.jsonl --origin <agent>`, then the same with `add-connection`. Each command takes its own kind of row, checks it and skips what is stored already. Fix and rerun any line it refuses. Never write directly to Supabase.
 
 ## Final reply (strict, nothing else)
 ```

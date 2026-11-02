@@ -96,6 +96,7 @@ def parsed(table, rec):
     return {k: (C.parse_ts(v) if k in C.COLS[table].stamps and v is not None else v) for k, v in rec.items()}
 
 
+@unittest.skipUnless(os.path.isdir(SRC), "source files are removed after the Supabase cutover")
 class FilesTest(unittest.TestCase):
     def test_foreign_keys_hold_on_real_data(self):
         places = {p["id"] for p in C.fold_places(read(os.path.join(SRC, "places.jsonl")))}

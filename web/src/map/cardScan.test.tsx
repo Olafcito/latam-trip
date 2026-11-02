@@ -1,5 +1,5 @@
-// Every row of the real data through the real card, in plain text, so a stray null or a missing value shows here
-// and not in front of the user. It reads the repo's data/web, as dev does.
+// Every row of the locally available data through the real card, when a developer has a test corpus.
+import { existsSync } from 'node:fs'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -11,15 +11,17 @@ import type { MapData } from '../data/types'
 import { CardWindow } from './CardWindow'
 import type { CardRef, MapModeApi } from './useMapMode'
 
-const read = <T,>(name: string): T => JSON.parse(readFileSync(resolve(import.meta.dirname, `../../../data/web/${name}.json`), 'utf8'))
+const DATA_DIR = resolve(import.meta.dirname, '../../../data/web')
+const hasCorpus = existsSync(resolve(DATA_DIR, 'places.json'))
+const read = <T,>(name: string): T => JSON.parse(readFileSync(resolve(DATA_DIR, `${name}.json`), 'utf8'))
 
 const data: MapData = {
-  places: read('places'),
-  connections: read('connections'),
-  countries: read('countries'),
-  experiences: read('experiences'),
-  categories: read('experience_categories'),
-  lists: read<{ lists: MapData['lists'] }>('lists').lists,
+  places: hasCorpus ? read('places') : [],
+  connections: hasCorpus ? read('connections') : [],
+  countries: hasCorpus ? read('countries') : [],
+  experiences: hasCorpus ? read('experiences') : [],
+  categories: hasCorpus ? read('experience_categories') : [],
+  lists: hasCorpus ? read<{ lists: MapData['lists'] }>('lists').lists : [],
 }
 const model = buildModel(data)
 const gyms = gymWorld(data.experiences, data.places)
@@ -42,7 +44,7 @@ const cards: CardRef[] = [
   ...exps.all.map((e): CardRef => ({ kind: 'experience', id: e.id })),
 ]
 
-describe('every card in the data', () => {
+describe.skipIf(!hasCorpus)('every card in the data', () => {
   it('covers every row', () => {
     const plain = (data.experiences ?? []).filter((r) => !r.tags?.includes('gym') && !r.tags?.includes('city-scorecard'))
     expect(gyms.gyms.length).toBeGreaterThan(100)

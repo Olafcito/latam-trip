@@ -43,7 +43,7 @@ export interface Journey {
   optionId: string | null
   places: Place[]
   savedAt?: string
-  /** a ranked trip from the trips table (data/web/trips.json) */
+  /** A ranked trip from the shared trips table. */
   rank?: number
   /** the version of the table trip this journey is, or was edited from */
   version?: number

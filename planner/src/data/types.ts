@@ -253,7 +253,7 @@ export interface AppData {
   map: MapData
   bags: BagRule[]
   trip: TripParams
-  source: 'github' | 'local' | 'project'
+  source: 'project'
   /** null when meta.json could not be read */
   meta: Meta | null
 }

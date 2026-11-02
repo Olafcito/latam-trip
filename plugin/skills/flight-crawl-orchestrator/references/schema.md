@@ -1,4 +1,4 @@
-# Quote schema (one JSON object per line in data/raw/<agent>.jsonl, added to data/sources/quotes/ with `tripdb add-quotes`, which refuses rows that do not fit)
+# Quote schema (one JSON object per line in ignored `data/raw/<agent>.jsonl`, added to Supabase with `tripdb add-quotes`, which refuses rows that do not fit)
 
 ```
 {

@@ -1,5 +1,3 @@
-import { existsSync, readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { InOut } from '../data/types'
 import type { Journey } from './journey'
@@ -141,26 +139,9 @@ describe('deep link /?trip=<id>', () => {
     expect(resolveDeepLink('', trips)).toBeNull()
     expect(resolveDeepLink('?tab=map', trips)).toBeNull()
   })
-
   it('sets and removes the parameter and keeps the rest of the address', () => {
     expect(urlWithTrip('http://localhost:5181/?tab=map#top', 'a')).toBe('/?tab=map&trip=a#top')
     expect(urlWithTrip('http://localhost:5181/?trip=a&tab=map', null)).toBe('/?tab=map')
     expect(urlWithTrip('http://localhost:5181/?trip=a', null)).toBe('/')
-  })
-})
-
-describe('the real trips.json', () => {
-  const file = resolve(__dirname, '../../../data/web/trips.json')
-  it.runIf(existsSync(file))('parses every trip and links each one', () => {
-    const raw = JSON.parse(readFileSync(file, 'utf8'))
-    const rows = parseTripsFile(raw)
-    expect(rows.length).toBe(raw.trips.length)
-    const io = withTripWays(inout, rows)
-    for (const r of rows) {
-      const j = rowToJourney(r)
-      expect(io.ways[j.wayIn]).toBeTruthy()
-      expect(io.ways[j.wayHome]).toBeTruthy()
-      expect(resolveDeepLink(`?trip=${r.id}`, rows.map(rowToJourney))).toMatchObject({ kind: 'open' })
-    }
   })
 })

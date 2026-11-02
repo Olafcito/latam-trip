@@ -298,6 +298,7 @@ class FakeStorageRest:
         return self.tables.get(table, [])
 
 
+@unittest.skipUnless(os.path.isdir(os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")), "data", "sources")), "the live source corpus is no longer kept in the repo")
 class ReadBuiltTest(unittest.TestCase):
     """file, run and status work on what the worker uploaded. A real build of the committed sources stands in for it."""
     REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))

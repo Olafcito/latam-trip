@@ -82,28 +82,39 @@ describe('freshness', () => {
 })
 
 describe('loadData and meta.json', () => {
-  afterEach(() => vi.unstubAllGlobals())
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.unstubAllEnvs()
+  })
 
-  const serve = (missing: string[]) =>
-    vi.fn(async (url: string) => {
-      const path = String(url)
-      if (missing.some((m) => path.endsWith(m))) return new Response('not found', { status: 404 })
-      const body = path.endsWith('meta.json') ? meta({ flights: '2026-10-28' }) : path.endsWith('bag_rules.json') ? [] : {}
-      return new Response(JSON.stringify(body), { status: 200 })
+  const BASE = 'https://bucket.test/storage/v1/object/public/web/'
+  const build = {
+    ...meta({ flights: '2026-10-28' }),
+    files: { 'inout.json': 'in', 'map.json': 'map', 'bag_rules.json': 'bags', 'trip.json': 'trip' },
+  }
+
+  it('reads the built files from the Supabase bucket cache', async () => {
+    vi.stubEnv('VITE_DATA_BASE', BASE)
+    const documents: Record<string, unknown> = {
+      [BASE + 'data/web/meta.json']: build,
+      [BASE + 'by-hash/in-inout.json']: { generated_at: '2026-10-29T10:25Z' },
+      [BASE + 'by-hash/map-map.json']: { nodes: [], edges: [] },
+      [BASE + 'by-hash/bags-bag_rules.json']: [],
+      [BASE + 'by-hash/trip-trip.json']: {},
+    }
+    const fetch = vi.fn(async (url: string) => {
+      const body = documents[url]
+      return body === undefined ? new Response('', { status: 404 }) : new Response(JSON.stringify(body), { status: 200 })
     })
-
-  it('reads meta.json from data/web', async () => {
-    const fetch = serve([])
     vi.stubGlobal('fetch', fetch)
     const d = await loadData()
-    expect(d.meta).toEqual(meta({ flights: '2026-10-28' }))
+    expect(d.meta).toMatchObject(meta({ flights: '2026-10-28' }))
+    expect(d.source).toBe('project')
     expect(fetch.mock.calls.some(([u]) => String(u).endsWith('data/web/meta.json'))).toBe(true)
   })
 
-  it('a missing meta.json gives meta null and the load still succeeds', async () => {
-    vi.stubGlobal('fetch', serve(['meta.json']))
-    const d = await loadData()
-    expect(d.meta).toBeNull()
-    expect(d.source).toBe('github')
+  it('refuses to load without the Supabase data base instead of using an old local copy', async () => {
+    vi.stubEnv('VITE_DATA_BASE', '')
+    await expect(loadData()).rejects.toThrow('Supabase data is not configured')
   })
 })

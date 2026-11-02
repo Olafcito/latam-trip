@@ -1,6 +1,6 @@
 ---
 name: trip-checklist
-description: Work through the trip app's checklist, the open rows of the tasks table (flight prices and self-built itineraries, hostel and hotel prices, experience and place research, saved-list changes, refresh of stale prices), with the flight-crawler plugin's Sonnet workers, then write results back into the repo data and mark each task done. Use when Simon says "check the checklist", or pastes a single task JSON from the app.
+description: Work through the trip app's checklist, the open rows of the tasks table (flight prices and self-built itineraries, hostel and hotel prices, experience and place research, saved-list changes, refresh of stale prices), with the flight-crawler plugin's Sonnet workers, then write results back to Supabase and mark each task done. Use when Simon says "check the checklist", or pastes a single task JSON from the app.
 ---
 
 # Trip checklist

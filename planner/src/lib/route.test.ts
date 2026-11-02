@@ -33,7 +33,7 @@ const map: MapData = {
   ],
   edges: [],
 }
-const data: AppData = { inout, map, bags: [], trip: {}, source: 'local', meta: null }
+const data: AppData = { inout, map, bags: [], trip: {}, source: 'project', meta: null }
 
 const hop = (from: string, to: string, over: Partial<Hop> = {}): Hop => ({
   from, to, mode: 'bus', operator: null, hours: null, price_dkk: null, overnight: false, border: false, flight: null, ...over,

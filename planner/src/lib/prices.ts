@@ -1,6 +1,6 @@
 import type { MapData } from '../data/types'
 
-// Prices by date for the regional flight pairs, from data/web/pair_dates.json (tripdb build).
+// Prices by date for regional flight pairs, from the worker-built Supabase bucket file.
 // The keys are short to keep the file small. data/README.md lists them.
 
 /** One known price on one day. Times are local clock times. */

@@ -1,7 +1,7 @@
 import type { InOut, Ticket, Way } from '../data/types'
 import { journeyIsValid, type Hop, type Journey, type Place } from './journey'
 
-// The trips table of the repo (data/web/trips.json, written by tripdb save-trip) as planner journeys.
+// The Supabase trips table (written by tripdb save-trip) as planner journeys.
 // A trip brings its own way in and way home. They are kept under the trip's own ids, since way ids in
 // inout.json change with every build and the trip's copy of its ways does not.
 
@@ -25,7 +25,7 @@ export interface RowPlace {
   stay?: Record<string, unknown> | null
 }
 
-/** One trip of trips.json: the latest version of a row of data/sources/trips.jsonl. */
+/** One latest trip row as returned from the Supabase trips table. */
 export interface TripRow {
   id: string
   version: number

@@ -38,6 +38,7 @@ def norm(table, rec):
     return rec
 
 
+@unittest.skipUnless(os.path.isdir(SRC), "source files are removed after the Supabase cutover")
 class ColsTest(unittest.TestCase):
     def test_round_trip_each_table(self):
         for table, name in FILES.items():

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('@map/data/remoteFiles', () => ({ dataBase: () => 'https://x/' }))
 const getFile = vi.fn(async () => ({ pairs: {} }))
 vi.mock('../lib/remoteFiles', () => ({ getFile: (...a: unknown[]) => (getFile as (...a: unknown[]) => unknown)(...a) }))
-vi.mock('./load', () => ({ LOCAL_BASE: './', REMOTE_BASE: 'r/' }))
+vi.mock('./load', () => ({}))
 vi.mock('react', () => ({ useEffect: () => {}, useState: () => [null, () => {}], useSyncExternalStore: () => 0 }))
 
 import { clearPairDates, loadPairDates } from './pairDates'

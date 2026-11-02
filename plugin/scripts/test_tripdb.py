@@ -581,6 +581,7 @@ class WayIdTest(PinFile):
         self.tmp = tempfile.mkdtemp(prefix="tripdb-ways-")
         self.addCleanup(shutil.rmtree, self.tmp, True)
 
+    @unittest.skipUnless(os.path.isdir(os.path.join(REPO, "data", "sources")), "the live source corpus is no longer kept in the repo")
     def test_way_ids_stable_across_builds(self):
         a = self.build_in(os.path.join(self.tmp, "a"))
         b = self.build_in(os.path.join(self.tmp, "b"))
@@ -588,6 +589,7 @@ class WayIdTest(PinFile):
         self.assertEqual(set(a["ways"]), set(b["ways"]))
         self.assertTrue(all(re.fullmatch(r"[IH][0-9a-f]{10}", i) for i in a["ways"]))
 
+    @unittest.skipUnless(os.path.isdir(os.path.join(REPO, "data", "sources")), "the live source corpus is no longer kept in the repo")
     def test_way_ids_stable_with_one_new_quote(self):
         root = os.path.join(self.tmp, "r")
         before = self.build_in(root)
@@ -628,6 +630,7 @@ class WayIdTest(PinFile):
 
 
 class QuoteRulesTest(unittest.TestCase):
+    @unittest.skipUnless(os.path.isdir(os.path.join(REPO, "data", "sources")), "the live source corpus is no longer kept in the repo")
     def test_rules_match_ingest(self):
         import sqlite3
         import quote_rules

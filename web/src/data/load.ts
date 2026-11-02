@@ -2,16 +2,13 @@ import type { DashFlight, DashJourney, DashTrip } from './dash'
 import { files } from './remoteFiles'
 import type { MapData } from './types'
 
-// Dev: the Vite middleware serves the repo's data/ folder at /data.
-// Build: set VITE_DATA_BASE to the bucket URL and the files come through the cache of remoteFiles.ts.
-const BASE = '/data'
+// All app data comes from the configured Supabase bucket cache.
+const BASE = 'supabase'
 
 async function getJson<T>(name: string, base: string): Promise<T> {
   const shared = base === BASE ? files() : null
   if (shared) return shared.getFile<T>(`${name}.json`)
-  const res = await fetch(`${base}/web/${name}.json`)
-  if (!res.ok) throw new Error(`${name}.json: HTTP ${res.status}`)
-  return res.json() as Promise<T>
+  throw new Error('Supabase data is not configured. Set VITE_DATA_BASE before starting the app.')
 }
 
 export async function loadMapData(base = BASE): Promise<MapData> {
