@@ -1,6 +1,6 @@
 # Map data schema (nodes, edges, place profiles)
 
-The interactive map reads these record kinds from the tables in `data/sources/` (`places.jsonl` for nodes, `connections.jsonl` for edges, `profiles.jsonl` for profiles, `place_images.jsonl` for photos), built into `data/built/map.json` by `tripdb build`. Workers add rows with `tripdb add-place`, `add-connection`, `add-profile` and `add-image`, which check them against this schema and record the worker file in `origin`.
+The interactive map reads these record kinds from Supabase (`places` for nodes, `connections` for edges, `profiles` for profiles, `place_images` for photos). The worker rebuilds and publishes the map after a write. Workers add rows with `tripdb add-place`, `add-connection`, `add-profile` and `add-image`, which check them against this schema and record the worker file in `origin`.
 
 ## node (written by network-researcher)
 `{"kind":"node","id","name","country","lat","lon","type","iata","popularity","why","source"}`
