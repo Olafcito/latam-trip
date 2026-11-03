@@ -153,6 +153,18 @@ def airport_flights(db):
     return rows
 
 
+def public_task_log(rows):
+    """The task log as the public web data holds it. A booking task keeps only its type and leg, never its text, which
+    can carry a reference, a price or names. tasks.py and tripdb log-task already drop it, this is the second guard."""
+    out = []
+    for r in rows:
+        t = r.get("task")
+        if r.get("type") == "booking" or (isinstance(t, dict) and t.get("type") == "booking"):
+            r = {**r, "task": {k: t[k] for k in ("type", "leg") if k in t} if isinstance(t, dict) else None}
+        out.append(r)
+    return out
+
+
 def quote_rows(db):
     """The quotes table without the raw column, every value as text the way the old quotes.csv held it."""
     if not os.path.exists(db):
@@ -217,7 +229,7 @@ def build():
     for r in load_jsonl("stays.jsonl"):
         if r.get("kind") == "stay_quote":
             stays.setdefault(r["place"], []).append({k: v for k, v in r.items() if k not in ("kind", "place")})
-    task_log = load_jsonl("task_log.jsonl")
+    task_log = public_task_log(load_jsonl("task_log.jsonl"))
 
     places = []
     for n in nodes.values():

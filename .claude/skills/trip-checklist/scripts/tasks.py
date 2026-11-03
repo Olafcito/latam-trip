@@ -15,9 +15,12 @@ sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "scripts"))
 import tripdb_store  # noqa: E402
 
 TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh",
-         "fix_parser", "import_quotes"}
+         "fix_parser", "import_quotes", "booking"}
 # The fields a task of a type must carry. A stay_prices task prices rooms of a lodging that exists, so it names them.
-NEEDS = {"stay_prices": ("lodging_id", "room_ids", "check_in", "check_out")}
+NEEDS = {"stay_prices": ("lodging_id", "room_ids", "check_in", "check_out"), "booking": ("leg",)}
+# The task log is public, in trip.db and the web data. A booking task's text says where the confirmation is and can
+# carry a reference, a price or names, so only these fields of it are logged.
+LOGGED = {"booking": ("type", "leg")}
 
 
 def rest_of(root):
@@ -33,6 +36,12 @@ def task_of(row):
     if t.get("type") not in TYPES:
         raise ValueError(f"unknown task type {t.get('type')}")
     return t
+
+
+def logged(t):
+    """The task JSON as the task log keeps it. A booking task keeps only its type and leg."""
+    keep = LOGGED.get(t.get("type"))
+    return {k: t[k] for k in keep if k in t} if keep else t
 
 
 def missing(t):
@@ -88,7 +97,7 @@ def cmd_done(rest, n, summary_file, outputs, root):
     if t:
         fd, tmp = tempfile.mkstemp(prefix=f"task-{n}-", suffix=".json")
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(t, f, ensure_ascii=False)
+            json.dump(logged(t), f, ensure_ascii=False)
         args += ["--type", t["type"], "--task", tmp]
     try:
         run_tripdb(root, args)

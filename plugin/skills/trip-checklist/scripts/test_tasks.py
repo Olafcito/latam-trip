@@ -93,6 +93,30 @@ class TasksTest(unittest.TestCase):
             self.assertEqual(rest.rows[0]["status"], "done")
             self.assertEqual(calls[0][calls[0].index("--type") + 1], kind)
 
+    def test_a_booking_task_is_listed_and_closed_with_only_its_type_and_leg_logged(self):
+        leg = {"kind": "flight", "from": "ADZ", "to": "SMR", "day": "2026-12-08"}
+        task = {"type": "booking", "leg": leg, "text": "confirmation in Gmail, ref TEST01, booked for two at 1234 kr",
+                "note": "TEST01", "reference": "TEST01", "price_dkk": 1234, "from": "app"}
+        rest = FakeRest([{"id": 40000, "type": "booking", "status": "open", "title": "b", "data": task}])
+        self.assertIn("#40000	booking	open	b", out(tasks.cmd_list, rest))
+        self.assertEqual(json.loads(out(tasks.cmd_show, rest, "40000"))["leg"], leg)
+        logged = []
+
+        def log(root, args):
+            with open(args[args.index("--task") + 1], encoding="utf-8") as fh:
+                logged.append(json.load(fh))
+
+        tasks.run_tripdb = log
+        with tempfile.TemporaryDirectory() as d:
+            f = os.path.join(d, "s.md")
+            with open(f, "w", encoding="utf-8") as fh:
+                fh.write("# Booked ADZ to SMR" + chr(10))
+            out(tasks.cmd_done, rest, "40000", f, [], d)
+        self.assertEqual(rest.rows[0]["status"], "done")
+        self.assertEqual(logged, [{"type": "booking", "leg": leg}])
+        self.assertNotIn("TEST01", json.dumps(logged))
+        self.assertNotIn("1234", json.dumps(logged))
+
     def test_a_stay_prices_task_names_rooms_of_a_lodging(self):
         good = {"type": "stay_prices", "lodging_id": "L1", "room_ids": ["R1", "R2"], "check_in": "2026-12-10",
                 "check_out": "2026-12-14", "from": "app"}

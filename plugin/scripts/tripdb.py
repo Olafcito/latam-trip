@@ -589,6 +589,10 @@ def cmd_log_task(paths, issue, typ, summary, outputs=(), task_file=None, done_at
     if task_file:
         with open(task_file, encoding="utf-8") as fh:
             task = json.load(fh)
+    # task_log goes into the public trip.db. A booking task's text can carry a reference, a price or names, so only
+    # its type and leg are kept
+    if typ == "booking" or (isinstance(task, dict) and task.get("type") == "booking"):
+        task = {k: task[k] for k in ("type", "leg") if k in task} if isinstance(task, dict) else None
     row = {"issue": issue, "type": typ, "task": task, "done_at": done_at or dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"),
            "summary": (summary or "")[:300], "outputs": list(outputs)}
     errs = row_errors("task_log", row)

@@ -262,6 +262,18 @@ class ContractTest(T.Base):
         rows = self.s.rows("task_log")
         self.assertEqual([(r["issue"], r["summary"], r["outputs"]) for r in rows], [(12, "did it", ["a.json"])])
 
+    def test_log_task_keeps_only_type_and_leg_of_a_booking(self):
+        leg = {"kind": "flight", "from": "ADZ", "to": "SMR", "day": "2026-12-08"}
+        f = os.path.join(self.root, "task.json")
+        with open(f, "w", encoding="utf-8") as fh:
+            json.dump({"type": "booking", "leg": leg, "text": "ref TEST01 in Gmail, 1234 kr", "note": "TEST01",
+                       "reference": "TEST01", "price_dkk": 1234, "from": "app"}, fh)
+        self.run_quiet(tripdb.cmd_log_task, 13, "booking", "Booked ADZ to SMR", [], f, "2026-10-30T10:00+00:00")
+        row = [r for r in self.s.rows("task_log") if r["issue"] == 13][0]
+        self.assertEqual(row["task"], {"type": "booking", "leg": leg})
+        self.assertNotIn("TEST01", json.dumps(row))
+        self.assertNotIn("1234", json.dumps(row))
+
     def test_log_usage(self):
         vals = {"round": "r1", "agent": "a", "model": "m", "tool": "t", "searches": "2", "tokens": "300", "tool_uses": "4",
                 "seconds": "50", "rows": "7"}
