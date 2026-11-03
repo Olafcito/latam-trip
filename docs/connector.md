@@ -1,6 +1,6 @@
 # The latam-trip connector
 
-The connector lets an assistant read and change the trip data in Supabase: trips, flights, connections, stays, experiences, places, tasks and bookings. It is an MCP server on AWS Lambda, and it works in Claude (web, desktop and phone), Claude Code and ChatGPT.
+The connector lets an assistant read and change the trip data in Supabase: trips, flights, connections, stays, experiences, places, tasks, bookings and places to stay. It is an MCP server on AWS Lambda, and it works in Claude (web, desktop and phone), Claude Code and ChatGPT.
 
 Server address:
 
@@ -64,6 +64,7 @@ Every type has five tools: `list_`, `get_`, `add_`, `update_` and `delete_`. Add
 | place | `list_place` `get_place` `add_place` `update_place` `delete_place` | A town, beach or airport on the map. |
 | task | `list_task` `get_task` `add_task` `update_task` `delete_task` | Work for the research agents. |
 | booking | `list_booking` `get_booking` `add_booking` `update_booking` `delete_booking` | A ticket or a bed that is paid for, one row per leg or stay. `list_booking` takes `from`, `to`, `day` and `place`. Delete sets the booking cancelled and keeps the row. |
+| lodging | `list_lodging` `get_lodging` `add_lodging` `update_lodging` `delete_lodging` | A place to stay that Simon asked for, with photos, rating, distances and rooms. `add_lodging` takes rooms under each lodging and prices under each room, and saves a lodging whole or not at all. `get_lodging` gives its rooms with their prices. `list_lodging` takes `place` and leaves out hidden ones unless `where` has `hidden`. `update_lodging` changes the lodging alone. Delete hides it and keeps the row. |
 
 Two more tools change the dates of a trip:
 
@@ -77,7 +78,9 @@ Two tools attach files to a booking. They go in the private `bookings` bucket, a
 - `attach_booking_file` takes a file of up to 4 MB as base64, such as a PDF from a mail.
 - `attach_booking_upload` gives a signed upload URL for a larger file, valid for 2 hours. A file with the same name is replaced. The entry's size is null until the upload is confirmed, so an attachment with size null may not be in the bucket yet.
 
-Bookings, their references, prices and files live only in the owner only table and the private bucket, never in a built file.
+`add_lodging_price` adds prices to rooms that exist, one row per room and date range in DKK. A row for a room that does not exist is refused. It never makes a lodging, so a stay price task only writes prices.
+
+Bookings, their references, prices and files live only in the owner only table and the private bucket, never in a built file. Places to stay, their rooms and prices live only in their owner only tables too.
 
 Each tool describes its fields to the assistant, so asking in plain words works, for example "add the 450 DKK flight from San Jose to Liberia on 12 December".
 

@@ -1,14 +1,16 @@
 """The tools of the latam-trip connector, with no network code of their own.
 
 TYPES is one table of the things Claude may read and write: trips, flights, connections, stays, experiences, places,
-tasks and bookings. List, get, add, update and delete tools are made from it, five per type, and add takes a batch.
+tasks, bookings and lodgings. List, get, add, update and delete tools are made from it, five per type, and add takes a
+batch. add_lodging takes rooms nested under each lodging and prices under each room, add_lodging_price adds prices to
+rooms that exist.
 set_leg_date and shift_leg write the dates of a trip's legs by the rules of planner/src/lib/journey.ts, and never move a
 booked leg. attach_booking_file and attach_booking_upload put a booking's files in the private bookings bucket.
 
 CRUD only. A tool reads what is stored and writes it through the tripdb store, so every write passes the same checks as
 the plugin's own commands. Nothing here searches the web.
 """
-import base64, binascii, copy, datetime as dt, hashlib, json, math, os, re, sys
+import base64, binascii, copy, datetime as dt, hashlib, json, math, os, re, sys, uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.normpath(os.path.join(HERE, "..", "plugin", "scripts"))
@@ -52,6 +54,13 @@ TYPES = {
                       "has status. delete_booking sets the status to cancelled and keeps the row. depart and arrive are local "
                       "clock times. A booked leg holds its day, set_leg_date, shift_leg and update_trip never move it, "
                       "and update_trip never drops it or changes its ends."),
+    "lodging": T("lodging", "lodgings", tripdb.LODGING, auto=("id", "created_at", "updated_at"), keys=("id",),
+                 note="A lodging is a place to stay, kept in the project database only. Add only places Simon asked for, "
+                      "with photos, rating, distances and rooms, and fill in prices for the trip's dates when you know them. "
+                      "Rooms go in rooms under the lodging and each room's prices in its prices, and a lodging is saved whole "
+                      "or not at all. A price is in DKK for the nights from check_in to check_out. list_lodging takes place, "
+                      "and leaves out hidden lodgings unless where has hidden. update_lodging changes the lodging alone, "
+                      "add_lodging_price adds prices to rooms that exist. delete_lodging hides the lodging and keeps it."),
 }
 
 # The private bucket for booking files and the types it takes, as supabase/migrations/0013_bookings.sql sets them.
@@ -62,6 +71,8 @@ MAX_FILE_MB = 4  # a Lambda request takes 6 MB, and base64 adds a third
 BOOKING_WHERE = {"from": "from_code", "to": "to_code", "place": "place_id"}  # the short names list_booking takes
 BOOKING_TIME_RE = re.compile(r"\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$")
 BOOKING_COLUMNS = [k for k in tripdb.BOOKING if k not in ("id", "created_at", "updated_at", "attachments")]
+LODGING_WHERE = {"place": "place_id"}  # the short name list_lodging takes
+ROOM_AUTO = {"id", "lodging_id", "created_at", "updated_at"}  # a room's fields the connector fills in
 
 TASK_FIELDS = {"title": "!str", "type": "str", "status": "enum:open,working,done,failed", "trip_id": "str",
                "trip_version": "int", "result": "str", "data": "dict"}
@@ -190,6 +201,11 @@ def floats(h):
     return bool(h) and not h.get("date") and not h.get("flight")
 
 
+def in_list(values):
+    """A PostgREST in filter for the values, each quoted, so a comma or a bracket in one cannot break the list."""
+    return "in.(" + ",".join('"' + str(v).replace("\\", "\\\\").replace('"', '\\"') + '"' for v in values) + ")"
+
+
 def now_hhmm():
     return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -219,6 +235,7 @@ class Core:
         for t in TYPES.values():
             props, required = self.fields_of(t)
             row = {"type": "object", "properties": props, "required": required}
+            patch_props = {k: v for k, v in props.items() if k != "rooms"}  # an update changes the lodging alone
             label = t.label
             note = (" " + t.note) if t.note else ""
             specs += [
@@ -238,13 +255,15 @@ class Core:
                 {"name": f"update_{t.name}", "description": f"Change fields of one {label}. Give the fields to change in patch. "
                  f"Give restore true instead to undo the last delete or change of that {label}.",
                  "schema": {"type": "object", "properties": {"id": {"type": "string"},
-                                                              "patch": {"type": "object", "properties": props},
+                                                              "patch": {"type": "object", "properties": patch_props},
                                                               "restore": {"type": "boolean"}}, "required": ["id"]},
                  "fn": (lambda t=t: lambda id, patch=None, restore=False: self.update(t.name, id, patch, restore))()},
                 {"name": f"delete_{t.name}", "description": f"Delete one {label}. The delete is soft, update_{t.name} with restore true brings it back.",
                  "schema": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]},
                  "fn": (lambda t=t: lambda id: self.delete(t.name, id))()},
             ]
+        price_props, price_required = properties_of(tripdb.LODGING_PRICE, skip={"id"})
+        price_row = {"type": "object", "properties": price_props, "required": price_required}
         leg = {"description": "The leg to change: the number of the place it arrives at (the first place has no leg), or that place's id.",
                "type": ["integer", "string"]}
         specs += [
@@ -277,6 +296,12 @@ class Core:
                  "name": {"type": "string", "description": "the file name, like ticket.pdf"},
                  "type": {"type": "string", "enum": list(BOOKING_FILE_TYPES)}}, "required": ["id", "name", "type"]},
              "fn": lambda id, name, type: self.attach_booking_upload(id, name, type)},
+            {"name": "add_lodging_price", "description": "Add prices to rooms of lodgings that exist, one row per room and date "
+             "range, in DKK. get_lodging gives the room ids. A row for a room that does not exist, or that fails the checks, "
+             "is refused by its row number and the other rows are still saved. Never add a lodging to hold a price.",
+             "schema": {"type": "object", "properties": {"rows": {"type": "array", "minItems": 1, "items": price_row}},
+                        "required": ["rows"]},
+             "fn": lambda rows: self.add_lodging_price(rows)},
         ]
         return specs
 
@@ -294,13 +319,31 @@ class Core:
         if t.name == "booking":
             props, required = properties_of(t.schema, skip=t.auto)
             return props, [f for f in required if f != "status"]  # a new booking is booked unless it says otherwise
+        if t.name == "lodging":
+            return self.lodging_fields(t)
         return properties_of(t.schema, skip=t.auto | {"kind"})
+
+    @staticmethod
+    def lodging_fields(t):
+        """A lodging's fields with its rooms nested, and each room's prices nested in it."""
+        def items(schema, skip=()):
+            p, r = properties_of(schema, skip=skip)
+            return {"type": "object", "properties": p, "required": r}
+        props, required = properties_of(t.schema, skip=t.auto)
+        props["photos"]["items"] = items(tripdb.LODGING_PHOTO)
+        props["links"]["items"] = items(tripdb.LODGING_LINK)
+        props["tags"]["items"] = {"type": "string"}
+        room = items(tripdb.LODGING_ROOM, skip=ROOM_AUTO)
+        room["properties"]["prices"] = {"type": "array", "items": items(tripdb.LODGING_PRICE, skip={"id", "room_id"})}
+        props["rooms"] = {"type": "array", "items": room}
+        return props, [f for f in required if f != "added_by"]  # added by claude unless it says otherwise
 
     @staticmethod
     def example_where(t):
         return {"trip": '"name": "Costa Rica"', "flight": '"from": "SJO", "to": "LIR"', "connection": '"from": "SJO", "mode": "bus"',
                 "stay": '"place": "LCORN"', "experience": '"category": "nature"', "place": '"country": "CR"',
-                "task": '"status": "open"', "booking": '"from": "SJO", "to": "LIR", "day": "2026-12-12"'}[t.name]
+                "task": '"status": "open"', "booking": '"from": "SJO", "to": "LIR", "day": "2026-12-12"',
+                "lodging": '"place": "LCORN"'}[t.name]
 
     # ---- what is stored ---------------------------------------------------------------------------------------
 
@@ -324,6 +367,9 @@ class Core:
         if tname == "booking":
             self.need_project("bookings")
             return [(r["id"], r) for r in self.store.rest.get_all("bookings", {"select": "*", "order": "created_at,id"})]
+        if tname == "lodging":
+            self.need_project("lodgings")
+            return [(r["id"], r) for r in self.store.rest.get_all("lodgings", {"select": "*", "order": "created_at,id"})]
         out = {}
         for r in self.store.rows(t.table):
             out[self.ident(tname, r)] = r
@@ -331,7 +377,7 @@ class Core:
 
     @staticmethod
     def ident(tname, r):
-        if tname in ("trip", "place", "experience", "booking"):
+        if tname in ("trip", "place", "experience", "booking", "lodging"):
             return r["id"]
         if tname == "connection":
             return f"{r['from']}>{r['to']}:{r['mode']}" + (f":{r['operator']}" if r.get("operator") else "")
@@ -347,7 +393,7 @@ class Core:
 
     @staticmethod
     def shown(tname, id, r):
-        return r if tname in ("trip", "task", "booking") else {"id": id, **r}
+        return r if tname in ("trip", "task", "booking", "lodging") else {"id": id, **r}
 
     @staticmethod
     def brief(tname, id, r):
@@ -369,6 +415,11 @@ class Core:
             if "day" in where and where.pop("day") not in ((r.get("depart") or "")[:10], r.get("check_in")):
                 return False
             where = {BOOKING_WHERE.get(k, k): v for k, v in where.items()}
+        if tname == "lodging":
+            where = dict(where or {})
+            if "hidden" not in where and r.get("hidden"):
+                return False
+            where = {LODGING_WHERE.get(k, k): v for k, v in where.items()}
         for k, v in (where or {}).items():
             if tname == "flight" and k in ("from", "to", "date"):
                 if r["legs_requested"][0].get(k) != v:
@@ -388,13 +439,25 @@ class Core:
 
     def get(self, tname, id):
         i, r = self.find(tname, id)
+        if tname == "lodging":
+            return {**r, "rooms": self.rooms_of(i)}
         return self.shown(tname, i, r)
+
+    def rooms_of(self, lodging_id):
+        """A lodging's rooms, each with its prices."""
+        rooms = self.store.rest.get_all("lodging_rooms", {"select": "*", "lodging_id": "eq." + lodging_id,
+                                                          "order": "created_at,id"})
+        prices = self.store.rest.get_all("lodging_prices", {"select": "*", "room_id": in_list([r["id"] for r in rooms]),
+                                                            "order": "check_in,id"}) if rooms else []
+        return [{**r, "prices": [p for p in prices if p["room_id"] == r["id"]]} for r in rooms]
 
     # ---- add --------------------------------------------------------------------------------------------------
 
     def add(self, tname, rows):
         if not isinstance(rows, list) or not rows:
             raise Refused("rows must be a list with at least one row")
+        if tname == "lodging":
+            return self.add_lodging(rows)
         good, nums, refused = [], [], []
         for n, row in enumerate(rows, 1):
             try:
@@ -471,6 +534,144 @@ class Core:
         if row.get("check_in") and row.get("check_out") and row["check_out"] <= row["check_in"]:
             errs.append("check_out is not after check_in")
         return errs
+
+    @staticmethod
+    def stored_errors(row, schema):
+        """Reasons the row cannot go in a table of that schema: a field it lacks, a value the database cannot hold, or a
+        field of the wrong type."""
+        if not isinstance(row, dict):
+            return ["is not a JSON object"]
+        unknown = [k for k in row if k not in schema]
+        if unknown:
+            return ["unknown field " + ", ".join(sorted(unknown)) + ", the fields are " + ", ".join(schema)]
+        if tripdb.store.has_nul(row):
+            return [tripdb.NUL_WHY]
+        if tripdb.store.has_unstorable(row):
+            return [tripdb.BAD_WHY]
+        return tripdb.check_fields(row, schema)
+
+    @classmethod
+    def lodging_errors(cls, row):
+        """Reasons to refuse a lodging, without its rooms: the schema, its photos and links, and the checks the table makes."""
+        errs = cls.stored_errors(row, tripdb.LODGING)
+        if errs:
+            return errs
+        for name, schema in (("photos", tripdb.LODGING_PHOTO), ("links", tripdb.LODGING_LINK)):
+            for n, item in enumerate(row.get(name) or []):
+                errs += [f"{name}[{n}] {e}" for e in (tripdb.check_fields(item, schema) if isinstance(item, dict)
+                                                       else ["is not a JSON object"])]
+        if any(not isinstance(x, str) for x in row.get("tags") or []):
+            errs.append("tags holds something that is not text")
+        if row.get("rating") is not None and not 0 <= row["rating"] <= 10:
+            errs.append("rating is not out of 10")
+        errs += [f"{k} is below 0" for k in ("reviews", "to_center_km", "to_beach_km") if row.get(k) is not None and row[k] < 0]
+        errs += [f"{k} is not between -{m} and {m}" for k, m in (("lat", 90), ("lon", 180))
+                 if row.get(k) is not None and not -m <= row[k] <= m]
+        return errs
+
+    @classmethod
+    def room_errors(cls, row):
+        errs = cls.stored_errors(row, tripdb.LODGING_ROOM)
+        if not errs and row.get("beds") is not None and row["beds"] < 1:
+            errs.append("beds is below 1")
+        return errs
+
+    @classmethod
+    def price_errors(cls, row):
+        errs = cls.stored_errors(row, tripdb.LODGING_PRICE)
+        if errs:
+            return errs
+        if row["check_out"] <= row["check_in"]:
+            errs.append("check_out is not after check_in")
+        if row.get("total_dkk") is None and row.get("per_night_dkk") is None:
+            errs.append("give total_dkk or per_night_dkk")
+        errs += [f"{k} is below 0" for k in ("total_dkk", "per_night_dkk") if row.get(k) is not None and row[k] < 0]
+        return errs
+
+    def lodging_parts(self, row):
+        """(lodging, rooms, prices) ready to store, with their ids set here so the three writes can name each other,
+        and the reasons to refuse any part of them."""
+        if not isinstance(row, dict):
+            return None, ["row is not a JSON object"]
+        row = dict(row)
+        rooms = row.pop("rooms", None) or []
+        set_here = sorted(set(row) & TYPES["lodging"].auto)
+        if set_here:
+            return None, ["the connector sets " + ", ".join(set_here) + ", leave them out"]
+        lodging = {"added_by": "claude", **row, "id": str(uuid.uuid4())}
+        errs = self.lodging_errors(lodging)
+        if not isinstance(rooms, list):
+            return None, errs + ["rooms is not a list"]
+        out_rooms, out_prices = [], []
+        for n, room in enumerate(rooms):
+            if not isinstance(room, dict):
+                errs.append(f"rooms[{n}] is not a JSON object")
+                continue
+            room = dict(room)
+            prices = room.pop("prices", None) or []
+            set_here = sorted(set(room) & ROOM_AUTO)
+            if set_here:
+                errs.append(f"rooms[{n}]: the connector sets " + ", ".join(set_here) + ", leave them out")
+                continue
+            room = {**room, "id": str(uuid.uuid4()), "lodging_id": lodging["id"]}
+            errs += [f"rooms[{n}] {e}" for e in self.room_errors(room)]
+            out_rooms.append(room)
+            if not isinstance(prices, list):
+                errs.append(f"rooms[{n}].prices is not a list")
+                continue
+            for k, price in enumerate(prices):
+                if isinstance(price, dict) and {"id", "room_id"} & set(price):
+                    errs.append(f"rooms[{n}].prices[{k}]: the connector sets id and room_id, leave them out")
+                    continue
+                price = {**price, "room_id": room["id"]} if isinstance(price, dict) else price
+                errs += [f"rooms[{n}].prices[{k}] {e}" for e in self.price_errors(price)]
+                out_prices.append(price)
+        return (lodging, out_rooms, out_prices), errs
+
+    def add_lodging(self, rows):
+        """Each lodging is written whole: the lodging, then its rooms, then their prices. A lodging with any part that
+        fails its checks writes nothing, and one whose later write fails is taken away again."""
+        self.need_project("lodgings")
+        rest = self.store.rest
+        added, rooms, refused = [], {}, []
+        for n, row in enumerate(rows, 1):
+            parts, errs = self.lodging_parts(row)
+            if errs:
+                refused.append({"row": n, "why": "; ".join(errs)})
+                continue
+            lodging, room_rows, price_rows = parts
+            rest.insert("lodgings", [lodging])
+            try:
+                if room_rows:
+                    rest.insert("lodging_rooms", room_rows)
+                if price_rows:
+                    rest.insert("lodging_prices", price_rows)
+            except Refused as e:
+                rest.delete("lodgings", {"id": "eq." + lodging["id"]})  # its rooms and prices go with it
+                refused.append({"row": n, "why": str(e)})
+                continue
+            added.append(lodging["id"])
+            rooms[lodging["id"]] = [r["id"] for r in room_rows]
+        return {"added": added, "rooms": rooms, "skipped": [], "refused": refused}
+
+    def add_lodging_price(self, rows):
+        """Prices for rooms that exist. A row for a room that does not exist is refused, nothing makes a lodging here."""
+        self.need_project("lodgings")
+        if not isinstance(rows, list) or not rows:
+            raise Refused("rows must be a list with at least one row")
+        good, refused = [], []
+        for n, row in enumerate(rows, 1):
+            errs = (["the connector sets id, leave it out"] if isinstance(row, dict) and "id" in row
+                    else self.price_errors(row))
+            (refused.append({"row": n, "why": "; ".join(errs)}) if errs else good.append((n, row)))
+        asked = sorted({r["room_id"] for _, r in good})
+        known = {r["id"] for r in self.store.rest.get_all("lodging_rooms", {"select": "id", "id": in_list(asked)})} if asked else set()
+        for n, r in good:
+            if r["room_id"] not in known:
+                refused.append({"row": n, "why": f"no room {r['room_id']!r}, get_lodging gives the room ids"})
+        good = [r for _, r in good if r["room_id"] in known]
+        added = [g["id"] for g in self.store.rest.insert("lodging_prices", good, returning="id")] if good else []
+        return {"added": added, "skipped": [], "refused": sorted(refused, key=lambda x: x["row"])}
 
     def extra_checks(self, tname, r):
         known = self.store.ids("places")
@@ -591,6 +792,18 @@ class Core:
             self.keep("booking", i, [old], "update")
             self.store.rest.patch("bookings", {"id": "eq." + i}, patch)
             return {"updated": i}
+        if tname == "lodging":
+            if "rooms" in patch:
+                raise Refused(f"{i}: update_lodging changes the lodging alone, add prices with add_lodging_price")
+            set_here = sorted(set(patch) & t.auto)
+            if set_here:
+                raise Refused(f"{i}: the connector sets " + ", ".join(set_here))
+            errs = self.lodging_errors({**{k: v for k, v in old.items() if k not in t.auto}, **patch})
+            if errs:
+                raise Refused(f"{i}: " + "; ".join(errs))
+            self.keep("lodging", i, [old], "update")
+            self.store.rest.patch("lodgings", {"id": "eq." + i}, patch)
+            return {"updated": i}
         if {"id", "kind"} & set(patch):
             raise Refused("id and kind cannot be changed")
         new = {**old, **patch}
@@ -666,6 +879,8 @@ class Core:
         try:
             if tname == "booking":
                 self.store.rest.patch("bookings", {"id": "eq." + i}, {"status": "cancelled"})  # the row stays, cancelled
+            elif tname == "lodging":
+                self.store.rest.patch("lodgings", {"id": "eq." + i}, {"hidden": True})  # set aside, with its rooms and prices
             elif tname == "flight":
                 self.store.remove("quotes", {"quote_id": i})
             else:
@@ -742,6 +957,12 @@ class Core:
             # the attachments stay as they are, a file added since is still in the bucket
             back = {"status": rows[0]["status"]} if action == "delete" else {k: v for k, v in rows[0].items() if k not in t.auto}
             self.store.rest.patch("bookings", {"id": "eq." + str(id)}, back)
+        elif tname == "lodging":
+            self.need_project("lodgings")
+            # a field the old row did not have goes back to null, so a field the update added is taken away too
+            back = {"hidden": rows[0]["hidden"]} if action == "delete" else {
+                k: rows[0].get(k) for k, spec in t.schema.items() if k not in t.auto and (k in rows[0] or "null" in spec)}
+            self.store.rest.patch("lodgings", {"id": "eq." + str(id)}, back)
         elif tname == "flight":
             if action == "update" and now_id == str(id):
                 self.store.remove("quotes", {"quote_id": now_id})
