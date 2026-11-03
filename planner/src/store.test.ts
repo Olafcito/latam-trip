@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ownKey } from '@map/data/ownKey'
 import { CURRENT_KEY, useStore } from './store'
-import type { AppData, CrawledFlight, InOut, MapEdge, Way } from './data/types'
+import type { AppData, Booking, CrawledFlight, InOut, MapEdge, Way } from './data/types'
 import { schedule, totals, travelTotal, type Hop, type Journey, type Totals } from './lib/journey'
 import { rowToJourney, withTripWays, type TripRow } from './lib/repoTrips'
 import { chooseWay } from './lib/ways'
@@ -325,6 +325,119 @@ describe('changing the ways and the ends of a trip', () => {
     const sched = schedule(j, inout.ways[j.wayIn], inout.ways[j.wayHome], 'GUA', (n) => n)
     const clash = sched.warnings.find((w) => w.leg === 1)
     expect(clash?.text).toBe('The leg on from CTG leaves 6 Dec, before you get there 8 Dec 18:00')
+  })
+})
+
+describe('a booked leg holds its day', () => {
+  // Made up rows only. A real reference, price or name never goes in this file.
+  const booking = (id: string, from: string, to: string, depart: string, over: Partial<Booking> = {}): Booking => ({
+    id, kind: 'flight', status: 'booked', from_code: from, to_code: to, depart, arrive: null,
+    place_id: null, check_in: null, check_out: null, lodging_id: null, room_id: null, reference: 'TEST01', seller: null,
+    url: null, price_dkk: 500, price: null, currency: null, refundable: null, changeable: null, change_until: null,
+    cancel_until: null, cabin_bag: null, checked_bag: null, segments: null, travellers: 1, trip_id: null, ticket: null,
+    source: 'manual', notes: null, attachments: [], created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z',
+    ...over,
+  })
+  const way = (over: Partial<Way>): Way => ({
+    id: 'W_in', direction: 'in', type: 'oneways', from: 'CPH', to: 'A', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
+    total_hours: 14.5, flying_hours: 14.5, flights: 2, hub_nights: 0, changes: 0, us_transit: false, airports: ['CPH', 'A'],
+    tickets: [], price_dkk: 1000, extras: { cabin_bag_fees_dkk: 0, checked_bag_fees_dkk: 0, hub_nights: 0, hub_stay_estimate_dkk: 0 },
+    score: 5, timeline: [], ...over,
+  })
+  const wIn = way({})
+  const wHome = way({ id: 'W_home', direction: 'home', from: 'G', to: 'CPH', depart: '2027-02-03T09:05', arrive: '2027-02-04T09:10' })
+  const laterIn = way({ id: 'W_in2', depart: '2026-12-04T06:00', arrive: '2026-12-04T14:30' })
+  const laterHome = way({ ...wHome, id: 'W_home2', depart: '2027-02-04T09:05', arrive: '2027-02-05T09:10' })
+  const inout = { generated_at: '', currency: 'DKK', home: ['CPH'], airports: {}, tickets: {}, options: [], ways: Object.fromEntries([wIn, wHome, laterIn, laterHome].map((w) => [w.id, w])) } as unknown as InOut
+  const data = { map: { nodes: [], edges: [] }, inout } as unknown as AppData
+  const nodes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+  const days = ['2026-12-10', '2026-12-15', '2026-12-20', '2026-12-25', '2026-12-30', '2027-01-05']
+  const bus = (from: string, to: string, date: string): Hop => ({ from, to, mode: 'bus', operator: null, hours: 4, price_dkk: 100, overnight: false, border: false, flight: null, date })
+  const long: Journey = {
+    id: 'jbooked', name: 'Booked', wayIn: 'W_in', wayHome: 'W_home', optionId: null, lastNights: 20,
+    places: nodes.map((node, k) => ({ node, hop: k ? bus(nodes[k - 1], node, days[k - 1]) : null })),
+  }
+  const flight: CrawledFlight = {
+    quote_id: 'q', depart: '2026-12-27T08:00', arrive: '2026-12-27T10:00', hours: 2, price_dkk: 900,
+    carriers: [], via: [], layover_h: [], source: 'momondo', observed_at: '2026-10-29T10:00Z',
+  }
+  const s = useStore.getState
+  const legDays = () => s().journey!.places.slice(1).map((p) => p.hop!.date)
+  const onLeg4 = booking('b4', 'D', 'E', '2026-12-25T08:00')
+
+  beforeEach(() => {
+    useStore.setState({ bookings: [onLeg4], unlocked: null })
+    s().setData(data)
+    s().setJourney(long)
+  })
+  afterEach(() => useStore.setState({ bookings: [], unlocked: null }))
+
+  it('removing stop 2 moves leg 3, and leg 4 and later keep their days', () => {
+    s().removeStop(2)
+    expect(s().journey!.places.map((p) => p.node)).toEqual(['A', 'B', 'D', 'E', 'F', 'G'])
+    expect(legDays()).toEqual(['2026-12-10', '2026-12-15', '2026-12-25', '2026-12-30', '2027-01-05'])
+  })
+
+  it('a day or a flight on a booked leg changes nothing until that leg is unlocked', () => {
+    const before = s().journey
+    s().setHopDate(4, '2026-12-27')
+    s().setHopDate(4, null)
+    s().setHopFlight(4, flight)
+    expect(s().journey).toBe(before)
+    s().setUnlocked(4)
+    s().setHopDate(4, '2026-12-27')
+    expect(legDays()[3]).toBe('2026-12-27')
+    expect(s().unlocked).toBeNull()
+  })
+
+  it('a flight on a booked leg goes on once the leg is unlocked', () => {
+    s().setUnlocked(4)
+    s().setHopFlight(4, flight)
+    expect(s().journey!.places[4].hop!.flight?.quote_id).toBe('q')
+    expect(s().unlocked).toBeNull()
+  })
+
+  it('a cancelled booking locks nothing', () => {
+    useStore.setState({ bookings: [{ ...onLeg4, status: 'cancelled' }] })
+    s().setHopDate(4, '2026-12-27')
+    expect(legDays()[3]).toBe('2026-12-27')
+  })
+
+  it('with legs 2 and 5 booked, a day set on leg 4 still moves it', () => {
+    useStore.setState({ bookings: [booking('b2', 'B', 'C', '2026-12-15T08:00'), booking('b5', 'E', 'F', '2026-12-30T08:00')] })
+    s().setHopDate(4, '2026-12-27')
+    expect(legDays()).toEqual(['2026-12-10', '2026-12-15', '2026-12-20', '2026-12-27', '2026-12-30', '2027-01-05'])
+  })
+
+  describe('a booked way', () => {
+    const onIn = booking('bin', 'CPH', 'A', '2026-12-03T06:00')
+
+    beforeEach(() => useStore.setState({ bookings: [onIn] }))
+
+    it('a pick that would change only the booked way does nothing', () => {
+      const before = s().journey
+      s().setWays({ wayIn: laterIn, wayHome: wHome, note: null })
+      expect(s().journey).toBe(before)
+    })
+
+    it('a pick of both ways keeps the booked one and takes the other', () => {
+      s().setWays({ wayIn: laterIn, wayHome: laterHome, note: null })
+      expect([s().journey!.wayIn, s().journey!.wayHome]).toEqual(['W_in', 'W_home2'])
+    })
+
+    it('an unlocked booked way can change, and the lock comes back', () => {
+      s().setUnlocked('in')
+      s().setWays({ wayIn: laterIn, wayHome: wHome, note: null })
+      expect([s().journey!.wayIn, s().unlocked]).toEqual(['W_in2', null])
+    })
+
+    it('a new start and end keep the booked way', () => {
+      s().changeEnds(laterIn, laterHome)
+      expect([s().journey!.wayIn, s().journey!.wayHome]).toEqual(['W_in', 'W_home2'])
+      s().setUnlocked('in')
+      s().changeEnds(laterIn, laterHome)
+      expect([s().journey!.wayIn, s().unlocked]).toEqual(['W_in2', null])
+    })
   })
 })
 

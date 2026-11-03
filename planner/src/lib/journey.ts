@@ -1,5 +1,5 @@
 import type { AppData, Booking, CrawledFlight, InOut, MapData, Mode, StopItem, Way } from '../data/types'
-import { bookedElsewhere, bookingOn, codeNode, paidPrice, staysIn, type BookData } from './booked'
+import { bookedElsewhere, bookingOn, paidPrice, staysIn, wayBooking, type BookData } from './booked'
 import { day, dayDiff, dayTime, kr } from './format'
 import { edgeHours, edgePrice, groundPath, type Arc } from './graph'
 import { priceOfWays } from './options'
@@ -258,25 +258,38 @@ function shiftLegs(j: Journey, s: Schedule, i: number, end: number, by: number):
   return legs
 }
 
+/** The first booked leg after stop i, or Infinity when there is none. Booked legs are anchors that keep their days. */
+const anchorAfter = (locked: Set<number>, i: number) => Math.min(Infinity, ...[...locked].filter((k) => k > i))
+
 /**
  * The earliest stop decides. A night more at stop i comes from the free nights, and from a later stop
  * you choose once there are none. The legs up to that stop leave a day later, the stops between keep
  * their nights, and nothing before stop i changes. Returns null when there is no such night to take.
+ * A booked leg after stop i and every leg after it keep their days, so the stop just before it gives
+ * the night and the free nights stay as they are. Pressed on past its last night that stop shows a clash.
+ * A stop past the booked leg cannot give a night, and the stop the booked leg leaves from cannot take one.
  */
-export function takeNight(j: Journey, s: Schedule, i: number, from: number | 'free'): NightMove | null {
+export function takeNight(j: Journey, s: Schedule, i: number, from: number | 'free', locked = new Set<number>()): NightMove | null {
   const last = j.places.length - 1
   const fromFree = from === 'free'
   if (fromFree ? !(s.free > 0) : !(from > i && s.places[from]?.days > 0)) return null
-  const legs = shiftLegs(j, s, i, fromFree ? last : from, 1)
+  const anchor = anchorAfter(locked, i)
+  if (anchor === i + 1 || (!fromFree && from >= anchor)) return null
+  const legs = shiftLegs(j, s, i, Math.min(fromFree ? last : from, anchor - 1), 1)
   if (!legs) return null
   return { legs, lastNights: s.places[last].days + (i === last ? 1 : 0) - (from === last ? 1 : 0) }
 }
 
-/** A night less at stop i is a free night. It goes to no other stop: every later stop leaves a day earlier with its nights. */
-export function giveNight(j: Journey, s: Schedule, i: number): NightMove | null {
+/**
+ * A night less at stop i is a free night. It goes to no other stop: every later stop leaves a day earlier with its nights.
+ * A booked leg after stop i and every leg after it keep their days, so the stop just before it takes the night instead.
+ */
+export function giveNight(j: Journey, s: Schedule, i: number, locked = new Set<number>()): NightMove | null {
   const last = j.places.length - 1
   if (!(s.places[i]?.days > 0)) return null
-  const legs = shiftLegs(j, s, i, last, -1)
+  const anchor = anchorAfter(locked, i)
+  if (anchor === i + 1) return null
+  const legs = shiftLegs(j, s, i, Math.min(last, anchor - 1), -1)
   if (!legs) return null
   return { legs, lastNights: s.places[last].days - (i === last ? 1 : 0) }
 }
@@ -284,8 +297,10 @@ export function giveNight(j: Journey, s: Schedule, i: number): NightMove | null 
 /**
  * A stop taken out of the trip. The stops before it keep their nights, the stops after it keep theirs
  * and move earlier, and its nights become free nights. The hop numbers are those of the trip without it.
+ * A booked leg after it and every leg after that keep their days, so the stop just before the booked
+ * leg takes the nights instead. locked holds place indexes of the trip with the stop still in it.
  */
-export function stopGoes(j: Journey, s: Schedule, i: number): NightMove | null {
+export function stopGoes(j: Journey, s: Schedule, i: number, locked = new Set<number>()): NightMove | null {
   const last = j.places.length - 1
   if (i <= 0 || i > last) return null
   const hop = (k: number) => j.places[k].hop
@@ -293,8 +308,9 @@ export function stopGoes(j: Journey, s: Schedule, i: number): NightMove | null {
   const dayOf = (k: number) => legDay(hop(k)!, s.places[k - 1].outDay)
   const leaves = dayOf(i)
   const by = i < last ? dayDiff(leaves, dayOf(i + 1)) : 0
+  const anchor = anchorAfter(locked, i)
   const legs: NightMove['legs'] = []
-  for (let k = i + 1; k <= last; k++) legs.push({ hop: k - 1, date: k === i + 1 ? leaves : addDays(dayOf(k), -by) })
+  for (let k = i + 1; k <= last; k++) legs.push({ hop: k - 1, date: k >= anchor ? dayOf(k) : k === i + 1 ? leaves : addDays(dayOf(k), -by) })
   for (let m = i - 1; m >= 1 && !hop(m)!.date && !hop(m)!.flight; m--) legs.push({ hop: m, date: dayOf(m) })
   return { legs, lastNights: s.places[i === last ? i - 1 : last].days }
 }
@@ -350,7 +366,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
     return b ? paidPrice(bookings, b) : null
   }
   const anyBooked = bookings.length > 0
-  const paidWays = anyBooked ? [wi, wh].map((w) => paid({ from: codeNode(data, w.from), to: codeNode(data, w.to), day: w.depart.slice(0, 10) })) : [null, null]
+  const paidWays = anyBooked ? [wi, wh].map((w) => { const b = wayBooking(bookings, data, w); return b ? paidPrice(bookings, b) : null }) : [null, null]
   const quoted = [wi, wh].filter((_, k) => paidWays[k] == null)
   const p = priceOfWays(inout, [wi, wh])
   let regional = 0

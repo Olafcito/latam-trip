@@ -294,3 +294,98 @@ describe('a day set by hand', () => {
     expect(pinned.places[3].hop!.date).toBe(sched(j).places[2].outDay)
   })
 })
+
+describe('a booked leg holds its day', () => {
+  // seven stops A to G. A has 7 nights, B to E 5 each, F 6, G keeps 20 and 9 are free
+  const home = way({ id: 'H1', direction: 'home', from: 'G', to: 'CPH', depart: '2027-02-03T09:05', arrive: '2027-02-04T09:10' })
+  const days = ['2026-12-10', '2026-12-15', '2026-12-20', '2026-12-25', '2026-12-30', '2027-01-05']
+  const nodes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+  const long = (dates: string[] = days): Journey => ({
+    id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, lastNights: 20,
+    places: nodes.map((node, k) => ({ node, hop: k ? bus(nodes[k - 1], node, dates[k - 1]) : null })),
+  })
+  const at = (j: Journey) => schedule(j, wi, home, 'G', (n) => n)
+  const nightsOf = (j: Journey) => at(j).places.map((p) => p.days)
+  const after = (j: Journey, m: NightMove | null) => {
+    expect(m).not.toBeNull()
+    return applyMove(j, m!)
+  }
+  /** the trip without stop i, its legs joined up the way the store does it */
+  const without = (j: Journey, i: number, locked: Set<number>) => {
+    const m = stopGoes(j, at(j), i, locked)
+    expect(m).not.toBeNull()
+    const places = j.places.filter((_, k) => k !== i).map((p, k, all) => (k && p.hop!.from !== all[k - 1].node ? { ...p, hop: bus(all[k - 1].node, p.node) } : p))
+    return applyMove({ ...j, places }, m!)
+  }
+  const four = new Set([4])
+
+  it('starts where the test says', () => {
+    expect(nightsOf(long())).toEqual([7, 5, 5, 5, 5, 6, 20])
+    expect(at(long()).free).toBe(9)
+  })
+
+  it('a stop taken out moves the leg after it, and the booked leg and every leg after it keep their days', () => {
+    const j = without(long(), 2, four)
+    expect(legDays(j)).toEqual(['2026-12-10', '2026-12-15', '2026-12-25', '2026-12-30', '2027-01-05'])
+    expect(nightsOf(j)).toEqual([7, 5, 10, 5, 6, 20])
+    expect(at(j).free).toBe(9)
+  })
+
+  it('a stop taken out just before a booked leg leaves that leg its day, and the stop before takes the nights', () => {
+    const j = without(long(), 3, four)
+    expect(legDays(j)).toEqual(['2026-12-10', '2026-12-15', '2026-12-25', '2026-12-30', '2027-01-05'])
+    expect(nightsOf(j)).toEqual([7, 5, 10, 5, 6, 20])
+  })
+
+  it('a night more moves the legs up to the booked leg, and the stop before it gives the night', () => {
+    const j = after(long(), takeNight(long(), at(long()), 2, 'free', four))
+    expect(legDays(j)).toEqual(['2026-12-10', '2026-12-15', '2026-12-21', ...days.slice(3)])
+    expect(nightsOf(j)).toEqual([7, 5, 6, 4, 5, 6, 20])
+    expect(at(j).free).toBe(9)
+  })
+
+  it('a night less moves the legs up to the booked leg, and the stop before it takes the night', () => {
+    const j = after(long(), giveNight(long(), at(long()), 2, four))
+    expect(legDays(j)).toEqual(['2026-12-10', '2026-12-15', '2026-12-19', ...days.slice(3)])
+    expect(nightsOf(j)).toEqual([7, 5, 4, 6, 5, 6, 20])
+    expect(at(j).free).toBe(9)
+  })
+
+  it('a night from a stop before the booked leg is taken as before', () => {
+    const j = after(long(), takeNight(long(), at(long()), 1, 3, four))
+    expect(nightsOf(j)).toEqual([7, 6, 5, 4, 5, 6, 20])
+  })
+
+  it('a night cannot come from a stop past the booked leg', () => {
+    expect(takeNight(long(), at(long()), 2, 4, four)).toBeNull()
+    expect(takeNight(long(), at(long()), 2, 6, four)).toBeNull()
+  })
+
+  it('the stop the booked leg leaves from cannot gain or lose a night', () => {
+    expect(takeNight(long(), at(long()), 3, 'free', four)).toBeNull()
+    expect(giveNight(long(), at(long()), 3, four)).toBeNull()
+  })
+
+  it('a booked leg before the change does not matter', () => {
+    const j = long()
+    expect(takeNight(j, at(j), 2, 'free', new Set([1]))).toEqual(takeNight(j, at(j), 2, 'free'))
+    expect(giveNight(j, at(j), 2, new Set([2]))).toEqual(giveNight(j, at(j), 2))
+  })
+
+  it('shows the clash once the stop before the booked leg is squeezed to nothing', () => {
+    // D has one night
+    let j = long(['2026-12-10', '2026-12-15', '2026-12-24', '2026-12-25', '2026-12-30', '2027-01-05'])
+    j = after(j, takeNight(j, at(j), 2, 'free', four))
+    expect(nightsOf(j)[3]).toBe(0)
+    expect(at(j).warnings.filter((w) => w.level === 'error')).toEqual([])
+    j = after(j, takeNight(j, at(j), 2, 'free', four))
+    expect(legDays(j)[3]).toBe('2026-12-25')
+    expect(at(j).warnings.find((w) => w.level === 'error')).toMatchObject({ leg: 4, text: expect.stringMatching(/^The leg on from D leaves 25 Dec, before you get there 26 Dec/) })
+  })
+
+  it('with legs 2 and 5 booked, a night more at stop 3 moves leg 4 only', () => {
+    const j = after(long(), takeNight(long(), at(long()), 3, 'free', new Set([2, 5])))
+    expect(legDays(j)).toEqual(['2026-12-10', '2026-12-15', '2026-12-20', '2026-12-26', '2026-12-30', '2027-01-05'])
+    expect(nightsOf(j)).toEqual([7, 5, 5, 6, 4, 6, 20])
+  })
+})

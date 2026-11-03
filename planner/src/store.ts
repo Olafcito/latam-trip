@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { ownKey, readOwn } from '@map/data/ownKey'
 import type { AppData, Booking, CrawledFlight, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
+import { lockedLegs, wayBooking } from './lib/booked'
 import { dayDiff } from './lib/format'
 import { applyMove, journeyIsValid, legDay, newJourney, nodeForAirport, nodeName, pinLegs, schedule, stopGoes, totals, type Hop, type Journey, type NightMove, type Place, type Schedule } from './lib/journey'
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
@@ -202,11 +203,19 @@ interface State {
   /** every booking row, cancelled ones too, read live. Empty when signed out */
   bookings: Booking[]
   setBookings: (bookings: Booking[]) => void
+  /**
+   * the booked leg (its place index) or way whose booking is being changed. A booked leg or way holds its day
+   * until then, and holds it again once the change is made
+   */
+  unlocked: number | 'in' | 'home' | null
+  setUnlocked: (unlocked: number | 'in' | 'home' | null) => void
 }
 
 export const useStore = create<State>((set, get) => ({
   bookings: [],
   setBookings: (bookings) => set({ bookings }),
+  unlocked: null,
+  setUnlocked: (unlocked) => set({ unlocked }),
   data: null,
   setData: (data) => {
     const { viewing } = get()
@@ -330,7 +339,7 @@ export const useStore = create<State>((set, get) => ({
     const { journey: j, cursor } = get()
     if (!j || i <= 0 || i >= j.places.length) return
     const sched = scheduleOf(j, get().data)
-    const move = sched && stopGoes(j, sched, i)
+    const move = sched && stopGoes(j, sched, i, lockedOf(j, sched, get()))
     const places = rehop(j.places.filter((_, k) => k !== i), get())
     get().setJourney(move ? applyMove({ ...j, places }, move) : { ...j, places })
     if (cursor != null) get().setCursor(cursor > i ? cursor - 1 : cursor === i ? i - 1 : cursor)
@@ -360,11 +369,12 @@ export const useStore = create<State>((set, get) => ({
   setHopDate: (i, date) => {
     const j = get().journey
     const p = j?.places[i]
-    if (!j || !p?.hop) return
+    if (!j || !p?.hop || holds(j, i, get())) return
     const { date: _, ...hop } = p.hop
     const base = date ? pinned(j, get().data) : j
     const places = base.places.map((q, k) => (k === i ? { ...q, hop: date ? { ...hop, date } : hop } : q))
     get().setJourney({ ...base, places })
+    if (get().unlocked === i) set({ unlocked: null })
   },
   moveNights: (m) => {
     const j = get().journey
@@ -374,15 +384,21 @@ export const useStore = create<State>((set, get) => ({
   setHopFlight: (i, flight) => {
     const { journey: j, data } = get()
     const h = j?.places[i]?.hop
-    if (!j || !h) return
+    if (!j || !h || holds(j, i, get())) return
     const hop = flight ? withFlight(h, flight) : withoutFlight(h, get())
     const base = flight ? pinned(j, data) : j
     get().setJourney({ ...base, places: base.places.map((q, k) => (k === i ? { ...q, hop } : q)) })
+    if (get().unlocked === i) set({ unlocked: null })
   },
   setWays: (choice) => {
-    const { journey: j, data } = get()
+    const s = get()
+    const { journey: j, data } = s
     if (!j || !data) return
-    get().setJourney(withEnds(j, data.inout, data.map, choice.wayIn, choice.wayHome))
+    const ways = keptWays(j, choice.wayIn, choice.wayHome, s)
+    // a pick whose only change is to a booked way changes nothing
+    if (ways.kept && ways.wayIn.id === j.wayIn && ways.wayHome.id === j.wayHome) return
+    s.setJourney(withEnds(j, data.inout, data.map, ways.wayIn, ways.wayHome))
+    relock(j, ways, get, set)
   },
   pickFor: null,
   changeEndsOf: (tripId) => {
@@ -395,8 +411,10 @@ export const useStore = create<State>((set, get) => ({
     const s = get()
     const j = changing(s) ?? (s.pickFor ? null : s.journey)
     if (!j || !s.data) return
+    const ways = keptWays(j, wayIn, wayHome, s)
     // an older version on screen, or a notice about the trip open before, does not stay with the changed trip
-    s.openTrip(withEnds(j, s.data.inout, s.data.map, wayIn, wayHome))
+    s.openTrip(withEnds(j, s.data.inout, s.data.map, ways.wayIn, ways.wayHome))
+    relock(j, ways, get, set)
   },
   pickWays: (wayIn, wayHome, optionId) => {
     const s = get()
@@ -697,6 +715,35 @@ function scheduleOf(j: Journey, data: AppData | null): Schedule | null {
   const wh = data?.inout.ways[j.wayHome]
   if (!data || !wi || !wh) return null
   return schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), (n) => nodeName(data.map, data.inout, n))
+}
+
+/** The legs of the trip booked on the day they show. No night move and no day set by hand moves them. */
+function lockedOf(j: Journey, sched: Schedule | null, s: { data: AppData | null; bookings: Booking[] }): Set<number> {
+  return sched && s.data ? lockedLegs(s.bookings, s.data, j, sched) : new Set()
+}
+
+/** Whether leg i is booked on its day and its booking is not being changed, so it keeps that day. */
+function holds(j: Journey, i: number, s: { data: AppData | null; bookings: Booking[]; unlocked: State['unlocked'] }): boolean {
+  return s.unlocked !== i && s.bookings.length > 0 && lockedOf(j, scheduleOf(j, s.data), s).has(i)
+}
+
+/** The ways a change gives a trip. A booked way stays unless its booking is being changed, and kept says one stayed. */
+function keptWays(j: Journey, wayIn: Way, wayHome: Way, s: { data: AppData | null; bookings: Booking[]; unlocked: State['unlocked'] }) {
+  let kept = false
+  const keep = (id: string, side: 'in' | 'home', next: Way): Way => {
+    const now = s.data?.inout.ways[id]
+    if (!now || next.id === id || s.unlocked === side || !wayBooking(s.bookings, s.data!, now)) return next
+    kept = true
+    return now
+  }
+  const ways = { wayIn: keep(j.wayIn, 'in', wayIn), wayHome: keep(j.wayHome, 'home', wayHome) }
+  return { ...ways, kept }
+}
+
+/** A booked way whose booking was being changed holds its day again once it has changed. */
+function relock(j: Journey, ways: { wayIn: Way; wayHome: Way }, get: () => State, set: (p: Partial<State>) => void) {
+  const u = get().unlocked
+  if ((u === 'in' && ways.wayIn.id !== j.wayIn) || (u === 'home' && ways.wayHome.id !== j.wayHome)) set({ unlocked: null })
 }
 
 /** The trip with every leg that floats pinned on the day it shows. */

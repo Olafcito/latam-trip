@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking, Way } from '../data/types'
-import { bookedCount, bookedElsewhere, bookingOn, endsMatch, paidPrice, stayOn, type BookData } from './booked'
+import { bookedCount, bookedElsewhere, bookingOn, endsMatch, lockedLegs, paidPrice, stayOn, wayBooking, type BookData } from './booked'
 import type { Hop, Journey, Schedule } from './journey'
 
 // Made up rows only. A real reference, price or name never goes in this file.
@@ -154,22 +154,22 @@ describe('paidPrice', () => {
   })
 })
 
-describe('bookedCount', () => {
-  const j: Journey = {
-    id: 'j1', name: 'Test', wayIn: 'I1', wayHome: 'H1', optionId: null,
-    places: [
-      { node: 'CTG', hop: null },
-      { node: 'san-andres', hop: hop('CTG', 'san-andres', { date: '2026-12-05' }) },
-      { node: 'SMR', hop: hop('san-andres', 'SMR') },
-      { node: 'guatemala', hop: hop('SMR', 'guatemala') },
-    ],
-  }
-  const at = (node: string, inDay: string, outDay: string) => ({ node, arrive: null, depart: null, days: 0, inDay, outDay, exact: false })
-  const sched: Schedule = {
-    places: [at('CTG', '2026-12-02', '2026-12-05'), at('san-andres', '2026-12-05', '2026-12-08'), at('SMR', '2026-12-08', '2026-12-20'), at('guatemala', '2026-12-20', '2027-02-04')],
-    firstDay: '2026-12-02', homeDepart: '2027-02-04T12:00', totalDays: 64, free: 0, warnings: [],
-  }
+const j: Journey = {
+  id: 'j1', name: 'Test', wayIn: 'I1', wayHome: 'H1', optionId: null,
+  places: [
+    { node: 'CTG', hop: null },
+    { node: 'san-andres', hop: hop('CTG', 'san-andres', { date: '2026-12-05' }) },
+    { node: 'SMR', hop: hop('san-andres', 'SMR') },
+    { node: 'guatemala', hop: hop('SMR', 'guatemala') },
+  ],
+}
+const at = (node: string, inDay: string, outDay: string) => ({ node, arrive: null, depart: null, days: 0, inDay, outDay, exact: false })
+const sched: Schedule = {
+  places: [at('CTG', '2026-12-02', '2026-12-05'), at('san-andres', '2026-12-05', '2026-12-08'), at('SMR', '2026-12-08', '2026-12-20'), at('guatemala', '2026-12-20', '2027-02-04')],
+  firstDay: '2026-12-02', homeDepart: '2027-02-04T12:00', totalDays: 64, free: 0, warnings: [],
+}
 
+describe('bookedCount', () => {
   it('counts the booked legs, ways and stays of a trip', () => {
     const list = [
       row({ id: 'in', from_code: 'CPH', to_code: 'CTG', depart: '2026-12-02T09:55', ticket: 'T' }),
@@ -190,5 +190,36 @@ describe('bookedCount', () => {
     ]
     expect(bookedCount(list, data, j, sched)).toBe(0)
     expect(bookedCount([], data, j, sched)).toBe(0)
+  })
+})
+
+describe('lockedLegs', () => {
+  it('holds the legs booked on the day they show, by their place index', () => {
+    const list = [
+      row({ id: 'h1', from_code: 'CTG', to_code: 'ADZ', depart: '2026-12-05T10:00' }),
+      // on the estimated day of the leg
+      row({ id: 'h2', from_code: 'SMR', to_code: 'GUA', depart: '2026-12-20T08:00' }),
+    ]
+    expect([...lockedLegs(list, data, j, sched)]).toEqual([1, 3])
+  })
+
+  it('locks nothing for a cancelled row, a row a day off, a way or a stay', () => {
+    const list = [
+      row({ id: 'gone', from_code: 'CTG', to_code: 'ADZ', depart: '2026-12-05T10:00', status: 'cancelled' }),
+      row({ id: 'off', from_code: 'ADZ', to_code: 'SMR', depart: '2026-12-09T06:15' }),
+      row({ id: 'in', from_code: 'CPH', to_code: 'CTG', depart: '2026-12-02T09:55' }),
+      row({ id: 's1', kind: 'stay', place_id: 'SMR', check_in: '2026-12-08', check_out: '2026-12-12' }),
+    ]
+    expect(lockedLegs(list, data, j, sched).size).toBe(0)
+    expect(lockedLegs([], data, j, sched).size).toBe(0)
+  })
+})
+
+describe('wayBooking', () => {
+  it('finds the booked row of a way on its ends and the day it leaves', () => {
+    const home = row({ id: 'home', from_code: 'GUA', to_code: 'CPH', depart: '2027-02-04T12:00' })
+    expect(wayBooking([home], data, data.inout.ways.H1)).toBe(home)
+    expect(wayBooking([home], data, data.inout.ways.I1)).toBeNull()
+    expect(wayBooking([row({ ...home, status: 'cancelled' })], data, data.inout.ways.H1)).toBeNull()
   })
 })

@@ -7,6 +7,7 @@ import { useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
 import { flightOffDay, giveNight, legDay, legTime, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
+import { lockedLegs } from '../../lib/booked'
 import { legWindow } from '../../lib/legDates'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
@@ -265,6 +266,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   // an older version of the trip is open to look at, its ends are not changed from here
   const viewingOld = useStore((s) => s.viewing?.id === journey.id)
   const setNotice = useStore((s) => s.setNotice)
+  const bookings = useStore((s) => s.bookings)
+  // a booked leg keeps its day, so the night steppers move only the legs up to it
+  const locked = useMemo(() => lockedLegs(bookings, data, journey, sched), [bookings, data, journey, sched])
   // the ways of each day for the way in and the way home, for their calendars and their sheets
   const wayRows = useMemo(() => {
     const ends = { wayIn, wayHome }
@@ -276,8 +280,8 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const press = (m: NightMove | null) => (m ? () => moveNights(m) : null)
   const nm = (id: string) => nodeName(map, inout, id)
   const nightRows = (i: number): NightRow[] => [
-    { from: 'free', name: 'Free nights', nights: sched.free, take: press(takeNight(journey, sched, i, 'free')) },
-    ...sched.places.flatMap((sp, k) => (k > i ? [{ from: k, name: nm(sp.node), nights: sp.days, take: press(takeNight(journey, sched, i, k)) }] : [])),
+    { from: 'free', name: 'Free nights', nights: sched.free, take: press(takeNight(journey, sched, i, 'free', locked)) },
+    ...sched.places.flatMap((sp, k) => (k > i ? [{ from: k, name: nm(sp.node), nights: sp.days, take: press(takeNight(journey, sched, i, k, locked)) }] : [])),
   ]
   const node = (id: string) => map.nodes.find((n) => n.id === id)
   const countryOf = (id: string) => node(id)?.country ?? inout.airports[id]?.country ?? ''
@@ -404,7 +408,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         country={countryOf(p.node)}
         days={sp.days}
         exact={sp.exact}
-        onLess={press(giveNight(journey, sched, i))}
+        onLess={press(giveNight(journey, sched, i, locked))}
         rows={nightRows(i)}
         onOpen={() => setCity(i)}
       />,

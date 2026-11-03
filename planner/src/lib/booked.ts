@@ -1,4 +1,4 @@
-import type { Booking, InOut, MapNode } from '../data/types'
+import type { Booking, InOut, MapNode, Way } from '../data/types'
 import { legDay, type Journey, type Schedule } from './journey'
 import { addDays } from './time'
 
@@ -76,18 +76,31 @@ export function paidPrice(list: Booking[], b: Booking): number {
   return first.id === b.id ? (b.price_dkk ?? 0) : 0
 }
 
+/** The booked row of a way in or home, on the way's two ends and the day it leaves. */
+export function wayBooking(list: Booking[], data: BookData, w: Pick<Way, 'from' | 'to' | 'depart'>): Booking | null {
+  return bookingOn(list, data, { from: codeNode(data, w.from), to: codeNode(data, w.to), day: w.depart.slice(0, 10) })
+}
+
+/** The place indexes whose leg is booked on the day it shows. A night move or a day set by hand leaves them on that day. */
+export function lockedLegs(list: Booking[], data: BookData, j: Journey, sched: Schedule): Set<number> {
+  const live = booked(list)
+  const locked = new Set<number>()
+  if (!live.length) return locked
+  j.places.forEach((p, k) => {
+    if (k === 0 || !p.hop || !sched.places[k - 1]) return
+    if (bookingOn(live, data, { from: j.places[k - 1].node, to: p.node, day: legDay(p.hop, sched.places[k - 1].outDay) })) locked.add(k)
+  })
+  return locked
+}
+
 /** How many legs, ways and stays of a trip are booked, for the trips list. */
 export function bookedCount(list: Booking[], data: BookData, j: Journey, sched: Schedule): number {
   const live = booked(list)
   if (!live.length) return 0
-  let n = 0
-  j.places.forEach((p, k) => {
-    if (k === 0 || !p.hop || !sched.places[k - 1]) return
-    if (bookingOn(live, data, { from: j.places[k - 1].node, to: p.node, day: legDay(p.hop, sched.places[k - 1].outDay) })) n++
-  })
+  let n = lockedLegs(live, data, j, sched).size
   for (const id of [j.wayIn, j.wayHome]) {
     const w = data.inout.ways[id]
-    if (w && bookingOn(live, data, { from: codeNode(data, w.from), to: codeNode(data, w.to), day: w.depart.slice(0, 10) })) n++
+    if (w && wayBooking(live, data, w)) n++
   }
   const seen = new Set<string>()
   for (const s of sched.places) {
