@@ -50,7 +50,7 @@ export function bookedElsewhere(list: Booking[], data: BookData, leg: { from: st
 }
 
 /** The booked stays at the place whose nights, check_in to the night before check_out, fall inside the stop's. */
-function staysIn(list: Booking[], placeNode: string, nights: { first: string; last: string }): Booking[] {
+export function staysIn(list: Booking[], placeNode: string, nights: { first: string; last: string }): Booking[] {
   return booked(list).filter(
     (b) => b.kind === 'stay' && b.place_id === placeNode && !!b.check_in && !!b.check_out && b.check_in >= nights.first && addDays(b.check_out, -1) <= nights.last,
   )

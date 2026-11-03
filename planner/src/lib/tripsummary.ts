@@ -1,16 +1,16 @@
-import type { AppData } from '../data/types'
+import type { AppData, Booking } from '../data/types'
 import { day } from './format'
 import { nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from './journey'
 
 // The facts the Trips home shows for one trip: its ways, totals and route. Null when a way has left the data.
 
-export function summarize(data: AppData, j: Journey) {
+export function summarize(data: AppData, j: Journey, bookings: Booking[] = []) {
   const wi = data.inout.ways[j.wayIn]
   const wh = data.inout.ways[j.wayHome]
   if (!wi || !wh) return null
   const nm = (id: string) => nodeName(data.map, data.inout, id)
-  const sched = schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), nm)
-  const t = totals(data, j, sched)
+  const sched = schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), nm, bookings, data)
+  const t = totals(data, j, sched, bookings)
   return {
     wi,
     wh,

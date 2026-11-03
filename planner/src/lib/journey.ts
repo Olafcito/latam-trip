@@ -1,4 +1,5 @@
-import type { AppData, CrawledFlight, InOut, MapData, Mode, StopItem, Way } from '../data/types'
+import type { AppData, Booking, CrawledFlight, InOut, MapData, Mode, StopItem, Way } from '../data/types'
+import { bookedElsewhere, bookingOn, codeNode, paidPrice, staysIn, type BookData } from './booked'
 import { day, dayDiff, dayTime, kr } from './format'
 import { edgeHours, edgePrice, groundPath, type Arc } from './graph'
 import { priceOfWays } from './options'
@@ -169,8 +170,9 @@ export function legTime(map: MapData, h: Hop): LegTime {
 /**
  * The dated moments of a trip are its landing, the legs with a date set or a picked flight, and
  * its flight home. The days between two dated moments are shared evenly by the places in between.
+ * Given the data to match them by, the bookings add a warning to a leg booked on another day.
  */
-export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string, names: (n: string) => string): Schedule {
+export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string, names: (n: string) => string, bookings: Booking[] = [], data?: BookData): Schedule {
   const warnings: Warning[] = []
   const first = wayIn.arrive.slice(0, 10)
   const places: ScheduledPlace[] = j.places.map((p) => ({ node: p.node, arrive: null, depart: null, days: 0, inDay: first, outDay: first, exact: false }))
@@ -224,6 +226,11 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
   const free = last && j.lastNights != null ? Math.max(0, last.days - j.lastNights) : 0
   if (last) last.days -= free
   if (last && last.node !== exitNode) warnings.push({ level: 'warn', text: `The journey has to end in ${names(exitNode)}, where the way home leaves` })
+  if (data) j.places.forEach((p, k) => {
+    if (k === 0 || !p.hop) return
+    const b = bookedElsewhere(bookings, data, { from: j.places[k - 1].node, to: p.node, day: legDay(p.hop, places[k - 1].outDay) })
+    if (b) warnings.push({ level: 'warn', text: `Booked on ${day(b.depart!)}`, leg: k })
+  })
   return { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), free, warnings }
 }
 
@@ -317,6 +324,8 @@ export interface Totals {
   hub_stay_dkk: number | null
   ground_dkk: number
   ground_unknown: number
+  /** what the booked stays at the stops cost. Not in the travel total */
+  stays_booked_dkk: number
   flights: number
   air_hours: number
   days_per_country: Record<string, number>
@@ -327,26 +336,48 @@ export function hubStops(w: Way): StopItem[] {
   return w.timeline.filter((x): x is StopItem => x.kind !== 'flight')
 }
 
-/** Totals for a journey: a ticket shared by both ways is counted once; bags, hub stays and ground kept apart. */
-export function totals(data: AppData, j: Journey, sched: Schedule | null): Totals {
+/**
+ * Totals for a journey: a ticket shared by both ways is counted once; bags, hub stays and ground kept apart.
+ * A booked way or leg counts what was paid for it in place of its quote, and the booked stays are kept apart.
+ */
+export function totals(data: AppData, j: Journey, sched: Schedule | null, bookings: Booking[] = []): Totals {
   const { inout, map } = data
   const wi = inout.ways[j.wayIn]
   const wh = inout.ways[j.wayHome]
+  /** what was paid for the leg, or null when it is not booked */
+  const paid = (leg: { from: string; to: string; day: string }) => {
+    const b = bookingOn(bookings, data, leg)
+    return b ? paidPrice(bookings, b) : null
+  }
+  const anyBooked = bookings.length > 0
+  const paidWays = anyBooked ? [wi, wh].map((w) => paid({ from: codeNode(data, w.from), to: codeNode(data, w.to), day: w.depart.slice(0, 10) })) : [null, null]
+  const quoted = [wi, wh].filter((_, k) => paidWays[k] == null)
   const p = priceOfWays(inout, [wi, wh])
   let regional = 0
   let ground = 0
   let groundUnknown = 0
   let flights = wi.flights + wh.flights
   let air = wi.flying_hours + wh.flying_hours
-  for (const pl of j.places) {
+  j.places.forEach((pl, k) => {
     const h = pl.hop
-    if (!h) continue
+    if (!h) return
+    const booked = anyBooked && k > 0 ? paid({ from: j.places[k - 1].node, to: pl.node, day: legDay(h, sched?.places[k - 1]?.outDay ?? '') }) : null
+    const price = booked ?? h.price_dkk
     if (h.mode === 'flight') {
       flights += 1 + (h.flight?.stops ?? h.flight?.via.length ?? 0)
-      regional += h.price_dkk ?? 0
+      regional += price ?? 0
       air += h.hours ?? 0
-    } else if (h.price_dkk == null) groundUnknown++
-    else ground += h.price_dkk
+    } else if (price == null) groundUnknown++
+    else ground += price
+  })
+  const stayIds = new Set<string>()
+  let staysBooked = 0
+  for (const s of sched?.places ?? []) {
+    if (s.outDay <= s.inDay) continue
+    for (const b of staysIn(bookings, s.node, { first: s.inDay, last: addDays(s.outDay, -1) })) {
+      if (!stayIds.has(b.id)) staysBooked += paidPrice(bookings, b)
+      stayIds.add(b.id)
+    }
   }
   const stops = [...hubStops(wi), ...hubStops(wh)].filter((s) => s.kind === 'night' || s.kind === 'day_stop' || s.kind === 'self_transfer')
   let hubStay: number | null = 0
@@ -366,7 +397,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null): Total
     days[c] = (days[c] ?? 0) + s.nights
   }
   return {
-    tickets_dkk: p.price_dkk,
+    tickets_dkk: (paidWays[0] ?? 0) + (paidWays[1] ?? 0) + (quoted.length ? priceOfWays(inout, quoted).price_dkk : 0),
     regional_flights_dkk: regional,
     cabin_bag_dkk: p.cabin,
     checked_bag_dkk: p.checked,
@@ -374,6 +405,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null): Total
     hub_stay_dkk: hubStay,
     ground_dkk: ground,
     ground_unknown: groundUnknown,
+    stays_booked_dkk: staysBooked,
     flights,
     air_hours: Math.round(air * 10) / 10,
     days_per_country: days,

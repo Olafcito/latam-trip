@@ -86,6 +86,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const moveStop = useStore((s) => s.moveStop)
   const insertLeg = useStore((s) => s.insertLeg)
   const setHopDate = useStore((s) => s.setHopDate)
+  const bookings = useStore((s) => s.bookings)
   const pd = usePairDates()
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(journey.name)
@@ -114,9 +115,9 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   }
 
   const exitNode = nodeForAirport(inout, wh.from)
-  const sched = schedule(journey, wi, wh, exitNode, nm)
+  const sched = schedule(journey, wi, wh, exitNode, nm, bookings, data)
   const homeDay = sched.homeDepart.slice(0, 10)
-  const t = totals(data, journey, sched)
+  const t = totals(data, journey, sched, bookings)
   const allIn = travelTotal(t)
   const lastIdx = journey.places.length - 1
   const at = cursor ?? lastIdx
@@ -255,7 +256,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                         route={`${nm(h.from)} to ${nm(h.to)}`}
                         w={legWindow(pd, map, h, sched.places[i - 1], homeDay)}
                         set={!!h.date}
-                        clash={sched.warnings.some((w) => w.leg === i)}
+                        clash={sched.warnings.some((w) => w.leg === i && w.level === 'error')}
                         firstDay={sched.firstDay}
                         stay={{ name: nm(journey.places[i - 1].node), inDay: sched.places[i - 1].inDay }}
                         trip={journey.id}

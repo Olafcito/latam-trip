@@ -11,7 +11,7 @@ function Cell({ k, children }: { k: string; children: ReactNode }) {
   return <div><dt>{k}</dt><dd>{children}</dd></div>
 }
 
-/** The price of the trip in one line: the total, then the three costs that make most of it. Bags, hub nights and flight counts open on a click. */
+/** The price of the trip in one line: the total, then the three costs that make most of it, and the booked stays when there are some. Bags, hub nights and flight counts open on a click. */
 export function CostStrip({ t }: { t: Totals }) {
   const more = useDisclosure()
   return (
@@ -22,6 +22,7 @@ export function CostStrip({ t }: { t: Totals }) {
           <Cell k="Long-haul">{kr(t.tickets_dkk)}</Cell>
           <Cell k="Regional flights">{kr(t.regional_flights_dkk)}</Cell>
           <Cell k="Ground">{groundCost(t)}</Cell>
+          {t.stays_booked_dkk > 0 && <Cell k="Stays">{kr(t.stays_booked_dkk)}</Cell>}
         </dl>
         <button className="disc-btn costs-btn" {...more.trigger}>All costs<Chevron open={more.open} /></button>
       </div>

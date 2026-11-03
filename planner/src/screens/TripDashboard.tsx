@@ -25,6 +25,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const saveJourney = useStore((s) => s.saveJourney)
   const go = useStore((s) => s.go)
   const changeEndsOf = useStore((s) => s.changeEndsOf)
+  const bookings = useStore((s) => s.bookings)
   const [onMap, setOnMap] = useState(false)
 
   const wi = inout.ways[journey.wayIn]
@@ -54,8 +55,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   }
 
   const exitNode = nodeForAirport(inout, wh.from)
-  const sched = schedule(journey, wi, wh, exitNode, nm)
-  const t = totals(data, journey, sched)
+  const sched = schedule(journey, wi, wh, exitNode, nm, bookings, data)
+  const t = totals(data, journey, sched, bookings)
   // a warning about one leg sits on that leg
   const general = sched.warnings.filter((w) => w.leg == null)
   const stops = routeStops(map, journey, sched)

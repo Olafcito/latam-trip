@@ -7,7 +7,7 @@ import { journeyToRow, tripRowErrors } from './tripRow'
 const bare = { generated_at: '', currency: 'DKK', home: ['CPH'], airports: {}, tickets: {}, ways: {}, options: [] } as unknown as InOut
 const zero: Totals = {
   tickets_dkk: 1, regional_flights_dkk: 2, cabin_bag_dkk: null, checked_bag_dkk: null, hub_nights: 0, hub_stay_dkk: 0,
-  ground_dkk: 3, ground_unknown: 0, flights: 4, air_hours: 5, days_per_country: { GT: 7 }, hub_stops: [],
+  ground_dkk: 3, ground_unknown: 0, stays_booked_dkk: 0, flights: 4, air_hours: 5, days_per_country: { GT: 7 }, hub_stops: [],
 }
 
 /** What a version holds apart from when, by whom and which number it is, and the history trips.json adds. */

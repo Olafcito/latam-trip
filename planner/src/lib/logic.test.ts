@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { AppData, InOut, MapData, Ticket, Way } from '../data/types'
-import { schedule, totals, type Hop, type Journey } from './journey'
+import type { AppData, Booking, InOut, MapData, Ticket, Way } from '../data/types'
+import { schedule, totals, travelTotal, type Hop, type Journey } from './journey'
 import { mixWays, priceOfWays, totalRating, priceScore } from './options'
 import { shortestPath } from './graph'
 import { kr, hours, dayTime, nextDayMark } from './format'
@@ -242,5 +242,71 @@ describe('shortest path', () => {
   })
   it('returns null when there is no route', () => {
     expect(shortestPath(map, 'VVI', 'BOG', 'hours')).toBeNull()
+  })
+})
+
+describe('paid prices and booked days', () => {
+  // Made up rows only. A real reference, price or name never goes in this file.
+  const row = (over: Partial<Booking>): Booking => ({
+    id: 'b1', kind: 'flight', status: 'booked', from_code: null, to_code: null, depart: null, arrive: null,
+    place_id: null, check_in: null, check_out: null, lodging_id: null, room_id: null, reference: 'TEST01', seller: null,
+    url: null, price_dkk: null, price: null, currency: null, refundable: null, changeable: null, change_until: null,
+    cancel_until: null, cabin_bag: null, checked_bag: null, segments: null, travellers: 1, trip_id: null, ticket: null,
+    source: 'manual', notes: null, attachments: [], created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z',
+    ...over,
+  })
+  const T1 = ticket('T1', 6000, 0, 300)
+  const wi = way({ id: 'I1', tickets: ['T1'], shared_ticket: 'T1', paired_with: 'H1', type: 'ticket' })
+  const wh = way({ id: 'H1', direction: 'home', from: 'VVI', to: 'CPH', tickets: ['T1'], shared_ticket: 'T1', paired_with: 'I1', type: 'ticket',
+    depart: '2027-02-03T09:05', arrive: '2027-02-04T09:10' })
+  const data: AppData = { inout: inout([wi, wh], [T1]), map, bags: [], trip: {}, source: 'project', meta: null }
+  const hop = (from: string, to: string, over: Partial<Hop>): Hop => ({ from, to, mode: 'flight', operator: null, hours: 6, price_dkk: 1500, overnight: false, border: false, flight: null, ...over })
+  const j: Journey = { id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
+    { node: 'BOG', hop: null },
+    { node: 'MDE', hop: hop('BOG', 'MDE', { mode: 'bus', hours: 9, price_dkk: 150, date: '2026-12-10' }) },
+    { node: 'VVI', hop: hop('MDE', 'VVI', { date: '2026-12-20' }) },
+  ] }
+  const names = (n: string) => n
+  const sched = schedule(j, wi, wh, 'VVI', names)
+  const wayIn = row({ id: 'w-in', from_code: 'CPH', to_code: 'BOG', depart: '2026-12-03T06:00', ticket: 'G1', price_dkk: 8000 })
+  const wayHome = row({ id: 'w-home', from_code: 'VVI', to_code: 'CPH', depart: '2027-02-03T09:05', ticket: 'G1' })
+  const regional = row({ id: 'reg', from_code: 'MDE', to_code: 'VVI', depart: '2026-12-20T10:00', price_dkk: 900 })
+  const bus = row({ id: 'bus', kind: 'bus', from_code: 'BOG', to_code: 'MDE', depart: '2026-12-10', price_dkk: 200 })
+  const stay = row({ id: 'stay', kind: 'stay', place_id: 'MDE', check_in: '2026-12-12', check_out: '2026-12-15', price_dkk: 1200 })
+
+  it('counts a ticket booked as two rows of one group once, whatever the quote says', () => {
+    expect(totals(data, j, sched).tickets_dkk).toBe(6000)
+    expect(totals(data, j, sched, [wayIn, wayHome]).tickets_dkk).toBe(8000)
+    expect(totals(data, j, sched, [wayHome, wayIn]).tickets_dkk).toBe(8000)
+  })
+
+  it('puts the paid price of a booked leg in place of its quote', () => {
+    expect(totals(data, j, sched).regional_flights_dkk).toBe(1500)
+    expect(totals(data, j, sched, [regional]).regional_flights_dkk).toBe(900)
+    expect(totals(data, j, sched, [bus]).ground_dkk).toBe(200)
+  })
+
+  it('adds a booked stay to the stays and leaves it out of the travel total', () => {
+    const plain = totals(data, j, sched)
+    const t = totals(data, j, sched, [stay])
+    expect(plain.stays_booked_dkk).toBe(0)
+    expect(t.stays_booked_dkk).toBe(1200)
+    expect(travelTotal(t)).toBe(travelTotal(plain))
+  })
+
+  it('warns on a leg booked a day off with the day it is booked on, and counts its quote', () => {
+    const off = row({ ...regional, depart: '2026-12-21T10:00' })
+    const s = schedule(j, wi, wh, 'VVI', names, [off], data)
+    expect(s.warnings).toContainEqual({ level: 'warn', text: 'Booked on 21 Dec', leg: 2 })
+    expect(schedule(j, wi, wh, 'VVI', names, [regional], data).warnings).toEqual(sched.warnings)
+    // without the data to match by, no booking is looked at
+    expect(schedule(j, wi, wh, 'VVI', names, [off]).warnings).toEqual(sched.warnings)
+    expect(totals(data, j, s, [off]).regional_flights_dkk).toBe(1500)
+  })
+
+  it('changes nothing for a cancelled booking', () => {
+    const all = [wayIn, wayHome, regional, bus, stay, row({ ...regional, id: 'off', depart: '2026-12-21T10:00' })].map((b) => ({ ...b, status: 'cancelled' as const }))
+    expect(totals(data, j, sched, all)).toEqual(totals(data, j, sched))
+    expect(schedule(j, wi, wh, 'VVI', names, all, data)).toEqual(sched)
   })
 })

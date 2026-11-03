@@ -163,7 +163,7 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, home, onOpen
  * Travel between two stops, one line: the day it leaves, a button to the calendar when the day can
  * move, then its mode and length with its ticket behind them. The rail is the leg drawn.
  */
-function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, fromName, onSet }: {
+function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, booked, fromName, onSet }: {
   fam: Family
   tone?: 'in' | 'home'
   route: string
@@ -179,6 +179,8 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   aria: string
   /** the warning when this leg leaves before you get there */
   clash?: Warning
+  /** the warning when this leg is booked on another day */
+  booked?: Warning
   fromName: string
   onSet?: (date: string) => void
 }) {
@@ -220,6 +222,7 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
           {clash.fix && onSet && <button type="button" className="btn small" onClick={() => onSet(clash.fix!)}>Move to {day(clash.fix)}</button>}
         </p>
       )}
+      {booked && <p className="st-clash" role="status"><Warn /><span>{booked.text}</span></p>}
     </li>
   )
 }
@@ -346,7 +349,8 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           times={f && timed(f) && f.depart.slice(0, 10) === date ? timesOf(f.depart, f.arrive) : timesOf(date, sched.places[i].inDay)}
           set={!!h.date}
           known={!!(h.date || f)}
-          clash={sched.warnings.find((w) => w.leg === i)}
+          clash={sched.warnings.find((w) => w.leg === i && w.level === 'error')}
+          booked={sched.warnings.find((w) => w.leg === i && w.level === 'warn')}
           fromName={ends.fromName}
           onSet={(d) => setHopDate(i, d)}
           aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${took ? `, ${took}` : ''}${h.overnight ? ', overnight' : ''}. Details`}
