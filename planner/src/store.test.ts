@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ownKey } from '@map/data/ownKey'
 import { CURRENT_KEY, useStore } from './store'
 import type { AppData, Booking, CrawledFlight, InOut, MapEdge, Way } from './data/types'
-import { schedule, totals, travelTotal, type Hop, type Journey, type Totals } from './lib/journey'
+import { legDay, schedule, totals, travelTotal, type Hop, type Journey, type Totals } from './lib/journey'
 import { rowToJourney, withTripWays, type TripRow } from './lib/repoTrips'
 import { chooseWay } from './lib/ways'
 
@@ -409,26 +409,91 @@ describe('a booked leg holds its day', () => {
     expect(legDays()).toEqual(['2026-12-10', '2026-12-15', '2026-12-20', '2026-12-27', '2026-12-30', '2027-01-05'])
   })
 
+  describe('a leg that floats and is booked', () => {
+    // leg 3 leaves 22 Dec, so leg 4 floats on 26 Dec between it and leg 5 on 30 Dec, and it is booked on that day
+    const floating = (leg3: Partial<Hop>): Journey => ({
+      ...long,
+      places: long.places.map((p, k) => (k === 3 ? { ...p, hop: { ...p.hop!, ...leg3 } } : k === 4 ? { ...p, hop: { ...p.hop!, date: undefined } } : p)),
+    })
+    const on26 = booking('b4', 'D', 'E', '2026-12-26T08:00')
+    /** the day leg 4 shows, its own or its share */
+    const shown4 = () => {
+      const j = s().journey!
+      return legDay(j.places[4].hop!, schedule(j, wIn, wHome, 'G', (n) => n).places[3].outDay)
+    }
+
+    beforeEach(() => useStore.setState({ bookings: [on26] }))
+
+    it('keeps its day when the day of the leg before it is cleared', () => {
+      s().setJourney(floating({ date: '2026-12-22' }))
+      expect(shown4()).toBe('2026-12-26')
+      const before = s().journey
+      s().setHopDate(4, '2026-12-28')
+      expect(s().journey).toBe(before)
+      s().setHopDate(3, null)
+      expect(s().journey!.places[3].hop!.date).toBeUndefined()
+      expect(shown4()).toBe('2026-12-26')
+    })
+
+    it('keeps its day when the flight of the leg before it is cleared', () => {
+      s().setJourney(floating({ date: undefined, flight: { ...flight, depart: '2026-12-22T08:00', arrive: '2026-12-22T10:00' } }))
+      expect(shown4()).toBe('2026-12-26')
+      s().setHopFlight(3, null)
+      expect(s().journey!.places[3].hop!.flight).toBeNull()
+      expect(shown4()).toBe('2026-12-26')
+    })
+  })
+
+  it('a leg unlocked on one trip is not unlocked on the next, nor once the stops change', () => {
+    s().setUnlocked(4)
+    s().setJourney({ ...long, id: 'jother' })
+    expect(s().unlocked).toBeNull()
+    s().setUnlocked(4)
+    s().setJourney({ ...long, id: 'jother', name: 'Renamed' })
+    expect(s().unlocked).toBe(4)
+    s().removeStop(1)
+    expect(s().unlocked).toBeNull()
+    s().setUnlocked(3)
+    s().openTrip({ ...long, id: 'jthird' })
+    expect(s().unlocked).toBeNull()
+  })
+
   describe('a booked way', () => {
     const onIn = booking('bin', 'CPH', 'A', '2026-12-03T06:00')
+    // one ticket, its way in on 5 Dec and its way home on 6 Feb
+    const tIn = way({ id: 'T_in', type: 'ticket', depart: '2026-12-05T06:00', arrive: '2026-12-05T14:30', paired_with: 'T_home' })
+    const tHome = way({ ...wHome, id: 'T_home', type: 'ticket', depart: '2027-02-06T09:05', arrive: '2027-02-07T09:10', paired_with: 'T_in' })
+    const tickets = { ...inout, ways: { ...inout.ways, T_in: tIn, T_home: tHome } } as InOut
 
-    beforeEach(() => useStore.setState({ bookings: [onIn] }))
+    beforeEach(() => {
+      useStore.setState({ bookings: [onIn] })
+      s().setData({ ...data, inout: tickets })
+      s().setJourney(long)
+    })
 
     it('a pick that would change only the booked way does nothing', () => {
       const before = s().journey
-      s().setWays({ wayIn: laterIn, wayHome: wHome, note: null })
+      expect(s().setWays({ wayIn: laterIn, wayHome: wHome, note: null })).toBe(false)
       expect(s().journey).toBe(before)
     })
 
-    it('a pick of both ways keeps the booked one and takes the other', () => {
-      s().setWays({ wayIn: laterIn, wayHome: laterHome, note: null })
-      expect([s().journey!.wayIn, s().journey!.wayHome]).toEqual(['W_in', 'W_home2'])
+    it('a ticket whose other half would replace the booked way is not taken at all', () => {
+      const choice = chooseWay(tickets, tHome, { wayIn: wIn, wayHome: wHome })
+      expect([choice.wayIn.id, choice.wayHome.id]).toEqual(['T_in', 'T_home'])
+      const before = s().journey
+      expect(s().setWays(choice)).toBe(false)
+      expect(s().journey).toBe(before)
     })
 
-    it('an unlocked booked way can change, and the lock comes back', () => {
+    it('a pick that leaves the booked way as it is goes on', () => {
+      expect(s().setWays({ wayIn: wIn, wayHome: laterHome, note: null })).toBe(true)
+      expect(s().journey!.wayHome).toBe('W_home2')
+    })
+
+    it('an unlocked booked way changes with its ticket, and the lock comes back', () => {
       s().setUnlocked('in')
-      s().setWays({ wayIn: laterIn, wayHome: wHome, note: null })
-      expect([s().journey!.wayIn, s().unlocked]).toEqual(['W_in2', null])
+      expect(s().setWays(chooseWay(tickets, tHome, { wayIn: wIn, wayHome: wHome }))).toBe(true)
+      expect([s().journey!.wayIn, s().journey!.wayHome, s().unlocked]).toEqual(['T_in', 'T_home', null])
     })
 
     it('a new start and end keep the booked way', () => {

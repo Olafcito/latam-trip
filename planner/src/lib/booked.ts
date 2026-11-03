@@ -81,6 +81,16 @@ export function wayBooking(list: Booking[], data: BookData, w: Pick<Way, 'from' 
   return bookingOn(list, data, { from: codeNode(data, w.from), to: codeNode(data, w.to), day: w.depart.slice(0, 10) })
 }
 
+/** Whether next would replace now, a booked way that is not unlocked. A booked way holds until its booking is changed. */
+export function wayHeld(list: Booking[], data: BookData, now: Way | undefined, next: Way, unlocked: boolean): boolean {
+  return !!now && next.id !== now.id && !unlocked && !!wayBooking(list, data, now)
+}
+
+/** What a pick that would change a booked way says in its place. */
+export function heldWayNotice(side: 'in' | 'home'): string {
+  return `The ${side === 'in' ? 'way in' : 'way home'} is booked. Change it from its booking.`
+}
+
 /** The place indexes whose leg is booked on the day it shows. A night move or a day set by hand leaves them on that day. */
 export function lockedLegs(list: Booking[], data: BookData, j: Journey, sched: Schedule): Set<number> {
   const live = booked(list)

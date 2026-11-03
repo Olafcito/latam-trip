@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { MapData, Way } from '../data/types'
-import { applyMove, flightOffDay, giveNight, legTime, pinLegs, schedule, stopGoes, takeNight, type Hop, type Journey, type NightMove } from './journey'
+import { applyMove, flightOffDay, giveNight, legTime, nightStop, pinLegs, schedule, stopGoes, takeNight, type Hop, type Journey, type NightMove } from './journey'
 
 describe('flightOffDay', () => {
   const flown = { ...({ from: 'A', to: 'B', mode: 'flight', operator: null, hours: 1, price_dkk: 100, overnight: false, border: false } as const), flight: { depart: '2026-12-29T01:10', arrive: '2026-12-29T07:05' } } as unknown as Hop
@@ -381,6 +381,19 @@ describe('a booked leg holds its day', () => {
     j = after(j, takeNight(j, at(j), 2, 'free', four))
     expect(legDays(j)[3]).toBe('2026-12-25')
     expect(at(j).warnings.find((w) => w.level === 'error')).toMatchObject({ leg: 4, text: expect.stringMatching(/^The leg on from D leaves 25 Dec, before you get there 26 Dec/) })
+  })
+
+  it('names the stop that gives or takes the night when a booked leg is ahead', () => {
+    expect(nightStop(four, 2)).toBe(3)
+    expect(nightStop(four, 1)).toBe(3)
+    expect(nightStop(new Set([2, 5]), 3)).toBe(4)
+    // no booked leg ahead, or the stop the booked leg leaves from, where nothing moves
+    expect(nightStop(new Set(), 2)).toBeNull()
+    expect(nightStop(new Set([1]), 2)).toBeNull()
+    expect(nightStop(four, 3)).toBeNull()
+    // the stop it names is the one whose nights change
+    const j = after(long(), giveNight(long(), at(long()), 1, four))
+    expect(nightsOf(j)[nightStop(four, 1)!]).toBe(6)
   })
 
   it('with legs 2 and 5 booked, a night more at stop 3 moves leg 4 only', () => {

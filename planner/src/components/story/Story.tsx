@@ -5,14 +5,14 @@ import type { AppData, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
-import { flightOffDay, giveNight, legDay, legTime, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
+import { flightOffDay, giveNight, legDay, legTime, nightStop, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
-import { lockedLegs } from '../../lib/booked'
+import { heldWayNotice, lockedLegs, wayHeld } from '../../lib/booked'
 import { legWindow } from '../../lib/legDates'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
 import { hopLink, wayLinks } from '../../lib/links'
-import { dayOf } from '../../lib/ways'
+import { dayOf, type WayChoice } from '../../lib/ways'
 import { pickOfDay, rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
 import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
@@ -114,24 +114,26 @@ function NightChooser({ name, days, rows }: { name: string; days: number; rows: 
 }
 
 /** A stop: flag on the rail, the city, and at the right edge the nights there, which you can change. Copenhagen has no nights. */
-function Stop({ id, name, node, country, days, exact, onLess, rows, home, onOpen }: {
+function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, onOpen }: {
   id?: string
   name: string; node: MapNode | undefined; country: string; days: number; exact: boolean
   /** a night less here, or null when it has none */
   onLess: (() => void) | null
   /** where a night more can come from */
   rows: NightRow[]
+  /** the stop just before a booked leg ahead, which gives the night more and takes the night less in place of the free nights */
+  through?: string
   /** Copenhagen, where the trip starts and ends */
   home?: 'start' | 'end'
   /** opens the City card */
   onOpen?: () => void
 }) {
   const pop = usePop(false)
-  const less = `One night less in ${name}, it becomes a free night`
+  const less = through ? `One night less in ${name}, it goes to ${through}` : `One night less in ${name}, it becomes a free night`
   // free nights go first with nothing to choose, the chooser is for when there are none left
   const direct = rows.find((r) => r.from === 'free')?.take
   const later = rows.filter((r) => r.from !== 'free')
-  const more = direct ? `One night more in ${name}, from the free nights` : `One night more in ${name}, choose where from`
+  const more = !direct ? `One night more in ${name}, choose where from` : through ? `One night more in ${name}, from ${through}` : `One night more in ${name}, from the free nights`
   const open = onOpen && (() => {
     usePlaceHover.getState().hide()
     onOpen()
@@ -267,6 +269,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const viewingOld = useStore((s) => s.viewing?.id === journey.id)
   const setNotice = useStore((s) => s.setNotice)
   const bookings = useStore((s) => s.bookings)
+  const unlocked = useStore((s) => s.unlocked)
   // a booked leg keeps its day, so the night steppers move only the legs up to it
   const locked = useMemo(() => lockedLegs(bookings, data, journey, sched), [bookings, data, journey, sched])
   // the ways of each day for the way in and the way home, for their calendars and their sheets
@@ -278,6 +281,12 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const [city, setCity] = useState<number | null>(null)
   const goes = useRef(false)
   const press = (m: NightMove | null) => (m ? () => moveNights(m) : null)
+  // a pick that would change a booked way changes nothing and says so
+  const pickWay = (c: WayChoice): boolean => {
+    if (setWays(c)) return true
+    setNotice(heldWayNotice(wayHeld(bookings, data, wayIn, c.wayIn, unlocked === 'in') ? 'in' : 'home'))
+    return false
+  }
   const nm = (id: string) => nodeName(map, inout, id)
   const nightRows = (i: number): NightRow[] => [
     { from: 'free', name: 'Free nights', nights: sched.free, take: press(takeNight(journey, sched, i, 'free', locked)) },
@@ -309,14 +318,13 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           // the day it has already changes nothing, another day takes the way the sheet lists first, one that keeps the other end's city when it can
           const r = d && d !== dayOf(w) && rows[d] ? pickOfDay(rows[d]) : undefined
           if (!r) return
-          setWays(r.choice)
-          if (r.choice.note) setNotice(r.choice.note)
+          if (pickWay(r.choice) && r.choice.note) setNotice(r.choice.note)
         }}
       />
     )
   }
   const waySheet = (dir: 'in' | 'home', w: Way, other: Way, rows: Record<string, WayRow[]>) => (close: () => void) => (
-    <WaySheet dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} onPick={setWays} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
+    <WaySheet dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} onPick={pickWay} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
   )
 
   const items: ReactNode[] = [
@@ -410,6 +418,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         exact={sp.exact}
         onLess={press(giveNight(journey, sched, i, locked))}
         rows={nightRows(i)}
+        through={(() => { const k = nightStop(locked, i); return k == null ? undefined : nm(sched.places[k].node) })()}
         onOpen={() => setCity(i)}
       />,
     )

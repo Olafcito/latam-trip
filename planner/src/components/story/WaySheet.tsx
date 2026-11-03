@@ -127,7 +127,8 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, onPick, onChang
   data: AppData
   /** the trip, so a flight picked on Momondo finds its way back */
   tripId?: string
-  onPick: (c: WayChoice) => void
+  /** whether the pick went on. One that would change a booked way does not, and the sheet closes on what it says */
+  onPick: (c: WayChoice) => boolean
   /** left out while an older version is open, and the button goes with it */
   onChangeEnds?: () => void
   close: () => void
@@ -156,7 +157,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, onPick, onChang
   useEffect(() => { if (said) status.current?.focus({ preventScroll: true }) }, [said])
 
   const pick = (r: WayRow) => {
-    onPick(r.choice)
+    if (!onPick(r.choice)) return close()
     if (r.choice.note) setSaid({ text: r.choice.note, n: (said?.n ?? 0) + 1 })
     else close()
   }

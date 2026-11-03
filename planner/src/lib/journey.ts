@@ -262,6 +262,16 @@ function shiftLegs(j: Journey, s: Schedule, i: number, end: number, by: number):
 const anchorAfter = (locked: Set<number>, i: number) => Math.min(Infinity, ...[...locked].filter((k) => k > i))
 
 /**
+ * The stop whose nights a night more or a night less at stop i really changes when a booked leg lies ahead:
+ * the stop just before that leg. Null when no booked leg is ahead, so the free nights take part as always,
+ * and null at the stop the booked leg leaves from, where neither move can be made.
+ */
+export function nightStop(locked: Set<number>, i: number): number | null {
+  const anchor = anchorAfter(locked, i)
+  return anchor === Infinity || anchor - 1 <= i ? null : anchor - 1
+}
+
+/**
  * The earliest stop decides. A night more at stop i comes from the free nights, and from a later stop
  * you choose once there are none. The legs up to that stop leave a day later, the stops between keep
  * their nights, and nothing before stop i changes. Returns null when there is no such night to take.
@@ -324,9 +334,10 @@ export function applyMove(j: Journey, m: NightMove): Journey {
   return { ...j, places, lastNights: m.lastNights }
 }
 
-/** Every leg with no day and no flight on the day it shows, so a day set by hand on one leg moves no other. */
-export function pinLegs(j: Journey, s: Schedule): Journey {
-  return { ...j, places: j.places.map((p, k) => (k > 0 && p.hop && !p.hop.date && !p.hop.flight ? { ...p, hop: { ...p.hop, date: s.places[k - 1].outDay } } : p)) }
+/** Every leg with no day and no flight on the day it shows, so a day set by hand on one leg moves no other. With only, just those legs. */
+export function pinLegs(j: Journey, s: Schedule, only?: Set<number>): Journey {
+  const pin = (k: number, h: Hop | null): h is Hop => k > 0 && !!h && !h.date && !h.flight && (!only || only.has(k))
+  return { ...j, places: j.places.map((p, k) => (pin(k, p.hop) ? { ...p, hop: { ...p.hop, date: s.places[k - 1].outDay } } : p)) }
 }
 
 // ---- totals

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking, Way } from '../data/types'
-import { bookedCount, bookedElsewhere, bookingOn, endsMatch, lockedLegs, paidPrice, stayOn, wayBooking, type BookData } from './booked'
+import { bookedCount, bookedElsewhere, bookingOn, endsMatch, heldWayNotice, lockedLegs, paidPrice, stayOn, wayBooking, wayHeld, type BookData } from './booked'
 import type { Hop, Journey, Schedule } from './journey'
 
 // Made up rows only. A real reference, price or name never goes in this file.
@@ -221,5 +221,24 @@ describe('wayBooking', () => {
     expect(wayBooking([home], data, data.inout.ways.H1)).toBe(home)
     expect(wayBooking([home], data, data.inout.ways.I1)).toBeNull()
     expect(wayBooking([row({ ...home, status: 'cancelled' })], data, data.inout.ways.H1)).toBeNull()
+  })
+})
+
+describe('wayHeld', () => {
+  const home = row({ id: 'home', from_code: 'GUA', to_code: 'CPH', depart: '2027-02-04T12:00' })
+  const H1 = data.inout.ways.H1
+  const other = { ...H1, id: 'H2', depart: '2027-02-05T12:00' }
+
+  it('holds a booked way that another way would replace, until it is unlocked', () => {
+    expect(wayHeld([home], data, H1, other, false)).toBe(true)
+    expect(wayHeld([home], data, H1, other, true)).toBe(false)
+    expect(wayHeld([home], data, H1, H1, false)).toBe(false)
+    expect(wayHeld([], data, H1, other, false)).toBe(false)
+    expect(wayHeld([home], data, undefined, other, false)).toBe(false)
+  })
+
+  it('says which way is booked and where to change it', () => {
+    expect(heldWayNotice('in')).toBe('The way in is booked. Change it from its booking.')
+    expect(heldWayNotice('home')).toBe('The way home is booked. Change it from its booking.')
   })
 })
