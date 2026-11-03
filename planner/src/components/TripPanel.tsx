@@ -77,7 +77,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const saveJourney = useStore((s) => s.saveJourney)
   const closeTrip = useStore((s) => s.closeTrip)
   const openTrip = useStore((s) => s.openTrip)
-  const go = useStore((s) => s.go)
+  const changeEndsOf = useStore((s) => s.changeEndsOf)
   const cursor = useStore((s) => s.cursor)
   const setCursor = useStore((s) => s.setCursor)
   const toggleCursor = useStore((s) => s.toggleCursor)
@@ -108,7 +108,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
           <button className="x" onClick={closeTrip} aria-label="Close trip"><Close /></button>
         </div>
         <p className="plan-empty">Its flights are no longer in the data. Pick a new way in and home.</p>
-        <div className="plan-acts"><button className="pbtn primary" onClick={() => go('trips', 'pick')}>Pick in and out</button></div>
+        <div className="plan-acts"><button className="pbtn primary" onClick={() => changeEndsOf(journey.id)}>Pick in and out</button></div>
       </aside>
     )
   }
@@ -227,7 +227,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
             <span className="io-ic in"><Land /></span>
             <b>{weekdayDay(wi.arrive)}</b>
             <small>{wi.arrive.slice(11, 16)}</small>
-            <button className="plan-link" onClick={() => go('trips', 'pick')}>Change</button>
+            <button className="plan-link" onClick={() => changeEndsOf(journey.id)}>Change</button>
           </li>
           {journey.places.flatMap((p, i) => {
             const n = node(p.node)

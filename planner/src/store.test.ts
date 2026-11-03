@@ -289,6 +289,17 @@ describe('changing the ways and the ends of a trip', () => {
     }
   })
 
+  it('an older version on screen keeps its ends', () => {
+    useStore.setState({ viewing: { id: 't1', version: 1, latest: 2, row } })
+    try {
+      const view = s().view
+      s().changeEndsOf('t1')
+      expect([s().pickFor, s().view]).toEqual([null, view])
+    } finally {
+      useStore.setState({ viewing: null })
+    }
+  })
+
   it('change mode stays while you look at the map and come back', () => {
     s().changeEndsOf('t1')
     s().go('map')

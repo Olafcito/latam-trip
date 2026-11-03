@@ -377,6 +377,8 @@ export const useStore = create<State>((set, get) => ({
   },
   pickFor: null,
   changeEndsOf: (tripId) => {
+    // an older version on screen is only looked at, its ends are not changed
+    if (get().viewing?.id === tripId) return
     get().go('trips', 'pick')
     set({ pickFor: tripId })
   },

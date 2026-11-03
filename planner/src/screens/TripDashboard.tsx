@@ -24,6 +24,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const openSaved = useStore((s) => s.openSaved)
   const saveJourney = useStore((s) => s.saveJourney)
   const go = useStore((s) => s.go)
+  const changeEndsOf = useStore((s) => s.changeEndsOf)
   const [onMap, setOnMap] = useState(false)
 
   const wi = inout.ways[journey.wayIn]
@@ -47,7 +48,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
           <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
           <h2 className="h2">{journey.name}</h2>
         </div>
-        <div className="card pad empty">Its flights are no longer in the data. <button className="btn small" onClick={() => go('trips', 'pick')}>Pick in and out</button></div>
+        <div className="card pad empty">Its flights are no longer in the data. <button className="btn small" onClick={() => changeEndsOf(journey.id)}>Pick in and out</button></div>
       </div>
     )
   }
