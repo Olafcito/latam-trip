@@ -1,13 +1,14 @@
 """The tools of the latam-trip connector, with no network code of their own.
 
-TYPES is one table of the things Claude may read and write: trips, flights, connections, stays, experiences, places and
-tasks. List, get, add, update and delete tools are made from it, five per type, and add takes a batch. set_leg_date and
-shift_leg write the dates of a trip's legs by the rules of planner/src/lib/journey.ts.
+TYPES is one table of the things Claude may read and write: trips, flights, connections, stays, experiences, places,
+tasks and bookings. List, get, add, update and delete tools are made from it, five per type, and add takes a batch.
+set_leg_date and shift_leg write the dates of a trip's legs by the rules of planner/src/lib/journey.ts, and never move a
+booked leg. attach_booking_file and attach_booking_upload put a booking's files in the private bookings bucket.
 
 CRUD only. A tool reads what is stored and writes it through the tripdb store, so every write passes the same checks as
 the plugin's own commands. Nothing here searches the web.
 """
-import copy, datetime as dt, hashlib, json, math, os, re, sys
+import base64, binascii, copy, datetime as dt, hashlib, json, math, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.normpath(os.path.join(HERE, "..", "plugin", "scripts"))
@@ -43,7 +44,22 @@ TYPES = {
     "experience": T("experience", "experiences", tripdb.EXPERIENCE, auto=("kind",), keys=("id",)),
     "place": T("place", "places", tripdb.NODE, auto=("kind", "origin"), keys=("id",)),
     "task": T("task", "tasks", None, keys=("id",), note="A task for the agents. Tasks live in the project database only."),
+    "booking": T("booking", "bookings", tripdb.BOOKING, auto=("id", "created_at", "updated_at", "attachments"), keys=("id",),
+                 note="A booking is a ticket or a bed that is paid for, kept in the project database only. Keep one row per leg: "
+                      "a ticket covering several legs is one row per leg with the same reference and the same ticket value, its "
+                      "price sits on the first row and the others carry 0. Call list_booking with from, to and day before adding, "
+                      "so nothing is bought twice. list_booking also takes place, and leaves out cancelled bookings unless where "
+                      "has status. delete_booking sets the status to cancelled and keeps the row. depart and arrive are local "
+                      "clock times. A booked leg holds its day, set_leg_date and shift_leg never move it."),
 }
+
+# The private bucket for booking files and the types it takes, as supabase/migrations/0013_bookings.sql sets them.
+BOOKING_BUCKET = "bookings"
+BOOKING_FILE_TYPES = ("application/pdf", "image/jpeg", "image/png", "image/heic", "image/webp")
+BOOKING_FILE_EXT = {**{t.split("/")[1]: t for t in BOOKING_FILE_TYPES}, "jpg": "image/jpeg"}
+MAX_FILE_MB = 4  # a Lambda request takes 6 MB, and base64 adds a third
+BOOKING_WHERE = {"from": "from_code", "to": "to_code", "place": "place_id"}  # the short names list_booking takes
+BOOKING_TIME_RE = re.compile(r"\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$")
 
 TASK_FIELDS = {"title": "!str", "type": "str", "status": "enum:open,working,done,failed", "trip_id": "str",
                "trip_version": "int", "result": "str", "data": "dict"}
@@ -231,15 +247,32 @@ class Core:
                "type": ["integer", "string"]}
         specs += [
             {"name": "set_leg_date", "description": "Put one leg of a trip on a day. No other leg moves, the leg keeps its picked flight, and the nights "
-             "either side follow from the dates. A clash is saved as it is and named in the reply, and so is a flight on another day than the leg.",
+             "either side follow from the dates. A clash is saved as it is and named in the reply, and so is a flight on another day than the leg. "
+             "A booked leg is refused, change its booking first.",
              "schema": {"type": "object", "properties": {"trip_id": {"type": "string"}, "leg": leg, "date": {"type": "string", "description": HINTS["date"]}},
                         "required": ["trip_id", "leg", "date"]},
              "fn": lambda trip_id, leg, date: self.set_leg_date(trip_id, leg, date)},
             {"name": "shift_leg", "description": "Move one leg of a trip and every later leg by the same number of days, earlier or later. "
-             "Earlier legs never change. A clash is saved as it is and named in the reply.",
+             "Earlier legs never change. The move stops at the first booked leg after this one: it and every leg after it keep their days, and "
+             "the reply names it in held. A booked leg itself is refused. A clash is saved as it is and named in the reply.",
              "schema": {"type": "object", "properties": {"trip_id": {"type": "string"}, "leg": leg, "days": {"type": "integer"}},
                         "required": ["trip_id", "leg", "days"]},
              "fn": lambda trip_id, leg, days: self.shift_leg(trip_id, leg, days)},
+            {"name": "attach_booking_file", "description": f"Attach a file Claude has, such as a PDF from a mail, to a booking. "
+             f"Up to {MAX_FILE_MB} MB of file, sent as base64. The name's ending gives the type, a PDF or a photo. A file with the "
+             f"same name is replaced. Use attach_booking_upload for a larger file.",
+             "schema": {"type": "object", "properties": {
+                 "id": {"type": "string", "description": "the booking's id"},
+                 "name": {"type": "string", "description": "the file name, ending in " + ", ".join("." + e for e in sorted(BOOKING_FILE_EXT))},
+                 "content_base64": {"type": "string"}}, "required": ["id", "name", "content_base64"]},
+             "fn": lambda id, name, content_base64: self.attach_booking_file(id, name, content_base64)},
+            {"name": "attach_booking_upload", "description": "Get a signed upload URL for a booking's file, valid for 10 minutes, "
+             "and add the file to the booking. PUT the file's bytes to the URL with its type as Content-Type. Type is a PDF or a photo.",
+             "schema": {"type": "object", "properties": {
+                 "id": {"type": "string", "description": "the booking's id"},
+                 "name": {"type": "string", "description": "the file name, like ticket.pdf"},
+                 "type": {"type": "string", "enum": list(BOOKING_FILE_TYPES)}}, "required": ["id", "name", "type"]},
+             "fn": lambda id, name, type: self.attach_booking_upload(id, name, type)},
         ]
         return specs
 
@@ -254,13 +287,16 @@ class Core:
             return properties_of(CHAT_FLIGHT)
         if t.name == "task":
             return properties_of(TASK_FIELDS)
+        if t.name == "booking":
+            props, required = properties_of(t.schema, skip=t.auto)
+            return props, [f for f in required if f != "status"]  # a new booking is booked unless it says otherwise
         return properties_of(t.schema, skip=t.auto | {"kind"})
 
     @staticmethod
     def example_where(t):
         return {"trip": '"name": "Costa Rica"', "flight": '"from": "SJO", "to": "LIR"', "connection": '"from": "SJO", "mode": "bus"',
                 "stay": '"place": "LCORN"', "experience": '"category": "nature"', "place": '"country": "CR"',
-                "task": '"status": "open"'}[t.name]
+                "task": '"status": "open"', "booking": '"from": "SJO", "to": "LIR", "day": "2026-12-12"'}[t.name]
 
     # ---- what is stored ---------------------------------------------------------------------------------------
 
@@ -281,6 +317,9 @@ class Core:
             return [(r["quote_id"], cols.from_row("quotes", r)) for r in self.store.query("quotes", eq=eq)]
         if tname == "task":
             return [(str(r["id"]), r) for r in self.store.query("tasks")]
+        if tname == "booking":
+            self.need_project("bookings")
+            return [(r["id"], r) for r in self.store.rest.get_all("bookings", {"select": "*", "order": "created_at,id"})]
         out = {}
         for r in self.store.rows(t.table):
             out[self.ident(tname, r)] = r
@@ -288,7 +327,7 @@ class Core:
 
     @staticmethod
     def ident(tname, r):
-        if tname in ("trip", "place", "experience"):
+        if tname in ("trip", "place", "experience", "booking"):
             return r["id"]
         if tname == "connection":
             return f"{r['from']}>{r['to']}:{r['mode']}" + (f":{r['operator']}" if r.get("operator") else "")
@@ -304,7 +343,7 @@ class Core:
 
     @staticmethod
     def shown(tname, id, r):
-        return r if tname in ("trip", "task") else {"id": id, **r}
+        return r if tname in ("trip", "task", "booking") else {"id": id, **r}
 
     @staticmethod
     def brief(tname, id, r):
@@ -319,6 +358,13 @@ class Core:
 
     @staticmethod
     def matches(tname, r, where):
+        if tname == "booking":
+            where = dict(where or {})
+            if "status" not in where and r.get("status") == "cancelled":
+                return False
+            if "day" in where and where.pop("day") not in ((r.get("depart") or "")[:10], r.get("check_in")):
+                return False
+            where = {BOOKING_WHERE.get(k, k): v for k, v in where.items()}
         for k, v in (where or {}).items():
             if tname == "flight" and k in ("from", "to", "date"):
                 if r["legs_requested"][0].get(k) != v:
@@ -368,6 +414,12 @@ class Core:
             return self.chat_flight(row)
         if tname == "task":
             return {"status": "open", **row}, self.task_errors(row)
+        if tname == "booking":
+            set_here = sorted(set(row) & t.auto)
+            if set_here:
+                return None, ["the connector sets " + ", ".join(set_here) + ", leave them out"]
+            r = {"status": "booked", **row}
+            return r, self.booking_errors(r)
         r = dict(row)
         if tname == "trip":
             r = self.new_trip(r)
@@ -392,6 +444,29 @@ class Core:
         if tripdb.store.has_unstorable(row):
             return [tripdb.BAD_WHY]
         return tripdb.check_fields(row, TASK_FIELDS)
+
+    @staticmethod
+    def booking_errors(row):
+        """Reasons to refuse a booking row: the schema, and the checks the bookings table makes, so one bad row in a
+        batch is refused here and does not fail the whole insert."""
+        unknown = [k for k in row if k not in tripdb.BOOKING]
+        if unknown:
+            return ["unknown field " + ", ".join(sorted(unknown)) + ", the fields are " + ", ".join(tripdb.BOOKING)]
+        if tripdb.store.has_nul(row):
+            return [tripdb.NUL_WHY]
+        if tripdb.store.has_unstorable(row):
+            return [tripdb.BAD_WHY]
+        errs = tripdb.check_fields(row, tripdb.BOOKING)
+        if errs:
+            return errs
+        errs += [f"{k} is {row[k]}, expected a local time like 2026-12-02T06:00 or a day alone"
+                 for k in ("depart", "arrive") if row.get(k) is not None and not BOOKING_TIME_RE.match(row[k])]
+        errs += [f"{k} is below 0" for k in ("price_dkk", "price") if row.get(k) is not None and row[k] < 0]
+        if row.get("travellers") is not None and row["travellers"] < 1:
+            errs.append("travellers is below 1")
+        if row.get("check_in") and row.get("check_out") and row["check_out"] <= row["check_in"]:
+            errs.append("check_out is not after check_in")
+        return errs
 
     def extra_checks(self, tname, r):
         known = self.store.ids("places")
@@ -433,6 +508,9 @@ class Core:
             self.need_project()
             got = self.store.rest.insert("tasks", good, returning="id")
             return [str(g["id"]) for g in got], []
+        if tname == "booking":
+            self.need_project("bookings")
+            return [g["id"] for g in self.store.rest.insert("bookings", good, returning="id")], []
         if tname == "flight":
             res = self.store.add_quotes(good, "chat.jsonl")
             ids = [cols.qr.quote_id(q) for q in good]
@@ -442,9 +520,9 @@ class Core:
         added = [self.ident(tname, r) for i, r in enumerate(good) if i not in skip_at]
         return added, [{"row": nums[i], "why": f"{self.ident(tname, good[i])} is stored already ({why})"} for i, _, why in res.skips]
 
-    def need_project(self):
+    def need_project(self, what="tasks"):
         if getattr(self.store, "kind", "") != "supabase":
-            raise Refused("tasks are kept in the project database only")
+            raise Refused(f"{what} are kept in the project database only")
 
     # ---- chat flights -----------------------------------------------------------------------------------------
 
@@ -497,6 +575,16 @@ class Core:
                 raise Refused(f"{i}: " + "; ".join(errs))
             self.keep("task", i, [old], "update")
             self.store.rest.patch("tasks", {"id": "eq." + i}, patch)
+            return {"updated": i}
+        if tname == "booking":
+            set_here = sorted(set(patch) & t.auto)
+            if set_here:
+                raise Refused(f"{i}: the connector sets " + ", ".join(set_here))
+            errs = self.booking_errors({**{k: v for k, v in old.items() if k not in t.auto}, **patch})
+            if errs:
+                raise Refused(f"{i}: " + "; ".join(errs))
+            self.keep("booking", i, [old], "update")
+            self.store.rest.patch("bookings", {"id": "eq." + i}, patch)
             return {"updated": i}
         if {"id", "kind"} & set(patch):
             raise Refused("id and kind cannot be changed")
@@ -570,7 +658,9 @@ class Core:
         i, old = self.find(tname, id)
         self.keep(tname, i, [old], "delete")
         try:
-            if tname == "flight":
+            if tname == "booking":
+                self.store.rest.patch("bookings", {"id": "eq." + i}, {"status": "cancelled"})  # the row stays, cancelled
+            elif tname == "flight":
                 self.store.remove("quotes", {"quote_id": i})
             else:
                 self.store.remove(t.table, {k: old.get(k) for k in t.keys})
@@ -641,6 +731,11 @@ class Core:
                 self.store.rest.patch("tasks", {"id": "eq." + str(id)}, {k: v for k, v in rows[0].items() if k in TASK_FIELDS})
             else:
                 self.store.rest.insert("tasks", rows)
+        elif tname == "booking":
+            self.need_project("bookings")
+            # the attachments stay as they are, a file added since is still in the bucket
+            back = {"status": rows[0]["status"]} if action == "delete" else {k: v for k, v in rows[0].items() if k not in t.auto}
+            self.store.rest.patch("bookings", {"id": "eq." + str(id)}, back)
         elif tname == "flight":
             if action == "update" and now_id == str(id):
                 self.store.remove("quotes", {"quote_id": now_id})
@@ -662,6 +757,82 @@ class Core:
 
         self.edit_trash(drop)  # only now, so a restore that failed halfway can be tried again
         return {"restored": str(id), "action_undone": action}
+
+    # ---- booking files ----------------------------------------------------------------------------------------
+
+    def booking_file(self, id, name, ftype):
+        """(booking id, path in the bucket) for a file about to be attached, after the checks."""
+        if not isinstance(name, str) or not name.strip() or name.strip(".") == "" or re.search(r"[/\\\x00-\x1f]", name):
+            raise Refused(f"name {name!r} is not a file name, give one like ticket.pdf")
+        if ftype not in BOOKING_FILE_TYPES:
+            raise Refused(f"{name} is {ftype or 'of an unknown type'}, the bookings bucket takes " + ", ".join(BOOKING_FILE_TYPES))
+        i, _ = self.find("booking", id)
+        return i, f"{i}/{name}"
+
+    def attach(self, id, entry):
+        """Add the entry to the booking's attachments, in place of one with the same path."""
+        _, row = self.find("booking", id)
+        files = [a for a in row.get("attachments") or [] if a.get("path") != entry["path"]] + [entry]
+        self.store.rest.patch("bookings", {"id": "eq." + id}, {"attachments": files})
+
+    def attach_booking_file(self, id, name, content_base64):
+        self.need_project("bookings")
+        ext = name.rsplit(".", 1)[-1].lower() if isinstance(name, str) and "." in name else ""
+        i, path = self.booking_file(id, name, BOOKING_FILE_EXT.get(ext))
+        if not isinstance(content_base64, str):
+            raise Refused("content_base64 must be the file as a base64 string")
+        limit = MAX_FILE_MB * 1024 * 1024
+        if len(content_base64.rstrip("=")) * 3 // 4 > limit:  # the size before decoding, so a huge string is not decoded
+            raise Refused(f"{name} is over {MAX_FILE_MB} MB, the limit of attach_booking_file. Use attach_booking_upload for it.")
+        try:
+            data = base64.b64decode(content_base64, validate=True)
+        except (binascii.Error, ValueError):
+            raise Refused("content_base64 is not base64")
+        if not data:
+            raise Refused(f"{name} is empty")
+        if len(data) > limit:
+            raise Refused(f"{name} is over {MAX_FILE_MB} MB, the limit of attach_booking_file. Use attach_booking_upload for it.")
+        ftype = BOOKING_FILE_EXT[ext]
+        self.store.rest.storage_put(BOOKING_BUCKET, path, data, content_type=ftype, upsert=True)
+        entry = {"path": path, "name": name, "type": ftype, "size": len(data), "added_at": self.now()}
+        self.attach(i, entry)
+        return {"booking": i, "attachment": entry}
+
+    def attach_booking_upload(self, id, name, type):
+        self.need_project("bookings")
+        i, path = self.booking_file(id, name, type)
+        url = self.store.rest.storage_sign_upload(BOOKING_BUCKET, path)
+        entry = {"path": path, "name": name, "type": type, "size": None, "added_at": self.now()}
+        self.attach(i, entry)
+        return {"booking": i, "attachment": entry, "upload_url": url, "method": "PUT", "content_type": type,
+                "valid": "10 minutes"}
+
+    # ---- booked legs ------------------------------------------------------------------------------------------
+
+    def airport_node(self):
+        """The map node of an airport code, the way the planner's nodeForAirport reads inout.json: inout.py gives an
+        airport the place with that iata, the place whose id is the code winning. Any other code is a node itself."""
+        nodes = {}
+        for p in self.store.rows("places"):
+            if p.get("iata") and (p["id"] == p["iata"] or p["iata"] not in nodes):
+                nodes[p["iata"]] = p["id"]
+        return lambda code: nodes.get(code, code)
+
+    def booked_legs(self, trip):
+        """{leg number: day} of the legs a booking holds. A leg is booked when a booked row (not cancelled) has its two
+        ends and departs on the day the leg shows. Bookings live in the project database only."""
+        if getattr(self.store, "kind", "") != "supabase":
+            return {}
+        rows = [r for _, r in self.pairs("booking") if r.get("status") == "booked" and r.get("depart")]
+        if not rows:
+            return {}
+        node, P = self.airport_node(), trip["places"]
+        ends = {(node(r.get("from_code")), node(r.get("to_code")), r["depart"][:10]) for r in rows}
+        return {k: day for k, day in self.leg_days(trip).items() if (P[k - 1]["node"], P[k]["node"], day) in ends}
+
+    @staticmethod
+    def booked_refusal(k, day):
+        return Refused(f"Leg {k} is booked on {day}. Change the booking first.")
 
     # ---- dates ------------------------------------------------------------------------------------------------
 
@@ -692,6 +863,9 @@ class Core:
         _, old = self.find("trip", trip_id)
         t = copy.deepcopy(old)
         k = self.leg_number(t, leg)
+        booked = self.booked_legs(t)
+        if k in booked:
+            raise self.booked_refusal(k, booked[k])
         self.pin(t)
         t["places"][k]["hop"]["date"] = date
         return self.saved_with_dates(t)
@@ -702,17 +876,31 @@ class Core:
         _, old = self.find("trip", trip_id)
         t = copy.deepcopy(old)
         k = self.leg_number(t, leg)
+        booked = self.booked_legs(t)
+        if k in booked:
+            raise self.booked_refusal(k, booked[k])
+        held = min((b for b in booked if b > k), default=None)
+        end = len(t["places"]) if held is None else held
         s = schedule(t, self.names())
         P = t["places"]
         day_of = lambda m: leg_day(P[m]["hop"], s["places"][m - 1]["outDay"])
-        moves = {m: add_days(day_of(m), days) for m in range(k, len(P))}
+        moves = {m: add_days(day_of(m), days) for m in range(k, end)}
         m = k - 1
         while m >= 1 and floats(P[m].get("hop")):
             moves[m] = day_of(m)
             m -= 1
+        # the booked leg and every leg after it keep their days, so a leg that floats there is pinned where it is
+        for m in range(end, len(P)):
+            if floats(P[m].get("hop")):
+                moves[m] = day_of(m)
         for m, day in moves.items():
             P[m]["hop"]["date"] = day
-        return self.saved_with_dates(t)
+        out = self.saved_with_dates(t)
+        if held is not None:
+            place = self.names()(P[held]["node"])
+            out["held"] = {"leg": held, "place": place, "day": booked[held],
+                           "text": f"Leg {held} to {place} is booked on {booked[held]}, so it and every later leg stay on their days."}
+        return out
 
     def pin(self, t):
         """Every leg with no day and no flight on the day it shows, so a day set by hand on one leg moves no other."""

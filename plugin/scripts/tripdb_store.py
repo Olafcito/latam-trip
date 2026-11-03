@@ -339,6 +339,20 @@ class Rest:
             headers["Cache-Control"] = cache_control
         self._call("POST", f"/storage/v1/object/{bucket}/{urllib.parse.quote(path)}", raw=data, headers=headers)
 
+    def _signed(self, rel):
+        """The full address of a signed path that Storage gives relative to /storage/v1."""
+        return self.url + ("" if rel.startswith("/storage/v1/") else "/storage/v1") + rel
+
+    def storage_sign(self, bucket, path, expires=600):
+        """A signed download URL for a file in a private bucket, valid for expires seconds."""
+        _, _, raw = self._call("POST", f"/storage/v1/object/sign/{bucket}/{urllib.parse.quote(path)}", body={"expiresIn": expires})
+        return self._signed(self._json(raw)["signedURL"])
+
+    def storage_sign_upload(self, bucket, path):
+        """A signed upload URL for one file in a bucket. Storage keeps it valid for 10 minutes. The file goes up with a PUT."""
+        _, _, raw = self._call("POST", f"/storage/v1/object/upload/sign/{bucket}/{urllib.parse.quote(path)}", body={})
+        return self._signed(self._json(raw)["url"])
+
     def storage_list(self, bucket, prefix):
         """Every object directly below prefix, as the Storage list call gives them: name, created_at and updated_at."""
         out, offset = [], 0

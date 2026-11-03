@@ -1,6 +1,6 @@
 # The latam-trip connector
 
-The connector lets an assistant read and change the trip data in Supabase: trips, flights, connections, stays, experiences, places and tasks. It is an MCP server on AWS Lambda, and it works in Claude (web, desktop and phone), Claude Code and ChatGPT.
+The connector lets an assistant read and change the trip data in Supabase: trips, flights, connections, stays, experiences, places, tasks and bookings. It is an MCP server on AWS Lambda, and it works in Claude (web, desktop and phone), Claude Code and ChatGPT.
 
 Server address:
 
@@ -63,11 +63,21 @@ Every type has five tools: `list_`, `get_`, `add_`, `update_` and `delete_`. Add
 | experience | `list_experience` `get_experience` `add_experience` `update_experience` `delete_experience` | Things to do at a place. |
 | place | `list_place` `get_place` `add_place` `update_place` `delete_place` | A town, beach or airport on the map. |
 | task | `list_task` `get_task` `add_task` `update_task` `delete_task` | Work for the research agents. |
+| booking | `list_booking` `get_booking` `add_booking` `update_booking` `delete_booking` | A ticket or a bed that is paid for, one row per leg or stay. `list_booking` takes `from`, `to`, `day` and `place`. Delete sets the booking cancelled and keeps the row. |
 
 Two more tools change the dates of a trip:
 
 - `set_leg_date` puts one leg on a day. No other leg moves.
-- `shift_leg` moves one leg and every later leg by a number of days.
+- `shift_leg` moves one leg and every later leg by a number of days, up to the first booked leg.
+
+A booked leg holds its day. Both tools refuse to move it, and `shift_leg` leaves it and every leg after it where they are. Change the booking first.
+
+Two tools attach files to a booking. They go in the private `bookings` bucket, and only PDF and photo types are taken.
+
+- `attach_booking_file` takes a file of up to 4 MB as base64, such as a PDF from a mail.
+- `attach_booking_upload` gives a signed upload URL for a larger file, valid for 10 minutes.
+
+Bookings, their references, prices and files live only in the owner only table and the private bucket, never in a built file.
 
 Each tool describes its fields to the assistant, so asking in plain words works, for example "add the 450 DKK flight from San Jose to Liberia on 12 December".
 

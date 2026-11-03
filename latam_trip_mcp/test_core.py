@@ -1,7 +1,7 @@
 """Tests for the latam-trip connector. Run from the repo root:
 python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"
 Every test works in its own temporary root with the file store, so no data is touched and nothing goes online."""
-import ast, asyncio, json, os, shutil, sys, tempfile, unittest
+import ast, asyncio, base64, json, os, re, shutil, sys, tempfile, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, ".."))
@@ -79,14 +79,14 @@ class Base(unittest.TestCase):
 
 class ToolsTest(Base):
     def test_types_table_generates_five_tools_per_type(self):
-        self.assertEqual(set(mcp_core.TYPES), {"trip", "flight", "connection", "stay", "experience", "place", "task"})
+        self.assertEqual(set(mcp_core.TYPES), {"trip", "flight", "connection", "stay", "experience", "place", "task", "booking"})
         specs = {s["name"]: s for s in self.core.tool_specs()}
         for t in mcp_core.TYPES:
             for verb in ("list", "get", "add", "update", "delete"):
                 self.assertIn(f"{verb}_{t}", specs)
-        self.assertEqual(len(specs), 5 * len(mcp_core.TYPES) + 2)
-        self.assertIn("set_leg_date", specs)
-        self.assertIn("shift_leg", specs)
+        self.assertEqual(len(specs), 5 * len(mcp_core.TYPES) + 4)
+        for name in ("set_leg_date", "shift_leg", "attach_booking_file", "attach_booking_upload"):
+            self.assertIn(name, specs)
         rows = specs["add_place"]["schema"]["properties"]["rows"]
         self.assertEqual(rows["type"], "array")
         self.assertIn("lat", rows["items"]["properties"])
@@ -218,6 +218,197 @@ class LegDatesTest(Base):
         self.assertEqual(leg["date"], "2026-12-27")
         self.assertEqual(leg["flight"]["depart"], "2026-12-25T09:00")
         self.assertEqual(out["flight_off_day"], [{"leg": 5, "place": "Jaco", "set_day": "2026-12-27", "flight_day": "2026-12-25"}])
+
+
+class BookingRest:
+    """The bookings table and the bookings bucket as the project would hold them, in memory. The references are made up."""
+
+    def __init__(self):
+        self.rows, self.files, self.signed = [], {}, []
+
+    def get_all(self, table, params=None, page=None, limit=None):
+        assert table == "bookings", table
+        return [json.loads(json.dumps(r)) for r in self.rows]
+
+    def insert(self, table, rows, returning=None, **kw):
+        assert table == "bookings", table
+        got = []
+        for r in rows:
+            row = {"status": "booked", "travellers": 1, "attachments": [], **json.loads(json.dumps(r)),
+                   "id": f"b{len(self.rows) + 1}", "created_at": NOW, "updated_at": NOW}
+            self.rows.append(row)
+            got.append({"id": row["id"]})
+        return got if returning else []
+
+    def patch(self, table, params, body, returning=None):
+        assert table == "bookings", table
+        for r in self.rows:
+            if "eq." + r["id"] == params["id"]:
+                r.update(json.loads(json.dumps(body)))
+
+    def storage_put(self, bucket, path, data, content_type="application/json", upsert=True, cache_control=None):
+        self.files[(bucket, path)] = (data, content_type)
+
+    def storage_sign_upload(self, bucket, path):
+        self.signed.append((bucket, path))
+        return f"https://example.test/storage/v1/object/upload/sign/{bucket}/{path}?token=TESTTOKEN"
+
+
+BUS = {"kind": "bus", "from_code": "TAM", "to_code": "NOSA", "depart": "2026-12-20T08:00", "reference": "TEST01",
+       "seller": "Test Lines", "price_dkk": 120}
+
+
+class BookingBase(Base):
+    def setUp(self):
+        super().setUp()
+        self.rest = BookingRest()
+        self.store.kind = "supabase"
+        self.store.rest = self.rest
+
+    def book(self, **row):
+        out = self.core.add("booking", [{**BUS, **row}])
+        self.assertEqual(out["refused"], [], out)
+        return out["added"][0]
+
+
+class BookingTest(BookingBase):
+    def test_add_then_list_by_from_and_day(self):
+        bid = self.book()
+        self.book(kind="stay", from_code=None, to_code=None, depart=None, place_id="NOSA", check_in="2026-12-20",
+                  check_out="2026-12-23", reference="TEST02")
+        got = self.core.list("booking", {"from": "TAM", "day": "2026-12-20"})
+        self.assertEqual([r["id"] for r in got["rows"]], [bid])
+        self.assertEqual(got["rows"][0]["status"], "booked")
+        self.assertEqual(self.core.list("booking", {"from": "TAM", "day": "2026-12-21"})["count"], 0)
+        self.assertEqual(self.core.list("booking", {"to": "NOSA"})["count"], 1)
+        stays = self.core.list("booking", {"place": "NOSA", "day": "2026-12-20"})["rows"]
+        self.assertEqual([r["reference"] for r in stays], ["TEST02"])
+
+    def test_add_refuses_a_bad_row_by_number_and_keeps_the_good_one(self):
+        out = self.core.add("booking", [dict(BUS), dict(BUS, kind="plane"), dict(BUS, price_dkk=-5),
+                                        dict(BUS, depart="2026-12-20T08:00Z"), dict(BUS, attachments=[])])
+        self.assertEqual(len(out["added"]), 1)
+        self.assertEqual([r["row"] for r in out["refused"]], [2, 3, 4, 5])
+        self.assertEqual(len(self.rest.rows), 1)
+
+    def test_update_changes_the_reference(self):
+        bid = self.book()
+        self.core.update("booking", bid, {"reference": "TEST03"})
+        self.assertEqual(self.core.get("booking", bid)["reference"], "TEST03")
+        with self.assertRaises(tripdb.Refused):
+            self.core.update("booking", bid, {"travellers": None})
+        self.core.update("booking", bid, restore=True)
+        self.assertEqual(self.core.get("booking", bid)["reference"], "TEST01")
+
+    def test_delete_cancels_and_keeps_the_row_and_restore_brings_it_back(self):
+        bid = self.book()
+        out = self.core.delete("booking", bid)
+        self.assertEqual(out["deleted"], bid)
+        self.assertEqual(len(self.rest.rows), 1)
+        self.assertEqual(self.core.get("booking", bid)["status"], "cancelled")
+        self.assertEqual(self.core.list("booking", {"from": "TAM"})["count"], 0)
+        self.assertEqual(self.core.list("booking", {"from": "TAM", "status": "cancelled"})["count"], 1)
+        self.core.update("booking", bid, restore=True)
+        self.assertEqual(self.core.get("booking", bid)["status"], "booked")
+        self.assertEqual(self.core.list("booking", {"from": "TAM"})["count"], 1)
+
+    def test_attach_a_small_pdf(self):
+        bid = self.book()
+        data = b"%PDF-1.4\n%"
+        self.assertEqual(len(data), 10)
+        out = self.core.call("attach_booking_file", {"id": bid, "name": "ticket.pdf",
+                                                     "content_base64": base64.b64encode(data).decode()})
+        entry = {"path": f"{bid}/ticket.pdf", "name": "ticket.pdf", "type": "application/pdf", "size": 10, "added_at": NOW}
+        self.assertEqual(out["attachment"], entry)
+        self.assertEqual(self.core.get("booking", bid)["attachments"], [entry])
+        self.assertEqual(self.rest.files[("bookings", f"{bid}/ticket.pdf")], (data, "application/pdf"))
+
+    def test_a_file_over_4_mb_is_refused(self):
+        bid = self.book()
+        big = base64.b64encode(b"x" * (5 * 1024 * 1024)).decode()
+        with self.assertRaises(tripdb.Refused) as e:
+            self.core.call("attach_booking_file", {"id": bid, "name": "ticket.pdf", "content_base64": big})
+        self.assertIn("4 MB", str(e.exception))
+        self.assertEqual(self.rest.files, {})
+        self.assertEqual(self.core.get("booking", bid)["attachments"], [])
+
+    def test_a_type_outside_the_bucket_list_is_refused(self):
+        bid = self.book()
+        with self.assertRaises(tripdb.Refused):
+            self.core.call("attach_booking_upload", {"id": bid, "name": "page.html", "type": "text/html"})
+        with self.assertRaises(tripdb.Refused):
+            self.core.call("attach_booking_file", {"id": bid, "name": "page.html",
+                                                   "content_base64": base64.b64encode(b"<p>hi</p>").decode()})
+        self.assertEqual((self.rest.files, self.rest.signed), ({}, []))
+        self.assertEqual(self.core.get("booking", bid)["attachments"], [])
+
+    def test_attach_upload_gives_a_signed_url_and_adds_the_entry(self):
+        bid = self.book()
+        out = self.core.call("attach_booking_upload", {"id": bid, "name": "scan.jpg", "type": "image/jpeg"})
+        self.assertIn("token=TESTTOKEN", out["upload_url"])
+        self.assertEqual(self.rest.signed, [("bookings", f"{bid}/scan.jpg")])
+        got = self.core.get("booking", bid)["attachments"]
+        self.assertEqual([(a["path"], a["type"]) for a in got], [(f"{bid}/scan.jpg", "image/jpeg")])
+
+    def test_the_file_types_are_the_bucket_list(self):
+        with open(os.path.join(REPO, "supabase", "migrations", "0013_bookings.sql"), encoding="utf-8") as fh:
+            sql = fh.read()
+        listed = re.findall(r"allowed_mime_types = array\[([^\]]*)\]", sql)[0]
+        self.assertEqual(list(mcp_core.BOOKING_FILE_TYPES), re.findall(r"'([^']+)'", listed))
+
+
+class BookedLegTest(BookingBase):
+    def test_set_leg_date_on_a_booked_leg_is_refused_and_the_trip_is_unchanged(self):
+        self.core.update("place", "NOSA", {"iata": "NOB"})
+        self.book(to_code="NOB")
+        with self.assertRaises(tripdb.Refused) as e:
+            self.core.set_leg_date("t1", 4, "2026-12-22")
+        self.assertEqual(str(e.exception), "Leg 4 is booked on 2026-12-20. Change the booking first.")
+        self.assertEqual(self.store.trip_versions()["t1"], [1])
+        with self.assertRaises(tripdb.Refused):
+            self.core.shift_leg("t1", 4, 1)
+        self.assertEqual(self.store.trip_versions()["t1"], [1])
+
+    def test_shift_leg_stops_at_the_first_booked_leg(self):
+        before = self.days()
+        self.book()
+        out = self.core.shift_leg("t1", 2, 2)
+        after = self.days()
+        self.assertEqual(after[1], before[1])
+        self.assertEqual(after[2], "2026-12-12")
+        self.assertEqual(after[3], "2026-12-17")
+        self.assertEqual(after[4], before[4])
+        self.assertEqual(after[5], before[5])
+        self.assertEqual(out["held"]["leg"], 4)
+        self.assertIn("booked on 2026-12-20", out["held"]["text"])
+
+    def test_a_cancelled_booking_or_one_on_another_day_locks_nothing(self):
+        bid = self.book()
+        self.book(depart="2026-12-19T08:00", reference="TEST02")
+        self.core.delete("booking", bid)
+        out = self.core.set_leg_date("t1", 4, "2026-12-22")
+        self.assertEqual(self.days()[4], "2026-12-22")
+        self.assertNotIn("held", self.core.shift_leg("t1", 2, 1))
+        self.assertEqual(out["version"], 2)
+
+
+class StorageSignTest(unittest.TestCase):
+    def rest(self, answer):
+        rest = tripdb_store.Rest("https://x.test", "k")
+        self.seen = []
+        rest._call = lambda method, path, body=None, headers=None, **kw: self.seen.append((method, path, body)) or (
+            200, {}, json.dumps(answer).encode())
+        return rest
+
+    def test_a_signed_download_url(self):
+        url = self.rest({"signedURL": "/object/sign/bookings/b1/t.pdf?token=TESTTOKEN"}).storage_sign("bookings", "b1/t.pdf")
+        self.assertEqual(url, "https://x.test/storage/v1/object/sign/bookings/b1/t.pdf?token=TESTTOKEN")
+        self.assertEqual(self.seen, [("POST", "/storage/v1/object/sign/bookings/b1/t.pdf", {"expiresIn": 600})])
+
+    def test_a_signed_upload_url(self):
+        url = self.rest({"url": "/object/upload/sign/bookings/b1/t.pdf?token=TESTTOKEN"}).storage_sign_upload("bookings", "b1/t.pdf")
+        self.assertEqual(url, "https://x.test/storage/v1/object/upload/sign/bookings/b1/t.pdf?token=TESTTOKEN")
+        self.assertEqual(self.seen[0][:2], ("POST", "/storage/v1/object/upload/sign/bookings/b1/t.pdf"))
 
 
 class GuardTest(Base):
