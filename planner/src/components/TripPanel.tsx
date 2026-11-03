@@ -87,6 +87,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const insertLeg = useStore((s) => s.insertLeg)
   const setHopDate = useStore((s) => s.setHopDate)
   const bookings = useStore((s) => s.bookings)
+  const lodgings = useStore((s) => s.lodgings)
   const pd = usePairDates()
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(journey.name)
@@ -115,9 +116,9 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   }
 
   const exitNode = nodeForAirport(inout, wh.from)
-  const sched = schedule(journey, wi, wh, exitNode, nm, bookings, data)
+  const sched = schedule(journey, wi, wh, exitNode, nm, bookings, data, lodgings)
   const homeDay = sched.homeDepart.slice(0, 10)
-  const t = totals(data, journey, sched, bookings)
+  const t = totals(data, journey, sched, bookings, lodgings)
   const allIn = travelTotal(t)
   const lastIdx = journey.places.length - 1
   const at = cursor ?? lastIdx

@@ -54,6 +54,7 @@ function Timetable({ data }: { data: AppData }) {
   const openTrip = useStore((s) => s.openTrip)
   const go = useStore((s) => s.go)
   const bookings = useStore((s) => s.bookings)
+  const lodgings = useStore((s) => s.lodgings)
   const file = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('rank')
@@ -62,7 +63,7 @@ function Timetable({ data }: { data: AppData }) {
   const rows = useMemo<Row[]>(() => {
     const all = [...saved, ...(unsaved ? [unsaved] : [])]
     return all.map((j) => {
-      const s = summarize(data, j, bookings)
+      const s = summarize(data, j, bookings, lodgings)
       return {
         j, s,
         route: s ? tripRoute(data, j) : null,
@@ -74,7 +75,7 @@ function Timetable({ data }: { data: AppData }) {
         booked: s ? bookedCount(bookings, data, j, s.sched) : 0,
       }
     })
-  }, [data, saved, unsaved, bookings])
+  }, [data, saved, unsaved, bookings, lodgings])
   const sorted = useMemo(() => sortTrips(rows, sort), [rows, sort])
 
   const cmp = compare

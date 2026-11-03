@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { groundCost, travelTotal, type Totals } from '../lib/journey'
+import { groundCost, staysCost, travelTotal, type Totals } from '../lib/journey'
 import { hours, kr } from '../lib/format'
 import { Chevron, DisclosurePanel, useDisclosure } from './Disclosure'
 
@@ -11,9 +11,10 @@ function Cell({ k, children }: { k: string; children: ReactNode }) {
   return <div><dt>{k}</dt><dd>{children}</dd></div>
 }
 
-/** The price of the trip in one line: the total, then the three costs that make most of it, and the booked stays when there are some. Bags, hub nights and flight counts open on a click. */
+/** The price of the trip in one line: the total, then the three costs that make most of it, and the stays booked and planned when there are some. Bags, hub nights and flight counts open on a click. */
 export function CostStrip({ t }: { t: Totals }) {
   const more = useDisclosure()
+  const stays = staysCost(t)
   return (
     <section className="costs" aria-label="Costs">
       <div className="costs-row">
@@ -22,7 +23,7 @@ export function CostStrip({ t }: { t: Totals }) {
           <Cell k="Long-haul">{kr(t.tickets_dkk)}</Cell>
           <Cell k="Regional flights">{kr(t.regional_flights_dkk)}</Cell>
           <Cell k="Ground">{groundCost(t)}</Cell>
-          {t.stays_booked_dkk > 0 && <Cell k="Stays">{kr(t.stays_booked_dkk)}</Cell>}
+          {stays && <Cell k="Stays">{stays}</Cell>}
         </dl>
         <button className="disc-btn costs-btn" {...more.trigger}>All costs<Chevron open={more.open} /></button>
       </div>

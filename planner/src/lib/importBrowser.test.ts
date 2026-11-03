@@ -14,7 +14,7 @@ const inout = {
 } as unknown as InOut
 const zero = {
   tickets_dkk: 1, regional_flights_dkk: 2, cabin_bag_dkk: null, checked_bag_dkk: null, hub_nights: 0, hub_stay_dkk: 0,
-  ground_dkk: 3, ground_unknown: 0, stays_booked_dkk: 0, flights: 4, air_hours: 5, days_per_country: { GT: 7 }, hub_stops: [],
+  ground_dkk: 3, ground_unknown: 0, stays_booked_dkk: 0, stays_planned_dkk: 0, stays_unknown: 0, flights: 4, air_hours: 5, days_per_country: { GT: 7 }, hub_stops: [],
 } as Totals
 
 const hop: Hop = { from: 'GUA', to: 'SAL', mode: 'bus', operator: null, hours: 5, price_dkk: 100, overnight: false, border: true, flight: null }

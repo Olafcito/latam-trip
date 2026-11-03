@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { AppData, Booking, InOut, MapData, Ticket, Way } from '../data/types'
-import { schedule, totals, travelTotal, type Hop, type Journey } from './journey'
+import type { AppData, Booking, InOut, Lodging, MapData, Ticket, Way } from '../data/types'
+import { applyMove, giveNight, schedule, staysCost, totals, travelTotal, type Hop, type Journey } from './journey'
 import { mixWays, priceOfWays, totalRating, priceScore } from './options'
 import { shortestPath } from './graph'
 import { kr, hours, dayTime, nextDayMark } from './format'
@@ -317,5 +317,99 @@ describe('paid prices and booked days', () => {
     const all = [wayIn, wayHome, regional, bus, stay, row({ ...regional, id: 'off', depart: '2026-12-21T10:00' })].map((b) => ({ ...b, status: 'cancelled' as const }))
     expect(totals(data, j, sched, all)).toEqual(totals(data, j, sched))
     expect(schedule(j, wi, wh, 'VVI', names, all, data)).toEqual(sched)
+  })
+})
+
+describe('planned stays and booked stays at the stops', () => {
+  // Made up places, rooms, rows and prices only. A real name, reference or price never goes in this file.
+  const row = (over: Partial<Booking>): Booking => ({
+    id: 'b1', kind: 'stay', status: 'booked', from_code: null, to_code: null, depart: null, arrive: null,
+    place_id: 'MDE', check_in: null, check_out: null, lodging_id: null, room_id: null, reference: 'TEST01', seller: null,
+    url: null, price_dkk: null, price: null, currency: null, refundable: null, changeable: null, change_until: null,
+    cancel_until: null, cabin_bag: null, checked_bag: null, segments: null, travellers: 1, trip_id: null, ticket: null,
+    source: 'manual', notes: null, attachments: [], created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z',
+    ...over,
+  })
+  const lodging = (id: string, name: string, total: number): Lodging => ({
+    id, place_id: 'MDE', name, kind: 'hostel', photos: [], rating: null, reviews: null, rating_source: null, address: null,
+    lat: null, lon: null, to_center_km: null, to_beach_km: null, tags: [], summary: null, notes: null, links: [], added_by: 'simon',
+    hidden: false, created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z',
+    rooms: [{ id: 'R1', lodging_id: id, name: 'TEST01 dorm', beds: 6, private: false, bathroom: 'shared', notes: null,
+      created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z',
+      prices: [{ id: 'p-' + id, room_id: 'R1', check_in: '2026-12-10', check_out: '2026-12-20', total_dkk: total, per_night_dkk: null,
+        site: null, url: null, refundable: null, cancel_until: null, observed_at: '2026-11-03T10:00:00Z' }] }],
+  })
+  const T1 = ticket('T1', 6000, 0, 300)
+  const wi = way({ id: 'I1', tickets: ['T1'], shared_ticket: 'T1', paired_with: 'H1', type: 'ticket' })
+  const wh = way({ id: 'H1', direction: 'home', from: 'VVI', to: 'CPH', tickets: ['T1'], shared_ticket: 'T1', paired_with: 'I1', type: 'ticket',
+    depart: '2027-02-03T09:05', arrive: '2027-02-04T09:10' })
+  const data: AppData = { inout: inout([wi, wh], [T1]), map, bags: [], trip: {}, source: 'project', meta: null }
+  const hop = (from: string, to: string, over: Partial<Hop>): Hop => ({ from, to, mode: 'flight', operator: null, hours: 6, price_dkk: 1500, overnight: false, border: false, flight: null, ...over })
+  /** Medellin from the 10th until the flight on leaves on the 20th, 10 nights */
+  const trip = (stays?: { lodging_id: string; room_id: string }[]): Journey => ({ id: 'j', name: '', wayIn: 'I1', wayHome: 'H1', optionId: null, places: [
+    { node: 'BOG', hop: null },
+    { node: 'MDE', hop: hop('BOG', 'MDE', { mode: 'bus', hours: 9, price_dkk: 150, date: '2026-12-10' }), ...(stays ? { stays } : {}) },
+    { node: 'VVI', hop: hop('MDE', 'VVI', { date: '2026-12-20' }) },
+  ] })
+  const names = (n: string) => n
+  const casa = lodging('L1', 'TEST01 Casa', 3000)
+  const planned = trip([{ lodging_id: 'L1', room_id: 'R1' }])
+  const sched = schedule(planned, wi, wh, 'VVI', names)
+
+  it('adds the planned stays to their own line and not to the travel total', () => {
+    const plain = totals(data, trip(), schedule(trip(), wi, wh, 'VVI', names), [], [casa])
+    const t = totals(data, planned, sched, [], [casa])
+    expect(t.stays_planned_dkk).toBe(3000)
+    expect(t.stays_unknown).toBe(0)
+    expect(t.stays_booked_dkk).toBe(0)
+    expect(travelTotal(t)).toBe(travelTotal(plain))
+    expect(plain.stays_planned_dkk).toBe(0)
+  })
+
+  it('counts a planned stay with no price found as not known, never as 0', () => {
+    const t = totals(data, planned, sched, [], [])
+    expect(t.stays_planned_dkk).toBe(0)
+    expect(t.stays_unknown).toBe(1)
+    // a saved row's totals are worked out without the places to stay, so they hold none of their numbers
+    expect(totals(data, planned, sched)).toMatchObject({ stays_planned_dkk: 0, stays_unknown: 0 })
+  })
+
+  it('does not count a booked stay again as planned, and counts the plan in place of a booked price not filled in', () => {
+    const booked = row({ id: 'casa', lodging_id: 'L1', check_in: '2026-12-12', check_out: '2026-12-15', price_dkk: 1200 })
+    const t = totals(data, planned, sched, [booked], [casa])
+    expect(t).toMatchObject({ stays_booked_dkk: 1200, stays_planned_dkk: 0, stays_unknown: 0 })
+    const noPrice = totals(data, planned, sched, [{ ...booked, price_dkk: null }], [casa])
+    expect(noPrice).toMatchObject({ stays_booked_dkk: 0, stays_planned_dkk: 3000, stays_unknown: 0 })
+    // with no plan to stand in for it, a booked stay with no price is not known
+    const alone = totals(data, trip(), schedule(trip(), wi, wh, 'VVI', names), [{ ...booked, price_dkk: null }], [casa])
+    expect(alone).toMatchObject({ stays_booked_dkk: 0, stays_planned_dkk: 0, stays_unknown: 1 })
+  })
+
+  it('shows booked and planned apart on the Stays line, and the stays with no price as not priced', () => {
+    const t = totals(data, planned, sched, [], [casa])
+    expect(staysCost(t)).toBe(`${kr(3000)} planned`)
+    expect(staysCost({ ...t, stays_booked_dkk: 1200, stays_unknown: 1 })).toBe(`${kr(1200)} booked, ${kr(3000)} planned, 1 not priced`)
+    expect(staysCost({ ...t, stays_planned_dkk: 0, stays_unknown: 2 })).toBe('2 not priced')
+    expect(staysCost(totals(data, trip(), schedule(trip(), wi, wh, 'VVI', names), [], [casa]))).toBeNull()
+  })
+
+  it('takes a night off a stop that cuts into a booked stay, and warns with the place and its last free cancel day', () => {
+    const booked = row({ id: 'casa', lodging_id: 'L1', check_in: '2026-12-17', check_out: '2026-12-20', price_dkk: 900, cancel_until: '2026-11-20' })
+    const j = trip()
+    const before = schedule(j, wi, wh, 'VVI', names, [booked], data, [casa])
+    expect(before.warnings.filter((w) => w.stop != null)).toEqual([])
+    const move = giveNight(j, before, 1)
+    expect(move).not.toBeNull()
+    const less = applyMove(j, move!)
+    const after = schedule(less, wi, wh, 'VVI', names, [booked], data, [casa])
+    expect(after.places[1].days).toBe(9)
+    expect(after.warnings).toContainEqual({ level: 'warn', text: 'Cuts into your booking at TEST01 Casa, free to cancel until 20 Nov', stop: 1 })
+    // the booked stay is paid for all the same
+    expect(totals(data, less, after, [booked], [casa]).stays_booked_dkk).toBe(900)
+    // without a place to stay to name it by, the seller names it, and without a cancel day the warning says no more
+    const sold = { ...booked, lodging_id: null, seller: 'TEST01 seller', cancel_until: null }
+    expect(schedule(less, wi, wh, 'VVI', names, [sold], data).warnings).toContainEqual({ level: 'warn', text: 'Cuts into your booking at TEST01 seller', stop: 1 })
+    // a cancelled stay warns of nothing
+    expect(schedule(less, wi, wh, 'VVI', names, [{ ...booked, status: 'cancelled' }], data, [casa]).warnings.filter((w) => w.stop != null)).toEqual([])
   })
 })

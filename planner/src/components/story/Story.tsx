@@ -116,7 +116,7 @@ function NightChooser({ name, days, rows }: { name: string; days: number; rows: 
 }
 
 /** A stop: flag on the rail, the city, and at the right edge the nights there, which you can change. Copenhagen has no nights. */
-function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, onOpen }: {
+function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, onOpen, cut }: {
   id?: string
   name: string; node: MapNode | undefined; country: string; days: number; exact: boolean
   /** a night less here, or null when it has none */
@@ -129,6 +129,8 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
   home?: 'start' | 'end'
   /** opens the City card */
   onOpen?: () => void
+  /** the booked stays here that the nights cut into */
+  cut?: Warning[]
 }) {
   const pop = usePop(false)
   const less = through ? `One night less in ${name}, it goes to ${through}` : `One night less in ${name}, it becomes a free night`
@@ -160,6 +162,7 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
           </span>
         )}
       </div>
+      {cut?.map((w, k) => <p key={k} className="st-clash" role="status"><Warn /><span>{w.text}</span></p>)}
     </li>
   )
 }
@@ -493,6 +496,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         rows={nightRows(i)}
         through={(() => { const k = nightStop(locked, i); return k == null ? undefined : nm(sched.places[k].node) })()}
         onOpen={() => setCity(i)}
+        cut={sched.warnings.filter((w) => w.stop === i)}
       />,
     )
   })

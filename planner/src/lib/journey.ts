@@ -1,9 +1,9 @@
-import type { AppData, Booking, CrawledFlight, InOut, MapData, Mode, StopItem, Way } from '../data/types'
-import { bookedElsewhere, bookingOn, paidPrice, staysIn, wayBooking, type BookData } from './booked'
+import type { AppData, Booking, CrawledFlight, InOut, Lodging, MapData, Mode, StopItem, Way } from '../data/types'
+import { bookedElsewhere, bookingOn, paidPrice, wayBooking, type BookData } from './booked'
 import { day, dayDiff, dayTime, kr } from './format'
 import { edgeHours, edgePrice, groundPath, type Arc } from './graph'
 import { priceOfWays } from './options'
-import type { PlannedStay } from './stays'
+import { cutStays, stayTotals, type PlannedStay } from './stays'
 import { addDays } from './time'
 
 export interface Hop {
@@ -116,6 +116,8 @@ export interface Warning {
   leg?: number
   /** the first day that leg can leave instead */
   fix?: string
+  /** the place index of the stop at fault, when one stop is */
+  stop?: number
 }
 
 export interface Schedule {
@@ -174,8 +176,9 @@ export function legTime(map: MapData, h: Hop): LegTime {
  * The dated moments of a trip are its landing, the legs with a date set or a picked flight, and
  * its flight home. The days between two dated moments are shared evenly by the places in between.
  * Given the data to match them by, the bookings add a warning to a leg booked on another day.
+ * A stop whose nights cut into a stay booked there gets a warning naming the place to stay and its last free cancel day.
  */
-export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string, names: (n: string) => string, bookings: Booking[] = [], data?: BookData): Schedule {
+export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string, names: (n: string) => string, bookings: Booking[] = [], data?: BookData, lodgings: Lodging[] = []): Schedule {
   const warnings: Warning[] = []
   const first = wayIn.arrive.slice(0, 10)
   const places: ScheduledPlace[] = j.places.map((p) => ({ node: p.node, arrive: null, depart: null, days: 0, inDay: first, outDay: first, exact: false }))
@@ -233,6 +236,13 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
     if (k === 0 || !p.hop) return
     const b = bookedElsewhere(bookings, data, { from: j.places[k - 1].node, to: p.node, day: legDay(p.hop, places[k - 1].outDay) })
     if (b) warnings.push({ level: 'warn', text: `Booked on ${day(b.depart!)}`, leg: k })
+  })
+  places.forEach((sp, k) => {
+    for (const b of cutStays(bookings, sp)) {
+      const name = lodgings.find((l) => l.id === b.lodging_id)?.name ?? b.seller
+      const cancel = b.cancel_until ? `, free to cancel until ${day(b.cancel_until)}` : ''
+      warnings.push({ level: 'warn', text: `${name ? `Cuts into your booking at ${name}` : 'Cuts into a booked stay'}${cancel}`, stop: k })
+    }
   })
   return { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), free, warnings }
 }
@@ -356,6 +366,10 @@ export interface Totals {
   ground_unknown: number
   /** what the booked stays at the stops cost. Not in the travel total */
   stays_booked_dkk: number
+  /** what the planned stays not booked cost, from the places to stay. Not in the travel total */
+  stays_planned_dkk: number
+  /** the stays with no price known: planned parts with none found, and booked stays with none filled in and no plan for them */
+  stays_unknown: number
   flights: number
   air_hours: number
   days_per_country: Record<string, number>
@@ -369,8 +383,9 @@ export function hubStops(w: Way): StopItem[] {
 /**
  * Totals for a journey: a ticket shared by both ways is counted once; bags, hub stays and ground kept apart.
  * A booked way or leg counts what was paid for it in place of its quote, and the booked stays are kept apart.
+ * Given the places to stay, the planned stays are kept apart too. Without them nothing planned is counted.
  */
-export function totals(data: AppData, j: Journey, sched: Schedule | null, bookings: Booking[] = []): Totals {
+export function totals(data: AppData, j: Journey, sched: Schedule | null, bookings: Booking[] = [], lodgings?: Lodging[]): Totals {
   const { inout, map } = data
   const wi = inout.ways[j.wayIn]
   const wh = inout.ways[j.wayHome]
@@ -400,16 +415,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
     } else if (price == null) groundUnknown++
     else ground += price
   })
-  const stayIds = new Set<string>()
-  let staysBooked = 0
-  for (const s of sched?.places ?? []) {
-    if (s.outDay <= s.inDay) continue
-    for (const b of staysIn(bookings, s.node, { first: s.inDay, last: addDays(s.outDay, -1) })) {
-      // a stay has no quote of its own here, so one with no price filled in adds nothing
-      if (!stayIds.has(b.id)) staysBooked += paidPrice(bookings, b) ?? 0
-      stayIds.add(b.id)
-    }
-  }
+  const stays = sched ? stayTotals(j, sched, bookings, lodgings) : { booked: 0, planned: 0, unknown: 0 }
   const stops = [...hubStops(wi), ...hubStops(wh)].filter((s) => s.kind === 'night' || s.kind === 'day_stop' || s.kind === 'self_transfer')
   let hubStay: number | null = 0
   let hubNights = 0
@@ -436,7 +442,9 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
     hub_stay_dkk: hubStay,
     ground_dkk: ground,
     ground_unknown: groundUnknown,
-    stays_booked_dkk: staysBooked,
+    stays_booked_dkk: stays.booked,
+    stays_planned_dkk: stays.planned,
+    stays_unknown: stays.unknown,
     flights,
     air_hours: Math.round(air * 10) / 10,
     days_per_country: days,
@@ -452,6 +460,16 @@ export const travelTotal = (t: Totals) =>
 export const groundCost = (t: Totals) => {
   if (!t.ground_unknown) return kr(t.ground_dkk)
   return t.ground_dkk ? `${kr(t.ground_dkk)}, ${t.ground_unknown} not priced` : 'Not priced'
+}
+
+/** The Stays line: what is booked and what is planned, apart, and the stays with no price known. null with no stays at all. */
+export const staysCost = (t: Totals): string | null => {
+  const parts = [
+    t.stays_booked_dkk > 0 ? `${kr(t.stays_booked_dkk)} booked` : null,
+    t.stays_planned_dkk > 0 ? `${kr(t.stays_planned_dkk)} planned` : null,
+    t.stays_unknown > 0 ? `${t.stays_unknown} not priced` : null,
+  ].filter((x): x is string => x != null)
+  return parts.length ? parts.join(', ') : null
 }
 
 export function journeyIsValid(j: unknown): j is Journey {

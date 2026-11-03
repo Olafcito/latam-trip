@@ -10,6 +10,9 @@
 
 /* stops: one height whatever the nights. Disc and ring fill the rail column exactly. */
 .st-stop { min-height: var(--stop); }
+/* a booked stay the nights cut into shows under the stop, the flag stays on the rail beside both */
+.st-stop:has(.st-clash) > .st-rail { grid-column: 1; grid-row: 1 / span 2; }
+.st-stop:has(.st-clash + .st-clash) > .st-rail { grid-row: 1 / span 3; }
 .st-disc { position: relative; z-index: 1; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3); box-shadow: 0 0 0 3px var(--surface), 0 0 0 4px var(--line-2); overflow: hidden; }
 .st-disc .flag { width: 32px !important; height: 32px !important; object-fit: cover; transform: scale(1.6); }
 .st-nf { font-size: var(--fs-label); font-weight: 600; color: var(--muted); }

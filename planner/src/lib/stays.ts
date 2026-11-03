@@ -71,14 +71,55 @@ export function partDkk(room: LodgingRoom | undefined, part: StayPart): number |
   return Math.round(per * part.nights)
 }
 
-/** The booked stay at the stop that is this part: the same place to stay, on nights that meet the part's. */
-export function partBooking(bookings: Booking[], sp: ScheduledPlace, part: StayPart): Booking | null {
-  if (!part.fits || sp.outDay <= sp.inDay) return null
-  return (
-    staysIn(bookings, sp.node, { first: sp.inDay, last: addDays(sp.outDay, -1) }).find(
-      (b) => b.lodging_id === part.stay.lodging_id && b.check_in! <= part.last && addDays(b.check_out!, -1) >= part.first,
-    ) ?? null
+/** The stop's nights as a first and a last night. A stop with no nights has its first night as its last, so a stay booked from that day still meets it. */
+const stopNights = (sp: ScheduledPlace) => ({ first: sp.inDay, last: sp.outDay > sp.inDay ? addDays(sp.outDay, -1) : sp.inDay })
+
+/** The booked stays at the stop's place on nights that meet the stop's, also one the stop cuts into, as that one is paid all the same. */
+export function bookedStaysAt(bookings: Booking[], sp: ScheduledPlace): Booking[] {
+  const { first, last } = stopNights(sp)
+  return bookings.filter(
+    (b) => b.status === 'booked' && b.kind === 'stay' && b.place_id === sp.node && !!b.check_in && !!b.check_out && b.check_in <= last && addDays(b.check_out, -1) >= first,
   )
+}
+
+/** The booked stays the stop's nights no longer cover: they meet the stop but have a night before or after it. */
+export function cutStays(bookings: Booking[], sp: ScheduledPlace): Booking[] {
+  const inside = new Set(sp.outDay > sp.inDay ? staysIn(bookings, sp.node, stopNights(sp)).map((b) => b.id) : [])
+  return bookedStaysAt(bookings, sp).filter((b) => !inside.has(b.id))
+}
+
+/** The booked stays at the stop that are this part: the same place to stay, on nights that meet the part's. */
+function partBookings(bookings: Booking[], sp: ScheduledPlace, part: StayPart): Booking[] {
+  if (!part.fits || sp.outDay <= sp.inDay) return []
+  return bookedStaysAt(bookings, sp).filter((b) => b.lodging_id === part.stay.lodging_id && b.check_in! <= part.last && addDays(b.check_out!, -1) >= part.first)
+}
+
+/** The booked stay at the stop that is this part, the first when there are more. */
+export function partBooking(bookings: Booking[], sp: ScheduledPlace, part: StayPart): Booking | null {
+  return partBookings(bookings, sp, part)[0] ?? null
+}
+
+/** The planned stays' cost and unknown parts, and the ids of the booked stays a planned part stands in for. */
+function planned(j: Journey, sched: Schedule, lodgings: Lodging[], bookings: Booking[]) {
+  let dkk = 0
+  let unknown = 0
+  const standsIn = new Set<string>()
+  j.places.forEach((p, k) => {
+    const sp = sched.places[k]
+    if (!sp || !p.stays?.length) return
+    for (const part of stayParts(p.stays, sp)) {
+      if (!part.fits) continue
+      const bs = partBookings(bookings, sp, part)
+      // the part is counted with the booked stays only when every booking in it has its price filled in
+      if (bs.length && bs.every((b) => paidPrice(bookings, b) != null)) continue
+      for (const b of bs) standsIn.add(b.id)
+      const room = lodgings.find((l) => l.id === part.stay.lodging_id)?.rooms.find((r) => r.id === part.stay.room_id)
+      const cost = partDkk(room, part)
+      if (cost == null) unknown++
+      else dkk += cost
+    }
+  })
+  return { dkk, unknown, standsIn }
 }
 
 /**
@@ -87,22 +128,39 @@ export function partBooking(bookings: Booking[], sp: ScheduledPlace, part: StayP
  * A booked part with no price filled in counts its planned price in its place.
  */
 export function plannedStays(j: Journey, sched: Schedule, lodgings: Lodging[], bookings: Booking[] = []): { dkk: number; unknown: number } {
-  let dkk = 0
-  let unknown = 0
-  j.places.forEach((p, k) => {
-    const sp = sched.places[k]
-    if (!sp || !p.stays?.length) return
-    for (const part of stayParts(p.stays, sp)) {
-      if (!part.fits) continue
-      const b = partBooking(bookings, sp, part)
-      if (b && paidPrice(bookings, b) != null) continue
-      const room = lodgings.find((l) => l.id === part.stay.lodging_id)?.rooms.find((r) => r.id === part.stay.room_id)
-      const cost = partDkk(room, part)
-      if (cost == null) unknown++
-      else dkk += cost
-    }
-  })
+  const { dkk, unknown } = planned(j, sched, lodgings, bookings)
   return { dkk, unknown }
 }
 
 export const plannedStaysDkk = (j: Journey, sched: Schedule, lodgings: Lodging[], bookings: Booking[] = []) => plannedStays(j, sched, lodgings, bookings).dkk
+
+export interface StayTotals {
+  /** what the booked stays met by the stops cost, each once */
+  booked: number
+  planned: number
+  /** planned parts with no price known, and booked stays with no price filled in that no planned part stands in for */
+  unknown: number
+}
+
+/**
+ * The trip's stays. A booked stay counts once, even one the stop cuts into, and one with no price filled in is not known
+ * unless a planned part stands in for it. Without the places to stay nothing planned or unknown is worked out.
+ */
+export function stayTotals(j: Journey, sched: Schedule, bookings: Booking[], lodgings?: Lodging[]): StayTotals {
+  const seen = new Set<string>()
+  const noPrice = new Set<string>()
+  let booked = 0
+  for (const sp of sched.places) {
+    for (const b of bookedStaysAt(bookings, sp)) {
+      if (seen.has(b.id)) continue
+      seen.add(b.id)
+      const paid = paidPrice(bookings, b)
+      if (paid == null) noPrice.add(b.id)
+      else booked += paid
+    }
+  }
+  if (!lodgings) return { booked, planned: 0, unknown: 0 }
+  const p = planned(j, sched, lodgings, bookings)
+  for (const id of p.standsIn) noPrice.delete(id)
+  return { booked, planned: p.dkk, unknown: p.unknown + noPrice.size }
+}
