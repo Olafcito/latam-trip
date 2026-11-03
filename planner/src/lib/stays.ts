@@ -71,8 +71,12 @@ export function partDkk(room: LodgingRoom | undefined, part: StayPart): number |
   return Math.round(per * part.nights)
 }
 
-/** The stop's nights by its count of nights, as its parts take them. A stop with no nights has its first night as its last, so a stay booked from that day still meets it. */
-const stopNights = (sp: ScheduledPlace) => ({ first: sp.inDay, last: addDays(sp.inDay, Math.max(1, sp.days) - 1) })
+/**
+ * The nights spent at the stop: from the day you get there to the night before you leave, as bookedCount reads them.
+ * At the last stop they hold its free nights too, since you sleep there all the same. A stop left the day you get
+ * there has its first night as its last, so a stay booked from that day still meets it.
+ */
+const stopNights = (sp: ScheduledPlace) => ({ first: sp.inDay, last: sp.outDay > sp.inDay ? addDays(sp.outDay, -1) : sp.inDay })
 
 /** How many of the booking's nights fall from first to last. */
 function nightsIn(b: Booking, first: string, last: string): number {
@@ -115,7 +119,7 @@ export function stayClashes(j: Journey, sched: Schedule, bookings: Booking[]): S
     }
     const has = at.map(({ sp, k }) => {
       const n = stopNights(sp)
-      const inside = sp.days > 0 && b.check_in! >= n.first && addDays(b.check_out!, -1) <= n.last
+      const inside = sp.outDay > sp.inDay && b.check_in! >= n.first && addDays(b.check_out!, -1) <= n.last
       const away = Math.min(Math.abs(dayDiff(n.first, b.check_in!)), Math.abs(dayDiff(n.last, addDays(b.check_out!, -1))))
       return { k, inside, meet: nightsIn(b, n.first, n.last), away }
     })

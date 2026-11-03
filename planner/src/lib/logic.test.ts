@@ -450,7 +450,7 @@ describe('planned stays and booked stays at the stops', () => {
     expect(totals(data, j, s, [free], [casa]).stays_booked_dkk).toBe(0)
   })
 
-  it('reads the last stop by its planned nights, so a stay booked on the free nights after them shows', () => {
+  it('reads the last stop by its planned nights and its free nights, so a stay booked on the free nights fits', () => {
     const j: Journey = { ...trip([{ lodging_id: 'L1', room_id: 'R1' }]), lastNights: 5 }
     j.places[2] = { ...j.places[2], stays: [{ lodging_id: 'L1', room_id: 'R1' }] }
     const at = (check_in: string, check_out: string) => row({ id: 'end', place_id: 'VVI', lodging_id: 'L1', check_in, check_out, price_dkk: 500, trip_id: 'j' })
@@ -463,8 +463,12 @@ describe('planned stays and booked stays at the stops', () => {
     const both = totals(data, j, s, [fits], [casa])
     expect(both.stays_booked_dkk).toBe(500)
     expect(both.stays_planned_dkk).toBe(3000)
-    // a stay on the free nights after them is no longer covered by the stop
-    expect(schedule(j, wi, wh, 'VVI', names, [at('2026-12-26', '2026-12-28')], data, [casa]).warnings).toContainEqual({ level: 'warn', text: 'Misses your booking at TEST01 Casa', stop: 2 })
-    expect(schedule(j, wi, wh, 'VVI', names, [at('2026-12-23', '2026-12-27')], data, [casa]).warnings).toContainEqual({ level: 'warn', text: 'Cuts into your booking at TEST01 Casa', stop: 2 })
+    // the free nights after them are slept at the stop too, up to the night before the way home, so a stay there fits
+    for (const b of [at('2026-12-26', '2026-12-28'), at('2026-12-23', '2026-12-27'), at('2027-01-30', '2027-02-03')]) {
+      expect(schedule(j, wi, wh, 'VVI', names, [b], data, [casa]).warnings.filter((w) => w.stop === 2)).toEqual([])
+    }
+    // a stay past the way home, or from before the stop, still cuts into the booking
+    expect(schedule(j, wi, wh, 'VVI', names, [at('2027-02-01', '2027-02-05')], data, [casa]).warnings).toContainEqual({ level: 'warn', text: 'Cuts into your booking at TEST01 Casa', stop: 2 })
+    expect(schedule(j, wi, wh, 'VVI', names, [at('2026-12-18', '2026-12-22')], data, [casa]).warnings).toContainEqual({ level: 'warn', text: 'Cuts into your booking at TEST01 Casa', stop: 2 })
   })
 })
