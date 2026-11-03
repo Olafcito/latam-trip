@@ -171,6 +171,18 @@ TRIP_HOP = {"from": "!pid", "to": "!pid", "mode": "!enum:flight,bus,boat,train,c
             "countries": "list|null"}
 TRIP_FLIGHT = {"quote_id": "!str", "depart": "!time", "arrive": "!time", "hours": "!num", "price_dkk": "!num",
                "carriers": "!list", "via": "list", "layover_h": "list", "observed_at": "time|null"}
+# a booking, the bookings table of spec 4.1: one row per leg or stay, owner only, never in a built file.
+# depart and arrive are local clock times or a day alone. A ticket that covers several legs shares its ticket value.
+BOOKING = {"id": "str", "kind": "!enum:flight,bus,boat,stay,other", "status": "!enum:booked,cancelled",
+           "from_code": "str|null", "to_code": "str|null", "depart": "date|time|null", "arrive": "date|time|null",
+           "place_id": "str|null", "check_in": "date|null", "check_out": "date|null", "lodging_id": "str|null",
+           "room_id": "str|null", "reference": "str|null", "seller": "str|null", "url": "str|null",
+           "price_dkk": "num|null", "price": "num|null", "currency": "str|null",
+           "refundable": "enum:yes,no,partly|null", "changeable": "enum:yes,no,fee|null",
+           "change_until": "date|null", "cancel_until": "date|null", "cabin_bag": "str|null",
+           "checked_bag": "str|null", "segments": "list|null", "travellers": "int", "trip_id": "str|null",
+           "source": "enum:picked,manual,claude|null", "notes": "str|null", "attachments": "list",
+           "ticket": "str|null", "created_at": "time", "updated_at": "time"}
 
 # table: file, schema per kind, what makes a row the same row
 TABLES = {
