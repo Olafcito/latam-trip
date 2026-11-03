@@ -164,7 +164,7 @@ TRIP_WAY = {"direction": "enum:in,home", "from": "!iata", "to": "!iata", "depart
             "price_dkk": "!num", "tickets": "!list", "timeline": "!list", "airports": "list", "observed_at": "time|null"}
 TRIP_TICKET = {"id": "!str", "price_dkk": "!num", "observed_at": "str|null"}
 TRIP_PLACE = {"node": "!pid", "hop": "!dict|null", "why": "str|null", "nights": "int|null", "arrive": "date|time|null",
-              "depart": "date|time|null", "stay": "dict|null"}
+              "depart": "date|time|null", "stay": "dict|null", "stays": "list|null"}
 TRIP_HOP = {"from": "!pid", "to": "!pid", "mode": "!enum:flight,bus,boat,train,colectivo,shuttle,chicken_bus",
             "operator": "str|null", "hours": "num|null", "price_dkk": "num|null", "observed_at": "time|null",
             "overnight": "bool|null", "border": "bool|null", "flight": "dict|null", "overland": "str|null",
@@ -183,6 +183,22 @@ BOOKING = {"id": "str", "kind": "!enum:flight,bus,boat,stay,other", "status": "!
            "checked_bag": "str|null", "segments": "list|null", "travellers": "int", "trip_id": "str|null",
            "source": "enum:picked,manual,claude|null", "notes": "str|null", "attachments": "list",
            "ticket": "str|null", "created_at": "time", "updated_at": "time"}
+# places to stay, the lodgings tables of spec 5.2: a place, its rooms and their prices, owner only, never in a built file.
+# The database checks types and numbers. kind, added_by, bathroom and the sites of links and prices are checked here.
+LODGING_SITES = "booking,hostelworld,airbnb,own,other"
+LODGING = {"id": "str", "place_id": "!pid", "name": "!str", "kind": "!enum:hostel,hotel,guesthouse,apartment,other",
+           "photos": "list", "rating": "num|null", "reviews": "int|null", "rating_source": "str|null",
+           "address": "str|null", "lat": "num|null", "lon": "num|null", "to_center_km": "num|null",
+           "to_beach_km": "num|null", "tags": "list", "summary": "str|null", "notes": "str|null", "links": "list",
+           "added_by": "!enum:simon,claude", "hidden": "bool", "created_at": "time", "updated_at": "time"}
+LODGING_PHOTO = {"url": "!str", "caption": "str|null"}
+LODGING_LINK = {"site": "!enum:" + LODGING_SITES, "url": "!str"}
+LODGING_ROOM = {"id": "str", "lodging_id": "!str", "name": "!str", "beds": "int|null", "private": "bool|null",
+                "bathroom": "enum:private,shared|null", "notes": "str|null", "created_at": "time", "updated_at": "time"}
+# a price is for a date range, as the sites quote it
+LODGING_PRICE = {"id": "str", "room_id": "!str", "check_in": "!date", "check_out": "!date", "total_dkk": "num|null",
+                 "per_night_dkk": "num|null", "site": f"enum:{LODGING_SITES}|null", "url": "str|null",
+                 "refundable": "enum:yes,no,partly|null", "cancel_until": "date|null", "observed_at": "time"}
 
 # table: file, schema per kind, what makes a row the same row
 TABLES = {
