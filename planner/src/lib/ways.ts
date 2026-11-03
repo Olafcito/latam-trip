@@ -1,5 +1,7 @@
-import type { InOut, Way } from '../data/types'
+import type { InOut, MapData, Way } from '../data/types'
 import { dayDiff, weekdayDay } from './format'
+import { nodeForAirport, type Journey, type Place } from './journey'
+import { hopBetween } from './mapTrips'
 import { isTripWayId } from './repoTrips'
 
 /** The local day a way leaves, "2026-12-03". */
@@ -92,4 +94,24 @@ export function chooseWay(inout: InOut, picked: Way, current: { wayIn: Way; wayH
   const one = oneWayFor(inout, other)
   if (!one) return { ...current, note: `There is no saved one ${otherLabel} on any day, so the ticket stays as it was` }
   return { ...pair(picked, one), note: `Your ${otherLabel} is now a one way on ${weekdayDay(one.depart)}` }
+}
+
+/**
+ * A trip on another way in and way home. A new arrival city comes in as the first stop, with a leg on to the
+ * old first stop, and a new home city is added as the last stop. A city already at that end is not added again.
+ * The option id is that of the option with these two ways, else null.
+ */
+export function withEnds(j: Journey, inout: InOut, map: MapData, wayIn: Way, wayHome: Way): Journey {
+  const places: Place[] = [...j.places]
+  const arrival = nodeForAirport(inout, wayIn.to)
+  if (!places.length) places.push({ node: arrival, hop: null })
+  else if (places[0].node !== arrival) {
+    places[0] = { ...places[0], hop: hopBetween(map, arrival, places[0].node, null) }
+    places.unshift({ node: arrival, hop: null })
+  }
+  const exit = nodeForAirport(inout, wayHome.from)
+  const last = places[places.length - 1]
+  if (last.node !== exit) places.push({ node: exit, hop: hopBetween(map, last.node, exit, null) })
+  const option = inout.options.find((o) => o.way_in === wayIn.id && o.way_home === wayHome.id)
+  return { ...j, wayIn: wayIn.id, wayHome: wayHome.id, optionId: option?.id ?? null, places }
 }

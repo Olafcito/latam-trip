@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { InOut, Way } from '../data/types'
+import type { InOut, MapData, MapEdge, Option, Way } from '../data/types'
+import type { Journey } from './journey'
 import { mixWays } from './options'
 import { withTripWays, type TripRow } from './repoTrips'
-import { chooseWay, dayFares, dayOf, waysOn } from './ways'
+import { chooseWay, dayFares, dayOf, waysOn, withEnds } from './ways'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -131,5 +132,54 @@ describe('choosing a way', () => {
   })
   it('a one way next to a one way sets only that way', () => {
     expect(chooseWay(inout, oneIn1202, { wayIn: oneIn, wayHome: oneHome }).note).toBeNull()
+  })
+})
+
+describe('changing the ends of a trip', () => {
+  const wayInCTG = ticketIn
+  const wayInCTG1202 = oneIn1202
+  const wayInBOG = way({ id: 'I_oneway_1203_BOG', to: 'BOG', depart: '2026-12-03T08:00', price_dkk: 3500 })
+  const wayHomeGUA = oneHome
+  const wayHomeSAL = home({ id: 'H_oneway_0205_SAL', from: 'SAL', depart: '2027-02-05T11:00', price_dkk: 3400 })
+  const optIn = ticketIn1202
+  const optHome = ticketHome0203
+  const option = { id: 'CTG-GUA-ticket-1202-0203', way_in: optIn.id, way_home: optHome.id } as Option
+  const inout = { ...inoutOf([wayInCTG, wayInCTG1202, wayInBOG, wayHomeGUA, wayHomeSAL, optIn, optHome]), options: [option] }
+  const edge = { from: 'BOG', to: 'CTG', mode: 'flight', oneway_min_dkk: 600, oneway_min_hours: 1.5 } as MapEdge
+  const map = { nodes: [], edges: [edge] } as unknown as MapData
+  const leg = (from: string, to: string) => ({ from, to, mode: 'bus' as const, operator: null, hours: 4, price_dkk: 100, overnight: false, border: false, flight: null })
+  const j: Journey = {
+    id: 'j1', name: 'Test', wayIn: wayInCTG.id, wayHome: ticketHome.id, optionId: null,
+    places: [{ node: 'CTG', hop: null }, { node: 'SMR', hop: leg('CTG', 'SMR') }, { node: 'GUA', hop: leg('SMR', 'GUA') }],
+  }
+
+  it('a new arrival city comes in before the old first stop', () => {
+    const j2 = withEnds(j, inout, map, wayInBOG, wayHomeGUA)
+    expect(j2.places.map((p) => p.node)).toEqual(['BOG', 'CTG', 'SMR', 'GUA'])
+    expect(j2.places[1].hop?.from).toBe('BOG')
+  })
+  it('the same arrival city adds no stop', () => {
+    expect(withEnds(j, inout, map, wayInCTG1202, wayHomeGUA).places).toHaveLength(j.places.length)
+  })
+  it('a new home city adds a last leg to it', () => {
+    expect(withEnds(j, inout, map, wayInCTG, wayHomeSAL).places.at(-1)!.node).toBe('SAL')
+  })
+  it('keeps the option id when the pair is an option', () => {
+    expect(withEnds(j, inout, map, optIn, optHome).optionId).toBe('CTG-GUA-ticket-1202-0203')
+  })
+  it('sets the ways, and no option id when the pair is no option', () => {
+    const j2 = withEnds({ ...j, optionId: 'CTG-GUA-ticket' }, inout, map, wayInBOG, wayHomeSAL)
+    expect([j2.wayIn, j2.wayHome, j2.optionId]).toEqual([wayInBOG.id, wayHomeSAL.id, null])
+  })
+  it('the new first leg and the new last leg are looked up on the map', () => {
+    const j2 = withEnds(j, inout, map, wayInBOG, wayHomeSAL)
+    expect(j2.places.map((p) => p.node)).toEqual(['BOG', 'CTG', 'SMR', 'GUA', 'SAL'])
+    expect([j2.places[1].hop?.mode, j2.places[1].hop?.price_dkk]).toEqual(['flight', 600])
+    expect([j2.places[4].hop?.from, j2.places[4].hop?.to]).toEqual(['GUA', 'SAL'])
+    expect(j2.places[0].hop).toBeNull()
+  })
+  it('the other stops and their legs stay as they were', () => {
+    const j2 = withEnds(j, inout, map, wayInBOG, wayHomeSAL)
+    expect(j2.places.slice(2, 4)).toEqual(j.places.slice(1, 3))
   })
 })

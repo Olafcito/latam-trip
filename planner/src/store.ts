@@ -14,6 +14,7 @@ import { deleteTrip, loadTrips, projectRef, readDoc, saveTrip, sendQueued, write
 import { importBrowser } from './lib/importBrowser'
 import { outbox, type FlushReport } from './lib/outbox'
 import { journeyToRow } from './lib/tripRow'
+import { withEnds, type WayChoice } from './lib/ways'
 
 const FILTERS_KEY = 'latam-planner.filters'
 /** the browser's own trips: every trip except a table trip it never changed */
@@ -123,6 +124,14 @@ interface State {
   setHopFlight: (i: number, flight: CrawledFlight | null) => void
   /** a press on a night stepper: the legs it moves and the nights kept at the last stop, as one change */
   moveNights: (m: NightMove) => void
+  /** another way in and way home between the same two cities for the open trip, kept as its draft */
+  setWays: (choice: WayChoice) => void
+  /** the trip whose start and end are being picked, while the picker is open for it. null for a new trip */
+  pickFor: string | null
+  /** open the picker to change the start and end of a trip */
+  changeEndsOf: (tripId: string) => void
+  /** the trip being changed takes these ways, its new end cities come in as stops, and its trip view opens */
+  changeEnds: (wayIn: Way, wayHome: Way) => void
 
   /** every trip in the list: the browser's own trips and the table trips it has no copy of */
   saved: Journey[]
@@ -190,7 +199,11 @@ export const useStore = create<State>((set, get) => ({
   },
   screen: 'trips',
   view: 'home',
-  go: (screen, view) => set({ mapCardFrom: null, ...(view ? { screen, view } : { screen }) }),
+  // leaving the picker forgets the trip it was open for, so the next pick is a new trip
+  go: (screen, view) => set({
+    mapCardFrom: null, ...(view ? { screen, view } : { screen }),
+    ...(screen === 'trips' && (view ?? get().view) === 'pick' ? {} : { pickFor: null }),
+  }),
 
   filters: { ...DEFAULT_FILTERS, ...read<Partial<Filters>>(FILTERS_KEY, {}) },
   setFilters: (f) => {
@@ -222,7 +235,7 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const journey = newJourney(data.inout, wayIn, wayHome, optionId)
     write(CURRENT_KEY, journey)
-    set({ journey, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false })
+    set({ journey, pickFor: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false })
   },
   startOnMap: (wayIn, wayHome, optionId) => get().startJourney(wayIn, wayHome, optionId),
   setJourney: (next) => {
@@ -243,14 +256,14 @@ export const useStore = create<State>((set, get) => ({
   openSaved: (next) => {
     const journey = settled(next, get())
     write(CURRENT_KEY, journey)
-    set({ journey, viewing: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
+    set({ journey, viewing: null, pickFor: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
   },
   openTrip: (next) => {
     const journey = settled(next, get())
     write(CURRENT_KEY, journey)
-    set({ journey, viewing: null, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
+    set({ journey, viewing: null, pickFor: null, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
   },
-  closeTrip: () => set({ viewing: null, mapOpen: false, screen: 'trips', view: 'home', cursor: null, idle: false }),
+  closeTrip: () => set({ viewing: null, pickFor: null, mapOpen: false, screen: 'trips', view: 'home', cursor: null, idle: false }),
 
   cursor: null,
   idle: false,
@@ -336,6 +349,25 @@ export const useStore = create<State>((set, get) => ({
     const hop = flight ? withFlight(h, flight) : withoutFlight(h, get())
     const base = flight ? pinned(j, data) : j
     get().setJourney({ ...base, places: base.places.map((q, k) => (k === i ? { ...q, hop } : q)) })
+  },
+  setWays: (choice) => {
+    const { journey: j, data } = get()
+    if (!j || !data) return
+    get().setJourney(withEnds(j, data.inout, data.map, choice.wayIn, choice.wayHome))
+  },
+  pickFor: null,
+  changeEndsOf: (tripId) => {
+    set({ pickFor: tripId })
+    get().go('trips', 'pick')
+  },
+  changeEnds: (wayIn, wayHome) => {
+    const { journey: open, saved, pickFor, data } = get()
+    // the trip the picker was opened for, which is the open trip when it was opened from its trip view
+    const j = pickFor && open?.id !== pickFor ? (saved.find((s) => s.id === pickFor) ?? null) : open
+    if (!j || !data) return
+    get().setJourney(withEnds(j, data.inout, data.map, wayIn, wayHome))
+    set({ pickFor: null, mapOpen: true, cursor: null, idle: false })
+    get().go('trips', 'trip')
   },
 
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),
@@ -509,7 +541,7 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const r = applyTrips(data.inout, data.map, journey, saved, mapOpen, after, facts)
     // a new trip needs a way in and a way home to start from
-    if (!r) return set({ screen: 'trips', view: 'pick' })
+    if (!r) return set({ screen: 'trips', view: 'pick', pickFor: null })
     write(SAVED_KEY, localOnly(r.saved, get().repo))
     if (r.current) write(CURRENT_KEY, r.current)
     else write(CURRENT_KEY, null)

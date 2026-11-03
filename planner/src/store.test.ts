@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useStore } from './store'
-import type { AppData, CrawledFlight, MapEdge } from './data/types'
-import { totals, travelTotal, type Hop, type Journey, type Totals } from './lib/journey'
+import { ownKey } from '@map/data/ownKey'
+import { CURRENT_KEY, useStore } from './store'
+import type { AppData, CrawledFlight, InOut, MapEdge, Way } from './data/types'
+import { schedule, totals, travelTotal, type Hop, type Journey, type Totals } from './lib/journey'
+import { rowToJourney, withTripWays, type TripRow } from './lib/repoTrips'
+import { chooseWay } from './lib/ways'
 
 const trip: Journey = {
   id: 'jtest',
@@ -179,5 +182,86 @@ describe('toggleCursor', () => {
     expect([s().cursor, s().idle]).toEqual([1, true])
     s().setCursor(0)
     expect([s().cursor, s().idle]).toEqual([0, false])
+  })
+})
+
+describe('changing the ways and the ends of a trip', () => {
+  const way = (over: Partial<Way>): Way => ({
+    id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
+    total_hours: 14.5, flying_hours: 14.5, flights: 2, hub_nights: 0, changes: 0, us_transit: false, airports: ['CPH', 'CTG'],
+    tickets: [], price_dkk: 1000,
+    extras: { cabin_bag_fees_dkk: 0, checked_bag_fees_dkk: 0, hub_nights: 0, hub_stay_estimate_dkk: 0 },
+    score: 5, timeline: [], ...over,
+  })
+  const oneIn = way({ id: 'I_one_1202', depart: '2026-12-02T09:00', arrive: '2026-12-02T18:00' })
+  const lateIn = way({ id: 'I_one_1208', depart: '2026-12-08T09:00', arrive: '2026-12-08T18:00' })
+  const bogIn = way({ id: 'I_one_BOG', to: 'BOG', depart: '2026-12-03T08:00', arrive: '2026-12-03T16:00' })
+  const oneHome = way({ id: 'H_one_0205', direction: 'home', from: 'GUA', to: 'CPH', depart: '2027-02-05T12:00', arrive: '2027-02-06T10:00' })
+  const leg = (from: string, to: string, date?: string): Hop => ({ from, to, mode: 'bus', operator: null, hours: 4, price_dkk: 100, overnight: false, border: false, flight: null, ...(date ? { date } : {}) })
+  const rowWay = ({ id: _, ...rest }: Way) => rest as unknown as TripRow['way_in']
+  // a saved trip still on its own pair of ticket ways
+  const row: TripRow = {
+    id: 't1', version: 1, name: 'Saved', saved_at: '2026-10-29T10:00:00Z', by: 'planner', why: '',
+    way_in: rowWay(way({ type: 'ticket', depart: '2026-12-03T07:00', arrive: '2026-12-03T15:00' })),
+    way_home: rowWay(way({ direction: 'home', type: 'ticket', from: 'GUA', to: 'CPH', depart: '2027-02-05T09:00', arrive: '2027-02-06T08:00' })),
+    places: [
+      { node: 'CTG', hop: null },
+      { node: 'SMR', hop: leg('CTG', 'SMR', '2026-12-06') },
+      { node: 'GUA', hop: leg('SMR', 'GUA') },
+    ],
+  }
+  const built = { generated_at: '', currency: 'DKK', home: ['CPH'], airports: {}, tickets: {}, options: [], ways: Object.fromEntries([oneIn, lateIn, bogIn, oneHome].map((w) => [w.id, w])) } as unknown as InOut
+  const inout = withTripWays(built, [row])
+  const data = { map: { nodes: [], edges: [] }, inout } as unknown as AppData
+  const s = useStore.getState
+  const open = () => s().journey!
+  const own = () => ({ wayIn: inout.ways['t1:in'], wayHome: inout.ways['t1:home'] })
+
+  beforeEach(() => {
+    s().setData(data)
+    s().openTrip(rowToJourney(row))
+  })
+
+  it('a way picked for a trip on its own pair sets both ways and keeps the stops', () => {
+    s().setWays(chooseWay(inout, oneIn, own()))
+    expect([open().wayIn, open().wayHome]).toEqual(['I_one_1202', 'H_one_0205'])
+    expect(open().places.map((p) => p.node)).toEqual(['CTG', 'SMR', 'GUA'])
+  })
+
+  it('keeps the new ways as the draft of the open trip', () => {
+    const kept = new Map<string, string>()
+    const was = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+    Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: { getItem: (k: string) => kept.get(k) ?? null, setItem: (k: string, v: string) => kept.set(k, v), removeItem: (k: string) => kept.delete(k) } })
+    try {
+      s().setWays(chooseWay(inout, oneIn, own()))
+      expect(JSON.parse(kept.get(ownKey(CURRENT_KEY))!).wayIn).toBe('I_one_1202')
+    } finally {
+      if (was) Object.defineProperty(globalThis, 'localStorage', was)
+      else delete (globalThis as { localStorage?: unknown }).localStorage
+    }
+  })
+
+  it('changing the ends opens the picker for the trip and comes back to it', () => {
+    s().changeEndsOf('t1')
+    expect([s().screen, s().view, s().pickFor]).toEqual(['trips', 'pick', 't1'])
+    s().changeEnds(bogIn, oneHome)
+    expect([s().screen, s().view, s().pickFor]).toEqual(['trips', 'trip', null])
+    expect(open().places.map((p) => p.node)).toEqual(['BOG', 'CTG', 'SMR', 'GUA'])
+    expect([open().id, open().wayIn]).toEqual(['t1', 'I_one_BOG'])
+  })
+
+  it('leaving the picker forgets the trip, so the next pick is a new trip', () => {
+    s().changeEndsOf('t1')
+    s().go('trips', 'home')
+    expect(s().pickFor).toBeNull()
+  })
+
+  it('a pinned leg before the new arrival shows a clash, nothing is blocked', () => {
+    s().changeEnds(lateIn, oneHome)
+    const j = open()
+    expect(j.wayIn).toBe('I_one_1208')
+    const sched = schedule(j, inout.ways[j.wayIn], inout.ways[j.wayHome], 'GUA', (n) => n)
+    const clash = sched.warnings.find((w) => w.leg === 1)
+    expect(clash?.text).toBe('The leg on from CTG leaves 6 Dec, before you get there 8 Dec 18:00')
   })
 })
