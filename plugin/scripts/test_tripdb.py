@@ -659,6 +659,12 @@ class QuoteRulesTest(unittest.TestCase):
             self.assertEqual(quote_rules.usable(q, cfg), ok)
             self.assertEqual(quote_rules.leg_dates(quote_rules.prepared(q, cfg)), (out_date, home_date))
 
+    def test_a_quote_without_a_price_is_not_usable(self):
+        import quote_rules
+        q = quote()
+        self.assertEqual(quote_rules.usable_of(q, {}), 1)
+        self.assertEqual(quote_rules.usable_of(dict(q, price_dkk=None), {}), 0)
+
     def test_quote_id_tells_flight_numbers_apart(self):
         import quote_rules
         a, b = quote(), quote()

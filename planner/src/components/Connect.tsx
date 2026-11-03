@@ -48,7 +48,7 @@ export function Connect({ flow, token, onClose }: { flow: string; token: string;
           {step.s === 'done' && (
             <>
               <p className="load-err-t" style={{ color: 'var(--text)' }}>Connected</p>
-              <p className="small muted">The sign in page on {step.info.host} goes on by itself. You can close this tab.</p>
+              <p className="small muted">The sign in page goes on by itself and takes you back to {step.info.host}. You can close this tab.</p>
               <button type="button" className="btn" onClick={onClose}>Open the planner</button>
             </>
           )}

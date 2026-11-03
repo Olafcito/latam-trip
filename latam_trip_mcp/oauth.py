@@ -478,7 +478,7 @@ def login_page(params, error=None, flow="", email=""):
     hidden = "".join(f'<input type="hidden" name="{esc(k)}" value="{esc(params.get(k, ""))}">' for k in FORWARD)
     err = f'<p class="error">{esc(error)}</p>' if error else ""
     host = urllib.parse.urlsplit(params.get("redirect_uri", "")).netloc
-    mail = f"""<p class="sub">We'll email a sign in link to {esc(email)}. Open it on any device and this page goes on by itself.</p>
+    mail = f"""<p class="sub">We'll email a sign in link to <span style="white-space:nowrap">{esc(email)}</span>. Open it on any device and this page goes on by itself.</p>
 <button type="button" id="send">Email me a sign in link</button>
 <p class="note" id="note" role="status" aria-live="polite"></p>""" if flow and email else ""
     return f"""<!doctype html>

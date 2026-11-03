@@ -107,7 +107,9 @@ def build_qid(q, cfg):
 
 
 def usable_of(q, cfg):
-    """The ok flag of an already prepared quote, as 0 or 1."""
+    """The ok flag of an already prepared quote, as 0 or 1. A quote with no price is never usable, the routes need one."""
+    if q.get("price_dkk") is None:
+        return 0
     hrs = [d.get("hours") for d in legs_of(q) if d and d.get("hours")]
     flags = list(q.get("flags") or [])
     site = (q.get("notes") or "").split(";")[0].replace("site=", "").strip()
