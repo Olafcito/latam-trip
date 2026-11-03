@@ -230,8 +230,13 @@ class BookingRest:
         assert table == "bookings", table
         return [json.loads(json.dumps(r)) for r in self.rows]
 
-    def insert(self, table, rows, returning=None, **kw):
+    def insert(self, table, rows, returning=None, columns=None, **kw):
         assert table == "bookings", table
+        # PostgREST refuses a bulk insert whose rows have different keys unless columns names them (PGRST102)
+        if len({frozenset(r) for r in rows}) > 1 and not columns:
+            raise tripdb_store.RestError("POST /rest/v1/bookings gave 400: All object keys must match")
+        if columns and any(set(r) - set(columns) for r in rows):
+            raise tripdb_store.RestError("POST /rest/v1/bookings gave 400: a key outside columns")
         got = []
         for r in rows:
             row = {"status": "booked", "travellers": 1, "attachments": [], **json.loads(json.dumps(r)),
@@ -291,6 +296,16 @@ class BookingTest(BookingBase):
         self.assertEqual([r["row"] for r in out["refused"]], [2, 3, 4, 5])
         self.assertEqual(len(self.rest.rows), 1)
 
+    def test_a_flight_and_a_stay_go_in_together(self):
+        flight = {"kind": "flight", "from_code": "SJO", "to_code": "LIR", "depart": "2026-12-12T06:00", "reference": "TEST04",
+                  "price_dkk": 450, "ticket": "TEST-T1"}
+        stay = {"kind": "stay", "place_id": "LIR", "check_in": "2026-12-12", "check_out": "2026-12-14", "reference": "TEST05"}
+        out = self.core.add("booking", [flight, stay])
+        self.assertEqual(out["refused"], [], out)
+        self.assertEqual(len(out["added"]), 2)
+        self.assertEqual([r["travellers"] for r in self.rest.rows], [1, 1])
+        self.assertEqual([r["attachments"] for r in self.rest.rows], [[], []])
+
     def test_update_changes_the_reference(self):
         bid = self.book()
         self.core.update("booking", bid, {"reference": "TEST03"})
@@ -346,6 +361,8 @@ class BookingTest(BookingBase):
         bid = self.book()
         out = self.core.call("attach_booking_upload", {"id": bid, "name": "scan.jpg", "type": "image/jpeg"})
         self.assertIn("token=TESTTOKEN", out["upload_url"])
+        self.assertEqual(out["valid"], "2 hours")
+        self.assertIsNone(out["attachment"]["size"])
         self.assertEqual(self.rest.signed, [("bookings", f"{bid}/scan.jpg")])
         got = self.core.get("booking", bid)["attachments"]
         self.assertEqual([(a["path"], a["type"]) for a in got], [(f"{bid}/scan.jpg", "image/jpeg")])
@@ -382,6 +399,25 @@ class BookedLegTest(BookingBase):
         self.assertEqual(out["held"]["leg"], 4)
         self.assertIn("booked on 2026-12-20", out["held"]["text"])
 
+    def test_update_trip_that_moves_a_booked_leg_is_refused(self):
+        self.book()
+        t = self.trip()
+        t["places"][4]["hop"]["date"] = "2026-12-22"
+        with self.assertRaises(tripdb.Refused) as e:
+            self.core.update("trip", "t1", {"places": t["places"]})
+        self.assertEqual(str(e.exception), "Leg 4 is booked on 2026-12-20. Change the booking first.")
+        self.assertEqual(self.store.trip_versions()["t1"], [1])
+
+    def test_update_trip_that_leaves_booked_legs_alone_works(self):
+        self.book()
+        before = self.days()
+        t = self.trip()
+        t["places"][2]["hop"]["date"] = "2026-12-11"
+        out = self.core.update("trip", "t1", {"places": t["places"], "why": "TEST change"})
+        self.assertEqual(out["version"], 2)
+        self.assertEqual(self.days()[2], "2026-12-11")
+        self.assertEqual(self.days()[4], before[4])
+
     def test_a_cancelled_booking_or_one_on_another_day_locks_nothing(self):
         bid = self.book()
         self.book(depart="2026-12-19T08:00", reference="TEST02")
@@ -396,8 +432,9 @@ class StorageSignTest(unittest.TestCase):
     def rest(self, answer):
         rest = tripdb_store.Rest("https://x.test", "k")
         self.seen = []
+        self.headers = []
         rest._call = lambda method, path, body=None, headers=None, **kw: self.seen.append((method, path, body)) or (
-            200, {}, json.dumps(answer).encode())
+            self.headers.append(headers)) or (200, {}, json.dumps(answer).encode())
         return rest
 
     def test_a_signed_download_url(self):
@@ -409,6 +446,14 @@ class StorageSignTest(unittest.TestCase):
         url = self.rest({"url": "/object/upload/sign/bookings/b1/t.pdf?token=TESTTOKEN"}).storage_sign_upload("bookings", "b1/t.pdf")
         self.assertEqual(url, "https://x.test/storage/v1/object/upload/sign/bookings/b1/t.pdf?token=TESTTOKEN")
         self.assertEqual(self.seen[0][:2], ("POST", "/storage/v1/object/upload/sign/bookings/b1/t.pdf"))
+        self.assertEqual(self.headers[0], {"x-upsert": "true"})
+
+    def test_an_insert_names_every_key_its_rows_use(self):
+        rest = self.rest([])
+        rest.insert("tasks", [{"title": "a"}, {"title": "b", "status": "done"}])
+        self.assertEqual(self.seen[0][1], "/rest/v1/tasks?columns=title,status")
+        rest.insert("bookings", [{"kind": "bus"}], returning="id", columns=["kind", "status"])
+        self.assertEqual(self.seen[1][1], "/rest/v1/bookings?columns=kind,status&select=id")
 
 
 class GuardTest(Base):

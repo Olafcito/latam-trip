@@ -50,7 +50,7 @@ TYPES = {
                       "price sits on the first row and the others carry 0. Call list_booking with from, to and day before adding, "
                       "so nothing is bought twice. list_booking also takes place, and leaves out cancelled bookings unless where "
                       "has status. delete_booking sets the status to cancelled and keeps the row. depart and arrive are local "
-                      "clock times. A booked leg holds its day, set_leg_date and shift_leg never move it."),
+                      "clock times. A booked leg holds its day, set_leg_date, shift_leg and update_trip never move it."),
 }
 
 # The private bucket for booking files and the types it takes, as supabase/migrations/0013_bookings.sql sets them.
@@ -60,6 +60,7 @@ BOOKING_FILE_EXT = {**{t.split("/")[1]: t for t in BOOKING_FILE_TYPES}, "jpg": "
 MAX_FILE_MB = 4  # a Lambda request takes 6 MB, and base64 adds a third
 BOOKING_WHERE = {"from": "from_code", "to": "to_code", "place": "place_id"}  # the short names list_booking takes
 BOOKING_TIME_RE = re.compile(r"\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$")
+BOOKING_COLUMNS = [k for k in tripdb.BOOKING if k not in ("id", "created_at", "updated_at", "attachments")]
 
 TASK_FIELDS = {"title": "!str", "type": "str", "status": "enum:open,working,done,failed", "trip_id": "str",
                "trip_version": "int", "result": "str", "data": "dict"}
@@ -266,8 +267,10 @@ class Core:
                  "name": {"type": "string", "description": "the file name, ending in " + ", ".join("." + e for e in sorted(BOOKING_FILE_EXT))},
                  "content_base64": {"type": "string"}}, "required": ["id", "name", "content_base64"]},
              "fn": lambda id, name, content_base64: self.attach_booking_file(id, name, content_base64)},
-            {"name": "attach_booking_upload", "description": "Get a signed upload URL for a booking's file, valid for 10 minutes, "
-             "and add the file to the booking. PUT the file's bytes to the URL with its type as Content-Type. Type is a PDF or a photo.",
+            {"name": "attach_booking_upload", "description": "Get a signed upload URL for a booking's file, valid for 2 hours, "
+             "and add the file to the booking. PUT the file's bytes to the URL with its type as Content-Type. A file with the same "
+             "name is replaced. Type is a PDF or a photo. The entry's size stays null until the upload is confirmed, so an "
+             "attachment with size null may not be in the bucket yet.",
              "schema": {"type": "object", "properties": {
                  "id": {"type": "string", "description": "the booking's id"},
                  "name": {"type": "string", "description": "the file name, like ticket.pdf"},
@@ -510,7 +513,8 @@ class Core:
             return [str(g["id"]) for g in got], []
         if tname == "booking":
             self.need_project("bookings")
-            return [g["id"] for g in self.store.rest.insert("bookings", good, returning="id")], []
+            # every column is named, so rows with different fields go in together and a field left out takes its default
+            return [g["id"] for g in self.store.rest.insert("bookings", good, returning="id", columns=BOOKING_COLUMNS)], []
         if tname == "flight":
             res = self.store.add_quotes(good, "chat.jsonl")
             ids = [cols.qr.quote_id(q) for q in good]
@@ -608,6 +612,7 @@ class Core:
             raise Refused("id, version and saved_at cannot be changed, a save makes the next version")
         new = {**copy.deepcopy(old), **patch}
         new["by"] = patch.get("by") or "plan-trip"
+        self.check_booked_days(old, new)
         self.keep("trip", id, [old], "update")
         try:
             out = self.save_trip(new)
@@ -805,7 +810,7 @@ class Core:
         entry = {"path": path, "name": name, "type": type, "size": None, "added_at": self.now()}
         self.attach(i, entry)
         return {"booking": i, "attachment": entry, "upload_url": url, "method": "PUT", "content_type": type,
-                "valid": "10 minutes"}
+                "valid": "2 hours"}
 
     # ---- booked legs ------------------------------------------------------------------------------------------
 
@@ -829,6 +834,21 @@ class Core:
         node, P = self.airport_node(), trip["places"]
         ends = {(node(r.get("from_code")), node(r.get("to_code")), r["depart"][:10]) for r in rows}
         return {k: day for k, day in self.leg_days(trip).items() if (P[k - 1]["node"], P[k]["node"], day) in ends}
+
+    def check_booked_days(self, old, new):
+        """Refuse a new version of a trip that puts a booked leg on another day. The leg is found by its two ends."""
+        booked = self.booked_legs(old)
+        if not booked:
+            return
+        errs = tripdb.row_errors("trips", new)
+        if errs:
+            raise Refused(f"{new['id']}: " + "; ".join(errs))
+        P, Q = old["places"], new["places"]
+        days = self.leg_days(new)
+        for k, day in sorted(booked.items()):
+            ends = (P[k - 1]["node"], P[k]["node"])
+            if any((Q[m - 1]["node"], Q[m]["node"]) == ends and d != day for m, d in days.items()):
+                raise self.booked_refusal(k, day)
 
     @staticmethod
     def booked_refusal(k, day):

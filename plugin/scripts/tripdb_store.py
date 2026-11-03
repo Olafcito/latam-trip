@@ -284,25 +284,31 @@ class Rest:
         return rows if limit is None else rows[:limit]
 
     # ---- writes ----
-    def insert(self, table, rows, on_conflict=None, returning=None, resolution=None):
-        """Insert in batches. returning is a column list to get back, or None for nothing. Stops on the first failed batch."""
+    def insert(self, table, rows, on_conflict=None, returning=None, resolution=None, columns=None):
+        """Insert in batches. returning is a column list to get back, or None for nothing. Stops on the first failed batch.
+        Each batch names its columns, the given ones or every key its rows use, so rows with different keys go in
+        together and a key a row leaves out takes the column's default."""
         out, batch, size, start = [], [], 0, 0
         for i, r in enumerate(rows):
             n = len(json.dumps(r, ensure_ascii=False))
             if batch and (len(batch) >= self.BATCH_ROWS or size + n > self.BATCH_BYTES):
-                out += self._insert_batch(table, batch, on_conflict, returning, resolution, start, i)
+                out += self._insert_batch(table, batch, on_conflict, returning, resolution, start, i, columns)
                 batch, size, start = [], 0, i
             batch.append(r)
             size += n
         if batch:
-            out += self._insert_batch(table, batch, on_conflict, returning, resolution, start, start + len(batch))
+            out += self._insert_batch(table, batch, on_conflict, returning, resolution, start, start + len(batch), columns)
         return out
 
-    def _insert_batch(self, table, batch, on_conflict, returning, resolution, a, b):
+    def _insert_batch(self, table, batch, on_conflict, returning, resolution, a, b, columns=None):
         prefer = ["return=representation" if returning else "return=minimal", "missing=default"]
         if resolution:
             prefer.append(f"resolution={resolution}")
         q = {}
+        # PostgREST takes a bulk insert whose rows have different keys only when columns names them all
+        names = ",".join(columns or dict.fromkeys(k for r in batch for k in r))
+        if names:
+            q["columns"] = names
         if on_conflict:
             q["on_conflict"] = on_conflict
         if returning:
@@ -349,8 +355,10 @@ class Rest:
         return self._signed(self._json(raw)["signedURL"])
 
     def storage_sign_upload(self, bucket, path):
-        """A signed upload URL for one file in a bucket. Storage keeps it valid for 10 minutes. The file goes up with a PUT."""
-        _, _, raw = self._call("POST", f"/storage/v1/object/upload/sign/{bucket}/{urllib.parse.quote(path)}", body={})
+        """A signed upload URL for one file in a bucket. Storage keeps it valid for 2 hours. The file goes up with a PUT,
+        and replaces a file already at the path."""
+        _, _, raw = self._call("POST", f"/storage/v1/object/upload/sign/{bucket}/{urllib.parse.quote(path)}", body={},
+                               headers={"x-upsert": "true"})
         return self._signed(self._json(raw)["url"])
 
     def storage_list(self, bucket, prefix):

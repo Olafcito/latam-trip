@@ -70,12 +70,12 @@ Two more tools change the dates of a trip:
 - `set_leg_date` puts one leg on a day. No other leg moves.
 - `shift_leg` moves one leg and every later leg by a number of days, up to the first booked leg.
 
-A booked leg holds its day. Both tools refuse to move it, and `shift_leg` leaves it and every leg after it where they are. Change the booking first.
+A booked leg holds its day. `set_leg_date`, `shift_leg` and `update_trip` refuse to move it, and `shift_leg` leaves it and every leg after it where they are. Change the booking first.
 
 Two tools attach files to a booking. They go in the private `bookings` bucket, and only PDF and photo types are taken.
 
 - `attach_booking_file` takes a file of up to 4 MB as base64, such as a PDF from a mail.
-- `attach_booking_upload` gives a signed upload URL for a larger file, valid for 10 minutes.
+- `attach_booking_upload` gives a signed upload URL for a larger file, valid for 2 hours. A file with the same name is replaced. The entry's size is null until the upload is confirmed, so an attachment with size null may not be in the bucket yet.
 
 Bookings, their references, prices and files live only in the owner only table and the private bucket, never in a built file.
 
