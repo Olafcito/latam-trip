@@ -127,7 +127,8 @@ export function rowToJourney(r: TripRow): Journey {
     const place: Place = { node: p.node, hop: i === 0 ? null : (p.hop ?? null) }
     if (p.why) place.why = p.why
     if (Array.isArray(p.stays) && p.stays.length)
-      place.stays = p.stays.map((s) => ({ lodging_id: s.lodging_id, room_id: s.room_id ?? null, ...(s.nights != null ? { nights: s.nights } : {}) }))
+      // each item as it was read, also a nights of null or a key the planner does not know, so a save changes nothing in it
+      place.stays = p.stays.map((s) => ({ ...s }))
     return place
   })
   const j: Journey = {

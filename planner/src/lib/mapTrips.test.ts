@@ -52,6 +52,18 @@ describe('journeys as map trips', () => {
     expect(places[2].hop).toMatchObject({ from: 'GUA', mode: 'flight', hours: 2 })
   })
 
+  it('keeps the planned stays of a stop when its leg changes mode', () => {
+    const stays = [{ lodging_id: 'L1', room_id: 'R1', nights: 2 }]
+    const planned: Journey = { ...j, places: j.places.map((p, k) => (k === 2 ? { ...p, stays } : p)) }
+    const legs = journeyToTrip(planned).legs.map((l, k) => (k === 1 ? { ...l, mode: 'flight' as const } : l))
+    const places = placesFromLegs(planned, legs, map)
+    expect(places.map((p) => p.node)).toEqual(['MEX', 'GUA', 'SAL', 'SJO'])
+    // the stop is rebuilt for the new leg, not the one it had
+    expect(places[2].hop).not.toBe(planned.places[2].hop)
+    expect(places[2].stays).toEqual(stays)
+    expect(places.filter((p) => p.stays)).toHaveLength(1)
+  })
+
   it('bridges a leg that starts away from the last place, by own way when there is no route', () => {
     const start: Journey = { ...j, places: [place('MEX', null)] }
     const places = placesFromLegs(start, [{ cid: 'LIM-CUZ', from: 'LIM', to: 'CUZ', mode: 'bus' }], map, () => ({ operator: 'Cruz del Sur', hours: 21, price_dkk: 400, overnight: true, border: false }))

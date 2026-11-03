@@ -101,7 +101,8 @@ const sameLeg = (a: TripLeg, b: TripLeg) => a.from === b.from && a.to === b.to &
 /**
  * Places for a new list of legs. Removing one leg drops the place it led to and rejoins its
  * neighbours. Anything else keeps the places that still match (with their picked flights)
- * and adds the rest. A leg that starts away from the last place gets a hop there first.
+ * and adds the rest, each with the planned stays of a place at the same city that no leg matched.
+ * A leg that starts away from the last place gets a hop there first.
  */
 export function placesFromLegs(j: Journey, legs: TripLeg[], map: MapData, facts?: LegFacts): Place[] {
   const old = journeyToTrip(j).legs
@@ -125,7 +126,14 @@ export function placesFromLegs(j: Journey, legs: TripLeg[], map: MapData, facts?
       hit.used = true
       return hit.p
     }
-    return { node: to, hop: hopBetween(map, from, to, mode, facts) }
+    const place: Place = { node: to, hop: hopBetween(map, from, to, mode, facts) }
+    // a stop rebuilt for a leg that changed its mode or its order keeps the planned stays of the stop it was at that place
+    const kept = pool.find((x) => !x.used && x.p.node === to && x.p.stays?.length)
+    if (kept) {
+      kept.used = true
+      place.stays = kept.p.stays
+    }
+    return place
   }
   const places: Place[] = [j.places[0]]
   for (const l of legs) {

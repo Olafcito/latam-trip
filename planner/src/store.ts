@@ -626,7 +626,7 @@ export const useStore = create<State>((set, get) => ({
       latest: loadTrips,
       save: saveTrip,
       remove: async (id: string) => ({ ok: (await deleteTrip(id)).ok }),
-      totals: (j: Journey) => totals(data, j, scheduleOf(j, data)),
+      totals: (j: Journey) => totals(data, j, scheduleOf(j, data), get().bookings, get().lodgings),
     }
     try {
       const a = await importBrowser(deps)
@@ -705,7 +705,7 @@ async function saveRemote(copy: Journey, get: () => State, set: (p: Partial<Stat
   if (!data) return s.setNotice('The data has not loaded yet, so nothing was saved.')
   let row: TripRow
   try {
-    row = journeyToRow(copy, (s.viewing?.id === copy.id ? s.viewing.row : s.rows[copy.id]) ?? null, data.inout, totals(data, copy, scheduleOf(copy, data)))
+    row = journeyToRow(copy, (s.viewing?.id === copy.id ? s.viewing.row : s.rows[copy.id]) ?? null, data.inout, totals(data, copy, scheduleOf(copy, data), s.bookings, s.lodgings))
   } catch (e) {
     return s.setNotice(e instanceof Error ? e.message : String(e))
   }

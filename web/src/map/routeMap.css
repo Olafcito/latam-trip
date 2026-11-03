@@ -281,9 +281,9 @@
 .meter i.f { background: var(--flight); }
 .todo { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.4; color: var(--text); }
 .todo li::marker { color: var(--flight); }
-.hostels { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; }
-.hostels li { background: var(--panel); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
-.hostels li span:last-child { font-size: 12px; font-weight: 500; color: var(--muted); text-align: right; white-space: nowrap; }
+.sums { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; }
+.sums li { background: var(--panel); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+.sums li span:last-child { font-size: 12px; font-weight: 500; color: var(--muted); text-align: right; white-space: nowrap; }
 
 .rtitle { margin: 0; font-size: 23px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
 .rtitle svg { color: var(--flight); }
@@ -546,6 +546,11 @@
   .plan-stop .flag { flex: none; }
   .plan-who { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .plan-when { flex: none; font-size: 12px; color: var(--muted); white-space: nowrap; }
+  /* a booked stay the stop no longer covers: the warning mark of the flight rows, its words in the tip */
+  .plan-cut { flex: none; display: flex; }
+  .plan-cut button.mk-i { position: relative; display: inline-flex; padding: 0; border: 0; background: none; color: var(--err); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .plan-cut button.mk-i::after { content: ''; position: absolute; inset: -8px -6px; }
+  .plan-cut button.mk-i:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
   /* folded: a small translucent card in the top right corner, the map gets the room */
   .panel.plan.mini {
     top: 14px; right: 14px; bottom: auto; width: var(--side); max-height: none; padding: 10px 12px 10px 14px; gap: 6px;

@@ -200,7 +200,7 @@ function GymCard({ g, api, model, onShow }: { g: GymRow; api: MapModeApi; model:
       )}
       {cost && (
         <Part title="Monthly estimate">
-          <ul className="hostels">
+          <ul className="sums">
             <li><span>Living</span><span className="mono">{kr(cost.living)}</span></li>
             <li><span>Gym</span><span className="mono">{cost.gym != null ? kr(cost.gym) : 'Not published'}</span></li>
             <li className="mc-sum"><span>Total</span><span className="mono">{kr(cost.total)}</span></li>

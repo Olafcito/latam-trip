@@ -108,13 +108,13 @@
   .mcard .hero img { animation: none; }
   .mcard .mc-where { margin-top: 5px; align-items: baseline; }
   .mcard .mc-where span { min-width: 0; }
-  .mcard .hostels li { flex-wrap: wrap; }
+  .mcard .sums li { flex-wrap: wrap; }
   .mcard .mc-note { padding: 10px 12px; }
   .mc-note .mc-saved { white-space: normal; }
   .mc-price { font-size: 18px; font-weight: 700; }
   .mc-kind { background: transparent; box-shadow: inset 0 0 0 1px var(--chrome-line); color: var(--muted); }
   .mc-facts .fact:last-child:nth-child(odd) { grid-column: 1 / -1; }
-  .hostels li.mc-sum span:last-child { font-size: 14px; font-weight: 700; color: var(--text); }
+  .sums li.mc-sum span:last-child { font-size: 14px; font-weight: 700; color: var(--text); }
 
   /* a score: its tier's colour is set once and the chip, the total and the bars read it */
   .tier-top { --score: var(--bus); }
@@ -239,7 +239,7 @@
     .mc-bars li { grid-template-columns: minmax(0, 1fr) 28px; }
     .mc-bar-l { white-space: normal; overflow-wrap: anywhere; }
     .mc-bar { grid-row: 2; grid-column: 1 / -1; }
-    .mcard .hostels li span { min-width: 0; overflow-wrap: anywhere; }
+    .mcard .sums li span { min-width: 0; overflow-wrap: anywhere; }
   }
 
   @media (prefers-reduced-motion: reduce) {

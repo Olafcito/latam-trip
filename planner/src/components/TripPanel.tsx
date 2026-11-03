@@ -18,6 +18,7 @@ import { hoverProps } from './PlaceCard'
 import { ReachList } from './ReachList'
 import { Calendar, Close, Download, External, Grip, Land, ModeChip, Moon, Plane } from './icons'
 import { hopLink } from '../lib/links'
+import { MarkIcon } from './story/Marks'
 import { WhenPicker } from './story/WhenPicker'
 
 // The open trip, on the right of the map: its two fixed flights and the stops between them.
@@ -311,6 +312,12 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                   <Flag code={c} size={12} title={countryName(c)} />
                   <b className="plan-who" {...hoverProps(n)}>{nm(p.node)}</b>
                   <span className="plan-when" title="Nights here. The day each leg leaves sets them">{days ? `${days} ${days === 1 ? 'night' : 'nights'}` : 'Passing'}</span>
+                  {/* a booked stay the stop no longer covers, the same mark as the flight rows, its words in the tip */}
+                  {sched.warnings.filter((w) => w.stop === i).map((w, k) => (
+                    <span key={k} className="plan-cut" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                      <MarkIcon m={{ kind: 'late', tone: 'bad', label: w.text }} bare />
+                    </span>
+                  ))}
                   {i > 0 && (
                     <button className="plan-rm" onClick={(e) => { e.stopPropagation(); removeStop(i) }} aria-label={`Remove ${nm(p.node)}`} title="Remove this stop"><Close /></button>
                   )}

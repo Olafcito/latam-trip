@@ -3,7 +3,7 @@ import { bookedElsewhere, bookingOn, paidPrice, wayBooking, type BookData } from
 import { day, dayDiff, dayTime, kr } from './format'
 import { edgeHours, edgePrice, groundPath, type Arc } from './graph'
 import { priceOfWays } from './options'
-import { cutStays, stayTotals, type PlannedStay } from './stays'
+import { stayClashes, stayTotals, type PlannedStay } from './stays'
 import { addDays } from './time'
 
 export interface Hop {
@@ -176,7 +176,8 @@ export function legTime(map: MapData, h: Hop): LegTime {
  * The dated moments of a trip are its landing, the legs with a date set or a picked flight, and
  * its flight home. The days between two dated moments are shared evenly by the places in between.
  * Given the data to match them by, the bookings add a warning to a leg booked on another day.
- * A stop whose nights cut into a stay booked there gets a warning naming the place to stay and its last free cancel day.
+ * A booked stay of the trip the stops no longer cover gets a warning on the stop at its place, or in the general list when
+ * the trip no longer stops there, naming the place to stay and its last free cancel day.
  */
 export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string, names: (n: string) => string, bookings: Booking[] = [], data?: BookData, lodgings: Lodging[] = []): Schedule {
   const warnings: Warning[] = []
@@ -237,14 +238,17 @@ export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string,
     const b = bookedElsewhere(bookings, data, { from: j.places[k - 1].node, to: p.node, day: legDay(p.hop, places[k - 1].outDay) })
     if (b) warnings.push({ level: 'warn', text: `Booked on ${day(b.depart!)}`, leg: k })
   })
-  places.forEach((sp, k) => {
-    for (const b of cutStays(bookings, sp)) {
-      const name = lodgings.find((l) => l.id === b.lodging_id)?.name ?? b.seller
-      const cancel = b.cancel_until ? `, free to cancel until ${day(b.cancel_until)}` : ''
-      warnings.push({ level: 'warn', text: `${name ? `Cuts into your booking at ${name}` : 'Cuts into a booked stay'}${cancel}`, stop: k })
-    }
-  })
-  return { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), free, warnings }
+  const sched = { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), free, warnings }
+  for (const { booking: b, stop, meets } of stayClashes(j, sched, bookings)) {
+    const name = lodgings.find((l) => l.id === b.lodging_id)?.name ?? b.seller
+    const cancel = b.cancel_until ? `, free to cancel until ${day(b.cancel_until)}` : ''
+    const text =
+      stop == null ? `${name ? `Your booking at ${name}` : 'A booked stay'} is in ${names(b.place_id!)}, where the trip no longer stops`
+      : meets ? (name ? `Cuts into your booking at ${name}` : 'Cuts into a booked stay')
+      : name ? `Misses your booking at ${name}` : 'Misses a booked stay'
+    warnings.push({ level: 'warn', text: text + cancel, ...(stop == null ? {} : { stop }) })
+  }
+  return sched
 }
 
 /** What a press on a night stepper changes: the leg days to set, and the nights kept at the last stop. */
@@ -364,7 +368,7 @@ export interface Totals {
   hub_stay_dkk: number | null
   ground_dkk: number
   ground_unknown: number
-  /** what the booked stays at the stops cost. Not in the travel total */
+  /** what the booked stays of the trip cost. Not in the travel total */
   stays_booked_dkk: number
   /** what the planned stays not booked cost, from the places to stay. Not in the travel total */
   stays_planned_dkk: number

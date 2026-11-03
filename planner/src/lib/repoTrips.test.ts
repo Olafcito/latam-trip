@@ -206,6 +206,16 @@ describe('planned stays in a trip row', () => {
     expect(again.places[1].stays).toEqual(stays)
   })
 
+  it('opens a stays item as it was written and saves it with no change', () => {
+    // written by the connector with a nights of null and a key of its own
+    const stays = [{ lodging_id: 'L1', room_id: null, nights: null, note: 'TEST01' }] as unknown as NonNullable<TripRow['places'][number]['stays']>
+    const old = { ...row('a'), places: row('a').places.map((p, k) => (k === 1 ? { ...p, stays } : p)) }
+    const j = rowToJourney(old)
+    expect(j.places[1].stays).toEqual(stays)
+    const next = journeyToRow(j, old, io, totals)
+    expect(content(next)).toEqual(content(old))
+  })
+
   it('drops the planned stays of a stop once the trip no longer holds them', () => {
     const stays = [{ lodging_id: 'L1', room_id: 'R1' }]
     const withStays = row('a', { places: row('a').places.map((p, k) => (k === 1 ? { ...p, stays } : p)) })

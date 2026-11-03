@@ -377,7 +377,13 @@ describe('planned stays and booked stays at the stops', () => {
   it('does not count a booked stay again as planned, and counts the plan in place of a booked price not filled in', () => {
     const booked = row({ id: 'casa', lodging_id: 'L1', check_in: '2026-12-12', check_out: '2026-12-15', price_dkk: 1200 })
     const t = totals(data, planned, sched, [booked], [casa])
-    expect(t).toMatchObject({ stays_booked_dkk: 1200, stays_planned_dkk: 0, stays_unknown: 0 })
+    // the 3 booked nights count as booked, the other 7 of the 10 planned at 3000 stay planned
+    expect(t).toMatchObject({ stays_booked_dkk: 1200, stays_planned_dkk: 2100, stays_unknown: 0 })
+    // a booking that names no place to stay is the part all the same, so it is not counted twice
+    expect(totals(data, planned, sched, [{ ...booked, lodging_id: null }], [casa])).toMatchObject({ stays_booked_dkk: 1200, stays_planned_dkk: 2100 })
+    // a booking of every planned night leaves nothing planned
+    const whole = { ...booked, check_in: '2026-12-10', check_out: '2026-12-20', price_dkk: 2800 }
+    expect(totals(data, planned, sched, [whole], [casa])).toMatchObject({ stays_booked_dkk: 2800, stays_planned_dkk: 0, stays_unknown: 0 })
     const noPrice = totals(data, planned, sched, [{ ...booked, price_dkk: null }], [casa])
     expect(noPrice).toMatchObject({ stays_booked_dkk: 0, stays_planned_dkk: 3000, stays_unknown: 0 })
     // with no plan to stand in for it, a booked stay with no price is not known
@@ -411,5 +417,54 @@ describe('planned stays and booked stays at the stops', () => {
     expect(schedule(less, wi, wh, 'VVI', names, [sold], data).warnings).toContainEqual({ level: 'warn', text: 'Cuts into your booking at TEST01 seller', stop: 1 })
     // a cancelled stay warns of nothing
     expect(schedule(less, wi, wh, 'VVI', names, [{ ...booked, status: 'cancelled' }], data, [casa]).warnings.filter((w) => w.stop != null)).toEqual([])
+  })
+
+  /** the trip with the leg on to Viedma moved to the day given */
+  const onTo = (date: string): Journey => ({ ...trip(), places: trip().places.map((p, k) => (k === 2 ? { ...p, hop: { ...p.hop!, date } } : p)) })
+  const casaBooked = row({ id: 'casa', lodging_id: 'L1', check_in: '2026-12-17', check_out: '2026-12-20', price_dkk: 900, cancel_until: '2026-11-20', trip_id: 'j' })
+
+  it('warns on the stop when a leg moves it wholly off a booked stay, and counts the stay as paid', () => {
+    const j = onTo('2026-12-15')
+    const s = schedule(j, wi, wh, 'VVI', names, [casaBooked], data, [casa])
+    expect(s.places[1].days).toBe(5)
+    expect(s.warnings).toContainEqual({ level: 'warn', text: 'Misses your booking at TEST01 Casa, free to cancel until 20 Nov', stop: 1 })
+    expect(totals(data, j, s, [casaBooked], [casa]).stays_booked_dkk).toBe(900)
+    // a stay booked for no trip is still the trip's when the trip stops at its place
+    const free = { ...casaBooked, trip_id: null }
+    expect(schedule(j, wi, wh, 'VVI', names, [free], data, [casa]).warnings).toContainEqual({ level: 'warn', text: 'Misses your booking at TEST01 Casa, free to cancel until 20 Nov', stop: 1 })
+    expect(totals(data, j, s, [free], [casa]).stays_booked_dkk).toBe(900)
+    // a stay booked for another trip is that trip's, not this one's
+    const other = { ...casaBooked, trip_id: 'k' }
+    expect(schedule(j, wi, wh, 'VVI', names, [other], data, [casa]).warnings.filter((w) => w.stop != null)).toEqual([])
+    expect(totals(data, j, s, [other], [casa]).stays_booked_dkk).toBe(0)
+  })
+
+  it('warns in the general list when the trip no longer stops at a booked stay, and counts the stay as paid', () => {
+    const j: Journey = { ...trip(), places: [{ node: 'BOG', hop: null }, { node: 'VVI', hop: hop('BOG', 'VVI', { date: '2026-12-20' }) }] }
+    const s = schedule(j, wi, wh, 'VVI', names, [casaBooked], data, [casa])
+    expect(s.warnings).toContainEqual({ level: 'warn', text: 'Your booking at TEST01 Casa is in MDE, where the trip no longer stops, free to cancel until 20 Nov' })
+    expect(totals(data, j, s, [casaBooked], [casa]).stays_booked_dkk).toBe(900)
+    // a stay booked for no trip at a place the trip does not stop at is not this trip's
+    const free = { ...casaBooked, trip_id: null }
+    expect(schedule(j, wi, wh, 'VVI', names, [free], data, [casa]).warnings.filter((w) => w.text.includes('Casa'))).toEqual([])
+    expect(totals(data, j, s, [free], [casa]).stays_booked_dkk).toBe(0)
+  })
+
+  it('reads the last stop by its planned nights, so a stay booked on the free nights after them shows', () => {
+    const j: Journey = { ...trip([{ lodging_id: 'L1', room_id: 'R1' }]), lastNights: 5 }
+    j.places[2] = { ...j.places[2], stays: [{ lodging_id: 'L1', room_id: 'R1' }] }
+    const at = (check_in: string, check_out: string) => row({ id: 'end', place_id: 'VVI', lodging_id: 'L1', check_in, check_out, price_dkk: 500, trip_id: 'j' })
+    const s = schedule(j, wi, wh, 'VVI', names)
+    expect(s.places[2].days).toBe(5)
+    expect(s.free).toBeGreaterThan(0)
+    // the 5 planned nights booked: no warning, and the part is booked, not planned again
+    const fits = at('2026-12-20', '2026-12-25')
+    expect(schedule(j, wi, wh, 'VVI', names, [fits], data, [casa]).warnings.filter((w) => w.stop === 2)).toEqual([])
+    const both = totals(data, j, s, [fits], [casa])
+    expect(both.stays_booked_dkk).toBe(500)
+    expect(both.stays_planned_dkk).toBe(3000)
+    // a stay on the free nights after them is no longer covered by the stop
+    expect(schedule(j, wi, wh, 'VVI', names, [at('2026-12-26', '2026-12-28')], data, [casa]).warnings).toContainEqual({ level: 'warn', text: 'Misses your booking at TEST01 Casa', stop: 2 })
+    expect(schedule(j, wi, wh, 'VVI', names, [at('2026-12-23', '2026-12-27')], data, [casa]).warnings).toContainEqual({ level: 'warn', text: 'Cuts into your booking at TEST01 Casa', stop: 2 })
   })
 })
