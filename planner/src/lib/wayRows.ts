@@ -75,14 +75,6 @@ export function rowFares(rows: Record<string, WayRow[]>): Record<string, number>
   return fares
 }
 
-/** The day with the cheapest way that changes the trip, or null when no such way has a price. */
-export function cheapestDay(rows: Record<string, WayRow[]>): string | null {
-  let best: { day: string; total: number } | null = null
-  for (const [day, list] of Object.entries(rows)) {
-    for (const r of list) if (r.works && r.total != null && (!best || r.total < best.total)) best = { day, total: r.total }
-  }
-  return best?.day ?? null
-}
 
 /** A line under a row. `bad` when picking it changes nothing, `strong` when it moves the other direction to another day. */
 export interface RowNote { text: string; bad?: boolean; strong?: boolean }

@@ -12,7 +12,7 @@ import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
 import { hopLink, wayLinks } from '../../lib/links'
 import { dayOf } from '../../lib/ways'
-import { cheapestDay, pickOfDay, rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
+import { pickOfDay, rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
 import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
@@ -296,7 +296,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     return (
       <WhenPicker
         date={dayOf(w)} set min={days[0]} max={days[days.length - 1]} days={days} firstDay={sched.firstDay}
-        fares={rowFares(rows)} cheapDay={cheapestDay(rows)} fareFor="for both ways"
+        fares={rowFares(rows)} fareFor="for both ways"
         codes={{ from: w.from, to: w.to }} trip={journey.id} clearable={false}
         onSet={(d) => {
           // the day it has already changes nothing, another day takes the way the sheet lists first, one that keeps the other end's city when it can

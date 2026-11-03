@@ -40,7 +40,7 @@ function monthCells(m: string): (string | null)[] {
   return out
 }
 
-export function WhenPicker({ date, set, min, max, days, firstDay, fares, cheapDay, fareFor, stay, codes, trip, clearable = true, onSet }: {
+export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor, stay, codes, trip, clearable = true, onSet }: {
   date: string
   set: boolean
   /** the first and last day the leg can leave */
@@ -52,8 +52,6 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, cheapDa
   firstDay: string
   /** the cheapest fare known for the leg by day */
   fares: Record<string, number>
-  /** the day to mark as the cheapest, when that is not simply the day of the lowest fare */
-  cheapDay?: string | null
   /** what a fare is when it is not the cheapest known for the leg alone, "for both ways" */
   fareFor?: string
   /** the stop before the leg: its name and the day you get there. None for a leg with no stop before it */
@@ -84,7 +82,7 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, cheapDa
   const after = step(date, 1)
   const priced = Object.entries(fares).filter(([d]) => d >= min && d <= max)
   const cheapest = priced.length ? Math.min(...priced.map(([, p]) => p)) : null
-  const isCheap = (d: string) => (cheapDay !== undefined ? d === cheapDay : fares[d] != null && fares[d] === cheapest)
+  const isCheap = (d: string) => fares[d] != null && fares[d] === cheapest
   const readout = [
     tripDay(date) != null ? `Day ${tripDay(date)}` : null,
     fares[date] != null ? `${kr(fares[date])}${fareFor ? ` ${fareFor}` : ''}${isCheap(date) ? ', the cheapest' : ''}` : null,

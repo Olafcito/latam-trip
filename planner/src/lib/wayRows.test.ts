@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut, Ticket, Way } from '../data/types'
 import { withTripWays, type TripRow } from './repoTrips'
-import { cheapestDay, kindOf, pairPrice, pickOfDay, rowFares, rowNotes, wayRowsByDay, type WayRow } from './wayRows'
+import { kindOf, pairPrice, pickOfDay, rowFares, rowNotes, wayRowsByDay } from './wayRows'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -117,15 +117,6 @@ describe('a ticket that moves the end of the trip to another city', () => {
   })
 })
 
-describe('the cheapest day', () => {
-  const row = (total: number | null, works = true) => ({ total, works }) as WayRow
-  it('is the day whose cheapest way that works is cheapest, not the day of the cheapest first row', () => {
-    expect(cheapestDay({ a: [row(8000), row(6000)], b: [row(7000)], c: [row(9000), row(1, false)] })).toBe('a')
-  })
-  it('is none when no day has a price', () => {
-    expect(cheapestDay({ a: [row(null)], b: [row(1, false)] })).toBeNull()
-  })
-})
 
 describe('the lines under a row', () => {
   const current = { wayIn: tIn1203, wayHome: tHome0205b }
