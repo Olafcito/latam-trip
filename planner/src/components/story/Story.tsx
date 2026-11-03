@@ -1,13 +1,13 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Family } from '@map/data/types'
 import { Flag, hasFlag } from '@map/map/Flag'
-import type { AppData, MapNode, Way } from '../../data/types'
+import type { AppData, Booking, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
 import { flightOffDay, giveNight, legDay, legTime, nightStop, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
-import { heldWayNotice, lockedLegs, wayHeld } from '../../lib/booked'
+import { bookingOn, heldWayNotice, lockedLegs, wayBooking, wayHeld } from '../../lib/booked'
 import { legWindow } from '../../lib/legDates'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
@@ -18,7 +18,7 @@ import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
-import { Boat, Bus, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
+import { Boat, Bus, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
 import { CityCard } from './CityCard'
 import { FlightSheet } from './FlightSheet'
 import { LegCard, type LegEnds } from './LegCard'
@@ -164,9 +164,10 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
 
 /**
  * Travel between two stops, one line: the day it leaves, a button to the calendar when the day can
- * move, then its mode and length with its ticket behind them. The rail is the leg drawn.
+ * move, then its mode and length with its ticket behind them. The rail is the leg drawn. A booked leg's
+ * mode button keeps a green ring and a check, the shape it has when pressed, so bought reads at a glance.
  */
-function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, booked, fromName, onSet }: {
+function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, booked, booking, fromName, onSet }: {
   fam: Family
   tone?: 'in' | 'home'
   route: string
@@ -179,17 +180,22 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   travel: ReactNode; card: ReactNode
   /** the flights to choose from, shown in a window in place of the ticket */
   sheet?: (close: () => void) => ReactNode
+  /** what the mode button says, Leg adds whether it is booked */
   aria: string
   /** the warning when this leg leaves before you get there */
   clash?: Warning
   /** the warning when this leg is booked on another day */
   booked?: Warning
+  /** the booking of this leg on the day it shows */
+  booking?: Booking | null
   fromName: string
   onSet?: (date: string) => void
 }) {
   const when = usePop(false)
   const pop = usePop(false)
   const [sheetOpen, setSheetOpen] = useState(false)
+  const label = `${aria}${booking ? ', booked' : ''}. Details`
+  const mode = <>{travel}{booking && <span className="st-booked" aria-hidden="true"><Check s={12} /></span>}</>
   return (
     <li className="st-leg" data-f={fam} data-tone={tone}>
       <span className="st-rail" />
@@ -208,12 +214,12 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
         )}
         {sheet ? (
           <>
-            <button type="button" className="st-hop" aria-label={aria} aria-haspopup="dialog" aria-expanded={sheetOpen} onClick={() => setSheetOpen(true)}>{travel}</button>
+            <button type="button" className="st-hop" data-booked={booking ? true : undefined} aria-label={label} aria-haspopup="dialog" aria-expanded={sheetOpen} onClick={() => setSheetOpen(true)}>{mode}</button>
             {sheetOpen && <Modal label={route} className="fl-md" onClose={() => setSheetOpen(false)}>{sheet}</Modal>}
           </>
         ) : (
           <span className="pop-wrap" {...pop.wrap}>
-            <button type="button" className="st-hop" aria-label={aria} {...pop.trigger}>{travel}</button>
+            <button type="button" className="st-hop" data-booked={booking ? true : undefined} aria-label={label} {...pop.trigger}>{mode}</button>
             {pop.open && <div className={`pop${tone ? ' way' : ''}`} role="dialog" aria-label={route} {...pop.panel}><Shut on={pop.dismiss} />{card}</div>}
           </span>
         )}
@@ -304,7 +310,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     const ns = ids.map(node)
     return ns.every((n) => n) ? ns.map((n) => ({ name: shortPlace(n!.name), lat: n!.lat, lon: n!.lon })) : null
   }
-  const wayAria = (w: Way, a: string, b: string) => `Flight ${a} to ${b}, leaves ${weekdayDay(w.depart)} ${clock(w.depart)}, ${hours(w.total_hours)}. Details`
+  const wayAria = (w: Way, a: string, b: string) => `Flight ${a} to ${b}, leaves ${weekdayDay(w.depart)} ${clock(w.depart)}, ${hours(w.total_hours)}`
   // the way in and the way home open like any other leg: the calendar of the days a way leaves on, and the ways of a day
   const wayPicker = (w: Way, rows: Record<string, WayRow[]>) => {
     // a day can be picked when one of its ways changes the trip, or it is the day the trip has
@@ -323,8 +329,10 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       />
     )
   }
+  // the booked rows of the way in and the way home, on the day each leaves
+  const wayBooked = { in: wayBooking(bookings, data, wayIn), home: wayBooking(bookings, data, wayHome) }
   const waySheet = (dir: 'in' | 'home', w: Way, other: Way, rows: Record<string, WayRow[]>) => (close: () => void) => (
-    <WaySheet dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} onPick={pickWay} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
+    <WaySheet dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} booking={wayBooked[dir]} onPick={pickWay} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
   )
 
   const items: ReactNode[] = [
@@ -336,6 +344,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       travel={<Travel fam="flight" time={hours(wayIn.total_hours)} overnight={false} />}
       card={<WayCard way={wayIn} other={wayHome} data={data} />}
       sheet={waySheet('in', wayIn, wayHome, wayRows.in)}
+      booking={wayBooked.in}
     />,
   ]
   ps.forEach((p, i) => {
@@ -352,6 +361,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       // a leg with no day of its own moves with this one, so the stay runs to the next leg that is fixed
       const fixedAt = ps.findIndex((q, k) => k > i && (q.hop?.date || q.hop?.flight))
       const fixed = fixedAt > 0 ? ps[fixedAt].hop! : null
+      const booking = bookingOn(bookings, data, { from: ps[i - 1].node, to: p.node, day: date })
+      // a locked leg keeps its day, so a parked flight is shown there without the button that would move it
+      const movable = !locked.has(i) || unlocked === i
       items.push(
         <Leg
           key={`h${i}`}
@@ -363,9 +375,10 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           known={!!(h.date || f)}
           clash={sched.warnings.find((w) => w.leg === i && w.level === 'error')}
           booked={sched.warnings.find((w) => w.leg === i && w.level === 'warn')}
+          booking={booking}
           fromName={ends.fromName}
           onSet={(d) => setHopDate(i, d)}
-          aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${took ? `, ${took}` : ''}${h.overnight ? ', overnight' : ''}. Details`}
+          aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${took ? `, ${took}` : ''}${h.overnight ? ', overnight' : ''}`}
           travel={<Travel fam={fam} time={took} overnight={!!h.overnight} off={flightOffDay(h)} />}
           picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} onSet={(d) => setHopDate(i, d)} />}
           card={<LegCard h={h} ends={ends} family={fam} date={date} time={time} points={fam === 'flight' ? null : pointsOf([h.from, ...time.via, h.to])} link={hopLink(h, inout)} />}
@@ -375,6 +388,8 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
               to={{ code: codes.to, name: ends.toName }}
               typical={h.price_dkk ?? null}
               picked={f ?? null}
+              parked={h.parked ?? null}
+              booking={booking}
               date={date}
               days={days}
               fares={fares}
@@ -392,6 +407,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
               tripVersion={journey.version}
               airportName={airportName}
               onPick={(x) => setHopFlight(i, x)}
+              onUseDay={movable ? (d) => setHopDate(i, d) : undefined}
               close={close}
             />
           ) : undefined}
@@ -442,6 +458,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       travel={<Travel fam="flight" time={hours(wayHome.total_hours)} overnight={false} />}
       card={<WayCard way={wayHome} other={wayIn} data={data} />}
       sheet={waySheet('home', wayHome, wayIn, wayRows.home)}
+      booking={wayBooked.home}
     />,
     <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />,
   )

@@ -98,6 +98,7 @@ const SOURCE: Record<string, string> = {
   kiwi: 'Kiwi',
   'airline:AV': 'Avianca',
   'airline:CM': 'Copa',
+  booked: 'Booked',
 }
 
 /** Where a price came from, as Simon reads it. A price from his Momondo userscript is "saved by you". */

@@ -38,6 +38,7 @@
     .fl-page { display: grid; }
     .fl-page:hover { background: var(--surface-2); color: var(--text); }
     .fl-day[aria-checked='false']:hover { background: var(--surface-2); }
+    button.fl-chip:hover { background: color-mix(in srgb, var(--booked) 22%, transparent); }
   }
 
   .fl-bar { display: flex; align-items: center; gap: 8px; min-height: var(--hit); }
@@ -80,18 +81,26 @@
   .fl-notes { grid-column: 2; list-style: none; display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 0; padding: 0; font-size: var(--fs-small); color: var(--muted); }
   .fl-notes [data-bad='true'] { color: var(--err); }
 
-  /* the flight you have, held above the day you look at */
-  .fl-picked { --fl-bg: var(--surface-2); margin: 12px -12px 0; padding: 8px 12px 0; border-radius: 12px; background: var(--surface-2); }
-  .fl-picked header { display: flex; align-items: center; gap: 8px; min-height: 24px; font-size: var(--fs-small); font-weight: 600; }
-  .fl-picked header span { display: inline-flex; align-items: center; gap: 6px; color: var(--in); }
-  .fl-picked header small { flex: 1; font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
-  .fl-picked .fl-row { padding-top: 8px; }
+  /* the flight you have, held above the day you look at, its state under its price where Pick sits on the others */
+  .fl-picked { --fl-bg: var(--surface-2); margin: 12px -12px 0; padding: 0 12px; border-radius: 12px; background: var(--surface-2); outline: none; }
   .fl-picked .fl-logo { background: var(--surface-3); }
+  .fl-remove { min-height: 24px; }
+  /* a flight picked for another day: the day it flies on top, Use this day where Pick sits */
+  .fl-parked { padding-top: 12px; }
+  .fl-parked h4 { margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--flight); }
+  .fl-parked .fl-row { padding-top: 8px; }
 
   /* the way sheet: the way the trip has is tinted where it is, its state under its price where Pick sits on the others */
   .ws .fl-row[data-picked] { --fl-bg: var(--surface-2); margin-inline: -12px; padding-inline: 12px; border-radius: 12px; background: var(--surface-2); }
   .ws .fl-row[data-picked] .fl-logo { background: var(--surface-3); }
-  .ws-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 0 10px; border-radius: 999px; background: color-mix(in srgb, var(--in) 14%, transparent); color: var(--in); font-size: var(--fs-small); font-weight: 600; white-space: nowrap; }
+  /* Picked, or Booked in the booked green. A booked one that opens its booking is a button of the same shape */
+  .fl-chip { position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 0 10px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--in) 14%, transparent); color: var(--in); font: inherit; font-size: var(--fs-small); font-weight: 600; white-space: nowrap; }
+  .fl-chip svg { flex: none; }
+  .fl-chip[data-booked] { background: color-mix(in srgb, var(--booked) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--booked) 45%, transparent); color: var(--booked); }
+  button.fl-chip { cursor: pointer; transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease; }
+  button.fl-chip::after { content: ''; position: absolute; inset: calc((28px - var(--hit)) / 2) 0; }
+  button.fl-chip:active { transform: scale(0.97); }
+  button.fl-chip:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
   .ws .fl-notes [data-strong='true'] { color: var(--text); font-weight: 600; }
   /* what a pick changed beyond this way, until the next pick or the sheet closes. Always there, so it is read out */
   .ws-said { margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--in); outline: none; }

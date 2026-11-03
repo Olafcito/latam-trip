@@ -25,6 +25,8 @@
   --in: #58D68D;
   --home: #FF8A4C;
   --err: #FF6B5E;
+  /* bought: a booked leg, way, stay or trip. At least 8:1 on every night surface and 5.8:1 on its own tint, so it reads in sunlight */
+  --booked: #4ADE80;
 
   /* motion */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking, Way } from '../data/types'
-import { bookedCount, bookedElsewhere, bookingOn, endsMatch, heldWayNotice, lockedLegs, paidPrice, stayOn, wayBooking, wayHeld, type BookData } from './booked'
+import { bookedCount, bookedElsewhere, bookedMark, bookingOn, endsMatch, heldWayNotice, lockedLegs, paidPrice, parkedRow, priceColumn, stayOn, wayBooking, wayHeld, type BookData } from './booked'
 import type { Hop, Journey, Schedule } from './journey'
 
 // Made up rows only. A real reference, price or name never goes in this file.
@@ -240,5 +240,39 @@ describe('wayHeld', () => {
   it('says which way is booked and where to change it', () => {
     expect(heldWayNotice('in')).toBe('The way in is booked. Change it from its booking.')
     expect(heldWayNotice('home')).toBe('The way home is booked. Change it from its booking.')
+  })
+})
+
+describe('the booked mark on a trip row', () => {
+  it('counts what is booked and shows nothing at 0', () => {
+    expect(bookedMark(3)).toBe('3 booked')
+    expect(bookedMark(1)).toBe('1 booked')
+    expect(bookedMark(0)).toBeNull()
+  })
+})
+
+describe('the price column of a flight row', () => {
+  it('holds Pick under the price on a row you can pick', () => {
+    expect(priceColumn({ picked: false, booked: false, canPick: true, canRemove: false })).toEqual({ chip: null, pick: true, remove: false })
+  })
+  it('holds the Picked chip and Remove on the picked row, never Pick', () => {
+    expect(priceColumn({ picked: true, booked: false, canPick: true, canRemove: true })).toEqual({ chip: 'Picked', pick: false, remove: true })
+  })
+  it('reads Booked on a booked row, and a booked flight is not removed from here', () => {
+    expect(priceColumn({ picked: true, booked: true, canPick: true, canRemove: true })).toEqual({ chip: 'Booked', pick: false, remove: false })
+  })
+  it('holds only the price on a row that cannot be picked', () => {
+    expect(priceColumn({ picked: false, booked: false, canPick: false, canRemove: false })).toEqual({ chip: null, pick: false, remove: false })
+  })
+})
+
+describe('a picked flight parked on another day', () => {
+  it('heads its row with the day it flies, the way the sheets write a day', () => {
+    expect(parkedRow({ depart: '2026-12-21T07:15' }, '2026-12-20')).toEqual({ title: 'Picked for Mon 21 Dec', day: '2026-12-21' })
+  })
+  it('gives no row when nothing is parked or the leg is on that day', () => {
+    expect(parkedRow(null, '2026-12-20')).toBeNull()
+    expect(parkedRow(undefined, '2026-12-20')).toBeNull()
+    expect(parkedRow({ depart: '2026-12-20T07:15' }, '2026-12-20')).toBeNull()
   })
 })

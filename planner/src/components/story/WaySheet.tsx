@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { AppData, Way } from '../../data/types'
+import type { AppData, Booking, Way } from '../../data/types'
+import { priceColumn } from '../../lib/booked'
 import { clock, hours, kr, nextDayMark, shortPlace, weekdayDay } from '../../lib/format'
 import type { FlightLink } from '../../lib/links'
 import { wayLinks } from '../../lib/links'
@@ -38,18 +39,23 @@ function carriersOf(way: Way, data: AppData): string[] {
  * The right column of a row: what both ways cost with it, and under that what you can do with it. Its
  * own part, so a booked way can show its state here the same way.
  */
-function WayState({ total, state, label, onPick }: { total: number | null; state: 'picked' | 'pick' | 'none'; label: string; onPick: () => void }) {
+function WayState({ total, picked, booked, works, label, onPick, onOpenBooking }: {
+  total: number | null; picked: boolean; booked: boolean; works: boolean; label: string; onPick: () => void; onOpenBooking?: () => void
+}) {
+  const col = priceColumn({ picked, booked, canPick: works, canRemove: false })
   return (
     <div className="fl-price">
-      {state !== 'none' && <b>{kr(total)}</b>}
-      {state === 'picked' && <span className="ws-chip"><Check /> Picked</span>}
-      {state === 'pick' && <button type="button" className="btn small" aria-label={`Pick ${label}${total != null ? `, ${kr(total)} for both ways` : ''}`} onClick={onPick}>Pick</button>}
+      {(col.chip || col.pick) && <b>{kr(total)}</b>}
+      {col.chip === 'Booked' && onOpenBooking
+        ? <button type="button" className="fl-chip" data-booked onClick={onOpenBooking} aria-label="Booked, open the booking"><Check /> Booked</button>
+        : col.chip && <span className="fl-chip" data-booked={col.chip === 'Booked' || undefined}><Check /> {col.chip}</span>}
+      {col.pick && <button type="button" className="btn small" aria-label={`Pick ${label}${total != null ? `, ${kr(total)} for both ways` : ''}`} onClick={onPick}>Pick</button>}
     </div>
   )
 }
 
-function WayRowView({ r, picked, dir, other, data, name, onPick }: {
-  r: WayRow; picked: boolean; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: () => void
+function WayRowView({ r, picked, booked, dir, other, data, name, onPick, onOpenBooking }: {
+  r: WayRow; picked: boolean; booked: boolean; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: () => void; onOpenBooking?: () => void
 }) {
   const w = r.way
   const air = carriersOf(w, data)
@@ -86,7 +92,7 @@ function WayRowView({ r, picked, dir, other, data, name, onPick }: {
           <small data-other={w.arrive.slice(0, 10) !== w.depart.slice(0, 10)}>{weekdayDay(w.arrive)}</small>
         </div>
       </div>
-      <WayState total={r.total} state={picked ? 'picked' : r.works ? 'pick' : 'none'} label={label} onPick={onPick} />
+      <WayState total={r.total} picked={picked} booked={picked && booked} works={r.works} label={label} onPick={onPick} onOpenBooking={onOpenBooking} />
       {notes.length > 0 && (
         <ul className="fl-notes">
           {notes.map((x) => <li key={x.text} data-bad={!!x.bad} data-strong={!!x.strong}>{x.text}</li>)}
@@ -97,8 +103,8 @@ function WayRowView({ r, picked, dir, other, data, name, onPick }: {
 }
 
 /** The ways of one day. Its own part, so Show all starts over with each day. */
-function DayList({ rows, current, dir, other, data, name, onPick }: {
-  rows: WayRow[]; current: string; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: (r: WayRow) => void
+function DayList({ rows, current, booked, dir, other, data, name, onPick, onOpenBooking }: {
+  rows: WayRow[]; current: string; booked: boolean; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: (r: WayRow) => void; onOpenBooking?: () => void
 }) {
   const [all, setAll] = useState(false)
   const shown = all ? rows : rows.slice(0, SHOWN)
@@ -107,7 +113,7 @@ function DayList({ rows, current, dir, other, data, name, onPick }: {
       <ol className="fl-rows">
         {shown.map((r) => (
           <li key={r.way.id}>
-            <WayRowView r={r} picked={r.way.id === current} dir={dir} other={other} data={data} name={name} onPick={() => onPick(r)} />
+            <WayRowView r={r} picked={r.way.id === current} booked={booked} dir={dir} other={other} data={data} name={name} onPick={() => onPick(r)} onOpenBooking={onOpenBooking} />
           </li>
         ))}
       </ol>
@@ -116,7 +122,7 @@ function DayList({ rows, current, dir, other, data, name, onPick }: {
   )
 }
 
-export function WaySheet({ dir, way, other, byDay, data, tripId, onPick, onChangeEnds, close }: {
+export function WaySheet({ dir, way, other, byDay, data, tripId, booking, onPick, onOpenBooking, onChangeEnds, close }: {
   dir: 'in' | 'home'
   /** the way the trip has in this direction */
   way: Way
@@ -127,8 +133,12 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, onPick, onChang
   data: AppData
   /** the trip, so a flight picked on Momondo finds its way back */
   tripId?: string
+  /** the booking of the way the trip has, on the day it leaves */
+  booking?: Booking | null
   /** whether the pick went on. One that would change a booked way does not, and the sheet closes on what it says */
   onPick: (c: WayChoice) => boolean
+  /** opens the way's booking, wired once the booking has its own view in the sheet */
+  onOpenBooking?: () => void
   /** left out while an older version is open, and the button goes with it */
   onChangeEnds?: () => void
   close: () => void
@@ -184,7 +194,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, onPick, onChang
       <div className="fl-list">
         {rows.length === 0
           ? <div className="fl-none"><p>No ways saved for {weekdayDay(at)}</p></div>
-          : <DayList key={at} rows={rows} current={way.id} dir={dir} other={other} data={data} name={name} onPick={pick} />}
+          : <DayList key={at} rows={rows} current={way.id} booked={!!booking} dir={dir} other={other} data={data} name={name} onPick={pick} onOpenBooking={onOpenBooking} />}
       </div>
       <footer className="fl-foot">
         <FlightLinks links={links} />

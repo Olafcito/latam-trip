@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEve
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
 import { kr } from '../lib/format'
+import { bookedCount, bookedMark } from '../lib/booked'
 import type { Journey } from '../lib/journey'
 import { tripRoute, type TripRoute } from '../lib/route'
 import { SORT_LABEL, sortTrips, type SortKey } from '../lib/tripsort'
@@ -18,7 +19,8 @@ import { TripDashboard } from './TripDashboard'
 
 // The Trips tab. Its home is a list: one row per trip with its name, its route as flags from the
 // landing to the way out, and the all-in price. Every trip runs early December to early February, so
-// dates and nights stay off the list. Compare docks to the bottom.
+// dates and nights stay off the list. A trip with something bought has a green ticket mark with the
+// count. Compare docks to the bottom.
 
 export function TripsScreen({ data }: { data: AppData }) {
   const view = useStore((s) => s.view)
@@ -37,6 +39,8 @@ interface Row {
   savedAt?: string
   total: number | null
   air: number | null
+  /** its legs, ways and stays that are booked */
+  booked: number
 }
 
 function Timetable({ data }: { data: AppData }) {
@@ -67,6 +71,7 @@ function Timetable({ data }: { data: AppData }) {
         savedAt: j.savedAt,
         total: s ? s.total : null,
         air: s ? s.t.air_hours : null,
+        booked: s ? bookedCount(bookings, data, j, s.sched) : 0,
       }
     })
   }, [data, saved, unsaved, bookings])
@@ -212,6 +217,7 @@ interface RowProps {
 
 function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps) {
   const { j, s, route, draft } = row
+  const mark = bookedMark(row.booked)
   const name = j.name
   const versioned = remoteEnabled() && (j.version ?? 0) > 1
   // the whole row opens the trip, except a click on a control in it or one that ends a text selection
@@ -234,6 +240,7 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
               : j.version != null ? (versioned ? null : <span className="tag" title={`Version ${j.version} in the trips table`}>v{j.version}</span>)
                 : <span className="tag mine">mine</span>}
           {!draft && versioned && <VersionMenu id={j.id} version={j.version!} />}
+          {mark && <span className="tt-booked" title="Legs, ways and stays booked"><Ticket />{mark}</span>}
         </span>
       </div>
 
@@ -261,6 +268,13 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
 }
 
 const Q = () => <span className="tt-q">not known</span>
+
+const Ticket = () => (
+  <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+    <path d="M13 5v2M13 11v2M13 17v2" />
+  </svg>
+)
 
 const Check = () => (
   <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

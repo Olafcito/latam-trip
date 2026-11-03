@@ -62,6 +62,7 @@ describe('labels', () => {
     expect(sourceLabel('momondo-manual')).toBe('saved by you')
     expect(sourceLabel('google_flights')).toBe('Google Flights')
     expect(sourceLabel(null)).toBe('unknown source')
+    expect(sourceLabel('booked')).toBe('Booked')
   })
 })
 

@@ -1,4 +1,5 @@
 import type { Booking, InOut, MapNode, Way } from '../data/types'
+import { weekdayDay } from './format'
 import { legDay, type Journey, type Schedule } from './journey'
 import { addDays } from './time'
 
@@ -118,4 +119,30 @@ export function bookedCount(list: Booking[], data: BookData, j: Journey, sched: 
     for (const b of staysIn(live, s.node, { first: s.inDay, last: addDays(s.outDay, -1) })) seen.add(b.id)
   }
   return n + seen.size
+}
+
+/** The green mark on a trip row, "3 booked". Nothing when none of it is booked. */
+export function bookedMark(n: number): string | null {
+  return n > 0 ? `${n} booked` : null
+}
+
+/** What sits under a flight's price, in the column where Pick sits on the other rows. */
+export interface PriceColumn {
+  chip: 'Booked' | 'Picked' | null
+  pick: boolean
+  remove: boolean
+}
+
+/** A row's state under its price. A picked row shows its chip in place of Pick, and a booked one is changed from its booking, not removed here. */
+export function priceColumn(row: { picked: boolean; booked: boolean; canPick: boolean; canRemove: boolean }): PriceColumn {
+  if (row.booked) return { chip: 'Booked', pick: false, remove: false }
+  if (row.picked) return { chip: 'Picked', pick: false, remove: row.canRemove }
+  return { chip: null, pick: row.canPick, remove: false }
+}
+
+/** The row at the top of a sheet for a picked flight set aside when its leg moved to another day, so it is never lost. */
+export function parkedRow(parked: { depart: string } | null | undefined, legDay: string): { title: string; day: string } | null {
+  if (!parked) return null
+  const day = parked.depart.slice(0, 10)
+  return day === legDay ? null : { title: `Picked for ${weekdayDay(day)}`, day }
 }

@@ -114,6 +114,9 @@
 .st-moon { display: inline-flex; color: var(--faint); }
 .flight-off { color: var(--flight); font-size: var(--fs-small); font-weight: 500; white-space: nowrap; }
 .st-hop[aria-expanded='true'] { color: var(--text); }
+/* a booked leg: a green ring in the shape of the pressed state and a check, always there, also while its ticket is open */
+.st-hop[data-booked] { color: var(--text); background: color-mix(in srgb, var(--booked) 10%, transparent); box-shadow: inset 0 0 0 1.5px var(--booked); }
+.st-booked { display: inline-flex; margin-right: -2px; color: var(--booked); }
 .st-arrives { font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .st-date:focus-visible, .st-hop:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 
