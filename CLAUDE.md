@@ -27,36 +27,35 @@ Planned trips live in the trips table. `tripdb save-trip FILE` saves a trip as i
 
 - `web/`: the route map (React, Vite, MapLibre) with the Options pane for whole trips, long-haul tickets and regional flights. `cd web && npm run dev`.
 - `planner/`: the two-tab trip app, Map and Trips. The Map tab imports `web/` through the `@map` alias. `cd planner && npm run dev`.
-- `plugin/`: the flight crawler plugin, its agents, skills and scripts. It is the only home for code outside the two apps.
+- `plugin/`: the flight crawler plugin, its agents, skills and scripts, `tripdb.py` among them.
+- `infra/`: deploy scripts for the build worker (`deploy.sh`, `worker/`), the trip MCP (`mcp/`) and the planner site (`site_setup.sh`, `site_upload.sh`, `preview.sh`). The repo is public, so no AWS account id or profile name goes in any file.
 - `data/`: `README.md` only. Shared tables and documents live in Supabase.
 - `docs/`: design briefs, the Claude task hand-over (`docs/claude-tasks.md`) and `docs/learnings/`, the notes each crawl round left about the sites.
 
 ## Frontend design
 
-Any work that changes how `web/` or `planner/` looks or moves goes through these project skills in `.claude/skills/`. The aim is an app that feels crafted, not vibe coded.
+Any work that changes how `web/` or `planner/` looks or moves goes through the project skills in `.claude/skills/` listed below. The aim is an app that feels crafted, not vibe coded.
 
-### Show it, do not say it
+### Let the interface carry the information
 
-This is the main design rule, on desktop as much as on the phone. Information is shown with interface, not with sentences. The failure to avoid is answering every new fact with one more line of small grey text under a row or a title, until rows read like paragraphs and nothing stands out.
+This is the main design rule, on every screen size. Meaning lives in the form of the interface, not in sentences about it. Prose is the last resort.
 
-Before adding any text, decide what it should be instead:
+- **Encode meaning in form.** Before writing a line, ask which visual property can carry it: an icon, a state, a position, a colour, a weight or the control itself. A fact sits on the thing it describes, a choice is a control, and a consequence shows where it lands.
+- **Let the thing be the control.** People act on the object itself rather than on a button that describes the action. If a control needs a label to explain it, the mapping is weak.
+- **Build hierarchy, not volume.** Order, size, weight, spacing and contrast decide what is seen first. The most important thing is the most obvious, and secondary detail recedes instead of piling up.
+- **Disclose progressively.** Show the common path first. Detail waits one level deeper, in a tooltip, a tap, an expanded state or a sheet.
+- **Practise restraint, not emptiness.** Every element earns its place. Cut meta text, repeated labels and explanations of what the interface already shows, but never hide what people need. Give it a better form instead.
 
-- **A fact about a thing** becomes an icon, a chip or a badge on it. Bags are bag icons that read included or a price, the way Momondo and Google Flights show them. A night arrival is a moon, a long layover an hourglass, a self transfer a warning mark. The detail sits behind a tooltip or a tap.
-- **An action** becomes an icon button or a control on the thing it changes, not a text button. Tapping the route codes edits the start and end, instead of a "Change start and end" button.
-- **A choice** becomes tabs, a segmented control or a toggle.
-- **A consequence**, such as the way home moving when a ticket is picked, shows on the thing it changes (the return date in its own chip), not as a sentence under the row.
-- **Meta lines** such as "2 ways, prices for both ways" or "checked 2 days ago" are dropped, or shrink to an icon with a tooltip.
+Text growing inside a component is a design problem, not a copy problem. When a component starts collecting subtext or layers of secondary lines, stop and rethink the whole component with `apple-design`, `emil-design-eng` and 21st.dev rather than appending another line. A status written as a grey line under a row usually wants to be a mark on the row itself.
 
-If a component would carry more than one line of secondary text, stop. Redesign the whole component with `apple-design`, `emil-design-eng` and 21st.dev, and do not add another line.
-
-New icons go in the apps' own sets (`planner/src/components/icons.tsx`, `web/src/map/icons.tsx`) and keep their style.
+An icon that carries meaning gets an accessible name and a tooltip. New icons go in the apps' own sets (`planner/src/components/icons.tsx`, `web/src/map/icons.tsx`) and keep their style.
 
 ### Skills, in order
 
 1. **Lead with `apple-design`** for every frontend task, not only phone work. It sets the hierarchy, restraint, materials, typography and motion, and Wallet, Maps and Flighty are the references for the booking views.
 2. **`emil-design-eng`** for component design, polish and the small details that make it feel finished.
 3. **Find components with the 21st.dev MCP** (`search`, `get_component`, `get_inspiration`, `get_theme`) before hand building a common component such as a picker, chip, segmented control, sheet or ticket card. Adapt what it returns to the app's tokens in `planner/src/styles`, never paste it in as is.
-4. **Shape and critique with `impeccable`**, and run its anti-pattern and polish passes before calling the UI done.
+4. **Shape and critique with `impeccable`**, use its `distill` pass when a screen grows crowded, and run its anti-pattern and polish passes before calling the UI done.
 5. **Motion:** `animate` to build an animation, `review-animations` to critique one, `improve-animations` to audit the app, `find-animation-opportunities` for where motion is missing, `remove-animations` when it feels over-animated, `animation-performance` when it drops frames, `animation-vocabulary` to name an effect.
 6. **Phone:** `mobile-native` for the fixes that make the web app feel installed. Simon uses it on his phone while travelling.
 7. **Before a frontend commit:** `web-design-guidelines` as the checklist for alignment, spacing, accessibility and interaction details, and `break-ui` to try the screen with worst-case data.
