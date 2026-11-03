@@ -89,6 +89,7 @@ Resources:
           LATAMTRIP_URL_PARAM: /latam-trip-mcp/supabase-url
           LATAMTRIP_KEY_PARAM: /latam-trip-mcp/supabase-secret-key
           LATAMTRIP_PASSPHRASE_PARAM: /latam-trip-mcp/signin-passphrase
+          LATAMTRIP_APP_URL: https://d15amu9hjiumbd.cloudfront.net
       Tags:
         - Key: project
           Value: latam-trip

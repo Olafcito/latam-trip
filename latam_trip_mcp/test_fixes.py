@@ -120,6 +120,14 @@ class StatelessTest(unittest.TestCase):
             self.assertIn("stateless_http=True", fh.read())
 
 
+class DocsTest(Base):
+    def test_the_connector_page_names_every_tool(self):
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "connector.md"), encoding="utf-8") as fh:
+            doc = fh.read()
+        missing = [s["name"] for s in self.core.tool_specs() if f"`{s['name']}`" not in doc]
+        self.assertEqual(missing, [])
+
+
 class OauthTest(unittest.TestCase):
     def setUp(self):
         self.db = {}
@@ -146,6 +154,70 @@ class OauthTest(unittest.TestCase):
     def test_the_login_page_names_where_it_sends_you(self):
         page = oauth.login_page({"redirect_uri": "https://claude.ai/api/mcp/auth_callback"})
         self.assertIn("claude.ai", page)
+
+    def test_the_login_page_names_no_assistant_and_offers_the_email_link(self):
+        page = oauth.login_page({"redirect_uri": "https://chatgpt.com/connector_platform_oauth_redirect"}, flow="f1", email="so…@gmail.com")
+        self.assertNotIn("Claude", page)
+        self.assertIn("Email me a sign in link", page)
+        self.assertIn("so…@gmail.com", page)
+        self.assertIn("passphrase", page.lower())
+
+
+class EmailSigninTest(unittest.TestCase):
+    PARAMS = {"client_id": "c1", "redirect_uri": "https://chatgpt.com/cb", "state": "s1", "code_challenge": "ch",
+              "code_challenge_method": "S256", "scope": "", "resource": ""}
+
+    def setUp(self):
+        self.db, self.sent, self.users = {}, [], {"good": "u-owner", "other": "u-else"}
+        names = ("_get", "_put", "_delete", "_send_link", "_user_of", "_is_owner")
+        self.saved = tuple(getattr(oauth, n) for n in names)
+        oauth._get = lambda pk: self.db.get(pk)
+        oauth._put = lambda item: self.db.__setitem__(item["pk"], item)
+        oauth._delete = lambda pk: self.db.pop(pk, None)
+        oauth._send_link = lambda redirect_to: self.sent.append(redirect_to)
+        oauth._user_of = lambda token: self.users.get(token)
+        oauth._is_owner = lambda uid: uid == "u-owner"
+        self.addCleanup(lambda: [setattr(oauth, n, f) for n, f in zip(names, self.saved)])
+
+    def test_a_flow_is_stored_hashed_and_is_passed_only_by_the_owner(self):
+        fid = oauth.start_flow(self.PARAMS)
+        self.assertFalse(any(fid in pk for pk in self.db))
+        self.assertEqual(oauth.flow_status(fid), {"state": "waiting"})
+        self.assertFalse(oauth.approve_flow(fid, "other"))
+        self.assertFalse(oauth.approve_flow(fid, "nobody"))
+        self.assertEqual(oauth.flow_status(fid), {"state": "waiting"})
+        self.assertTrue(oauth.approve_flow(fid, "good"))
+        done = oauth.flow_status(fid)
+        self.assertEqual(done["state"], "done")
+        self.assertTrue(done["redirect"].startswith("https://chatgpt.com/cb?code=lt_ac_"))
+        self.assertIn("state=s1", done["redirect"])
+        # the code is handed out once, a second poll finds nothing
+        self.assertEqual(oauth.flow_status(fid), {"state": "gone"})
+
+    def test_the_email_link_comes_back_to_the_app_with_the_flow(self):
+        fid = oauth.start_flow(self.PARAMS)
+        self.assertTrue(oauth.email_link(fid, "https://app.test"))
+        self.assertEqual(self.sent, [f"https://app.test/?connect={fid}"])
+
+    def test_an_unknown_or_expired_flow_sends_nothing_and_cannot_be_approved(self):
+        self.assertFalse(oauth.email_link("nope", "https://app.test"))
+        fid = oauth.start_flow(self.PARAMS)
+        for item in self.db.values():
+            item["ttl"] = 1
+        self.assertFalse(oauth.approve_flow(fid, "good"))
+        self.assertEqual(oauth.flow_status(fid), {"state": "gone"})
+
+    def test_link_requests_are_rate_limited(self):
+        fid = oauth.start_flow(self.PARAMS)
+        for _ in range(oauth.TRIES):
+            oauth.email_link(fid, "https://app.test")
+        self.assertTrue(oauth.too_many())
+
+    def test_the_flow_tells_the_app_who_is_asking(self):
+        self.db["oauth:client:c1"] = {"pk": "oauth:client:c1", "client_name": "ChatGPT", "redirect_uris": ["https://chatgpt.com/cb"]}
+        fid = oauth.start_flow(self.PARAMS)
+        self.assertEqual(oauth.flow_info(fid), {"client": "ChatGPT", "host": "chatgpt.com"})
+        self.assertIsNone(oauth.flow_info("nope"))
 
 
 if __name__ == "__main__":

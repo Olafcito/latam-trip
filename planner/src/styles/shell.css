@@ -66,6 +66,10 @@
 .load-err p { margin: 0; }
 .load-err-t { display: flex; align-items: center; gap: 8px; font-size: var(--fs-title); font-weight: 600; color: var(--err); }
 .load-err .mono { color: var(--muted); overflow-wrap: anywhere; }
+.connect { gap: 10px; }
+.connect > .btn { align-self: flex-start; margin-top: 6px; }
+.connect-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+.connect-actions .btn { min-width: 96px; }
 
 /* Map tab: the route map fills the window under the header */
 .app.wide { height: 100dvh; }

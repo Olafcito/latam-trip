@@ -44,4 +44,10 @@ describe('signInRedirect', () => {
     const m = await load()
     expect(m.signInRedirect({ origin, pathname })).toBe(want)
   })
+
+  it('keeps a connector sign in and nothing else', async () => {
+    const m = await load()
+    expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?trip=a&connect=lt_fl_abc' })).toBe('https://x.test/?connect=lt_fl_abc')
+    expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?trip=a' })).toBe('https://x.test')
+  })
 })

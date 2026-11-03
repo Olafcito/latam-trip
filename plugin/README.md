@@ -12,6 +12,8 @@ A Claude plugin that researches flights, stays, places and experiences for Simon
 
 Ask Claude to use `flight-crawl-orchestrator`. It expands a route tree into browser searches, dispatches the Momondo and Google Flights workers, checks their results and writes accepted rows using `tripdb`. The scheduled worker ingests inbox rows and builds the files read by the app. Nobody runs a local build for normal research.
 
+From a chat without the plugin, the connector does the same reads and writes. See [../docs/connector.md](../docs/connector.md) for how to add it to Claude or ChatGPT.
+
 `tripdb query TABLE` reads rows. `tripdb doc-get NAME` reads documents, and `tripdb file NAME` reads built app files. Use the matching `tripdb` command to save research and `tripdb status` to check the worker. See the Supabase data and table descriptions in `../data/README.md`.
 
 ## Contents

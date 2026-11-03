@@ -7,6 +7,7 @@ Simon's Latin America trip planner and research tools. The planner works on desk
 - `planner/` is the trip planner. Sign in with the configured account to save trips and keep them in sync across devices.
 - `web/` is the route map and flight options view.
 - `plugin/` contains the Claude research skills, workers and `tripdb` commands.
+- `latam_trip_mcp/` is the connector that lets Claude or ChatGPT read and change the trip data. How to add it and sign in is in [docs/connector.md](docs/connector.md).
 
 The planner reads its built map and pricing data from the Supabase `web` storage bucket through the worker's hash-aware cache. Trips are read and written in Supabase directly. The worker rebuilds derived files after database changes and runs scheduled builds and backups.
 

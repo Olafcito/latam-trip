@@ -13,6 +13,8 @@ import { DataStrip } from './components/DataStrip'
 import { Freshness } from './components/Freshness'
 import { QuoteSheet } from './components/QuoteSheet'
 import { SignIn } from './components/SignIn'
+import { Connect } from './components/Connect'
+import { connectFlow, withoutConnect } from './lib/connect'
 import { remoteEnabled, useSession } from './lib/supabase'
 import { dataChanged } from './data/rev'
 import { clearRouteData } from './data/routeMap'
@@ -170,6 +172,12 @@ export function App() {
   const go = useStore((s) => s.go)
   const [error, setError] = useState<string | null>(null)
   const auth = useSession()
+  // a connector sign in from its email link, allowed here once signed in
+  const [connect, setConnect] = useState(() => connectFlow(window.location.search))
+  const closeConnect = () => {
+    window.history.replaceState(window.history.state, '', withoutConnect(window.location.href))
+    setConnect(null)
+  }
 
   const setRepoTrips = useStore((s) => s.setRepoTrips)
   useInputMode()
@@ -260,6 +268,7 @@ export function App() {
 
   if (remoteEnabled() && !auth.ready) return <div className="app"><main className="main" /></div>
   if (remoteEnabled() && !auth.session) return <SignIn />
+  if (connect && auth.session) return <Connect flow={connect} token={auth.session.access_token} onClose={closeConnect} />
   if (error) {
     return (
       <div className="app">
