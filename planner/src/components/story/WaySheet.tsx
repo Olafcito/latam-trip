@@ -8,7 +8,8 @@ import { momondoUrl } from '../../lib/prices'
 import { dayOf, type WayChoice } from '../../lib/ways'
 import { kindOf, nightsText, rowFares, rowNotes, type WayRow } from '../../lib/wayRows'
 import { FlightLinks } from '../FlightLinks'
-import { Check, Plane } from '../icons'
+import { Check, Plane, Warn } from '../icons'
+import { BookedBox } from './BookedBox'
 import { Chip, Days } from './FlightSheet'
 
 // The way in or the way home opened like any other leg: the days it can leave with a price each, and
@@ -16,7 +17,9 @@ import { Chip, Days } from './FlightSheet'
 // between, and what both ways cost once it is picked, since a return ticket is one price for both.
 // Looking at a day changes nothing, only Pick does. A pick that only changes this way closes the
 // sheet. A pick that also moves or changes the other way keeps it open and says so, where you pressed,
-// so the change to the other end of the trip is never a surprise.
+// so the change to the other end of the trip is never a surprise. A pick the trip refuses, one that
+// would change a booked way, keeps it open too and says why. A booked way opens on its booking, the
+// days locked and the ways folded away until Change booking opens them to look at.
 
 /** the ways shown before Show all */
 const SHOWN = 6
@@ -40,9 +43,9 @@ function carriersOf(way: Way, data: AppData): string[] {
  * own part, so a booked way can show its state here the same way.
  */
 function WayState({ total, picked, booked, works, label, onPick, onOpenBooking }: {
-  total: number | null; picked: boolean; booked: boolean; works: boolean; label: string; onPick: () => void; onOpenBooking?: () => void
+  total: number | null; picked: boolean; booked: boolean; works: boolean; label: string; onPick?: () => void; onOpenBooking?: () => void
 }) {
-  const col = priceColumn({ picked, booked, canPick: works, canRemove: false })
+  const col = priceColumn({ picked, booked, canPick: works && !!onPick, canRemove: false })
   return (
     <div className="fl-price">
       {(col.chip || col.pick) && <b>{kr(total)}</b>}
@@ -53,7 +56,7 @@ function WayState({ total, picked, booked, works, label, onPick, onOpenBooking }
 }
 
 function WayRowView({ r, picked, booking, dir, other, data, name, onPick, onOpenBooking }: {
-  r: WayRow; picked: boolean; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: () => void; onOpenBooking?: () => void
+  r: WayRow; picked: boolean; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick?: () => void; onOpenBooking?: () => void
 }) {
   const w = r.way
   const air = carriersOf(w, data)
@@ -102,7 +105,7 @@ function WayRowView({ r, picked, booking, dir, other, data, name, onPick, onOpen
 
 /** The ways of one day. Its own part, so Show all starts over with each day. */
 function DayList({ rows, current, booking, dir, other, data, name, onPick, onOpenBooking }: {
-  rows: WayRow[]; current: string; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: (r: WayRow) => void; onOpenBooking?: () => void
+  rows: WayRow[]; current: string; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick?: (r: WayRow) => void; onOpenBooking?: () => void
 }) {
   const [all, setAll] = useState(false)
   const shown = all ? rows : rows.slice(0, SHOWN)
@@ -111,7 +114,7 @@ function DayList({ rows, current, booking, dir, other, data, name, onPick, onOpe
       <ol className="fl-rows">
         {shown.map((r) => (
           <li key={r.way.id}>
-            <WayRowView r={r} picked={r.way.id === current} booking={booking} dir={dir} other={other} data={data} name={name} onPick={() => onPick(r)} onOpenBooking={onOpenBooking} />
+            <WayRowView r={r} picked={r.way.id === current} booking={booking} dir={dir} other={other} data={data} name={name} onPick={onPick && (() => onPick(r))} onOpenBooking={onOpenBooking} />
           </li>
         ))}
       </ol>
@@ -120,7 +123,7 @@ function DayList({ rows, current, booking, dir, other, data, name, onPick, onOpe
   )
 }
 
-export function WaySheet({ dir, way, other, byDay, data, tripId, booking, onPick, onOpenBooking, onChangeEnds, close }: {
+export function WaySheet({ dir, way, other, byDay, data, tripId, booking, unlocked, onUnlock, onPick, onRebook, onChangeEnds, close }: {
   dir: 'in' | 'home'
   /** the way the trip has in this direction */
   way: Way
@@ -133,10 +136,13 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, onPick
   tripId?: string
   /** the booking of the way the trip has, on the day it leaves */
   booking?: Booking | null
-  /** whether the pick went on. One that would change a booked way does not, and the sheet closes on what it says */
-  onPick: (c: WayChoice) => boolean
-  /** opens the way's booking, wired once the booking has its own view in the sheet */
-  onOpenBooking?: () => void
+  /** Change booking is on: the days and the ways under the box are open */
+  unlocked?: boolean
+  onUnlock?: (on: boolean) => void
+  /** true when the pick went on, or why it did not. One that would change a booked way does not, and the sheet stays open on the reason */
+  onPick: (c: WayChoice) => true | string
+  /** a way picked on a booked way while it is open, for the booking form. Without it the ways are there to look at only */
+  onRebook?: (c: WayChoice) => void
   /** left out while an older version is open, and the button goes with it */
   onChangeEnds?: () => void
   close: () => void
@@ -145,7 +151,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, onPick
   const days = useMemo(() => Object.keys(byDay).sort(), [byDay])
   const fares = useMemo(() => rowFares(byDay), [byDay])
   const [at, setAt] = useState(() => dayOf(way))
-  const [said, setSaid] = useState<{ text: string; n: number } | null>(null)
+  const [said, setSaid] = useState<{ text: string; n: number; bad?: boolean } | null>(null)
   const status = useRef<HTMLParagraphElement>(null)
   // the order a day's ways had when it was first looked at, so a pick never moves a row from under the pointer
   const order = useRef<Record<string, string[]>>({})
@@ -164,40 +170,69 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, onPick
   // the pressed Pick turns into the Picked mark, so the focus goes to the line that says what changed
   useEffect(() => { if (said) status.current?.focus({ preventScroll: true }) }, [said])
 
+  const say = (text: string, bad?: boolean) => setSaid({ text, n: (said?.n ?? 0) + 1, bad })
   const pick = (r: WayRow) => {
-    if (!onPick(r.choice)) return close()
-    if (r.choice.note) setSaid({ text: r.choice.note, n: (said?.n ?? 0) + 1 })
+    const went = onPick(r.choice)
+    if (went !== true) return say(went, true)
+    if (r.choice.note) say(r.choice.note)
     else close()
+  }
+  // a booked way is held: the box shows the booking and nothing under it changes the way
+  const held = !!booking && !unlocked
+  const choose = booking ? onRebook && ((r: WayRow) => onRebook(r.choice)) : pick
+  const box = useRef<HTMLElement>(null)
+  const showBox = () => {
+    const b = box.current
+    if (!b) return
+    b.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+    b.focus({ preventScroll: true })
+  }
+  const change = (on: boolean) => {
+    onUnlock?.(on)
+    if (!on) setAt(dayOf(way))
   }
   const links: readonly FlightLink[] = at === dayOf(way)
     ? wayLinks(way, inout, other)
     : [{ href: momondoUrl(way.from, way.to, at, tripId), site: 'Momondo', saved: false, legs: [{ from: way.from, to: way.to, date: at }] }]
 
   return (
-    <div className="fl ws">
+    <div className="fl ws" data-booked={booking ? true : undefined}>
       <div className="fl-top">
         <header className="fl-h">
           <h3>{name(way.from)} to {name(way.to)}</h3>
           <small>{dir === 'in' ? 'Way in' : 'Way home'}, {way.from} to {way.to}</small>
         </header>
-        <Days days={days} fares={fares} at={at} leg={dayOf(way)} onChange={setAt} />
-        <div className="fl-bar">
-          <b>{weekdayDay(at)}</b>
-          {rows.length > 0 && <span>{rows.length === 1 ? '1 way' : `${rows.length} ways`}, prices for both ways</span>}
-        </div>
+        {booking && (
+          <BookedBox
+            ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change}
+            hint={onRebook ? 'Pick a way below to change the booking to it.' : 'The days and the ways below are open to look at. The booking stays as it is.'}
+            onRemoved={() => say(`The booking is removed. The ${dir === 'in' ? 'way in' : 'way home'} can change again.`)}
+          />
+        )}
+        <Days days={days} fares={fares} at={at} leg={dayOf(way)} onChange={setAt} locked={held} booked={booking ? booking.depart?.slice(0, 10) ?? dayOf(way) : null} />
+        {!held && (
+          <div className="fl-bar">
+            <b>{weekdayDay(at)}</b>
+            {rows.length > 0 && <span>{rows.length === 1 ? '1 way' : `${rows.length} ways`}, prices for both ways</span>}
+          </div>
+        )}
         <p ref={status} className="ws-said" role="status" tabIndex={-1}>
-          {said && <span key={said.n} className="ws-said-in"><Check /><span>{said.text}</span></span>}
+          {said && <span key={said.n} className="ws-said-in" data-bad={said.bad || undefined}>{said.bad ? <Warn /> : <Check />}<span>{said.text}</span></span>}
         </p>
       </div>
-      <div className="fl-list">
-        {rows.length === 0
-          ? <div className="fl-none"><p>No ways saved for {weekdayDay(at)}</p></div>
-          : <DayList key={at} rows={rows} current={way.id} booking={booking ?? null} dir={dir} other={other} data={data} name={name} onPick={pick} onOpenBooking={onOpenBooking} />}
-      </div>
-      <footer className="fl-foot">
-        <FlightLinks links={links} />
-        {onChangeEnds && <button type="button" className="btn small" onClick={() => { close(); onChangeEnds() }}>Change start and end</button>}
-      </footer>
+      {!held && (
+        <div className="fl-list">
+          {rows.length === 0
+            ? <div className="fl-none"><p>No ways saved for {weekdayDay(at)}</p></div>
+            : <DayList key={at} rows={rows} current={way.id} booking={booking ?? null} dir={dir} other={other} data={data} name={name} onPick={choose} onOpenBooking={booking ? showBox : undefined} />}
+        </div>
+      )}
+      {!held && (
+        <footer className="fl-foot">
+          <FlightLinks links={links} />
+          {onChangeEnds && !booking && <button type="button" className="btn small" onClick={() => { close(); onChangeEnds() }}>Change start and end</button>}
+        </footer>
+      )}
     </div>
   )
 }

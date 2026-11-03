@@ -194,6 +194,8 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   const when = usePop(false)
   const pop = usePop(false)
   const [sheetOpen, setSheetOpen] = useState(false)
+  // a booking opened with Change booking locks again once its sheet is closed
+  const setUnlocked = useStore((s) => s.setUnlocked)
   const label = `${aria}${booking ? ', booked' : ''}. Details`
   const mode = <>{travel}{booking && <span className="st-booked" aria-hidden="true"><Check s={12} /></span>}</>
   return (
@@ -215,7 +217,7 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
         {sheet ? (
           <>
             <button type="button" className="st-hop" data-booked={booking ? true : undefined} aria-label={label} aria-haspopup="dialog" aria-expanded={sheetOpen} onClick={() => setSheetOpen(true)}>{mode}</button>
-            {sheetOpen && <Modal label={route} className="fl-md" onClose={() => setSheetOpen(false)}>{sheet}</Modal>}
+            {sheetOpen && <Modal label={route} className="fl-md" onClose={() => { setSheetOpen(false); setUnlocked(null) }}>{sheet}</Modal>}
           </>
         ) : (
           <span className="pop-wrap" {...pop.wrap}>
@@ -276,6 +278,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const setNotice = useStore((s) => s.setNotice)
   const bookings = useStore((s) => s.bookings)
   const unlocked = useStore((s) => s.unlocked)
+  const setUnlocked = useStore((s) => s.setUnlocked)
   // a booked leg keeps its day, so the night steppers move only the legs up to it
   const locked = useMemo(() => lockedLegs(bookings, data, journey, sched), [bookings, data, journey, sched])
   // the ways of each day for the way in and the way home, for their calendars and their sheets
@@ -287,10 +290,13 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const [city, setCity] = useState<number | null>(null)
   const goes = useRef(false)
   const press = (m: NightMove | null) => (m ? () => moveNights(m) : null)
-  // a pick that would change a booked way changes nothing and says so
+  // a pick that would change a booked way changes nothing and says why, in the sheet or as a notice
+  const tryWay = (c: WayChoice): true | string =>
+    setWays(c) || heldWayNotice(wayHeld(bookings, data, wayIn, c.wayIn, unlocked === 'in') ? 'in' : 'home')
   const pickWay = (c: WayChoice): boolean => {
-    if (setWays(c)) return true
-    setNotice(heldWayNotice(wayHeld(bookings, data, wayIn, c.wayIn, unlocked === 'in') ? 'in' : 'home'))
+    const went = tryWay(c)
+    if (went === true) return true
+    setNotice(went)
     return false
   }
   const nm = (id: string) => nodeName(map, inout, id)
@@ -332,7 +338,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   // the booked rows of the way in and the way home, on the day each leaves
   const wayBooked = { in: wayBooking(bookings, data, wayIn), home: wayBooking(bookings, data, wayHome) }
   const waySheet = (dir: 'in' | 'home', w: Way, other: Way, rows: Record<string, WayRow[]>) => (close: () => void) => (
-    <WaySheet dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} booking={wayBooked[dir]} onPick={pickWay} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
+    <WaySheet
+      dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} booking={wayBooked[dir]}
+      unlocked={unlocked === dir} onUnlock={(on) => setUnlocked(on ? dir : null)} onPick={tryWay} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
   )
 
   const items: ReactNode[] = [
@@ -390,6 +398,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
               picked={f ?? null}
               parked={h.parked ?? null}
               booking={booking}
+              data={data}
+              unlocked={unlocked === i}
+              onUnlock={(on) => setUnlocked(on ? i : null)}
               date={date}
               days={days}
               fares={fares}

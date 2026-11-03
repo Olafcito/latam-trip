@@ -125,6 +125,8 @@
   .st-date:hover { background: var(--surface-3); }
   /* on hover the rail takes the leg's full colour */
   .st-hop:hover { background: var(--surface-2); color: var(--text); }
+  /* a booked leg keeps its green on hover, a little stronger */
+  .st-hop[data-booked]:hover { background: color-mix(in srgb, var(--booked) 16%, transparent); }
   .st-leg:has(.st-hop:hover) { --stroke: var(--tone); }
   .st-n:hover, .wp-step button:hover { color: var(--text); background: var(--line-2); }
   .st-step .st-n:not(:disabled):hover { background: var(--surface-3); }
