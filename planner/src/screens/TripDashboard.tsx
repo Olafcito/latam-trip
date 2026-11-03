@@ -3,7 +3,8 @@ import type { AppData } from '../data/types'
 import { useStore } from '../store'
 import { routeStops } from '../lib/bundle'
 import { dayRange } from '../lib/format'
-import { nodeForAirport, nodeName, schedule, totals, type Journey } from '../lib/journey'
+import { totals, type Journey } from '../lib/journey'
+import { useSchedule } from '../lib/useSchedule'
 import { CostStrip } from '../components/CostStrip'
 import { Caret, Download, Pin, Warn } from '../components/icons'
 import { Modal } from '../components/Modal'
@@ -31,7 +32,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
 
   const wi = inout.ways[journey.wayIn]
   const wh = inout.ways[journey.wayHome]
-  const nm = (id: string) => nodeName(map, inout, id)
+  const plan = useSchedule(data, journey)
   const stored = saved.find((s) => s.id === journey.id)
   const dirty = !stored || JSON.stringify({ ...stored, savedAt: 0 }) !== JSON.stringify({ ...journey, savedAt: 0 })
   const exportJson = () => {
@@ -43,7 +44,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
     URL.revokeObjectURL(a.href)
   }
 
-  if (!wi || !wh) {
+  if (!wi || !wh || !plan) {
     return (
       <div className="dash">
         <div className="row dash-head">
@@ -55,8 +56,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
     )
   }
 
-  const exitNode = nodeForAirport(inout, wh.from)
-  const sched = schedule(journey, wi, wh, exitNode, nm, bookings, data, lodgings)
+  const { sched } = plan
   const t = totals(data, journey, sched, bookings, lodgings)
   // a warning about one leg or one stop sits on that leg or stop
   const general = sched.warnings.filter((w) => w.leg == null && w.stop == null)

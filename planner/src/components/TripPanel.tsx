@@ -7,7 +7,8 @@ import type { AppData } from '../data/types'
 import { usePairDates } from '../data/pairDates'
 import { useStore } from '../store'
 import { day, hours, kr, legHours, weekdayDay } from '../lib/format'
-import { flightOffDay, groundCost, legTime, nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from '../lib/journey'
+import { flightOffDay, groundCost, legTime, nodeForAirport, nodeName, totals, travelTotal, type Journey } from '../lib/journey'
+import { useSchedule } from '../lib/useSchedule'
 import { legWindow, type LegWindow } from '../lib/legDates'
 import { countryName } from '../lib/colors'
 import { Flag } from '@map/map/Flag'
@@ -98,12 +99,13 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
 
   const wi = inout.ways[journey.wayIn]
   const wh = inout.ways[journey.wayHome]
+  const plan = useSchedule(data, journey)
   const nm = (id: string) => nodeName(map, inout, id)
   const node = (id: string) => map.nodes.find((n) => n.id === id)
   const stored = saved.find((s) => s.id === journey.id)
   const dirty = !stored || JSON.stringify({ ...stored, savedAt: 0 }) !== JSON.stringify({ ...journey, savedAt: 0 })
 
-  if (!wi || !wh) {
+  if (!wi || !wh || !plan) {
     return (
       <aside className="panel plan">
         <div className="plan-h">
@@ -116,8 +118,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
     )
   }
 
-  const exitNode = nodeForAirport(inout, wh.from)
-  const sched = schedule(journey, wi, wh, exitNode, nm, bookings, data, lodgings)
+  const { sched, exitNode } = plan
   const homeDay = sched.homeDepart.slice(0, 10)
   const t = totals(data, journey, sched, bookings, lodgings)
   const allIn = travelTotal(t)

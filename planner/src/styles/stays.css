@@ -23,7 +23,6 @@
 .pview > .ws { margin: 14px 14px 2px; flex: none; }
 .ws-head { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
 .ws-head h4 { margin: 0; font-size: var(--fs-label); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--faint); }
-.ws-n { display: inline-flex; align-items: center; gap: 4px; color: var(--faint); font-size: var(--fs-label); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* the stop's nights as one line, a part as long as its nights */
 .ws-bar { display: flex; gap: 2px; height: 4px; margin: 0 0 6px; border-radius: 999px; overflow: hidden; }
@@ -33,20 +32,27 @@
 
 .ws-parts { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 4px; }
 .ws-part {
-  display: grid; grid-template-columns: minmax(4.5rem, auto) minmax(0, 1fr) auto; align-items: center; gap: 4px 10px;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: 'what meta x'; align-items: center; gap: 4px 10px;
   min-height: 48px; padding: 6px 6px 6px 12px; border-radius: 10px; background: var(--surface-2);
 }
 .ws-part[data-booked] { box-shadow: var(--sc-ring); background: color-mix(in srgb, var(--booked) 10%, var(--surface-2)); }
 .ws-part[data-free] { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); }
 .ws-part[data-off] { opacity: .75; }
-.ws-when { font-size: var(--fs-small); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.ws-what { display: grid; min-width: 0; }
-.ws-what b { font-size: var(--fs-body); font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* the place and its room on one line, the room gives way first */
+.ws-what { grid-area: what; display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.ws-what b { flex: 0 1 auto; min-width: 0; font-size: var(--fs-body); font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ws-part[data-free] .ws-what b { color: var(--muted); font-weight: 500; }
-.ws-what small { font-size: var(--fs-small); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ws-end { display: flex; align-items: center; gap: 6px; }
-.ws-pr { font-size: var(--fs-small); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ws-what small { flex: 0 100 auto; min-width: 2.5rem; font-size: var(--fs-small); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* its dates, price and nights on one line */
+.ws-meta { grid-area: meta; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ws-x { grid-area: x; }
+.ws-when { font-size: var(--fs-small); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ws-pr { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-small); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ws-pr[data-near] { color: var(--muted); font-weight: 500; }
 .ws-pr[data-none] { color: var(--faint); font-weight: 500; }
+.ws-meta > :is(.ws-when, .ws-pr, .ws-step) { flex: none; }
+.ws-ref { flex: 0 1 auto; min-width: 0; }
+.ws-ref span { min-width: 0; max-width: 6.5rem; overflow: hidden; text-overflow: ellipsis; }
 
 /* nights of a part: a night less, the count, a night more */
 .ws-step { display: inline-flex; align-items: center; border-radius: 999px; background: var(--surface-3); }
@@ -85,13 +91,16 @@
 .ws-mk[data-tone='booked'] { background: color-mix(in srgb, var(--booked) 16%, transparent); color: var(--booked); }
 .ws-mk[data-tone='warn'] { background: color-mix(in srgb, var(--err) 14%, transparent); color: var(--err); }
 .sc-mk[data-kind='beach'] { color: #7DD3E0; }
+/* a price worked out from other nights, and a price for other dates */
+:is(.ws-mk, .sc-mk)[data-kind='near'] { background: color-mix(in srgb, var(--flight) 14%, transparent); color: var(--flight); }
+.ws-pr .ws-mk:has(> svg:only-child) { width: 20px; min-height: 20px; }
 
-/* narrow: the dates and the controls on top, the name under them with the full width */
+/* narrow: the name on top with the bin, its dates, price and nights on the line under it */
 @container (max-width: 420px) {
-  .ws-part { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'when end' 'what what'; padding: 6px 6px 10px 10px; }
-  .ws-when { grid-area: when; font-size: var(--fs-label); }
-  .ws-what { grid-area: what; }
-  .ws-end { grid-area: end; flex-wrap: wrap; justify-content: flex-end; }
+  .ws-part { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'what x' 'meta meta'; padding: 8px 6px 6px 12px; }
+  .ws-part:not(:has(> .ws-x)) { grid-template-areas: 'what what' 'meta meta'; padding-top: 10px; padding-bottom: 10px; }
+  .ws-meta { gap: 8px; }
+  .ws-step { margin-left: auto; }
 }
 
 .ws-cards { display: grid; gap: 12px; }
@@ -110,8 +119,13 @@
   background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
 }
 .sc[data-booked] { box-shadow: var(--sc-ring); background: color-mix(in srgb, var(--booked) 6%, var(--surface-2)); }
-.sc-band { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked); font-size: var(--fs-small); font-weight: 600; }
-.sc-ref { margin-left: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--fs-small); color: var(--text); user-select: all; }
+.sc-band { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 12px; background: var(--booked); color: var(--ground); }
+.sc-band svg { flex: none; }
+.sc-band strong { font-size: var(--fs-title); font-weight: 700; line-height: 1.2; }
+.sc-ref {
+  margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--fs-small); font-weight: 600; user-select: all;
+}
 
 /* photos: a strip that swipes and snaps, one photo a page */
 .sc-top { position: relative; }
@@ -150,7 +164,7 @@
 .sc-body { display: grid; gap: 10px; padding: 12px; }
 .sc-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
 .sc-h h4 { margin: 0; font-size: var(--fs-title); font-weight: 600; line-height: 1.25; color: var(--text); overflow-wrap: anywhere; }
-.sc-kind { font-size: var(--fs-small); color: var(--muted); }
+.sc-kind { display: inline-flex; align-items: center; align-self: center; min-height: 22px; padding: 0 9px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); font-size: var(--fs-label); font-weight: 600; }
 .sc-h .sc-rate { margin-left: auto; align-self: center; }
 
 .sc-facts { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
@@ -172,11 +186,9 @@ button.sc-row:active { transform: scale(0.985); }
 .sc-room[data-on] .sc-pick { background: var(--text); box-shadow: none; }
 .sc-room[data-booked] .sc-pick { background: var(--booked); }
 .sc-rn { flex: 1; min-width: 0; font-size: var(--fs-body); font-weight: 500; overflow-wrap: anywhere; }
-.sc-pr { display: grid; justify-items: end; flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.sc-pr b { font-size: var(--fs-body); font-weight: 650; color: var(--text); }
-.sc-pr[data-near] b { font-weight: 500; color: var(--muted); }
-.sc-pr small { font-size: var(--fs-label); color: var(--faint); }
-.sc-pr[data-none] { font-size: var(--fs-small); color: var(--faint); }
+.sc-pr { flex: none; font-size: var(--fs-body); font-weight: 650; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sc-pr[data-near] { font-weight: 500; color: var(--muted); }
+.sc-pr[data-none] { font-size: var(--fs-small); font-weight: 500; color: var(--faint); }
 .sc-rmk { flex: none; display: inline-flex; gap: 4px; padding-right: 8px; }
 @container (max-width: 340px) {
   .sc-room { flex-wrap: wrap; }
@@ -184,17 +196,24 @@ button.sc-row:active { transform: scale(0.985); }
   .sc-rmk { padding: 0 10px 8px 36px; margin-top: -4px; }
 }
 
-.sc-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: -2px 0 0; }
-.sc-ask button {
+.sc-ask { display: grid; justify-items: start; gap: 6px; margin: -2px 0 0; }
+.sc-askb {
   display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 0 12px; border-radius: 999px;
   background: color-mix(in srgb, var(--flight) 14%, transparent); color: var(--flight) !important; font-size: var(--fs-small) !important; font-weight: 600 !important;
   transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
 }
-.sc-ask button:not(:disabled):active { transform: scale(0.97); }
-.sc-ask button[data-state='sent'] { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked) !important; }
-.sc-ask button[data-state='sending'] { opacity: .7; }
-.sc-ask small { font-size: var(--fs-small); color: var(--err); }
-@media (hover: hover) and (pointer: fine) { .sc-ask button:not(:disabled):hover { background: color-mix(in srgb, var(--flight) 22%, transparent); } }
+.sc-askb:not(:disabled):active { transform: scale(0.97); }
+.sc-askb[data-state='sent'] { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked) !important; }
+.sc-askb[data-state='sending'] { opacity: .7; }
+@media (hover: hover) and (pointer: fine) { .sc-askb:not(:disabled):hover { background: color-mix(in srgb, var(--flight) 22%, transparent); } }
+/* the answers, styled here too, since the planner's own styles do not reach the map */
+.sc-ask .ask-error { font-size: var(--fs-small); color: var(--err); }
+.sc-ask .ask-list { list-style: none; display: grid; gap: 4px; width: 100%; margin: 0; padding: 0; }
+.sc-ask .ask-list li { display: grid; gap: 2px; padding: 8px 10px; border-radius: 10px; background: var(--surface-3); font-size: var(--fs-small); }
+.sc-ask .ask-list li > span { font-size: var(--fs-label); font-weight: 600; color: var(--muted); }
+.sc-ask .ask-list li.ask-failed > span { color: var(--err); }
+.sc-ask .ask-list li.ask-done > span { color: var(--booked); }
+.sc-ask .ask-list p { margin: 0; color: var(--text); line-height: 1.45; white-space: pre-wrap; }
 
 .sc-links { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
 .sc-links a {
@@ -208,8 +227,6 @@ button.sc-row:active { transform: scale(0.985); }
 @media (hover: hover) and (pointer: fine) { .sc-links a:hover { background: var(--line-2); } }
 
 .sc-sum { margin: 0; font-size: var(--fs-body); line-height: 1.5; color: color-mix(in srgb, var(--text) 86%, transparent); }
-.sc-note { display: flex; gap: 6px; margin: 0; font-size: var(--fs-small); line-height: 1.45; color: var(--muted); }
-.sc-note svg { flex: none; margin-top: 2px; }
 
 /* ---------- Add a place: grouped lists, as a settings sheet ---------- */
 .ap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 12px; padding: 12px; border-radius: 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); container-type: inline-size; }
@@ -301,7 +318,7 @@ button.sc-row:active { transform: scale(0.985); }
 }
 
 @media (pointer: coarse) {
-  .sc-links a, .sc-ask button, .ap-seg button, .ap-tags button, .ap-more { min-height: 40px; }
+  .sc-links a, .sc-askb, .ap-seg button, .ap-tags button, .ap-more { min-height: 40px; }
   .ap-icon { width: 40px; height: 40px; }
 }
 

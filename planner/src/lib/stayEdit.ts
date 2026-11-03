@@ -73,7 +73,7 @@ export function canStep(stays: PlannedStay[], sp: ScheduledPlace, k: number): { 
   return { more: freeNights(stays, sp).nights > 0 || (!!next && next.nights > 1), less: part.nights > 1 }
 }
 
-/** Part k taken out. The nights it had go to the part after it when that one follows the stop, else they become free. */
+/** Part k taken out. The parts after it move up to start sooner, as parts run in order from the first night. The nights that frees go to a last part with no nights of its own, else they become free at the end of the stop. */
 export function removePart(stays: PlannedStay[], k: number): PlannedStay[] {
   return stays.filter((_, i) => i !== k)
 }

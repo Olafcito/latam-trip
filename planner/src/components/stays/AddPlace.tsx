@@ -1,23 +1,17 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react'
-import type { LodgingKind, LodgingSite, LodgingTag } from '../../data/types'
-import { readKr } from '../../lib/bookingDraft'
-import { siteOf } from '../../lib/lodgingLinks'
-import { loadLodgings, saveLodging, type LodgingDraft } from '../../lib/lodgings'
+import type { LodgingKind, LodgingTag } from '../../data/types'
+import { safeUrl, siteOf } from '../../lib/lodgingLinks'
+import { loadLodgings, saveLodging } from '../../lib/lodgings'
+import { KINDS, SITE, TAGS } from '../../lib/lodgingWords'
+import { placeDraft, type PriceForm, type RoomForm } from '../../lib/placeDraft'
 import { addDays } from '../../lib/time'
 import { useStore } from '../../store'
 import { Bath, Bed, Calendar, Check, Close, Door, Link, Note, Person, Plus, Trash } from '../icons'
-import { safeUrl } from './StayCard'
 
 // Adding a place to stay by hand, in place of the button that opens it. Only the name is needed. A link pasted
 // in says which site it is on by itself, a photo shows as soon as its address loads, and a room takes its
-// prices for the dates they are for, the stop's nights first. It saves the place whole, as the connector would.
-
-const KINDS: [LodgingKind, string][] = [['hostel', 'Hostel'], ['hotel', 'Hotel'], ['guesthouse', 'Guesthouse'], ['apartment', 'Apartment'], ['other', 'Other']]
-const TAGS: [LodgingTag, string][] = [['beach', 'Beach'], ['pool', 'Pool'], ['social', 'Social'], ['quiet', 'Quiet'], ['kitchen', 'Kitchen'], ['breakfast', 'Breakfast'], ['aircon', 'Air con'], ['workspace', 'Workspace']]
-const SITE: Record<LodgingSite, string> = { booking: 'Booking.com', hostelworld: 'Hostelworld', airbnb: 'Airbnb', own: 'Own site', other: 'Link' }
-
-interface PriceForm { key: string; check_in: string; check_out: string; total: string }
-interface RoomForm { key: string; name: string; beds: string; own: '' | 'own' | 'shared'; bath: '' | 'private' | 'shared'; prices: PriceForm[] }
+// prices for the dates they are for, the stop's nights first. A price row with no total is left out. It saves
+// the place whole, as the connector would. What the form says is wrong is worked out in placeDraft.
 
 const key = () => crypto.randomUUID()
 
@@ -101,39 +95,10 @@ export function AddPlace({ place, onSaved, close, first, nights = 0 }: {
     room(rk, (r) => ({ ...r, prices: r.prices.map((p) => (p.key === pk ? { ...p, ...change } : p)) }))
   const toggleTag = (t: LodgingTag) => setTags((ts) => (ts.includes(t) ? ts.filter((x) => x !== t) : [...ts, t]))
 
-  /** The form as a draft, or what is wrong with it said the way the form shows it. */
-  const draft = (): LodgingDraft | string => {
-    const ls = links.map((l) => l.url.trim()).filter(Boolean)
-    if (ls.some((u) => !safeUrl(u))) return 'A link starts with https://.'
-    const ps = photos.map((p) => p.url.trim()).filter(Boolean)
-    if (ps.some((u) => !safeUrl(u))) return 'A photo address starts with https://.'
-    const rs: LodgingDraft['rooms'] = []
-    for (const r of rooms) {
-      const beds = r.beds.trim() ? Number(r.beds) : null
-      if (beds != null && !(Number.isInteger(beds) && beds >= 1)) return 'A room has at least 1 bed.'
-      const prices: LodgingDraft['rooms'][number]['prices'] = []
-      for (const p of r.prices) {
-        if (!p.check_in && !p.check_out && !p.total.trim()) continue
-        if (!p.check_in || !p.check_out) return 'A price needs the day you check in and the day you check out.'
-        const total = readKr(p.total)
-        if (total == null || Number.isNaN(total)) return 'A price needs what it costs in kr.'
-        prices.push({ check_in: p.check_in, check_out: p.check_out, total_dkk: Math.round(total), per_night_dkk: null, site: null, url: null, refundable: null, cancel_until: null })
-      }
-      rs.push({ name: r.name.trim(), beds, private: r.own === '' ? null : r.own === 'own', bathroom: r.bath || null, notes: null, prices })
-    }
-    return {
-      place_id: place, name: name.trim(), kind, tags, notes: notes.trim() || null, summary: null,
-      photos: ps.map((url) => ({ url, caption: null })),
-      links: ls.map((url) => ({ site: siteOf(url), url })),
-      rating: null, reviews: null, rating_source: null, address: null, lat: null, lon: null, to_center_km: null, to_beach_km: null,
-      added_by: 'simon', rooms: rs,
-    }
-  }
-
   const submit = async (e: FormEvent) => {
     e.preventDefault()
     if (busy) return
-    const d = draft()
+    const d = placeDraft(place, { name, kind, links: links.map((l) => l.url), photos: photos.map((p) => p.url), rooms, tags, notes })
     if (typeof d === 'string') return setError(d)
     setBusy(true)
     setError('')
@@ -143,7 +108,8 @@ export function AddPlace({ place, onSaved, close, first, nights = 0 }: {
       setError(r.message)
       return
     }
-    // the live channel brings it as well, this only makes it show at once
+    // the live channel brings it as well, this only makes it show at once. So a failed read here is let go:
+    // the place is saved, and the channel shows it a moment later
     loadLodgings().then(setLodgings, () => {})
     onSaved(r.id)
   }
@@ -240,7 +206,7 @@ export function AddPlace({ place, onSaved, close, first, nights = 0 }: {
                 </span>
                 <span className="ap-kr">
                   <label className="ws-vh" htmlFor={`${id}-t${k}-${j}`}>Total in kr</label>
-                  <input id={`${id}-t${k}-${j}`} className="ap-in" inputMode="decimal" value={p.total} placeholder="0" autoComplete="off" onChange={(e) => price(r.key, p.key, { total: e.currentTarget.value })} />
+                  <input id={`${id}-t${k}-${j}`} className="ap-in" inputMode="decimal" value={p.total} placeholder="Total" autoComplete="off" onChange={(e) => price(r.key, p.key, { total: e.currentTarget.value })} />
                   <span aria-hidden="true">kr</span>
                 </span>
                 <button type="button" className="ap-icon" aria-label={`Take price ${j + 1} away`} onClick={() => room(r.key, (x) => ({ ...x, prices: x.prices.filter((y) => y.key !== p.key) }))}><Trash /></button>

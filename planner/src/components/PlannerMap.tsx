@@ -5,8 +5,8 @@ import type { TripState } from '@map/data/trips'
 import type { Family, MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../data/routeMap'
 import { useDataRev } from '../data/rev'
-import { nodeForAirport, nodeName, schedule } from '../lib/journey'
 import { legFactsFrom, toTripState } from '../lib/mapTrips'
+import { useSchedule } from '../lib/useSchedule'
 import { useStore } from '../store'
 import { Plus } from './icons'
 import { AddPlace } from './stays/AddPlace'
@@ -22,17 +22,10 @@ function CityStays({ placeId }: { placeId: string }) {
   const data = useStore((s) => s.data)
   const journey = useStore((s) => s.journey)
   const mapOpen = useStore((s) => s.mapOpen)
-  const bookings = useStore((s) => s.bookings)
   const lodgings = useStore((s) => s.lodgings)
   const [adding, setAdding] = useState(false)
   const j = mapOpen ? journey : null
-  const sched = useMemo(() => {
-    if (!data || !j) return null
-    const wi = data.inout.ways[j.wayIn]
-    const wh = data.inout.ways[j.wayHome]
-    if (!wi || !wh) return null
-    return schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), (n) => nodeName(data.map, data.inout, n), bookings, data, lodgings)
-  }, [data, j, bookings, lodgings])
+  const sched = useSchedule(data, j)?.sched ?? null
   const stops = j && sched ? j.places.flatMap((p, i) => (p.node === placeId && sched.places[i] ? [i] : [])) : []
   if (sched && stops.length) return <>{stops.map((i) => <WhereToStay key={i} i={i} sched={sched} />)}</>
 

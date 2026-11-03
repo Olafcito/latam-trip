@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import type { Booking, Lodging } from '../../data/types'
-import { dayRange, kr } from '../../lib/format'
+import { dayRange } from '../../lib/format'
 import type { Schedule } from '../../lib/journey'
 import { canStep, choiceNights, chooseRoom, freeNights, removePart, stepNights } from '../../lib/stayEdit'
-import { partBooking, partDkk, stayClashes, stayParts, tripStays, type StayPart } from '../../lib/stays'
+import { partBooking, stayClashes, stayParts, tripStays, type StayPart } from '../../lib/stays'
+import { partPrice, partPriceWords } from '../../lib/stayView'
 import { addDays } from '../../lib/time'
 import { useStore } from '../../store'
-import { Check, Minus, Moon, Plus, Trash, Warn } from '../icons'
+import { Calendar, Check, Minus, Moon, Plus, Trash, Warn } from '../icons'
 import { Tip } from '../story/Marks'
 import { AddPlace } from './AddPlace'
 import { StayCard } from './StayCard'
 
 // Where to stay at a stop of the open trip: the stop's nights as a line of parts, each a room of a place to
-// stay with its nights and its price, then the places to stay there as cards whose rooms you pick. A night
-// no part takes shows as a free night, a booked stay wears the green ring and a stay the stop has moved off
-// says so with a mark.
+// stay with its nights and its price, then the places to stay there as cards whose rooms you pick. A part is
+// one row: the place and its room, then its dates, price and nights, which wrap under the name when narrow.
+// A price worked out from other nights is muted and wears the estimate mark. A night no part takes shows as a
+// free night, a booked stay wears the green ring and a stay the stop has moved off says so with a mark.
 
 /** check in to check out of nights from first */
 const span = (first: string, nights: number) => dayRange(first, addDays(first, nights))
@@ -32,19 +34,20 @@ function PartRow({ part, k, lodging, booking, more, less, onStep, onRemove }: {
 }) {
   const room = lodging?.rooms.find((r) => r.id === part.stay.room_id)
   const name = lodging?.name ?? 'A place to stay'
-  const cost = booking ? null : partDkk(room, part)
+  const pp = partPrice(room, part)
+  const price = partPriceWords(pp)
   return (
     <li className="ws-part" data-booked={booking ? true : undefined} data-off={!part.fits || undefined}>
-      <span className="ws-when">{part.fits ? span(part.first, part.nights) : 'No nights'}</span>
-      <span className="ws-what">
-        <b>{name}</b>
-        <small>{room?.name ?? 'No room picked'}</small>
-      </span>
-      <span className="ws-end">
+      <What name={name} room={room?.name ?? 'No room picked'} />
+      <span className="ws-meta">
+        <span className="ws-when">{part.fits ? span(part.first, part.nights) : 'No nights'}</span>
         {booking ? (
-          <Tip label={booking.reference ? `Booked, reference ${booking.reference}` : 'Booked'} className="ws-mk" tone="booked"><Check /><span aria-hidden="true">{booking.reference ?? 'Booked'}</span></Tip>
+          <Booked b={booking} />
         ) : part.fits ? (
-          <span className="ws-pr" data-none={cost == null || undefined}>{kr(cost)}</span>
+          <span className="ws-pr" data-none={pp.kind === 'none' || undefined} data-near={price.estimate ? true : undefined}>
+            {price.estimate && <Tip label={price.estimate} className="ws-mk" kind="near"><Calendar s={12} /></Tip>}
+            <span>{price.text}</span>
+          </span>
         ) : (
           <Tip label="The stop has no nights left for this part" className="ws-mk" tone="warn"><Warn /></Tip>
         )}
@@ -55,10 +58,25 @@ function PartRow({ part, k, lodging, booking, more, less, onStep, onRemove }: {
             <button type="button" aria-label={`A night more at ${name}`} disabled={!more} onClick={() => onStep(k, 1)}><Plus /></button>
           </span>
         )}
-        <button type="button" className="ws-x" aria-label={`Take ${name} off the stop`} onClick={() => onRemove(k)}><Trash /></button>
       </span>
+      <button type="button" className="ws-x" aria-label={`Take ${name} off the stop`} onClick={() => onRemove(k)}><Trash /></button>
     </li>
   )
+}
+
+/** The place and its room on one line, the room cut short first. */
+function What({ name, room }: { name: string; room?: string | null }) {
+  return (
+    <span className="ws-what">
+      <b>{name}</b>
+      {room && <small>{room}</small>}
+    </span>
+  )
+}
+
+/** A booked stay's mark, its reference cut short when it is long. */
+function Booked({ b }: { b: Booking }) {
+  return <Tip label={b.reference ? `Booked, reference ${b.reference}` : 'Booked'} className="ws-mk ws-ref" tone="booked"><Check /><span aria-hidden="true">{b.reference ?? 'Booked'}</span></Tip>
 }
 
 export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
@@ -93,7 +111,6 @@ export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
     <section className="ws" aria-labelledby={`ws-h-${i}`}>
       <header className="ws-head">
         <h4 id={`ws-h-${i}`}>Where to stay</h4>
-        {nights && <span className="ws-n"><Moon />{sp.days}</span>}
       </header>
 
       {nights && (parts.length > 0 || loose.length > 0) && (
@@ -121,8 +138,8 @@ export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
             })}
             {parts.length > 0 && free.nights > 0 && (
               <li className="ws-part" data-free>
-                <span className="ws-when">{span(free.first, free.nights)}</span>
-                <span className="ws-what"><b>{nightsWord(free.nights)} free</b></span>
+                <What name={`${nightsWord(free.nights)} free`} />
+                <span className="ws-meta"><span className="ws-when">{span(free.first, free.nights)}</span></span>
               </li>
             )}
             {loose.map((b) => {
@@ -130,11 +147,11 @@ export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
               const l = b.lodging_id ? byId.get(b.lodging_id) : undefined
               return (
                 <li key={b.id} className="ws-part" data-booked>
-                  <span className="ws-when">{dayRange(b.check_in!, b.check_out!)}</span>
-                  <span className="ws-what"><b>{l?.name ?? b.seller ?? 'Booked stay'}</b>{l && b.room_id && <small>{l.rooms.find((r) => r.id === b.room_id)?.name}</small>}</span>
-                  <span className="ws-end">
+                  <What name={l?.name ?? b.seller ?? 'Booked stay'} room={l && b.room_id ? l.rooms.find((r) => r.id === b.room_id)?.name : null} />
+                  <span className="ws-meta">
+                    <span className="ws-when">{dayRange(b.check_in!, b.check_out!)}</span>
                     {c && <Tip label={c.meets ? 'The stop has only some of these nights now' : 'The stop has none of these nights now'} className="ws-mk" tone="warn"><Warn /></Tip>}
-                    <Tip label={b.reference ? `Booked, reference ${b.reference}` : 'Booked'} className="ws-mk" tone="booked"><Check /><span aria-hidden="true">{b.reference ?? 'Booked'}</span></Tip>
+                    <Booked b={b} />
                   </span>
                 </li>
               )
