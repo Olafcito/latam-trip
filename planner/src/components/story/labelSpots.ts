@@ -120,13 +120,3 @@ export function spotFor(l: Ask, hard: Box[], words: Box[], soft: Box[], bounds: 
   })
   return { ...near, peek: true }
 }
-
-/** Flags closer than this to a neighbour shrink before any of them is pushed aside. */
-export function shrinkCluster(pts: Point[], r: number, least = 0.72): number[] {
-  return pts.map((a, i) => {
-    let near = Infinity
-    pts.forEach((b, j) => { if (i !== j) near = Math.min(near, Math.hypot(b[0] - a[0], b[1] - a[1])) })
-    // two flags side by side with a small gap is the goal, never below the least size
-    return near >= r * 2 + 8 ? r : Math.max(r * least, Math.min(r, (near - 8) / 2))
-  })
-}

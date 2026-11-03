@@ -5,11 +5,26 @@
 .rs-land { fill: var(--surface-2); }
 .rs-lit { fill: var(--line-2); }
 .rs-borders { fill: none; stroke: color-mix(in srgb, var(--line-2), var(--muted) 16%); stroke-width: 0.75px; vector-effect: non-scaling-stroke; }
-.rs-line, .rs-chev, .rs-from, .rs-to { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.rs-line { stroke: var(--text); stroke-width: 2.25px; }
-.rs-chev { stroke: var(--text); stroke-width: 2.5px; }
+.rs-leg, .rs-chev, .rs-from, .rs-to { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; transition: opacity var(--t-slow) var(--ease-out); }
+/* a leg in the colour of how you travel it, dashed while it is a plan, solid once booked */
+.rs-leg { --mode: var(--bus); stroke: var(--mode); stroke-width: 2.5px; stroke-dasharray: 7 6; }
+.rs-leg[data-booked] { stroke-dasharray: none; stroke-width: 2.75px; }
+.rs-chev { --mode: var(--bus); stroke: var(--mode); stroke-width: 2.5px; }
+.rs-leg[data-f='flight'], .rs-chev[data-f='flight'] { --mode: var(--flight); }
+.rs-leg[data-f='boat'], .rs-chev[data-f='boat'] { --mode: var(--boat); }
 .rs-from, .rs-to { stroke: var(--muted); stroke-width: 1.75px; stroke-dasharray: 0.1 6; }
-.rs-way { fill: var(--muted); font-weight: 500; }
+.rs-way { fill: var(--muted); font-weight: 500; transition: opacity var(--t-slow) var(--ease-out); }
+/* the opening draw: the route comes out along this path, words wait for it to end */
+.rs-reveal { fill: none; stroke: #fff; stroke-width: 90px; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+.rs-labels { transition: opacity var(--t-slow) var(--ease-out); }
+.rs-map[data-drawing] .rs-labels, .rs-map[data-drawing] .rs-way { opacity: 0; }
+/* the route up to the country you look at, the rest steps back */
+.rs-leg[data-dim], .rs-chev[data-dim], .rs-to[data-dim] { opacity: 0.16; }
+.rs-flag { transition: opacity var(--t-slow) var(--ease-out); }
+.rs-flag[data-dim] { opacity: 0.32; }
+.rs-lab text { transition: opacity var(--t-slow) var(--ease-out); }
+.rs-lab[data-dim] text { opacity: 0.32; }
+.rs-flag[data-here] .rs-ring { stroke: var(--flight); }
 .rs-dot { fill: var(--flight); stroke: var(--ground); }
 .rs-pass { fill: var(--text); }
 .rs-blank { fill: var(--surface-3); }
@@ -28,10 +43,47 @@
 .rs-head { position: absolute; top: 16px; left: 20px; max-width: calc(100% - 76px); pointer-events: none; }
 .rs-head h3 { margin: 0; font-size: var(--fs-head); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; color: var(--text); text-wrap: balance; }
 .rs-head p { margin: 4px 0 0; font-size: var(--fs-small); font-variant-numeric: tabular-nums; color: var(--muted); }
-.rs-hint { position: absolute; left: 20px; bottom: 16px; margin: 0; font-size: var(--fs-small); line-height: 1.3; color: var(--muted); pointer-events: none; transition: opacity var(--t-med) ease-out; }
-.rs-hint.gone { opacity: 0; }
+
+/* the itinerary over the foot of the map: a segment per country as wide as its nights */
+.rs-bar { position: absolute; left: 12px; right: 12px; bottom: 12px; display: grid; gap: 8px; pointer-events: none; }
+.rs-read { display: flex; align-items: baseline; gap: 10px; margin: 0 8px; min-height: 1.4em; font-size: var(--fs-body); line-height: 1.3; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rs-read b { font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+.rs-read span { white-space: nowrap; }
+.rs-segs {
+  display: flex; gap: 3px; padding: 4px; pointer-events: auto;
+  /* a long trip scrolls sideways rather than squeezing a stay under its flag */
+  overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+  border-radius: calc(var(--radius) + 4px);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text) 8%, transparent), 0 8px 24px rgb(0 0 0 / 0.35);
+}
+.rs-seg {
+  flex: 1 1 0; min-width: 46px; height: var(--hit); padding: 0 7px; container-type: inline-size;
+  display: flex; align-items: center; gap: 6px; overflow: hidden;
+  border: 0; border-radius: var(--radius); background: color-mix(in srgb, var(--surface-3) 45%, transparent); color: var(--text);
+  font: 600 var(--fs-num) / 1 var(--font-word); font-variant-numeric: tabular-nums; cursor: pointer;
+  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.rs-segs::-webkit-scrollbar { display: none; }
+.rs-seg[data-passing] { flex: 0 0 auto; min-width: 0; padding: 0 6px; background: transparent; container-type: normal; }
+.rs-seg[aria-pressed='true'] { background: var(--surface-3); box-shadow: inset 0 0 0 1.5px var(--flight); }
+.rs-seg:active { transform: scale(0.97); }
+.rs-seg:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+.rs-seg-flag { display: flex; flex: none; border-radius: 2px; overflow: hidden; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25); }
+.rs-seg-code { flex: none; font-size: var(--fs-label); color: var(--muted); }
+.rs-seg-n { min-width: 0; }
+/* how you got there: filled once booked, an outline while it is a plan */
+.rs-mode { --mode: var(--bus); flex: none; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; color: var(--mode); box-shadow: inset 0 0 0 1.5px var(--mode); }
+.rs-mode[data-f='flight'] { --mode: var(--flight); }
+.rs-mode[data-f='boat'] { --mode: var(--boat); }
+.rs-mode[data-booked] { background: var(--mode); color: var(--ground); box-shadow: none; }
+@container (max-width: 66px) { .rs-mode { display: none; } }
+@container (max-width: 28px) { .rs-seg-n { display: none; } }
 .rs-flag, .rs-lab[data-t], .rs-dot[data-t] { cursor: pointer; outline: none; }
-.rs-disc { transition: transform var(--t-fast) var(--ease-out); transform-box: fill-box; transform-origin: center; }
+.rs-disc { transition: transform var(--t-fast) var(--ease-out), opacity var(--t-slow) var(--ease-out); transform-box: fill-box; transform-origin: center; }
+.rs-flag[data-wait] .rs-disc { opacity: 0; transform: scale(0.7); transition: none; }
 .rs-flag[data-t]:active .rs-disc { transform: scale(0.94); }
 .rs-flag:focus-visible .rs-ring { stroke: var(--flight); }
 .rs-lab[data-t]:focus-visible text { fill: var(--flight); }
@@ -49,7 +101,7 @@
 @media (hover: hover) and (pointer: fine) {
   .rs-flag[data-t]:hover .rs-disc { transform: scale(1.05); }
   .rs-lab[data-t]:hover text { fill: var(--flight); }
-  .rs-strip:hover .rs-line { stroke: var(--flight); }
+  .rs-seg:hover:not([aria-pressed='true']) { background: color-mix(in srgb, var(--surface-3) 70%, transparent); }
 }
 
 @media (max-width: 560px) {
@@ -58,10 +110,15 @@
   .rs-strip { aspect-ratio: 1000 / 460; }
   .rs-head { left: 16px; top: 14px; }
   .rs-head h3 { font-size: var(--fs-lead); }
-  .rs-hint { left: 16px; bottom: 12px; }
+  .rs-bar { left: 8px; right: 8px; bottom: 8px; gap: 6px; }
+  .rs-segs { gap: 2px; padding: 3px; }
+  .rs-seg { padding: 0 5px; gap: 4px; min-width: 40px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rs-disc, .rs-hint, .rs-strip { transition: none; }
-  .rs-strip:active, .rs-flag[data-t]:active .rs-disc { transform: none; }
+  .rs-disc, .rs-strip, .rs-seg { transition: none; }
+  .rs-strip:active, .rs-flag[data-t]:active .rs-disc, .rs-seg:active { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .rs-segs { background: var(--surface-2); -webkit-backdrop-filter: none; backdrop-filter: none; }
 }

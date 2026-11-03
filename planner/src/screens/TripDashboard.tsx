@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import type { AppData } from '../data/types'
 import { useStore } from '../store'
+import { lockedLegs, wayBooking } from '../lib/booked'
 import { routeStops } from '../lib/bundle'
 import { dayRange } from '../lib/format'
 import { totals, type Journey } from '../lib/journey'
@@ -60,7 +61,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const t = totals(data, journey, sched, bookings, lodgings)
   // a warning about one leg or one stop sits on that leg or stop
   const general = sched.warnings.filter((w) => w.leg == null && w.stop == null)
-  const stops = routeStops(map, journey, sched)
+  // the map tells a booked leg from a planned one
+  const stops = routeStops(map, journey, sched, lockedLegs(bookings, data, journey, sched))
 
   return (
     <div className="dash">
@@ -111,6 +113,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
                 dates={dayRange(sched.firstDay, sched.homeDepart)}
                 from={inout.airports[wi.from]?.name ?? wi.from}
                 to={inout.airports[wh.to]?.name ?? wh.to}
+                inBooked={!!wayBooking(bookings, data, wi)}
               />
             </Suspense>
           )}

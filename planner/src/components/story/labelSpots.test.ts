@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cover, leadFrom, shrinkCluster, SIDES, spotFor } from './labelSpots'
+import { cover, leadFrom, SIDES, spotFor } from './labelSpots'
 import type { Box } from './routeView'
 
 const bounds: Box = [0, 0, 1000, 500]
@@ -56,6 +56,12 @@ describe('spotFor', () => {
     expect(s.peek).toBe(true)
   })
 
+  it('never lays a label over a line it is told is hard', () => {
+    const line: Box[] = Array.from({ length: 20 }, (_, k): Box => [430 + k * 7, 225, 434 + k * 7, 229])
+    const s = spotFor({ w: 100, h: 30, at: [500, 250, 20] }, [flag(500, 250), ...line], [], [], bounds)
+    expect(line.every((b) => cover(s.box, b) === 0)).toBe(true)
+  })
+
   it('lets the line cost but not block', () => {
     const line: Box[] = [[520, 200, 700, 300]]
     const s = spotFor({ w: 100, h: 30, at: [500, 250, 20] }, [], [], line, bounds)
@@ -67,14 +73,5 @@ describe('spotFor', () => {
 describe('leadFrom', () => {
   it('starts on the flag edge facing the label', () => {
     expect(leadFrom([0, 0, 10], [50, -5, 90, 5])).toEqual([10, 0])
-  })
-})
-
-describe('shrinkCluster', () => {
-  it('leaves lone flags alone and shrinks close ones', () => {
-    const r = shrinkCluster([[0, 0], [40, 0], [500, 0]], 30)
-    expect(r[2]).toBe(30)
-    expect(r[0]).toBeLessThan(30)
-    expect(r[0]).toBeGreaterThanOrEqual(30 * 0.72)
   })
 })

@@ -17,6 +17,11 @@ export interface RouteStop {
   type: string
   lat: number
   lon: number
+  /** the day you get here and the day you leave */
+  inDay?: string
+  outDay?: string
+  /** the leg that brings you here is booked */
+  booked?: boolean
 }
 
 export interface BundledPlace {
@@ -122,8 +127,8 @@ export const entryOf = (p: BundledPlace) => (p.kind === 'chain' ? p.ends[0] : p.
 /** "Tolu (Golfo de Morrosquillo airport)" -> "Tolu", as you would say it to a friend. */
 const spoken = (name: string) => shortPlace(name).split(' / ')[0].replace(/ coast$/, '').replace(/ de la Sierra$/, '')
 
-/** A journey's stops as the summary map reads them. A stop whose node left the data is skipped. */
-export function routeStops(map: { nodes: MapNode[] }, journey: Journey, sched: Schedule): RouteStop[] {
+/** A journey's stops as the summary map reads them. A stop whose node left the data is skipped. locked holds the place indexes whose leg in is booked. */
+export function routeStops(map: { nodes: MapNode[] }, journey: Journey, sched: Schedule, locked?: ReadonlySet<number>): RouteStop[] {
   return journey.places.flatMap((p, i) => {
     const node = map.nodes.find((n) => n.id === p.node)
     if (!node) return []
@@ -136,6 +141,9 @@ export function routeStops(map: { nodes: MapNode[] }, journey: Journey, sched: S
       type: node.type,
       lat: node.lat,
       lon: node.lon,
+      inDay: sched.places[i]?.inDay,
+      outDay: sched.places[i]?.outDay,
+      booked: locked?.has(i) ?? false,
     }]
   })
 }

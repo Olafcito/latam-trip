@@ -4,7 +4,6 @@ import type { GeometryCollection, Topology } from 'topojson-specification'
 import world from 'world-atlas/countries-50m.json'
 import { bundle, entryOf, type BundledPlace, type RouteStop } from '../../lib/bundle'
 import { countryName } from '../../lib/colors'
-import { shrinkCluster } from './labelSpots'
 
 // Where everything sits on the summary map. The window keeps north up. The strip on top of a trip
 // lies the map back and turns it so the route runs along the strip, a tall trip would be a sliver in
@@ -21,6 +20,10 @@ export interface Canvas {
   room?: Point
   /** flags alone, too narrow for their words */
   bare?: boolean
+  /** a window keeps this much free below the route, for the bar laid over it */
+  foot?: number
+  /** the radius of the flag of the longest stay */
+  flag?: number
 }
 export interface RouteLand { at: (lon: number, lat: number) => Point; land: string; lit: string; borders: string }
 export interface ViewStop extends RouteStop { x: number; y: number; fly: boolean }
@@ -31,8 +34,13 @@ export interface ViewCountry {
   code: string
   name: string
   nights: string
+  /** the nights as a number, for the bar and the sizes */
+  n: number
+  /** its first and last stop, as indexes into the trip's stops */
+  first: number
+  last: number
   places: ViewPlace[]
-  /** closed, moved just clear of its neighbours */
+  /** closed, on the first place you reach */
   rest: Point
   /** open, on the first place you reach */
   out: Point
@@ -53,9 +61,33 @@ const DEPTH = 2200
 /** The flat map is drawn this big and laid back around its middle. */
 const FLAT = 1000
 
-/** A country only passed through gets a flag this much smaller, closed and open. */
+/** A country only passed through gets a flag this much smaller open, and a small mark closed. */
 const PASS = 0.55
+const MARK = 0.34
+/** The shortest stay still gets this share of the longest one's flag, so it stays a flag you can tap. */
+const LEAST = 0.5
 const OPEN = 18
+
+/** A flag's area goes with its nights against the longest stay. */
+export function flagSize(nights: number, longest: number, base: number): number {
+  if (!nights) return base * MARK
+  return base * Math.max(LEAST, Math.sqrt(nights / Math.max(longest, 1)))
+}
+
+/**
+ * Two flags that would touch: the smaller one shrinks first, never below least of its size. What still
+ * touches then stacks, the smaller drawn on top.
+ */
+export function fitSizes(pts: Point[], rs: number[], gap = 6, least = 0.7): number[] {
+  const out = [...rs]
+  const order = rs.map((_, i) => i).sort((a, b) => rs[b] - rs[a])
+  order.forEach((i, k) => order.slice(0, k).forEach((j) => {
+    const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1])
+    if (d >= out[i] + out[j] + gap) return
+    out[i] = Math.max(rs[i] * least, Math.min(out[i], d - out[j] - gap))
+  }))
+  return out
+}
 
 export const nightWord = (n: number) => (n ? `${n} ${n === 1 ? 'night' : 'nights'}` : 'Passing through')
 
@@ -131,46 +163,29 @@ export function routeLand(stops: RouteStop[], c: Canvas): RouteLand {
     return drawn(geoPath(stream).digits(1), stops, at)
   }
   const [top, side] = c.room ?? [0, 0]
-  const proj: GeoProjection = geoMercator().fitExtent([[side, top], [c.w - side, c.h - 140]], reach(stops)).clipExtent([[0, 0], [c.w, c.h]])
+  const proj: GeoProjection = geoMercator().fitExtent([[side, top], [c.w - side, c.h - (c.foot ?? 140)]], reach(stops)).clipExtent([[0, 0], [c.w, c.h]])
   return drawn(geoPath(proj).digits(1), stops, (lon, lat) => proj([lon, lat]) as Point)
 }
 
-// Flags that would touch move just apart while they are closed.
-function clear(list: ViewCountry[], c: Canvas) {
-  for (let n = 0; n < 40; n++) {
-    list.forEach((a, i) => list.slice(i + 1).forEach((b) => {
-      const dx = b.rest[0] - a.rest[0]
-      const dy = b.rest[1] - a.rest[1]
-      const d = Math.hypot(dx, dy) || 1
-      const push = (a.r + b.r + 8 - d) / 2
-      if (push <= 0) return
-      a.rest = [a.rest[0] - dx / d * push, a.rest[1] - dy / d * push]
-      b.rest = [b.rest[0] + dx / d * push, b.rest[1] + dy / d * push]
-    }))
-    list.forEach((a) => {
-      a.rest = [Math.min(c.w - a.r - 4, Math.max(a.r + 4, a.rest[0])), Math.min(c.h - a.r - 4, Math.max(a.r + 4, a.rest[1]))]
-    })
-  }
-}
-
 export function routeView(stops: RouteStop[], land: RouteLand, c: Canvas): RouteView {
-  const r = c.tilted ? (c.h > 300 ? 38 : 22) : 30
+  const r = c.flag ?? (c.tilted ? (c.h > 300 ? 38 : 22) : 34)
   const placed = stops.map((s, i): ViewStop => {
     const [x, y] = land.at(s.lon, s.lat)
     return { ...s, x, y, fly: i > 0 && s.mode === 'flight' && s.country !== stops[i - 1].country }
   })
-  const countries = bundle(stops).map((b, ci): ViewCountry => {
+  const bundled = bundle(stops)
+  const longest = Math.max(...bundled.map((b) => b.nights), 1)
+  const countries = bundled.map((b, ci): ViewCountry => {
     const places = b.places.map((p, pi) => ({ ...p, id: `${ci}.${pi}` }))
     const first = placed[entryOf(places[0])]
-    const k = b.nights ? 1 : PASS
     return {
-      key: `${b.code}-${ci}`, code: b.code, name: countryName(b.code), nights: nightWord(b.nights), places,
-      rest: [first.x, first.y], out: [first.x, first.y], r: r * k, ro: OPEN * k,
+      key: `${b.code}-${ci}`, code: b.code, name: countryName(b.code), nights: nightWord(b.nights), n: b.nights,
+      first: b.stops[0], last: b.stops[b.stops.length - 1], places,
+      rest: [first.x, first.y], out: [first.x, first.y], r: flagSize(b.nights, longest, r), ro: OPEN * (b.nights ? 1 : PASS),
     }
   })
-  // close flags shrink a little first, so they need to move less to stand apart
-  shrinkCluster(countries.map((x) => x.rest), r).forEach((size, i) => { countries[i].r = Math.min(countries[i].r, size) })
-  clear(countries, c)
+  // a flag stays on its place: close ones shrink the smaller first, then stack
+  fitSizes(countries.map((x) => x.rest), countries.map((x) => x.r)).forEach((size, i) => { countries[i].r = size })
   const a = placed[0]
   const b = placed[placed.length - 1]
   // Copenhagen is off the map: the end further right leaves up to the right, the other up to the left
