@@ -35,15 +35,34 @@ Planned trips live in the trips table. `tripdb save-trip FILE` saves a trip as i
 
 Any work that changes how `web/` or `planner/` looks or moves goes through these project skills in `.claude/skills/`. The aim is an app that feels crafted, not vibe coded.
 
-1. **Start with `emil-design-eng`** for every frontend task. It sets the bar for polish, component design and motion decisions.
-2. **Design and refine with `impeccable`.** Use it to shape a screen, critique it, and run its anti-pattern and polish passes before calling the UI done.
-3. **Find components with the 21st.dev MCP** (`21st`, its `search`, `get_component`, `get_inspiration` and `get_theme` tools) before hand-building a common component such as a picker, table, sheet or command menu. Adapt what it returns to the app's existing tokens and style, never paste it in as is.
-4. **Motion:** `animate` to build an animation, `review-animations` to critique one, `improve-animations` to audit the app, `find-animation-opportunities` for where motion is missing, `remove-animations` when it feels over-animated, `animation-performance` when it drops frames, `animation-vocabulary` to name an effect.
-5. **Phone use:** `mobile-native` for the fixes that make the web app feel installed (Simon uses it on his phone while travelling), `apple-design` for gestures, sheets and springs.
-6. **Before a frontend commit, run `web-design-guidelines`** (Vercel's Web Interface Guidelines) as the checklist for alignment, spacing, accessibility and interaction details, and `break-ui` to try the screen with worst-case data.
-7. On request only: `prototype` for several versions behind a picker, `pick-ui-library` to choose a library.
+### Show it, do not say it
 
-Larger UX and visual design is done in Claude Design (the Claude app) and handed over. Implement that design as given, and use the skills above for the details it leaves open.
+This is the main design rule, on desktop as much as on the phone. Information is shown with interface, not with sentences. The failure to avoid is answering every new fact with one more line of small grey text under a row or a title, until rows read like paragraphs and nothing stands out.
+
+Before adding any text, decide what it should be instead:
+
+- **A fact about a thing** becomes an icon, a chip or a badge on it. Bags are bag icons that read included or a price, the way Momondo and Google Flights show them. A night arrival is a moon, a long layover an hourglass, a self transfer a warning mark. The detail sits behind a tooltip or a tap.
+- **An action** becomes an icon button or a control on the thing it changes, not a text button. Tapping the route codes edits the start and end, instead of a "Change start and end" button.
+- **A choice** becomes tabs, a segmented control or a toggle.
+- **A consequence**, such as the way home moving when a ticket is picked, shows on the thing it changes (the return date in its own chip), not as a sentence under the row.
+- **Meta lines** such as "2 ways, prices for both ways" or "checked 2 days ago" are dropped, or shrink to an icon with a tooltip.
+
+If a component would carry more than one line of secondary text, stop. Redesign the whole component with `apple-design`, `emil-design-eng` and 21st.dev, and do not add another line.
+
+New icons go in the apps' own sets (`planner/src/components/icons.tsx`, `web/src/map/icons.tsx`) and keep their style.
+
+### Skills, in order
+
+1. **Lead with `apple-design`** for every frontend task, not only phone work. It sets the hierarchy, restraint, materials, typography and motion, and Wallet, Maps and Flighty are the references for the booking views.
+2. **`emil-design-eng`** for component design, polish and the small details that make it feel finished.
+3. **Find components with the 21st.dev MCP** (`search`, `get_component`, `get_inspiration`, `get_theme`) before hand building a common component such as a picker, chip, segmented control, sheet or ticket card. Adapt what it returns to the app's tokens in `planner/src/styles`, never paste it in as is.
+4. **Shape and critique with `impeccable`**, and run its anti-pattern and polish passes before calling the UI done.
+5. **Motion:** `animate` to build an animation, `review-animations` to critique one, `improve-animations` to audit the app, `find-animation-opportunities` for where motion is missing, `remove-animations` when it feels over-animated, `animation-performance` when it drops frames, `animation-vocabulary` to name an effect.
+6. **Phone:** `mobile-native` for the fixes that make the web app feel installed. Simon uses it on his phone while travelling.
+7. **Before a frontend commit:** `web-design-guidelines` as the checklist for alignment, spacing, accessibility and interaction details, and `break-ui` to try the screen with worst-case data.
+8. On request only: `prototype` for several versions behind a picker, `pick-ui-library` to choose a library.
+
+Ideas from Claude Design (the Claude app) are welcome, but its look is not the reference. Build from 21st.dev components and the app's own tokens.
 
 `hyperframes` and its siblings are for making videos, slideshows and motion pieces from HTML. They are not used for the app.
 
