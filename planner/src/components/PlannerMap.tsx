@@ -43,7 +43,11 @@ function CityStays({ placeId }: { placeId: string }) {
   )
 }
 
-const cityStays = (placeId: string) => <CityStays key={placeId} placeId={placeId} />
+/**
+ * The city panel's stays block. Its key differs from the city id, since the panel keys its own places by that id
+ * among the same children, and two children with one key make React warn.
+ */
+export const cityStays = (placeId: string) => <CityStays key={`stays:${placeId}`} placeId={placeId} />
 
 /**
  * The route map with the planner's journeys as its trips, where journeys are built. Every edit
