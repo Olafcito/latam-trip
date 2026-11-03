@@ -101,10 +101,32 @@ export function buildModel(data: MapData): Model {
     byIata,
     conns,
     byPlace,
-    home: boundsOf(places.map((p) => [p.lon, p.lat])),
+    home: coreBounds(places.filter((p) => !p.context).map((p) => [p.lon, p.lat])),
     routes: { type: 'FeatureCollection', features },
     routeLines,
   }
+}
+
+/**
+ * The frame of the researched region. A few places that stand far off on their own, more than
+ * `gap` degrees past the rest and no more than `share` of all places, stay out of it, so one far
+ * city does not leave the region a strip in the middle of an ocean. They are still on the map.
+ */
+export function coreBounds(points: LonLat[], gap = 10, share = 0.05): Bounds {
+  if (!points.length) return boundsOf(points)
+  const most = Math.floor(points.length * share)
+  const range = (vals: number[]): [number, number] => {
+    const v = [...vals].sort((a, b) => a - b)
+    let lo = 0
+    let hi = v.length - 1
+    for (let i = 0; i < most && i < v.length - 1; i++) if (v[i + 1] - v[i] > gap) lo = i + 1
+    for (let i = v.length - 1; i > v.length - 1 - most && i > 0; i--) if (v[i] - v[i - 1] > gap) hi = i - 1
+    return [v[lo], v[hi]]
+  }
+  const [w, e] = range(points.map((p) => p[0]))
+  const [s, n] = range(points.map((p) => p[1]))
+  const kept = points.filter(([lon, lat]) => lon >= w && lon <= e && lat >= s && lat <= n)
+  return boundsOf(kept.length ? kept : points)
 }
 
 function stopPoints(byId: Map<string, Place>, conn: Connection, opt: RouteOption): LonLat[] {

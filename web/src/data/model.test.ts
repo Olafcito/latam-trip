@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { airportFlights, buildModel, byCountry, landing, pairFlights, viaLine, type Neighbour } from './model'
+import { airportFlights, buildModel, byCountry, coreBounds, landing, pairFlights, viaLine, type Neighbour } from './model'
 import type { MapData } from './types'
 
 const n = (id: string, country: string, fastest: number) => ({ other: { id, country }, fastest }) as unknown as Neighbour
@@ -70,5 +70,19 @@ describe('airport flights', () => {
     expect(landing('2026-12-10T12:42')).toBe('day')
     expect(landing('2026-12-10T18:00')).toBe('evening')
     expect(landing(null)).toBeNull()
+  })
+})
+
+describe('coreBounds', () => {
+  const grid: [number, number][] = Array.from({ length: 40 }, (_, i) => [-90 + (i % 8) * 2, -20 + Math.floor(i / 8) * 9])
+  it('frames every point when none stands far off', () => {
+    expect(coreBounds(grid)).toEqual([[-90, -20], [-76, 16]])
+  })
+  it('leaves out a lone far outlier, like Montevideo beside a trip from Mexico to Bolivia', () => {
+    expect(coreBounds([...grid, [-56, -35]])).toEqual([[-90, -20], [-76, 16]])
+  })
+  it('keeps a far group that holds a real share of the places', () => {
+    const far = Array.from({ length: 10 }, (): [number, number] => [-56, -35])
+    expect(coreBounds([...grid, ...far])[0]).toEqual([-90, -35])
   })
 })
