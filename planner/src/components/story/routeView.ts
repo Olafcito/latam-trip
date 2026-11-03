@@ -53,6 +53,10 @@ const DEPTH = 2200
 /** The flat map is drawn this big and laid back around its middle. */
 const FLAT = 1000
 
+/** A country only passed through gets a flag this much smaller, closed and open. */
+const PASS = 0.55
+const OPEN = 18
+
 export const nightWord = (n: number) => (n ? `${n} ${n === 1 ? 'night' : 'nights'}` : 'Passing through')
 
 function reach(stops: RouteStop[]) {
@@ -158,13 +162,14 @@ export function routeView(stops: RouteStop[], land: RouteLand, c: Canvas): Route
   const countries = bundle(stops).map((b, ci): ViewCountry => {
     const places = b.places.map((p, pi) => ({ ...p, id: `${ci}.${pi}` }))
     const first = placed[entryOf(places[0])]
+    const k = b.nights ? 1 : PASS
     return {
       key: `${b.code}-${ci}`, code: b.code, name: countryName(b.code), nights: nightWord(b.nights), places,
-      rest: [first.x, first.y], out: [first.x, first.y], r, ro: 18,
+      rest: [first.x, first.y], out: [first.x, first.y], r: r * k, ro: OPEN * k,
     }
   })
   // close flags shrink a little first, so they need to move less to stand apart
-  shrinkCluster(countries.map((x) => x.rest), r).forEach((size, i) => { countries[i].r = size })
+  shrinkCluster(countries.map((x) => x.rest), r).forEach((size, i) => { countries[i].r = Math.min(countries[i].r, size) })
   clear(countries, c)
   const a = placed[0]
   const b = placed[placed.length - 1]

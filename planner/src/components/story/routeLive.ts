@@ -108,8 +108,11 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
   const opens = (p: Place) => new Set(p.stops.filter((i) => S[i].nights).map((i) => S[i].id)).size > 1
   const flagAt = (c: Country): Point => [mix(c.rest[0], c.out[0], c.o.v), mix(c.rest[1], c.out[1], c.o.v)]
   const real = (i: number): Point => [S[i].x, S[i].y]
+  // you land at and leave from an airport, so the line from and to Copenhagen meets it there
+  const port = (i: number) => i === 0 || i === S.length - 1
 
   function spot(i: number): Point {
+    if (port(i)) return real(i)
     const s = S[i]
     const p = s.p
     const inPlace = p.kind === 'chain' && p.own.includes(i) ? real(i) : real(p.anchor)
@@ -223,7 +226,8 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
     spotFor({ w: l.w, h: l.h, at, side: l.side }, hard, words, soft, bounds)
 
   // The line takes up room too, words laid over it are hard to read.
-  function trail(taken: Box[], at: (i: number) => Point) {
+  function trail(taken: Box[], near: (i: number) => Point) {
+    const at = (i: number) => (port(i) ? real(i) : near(i))
     const dotted = (a: Point, b: Point) => {
       for (let k = 1; k < TRAIL; k++) mark(taken, mix(a[0], b[0], k / TRAIL), mix(a[1], b[1], k / TRAIL), 2)
     }
