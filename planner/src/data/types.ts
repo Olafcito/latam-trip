@@ -300,3 +300,64 @@ export interface Booking {
   created_at: string
   updated_at: string
 }
+
+// ---- places to stay (the owner only tables of 0014_lodgings.sql), never in a built file
+
+export type LodgingKind = 'hostel' | 'hotel' | 'guesthouse' | 'apartment' | 'other'
+export type LodgingSite = 'booking' | 'hostelworld' | 'airbnb' | 'own' | 'other'
+export type LodgingTag = 'beach' | 'pool' | 'social' | 'quiet' | 'kitchen' | 'breakfast' | 'aircon' | 'workspace'
+
+/** A price for a room over a date range, as the sites quote it. It has a total, a price per night or both. */
+export interface LodgingPrice {
+  id: string
+  room_id: string
+  check_in: string
+  check_out: string
+  total_dkk: number | null
+  per_night_dkk: number | null
+  site: LodgingSite | null
+  url: string | null
+  refundable: 'yes' | 'no' | 'partly' | null
+  cancel_until: string | null
+  observed_at: string
+}
+
+/** A room of a place to stay, with its prices by date. */
+export interface LodgingRoom {
+  id: string
+  lodging_id: string
+  name: string
+  beds: number | null
+  private: boolean | null
+  bathroom: 'private' | 'shared' | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+  prices: LodgingPrice[]
+}
+
+/** A place to stay that Simon added, or asked Claude to add, with its rooms by name. */
+export interface Lodging {
+  id: string
+  place_id: string
+  name: string
+  kind: LodgingKind
+  photos: { url: string; caption: string | null }[]
+  rating: number | null
+  reviews: number | null
+  rating_source: string | null
+  address: string | null
+  lat: number | null
+  lon: number | null
+  to_center_km: number | null
+  to_beach_km: number | null
+  tags: LodgingTag[]
+  summary: string | null
+  notes: string | null
+  links: { site: LodgingSite; url: string }[]
+  added_by: 'simon' | 'claude'
+  hidden: boolean
+  created_at: string
+  updated_at: string
+  rooms: LodgingRoom[]
+}

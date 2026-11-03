@@ -18,7 +18,9 @@ const TRIP_WAY: Spec = {
 const TRIP_TICKET: Spec = { id: '!str', price_dkk: '!num', observed_at: 'str|null' }
 const TRIP_PLACE: Spec = {
   node: '!pid', hop: '!dict|null', why: 'str|null', nights: 'int|null', arrive: 'date|time|null', depart: 'date|time|null', stay: 'dict|null',
+  stays: 'list|null',
 }
+const TRIP_STAY: Spec = { lodging_id: '!str', room_id: 'str|null', nights: 'int|null' }
 const TRIP_HOP: Spec = {
   from: '!pid', to: '!pid', mode: '!enum:flight,bus,boat,train,colectivo,shuttle,chicken_bus', operator: 'str|null', hours: 'num|null',
   price_dkk: 'num|null', observed_at: 'time|null', overnight: 'bool|null', border: 'bool|null', flight: 'dict|null', overland: 'str|null',
@@ -99,6 +101,11 @@ export function tripRowErrors(r: TripRow): string[] {
       prev = null
       return
     }
+    for (const [k, s] of (p.stays ?? []).entries()) {
+      let se = isObj(s) ? checkFields(s, TRIP_STAY) : ['is not a JSON object']
+      if (!se.length && s.nights != null && s.nights < 1) se = ['nights is below 1']
+      errs = errs.concat(se.map((e) => `places[${i}].stays[${k}] ${e}`))
+    }
     const hop = p.hop
     if (i === 0) {
       if (hop != null) errs.push('places[0] has a hop, the first place is where the way in lands')
@@ -159,6 +166,8 @@ function rowPlace(p: Place, i: number, last: TripRow | null, at: number): RowPla
   const keep = at >= 0 ? last?.places[at] : undefined
   const out: RowPlace = { node: p.node, hop: i === 0 ? null : (p.hop as RowPlace['hop']) }
   if (p.why) out.why = p.why
+  // the planned stays are the journey's own, so a place that has none saves none, the way it opened
+  if (p.stays?.length) out.stays = p.stays.map((s) => ({ ...s }))
   // what the journey does not hold stays as the last version had it. A why only stays on a stop that kept its
   // place, since a first stop that moved on lost the why that said the way in landed there
   if (keep) {

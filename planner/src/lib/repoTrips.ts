@@ -25,6 +25,8 @@ export interface RowPlace {
   arrive?: string | null
   depart?: string | null
   stay?: Record<string, unknown> | null
+  /** the planned stays, TRIP_STAY in tripdb */
+  stays?: { lodging_id: string; room_id: string | null; nights?: number | null }[] | null
 }
 
 /** One latest trip row as returned from the Supabase trips table. */
@@ -124,6 +126,8 @@ export function rowToJourney(r: TripRow): Journey {
   const places: Place[] = r.places.map((p, i) => {
     const place: Place = { node: p.node, hop: i === 0 ? null : (p.hop ?? null) }
     if (p.why) place.why = p.why
+    if (Array.isArray(p.stays) && p.stays.length)
+      place.stays = p.stays.map((s) => ({ lodging_id: s.lodging_id, room_id: s.room_id ?? null, ...(s.nights != null ? { nights: s.nights } : {}) }))
     return place
   })
   const j: Journey = {

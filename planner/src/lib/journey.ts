@@ -3,6 +3,7 @@ import { bookedElsewhere, bookingOn, paidPrice, staysIn, wayBooking, type BookDa
 import { day, dayDiff, dayTime, kr } from './format'
 import { edgeHours, edgePrice, groundPath, type Arc } from './graph'
 import { priceOfWays } from './options'
+import type { PlannedStay } from './stays'
 import { addDays } from './time'
 
 export interface Hop {
@@ -34,6 +35,8 @@ export interface Place {
   hop: Hop | null
   /** why the stop is in the trip (a trip from the trips table) */
   why?: string
+  /** where you plan to sleep here, in order from the first night */
+  stays?: PlannedStay[]
 }
 
 export interface Journey {

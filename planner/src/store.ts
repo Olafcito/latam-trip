@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { ownKey, readOwn } from '@map/data/ownKey'
-import type { AppData, Booking, CrawledFlight, Way } from './data/types'
+import type { AppData, Booking, CrawledFlight, Lodging, Way } from './data/types'
+import type { PlannedStay } from './lib/stays'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
 import { heldWayNotice, lockedLegs, wayHeld } from './lib/booked'
 import { saveBookings } from './lib/bookings'
@@ -220,9 +221,29 @@ interface State {
    */
   unlocked: number | 'in' | 'home' | null
   setUnlocked: (unlocked: number | 'in' | 'home' | null) => void
+
+  /** every place to stay with its rooms and prices, hidden ones too, read live. Empty when signed out */
+  lodgings: Lodging[]
+  setLodgings: (lodgings: Lodging[]) => void
+  /** where you plan to sleep at place i, in order from its first night, kept as the trip's draft. An empty list takes them away */
+  setStays: (i: number, stays: PlannedStay[]) => void
 }
 
 export const useStore = create<State>((set, get) => ({
+  lodgings: [],
+  setLodgings: (lodgings) => set({ lodgings }),
+  setStays: (i, stays) => {
+    const j = get().journey
+    if (!j?.places[i]) return
+    get().setJourney({
+      ...j,
+      places: j.places.map((q, k) => {
+        if (k !== i) return q
+        const { stays: _gone, ...rest } = q
+        return stays.length ? { ...rest, stays: stays.map((s) => ({ ...s })) } : rest
+      }),
+    })
+  },
   bookings: [],
   setBookings: (bookings) => set({ bookings }),
   patchBooking: (id, change) => set({ bookings: get().bookings.map((b) => (b.id === id ? { ...b, ...change } : b)) }),

@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut } from '../data/types'
-import type { Journey } from './journey'
+import type { Journey, Totals } from './journey'
 import { mixWays } from './options'
 import {
   isTripWayId, localOnly, mergeTrips, parseTripsFile, resolveDeepLink, retireSeeds, rowToJourney, sameJourney,
   tripParam, urlWithTrip, withTripWays, type TripRow,
 } from './repoTrips'
+import { journeyToRow } from './tripRow'
 
 const way = (from: string, to: string) => ({
   from, to, depart: '2026-12-02T09:55', arrive: '2026-12-02T22:10', price_dkk: 3900,
@@ -169,5 +170,47 @@ describe('deep link /?trip=<id>', () => {
     expect(urlWithTrip('http://localhost:5181/?tab=map#top', 'a')).toBe('/?tab=map&trip=a#top')
     expect(urlWithTrip('http://localhost:5181/?trip=a&tab=map', null)).toBe('/?tab=map')
     expect(urlWithTrip('http://localhost:5181/?trip=a', null)).toBe('/')
+  })
+})
+
+describe('planned stays in a trip row', () => {
+  const totals = { stays_booked_dkk: 0 } as unknown as Totals
+  const io = withTripWays(inout, [row('a')])
+  /** what a version holds apart from when, by whom and which number it is */
+  const content = (r: TripRow) => {
+    const { version: _v, saved_at: _s, by: _b, ...rest } = r
+    return JSON.parse(JSON.stringify(rest))
+  }
+
+  it('opens and saves a trip from before planned stays unchanged', () => {
+    const old = row('a')
+    expect(old.places.some((p) => 'stays' in p)).toBe(false)
+    const j = rowToJourney(old)
+    expect(j.places.some((p) => 'stays' in p)).toBe(false)
+    const next = journeyToRow(j, old, io, totals)
+    expect(content(next)).toEqual(content(old))
+    expect(next.places.some((p) => 'stays' in p)).toBe(false)
+  })
+
+  it('keeps the planned stays of a trip across a reload and a new version', () => {
+    const stays = [{ lodging_id: 'L1', room_id: 'R1', nights: 2 }, { lodging_id: 'L2', room_id: 'R2' }]
+    const first = rowToJourney(row('a'))
+    const planned = { ...first, places: first.places.map((p, k) => (k === 1 ? { ...p, stays } : p)) }
+    const saved = journeyToRow(planned, row('a'), io, totals)
+    expect(saved.places[1].stays).toEqual(stays)
+    const reloaded = rowToJourney(saved)
+    expect(reloaded.places[1].stays).toEqual(stays)
+    expect(reloaded.places[0]).not.toHaveProperty('stays')
+    const again = journeyToRow({ ...reloaded, name: 'Renamed' }, saved, io, totals)
+    expect(again.version).toBe(saved.version + 1)
+    expect(again.places[1].stays).toEqual(stays)
+  })
+
+  it('drops the planned stays of a stop once the trip no longer holds them', () => {
+    const stays = [{ lodging_id: 'L1', room_id: 'R1' }]
+    const withStays = row('a', { places: row('a').places.map((p, k) => (k === 1 ? { ...p, stays } : p)) })
+    const j = rowToJourney(withStays)
+    const cleared = { ...j, places: j.places.map(({ stays: _s, ...p }) => p) }
+    expect(journeyToRow(cleared, withStays, io, totals).places[1]).not.toHaveProperty('stays')
   })
 })

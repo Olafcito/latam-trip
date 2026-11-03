@@ -21,6 +21,7 @@ import { clearRouteData } from './data/routeMap'
 import { clearPairDates } from './data/pairDates'
 import { loadDeletedIds, loadTrips, loadVersions, subscribeTrips } from './lib/remoteTrips'
 import { loadBookings, subscribeBookings } from './lib/bookings'
+import { loadLodgings, subscribeLodgings } from './lib/lodgings'
 import { loadDeriveState, refresh, subscribeBuilds, type DeriveState } from './lib/remoteFiles'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
@@ -253,6 +254,30 @@ export function App() {
       window.removeEventListener('online', reload)
     }
   }, [userId, setBookings])
+
+  // Places to stay are owner only as well, read the same way. They live only in the store, never in a built file
+  const setLodgings = useStore((s) => s.setLodgings)
+  useEffect(() => {
+    if (!remoteEnabled() || !userId) {
+      setLodgings([])
+      return
+    }
+    let latest = 0
+    const reload = () => {
+      const n = ++latest
+      loadLodgings().then((l) => {
+        if (n === latest) setLodgings(l)
+      }, () => {})
+    }
+    reload()
+    const stop = subscribeLodgings(reload)
+    window.addEventListener('online', reload)
+    return () => {
+      latest = -1
+      stop()
+      window.removeEventListener('online', reload)
+    }
+  }, [userId, setLodgings])
 
   // a finished build swaps the changed files in with no reload. The strip says when builds have stopped
   const [build, setBuild] = useState<DeriveState | null>(null)
