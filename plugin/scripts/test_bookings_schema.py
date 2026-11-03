@@ -8,11 +8,12 @@ import tripdb  # noqa: E402
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 MIGRATION = os.path.join(REPO, "supabase", "migrations", "0013_bookings.sql")
+DETAILS = os.path.join(REPO, "supabase", "migrations", "0015_booking_details.sql")
 
 FLIGHT = {
     "kind": "flight", "status": "booked", "from_code": "CPH", "to_code": "CTG",
     "depart": "2026-12-02T06:00", "arrive": "2026-12-02T19:40", "reference": "TEST01", "seller": "KLM",
-    "url": "https://example.com/booking/TEST01", "price_dkk": 4200, "price": 560.5, "currency": "EUR",
+    "seller_reference": "TEST02", "fare": "Light", "url": "https://example.com/booking/TEST01", "price_dkk": 4200, "price": 560.5, "currency": "EUR",
     "refundable": "no", "changeable": "fee", "change_until": "2026-11-30", "cancel_until": None,
     "cabin_bag": "8 kg", "checked_bag": "23 kg", "travellers": 1, "ticket": "TEST01",
     "segments": [{"flight": "KL1126", "from": "CPH", "to": "AMS", "depart": "2026-12-02T06:00",
@@ -49,6 +50,13 @@ class BookingSchema(unittest.TestCase):
     def test_a_stay_row_with_its_dates_passes(self):
         self.assertEqual(self.check(STAY), [])
 
+    def test_a_seller_reference_must_be_text(self):
+        errs = self.check(dict(FLIGHT, seller_reference=12345))
+        self.assertTrue(any(e.startswith("seller_reference") for e in errs), errs)
+
+    def test_bookings_stay_out_of_the_built_tables(self):
+        self.assertNotIn("bookings", tripdb.TABLES)
+
     def test_a_kind_and_status_alone_pass(self):
         self.assertEqual(self.check({"kind": "other", "status": "cancelled"}), [])
 
@@ -79,6 +87,22 @@ class BookingMigration(unittest.TestCase):
             self.assertIn("to authenticated", p)
             self.assertIn("bucket_id = 'bookings'", p)
             self.assertIn("(select public.is_owner())", p)
+
+
+class DetailsMigration(unittest.TestCase):
+    """0015 only adds columns. It opens nothing to anon and adds no trigger that would mark a build dirty."""
+
+    def setUp(self):
+        with open(DETAILS, encoding="utf-8") as f:
+            self.sql = re.sub(r"--[^\n]*", "", f.read()).lower()
+
+    def test_it_adds_the_two_columns(self):
+        self.assertIn("add column seller_reference text", self.sql)
+        self.assertIn("add column fare text", self.sql)
+
+    def test_it_grants_and_triggers_nothing(self):
+        for word in ("grant", "policy", "trigger", "anon", "disable"):
+            self.assertNotIn(word, self.sql)
 
 
 if __name__ == "__main__":
