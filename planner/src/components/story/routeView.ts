@@ -4,6 +4,7 @@ import type { GeometryCollection, Topology } from 'topojson-specification'
 import world from 'world-atlas/countries-50m.json'
 import { bundle, entryOf, type BundledPlace, type RouteStop } from '../../lib/bundle'
 import { countryName } from '../../lib/colors'
+import { shrinkCluster } from './labelSpots'
 
 // Where everything sits on the summary map. The window keeps north up. The strip on top of a trip
 // lies the map back and turns it so the route runs along the strip, a tall trip would be a sliver in
@@ -137,7 +138,7 @@ function clear(list: ViewCountry[], c: Canvas) {
       const dx = b.rest[0] - a.rest[0]
       const dy = b.rest[1] - a.rest[1]
       const d = Math.hypot(dx, dy) || 1
-      const push = (a.r * 2 + 8 - d) / 2
+      const push = (a.r + b.r + 8 - d) / 2
       if (push <= 0) return
       a.rest = [a.rest[0] - dx / d * push, a.rest[1] - dy / d * push]
       b.rest = [b.rest[0] + dx / d * push, b.rest[1] + dy / d * push]
@@ -162,6 +163,8 @@ export function routeView(stops: RouteStop[], land: RouteLand, c: Canvas): Route
       rest: [first.x, first.y], out: [first.x, first.y], r, ro: 18,
     }
   })
+  // close flags shrink a little first, so they need to move less to stand apart
+  shrinkCluster(countries.map((x) => x.rest), r).forEach((size, i) => { countries[i].r = size })
   clear(countries, c)
   const a = placed[0]
   const b = placed[placed.length - 1]

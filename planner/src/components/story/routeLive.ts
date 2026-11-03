@@ -1,3 +1,4 @@
+import { cover, leadFrom, spotFor, type Spot } from './labelSpots'
 import { nightWord, type Box, type Point, type RouteView, type ViewCountry, type ViewPlace, type ViewStop } from './routeView'
 
 // Moves the summary map. React draws what never moves, this owns what does: every flag, dot, label
@@ -10,15 +11,11 @@ const WAVE = 2 * Math.PI / 0.42
 const FRAME_INSET = 14
 /** A phone has no room for two neighbours side by side, closer than this they replace each other. */
 const NEAR = 180
-const SIDES = [[1, 0], [1, -1], [1, 1], [-1, 0], [-1, -1], [-1, 1], [0, 1], [0, -1]]
 /** How finely a leg of the line is measured when words look for a free spot. */
 const TRAIL = 14
-/** Words over words are worse than words over a flag's edge. */
-const WORDS = 4
 
 const mix = (a: number, b: number, t: number) => a + (b - a) * t
 const n1 = (v: number) => +v.toFixed(1)
-const cover = (a: Box, b: Box) => Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])) * Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]))
 const mark = (taken: Box[], x: number, y: number, r: number) => { taken.push([x - r - 3, y - r - 3, x + r + 3, y + r + 3]) }
 
 function add<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string | number>, parent: Element) {
@@ -34,7 +31,6 @@ const snap = (s: Spring) => { s.v = s.t; s.w = 0 }
 interface Country extends ViewCountry { o: Spring; g: SVGGElement; hit: SVGCircleElement | null; size: SVGGElement }
 interface Place extends ViewPlace { c: Country; o: Spring }
 interface Stop extends ViewStop { c: Country; p: Place }
-interface Fit { box: Box; left: number; mid: number; sx: number; k: number }
 interface Label {
   country?: boolean
   stop?: boolean
@@ -46,6 +42,12 @@ interface Label {
   g: SVGGElement
   tap: SVGRectElement | null
   lines: SVGTextElement[]
+  lead: SVGLineElement
+  /** no clear spot, shown while its flag is hovered or focused */
+  peek: boolean
+  leads: boolean
+  /** where it sits now, so a peeking neighbour can step over it */
+  box?: Box
   x: Spring
   y: Spring
   a: Spring
@@ -55,7 +57,7 @@ interface Label {
   w: number
   h: number
   side?: number
-  home?: Fit
+  home?: Spot
 }
 
 export interface LiveOptions {
@@ -131,11 +133,12 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
       ...(t ? { 'data-t': t } : {}),
       ...(t && !l.country ? { tabindex: 0, role: 'button', 'aria-label': `${l.name}, ${l.nights}` } : {}),
     }, labelsG)
+    const lead = add('line', { class: 'rs-lead' }, labelsG)
     const tap = t ? add('rect', { fill: 'transparent' }, g) : null
     const lines = [add('text', { class: l.stop ? 'rs-stop' : 'rs-name' }, g), add('text', { class: 'rs-nights' }, g)]
     lines[0].textContent = l.name
     lines[1].textContent = l.nights
-    labels.push({ ...l, g, tap, lines, x: track(0), y: track(0), a: track(0), al: track(0), dir: 1, ws: [], w: 0, h: 0 })
+    labels.push({ ...l, g, tap, lines, lead, peek: false, leads: false, x: track(0), y: track(0), a: track(0), al: track(0), dir: 1, ws: [], w: 0, h: 0 })
   }
   if (!view.bare) C.forEach((c) => addLabel({ country: true, c, name: c.name, nights: c.nights }))
   if (interactive) P.forEach((p) => {
@@ -146,6 +149,10 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
     })
   })
 
+  let peeking: string | null = null
+  const under = (l: Label) => labels.some((o) => o !== l && o.peek && o.c.key === peeking && seen(o) && !!o.box && !!l.box && cover(o.box, l.box) > 0)
+  // a peeking label steps over what lies under it, so it never reads on top of another word
+  const shows = (l: Label) => (seen(l) && (l.peek ? peeking === l.c.key : !under(l)) ? 1 : 0)
   const seen = (l: Label) => (l.country ? !open.has(l.c.key) : open.has(l.c.key) && deep.has(l.p!.id) === !!l.stop)
   const point = (l: Label, f: (i: number) => Point): Point => {
     if (l.at != null) return f(l.at)
@@ -155,7 +162,8 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
 
   // Sizes are map units with a floor in screen pixels, so a phone keeps readable text while a wide map keeps the steps between levels.
   const inset = view.tilted ? 8 : FRAME_INSET
-  const bounds: Box = [inset, inset, view.w - inset, view.h - inset]
+  // the far edge of the strip fades away, words there would fade with it
+  const bounds: Box = [inset, view.tilted ? view.h * 0.24 : inset, view.w - inset, view.h - inset]
   const from: Point = [...view.from]
   const to: Point = [...view.to]
   let blocks: Box[] = []
@@ -211,25 +219,16 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
     return Math.hypot(x - fx, y - fy) < fr ? [fx, fy, fr] : [x, y, 10]
   }
 
-  // Each label takes the side beside its flag or dot that covers the least, trying the right first.
-  function fit(l: Label, [x, y, r]: [number, number, number], taken: Box[], words: Box[]) {
-    let best: Fit | null = null
-    let low = Infinity
-    SIDES.forEach(([sx, sy], k) => {
-      const left = sx > 0 ? x + r + 6 : sx < 0 ? x - r - 6 - l.w : x - l.w / 2
-      const mid = sx ? y + sy * l.h * 0.55 : y + sy * (r + 6 + l.h / 2)
-      const box: Box = [left, mid - l.h / 2, left + l.w, mid + l.h / 2]
-      const out = l.w * l.h - cover(box, bounds)
-      const hidden = taken.reduce((n, b) => n + cover(box, b), 0) + WORDS * words.reduce((n, b) => n + cover(box, b), 0)
-      const cost = out * 6 + hidden + (k === l.side ? 0 : k + 1)
-      if (cost < low) { low = cost; best = { box, left, mid, sx, k } }
-    })
-    words.push(best!.box)
-    return best!
-  }
+  const fit = (l: Label, at: [number, number, number], hard: Box[], words: Box[], soft: Box[]) =>
+    spotFor({ w: l.w, h: l.h, at, side: l.side }, hard, words, soft, bounds)
 
-  // The line takes up room too, words laid over it cannot be read.
+  // The line takes up room too, words laid over it are hard to read.
   function trail(taken: Box[], at: (i: number) => Point) {
+    const dotted = (a: Point, b: Point) => {
+      for (let k = 1; k < TRAIL; k++) mark(taken, mix(a[0], b[0], k / TRAIL), mix(a[1], b[1], k / TRAIL), 2)
+    }
+    dotted(from, at(0))
+    dotted(at(S.length - 1), to)
     S.forEach((s, i) => {
       if (!i) return
       const a = at(i - 1)
@@ -243,32 +242,42 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
     })
   }
 
-  // A closed country keeps its side whatever its neighbours do, so opening one never moves the words of another.
+  // A closed country keeps its side whatever its neighbours do, so opening one never moves the words of
+  // another. The longest stays choose first.
   function home() {
-    const taken = [...blocks]
-    C.forEach((c) => mark(taken, ...c.rest, c.r))
-    trail(taken, (i) => S[i].c.rest)
+    const hard = [...blocks]
+    C.forEach((c) => mark(hard, ...c.rest, c.r))
+    const soft: Box[] = []
+    trail(soft, (i) => S[i].c.rest)
     const words: Box[] = []
-    labels.filter((l) => l.country).forEach((l) => { l.home = fit(l, [...l.c.rest, l.c.r], taken, words) })
+    const stay = (l: Label) => l.c.places.reduce((n, p) => n + p.nights, 0)
+    labels.filter((l) => l.country).sort((a, b) => stay(b) - stay(a)).forEach((l) => {
+      l.home = fit(l, [...l.c.rest, l.c.r], hard, words, soft)
+      if (l.home.peek) words.pop()
+    })
   }
 
   function place() {
-    const taken = [...blocks]
-    C.forEach((c) => mark(taken, ...flagTarget(c)))
-    trail(taken, (i) => (open.has(S[i].c.key) ? real(i) : S[i].c.rest))
-    dots.forEach(({ i, main }) => { if (open.has(S[i].c.key) && (main || deep.has(S[i].p.id))) mark(taken, ...real(i), 7) })
+    const hard = [...blocks]
+    C.forEach((c) => mark(hard, ...flagTarget(c)))
+    const soft: Box[] = []
+    trail(soft, (i) => (open.has(S[i].c.key) ? real(i) : S[i].c.rest))
+    dots.forEach(({ i, main }) => { if (open.has(S[i].c.key) && (main || deep.has(S[i].p.id))) mark(hard, ...real(i), 7) })
     const list = labels.filter(seen)
-    const words = list.filter((l) => l.country).map((l) => l.home!.box)
+    const words = list.filter((l) => l.country && !l.home!.peek).map((l) => l.home!.box)
     list.forEach((l) => {
-      const best = l.country ? l.home! : fit(l, anchorOf(l), taken, words)
+      const best = l.country ? l.home! : fit(l, anchorOf(l), hard, words, soft)
       l.x.t = best.left
       l.y.t = best.mid
       l.al.t = best.sx < 0 ? 1 : best.sx > 0 ? 0 : 0.5
       l.dir = best.sx || 0
       l.side = best.k
+      l.peek = best.peek
+      l.box = best.box
+      l.leads = !!best.lead
     })
     labels.forEach((l) => {
-      l.a.t = seen(l) ? 1 : 0
+      l.a.t = shows(l)
       if (!seen(l)) l.side = undefined
       if (l.a.v < 0.02) [l.x, l.y, l.al].forEach(snap)
     })
@@ -314,7 +323,17 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
       const a = l.a.v
       const shown = a > 0.02
       l.g.style.display = shown ? '' : 'none'
+      l.lead.style.display = shown && l.leads ? '' : 'none'
       if (!shown) return
+      if (l.leads) {
+        const from: [number, number, number] = l.country ? [...flagAt(l.c), mix(l.c.r, l.c.ro * big, l.c.o.v)] : anchorOf(l)
+        const box: Box = [l.x.v, l.y.v - l.h / 2, l.x.v + l.w, l.y.v + l.h / 2]
+        const [x1, y1] = leadFrom(from, box)
+        const x2 = Math.min(Math.max(from[0], box[0]), box[2])
+        const y2 = Math.min(Math.max(from[1], box[1]), box[3])
+        Object.entries({ x1, y1, x2, y2 }).forEach(([k, v]) => l.lead.setAttribute(k, String(n1(v))))
+        l.lead.setAttribute('opacity', a.toFixed(2))
+      }
       l.g.setAttribute('transform', `translate(${n1(l.x.v - (1 - a) * l.dir * 10)} ${n1(l.y.v)})`)
       l.g.setAttribute('opacity', a.toFixed(2))
       if (!l.stop) l.lines.forEach((t, k) => t.setAttribute('x', String(n1((l.w - l.ws[k]) * l.al.v))))
@@ -360,6 +379,17 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
   }
   const sync = () => { if (type()) apply() }
 
+  // A label with no room of its own comes out while its flag is under the pointer or has focus.
+  function peek(key: string | null) {
+    if (key === peeking) return
+    peeking = key
+    labels.forEach((l) => { l.a.t = shows(l) })
+    if (calm) { labels.forEach((l) => snap(l.a)); draw() } else kick()
+  }
+  const keyOf = (e: Event) => (e.target as Element).closest?.('[data-key]')?.getAttribute('data-key') ?? null
+  const onOver = (e: Event) => peek(keyOf(e))
+  const onLeave = () => peek(null)
+
   const shut = (c: Country) => { open.delete(c.key); c.places.forEach((p) => deep.delete(p.id)) }
   function toggle(t: string) {
     const c = C.find((x) => x.key === t)
@@ -387,6 +417,10 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
     svg.addEventListener('click', onClick)
     svg.addEventListener('keydown', onKey)
   }
+  svg.addEventListener('pointerover', onOver)
+  svg.addEventListener('pointerleave', onLeave)
+  svg.addEventListener('focusin', onOver)
+  svg.addEventListener('focusout', onLeave)
   draw()
   sync()
   const seenSize = new ResizeObserver(sync)
@@ -398,6 +432,10 @@ export function liveRoute(svg: SVGSVGElement, view: RouteView, { interactive, he
     seenSize.disconnect()
     svg.removeEventListener('click', onClick)
     svg.removeEventListener('keydown', onKey)
+    svg.removeEventListener('pointerover', onOver)
+    svg.removeEventListener('pointerleave', onLeave)
+    svg.removeEventListener('focusin', onOver)
+    svg.removeEventListener('focusout', onLeave)
     dotsG.replaceChildren()
     labelsG.replaceChildren()
   }
