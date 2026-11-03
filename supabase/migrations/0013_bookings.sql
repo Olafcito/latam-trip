@@ -8,8 +8,8 @@ create table public.bookings (
   status text not null default 'booked' check (status in ('booked', 'cancelled')),
   from_code text,
   to_code text,
-  depart text,
-  arrive text,
+  depart text check (depart ~ '^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$'),
+  arrive text check (arrive ~ '^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$'),
   place_id text,
   check_in date,
   check_out date,
@@ -18,8 +18,8 @@ create table public.bookings (
   reference text,
   seller text,
   url text,
-  price_dkk numeric,
-  price numeric,
+  price_dkk numeric check (price_dkk >= 0),
+  price numeric check (price >= 0),
   currency text,
   refundable text check (refundable in ('yes', 'no', 'partly')),
   changeable text check (changeable in ('yes', 'no', 'fee')),
@@ -27,15 +27,17 @@ create table public.bookings (
   cancel_until date,
   cabin_bag text,
   checked_bag text,
-  segments jsonb,
-  travellers int not null default 1,
+  segments jsonb check (segments is null or jsonb_typeof(segments) = 'array'),
+  travellers int not null default 1 check (travellers >= 1),
   trip_id text,
   ticket text,
   source text check (source in ('picked', 'manual', 'claude')),
   notes text,
   attachments jsonb not null default '[]' check (jsonb_typeof(attachments) = 'array'),
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  -- a stay leaves after it arrives
+  check (check_out > check_in)
 );
 
 -- updated_at follows every update, whoever writes the row.
