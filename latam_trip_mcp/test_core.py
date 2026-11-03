@@ -1,7 +1,7 @@
 """Tests for the latam-trip connector. Run from the repo root:
 python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"
 Every test works in its own temporary root with the file store, so no data is touched and nothing goes online."""
-import ast, asyncio, base64, json, os, re, shutil, sys, tempfile, unittest
+import ast, asyncio, base64, copy, json, os, re, shutil, sys, tempfile, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, ".."))
@@ -408,6 +408,19 @@ class BookedLegTest(BookingBase):
         self.assertEqual(str(e.exception), "Leg 4 is booked on 2026-12-20. Change the booking first.")
         self.assertEqual(self.store.trip_versions()["t1"], [1])
 
+    def test_update_trip_that_drops_a_booked_leg_or_changes_an_end_is_refused(self):
+        self.book()
+        P = self.trip()["places"]
+        dropped = P[:4] + [{"node": "JACO", "hop": hop("TAM", "JACO", date="2026-12-25")}]
+        moved = copy.deepcopy(P)
+        moved[4] = {"node": "MONT", "hop": hop("TAM", "MONT", date="2026-12-20")}
+        moved[5]["hop"]["from"] = "MONT"
+        for places in (dropped, moved):
+            with self.assertRaises(tripdb.Refused) as e:
+                self.core.update("trip", "t1", {"places": places})
+            self.assertEqual(str(e.exception), "Leg 4 is booked on 2026-12-20. Change the booking first.")
+        self.assertEqual(self.store.trip_versions()["t1"], [1])
+
     def test_update_trip_that_leaves_booked_legs_alone_works(self):
         self.book()
         before = self.days()
@@ -426,6 +439,62 @@ class BookedLegTest(BookingBase):
         self.assertEqual(self.days()[4], "2026-12-22")
         self.assertNotIn("held", self.core.shift_leg("t1", 2, 1))
         self.assertEqual(out["version"], 2)
+
+
+def twin_trip():
+    """LIR to TAM twice, on 12 and 20 December, with TAM to LIR between them."""
+    return {**seed_trip(), "places": [
+        {"node": "SJO", "hop": None},
+        {"node": "LIR", "hop": hop("SJO", "LIR", date="2026-12-05")},
+        {"node": "TAM", "hop": hop("LIR", "TAM", date="2026-12-12")},
+        {"node": "LIR", "hop": hop("TAM", "LIR", date="2026-12-15")},
+        {"node": "TAM", "hop": hop("LIR", "TAM", date="2026-12-20")},
+        {"node": "JACO", "hop": hop("TAM", "JACO", date="2026-12-25")},
+    ]}
+
+
+class TwinLegTest(BookingBase):
+    """A trip with the same two ends twice, where only the 20 December leg is booked."""
+
+    def setUp(self):
+        super().setUp()
+        with open(self.paths.src("trips.jsonl"), "w", encoding="utf-8") as fh:
+            fh.write(json.dumps(twin_trip()) + "\n")
+        self.store = tripdb_store.FileStore(self.paths)
+        self.store.kind, self.store.rest = "supabase", self.rest
+        self.core = mcp_core.Core(self.store, now=lambda: NOW)
+        self.book(from_code="LIR", to_code="TAM")
+
+    def refused(self, patch):
+        with self.assertRaises(tripdb.Refused) as e:
+            self.core.update("trip", "t1", patch)
+        self.assertEqual(str(e.exception), "Leg 4 is booked on 2026-12-20. Change the booking first.")
+        self.assertEqual(self.store.trip_versions()["t1"], [1])
+
+    def test_an_update_of_why_alone_passes(self):
+        self.assertEqual(self.core.update("trip", "t1", {"why": "TEST why"})["version"], 2)
+
+    def test_moving_the_unbooked_twin_passes(self):
+        P = self.trip()["places"]
+        P[2]["hop"]["date"] = "2026-12-13"
+        self.assertEqual(self.core.update("trip", "t1", {"places": P})["version"], 2)
+        self.assertEqual(self.days()[2], "2026-12-13")
+        self.assertEqual(self.days()[4], "2026-12-20")
+
+    def test_moving_the_booked_leg_is_refused(self):
+        P = self.trip()["places"]
+        P[4]["hop"]["date"] = "2026-12-22"
+        self.refused({"places": P})
+
+    def test_removing_the_booked_leg_is_refused(self):
+        P = self.trip()["places"]
+        self.refused({"places": P[:3] + [{"node": "JACO", "hop": hop("TAM", "JACO", date="2026-12-25")}]})
+
+    def test_changing_an_end_of_the_booked_leg_is_refused(self):
+        P = self.trip()["places"]
+        P[4] = {"node": "NOSA", "hop": hop("LIR", "NOSA", date="2026-12-20")}
+        P[5]["hop"]["from"] = "NOSA"
+        self.refused({"places": P})
 
 
 class StorageSignTest(unittest.TestCase):

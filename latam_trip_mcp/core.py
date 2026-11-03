@@ -50,7 +50,8 @@ TYPES = {
                       "price sits on the first row and the others carry 0. Call list_booking with from, to and day before adding, "
                       "so nothing is bought twice. list_booking also takes place, and leaves out cancelled bookings unless where "
                       "has status. delete_booking sets the status to cancelled and keeps the row. depart and arrive are local "
-                      "clock times. A booked leg holds its day, set_leg_date, shift_leg and update_trip never move it."),
+                      "clock times. A booked leg holds its day, set_leg_date, shift_leg and update_trip never move it, "
+                      "and update_trip never drops it or changes its ends."),
 }
 
 # The private bucket for booking files and the types it takes, as supabase/migrations/0013_bookings.sql sets them.
@@ -836,7 +837,8 @@ class Core:
         return {k: day for k, day in self.leg_days(trip).items() if (P[k - 1]["node"], P[k]["node"], day) in ends}
 
     def check_booked_days(self, old, new):
-        """Refuse a new version of a trip that puts a booked leg on another day. The leg is found by its two ends."""
+        """Refuse a new version of a trip with no leg on a booked leg's two ends and day. Moving or dropping a booked
+        leg, or changing one of its ends, is refused. Another leg with the same two ends can still move."""
         booked = self.booked_legs(old)
         if not booked:
             return
@@ -847,7 +849,7 @@ class Core:
         days = self.leg_days(new)
         for k, day in sorted(booked.items()):
             ends = (P[k - 1]["node"], P[k]["node"])
-            if any((Q[m - 1]["node"], Q[m]["node"]) == ends and d != day for m, d in days.items()):
+            if day not in {d for m, d in days.items() if (Q[m - 1]["node"], Q[m]["node"]) == ends}:
                 raise self.booked_refusal(k, day)
 
     @staticmethod

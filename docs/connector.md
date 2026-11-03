@@ -70,7 +70,7 @@ Two more tools change the dates of a trip:
 - `set_leg_date` puts one leg on a day. No other leg moves.
 - `shift_leg` moves one leg and every later leg by a number of days, up to the first booked leg.
 
-A booked leg holds its day. `set_leg_date`, `shift_leg` and `update_trip` refuse to move it, and `shift_leg` leaves it and every leg after it where they are. Change the booking first.
+A booked leg holds its day. `set_leg_date`, `shift_leg` and `update_trip` refuse to move it, and `update_trip` also refuses to drop it or change its ends. `shift_leg` leaves it and every leg after it where they are. Change or cancel the booking first.
 
 Two tools attach files to a booking. They go in the private `bookings` bucket, and only PDF and photo types are taken.
 
