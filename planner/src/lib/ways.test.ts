@@ -195,4 +195,14 @@ describe('changing the ends of a trip', () => {
     const j2 = withEnds(j, inout, map, wayInBOG, wayHomeSAL)
     expect(j2.places.slice(2, 4)).toEqual(j.places.slice(1, 3))
   })
+  it('a new home city drops the nights planned at the old last stop, the same home city keeps them', () => {
+    const planned = { ...j, lastNights: 3 }
+    expect(withEnds(planned, inout, map, wayInCTG, wayHomeSAL).lastNights).toBeUndefined()
+    expect(withEnds(planned, inout, map, wayInBOG, wayHomeGUA).lastNights).toBe(3)
+  })
+  it('the old first stop loses why it was there once a new arrival city comes before it', () => {
+    const why = { ...j, places: [{ ...j.places[0], why: 'the way in lands here' }, ...j.places.slice(1)] }
+    expect(withEnds(why, inout, map, wayInBOG, wayHomeGUA).places[1].why).toBeUndefined()
+    expect(withEnds(why, inout, map, wayInCTG1202, wayHomeGUA).places[0].why).toBe('the way in lands here')
+  })
 })

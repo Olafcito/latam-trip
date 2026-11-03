@@ -126,7 +126,8 @@ export function WaySheet({ dir, way, other, data, tripId, onPick, onChangeEnds, 
   /** the trip, so a flight picked on Momondo finds its way back */
   tripId?: string
   onPick: (c: WayChoice) => void
-  onChangeEnds: () => void
+  /** left out while an older version is open, and the button goes with it */
+  onChangeEnds?: () => void
   close: () => void
 }) {
   const { inout, map } = data
@@ -186,7 +187,7 @@ export function WaySheet({ dir, way, other, data, tripId, onPick, onChangeEnds, 
       </div>
       <footer className="fl-foot">
         <FlightLinks links={links} />
-        <button type="button" className="btn small" onClick={() => { close(); onChangeEnds() }}>Change start and end</button>
+        {onChangeEnds && <button type="button" className="btn small" onClick={() => { close(); onChangeEnds() }}>Change start and end</button>}
       </footer>
     </div>
   )

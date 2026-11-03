@@ -66,6 +66,14 @@ describe('withTripWays and rowToJourney', () => {
     expect([io.ways['a:in'].paired_with, io.ways['a:home'].paired_with]).toEqual([null, null])
   })
 
+  it('a trip on a ticket way and a one way names no partner, not even the built one its row way still carries', () => {
+    const io = withTripWays(inout, [row('a', {
+      way_in: { ...way('CPH', 'GUA'), type: 'ticket', paired_with: 'H0042' },
+      way_home: { ...way('BOG', 'CPH'), type: 'oneways', paired_with: 'I0042' },
+    })])
+    expect([io.ways['a:in'].paired_with, io.ways['a:home'].paired_with]).toEqual([null, null])
+  })
+
   it('knows the ids of the own ways of a trip', () => {
     expect(['a:in', 'seed-1-gua-bog:home', 'I0001', 'TQ:abc'].map(isTripWayId)).toEqual([true, true, false, false])
   })

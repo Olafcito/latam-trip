@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ownKey } from '@map/data/ownKey'
 import { CURRENT_KEY, useStore } from './store'
 import type { AppData, CrawledFlight, InOut, MapEdge, Way } from './data/types'
@@ -256,6 +256,57 @@ describe('changing the ways and the ends of a trip', () => {
     expect(s().pickFor).toBeNull()
   })
 
+  it('a pick in change mode changes the trip, a pick without it starts a new trip', () => {
+    const real = s().changeEnds
+    const changeEnds = vi.fn(real)
+    useStore.setState({ changeEnds })
+    try {
+      const count = s().saved.length
+      s().changeEndsOf('t1')
+      s().pickWays(bogIn, oneHome, null)
+      expect(changeEnds).toHaveBeenCalledWith(bogIn, oneHome)
+      expect([open().id, open().wayIn, s().saved.length, s().view]).toEqual(['t1', 'I_one_BOG', count, 'trip'])
+      s().go('trips', 'pick')
+      s().pickWays(oneIn, oneHome, null)
+      expect(changeEnds).toHaveBeenCalledTimes(1)
+      expect([open().id === 't1', s().screen, s().saved.length]).toEqual([false, 'map', count])
+    } finally {
+      useStore.setState({ changeEnds: real })
+    }
+  })
+
+  it('changing the ends of a trip that is no longer the open one opens it, as the list does', () => {
+    const saved = s().saved
+    useStore.setState({ saved: [...saved, { ...rowToJourney(row), id: 't2', name: 'Other' }] })
+    try {
+      s().changeEndsOf('t2')
+      useStore.setState({ viewing: { id: 't1', version: 1, latest: 2, row }, notice: 'An old notice' })
+      s().changeEnds(bogIn, oneHome)
+      expect([open().id, s().viewing, s().notice, s().pickFor, s().screen, s().view]).toEqual(['t2', null, null, null, 'trips', 'trip'])
+      expect(open().places.map((p) => p.node)).toEqual(['BOG', 'CTG', 'SMR', 'GUA'])
+    } finally {
+      useStore.setState({ saved })
+    }
+  })
+
+  it('change mode stays while you look at the map and come back', () => {
+    s().changeEndsOf('t1')
+    s().go('map')
+    s().go('trips')
+    expect([s().view, s().pickFor]).toEqual(['pick', 't1'])
+    s().showOnMap()
+    s().openMapCard({ kind: 'gym', id: 'g1' })
+    s().go('trips')
+    expect([s().view, s().pickFor]).toEqual(['pick', 't1'])
+  })
+
+  it('a new trip picked after change mode is a new trip', () => {
+    s().changeEndsOf('t1')
+    s().go('map')
+    s().go('trips', 'pick')
+    expect([s().view, s().pickFor]).toEqual(['pick', null])
+  })
+
   it('a pinned leg before the new arrival shows a clash, nothing is blocked', () => {
     s().changeEnds(lateIn, oneHome)
     const j = open()
@@ -263,5 +314,60 @@ describe('changing the ways and the ends of a trip', () => {
     const sched = schedule(j, inout.ways[j.wayIn], inout.ways[j.wayHome], 'GUA', (n) => n)
     const clash = sched.warnings.find((w) => w.leg === 1)
     expect(clash?.text).toBe('The leg on from CTG leaves 6 Dec, before you get there 8 Dec 18:00')
+  })
+})
+
+describe('the home airport', () => {
+  const FILTERS = 'latam-planner.filters'
+  let kept: Map<string, string>
+  let was: PropertyDescriptor | undefined
+  beforeEach(() => {
+    kept = new Map()
+    was = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+    Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: { getItem: (k: string) => kept.get(k) ?? null, setItem: (k: string, v: string) => kept.set(k, v), removeItem: (k: string) => kept.delete(k) } })
+    vi.resetModules()
+    vi.doMock('./lib/homes', () => ({ HOMES: [{ code: 'CPH', city: 'Copenhagen', country: 'DK' }, { code: 'BLL', city: 'Billund', country: 'DK' }] }))
+  })
+  const restore = () => {
+    vi.doUnmock('./lib/homes')
+    vi.resetModules()
+    if (was) Object.defineProperty(globalThis, 'localStorage', was)
+    else delete (globalThis as { localStorage?: unknown }).localStorage
+  }
+  const fresh = async () => (await import('./store')).useStore
+
+  it('is Copenhagen at first', async () => {
+    try {
+      expect((await fresh()).getState().home).toBe('CPH')
+    } finally {
+      restore()
+    }
+  })
+
+  it('is kept under the filters key, and a reload of it keeps the home and the filters', async () => {
+    try {
+      const first = await fresh()
+      first.getState().setFilters({ noUS: true })
+      first.getState().setHome('BLL')
+      expect(JSON.parse(kept.get(ownKey(FILTERS))!)).toMatchObject({ home: 'BLL', noUS: true })
+      first.getState().resetFilters()
+      expect(JSON.parse(kept.get(ownKey(FILTERS))!)).toMatchObject({ home: 'BLL', noUS: false })
+      vi.resetModules()
+      const again = (await fresh()).getState()
+      expect(again.home).toBe('BLL')
+      expect(again.filters).not.toHaveProperty('home')
+    } finally {
+      restore()
+    }
+  })
+
+  it('a stored home the list does not have is Copenhagen', async () => {
+    try {
+      kept.set(ownKey(FILTERS), JSON.stringify({ home: 'XXX', noUS: true }))
+      const s = (await fresh()).getState()
+      expect([s.home, s.filters.noUS]).toEqual(['CPH', true])
+    } finally {
+      restore()
+    }
   })
 })

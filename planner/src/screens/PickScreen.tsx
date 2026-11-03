@@ -1,12 +1,13 @@
-import { Fragment, useMemo, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent } from 'react'
 import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, Option, Way } from '../data/types'
-import { useStore, type Pair } from '../store'
+import { changing, useStore, type Pair } from '../store'
 import { clock, day, dec1, hours, kr, nextDayMark, observed, timeUncertain, TYPE_LABEL } from '../lib/format'
 import { mixWays, oneWayWays, passesFilters, type Filters } from '../lib/options'
 import { topTiers } from '../lib/tiers'
 import { WayCard } from '../components/WayCard'
 import { MiniMap } from '../components/MiniMap'
+import { HomePill } from '../components/HomePill'
 import { Bag, Caret, Moon, Pin } from '../components/icons'
 
 // Picking the way in and way home: the matrix of airport pairs first, then the options of the
@@ -57,30 +58,56 @@ const onActivate = (fn: () => void) => (e: KeyboardEvent) => {
 /** The filters without the airport pair: the matrix picks the pair. */
 const noPair = (f: Filters): Filters => ({ ...f, arrival: '', departure: '' })
 
-function useRows(inout: InOut): Row[] {
+/** The options that leave from home and come back to it, before the filters. */
+function useHomeRows(inout: InOut): Row[] {
+  const home = useStore((s) => s.home)
+  return useMemo(
+    () =>
+      inout.options
+        .map((o) => ({ o, wi: inout.ways[o.way_in], wh: inout.ways[o.way_home] }))
+        .filter((r) => r.wi && r.wh && r.wi.from === home && r.wh.to === home),
+    [inout, home],
+  )
+}
+
+function useRows(all: Row[]): Row[] {
   const filters = useStore((s) => s.filters)
   return useMemo(() => {
     const f = noPair(filters)
-    return inout.options
-      .map((o) => ({ o, wi: inout.ways[o.way_in], wh: inout.ways[o.way_home] }))
-      .filter((r) => r.wi && r.wh && passesFilters(r.o, r.wi, r.wh, f))
-  }, [inout, filters])
+    return all.filter((r) => passesFilters(r.o, r.wi, r.wh, f))
+  }, [all, filters])
 }
 
 export function PickScreen({ data }: { data: AppData }) {
   const mode = useStore((s) => s.pickMode)
   const setMode = useStore((s) => s.setPickMode)
   const go = useStore((s) => s.go)
+  const home = useStore((s) => s.home)
+  const setHome = useStore((s) => s.setHome)
+  const pickFor = useStore((s) => s.pickFor)
+  const trip = useStore(changing)
+  // the picker opens at its top when a trip's sheet sends you here
+  useEffect(() => {
+    if (pickFor) window.scrollTo({ top: 0 })
+  }, [pickFor])
   return (
     <div className="pick">
       <div className="pick-head">
-        <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
+        {trip ? (
+          <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'trip')}><Caret dir="l" />Back to the trip</button>
+        ) : (
+          <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
+        )}
         <div className="pick-title">
-          <h2 className="h2">New trip: where in, where home</h2>
+          <h2 className="h2">{trip ? `Change start and end of ${trip.name}` : 'New trip: where in, where home'}</h2>
           <div className="seg" role="group" aria-label="Mode">
             <button type="button" className={mode === 'options' ? 'on' : ''} aria-pressed={mode === 'options'} onClick={() => setMode('options')}>Rated pairs</button>
             <button type="button" className={mode === 'mix' ? 'on' : ''} aria-pressed={mode === 'mix'} onClick={() => setMode('mix')}>Mix one-ways</button>
           </div>
+        </div>
+        <div className="pick-sub">
+          <span className="lbl">Leaves from and comes home to</span>
+          <HomePill value={home} onChange={setHome} />
         </div>
       </div>
       {mode === 'options' ? <OptionsView data={data} /> : <MixView data={data} />}
@@ -135,7 +162,7 @@ function FiltersBar({ sort, onSort }: { sort: SortKey; onSort: (k: SortKey) => v
 
 /** Rows fly in to, columns fly home from. Each cell is the best option of its pair, and only the
  *  pairs near the top by the active sort light up. A pair with no option leaves a gap. */
-function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]; pair: Pair | null; onPick: (p: Pair | null) => void; sort: SortKey }) {
+function Matrix({ inout, all, rows, pair, onPick, sort }: { inout: InOut; all: Row[]; rows: Row[]; pair: Pair | null; onPick: (p: Pair | null) => void; sort: SortKey }) {
   const ap = inout.airports
   const byPrice = sort === 'price'
   const [hover, setHover] = useState<Pair | null>(null)
@@ -159,13 +186,13 @@ function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]
         .filter((g) => byRegion.has(g))
         .map((g) => ({ g, codes: byRegion.get(g)!.sort((a, b) => (ap[a]?.name ?? a).localeCompare(ap[b]?.name ?? b)) }))
     }
-    const entries = group([...new Set(inout.options.map((o) => o.entry))])
-    const exits = group([...new Set(inout.options.map((o) => o.exit))])
+    const entries = group([...new Set(all.map((r) => r.o.entry))])
+    const exits = group([...new Set(all.map((r) => r.o.exit))])
     const keys = [...best.keys()]
     const tiers = topTiers(keys.map((k) => (byPrice ? best.get(k)!.o.price_dkk : best.get(k)!.o.rating.total)), byPrice ? 'asc' : 'desc')
     const tier = new Map(keys.map((k, i) => [k, tiers[i]]))
     return { entries, exits, best, tier }
-  }, [inout, rows, ap, byPrice])
+  }, [all, rows, ap, byPrice])
 
   const hl = hover ?? pair
   const allEntries = entries.flatMap((g) => g.codes)
@@ -308,7 +335,9 @@ function Matrix({ inout, rows, pair, onPick, sort }: { inout: InOut; rows: Row[]
 
 function OptionsView({ data }: { data: AppData }) {
   const { inout } = data
-  const rows = useRows(inout)
+  const all = useHomeRows(inout)
+  const rows = useRows(all)
+  const home = useStore((s) => s.home)
   const pair = useStore((s) => s.pair)
   const setPair = useStore((s) => s.setPair)
   const expanded = useStore((s) => s.expanded)
@@ -342,7 +371,7 @@ function OptionsView({ data }: { data: AppData }) {
   return (
     <>
       <FiltersBar sort={sort} onSort={setSort} />
-      <Matrix inout={inout} rows={rows} pair={pair} onPick={setPair} sort={sort} />
+      <Matrix inout={inout} all={all} rows={rows} pair={pair} onPick={setPair} sort={sort} />
       <section className="opt-sec" id="pick-list" aria-labelledby="opt-title">
         <div className="sec-head">
           {pair ? (
@@ -355,7 +384,7 @@ function OptionsView({ data }: { data: AppData }) {
           ) : (
             <>
               <h3 className="sec-title" id="opt-title">All pairs</h3>
-              <span className="count">{list.length} of {inout.options.length} options</span>
+              <span className="count">{list.length} of {all.length} options</span>
             </>
           )}
         </div>
@@ -369,10 +398,10 @@ function OptionsView({ data }: { data: AppData }) {
                 {th('price', 'Flights', true)}
                 {th(null, 'Bags', true)}
                 {th('rating', 'Rating')}
-                {th('leave', 'Leaves CPH')}
+                {th('leave', `Leaves ${home}`)}
                 {th(null, 'Lands')}
                 {th(null, 'Departs')}
-                {th('home', 'Home in CPH')}
+                {th('home', `Home in ${home}`)}
                 {th(null, 'Hub nights', true)}
               </tr>
             </thead>
@@ -411,10 +440,16 @@ function OptionsView({ data }: { data: AppData }) {
   )
 }
 
+/** The words of the build button: a new trip goes onto the map, a trip being changed takes the ways. */
+function useBuildLabel(): string {
+  return useStore((s) => (changing(s) ? 'Use these ways for the trip' : 'Build this trip on the map'))
+}
+
 function Expanded({ data, option, wi, wh }: { data: AppData; option: Option; wi: Way; wh: Way }) {
-  const startOnMap = useStore((s) => s.startOnMap)
+  const pickWays = useStore((s) => s.pickWays)
+  const label = useBuildLabel()
   const tickets = [...new Set([...wi.tickets, ...wh.tickets])].map((t) => data.inout.tickets[t]).filter(Boolean)
-  const build = () => startOnMap(wi, wh, option.id)
+  const build = () => pickWays(wi, wh, option.id)
   return (
     <div className="expand-in">
       <div className="ways">
@@ -431,7 +466,7 @@ function Expanded({ data, option, wi, wh }: { data: AppData; option: Option; wi:
           <span className="sep" />
           <span className="k">Rating: price, in, home</span><span className="v">{dec1(option.rating.price)} · {option.rating.way_in} · {option.rating.way_home}</span>
         </div>
-        <button type="button" className="btn primary wide" onClick={build}><Pin />Build this trip on the map</button>
+        <button type="button" className="btn primary wide" onClick={build}><Pin />{label}</button>
         <p className="prov small faint">
           {tickets.map((t) => `${t.legs.join(' + ')} ${kr(t.price_dkk)}, ${t.source} ${observed(t.observed_at)}`).join(' · ')}
         </p>
@@ -445,9 +480,11 @@ function MixView({ data }: { data: AppData }) {
   const mixIn = useStore((s) => s.mixIn)
   const mixHome = useStore((s) => s.mixHome)
   const setMix = useStore((s) => s.setMix)
-  const startOnMap = useStore((s) => s.startOnMap)
-  const ins = useMemo(() => oneWayWays(inout, 'in'), [inout])
-  const homes = useMemo(() => oneWayWays(inout, 'home'), [inout])
+  const pickWays = useStore((s) => s.pickWays)
+  const home = useStore((s) => s.home)
+  const label = useBuildLabel()
+  const ins = useMemo(() => oneWayWays(inout, 'in').filter((w) => w.from === home), [inout, home])
+  const homes = useMemo(() => oneWayWays(inout, 'home').filter((w) => w.to === home), [inout, home])
   const wi = mixIn ? inout.ways[mixIn] : null
   const wh = mixHome ? inout.ways[mixHome] : null
   const mixed = wi && wh ? mixWays(inout, wi, wh) : null
@@ -461,7 +498,7 @@ function MixView({ data }: { data: AppData }) {
         <span className="sec-note">Separate one-way ways, best first. One ticket and Madrid ways always come with their pair.</span>
       </div>
       <div className="waylist">
-        <div className="wayrow head" aria-hidden="true"><span>{dir === 'in' ? 'Lands in' : 'Leaves from'}</span><span>{dir === 'in' ? 'Leaves CPH' : 'Departs'}</span><span>Price</span><span>Flying</span><span>Score</span></div>
+        <div className="wayrow head" aria-hidden="true"><span>{dir === 'in' ? 'Lands in' : 'Leaves from'}</span><span>{dir === 'in' ? `Leaves ${home}` : 'Departs'}</span><span>Price</span><span>Flying</span><span>Score</span></div>
         {ways.map((w) => (
           <button type="button" key={w.id} className={'wayrow' + (sel === w.id ? ' on' : '')} onClick={() => setMix(dir, sel === w.id ? null : w.id)} aria-pressed={sel === w.id}>
             <span className="wr-name"><b>{ap(dir === 'in' ? w.to : w.from)}</b> <span className="faint small">via {w.airports.slice(1, -1).join(', ') || 'nonstop'}{w.hub_nights ? ` · ${w.hub_nights} hub night${w.hub_nights > 1 ? 's' : ''}` : ''}{w.us_transit ? ' · US' : ''}</span></span>
@@ -491,14 +528,14 @@ function MixView({ data }: { data: AppData }) {
             <div className="mb-facts small">Cabin bags <Num v={mixed.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /> · checked <Num v={mixed.extras.checked_bag_fees_dkk} what="Checked-bag fee" /> · {mixed.extras.hub_nights} hub nights</div>
             <Rate v={mixed.rating.total} />
             <span className="spacer" />
-            <button type="button" className="btn primary" onClick={() => startOnMap(wi, wh, null)}><Pin />Build this trip on the map</button>
+            <button type="button" className="btn primary" onClick={() => pickWays(wi, wh, null)}><Pin />{label}</button>
           </div>
           <div className="expand-in">
             <div className="ways">
               <WayCard way={wi} inout={inout} dir="in" />
               <WayCard way={wh} inout={inout} dir="home" />
             </div>
-            <div className="side"><MiniMap data={inout} ways={[wi, wh]} onOpen={() => startOnMap(wi, wh, null)} /></div>
+            <div className="side"><MiniMap data={inout} ways={[wi, wh]} onOpen={() => pickWays(wi, wh, null)} /></div>
           </div>
         </section>
       ) : (

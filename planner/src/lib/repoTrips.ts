@@ -87,16 +87,16 @@ function asWay(w: TripRow['way_in'], id: string, direction: 'in' | 'home'): Way 
 /**
  * inout with every trip's way in and way home added, and any ticket of theirs the build lacks.
  * When neither way is a one way, each is paired with the other, so the trip's own pair can be mixed.
+ * Otherwise neither names a partner, not even the built one a row way still carries.
  */
 export function withTripWays(inout: InOut, rows: readonly TripRow[]): InOut {
   const ways = { ...inout.ways }
   const tickets = { ...inout.tickets }
   for (const r of rows) {
     const own = { in: asWay(r.way_in, tripWayId(r.id, 'in'), 'in'), home: asWay(r.way_home, tripWayId(r.id, 'home'), 'home') }
-    if (own.in.type !== 'oneways' && own.home.type !== 'oneways') {
-      own.in.paired_with = own.home.id
-      own.home.paired_with = own.in.id
-    }
+    const paired = own.in.type !== 'oneways' && own.home.type !== 'oneways'
+    own.in.paired_with = paired ? own.home.id : null
+    own.home.paired_with = paired ? own.in.id : null
     for (const dir of ['in', 'home'] as const) {
       const w = own[dir]
       ways[w.id] = w

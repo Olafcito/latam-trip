@@ -15,6 +15,7 @@ import { importBrowser } from './lib/importBrowser'
 import { outbox, type FlushReport } from './lib/outbox'
 import { journeyToRow } from './lib/tripRow'
 import { withEnds, type WayChoice } from './lib/ways'
+import { HOMES } from './lib/homes'
 
 const FILTERS_KEY = 'latam-planner.filters'
 /** the browser's own trips: every trip except a table trip it never changed */
@@ -46,6 +47,16 @@ function write(key: string, value: unknown) {
   }
 }
 
+/** The filters and the home airport, kept together under the filters key. A home the list does not have is Copenhagen. */
+function readFilters(): { filters: Filters; home: string } {
+  const { home, ...filters } = read<Partial<Filters> & { home?: unknown }>(FILTERS_KEY, {})
+  return { filters: { ...DEFAULT_FILTERS, ...filters }, home: HOMES.find((h) => h.code === home)?.code ?? 'CPH' }
+}
+
+function writeFilters(filters: Filters, home: string) {
+  write(FILTERS_KEY, { ...filters, home })
+}
+
 function forget(key: string) {
   try {
     localStorage.removeItem(ownKey(key))
@@ -74,6 +85,9 @@ interface State {
   filters: Filters
   setFilters: (f: Partial<Filters>) => void
   resetFilters: () => void
+  /** the airport every way in leaves from and every way home flies to, "CPH" */
+  home: string
+  setHome: (code: string) => void
 
   pickMode: 'options' | 'mix'
   setPickMode: (m: 'options' | 'mix') => void
@@ -130,8 +144,10 @@ interface State {
   pickFor: string | null
   /** open the picker to change the start and end of a trip */
   changeEndsOf: (tripId: string) => void
-  /** the trip being changed takes these ways, its new end cities come in as stops, and its trip view opens */
+  /** the trip being changed takes these ways, its new end cities come in as stops, and it opens as a click in the list opens it */
   changeEnds: (wayIn: Way, wayHome: Way) => void
+  /** a pick in the picker: the trip being changed takes the ways, or without one a new trip starts on them */
+  pickWays: (wayIn: Way, wayHome: Way, optionId: string | null) => void
 
   /** every trip in the list: the browser's own trips and the table trips it has no copy of */
   saved: Journey[]
@@ -199,21 +215,25 @@ export const useStore = create<State>((set, get) => ({
   },
   screen: 'trips',
   view: 'home',
-  // leaving the picker forgets the trip it was open for, so the next pick is a new trip
-  go: (screen, view) => set({
-    mapCardFrom: null, ...(view ? { screen, view } : { screen }),
-    ...(screen === 'trips' && (view ?? get().view) === 'pick' ? {} : { pickFor: null }),
-  }),
+  // a view of its own leaves the picker or opens it for a new trip, so it forgets the trip being changed.
+  // A tab press keeps it, so a look at the map and back is still the change of that trip
+  go: (screen, view) => set({ mapCardFrom: null, ...(view ? { screen, view, pickFor: null } : { screen }) }),
 
-  filters: { ...DEFAULT_FILTERS, ...read<Partial<Filters>>(FILTERS_KEY, {}) },
+  ...readFilters(),
   setFilters: (f) => {
     const filters = { ...get().filters, ...f }
-    write(FILTERS_KEY, filters)
+    writeFilters(filters, get().home)
     set({ filters })
   },
   resetFilters: () => {
-    write(FILTERS_KEY, DEFAULT_FILTERS)
+    writeFilters(DEFAULT_FILTERS, get().home)
     set({ filters: { ...DEFAULT_FILTERS } })
+  },
+  setHome: (home) => {
+    if (home === get().home) return
+    writeFilters(get().filters, home)
+    // a pair or a way picked from the old home does not fly from the new one
+    set({ home, pair: null, expanded: null, mixIn: null, mixHome: null })
   },
 
   pickMode: 'options',
@@ -357,17 +377,20 @@ export const useStore = create<State>((set, get) => ({
   },
   pickFor: null,
   changeEndsOf: (tripId) => {
-    set({ pickFor: tripId })
     get().go('trips', 'pick')
+    set({ pickFor: tripId })
   },
   changeEnds: (wayIn, wayHome) => {
-    const { journey: open, saved, pickFor, data } = get()
-    // the trip the picker was opened for, which is the open trip when it was opened from its trip view
-    const j = pickFor && open?.id !== pickFor ? (saved.find((s) => s.id === pickFor) ?? null) : open
-    if (!j || !data) return
-    get().setJourney(withEnds(j, data.inout, data.map, wayIn, wayHome))
-    set({ pickFor: null, mapOpen: true, cursor: null, idle: false })
-    get().go('trips', 'trip')
+    const s = get()
+    const j = changing(s) ?? (s.pickFor ? null : s.journey)
+    if (!j || !s.data) return
+    // an older version on screen, or a notice about the trip open before, does not stay with the changed trip
+    s.openTrip(withEnds(j, s.data.inout, s.data.map, wayIn, wayHome))
+  },
+  pickWays: (wayIn, wayHome, optionId) => {
+    const s = get()
+    if (changing(s)) s.changeEnds(wayIn, wayHome)
+    else s.startOnMap(wayIn, wayHome, optionId)
   },
 
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),
@@ -439,7 +462,7 @@ export const useStore = create<State>((set, get) => ({
       journey: rowToJourney(row),
       viewing: { id: row.id, version: row.version, latest, row },
       ...(d ? { data: { ...d, inout: withTripWays(d.inout, [row]) } } : {}),
-      mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null,
+      pickFor: null, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null,
     })
   },
   backToLatest: () => {
@@ -561,6 +584,15 @@ export const useStore = create<State>((set, get) => ({
     void touched.reduce((p, j) => p.then(() => saveRemote(j, get, set)), Promise.resolve())
   },
 }))
+
+/**
+ * The trip the picker changes the start and end of: the open trip, or the saved trip of that id when another trip
+ * opened since. null for a new trip, and when that trip is gone.
+ */
+export function changing(s: { pickFor: string | null; journey: Journey | null; saved: Journey[] }): Journey | null {
+  if (!s.pickFor) return null
+  return s.journey?.id === s.pickFor ? s.journey : (s.saved.find((j) => j.id === s.pickFor) ?? null)
+}
 
 /**
  * Save through Supabase. The trip shows as saved at once. A save that cannot reach the database goes to the

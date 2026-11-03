@@ -99,19 +99,26 @@ export function chooseWay(inout: InOut, picked: Way, current: { wayIn: Way; wayH
 /**
  * A trip on another way in and way home. A new arrival city comes in as the first stop, with a leg on to the
  * old first stop, and a new home city is added as the last stop. A city already at that end is not added again.
- * The option id is that of the option with these two ways, else null.
+ * The old first stop loses its why, which said the way in landed there. A new last stop takes the nights that
+ * were planned at the old one, so those are no longer kept. The option id is that of the option with these two ways, else null.
  */
 export function withEnds(j: Journey, inout: InOut, map: MapData, wayIn: Way, wayHome: Way): Journey {
   const places: Place[] = [...j.places]
   const arrival = nodeForAirport(inout, wayIn.to)
   if (!places.length) places.push({ node: arrival, hop: null })
   else if (places[0].node !== arrival) {
-    places[0] = { ...places[0], hop: hopBetween(map, arrival, places[0].node, null) }
+    const { why: _, ...first } = places[0]
+    places[0] = { ...first, hop: hopBetween(map, arrival, first.node, null) }
     places.unshift({ node: arrival, hop: null })
   }
   const exit = nodeForAirport(inout, wayHome.from)
   const last = places[places.length - 1]
-  if (last.node !== exit) places.push({ node: exit, hop: hopBetween(map, last.node, exit, null) })
+  const { lastNights, ...rest } = j
+  const newLast = last.node !== exit
+  if (newLast) places.push({ node: exit, hop: hopBetween(map, last.node, exit, null) })
   const option = inout.options.find((o) => o.way_in === wayIn.id && o.way_home === wayHome.id)
-  return { ...j, wayIn: wayIn.id, wayHome: wayHome.id, optionId: option?.id ?? null, places }
+  return {
+    ...rest, ...(newLast || lastNights === undefined ? {} : { lastNights }),
+    wayIn: wayIn.id, wayHome: wayHome.id, optionId: option?.id ?? null, places,
+  }
 }

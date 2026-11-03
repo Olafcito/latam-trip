@@ -259,6 +259,8 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const removeStop = useStore((s) => s.removeStop)
   const setWays = useStore((s) => s.setWays)
   const changeEndsOf = useStore((s) => s.changeEndsOf)
+  // an older version of the trip is open to look at, its ends are not changed from here
+  const viewingOld = useStore((s) => s.viewing?.id === journey.id)
   const setNotice = useStore((s) => s.setNotice)
   // the ways of each day for the way in and the way home, for their calendars
   const wayRows = useMemo(() => {
@@ -306,7 +308,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     )
   }
   const waySheet = (dir: 'in' | 'home', w: Way, other: Way) => (close: () => void) => (
-    <WaySheet dir={dir} way={w} other={other} data={data} tripId={journey.id} onPick={setWays} onChangeEnds={() => { changeEndsOf(journey.id); window.scrollTo({ top: 0 }) }} close={close} />
+    <WaySheet dir={dir} way={w} other={other} data={data} tripId={journey.id} onPick={setWays} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
   )
 
   const items: ReactNode[] = [
