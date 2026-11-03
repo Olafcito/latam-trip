@@ -100,9 +100,10 @@ class TasksTest(unittest.TestCase):
         rest = FakeRest([{"id": 40000, "type": "booking", "status": "open", "title": "b", "data": task}])
         self.assertIn("#40000	booking	open	b", out(tasks.cmd_list, rest))
         self.assertEqual(json.loads(out(tasks.cmd_show, rest, "40000"))["leg"], leg)
-        logged = []
+        logged, sent = [], []
 
         def log(root, args):
+            sent.append(args)
             with open(args[args.index("--task") + 1], encoding="utf-8") as fh:
                 logged.append(json.load(fh))
 
@@ -110,12 +111,16 @@ class TasksTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             f = os.path.join(d, "s.md")
             with open(f, "w", encoding="utf-8") as fh:
-                fh.write("# Booked ADZ to SMR" + chr(10))
-            out(tasks.cmd_done, rest, "40000", f, [], d)
+                fh.write("# Booked ADZ to SMR, ref TEST01, 1234 kr" + chr(10))
+            out(tasks.cmd_done, rest, "40000", f, ["TEST01.pdf"], d)
         self.assertEqual(rest.rows[0]["status"], "done")
         self.assertEqual(logged, [{"type": "booking", "leg": leg}])
-        self.assertNotIn("TEST01", json.dumps(logged))
-        self.assertNotIn("1234", json.dumps(logged))
+        args = sent[0]
+        self.assertEqual(args[args.index("--summary") + 1], "Booked")
+        self.assertEqual(args[args.index("--outputs") + 1], "")
+        for word in ("TEST01", "1234"):
+            self.assertNotIn(word, json.dumps(logged))
+            self.assertNotIn(word, json.dumps(args))
 
     def test_a_stay_prices_task_names_rooms_of_a_lodging(self):
         good = {"type": "stay_prices", "lodging_id": "L1", "room_ids": ["R1", "R2"], "check_in": "2026-12-10",

@@ -92,6 +92,9 @@ def cmd_done(rest, n, summary_file, outputs, root):
     rest.patch("tasks", {"id": f"eq.{int(n)}"}, {"status": "done", "result": body, "done_at": done_at})
     first = next((l.strip("# ").strip() for l in body.splitlines() if l.strip()), "")
     print(f"done #{n}")
+    if t and t.get("type") == "booking":
+        # the log is public and Claude writes the summary and the outputs at close time, so a booking logs neither
+        first, outputs = "Booked", []
     args = ["log-task", "--issue", str(int(n)), "--summary", first[:300], "--outputs", ",".join(outputs)]
     tmp = None
     if t:

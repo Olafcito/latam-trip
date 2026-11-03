@@ -1,8 +1,8 @@
 """The public paths stay clean of what is owner only. Run from the repo root:
 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_public_data.py"
 The repo and the web bucket are public. Booking references, prices paid, names and attachments live only in owner only
-tables, so no column of bookings, lodgings, lodging_rooms or lodging_prices, and no booking task text, may reach a file
-build_web_data writes. The rows here are made up, every value a marker that is looked for in the output."""
+tables, so no column of bookings, lodgings, lodging_rooms or lodging_prices, and no booking task text, summary or outputs,
+may reach a file build_web_data writes. The rows here are made up, every value a marker that is looked for in the output."""
 import json, os, re, sqlite3, subprocess, sys, tempfile, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -65,7 +65,7 @@ class PublicData(unittest.TestCase):
                 "reference": "LEAKTASKREF", "price_dkk": 987654, "from": "app"}
         with open(os.path.join(src, "task_log.jsonl"), "w", encoding="utf-8") as f:
             f.write(json.dumps({"issue": 7, "type": "booking", "task": task, "done_at": "2026-11-03T10:00+00:00",
-                                "summary": "Booked CTG to SMR", "outputs": []}) + "\n")
+                                "summary": "LEAKSUMMARY ref TEST01, 987654 kr", "outputs": ["LEAKOUTPUT"]}) + "\n")
         # and as if they had reached trip.db
         db = sqlite3.connect(os.path.join(built, "trip.db"))
         db.execute("CREATE TABLE quotes (quote_id, pattern_id, ok, price_dkk, out_hours, out_via, out_carriers, self_transfer,"
@@ -104,6 +104,7 @@ class PublicData(unittest.TestCase):
     def test_a_booking_task_keeps_only_its_type_and_leg(self):
         log = json.loads(self.files["task_log.json"])
         self.assertEqual([r["task"] for r in log], [{"type": "booking", "leg": self.leg}])
+        self.assertEqual([(r["summary"], r["outputs"]) for r in log], [("Booked", [])])
         for name, text in self.files.items():
             for word in ("TEST01", "987654", "Ana"):
                 self.assertNotIn(word, text, name)

@@ -268,9 +268,11 @@ class ContractTest(T.Base):
         with open(f, "w", encoding="utf-8") as fh:
             json.dump({"type": "booking", "leg": leg, "text": "ref TEST01 in Gmail, 1234 kr", "note": "TEST01",
                        "reference": "TEST01", "price_dkk": 1234, "from": "app"}, fh)
-        self.run_quiet(tripdb.cmd_log_task, 13, "booking", "Booked ADZ to SMR", [], f, "2026-10-30T10:00+00:00")
+        self.run_quiet(tripdb.cmd_log_task, 13, "booking", "Booked ADZ to SMR, ref TEST01, 1234 kr", ["TEST01.pdf"], f,
+                       "2026-10-30T10:00+00:00")
         row = [r for r in self.s.rows("task_log") if r["issue"] == 13][0]
         self.assertEqual(row["task"], {"type": "booking", "leg": leg})
+        self.assertEqual((row["summary"], row["outputs"]), ("Booked", []))
         self.assertNotIn("TEST01", json.dumps(row))
         self.assertNotIn("1234", json.dumps(row))
 

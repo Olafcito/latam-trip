@@ -155,12 +155,14 @@ def airport_flights(db):
 
 def public_task_log(rows):
     """The task log as the public web data holds it. A booking task keeps only its type and leg, never its text, which
-    can carry a reference, a price or names. tasks.py and tripdb log-task already drop it, this is the second guard."""
+    can carry a reference, a price or names. Its summary is the word Booked and its outputs are empty, since both are
+    free text written at close time. tasks.py and tripdb log-task already do this, this is the second guard."""
     out = []
     for r in rows:
         t = r.get("task")
         if r.get("type") == "booking" or (isinstance(t, dict) and t.get("type") == "booking"):
-            r = {**r, "task": {k: t[k] for k in ("type", "leg") if k in t} if isinstance(t, dict) else None}
+            r = {**r, "task": {k: t[k] for k in ("type", "leg") if k in t} if isinstance(t, dict) else None,
+                 "summary": "Booked", "outputs": []}
         out.append(r)
     return out
 
