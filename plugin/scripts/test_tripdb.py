@@ -429,6 +429,26 @@ class SaveTripTest(Base):
         self.assertNotIn("TEST01", dump)
         self.assertFalse(hasattr(tripdb, "export_trips"))
 
+    def test_trip_db_cuts_an_old_booking_row_of_the_task_log(self):
+        import sqlite3
+        leg = {"kind": "flight", "from": "ADZ", "to": "SMR", "day": "2026-12-08"}
+        # a booking row as it could be logged before log-task kept a booking short
+        old = {"issue": 9, "type": "booking", "done_at": "2026-11-01T10:00+00:00", "summary": "Booked ADZ to SMR, ref TEST01",
+               "outputs": ["TEST01.pdf"], "task": {"type": "booking", "leg": leg, "text": "ref TEST01, 1234 kr", "price_dkk": 1234}}
+        other = {"issue": 10, "type": "research", "done_at": "2026-11-01T11:00+00:00", "summary": "Found 3 hostels",
+                 "outputs": ["places.jsonl"], "task": {"type": "research", "question": "hostels"}}
+        self.write(self.paths.src("task_log.jsonl"), [old, other])
+        os.makedirs(self.paths.built, exist_ok=True)
+        tripdb.load_tables(self.paths)
+        con = sqlite3.connect(os.path.join(self.paths.built, "trip.db"))
+        got = con.execute("SELECT issue, summary, outputs, task FROM task_log ORDER BY issue").fetchall()
+        dump = "\n".join(con.iterdump())
+        con.close()
+        self.assertEqual([(i, s, json.loads(o), json.loads(t)) for i, s, o, t in got],
+                         [(9, "Booked", [], {"type": "booking", "leg": leg}), (10, "Found 3 hostels", ["places.jsonl"], other["task"])])
+        for word in ("TEST01", "1234"):
+            self.assertNotIn(word, dump)
+
     def test_delete_trip_removes_every_version_and_only_that_trip(self):
         self.save(trip(why="First idea"))
         self.save(trip(why="Second idea"))

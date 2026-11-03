@@ -584,19 +584,26 @@ def cmd_list_remove(paths, list_id, typ, item_id):
     return _lists_change(paths, change)
 
 
+def public_log_row(row):
+    """A task_log row as the public trip.db may hold it. A booking task's text can carry a reference, a price or names,
+    so only its type and leg are kept. Its summary and outputs are free text written at close time, so the summary is
+    the word Booked and the outputs are empty. Any other row is kept as it is."""
+    t = row.get("task")
+    if row.get("type") == "booking" or (isinstance(t, dict) and t.get("type") == "booking"):
+        return {**row, "task": {k: t[k] for k in ("type", "leg") if k in t} if isinstance(t, dict) else None,
+                "summary": "Booked", "outputs": []}
+    return row
+
+
 def cmd_log_task(paths, issue, typ, summary, outputs=(), task_file=None, done_at=None):
     task = None
     if task_file:
         with open(task_file, encoding="utf-8") as fh:
             task = json.load(fh)
-    # task_log goes into the public trip.db. A booking task's text can carry a reference, a price or names, so only
-    # its type and leg are kept. Its summary and outputs are free text written at close time, so the summary is the
-    # word Booked and the outputs are empty
-    if typ == "booking" or (isinstance(task, dict) and task.get("type") == "booking"):
-        task = {k: task[k] for k in ("type", "leg") if k in task} if isinstance(task, dict) else None
-        summary, outputs = "Booked", ()
-    row = {"issue": issue, "type": typ, "task": task, "done_at": done_at or dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"),
-           "summary": (summary or "")[:300], "outputs": list(outputs)}
+    # task_log goes into the public trip.db, so a booking is logged as public_log_row keeps it
+    row = public_log_row({"issue": issue, "type": typ, "task": task,
+                          "done_at": done_at or dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"),
+                          "summary": (summary or "")[:300], "outputs": list(outputs)})
     errs = row_errors("task_log", row)
     if errs:
         raise Refused("; ".join(errs))
@@ -843,6 +850,9 @@ def load_tables(paths):
             con.execute(f'DROP TABLE IF EXISTS "{table}"')
             continue
         rows = [r for r in rows_of(paths.src(fname)) if isinstance(r, dict)]
+        if table == "task_log":
+            # a booking row logged before log-task kept it short, or pulled from the project as it is, is cut here too
+            rows = [public_log_row(r) for r in rows]
         cols = []
         for r in rows:
             cols += [c for c in r if c not in cols]
