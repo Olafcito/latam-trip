@@ -17,7 +17,8 @@ import { hopFromArc } from '../lib/journey'
 import { Modal } from './Modal'
 import { hoverProps } from './PlaceCard'
 import { ReachList } from './ReachList'
-import { Calendar, Close, Download, External, Grip, Land, ModeChip, Moon, Plane } from './icons'
+import { Calendar, Check, Close, Download, External, Grip, Land, ModeChip, Moon, Plane } from './icons'
+import { lockedLegs } from '../lib/booked'
 import { hopLink } from '../lib/links'
 import { MarkIcon } from './story/Marks'
 import { WhenPicker } from './story/WhenPicker'
@@ -35,7 +36,7 @@ function Money({ v }: { v: number | null }) {
 }
 
 /** The day a leg leaves. The calendar opens over the map, the pane is too narrow and clips it. */
-function PlanDate({ route, w, set, clash, firstDay, stay, trip, onSet }: {
+function PlanDate({ route, w, set, clash, firstDay, stay, trip, held, onSet }: {
   route: string
   w: LegWindow
   set: boolean
@@ -43,20 +44,22 @@ function PlanDate({ route, w, set, clash, firstDay, stay, trip, onSet }: {
   firstDay: string
   stay: { name: string; inDay: string }
   trip: string
+  /** the day a booking holds the leg on, which the calendar shows and does not move */
+  held: string | null
   onSet: (date: string | null) => void
 }) {
   const [open, setOpen] = useState(false)
   return (
     <>
-      <button type="button" className="plan-date" data-set={set} data-clash={clash} aria-label={`${route}, leaves ${weekdayDay(w.date)}${clash ? ', before you get there' : ''}. Change the day`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
-        {weekdayDay(w.date)}
+      <button type="button" className="plan-date" data-set={set} data-clash={clash} data-booked={held ? true : undefined} aria-label={`${route}, leaves ${weekdayDay(w.date)}${held ? ', booked' : ''}${clash ? ', before you get there' : ''}. ${held ? 'See the day' : 'Change the day'}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
+        {held && <Check s={11} />}{weekdayDay(w.date)}
       </button>
       {open && createPortal(
         <Modal label={`When ${route} leaves`} className="wp-md" onClose={() => setOpen(false)}>
           {() => (
             <div className="wp-box">
               <h3>{route}</h3>
-              <WhenPicker date={w.date} set={set} min={w.min} max={w.max} firstDay={firstDay} fares={w.fares} stay={stay} codes={w.codes} trip={trip} onSet={onSet} />
+              <WhenPicker date={w.date} set={set} min={w.min} max={w.max} firstDay={firstDay} fares={w.fares} stay={stay} codes={w.codes} trip={trip} held={held} onSet={onSet} />
             </div>
           )}
         </Modal>,
@@ -90,6 +93,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const setHopDate = useStore((s) => s.setHopDate)
   const bookings = useStore((s) => s.bookings)
   const lodgings = useStore((s) => s.lodgings)
+  const unlocked = useStore((s) => s.unlocked)
   const pd = usePairDates()
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(journey.name)
@@ -121,6 +125,8 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   const { sched, exitNode } = plan
   const homeDay = sched.homeDepart.slice(0, 10)
   const t = totals(data, journey, sched, bookings, lodgings)
+  // a booked leg keeps its day, so its calendar shows the day and moves nothing
+  const locked = lockedLegs(bookings, data, journey, sched)
   const allIn = travelTotal(t)
   const lastIdx = journey.places.length - 1
   const at = cursor ?? lastIdx
@@ -240,6 +246,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
             const c = n?.country ?? inout.airports[p.node]?.country ?? ''
             const took = h ? legHours(legTime(map, h)) : null
             const days = sched.places[i]?.days ?? 0
+            const win = h && i > 0 ? legWindow(pd, map, h, sched.places[i - 1], homeDay) : null
             const row = (
               <li
                 key={i}
@@ -254,15 +261,16 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
                     title={[h.overland, h.operator, h.flight?.via.length ? `via ${h.flight.via.join(', ')}` : null, h.overnight ? 'overnight' : null].filter(Boolean).join(' · ') || undefined}
                   >
                     <ModeChip family={family(h.mode)} />
-                    {i > 0 && (
+                    {win && (
                       <PlanDate
                         route={`${nm(h.from)} to ${nm(h.to)}`}
-                        w={legWindow(pd, map, h, sched.places[i - 1], homeDay)}
+                        w={win}
                         set={!!h.date}
                         clash={sched.warnings.some((w) => w.leg === i && w.level === 'error')}
                         firstDay={sched.firstDay}
                         stay={{ name: nm(journey.places[i - 1].node), inDay: sched.places[i - 1].inDay }}
                         trip={journey.id}
+                        held={locked.has(i) && unlocked !== i ? win.date : null}
                         onSet={(d) => setHopDate(i, d)}
                       />
                     )}

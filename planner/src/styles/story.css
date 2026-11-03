@@ -279,6 +279,9 @@
 /* a bus or a boat: the chosen day in plain white, the amber belongs to flights */
 .wp[data-overland] .wp-d[data-sel='true'] { background: var(--text); color: var(--surface); }
 .wp[data-overland] .wp-d[data-sel='true'][data-set='false'] { background: none; color: var(--text); box-shadow: inset 0 0 0 1.5px var(--muted); }
+/* a booked leg: the day it holds in the booked green with its check, at full strength among the dimmed days */
+.wp .wp-d[data-booked] { opacity: 1; background: var(--booked); color: var(--ground); box-shadow: none; }
+.wp .wp-d[data-booked] small { display: inline-flex; align-items: center; justify-content: center; color: var(--ground); }
 .wp-d:focus-visible, .wp-arr:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
 @media (pointer: coarse) { .wp-d { height: 44px; } }
 .wp-stay { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 10px; border-radius: 10px; background: var(--surface-2); font-size: var(--fs-small); color: var(--muted); }

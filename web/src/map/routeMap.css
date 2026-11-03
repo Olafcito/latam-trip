@@ -524,6 +524,8 @@
 .plan-date { flex: none; min-height: 28px; padding: 0 8px; border: 0; border-radius: 8px; background: var(--surface-2); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted) !important; cursor: pointer; transition: var(--tint), var(--press); }
 .plan-date[data-set='true'] { color: var(--text) !important; }
 .plan-date[data-clash='true'] { color: var(--err) !important; }
+/* a booked leg: its day in the booked green with the check, the calendar behind it shows the day and moves nothing */
+.plan-date[data-booked] { display: inline-flex; align-items: center; gap: 4px; color: var(--booked, #4ADE80) !important; }
 .plan-date:active { transform: scale(0.97); }
 .plan-date:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
 @media (pointer: coarse) { .plan-date { min-height: 36px; } }

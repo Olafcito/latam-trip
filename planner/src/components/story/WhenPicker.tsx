@@ -3,13 +3,14 @@ import { ownKey, readOwn } from '@map/data/ownKey'
 import { day, dayDiff, kr, shortKr, weekdayDay } from '../../lib/format'
 import { momondoUrl } from '../../lib/prices'
 import { addDays } from '../../lib/time'
-import { Caret, External, Minus, Plus } from '../icons'
+import { Caret, Check, External, Minus, Plus } from '../icons'
 
 // When a leg leaves, as a calendar of one month at a time. After two components on 21st.dev: the
 // month grid with its arrows and keyboard moves from halaska-studio's Calendar, and the price under
 // each day from originui's pricing calendar, so the cheap days show while you pick. Built here on the
 // planner's own tokens instead of pulling in react-day-picker. The days read as dates or as days of
-// the trip, and the nights at the stop before move the same day.
+// the trip, and the nights at the stop before move the same day. A booked leg holds its day: every day
+// and both steppers show and none moves, the booked day marked the way the flight sheet's day strip marks it.
 
 type Lens = 'date' | 'day'
 const KEY = 'planner.whenLens'
@@ -40,7 +41,7 @@ function monthCells(m: string): (string | null)[] {
   return out
 }
 
-export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor, stay, codes, trip, clearable = true, onSet }: {
+export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor, stay, codes, trip, clearable = true, held = null, onSet }: {
   date: string
   set: boolean
   /** the first and last day the leg can leave */
@@ -61,6 +62,8 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
   codes: { from: string; to: string } | null
   /** false when the leg has no estimate to go back to */
   clearable?: boolean
+  /** the day a booking holds the leg on. Nothing can be picked then, and the leg is changed from its booking */
+  held?: string | null
   onSet: (date: string | null) => void
 }) {
   const [lens, setLens] = useState<Lens>(readLens)
@@ -72,7 +75,8 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
   /** the day of the trip, or null for a day before it starts, as the way in can leave */
   const tripDay = (d: string) => (d < firstDay ? null : dayDiff(firstDay, d) + 1)
   const nights = stay ? dayDiff(stay.inDay, date) : 0
-  const open = (d: string) => d >= min && d <= max && (!days || days.includes(d))
+  const open = (d: string) => !held && d >= min && d <= max && (!days || days.includes(d))
+  const heldLabel = held ? `Booked for ${weekdayDay(held)}, change it from its booking` : undefined
   /** the next day that can be picked from d in a direction, or null */
   const step = (d: string, dir: number): string | null => {
     for (let x = addDays(d, dir); x >= min && x <= max; x = addDays(x, dir)) if (open(x)) return x
@@ -160,15 +164,16 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
                 disabled={!open(d)}
                 tabIndex={d === tabDay ? 0 : -1}
                 data-sel={d === date}
-                data-set={set && d === date}
+                data-set={(set || !!held) && d === date}
                 data-cheap={isCheap(d)}
                 data-priced={p != null}
+                data-booked={d === held || undefined}
                 aria-pressed={d === date}
-                aria-label={`${weekdayDay(d)}${tripDay(d) != null ? `, day ${tripDay(d)}` : ''}${p == null ? '' : fareFor ? `, ${kr(p)} ${fareFor}` : `, from ${kr(p)}`}`}
+                aria-label={`${weekdayDay(d)}${tripDay(d) != null ? `, day ${tripDay(d)}` : ''}${d === held ? ', booked' : p == null ? '' : fareFor ? `, ${kr(p)} ${fareFor}` : `, from ${kr(p)}`}`}
                 onClick={() => { setFocus(d); onSet(d) }}
               >
                 <b>{lens === 'date' ? +d.slice(8) : tripDay(d) ?? ' '}</b>
-                <small>{p != null ? shortKr(p) : ''}</small>
+                <small>{d === held ? <Check s={11} /> : p != null ? shortKr(p) : ''}</small>
               </button>
             )
           })}
@@ -179,9 +184,9 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
         <div className="wp-stay">
           <span>Nights in <b>{stay.name}</b></span>
           <span className="wp-step">
-            <button type="button" aria-label="One night less" disabled={!before || dayDiff(stay.inDay, before) < 0} onClick={() => before && onSet(before)}><Minus /></button>
+            <button type="button" aria-label={heldLabel ?? 'One night less'} title={heldLabel} disabled={!before || dayDiff(stay.inDay, before) < 0} onClick={() => before && onSet(before)}><Minus /></button>
             <b>{nights}</b>
-            <button type="button" aria-label="One night more" disabled={!after} onClick={() => after && onSet(after)}><Plus /></button>
+            <button type="button" aria-label={heldLabel ?? 'One night more'} title={heldLabel} disabled={!after} onClick={() => after && onSet(after)}><Plus /></button>
           </span>
         </div>
       )}
@@ -189,7 +194,7 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
       <div className="wp-foot">
         <span className="wp-key">{cheapest != null ? <><i /> {fareFor ? `Cheapest day, prices ${fareFor}` : 'Cheapest known fare'}</> : codes ? 'No fares saved for these days yet' : 'Overland, no fares to look up'}</span>
         <span className="wp-btns">
-          {set && clearable && <button type="button" className="btn link small" onClick={() => onSet(null)}>Back to estimate</button>}
+          {set && clearable && !held && <button type="button" className="btn link small" onClick={() => onSet(null)}>Back to estimate</button>}
           {codes && <a className="btn small" href={momondoUrl(codes.from, codes.to, date, trip)} target="_blank" rel="noopener noreferrer">Momondo {day(date)}<External /></a>}
         </span>
       </div>

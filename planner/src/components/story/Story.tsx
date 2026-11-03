@@ -7,7 +7,7 @@ import { useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
 import { flightOffDay, giveNight, legDay, legTime, nightStop, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
-import { bookingOn, heldWayNotice, lockedLegs, wayBooking, wayHeld } from '../../lib/booked'
+import { bookedDay, bookingOn, heldWayNotice, lockedLegs, wayBooking, wayHeld } from '../../lib/booked'
 import { legWindow } from '../../lib/legDates'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
@@ -422,10 +422,10 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           booked={sched.warnings.find((w) => w.leg === i && w.level === 'warn')}
           booking={booking}
           fromName={ends.fromName}
-          onSet={(d) => setHopDate(i, d)}
+          onSet={movable ? (d) => setHopDate(i, d) : undefined}
           aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${took ? `, ${took}` : ''}${h.overnight ? ', overnight' : ''}`}
           travel={<Travel fam={fam} time={took} overnight={!!h.overnight} off={flightOffDay(h)} />}
-          picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} onSet={(d) => setHopDate(i, d)} />}
+          picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} held={movable ? null : bookedDay(booking, date)} onSet={(d) => setHopDate(i, d)} />}
           card={(dismiss) => (
             <LegCard
               h={h} ends={ends} family={fam} date={date} time={time} points={fam === 'flight' ? null : pointsOf([h.from, ...time.via, h.to])} link={hopLink(h, inout)}
