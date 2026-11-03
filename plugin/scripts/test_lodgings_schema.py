@@ -59,6 +59,20 @@ class LodgingSchema(unittest.TestCase):
         self.assertEqual(tripdb.check_fields(p, tripdb.TRIP_PLACE), [])
         self.assertTrue(tripdb.check_fields(dict(p, stays="a"), tripdb.TRIP_PLACE))
 
+    def test_each_planned_stay_has_the_trip_stay_shape(self):
+        def stay_errors(stays):
+            t = {"version": 1, "way_in": {}, "way_home": {}, "places": [{"node": "CTG", "hop": None, "stays": stays}]}
+            return [e for e in tripdb.trip_errors(t) if e.startswith("places[0].stays")]
+        self.assertEqual(stay_errors([{"lodging_id": "a", "room_id": "b", "nights": 3}, {"lodging_id": "c"}]), [])
+        errs = stay_errors([1, {"room": "x"}, {"lodging_id": "a", "nights": 0}, {"lodging_id": "a", "nights": "2"}])
+        self.assertEqual([e.split(" ")[0] for e in errs], [f"places[0].stays[{k}]" for k in range(4)])
+        self.assertIn("missing lodging_id", errs[1])
+        self.assertIn("nights is below 1", errs[2])
+
+    def test_the_tag_words_are_the_ones_of_the_spec(self):
+        self.assertEqual(tripdb.LODGING_TAGS.split(","),
+                         ["beach", "pool", "social", "quiet", "kitchen", "breakfast", "aircon", "workspace"])
+
 
 class LodgingMigration(unittest.TestCase):
     """The owner only rule lives in the migration text, so an edit cannot quietly drop it."""

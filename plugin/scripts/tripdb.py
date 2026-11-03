@@ -165,6 +165,8 @@ TRIP_WAY = {"direction": "enum:in,home", "from": "!iata", "to": "!iata", "depart
 TRIP_TICKET = {"id": "!str", "price_dkk": "!num", "observed_at": "str|null"}
 TRIP_PLACE = {"node": "!pid", "hop": "!dict|null", "why": "str|null", "nights": "int|null", "arrive": "date|time|null",
               "depart": "date|time|null", "stay": "dict|null", "stays": "list|null"}
+# one planned stay in a place of a trip, spec 5.3: a lodging, the room if one is picked, and the nights in it
+TRIP_STAY = {"lodging_id": "!str", "room_id": "str|null", "nights": "int|null"}
 TRIP_HOP = {"from": "!pid", "to": "!pid", "mode": "!enum:flight,bus,boat,train,colectivo,shuttle,chicken_bus",
             "operator": "str|null", "hours": "num|null", "price_dkk": "num|null", "observed_at": "time|null",
             "overnight": "bool|null", "border": "bool|null", "flight": "dict|null", "overland": "str|null",
@@ -186,6 +188,7 @@ BOOKING = {"id": "str", "kind": "!enum:flight,bus,boat,stay,other", "status": "!
 # places to stay, the lodgings tables of spec 5.2: a place, its rooms and their prices, owner only, never in a built file.
 # The database checks types and numbers. kind, added_by, bathroom and the sites of links and prices are checked here.
 LODGING_SITES = "booking,hostelworld,airbnb,own,other"
+LODGING_TAGS = "beach,pool,social,quiet,kitchen,breakfast,aircon,workspace"  # the tag words of spec 5.2
 LODGING = {"id": "str", "place_id": "!pid", "name": "!str", "kind": "!enum:hostel,hotel,guesthouse,apartment,other",
            "photos": "list", "rating": "num|null", "reviews": "int|null", "rating_source": "str|null",
            "address": "str|null", "lat": "num|null", "lon": "num|null", "to_center_km": "num|null",
@@ -263,6 +266,11 @@ def trip_errors(t):
         if pe:
             prev = None
             continue
+        for k, s in enumerate(p.get("stays") or []):
+            se = check_fields(s, TRIP_STAY) if isinstance(s, dict) else ["is not a JSON object"]
+            if not se and s.get("nights") is not None and s["nights"] < 1:
+                se = ["nights is below 1"]
+            errs += [f"places[{i}].stays[{k}] {e}" for e in se]
         hop = p.get("hop")
         if i == 0:
             if hop is not None:

@@ -1,7 +1,7 @@
 """Tests for the latam-trip connector. Run from the repo root:
 python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"
 Every test works in its own temporary root with the file store, so no data is touched and nothing goes online."""
-import ast, asyncio, base64, copy, json, os, re, shutil, sys, tempfile, unittest
+import ast, asyncio, base64, collections, copy, json, os, re, shutil, sys, tempfile, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, ".."))
@@ -499,13 +499,16 @@ class TwinLegTest(BookingBase):
 
 class LodgingRest:
     """The lodgings, lodging_rooms and lodging_prices tables as the project would hold them, in memory. A room goes
-    with its lodging and a price with its room, as on delete cascade does. fail names a table whose inserts fail."""
+    with its lodging and a price with its room, as on delete cascade does. fail names a table whose inserts fail,
+    fail_at the numbers of the inserts into it that fail, counted from 1, committed makes a failed insert write its
+    rows first, as a timeout after the commit does, and fail_delete makes every delete fail."""
 
     TABLES = ("lodgings", "lodging_rooms", "lodging_prices")
 
     def __init__(self):
         self.tables = {t: [] for t in self.TABLES}
-        self.fail = None
+        self.fail, self.fail_at, self.committed, self.fail_delete = None, None, False, False
+        self.inserts = collections.Counter()
 
     @staticmethod
     def picked(r, params):
@@ -519,11 +522,22 @@ class LodgingRest:
         return True
 
     def get_all(self, table, params=None, page=None, limit=None):
-        return [json.loads(json.dumps(r)) for r in self.tables[table] if self.picked(r, params)]
+        rows = [json.loads(json.dumps(r)) for r in self.tables[table] if self.picked(r, params)]
+        for col in reversed(((params or {}).get("order") or "").split(",")):
+            if col:
+                rows.sort(key=lambda r: str(r.get(col) if r.get(col) is not None else ""))
+        return rows
 
-    def insert(self, table, rows, returning=None, columns=None, **kw):
-        if table == self.fail:
+    def insert(self, table, rows, returning=None, columns=None, on_conflict=None, resolution=None):
+        self.inserts[table] += 1
+        failing = table == self.fail and (self.fail_at is None or self.inserts[table] in self.fail_at)
+        if failing and not self.committed:
             raise tripdb_store.RestError(f"POST /rest/v1/{table} gave 500")
+        have = {r["id"] for r in self.tables[table]}
+        if resolution == "ignore-duplicates":
+            rows = [r for r in rows if r.get("id") not in have]
+        elif any(r.get("id") in have for r in rows):
+            raise tripdb_store.RestError(f"POST /rest/v1/{table} gave 409")
         got = []
         for r in rows:
             row = {"id": f"{table[:3]}{len(self.tables[table]) + 1}", "created_at": NOW, "updated_at": NOW,
@@ -535,6 +549,8 @@ class LodgingRest:
                 row.setdefault("observed_at", NOW)
             self.tables[table].append(row)
             got.append({"id": row["id"]})
+        if failing:
+            raise tripdb_store.RestError(f"POST /rest/v1/{table} timed out")
         return got if returning else []
 
     def patch(self, table, params, body, returning=None):
@@ -543,6 +559,8 @@ class LodgingRest:
                 r.update(json.loads(json.dumps(body)))
 
     def delete(self, table, params):
+        if self.fail_delete:
+            raise tripdb_store.RestError(f"DELETE /rest/v1/{table} gave 500")
         gone = {r["id"] for r in self.tables[table] if self.picked(r, params)}
         self.tables[table] = [r for r in self.tables[table] if r["id"] not in gone]
         if table == "lodgings":
@@ -621,6 +639,107 @@ class LodgingTest(Base):
         self.assertEqual([r["row"] for r in out["refused"]], [1])
         self.assertEqual(self.rest.count(), (0, 0, 0))
 
+    def test_a_failed_write_of_its_rooms_saves_nothing(self):
+        self.rest.fail = "lodging_rooms"
+        out = self.core.add("lodging", [lodging()])
+        self.assertEqual((out["added"], [r["row"] for r in out["refused"]]), ([], [1]))
+        self.assertIn("nothing was saved", out["refused"][0]["why"])
+        self.assertEqual(self.rest.count(), (0, 0, 0))
+
+    def test_a_failed_lodging_write_in_a_batch_leaves_the_other_rows_saved(self):
+        self.rest.fail, self.rest.fail_at = "lodgings", {2}
+        out = self.core.add("lodging", [lodging(), lodging(name="Second"), lodging(name="Third")])
+        self.assertEqual(len(out["added"]), 2)
+        self.assertEqual([r["row"] for r in out["refused"]], [2])
+        self.assertEqual(self.rest.count(), (2, 4, 6))
+        self.assertEqual(sorted(r["name"] for r in self.rest.tables["lodgings"]), ["Test Hostel", "Third"])
+
+    def test_a_write_that_times_out_after_it_was_saved_is_taken_away(self):
+        self.rest.fail, self.rest.committed = "lodgings", True
+        out = self.core.add("lodging", [lodging()])
+        self.assertEqual((out["added"], [r["row"] for r in out["refused"]]), ([], [1]))
+        self.assertEqual(self.rest.count(), (0, 0, 0))
+
+    def test_a_failed_take_back_names_what_is_left_and_the_same_row_finishes_it(self):
+        self.rest.fail, self.rest.fail_delete = "lodging_prices", True
+        out = self.core.add("lodging", [lodging(), lodging(name="Second", rooms=[])])
+        self.assertEqual(len(out["added"]), 1)
+        left = out["refused"][0]
+        self.assertEqual(left["row"], 1)
+        self.assertIn(f"saved in part as {left['id']}", left["why"])
+        self.assertEqual(self.rest.count(), (2, 2, 0))
+        self.rest.fail, self.rest.fail_delete = None, False
+        again = self.core.add("lodging", [lodging()])
+        self.assertEqual((again["added"], again["refused"]), ([], []))
+        self.assertEqual([s["id"] for s in again["skipped"]], [left["id"]])
+        self.assertEqual(self.rest.count(), (2, 2, 3))
+        self.assertEqual([len(r["prices"]) for r in self.core.get("lodging", left["id"])["rooms"]], [2, 1])
+
+    def test_sending_a_lodging_again_never_stores_it_twice(self):
+        lid = self.add()
+        out = self.core.add("lodging", [lodging(name="  test   HOSTEL ", rating=2.0)])
+        self.assertEqual((out["added"], out["refused"]), ([], []))
+        self.assertEqual([(s["row"], s["id"]) for s in out["skipped"]], [(1, lid)])
+        self.assertEqual(self.rest.count(), (1, 2, 3))
+        self.assertEqual(self.rest.tables["lodgings"][0]["rating"], 9.1)
+        more = lodging()
+        more["rooms"][1]["prices"].append(dict(PRICE, check_in="2026-12-20", check_out="2026-12-22"))
+        more["rooms"].append({"name": "Private twin", "prices": [dict(PRICE)]})
+        out = self.core.add("lodging", [more])
+        self.assertEqual(self.rest.count(), (1, 3, 5))
+        self.assertEqual(len(out["rooms"][lid]), 3)
+        self.core.delete("lodging", lid)
+        out = self.core.add("lodging", [lodging()])
+        self.assertIn("hidden", out["skipped"][0]["why"])
+        self.assertEqual(self.rest.count()[0], 1)
+
+    def test_one_batch_with_the_same_lodging_twice_stores_it_once(self):
+        out = self.core.add("lodging", [lodging(), lodging()])
+        self.assertEqual((len(out["added"]), [s["row"] for s in out["skipped"]]), (1, [2]))
+        self.assertEqual(self.rest.count(), (1, 2, 3))
+
+    def test_a_mixed_batch_saves_the_good_rows_and_refuses_the_bad(self):
+        out = self.core.add("lodging", [lodging(), lodging(name="Bad", kind="castle"), lodging(name="Good too")])
+        self.assertEqual(len(out["added"]), 2)
+        self.assertEqual([r["row"] for r in out["refused"]], [2])
+        self.assertEqual(self.rest.count(), (2, 4, 6))
+
+    def test_a_place_that_is_not_in_the_places_is_refused(self):
+        out = self.core.add("lodging", [lodging(place_id="LCOR")])
+        self.assertIn("place LCOR is not in the places", out["refused"][0]["why"])
+        lid = self.add()
+        with self.assertRaises(tripdb.Refused):
+            self.core.update("lodging", lid, {"place_id": "LCOR"})
+        self.core.update("lodging", lid, {"place_id": "NOSA"})
+        self.assertEqual(self.core.get("lodging", lid)["place_id"], "NOSA")
+
+    def test_a_tag_outside_the_tag_words_is_refused(self):
+        out = self.core.add("lodging", [lodging(tags=["pool", "Swimming pool"])])
+        self.assertIn("a tag is one of beach, pool", out["refused"][0]["why"])
+        self.assertEqual(self.rest.count(), (0, 0, 0))
+        specs = {s["name"]: s for s in self.core.tool_specs()}
+        tags = specs["add_lodging"]["schema"]["properties"]["rows"]["items"]["properties"]["tags"]["items"]
+        self.assertEqual(tags["enum"], tripdb.LODGING_TAGS.split(","))
+
+    def test_two_rooms_with_one_name_or_two_prices_for_the_same_dates_are_refused(self):
+        twin = lodging()
+        twin["rooms"][1]["name"] = "10 BED dorm"
+        same = lodging()
+        same["rooms"][1]["prices"].append(dict(PRICE, total_dkk=1))
+        out = self.core.add("lodging", [twin, same])
+        self.assertIn("rooms[1] has the name of rooms[0]", out["refused"][0]["why"])
+        self.assertIn("rooms[1].prices[1] has the dates and site of prices[0]", out["refused"][1]["why"])
+        self.assertEqual(self.rest.count(), (0, 0, 0))
+
+    def test_rooms_come_back_by_name_and_the_reply_keeps_the_order_sent(self):
+        row = lodging()
+        row["rooms"].reverse()
+        out = self.core.add("lodging", [row])
+        lid = out["added"][0]
+        got = self.core.get("lodging", lid)["rooms"]
+        self.assertEqual([r["name"] for r in got], ["10 bed dorm", "Double room"])
+        self.assertEqual(out["rooms"][lid], [got[1]["id"], got[0]["id"]])
+
     def test_delete_hides_it_and_list_by_place_leaves_it_out(self):
         lid = self.add()
         other = self.add(name="Test Hotel", kind="hotel", rooms=[])
@@ -662,6 +781,19 @@ class LodgingTest(Base):
         self.assertIn("check_in", room["properties"]["prices"]["items"]["required"])
         self.assertNotIn("rooms", specs["update_lodging"]["schema"]["properties"]["patch"]["properties"])
         self.assertIn("room_id", specs["add_lodging_price"]["schema"]["properties"]["rows"]["items"]["required"])
+
+
+class StayClosedTest(Base):
+    def test_the_stay_tools_that_write_are_refused_with_the_closed_message(self):
+        row = {"place": "TAM", "site": "booking", "name": "Test Hostel", "check_in": "2026-12-09", "check_out": "2026-12-14"}
+        for name, args in (("add_stay", {"rows": [row]}), ("update_stay", {"id": "stay-x", "patch": {"name": "y"}}),
+                           ("update_stay", {"id": "stay-x", "restore": True}), ("delete_stay", {"id": "stay-x"})):
+            with self.assertRaises(tripdb.Refused) as e:
+                self.core.call(name, args)
+            self.assertEqual(str(e.exception), tripdb.STAYS_CLOSED)
+        self.assertIn("count", self.core.call("list_stay", {}))
+        specs = {s["name"]: s for s in self.core.tool_specs()}
+        self.assertIn("closed", specs["add_stay"]["description"])
 
 
 class StorageSignTest(unittest.TestCase):
