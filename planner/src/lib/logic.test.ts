@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { AppData, Booking, InOut, Lodging, MapData, Ticket, Way } from '../data/types'
-import { applyMove, giveNight, schedule, staysCost, totals, travelTotal, type Hop, type Journey } from './journey'
+import { applyMove, giveNight, regionalCost, schedule, staysCost, totals, travelCost, travelTotal, travelUnknown, type Hop, type Journey } from './journey'
 import { mixWays, priceOfWays, totalRating, priceScore } from './options'
 import { shortestPath } from './graph'
 import { kr, hours, dayTime, nextDayMark } from './format'
@@ -295,6 +295,19 @@ describe('paid prices and booked days', () => {
     expect(totals(data, j, sched, [{ ...bus, price_dkk: null }]).ground_dkk).toBe(150)
   })
 
+  it('counts a regional flight with no price as not priced, never as 0', () => {
+    const bare: Journey = { ...j, places: j.places.map((p, k) => (k === 2 ? { ...p, hop: { ...p.hop!, price_dkk: null } } : p)) }
+    const t = totals(data, bare, sched)
+    expect(t.regional_unknown).toBe(1)
+    expect(t.regional_flights_dkk).toBe(0)
+    expect(regionalCost(t)).toBe('Not priced')
+    expect(travelUnknown(t)).toBe(1)
+    expect(travelCost(t)).toBe(`${kr(travelTotal(t))}, 1 not priced`)
+    // a booked flight with its price filled in counts what was paid
+    expect(totals(data, bare, sched, [regional])).toMatchObject({ regional_flights_dkk: 900, regional_unknown: 0 })
+    expect(totals(data, j, sched).regional_unknown).toBe(0)
+  })
+
   it('adds a booked stay to the stays and leaves it out of the travel total', () => {
     const plain = totals(data, j, sched)
     const t = totals(data, j, sched, [stay])
@@ -372,6 +385,10 @@ describe('planned stays and booked stays at the stops', () => {
     expect(t.stays_unknown).toBe(1)
     // a saved row's totals are worked out without the places to stay, so they hold none of their numbers
     expect(totals(data, planned, sched)).toMatchObject({ stays_planned_dkk: 0, stays_unknown: 0 })
+    // a booked stay with no price filled in is still not known there, and one with a price still counts
+    const bare = row({ id: 'bare', check_in: '2026-12-12', check_out: '2026-12-15' })
+    expect(totals(data, planned, sched, [bare])).toMatchObject({ stays_booked_dkk: 0, stays_unknown: 1 })
+    expect(totals(data, planned, sched, [{ ...bare, price_dkk: 1200 }])).toMatchObject({ stays_booked_dkk: 1200, stays_unknown: 0 })
   })
 
   it('does not count a booked stay again as planned, and counts the plan in place of a booked price not filled in', () => {

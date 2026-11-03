@@ -199,7 +199,7 @@ export interface StayTotals {
 /**
  * The trip's stays. A booked stay counts once, also one the stops have moved off, as that one is paid all the same.
  * One with no price filled in is not known unless a planned part stands in for it. Without the places to stay
- * nothing planned or unknown is worked out.
+ * nothing planned is worked out, and a booked stay with no price filled in is not known.
  */
 export function stayTotals(j: Journey, sched: Schedule, bookings: Booking[], lodgings?: Lodging[]): StayTotals {
   const noPrice = new Set<string>()
@@ -209,7 +209,7 @@ export function stayTotals(j: Journey, sched: Schedule, bookings: Booking[], lod
     if (paid == null) noPrice.add(b.id)
     else booked += paid
   }
-  if (!lodgings) return { booked, planned: 0, unknown: 0 }
+  if (!lodgings) return { booked, planned: 0, unknown: noPrice.size }
   const p = planned(j, sched, lodgings, bookings)
   for (const id of p.standsIn) noPrice.delete(id)
   return { booked, planned: p.dkk, unknown: p.unknown + noPrice.size }

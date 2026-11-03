@@ -7,7 +7,7 @@ import type { AppData } from '../data/types'
 import { usePairDates } from '../data/pairDates'
 import { useStore } from '../store'
 import { day, hours, kr, legHours, weekdayDay } from '../lib/format'
-import { flightOffDay, groundCost, legTime, nodeForAirport, nodeName, totals, travelTotal, type Journey } from '../lib/journey'
+import { flightOffDay, groundCost, legTime, nodeForAirport, nodeName, regionalCost, staysCost, totals, travelTotal, type Journey } from '../lib/journey'
 import { useSchedule } from '../lib/useSchedule'
 import { legWindow, type LegWindow } from '../lib/legDates'
 import { countryName } from '../lib/colors'
@@ -128,6 +128,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
   // a booked leg keeps its day, so its calendar shows the day and moves nothing
   const locked = lockedLegs(bookings, data, journey, sched)
   const allIn = travelTotal(t)
+  const stays = staysCost(t)
   const lastIdx = journey.places.length - 1
   const at = cursor ?? lastIdx
   const here = journey.places[at]
@@ -347,8 +348,9 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
           <summary>Costs</summary>
           <dl className="plan-tot">
             <dt>Long-haul tickets</dt><dd>{kr(t.tickets_dkk)}</dd>
-            <dt>Regional flights</dt><dd>{kr(t.regional_flights_dkk)}</dd>
+            <dt>Regional flights</dt><dd>{regionalCost(t)}</dd>
             <dt>Ground transport</dt><dd>{groundCost(t)}</dd>
+            {stays && <><dt>Stays</dt><dd>{stays}</dd></>}
             <dt>Cabin bags</dt><dd><Money v={t.cabin_bag_dkk} /></dd>
             <dt>Checked bags</dt><dd><Money v={t.checked_bag_dkk} /></dd>
             <dt>Hub nights, stay est.</dt><dd>{t.hub_nights} · <Money v={t.hub_stay_dkk} /></dd>

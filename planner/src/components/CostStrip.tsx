@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { groundCost, staysCost, travelTotal, type Totals } from '../lib/journey'
+import { groundCost, regionalCost, staysCost, travelCost, type Totals } from '../lib/journey'
 import { hours, kr } from '../lib/format'
 import { Chevron, DisclosurePanel, useDisclosure } from './Disclosure'
 
@@ -19,9 +19,9 @@ export function CostStrip({ t }: { t: Totals }) {
     <section className="costs" aria-label="Costs">
       <div className="costs-row">
         <dl>
-          <Cell k="Travel total">{kr(travelTotal(t))}</Cell>
+          <Cell k="Travel total">{travelCost(t)}</Cell>
           <Cell k="Long-haul">{kr(t.tickets_dkk)}</Cell>
-          <Cell k="Regional flights">{kr(t.regional_flights_dkk)}</Cell>
+          <Cell k="Regional flights">{regionalCost(t)}</Cell>
           <Cell k="Ground">{groundCost(t)}</Cell>
           {stays && <Cell k="Stays">{stays}</Cell>}
         </dl>

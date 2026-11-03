@@ -362,6 +362,8 @@ export function pinLegs(j: Journey, s: Schedule, only?: Set<number>): Journey {
 export interface Totals {
   tickets_dkk: number
   regional_flights_dkk: number
+  /** the regional flights with no price, not in regional_flights_dkk */
+  regional_unknown: number
   cabin_bag_dkk: number | null
   checked_bag_dkk: number | null
   hub_nights: number
@@ -385,7 +387,8 @@ export function hubStops(w: Way): StopItem[] {
 }
 
 /**
- * Totals for a journey: a ticket shared by both ways is counted once; bags, hub stays and ground kept apart.
+ * Totals for a journey. A ticket shared by both ways is counted once. Bags, hub stays and ground are kept apart.
+ * A flight or ground leg with no price is counted as not priced, never as 0.
  * A booked way or leg counts what was paid for it in place of its quote, and the booked stays are kept apart.
  * Given the places to stay, the planned stays are kept apart too. Without them nothing planned is counted.
  */
@@ -403,6 +406,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
   const quoted = [wi, wh].filter((_, k) => paidWays[k] == null)
   const p = priceOfWays(inout, [wi, wh])
   let regional = 0
+  let regionalUnknown = 0
   let ground = 0
   let groundUnknown = 0
   let flights = wi.flights + wh.flights
@@ -414,7 +418,8 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
     const price = booked ?? h.price_dkk
     if (h.mode === 'flight') {
       flights += 1 + (h.flight?.stops ?? h.flight?.via.length ?? 0)
-      regional += price ?? 0
+      if (price == null) regionalUnknown++
+      else regional += price
       air += h.hours ?? 0
     } else if (price == null) groundUnknown++
     else ground += price
@@ -440,6 +445,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
   return {
     tickets_dkk: (paidWays[0] ?? 0) + (paidWays[1] ?? 0) + (quoted.length ? priceOfWays(inout, quoted).price_dkk : 0),
     regional_flights_dkk: regional,
+    regional_unknown: regionalUnknown,
     cabin_bag_dkk: p.cabin,
     checked_bag_dkk: p.checked,
     hub_nights: hubNights,
@@ -456,15 +462,31 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
   }
 }
 
-/** The trip's travel: tickets, regional flights, ground, the nights at the hubs and the cabin bags. A checked bag is optional, so its fees are shown but not added. Stays at the stops are not in it. */
+/**
+ * The trip's travel: tickets, regional flights, ground, the nights at the hubs and the cabin bags, of what is priced.
+ * A checked bag is optional, so its fees are shown but not added. Stays at the stops are not in it.
+ */
 export const travelTotal = (t: Totals) =>
   t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
 
-/** Ground transport in words: what is priced, and how many hops are not. */
-export const groundCost = (t: Totals) => {
-  if (!t.ground_unknown) return kr(t.ground_dkk)
-  return t.ground_dkk ? `${kr(t.ground_dkk)}, ${t.ground_unknown} not priced` : 'Not priced'
+/** How many parts of the travel total have no price: the flights and ground legs, the hub stays and the cabin bags. */
+export const travelUnknown = (t: Totals) =>
+  t.regional_unknown + t.ground_unknown + (t.hub_stay_dkk == null ? 1 : 0) + (t.cabin_bag_dkk == null ? 1 : 0)
+
+/** A cost in words: what is priced, and how many parts are not. */
+const priced = (dkk: number, unknown: number) => {
+  if (!unknown) return kr(dkk)
+  return dkk ? `${kr(dkk)}, ${unknown} not priced` : 'Not priced'
 }
+
+/** The travel total in words, with how many of its parts are not priced. */
+export const travelCost = (t: Totals) => priced(travelTotal(t), travelUnknown(t))
+
+/** Regional flights in words: what is priced, and how many flights are not. */
+export const regionalCost = (t: Totals) => priced(t.regional_flights_dkk, t.regional_unknown)
+
+/** Ground transport in words: what is priced, and how many hops are not. */
+export const groundCost = (t: Totals) => priced(t.ground_dkk, t.ground_unknown)
 
 /** The Stays line: what is booked and what is planned, apart, and the stays with no price known. null with no stays at all. */
 export const staysCost = (t: Totals): string | null => {

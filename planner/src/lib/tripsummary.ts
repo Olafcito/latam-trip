@@ -1,6 +1,6 @@
 import type { AppData, Booking, Lodging } from '../data/types'
 import { day } from './format'
-import { nodeForAirport, nodeName, schedule, totals, travelTotal, type Journey } from './journey'
+import { nodeForAirport, nodeName, schedule, totals, travelTotal, travelUnknown, type Journey } from './journey'
 
 // The facts the Trips home shows for one trip: its ways, totals and route. Null when a way has left the data.
 
@@ -18,8 +18,8 @@ export function summarize(data: AppData, j: Journey, bookings: Booking[] = [], l
     sched,
     route: j.places.map((p) => nm(p.node)),
     total: travelTotal(t),
-    /** some ground legs or a hub stay have no price, so the total is a floor */
-    partial: t.ground_unknown > 0 || t.hub_stay_dkk == null,
+    /** some flights, ground legs, a hub stay or the cabin bags have no price, so the total is a floor */
+    partial: travelUnknown(t) > 0,
     /** calendar days from the landing to the flight home */
     nights: sched.totalDays,
     stops: j.places.length,

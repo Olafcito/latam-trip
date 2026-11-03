@@ -31,7 +31,11 @@ const LINES = (data: AppData): Line[] => {
     { label: 'Lands', text: (s) => `${airport(s.wi.to)}, ${day(s.wi.arrive)}` },
     { label: 'Flies home', text: (s) => `${airport(s.wh.from)}, ${day(s.wh.depart)}` },
     { label: 'Long-haul tickets', text: (s) => kr(s.t.tickets_dkk), value: (s) => known(s.t.tickets_dkk) },
-    { label: 'Regional flights', text: (s) => kr(s.t.regional_flights_dkk), value: (s) => known(s.t.regional_flights_dkk) },
+    {
+      label: 'Regional flights',
+      text: (s) => (s.t.regional_unknown ? `${kr(s.t.regional_flights_dkk)}, some not priced` : kr(s.t.regional_flights_dkk)),
+      value: (s) => (s.t.regional_unknown ? null : s.t.regional_flights_dkk),
+    },
     { label: 'Cabin-bag fees', text: (s) => (s.t.cabin_bag_dkk == null ? null : kr(s.t.cabin_bag_dkk)), value: (s) => known(s.t.cabin_bag_dkk) },
     { label: 'Checked-bag fees', text: (s) => (s.t.checked_bag_dkk == null ? null : kr(s.t.checked_bag_dkk)), value: (s) => known(s.t.checked_bag_dkk) },
     { label: 'Hub nights', text: (s) => String(s.t.hub_nights), count: true },
