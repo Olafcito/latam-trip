@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import type { Booking, CrawledFlight } from '../../data/types'
-import { parkedRow, priceColumn } from '../../lib/booked'
+import { isBookedFlight, parkedRow, priceColumn } from '../../lib/booked'
 import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../../lib/format'
 import { fareNotes, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
 import type { FlightLink } from '../../lib/links'
@@ -157,15 +157,18 @@ function Stops({ f, name }: { f: CrawledFlight; name: (code: string) => string }
 /** What a row shows under its price besides Pick: the state of the flight you picked, or the button that brings a parked one back. */
 interface RowState {
   picked?: boolean
+  /** this flight is the one the booking is for */
   booked?: boolean
+  /** the leg is booked, so the picked flight is not removed here */
+  locked?: boolean
   onRemove?: () => void
   onOpenBooking?: () => void
   /** a parked flight: the leg goes back to its day */
   onUseDay?: () => void
 }
 
-/** The Picked or Booked mark under a price. A booked one opens its booking when the sheet can. */
-function Chip({ text, onOpen }: { text: 'Picked' | 'Booked'; onOpen?: () => void }) {
+/** The Picked or Booked mark under a price, in both sheets. A booked one opens its booking when the sheet can. */
+export function Chip({ text, onOpen }: { text: 'Picked' | 'Booked'; onOpen?: () => void }) {
   const booked = text === 'Booked' || undefined
   if (booked && onOpen) return <button type="button" className="fl-chip" data-booked onClick={onOpen} aria-label="Booked, open the booking"><Check /> Booked</button>
   return <span className="fl-chip" data-booked={booked}><Check /> {text}</span>
@@ -174,7 +177,7 @@ function Chip({ text, onOpen }: { text: 'Picked' | 'Booked'; onOpen?: () => void
 function Flight({ row, name, nextDay, now, onPick, state = {} }: { row: FareRow; name: (code: string) => string; nextDay: string | null; now: number; onPick?: () => void; state?: RowState }) {
   const { flight: f, others } = row
   const known = timed(f)
-  const col = priceColumn({ picked: !!state.picked, booked: !!state.booked, canPick: !!onPick && known, canRemove: !!state.onRemove })
+  const col = priceColumn({ picked: !!state.picked, booked: !!state.booked, locked: !!state.locked, canPick: !!onPick && known, canRemove: !!state.onRemove })
   const air = f.carriers.join(', ')
   const site = seller(f)
   const notes = fareNotes(f, name, nextDay)
@@ -306,10 +309,10 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, date, 
       </div>
       <div className="fl-list">
         {picked && (
-          <section ref={held} className="fl-picked" aria-label={booking ? 'The flight you booked' : 'The flight you picked'} tabIndex={-1}>
+          <section ref={held} className="fl-picked" aria-label={isBookedFlight(booking, picked) ? 'The flight you booked' : 'The flight you picked'} tabIndex={-1}>
             <Flight
               row={{ flight: picked, others: [] }} name={airportName} nextDay={stay.nextDay} now={now}
-              state={{ picked: true, booked: !!booking, onRemove: () => onPick(null), onOpenBooking }}
+              state={{ picked: true, booked: isBookedFlight(booking, picked), locked: !!booking, onRemove: () => onPick(null), onOpenBooking }}
             />
           </section>
         )}

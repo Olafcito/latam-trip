@@ -133,11 +133,20 @@ export interface PriceColumn {
   remove: boolean
 }
 
-/** A row's state under its price. A picked row shows its chip in place of Pick, and a booked one is changed from its booking, not removed here. */
-export function priceColumn(row: { picked: boolean; booked: boolean; canPick: boolean; canRemove: boolean }): PriceColumn {
+/**
+ * A row's state under its price. A picked row shows its chip in place of Pick. Booked is the flight the booking is for,
+ * changed from its booking and not removed here. A picked flight on a booked leg that is not the booked one reads Picked,
+ * and has no Remove either, since the leg stays locked until its booking changes.
+ */
+export function priceColumn(row: { picked: boolean; booked: boolean; locked?: boolean; canPick: boolean; canRemove: boolean }): PriceColumn {
   if (row.booked) return { chip: 'Booked', pick: false, remove: false }
-  if (row.picked) return { chip: 'Picked', pick: false, remove: row.canRemove }
+  if (row.picked) return { chip: 'Picked', pick: false, remove: row.canRemove && !row.locked }
   return { chip: null, pick: row.canPick, remove: false }
+}
+
+/** Whether a flight is the one a booking is for: the same departure, to the minute. */
+export function isBookedFlight(booking: Pick<Booking, 'depart'> | null | undefined, flight: { depart: string } | null | undefined): boolean {
+  return !!booking?.depart && !!flight?.depart && booking.depart.slice(0, 16) === flight.depart.slice(0, 16)
 }
 
 /** The row at the top of a sheet for a picked flight set aside when its leg moved to another day, so it is never lost. */

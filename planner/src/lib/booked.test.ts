@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking, Way } from '../data/types'
-import { bookedCount, bookedElsewhere, bookedMark, bookingOn, endsMatch, heldWayNotice, lockedLegs, paidPrice, parkedRow, priceColumn, stayOn, wayBooking, wayHeld, type BookData } from './booked'
+import { bookedCount, bookedElsewhere, bookedMark, bookingOn, endsMatch, heldWayNotice, isBookedFlight, lockedLegs, paidPrice, parkedRow, priceColumn, stayOn, wayBooking, wayHeld, type BookData } from './booked'
 import type { Hop, Journey, Schedule } from './journey'
 
 // Made up rows only. A real reference, price or name never goes in this file.
@@ -260,6 +260,17 @@ describe('the price column of a flight row', () => {
   })
   it('reads Booked on a booked row, and a booked flight is not removed from here', () => {
     expect(priceColumn({ picked: true, booked: true, canPick: true, canRemove: true })).toEqual({ chip: 'Booked', pick: false, remove: false })
+  })
+  it('reads Picked with no Remove when the leg is booked on another flight than the picked one', () => {
+    const booking = { depart: '2026-12-03T11:37:00' }
+    const picked = { depart: '2026-12-03T19:33' }
+    expect(isBookedFlight(booking, picked)).toBe(false)
+    expect(priceColumn({ picked: true, booked: isBookedFlight(booking, picked), locked: true, canPick: true, canRemove: true })).toEqual({ chip: 'Picked', pick: false, remove: false })
+  })
+  it('knows the booked flight by its departure to the minute', () => {
+    expect(isBookedFlight({ depart: '2026-12-03T11:37:00' }, { depart: '2026-12-03T11:37' })).toBe(true)
+    expect(isBookedFlight({ depart: null }, { depart: '2026-12-03T11:37' })).toBe(false)
+    expect(isBookedFlight(null, { depart: '2026-12-03T11:37' })).toBe(false)
   })
   it('holds only the price on a row that cannot be picked', () => {
     expect(priceColumn({ picked: false, booked: false, canPick: false, canRemove: false })).toEqual({ chip: null, pick: false, remove: false })

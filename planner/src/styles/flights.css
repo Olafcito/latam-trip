@@ -38,7 +38,7 @@
     .fl-page { display: grid; }
     .fl-page:hover { background: var(--surface-2); color: var(--text); }
     .fl-day[aria-checked='false']:hover { background: var(--surface-2); }
-    button.fl-chip:hover { background: color-mix(in srgb, var(--booked) 22%, transparent); }
+    button.fl-chip[data-booked]:hover { background: color-mix(in srgb, var(--booked) 88%, white); }
   }
 
   .fl-bar { display: flex; align-items: center; gap: 8px; min-height: var(--hit); }
@@ -96,7 +96,8 @@
   /* Picked, or Booked in the booked green. A booked one that opens its booking is a button of the same shape */
   .fl-chip { position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 0 10px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--in) 14%, transparent); color: var(--in); font: inherit; font-size: var(--fs-small); font-weight: 600; white-space: nowrap; }
   .fl-chip svg { flex: none; }
-  .fl-chip[data-booked] { background: color-mix(in srgb, var(--booked) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--booked) 45%, transparent); color: var(--booked); }
+  /* Booked is filled, the booked green with the ground's dark ink, so it reads apart from Picked at a glance */
+  .fl-chip[data-booked] { background: var(--booked); color: var(--ground); }
   button.fl-chip { cursor: pointer; transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease; }
   button.fl-chip::after { content: ''; position: absolute; inset: calc((28px - var(--hit)) / 2) 0; }
   button.fl-chip:active { transform: scale(0.97); }

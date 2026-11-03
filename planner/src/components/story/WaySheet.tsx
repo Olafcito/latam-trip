@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { AppData, Booking, Way } from '../../data/types'
-import { priceColumn } from '../../lib/booked'
+import { isBookedFlight, priceColumn } from '../../lib/booked'
 import { clock, hours, kr, nextDayMark, shortPlace, weekdayDay } from '../../lib/format'
 import type { FlightLink } from '../../lib/links'
 import { wayLinks } from '../../lib/links'
@@ -9,7 +9,7 @@ import { dayOf, type WayChoice } from '../../lib/ways'
 import { kindOf, nightsText, rowFares, rowNotes, type WayRow } from '../../lib/wayRows'
 import { FlightLinks } from '../FlightLinks'
 import { Check, Plane } from '../icons'
-import { Days } from './FlightSheet'
+import { Chip, Days } from './FlightSheet'
 
 // The way in or the way home opened like any other leg: the days it can leave with a price each, and
 // the ways of the day you look at as tickets, airline, when it leaves and lands with the airports in
@@ -46,16 +46,14 @@ function WayState({ total, picked, booked, works, label, onPick, onOpenBooking }
   return (
     <div className="fl-price">
       {(col.chip || col.pick) && <b>{kr(total)}</b>}
-      {col.chip === 'Booked' && onOpenBooking
-        ? <button type="button" className="fl-chip" data-booked onClick={onOpenBooking} aria-label="Booked, open the booking"><Check /> Booked</button>
-        : col.chip && <span className="fl-chip" data-booked={col.chip === 'Booked' || undefined}><Check /> {col.chip}</span>}
+      {col.chip && <Chip text={col.chip} onOpen={onOpenBooking} />}
       {col.pick && <button type="button" className="btn small" aria-label={`Pick ${label}${total != null ? `, ${kr(total)} for both ways` : ''}`} onClick={onPick}>Pick</button>}
     </div>
   )
 }
 
-function WayRowView({ r, picked, booked, dir, other, data, name, onPick, onOpenBooking }: {
-  r: WayRow; picked: boolean; booked: boolean; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: () => void; onOpenBooking?: () => void
+function WayRowView({ r, picked, booking, dir, other, data, name, onPick, onOpenBooking }: {
+  r: WayRow; picked: boolean; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: () => void; onOpenBooking?: () => void
 }) {
   const w = r.way
   const air = carriersOf(w, data)
@@ -92,7 +90,7 @@ function WayRowView({ r, picked, booked, dir, other, data, name, onPick, onOpenB
           <small data-other={w.arrive.slice(0, 10) !== w.depart.slice(0, 10)}>{weekdayDay(w.arrive)}</small>
         </div>
       </div>
-      <WayState total={r.total} picked={picked} booked={picked && booked} works={r.works} label={label} onPick={onPick} onOpenBooking={onOpenBooking} />
+      <WayState total={r.total} picked={picked} booked={picked && isBookedFlight(booking, w)} works={r.works} label={label} onPick={onPick} onOpenBooking={onOpenBooking} />
       {notes.length > 0 && (
         <ul className="fl-notes">
           {notes.map((x) => <li key={x.text} data-bad={!!x.bad} data-strong={!!x.strong}>{x.text}</li>)}
@@ -103,8 +101,8 @@ function WayRowView({ r, picked, booked, dir, other, data, name, onPick, onOpenB
 }
 
 /** The ways of one day. Its own part, so Show all starts over with each day. */
-function DayList({ rows, current, booked, dir, other, data, name, onPick, onOpenBooking }: {
-  rows: WayRow[]; current: string; booked: boolean; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: (r: WayRow) => void; onOpenBooking?: () => void
+function DayList({ rows, current, booking, dir, other, data, name, onPick, onOpenBooking }: {
+  rows: WayRow[]; current: string; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick: (r: WayRow) => void; onOpenBooking?: () => void
 }) {
   const [all, setAll] = useState(false)
   const shown = all ? rows : rows.slice(0, SHOWN)
@@ -113,7 +111,7 @@ function DayList({ rows, current, booked, dir, other, data, name, onPick, onOpen
       <ol className="fl-rows">
         {shown.map((r) => (
           <li key={r.way.id}>
-            <WayRowView r={r} picked={r.way.id === current} booked={booked} dir={dir} other={other} data={data} name={name} onPick={() => onPick(r)} onOpenBooking={onOpenBooking} />
+            <WayRowView r={r} picked={r.way.id === current} booking={booking} dir={dir} other={other} data={data} name={name} onPick={() => onPick(r)} onOpenBooking={onOpenBooking} />
           </li>
         ))}
       </ol>
@@ -194,7 +192,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, onPick
       <div className="fl-list">
         {rows.length === 0
           ? <div className="fl-none"><p>No ways saved for {weekdayDay(at)}</p></div>
-          : <DayList key={at} rows={rows} current={way.id} booked={!!booking} dir={dir} other={other} data={data} name={name} onPick={pick} onOpenBooking={onOpenBooking} />}
+          : <DayList key={at} rows={rows} current={way.id} booking={booking ?? null} dir={dir} other={other} data={data} name={name} onPick={pick} onOpenBooking={onOpenBooking} />}
       </div>
       <footer className="fl-foot">
         <FlightLinks links={links} />
