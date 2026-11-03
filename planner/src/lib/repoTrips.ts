@@ -1,5 +1,6 @@
 import type { InOut, Ticket, Way } from '../data/types'
 import { journeyIsValid, type Hop, type Journey, type Place } from './journey'
+import type { PlannedStay } from './stays'
 
 // The Supabase trips table (written by tripdb save-trip) as planner journeys.
 // A trip brings its own way in and way home. They are kept under the trip's own ids, since way ids in
@@ -25,8 +26,8 @@ export interface RowPlace {
   arrive?: string | null
   depart?: string | null
   stay?: Record<string, unknown> | null
-  /** the planned stays, TRIP_STAY in tripdb */
-  stays?: { lodging_id: string; room_id: string | null; nights?: number | null }[] | null
+  /** the planned stays, TRIP_STAY in tripdb, in the shape a journey keeps them */
+  stays?: PlannedStay[] | null
 }
 
 /** One latest trip row as returned from the Supabase trips table. */

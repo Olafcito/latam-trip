@@ -85,7 +85,7 @@ git commit -m "Keep one long haul option per day pair, the best of each city pai
 - Produces:
   - `dayOf(w: Way): string` is the local day `w.depart.slice(0, 10)`.
   - `waysOn(inout: InOut, like: Way): Record<string, Way[]>` gives ways with the same `direction`, `from` and `to` as `like`, by day, each day sorted same `type` as `like` first, then `price_dkk`. `like` itself is included even when it is not in `inout.ways` (a trip's own way).
-  - `dayFares(inout: InOut, like: Way): Record<string, number>` is the first way's `price_dkk` per day, the shape `WhenPicker` takes.
+  - `rowFares(rows: Record<string, WayRow[]>): Record<string, number>` is the price of the row a tap on each day takes, from `wayRowsByDay`, the shape `WhenPicker` takes.
   - `interface WayChoice { wayIn: Way; wayHome: Way; note: string | null }`
   - `chooseWay(inout: InOut, picked: Way, current: { wayIn: Way; wayHome: Way }): WayChoice`
 
@@ -99,7 +99,7 @@ it('keeps a trip way that is not in the built ways', () => {
   expect(waysOn(inout, tripOwnIn)['2026-12-03'][0].id).toBe('t1:in')
 })
 it('day fares are the price of the first way that day', () => {
-  expect(dayFares(inout, ticketIn)['2026-12-02']).toBe(8235)
+  expect(rowFares(wayRowsByDay(inout, ticketIn, current))['2026-12-02']).toBe(8235)
 })
 it('a ticket way sets both ways', () => {
   const c = chooseWay(inout, ticketIn1202, { wayIn: oneIn, wayHome: oneHome })
@@ -175,11 +175,11 @@ it('a pinned leg before the new arrival shows a clash, nothing is blocked', () =
 - Modify: `planner/src/styles/story.css` (or the flight sheet's stylesheet, beside `.fl-md`)
 
 **Interfaces:**
-- Consumes: `waysOn`, `dayFares`, `chooseWay`, `dayOf` (Task 2), store `setWays`, `changeEndsOf` (Task 3), `WhenPicker` props (`WhenPicker.tsx:43`), `WayTrack`, `FlightLinks`, `wayLinks(way, inout, other)`, `momondoUrl`.
+- Consumes: `waysOn`, `rowFares`, `chooseWay`, `dayOf` (Task 2), store `setWays`, `changeEndsOf` (Task 3), `WhenPicker` props (`WhenPicker.tsx:43`), `WayTrack`, `FlightLinks`, `wayLinks(way, inout, other)`, `momondoUrl`.
 - Produces: `WaySheet({ dir, way, other, data, onPick, onChangeEnds, close }: { dir: 'in' | 'home'; way: Way; other: Way; data: AppData; onPick: (c: WayChoice) => void; onChangeEnds: () => void; close: () => void })`.
 
 - [ ] **Step 1: Design pass.** Load `emil-design-eng`, then `impeccable`. Read `FlightSheet.tsx` and its CSS first, the way sheet must read as its sibling: the strip of days with a price each at the top (same component or markup as FlightSheet's days), then the ways of the looked at day as ticket rows (airline, times, stops, hub nights, bags, price, Pick), the current way marked picked. Picking shows the `note` from `chooseWay` inline for a moment before the sheet closes, or keeps the sheet open with the note, whichever `emil-design-eng` argues for. Foot: the Momondo link as `FlightLinks` does today, and beside it a second button "Change start and end".
-- [ ] **Step 2: Wire it.** The two Copenhagen legs get `picker={<WhenPicker ... fares={dayFares(...)} onSet={(d) => setWays(chooseWay(data.inout, waysOn(...)[d][0], current))} />}` and `sheet={(close) => <WaySheet ... />}`. Keep `card` for the popover fallback. `WhenPicker`'s `min`, `max` and `days` come from the days `waysOn` returns.
+- [ ] **Step 2: Wire it.** The two Copenhagen legs get `picker={<WhenPicker ... fares={rowFares(...)} onSet={(d) => setWays(chooseWay(data.inout, waysOn(...)[d][0], current))} />}` and `sheet={(close) => <WaySheet ... />}`. Keep `card` for the popover fallback. `WhenPicker`'s `min`, `max` and `days` come from the days `waysOn` returns.
 - [ ] **Step 3: Check in the running app** (dev server on port 5198 is already running, do not start another) at 375, 768 and 1440 wide on `/?trip=ctg-sal-xmas-cbb`: the day opens the calendar with prices per day, the plane and time open the way sheet, picking a ticket sets both and says so, "Change start and end" opens the picker. Signing in locally: see the controller's notes, ask the controller if the app shows the sign in page.
 - [ ] **Step 4: Run `web-design-guidelines`** on the sheet and fix what it finds. Run both app checks. Expected: PASS.
 - [ ] **Step 5: Commit** "Open the way in and the way home like any other leg, by day and by flight".
