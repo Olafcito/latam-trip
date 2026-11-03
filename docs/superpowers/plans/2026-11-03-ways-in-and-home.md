@@ -205,6 +205,6 @@ it('a pinned leg before the new arrival shows a clash, nothing is blocked', () =
 
 ### Task 6: Ship the pipeline change (controller)
 
-- [ ] **Step 1:** `AWS_PROFILE=the-deploy-profile bash infra/deploy.sh --enable-schedules`, then start a build the way `tripdb status` and `infra/` docs describe, and wait for it to finish.
+- [ ] **Step 1:** `bash infra/deploy.sh --enable-schedules` with the deploy profile, then start a build the way `tripdb status` and `infra/` docs describe, and wait for it to finish.
 - [ ] **Step 2:** In the app, open "New trip", pair "Cartagena in, Guatemala City home". Expected: a row out Wed 2 Dec with the KLM ticket at 8,235 kr beside the 3 Dec row.
 - [ ] **Step 3:** In `ctg-sal-xmas-cbb`, open the way in, pick the 2 Dec KLM ticket. Expected: both ways set, the note shows, totals update, saving works and a reload keeps it.

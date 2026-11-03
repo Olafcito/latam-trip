@@ -170,5 +170,5 @@
 ### Task 9: Ship it (controller)
 
 - [ ] **Step 1:** Apply `0014_lodgings.sql` with `supabase/migrate.py`.
-- [ ] **Step 2:** `AWS_PROFILE=the-deploy-profile bash infra/mcp/deploy.sh` and `bash infra/deploy.sh --enable-schedules` (tripdb's `TRIP_PLACE` and `add-stays` changed).
+- [ ] **Step 2:** `bash infra/mcp/deploy.sh` and `bash infra/deploy.sh --enable-schedules` with the deploy profile (tripdb's `TRIP_PLACE` and `add-stays` changed).
 - [ ] **Step 3:** Through the connector add one real place Simon named, if he has named one, or a test place that is hidden again after. Open it on a stop at 375, 768 and 1440.
