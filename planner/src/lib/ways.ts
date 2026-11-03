@@ -1,20 +1,15 @@
 import type { InOut, Way } from '../data/types'
 import { dayDiff, weekdayDay } from './format'
+import { isTripWayId } from './repoTrips'
 
 /** The local day a way leaves, "2026-12-03". */
 export function dayOf(w: Way): string {
   return w.depart.slice(0, 10)
 }
 
-// A saved trip's own way is named "{tripId}:in" or "{tripId}:home" by withTripWays.
-const TRIP_OWN = /:(in|home)$/
-const tripOwn = (id: string) => TRIP_OWN.test(id)
-
-/** The way a ticket way travels with. A trip's own way has no paired_with, its partner is the trip's other way. */
+/** The way a ticket way travels with. A trip's own ticket ways are paired with each other by withTripWays. */
 function partnerOf(inout: InOut, w: Way): Way | undefined {
-  if (w.paired_with) return inout.ways[w.paired_with]
-  if (tripOwn(w.id)) return inout.ways[w.id.replace(TRIP_OWN, w.direction === 'in' ? ':home' : ':in')]
-  return undefined
+  return w.paired_with ? inout.ways[w.paired_with] : undefined
 }
 
 /**
@@ -26,17 +21,24 @@ function sameRoute(inout: InOut, like: Way): Way[] {
   const byId = new Map<string, Way>()
   for (const w of Object.values(inout.ways)) {
     if (w.direction !== like.direction || w.from !== like.from || w.to !== like.to) continue
-    if (tripOwn(w.id) && w.id !== like.id) continue
+    if (isTripWayId(w.id) && w.id !== like.id) continue
     byId.set(w.id, w)
   }
   byId.set(like.id, like)
   return [...byId.values()]
 }
 
-/** Ways between the same two cities as `like`, by day, each day with the same kind first and then the cheapest. */
+/** The same flight at the same price. A saved trip's way is a copy of a built way and has no link back to it. */
+const lookalike = (a: Way, b: Way) =>
+  a.depart === b.depart && a.arrive === b.arrive && a.from === b.from && a.to === b.to && a.price_dkk === b.price_dkk
+
+/**
+ * Ways between the same two cities as `like`, by day, each day with the same kind first and then the cheapest.
+ * A way that is the same flight as `like` at the same price is left out, `like` stays.
+ */
 export function waysOn(inout: InOut, like: Way): Record<string, Way[]> {
   const days: Record<string, Way[]> = {}
-  for (const w of sameRoute(inout, like)) (days[dayOf(w)] ??= []).push(w)
+  for (const w of sameRoute(inout, like)) if (w.id === like.id || !lookalike(w, like)) (days[dayOf(w)] ??= []).push(w)
   const kind = (w: Way) => (w.type === like.type ? 0 : 1)
   for (const list of Object.values(days)) list.sort((a, b) => kind(a) - kind(b) || a.price_dkk - b.price_dkk)
   return days
@@ -88,6 +90,6 @@ export function chooseWay(inout: InOut, picked: Way, current: { wayIn: Way; wayH
   if (other.type === 'oneways') return { ...pair(picked, other), note: null }
 
   const one = oneWayFor(inout, other)
-  if (!one) return { ...current, note: `No one ${otherLabel} is saved for any day, so the ticket stays as it was` }
+  if (!one) return { ...current, note: `There is no saved one ${otherLabel} on any day, so the ticket stays as it was` }
   return { ...pair(picked, one), note: `Your ${otherLabel} is now a one way on ${weekdayDay(one.depart)}` }
 }

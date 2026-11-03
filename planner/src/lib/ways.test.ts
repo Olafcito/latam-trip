@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut, Way } from '../data/types'
 import { mixWays } from './options'
+import { withTripWays, type TripRow } from './repoTrips'
 import { chooseWay, dayFares, dayOf, waysOn } from './ways'
 
 const way = (over: Partial<Way>): Way => ({
@@ -35,8 +36,16 @@ const otherCity = way({ id: 'I_oneway_1202_BOG', to: 'BOG', depart: '2026-12-02T
 
 const inout = inoutOf([ticketIn1202, oneIn1202, ticketIn, oneIn, ticketHome0203, ticketHome, oneHome, oneHomeDear, oneHome0204, otherCity])
 
-// a saved trip's own way, as withTripWays names it, not in the built ways
-const tripOwnIn = way({ id: 't1:in', type: 'ticket', depart: '2026-12-03T06:30', price_dkk: 7000, paired_with: 'H_ticket_0205' })
+// a saved trip's own ways, as withTripWays makes them from its row. A row way is a built way without its id
+const rowWay = ({ id: _, ...rest }: Way) => rest as unknown as TripRow['way_in']
+const tripWays = (id: string, wayIn: Way, wayHome: Way) => withTripWays(inoutOf([]), [{
+  id, version: 1, name: id, saved_at: '2026-10-29T10:00:00Z', by: 'planner', why: '',
+  way_in: rowWay(wayIn), way_home: rowWay(wayHome), places: [{ node: 'CTG', hop: null }],
+}]).ways
+const t1 = tripWays('t1', way({ type: 'ticket', depart: '2026-12-03T06:30', price_dkk: 7000, paired_with: 'H_ticket_0205' }), home({ type: 'ticket', depart: '2027-02-05T09:00' }))
+// not in the built ways
+const tripOwnIn = t1['t1:in']
+const tripOwnHome = t1['t1:home']
 
 describe('ways by day', () => {
   it('lists ways by day with the same kind first', () => {
@@ -47,6 +56,10 @@ describe('ways by day', () => {
   })
   it('keeps a trip way that is not in the built ways', () => {
     expect(waysOn(inout, tripOwnIn)['2026-12-03'][0].id).toBe('t1:in')
+  })
+  it('leaves out a built way that is the same flight as the trip way', () => {
+    const io = { ...inout, ways: { ...inout.ways, ...tripWays('t3', ticketIn, ticketHome) } }
+    expect(waysOn(io, io.ways['t3:in'])['2026-12-03'].map((w) => w.id)).toEqual(['t3:in', 'I_oneway_1203'])
   })
   it('leaves out the own ways of other trips', () => {
     const withOther = inoutOf([...Object.values(inout.ways), way({ id: 't2:in', depart: '2026-12-03T05:00', price_dkk: 1 })])
@@ -99,20 +112,17 @@ describe('choosing a way', () => {
     const c = chooseWay(io, oneIn1202, { wayIn: ticketIn, wayHome: ticketHome })
     expect(c.wayIn.id).toBe('I_ticket_1203')
     expect(c.wayHome.id).toBe('H_ticket_0205')
-    expect(c.note).toBe('No one way home is saved for any day, so the ticket stays as it was')
+    expect(c.note).toBe('There is no saved one way home on any day, so the ticket stays as it was')
     expect(() => mixWays(io, c.wayIn, c.wayHome)).not.toThrow()
   })
   it('picking a trip way of its own brings back the trip way home', () => {
-    const tripOwnHome = home({ id: 't1:home', type: 'ticket', depart: '2027-02-05T09:00', paired_with: null })
-    const own = { ...tripOwnIn, paired_with: null }
-    const io = inoutOf([...Object.values(inout.ways), own, tripOwnHome])
-    const c = chooseWay(io, own, { wayIn: oneIn, wayHome: oneHome })
+    const io = inoutOf([...Object.values(inout.ways), tripOwnIn, tripOwnHome])
+    const c = chooseWay(io, tripOwnIn, { wayIn: oneIn, wayHome: oneHome })
     expect(c.wayHome.id).toBe('t1:home')
     expect(c.note).toBe('One ticket. This also sets the way home on Fri 5 Feb')
   })
   it('a one way next to a trip way of its own turns that into a one way', () => {
-    const tripOwnHome = home({ id: 't1:home', type: 'ticket', depart: '2027-02-05T09:00', paired_with: null })
-    const c = chooseWay(inout, oneIn1202, { wayIn: { ...tripOwnIn, paired_with: null }, wayHome: tripOwnHome })
+    const c = chooseWay(inout, oneIn1202, { wayIn: tripOwnIn, wayHome: tripOwnHome })
     expect(c.wayHome.id).toBe('H_oneway_0205')
     expect(() => mixWays(inout, c.wayIn, c.wayHome)).not.toThrow()
   })

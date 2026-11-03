@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut } from '../data/types'
 import type { Journey } from './journey'
+import { mixWays } from './options'
 import {
-  localOnly, mergeTrips, parseTripsFile, resolveDeepLink, retireSeeds, rowToJourney, sameJourney,
+  isTripWayId, localOnly, mergeTrips, parseTripsFile, resolveDeepLink, retireSeeds, rowToJourney, sameJourney,
   tripParam, urlWithTrip, withTripWays, type TripRow,
 } from './repoTrips'
 
@@ -50,6 +51,23 @@ describe('withTripWays and rowToJourney', () => {
     expect(io.ways['a:home'].to).toBe('CPH')
     expect(io.tickets['TQ:abc'].price_dkk).toBe(7850)
     expect(io.tickets['TQ:abc'].observed_at).toBe('2026-10-28T17:18:27Z')
+  })
+
+  it('pairs the two ways of a trip with each other, so an unchanged trip mixes', () => {
+    // a row way written from a built way still names the built partner, which this build may not have
+    const io = withTripWays(inout, [row('a', { way_in: { ...way('CPH', 'GUA'), type: 'ticket', paired_with: 'H0042' } })])
+    expect([io.ways['a:in'].paired_with, io.ways['a:home'].paired_with]).toEqual(['a:home', 'a:in'])
+    expect(() => mixWays(io, io.ways['a:in'], io.ways['a:home'])).not.toThrow()
+  })
+
+  it('leaves two one ways of a trip unpaired', () => {
+    const one = (from: string, to: string) => ({ ...way(from, to), type: 'oneways' as const, paired_with: null })
+    const io = withTripWays(inout, [row('a', { way_in: one('CPH', 'GUA'), way_home: one('BOG', 'CPH') })])
+    expect([io.ways['a:in'].paired_with, io.ways['a:home'].paired_with]).toEqual([null, null])
+  })
+
+  it('knows the ids of the own ways of a trip', () => {
+    expect(['a:in', 'seed-1-gua-bog:home', 'I0001', 'TQ:abc'].map(isTripWayId)).toEqual([true, true, false, false])
   })
 
   it('keeps a ticket the build already has', () => {
