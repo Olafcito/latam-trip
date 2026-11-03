@@ -1,14 +1,16 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import type { Booking, CrawledFlight } from '../../data/types'
-import { isBookedFlight, parkedRow, priceColumn } from '../../lib/booked'
+import { bookedDay, bookedGate, isBookedFlight, parkedRow, priceColumn } from '../../lib/booked'
 import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../../lib/format'
 import { fareNotes, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
 import type { FlightLink } from '../../lib/links'
 import { checkedAgo, momondoUrl, nearestDay, newestSeen, pricesOn, type PairDates } from '../../lib/prices'
+import { remoteEnabled } from '../../lib/supabase'
 import { flightPricesTask } from '../../lib/tasks'
 import { AskClaude } from '../AskClaude'
 import { Caret, Check, External, Plane } from '../icons'
 import { BookedBox, type BoxData } from './BookedBox'
+import { useBookingForm, type BookTarget } from './BookingForm'
 import { stopsText } from './LegCard'
 
 // The window behind a flight on the route: the days around it, each with its cheapest fare, and the
@@ -246,7 +248,7 @@ function DayList({ rows, name, nextDay, now, onPick }: { rows: FareRow[]; name: 
   )
 }
 
-export function FlightSheet({ from, to, typical, picked, parked, booking, data, unlocked, onUnlock, date, days, fares, stay, pd, link, tripId, tripVersion, airportName, onPick, onRebook, onUseDay, close }: {
+export function FlightSheet({ from, to, typical, picked, parked, booking, data, unlocked, onUnlock, date, days, fares, stay, pd, link, tripId, tripVersion, airportName, onPick, book, onUseDay, close }: {
   from: { code: string; name: string }
   to: { code: string; name: string }
   /** the usual price of the route, or null */
@@ -274,8 +276,8 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
   tripVersion?: number
   airportName: (code: string) => string
   onPick: (f: CrawledFlight | null) => void
-  /** a flight picked on a booked leg while it is open, for the booking form. Without it the flights are there to look at only */
-  onRebook?: (f: CrawledFlight) => void
+  /** what the booking form saves to. Without it the leg is not marked here, and a booked leg's flights are there to look at only */
+  book?: BookTarget<CrawledFlight>
   /** puts the leg on a day. A booked leg keeps its day, so the sheet never calls it there */
   onUseDay?: (day: string) => void
   close: () => void
@@ -307,10 +309,16 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
     onPick(f)
     close()
   }
-  // a booked leg is held: the box shows the booking and nothing under it changes the leg
-  const hold = !!booking && !unlocked
-  const choose = booking ? onRebook : pick
   const box = useRef<HTMLElement>(null)
+  const pill = useRef<HTMLButtonElement>(null)
+  // back from the form, the focus goes to the booking it saved, or to Mark as booked when it was left
+  const form = useBookingForm(book, () => (box.current ? showBox() : pill.current?.focus({ preventScroll: true })))
+  // a booked leg is held: the box shows the booking and nothing under it changes the leg. Opened with Change
+  // booking, a flight picked there opens the form on the booking, so the save changes that row
+  const { hold, choose } = bookedGate<CrawledFlight>({
+    booking, unlocked, pick,
+    onRebook: book && booking ? (f) => form.open({ start: 'picked', picked: f, pin: f, booking, ids: () => [booking.id] }) : undefined,
+  })
   const showBox = () => {
     const b = box.current
     if (!b) return
@@ -325,6 +333,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
   const [removed, setRemoved] = useState(false)
   const said = useRef<HTMLParagraphElement>(null)
   useEffect(() => { if (removed && !booking) said.current?.focus({ preventScroll: true }) }, [removed, booking])
+  if (form.node) return form.node
   return (
     <div className="fl" data-booked={booking ? true : undefined}>
       <div className="fl-top">
@@ -333,10 +342,10 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
           <small>{from.code} to {to.code}{!picked && !booking && typical != null && `, typical price ${kr(typical)}`}</small>
         </header>
         {booking && <BookedBox ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} onRemoved={() => setRemoved(true)}
-            hint={onRebook ? 'Pick a flight below to change the booking to it.' : 'The days and the flights below are open to look at. The booking stays as it is.'} />}
+          onEdit={book ? () => form.open({ start: 'manual', edit: true, booking }) : undefined} />}
         <p ref={said} className="ws-said" role="status" tabIndex={-1}>{removed && !booking ? 'The booking is removed. The leg can change again.' : ''}</p>
         <Stay at={at} stay={stay} />
-        <Days days={days} fares={fares} at={at} leg={date} onChange={setAt} locked={hold} booked={booking ? booking.depart?.slice(0, 10) ?? date : null} />
+        <Days days={days} fares={fares} at={at} leg={date} onChange={setAt} locked={hold} booked={bookedDay(booking, date)} />
         {!hold && <div className="fl-bar">
           <b>{weekdayDay(at)}</b>
           {rows.length > 0 && <span>{rows.length === 1 ? '1 flight' : `${rows.length} flights`}{seen != null && `, ${checkedAgo(new Date(seen).toISOString(), now)}`}</span>}
@@ -380,6 +389,11 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
         <footer className="fl-foot">
           {rows.length > 0 && <a className="btn small" href={open.href} target="_blank" rel="noopener noreferrer">{open.label}<External /></a>}
           <AskClaude draft={task} tripId={tripId} version={tripVersion ?? null} title="Claude checks every flight this day and 3 days either side" />
+          {book && !booking && remoteEnabled() && (
+            <button ref={pill} type="button" className="btn small mark-booked" onClick={() => form.open({ start: picked ? 'picked' : 'manual', picked, pin: picked ?? undefined })}>
+              <Check s={14} />Mark as booked
+            </button>
+          )}
         </footer>
       )}
     </div>

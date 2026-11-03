@@ -2,7 +2,9 @@ import { create } from 'zustand'
 import { ownKey, readOwn } from '@map/data/ownKey'
 import type { AppData, Booking, CrawledFlight, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
-import { lockedLegs, wayHeld } from './lib/booked'
+import { heldWayNotice, lockedLegs, wayHeld } from './lib/booked'
+import { saveBookings } from './lib/bookings'
+import { withSaved } from './lib/bookingDraft'
 import { dayDiff } from './lib/format'
 import { applyMove, journeyIsValid, legDay, newJourney, nodeForAirport, nodeName, pinLegs, schedule, stopGoes, totals, type Hop, type Journey, type NightMove, type Place, type Schedule } from './lib/journey'
 import { applyTrips, hopBetween, type LegFacts } from './lib/mapTrips'
@@ -204,6 +206,14 @@ interface State {
   /** every booking row, cancelled ones too, read live. Empty when signed out */
   bookings: Booking[]
   setBookings: (bookings: Booking[]) => void
+  /** one booking row changed in place, before the reload lands */
+  patchBooking: (id: string, change: Partial<Booking>) => void
+  /**
+   * Saves the rows of a booking and pins what they book, as a pick by hand does: leg i on the day of the first row
+   * and on its flight, or the ways chosen. A way choice that would move another booked way is refused before
+   * anything is saved. A row with an id updates that row, so a booking changed from its window stays one booking.
+   */
+  markBooked: (rows: Partial<Booking>[], leg: { i: number; flight?: CrawledFlight | null } | { way: 'in' | 'home'; choice?: WayChoice }) => Promise<{ ok: true; ids: string[] } | { ok: false; message: string }>
   /**
    * the booked leg (its place index) or way whose booking is being changed. A booked leg or way holds its day
    * until then, and holds it again once the change is made
@@ -215,6 +225,40 @@ interface State {
 export const useStore = create<State>((set, get) => ({
   bookings: [],
   setBookings: (bookings) => set({ bookings }),
+  patchBooking: (id, change) => set({ bookings: get().bookings.map((b) => (b.id === id ? { ...b, ...change } : b)) }),
+  markBooked: async (rows, leg) => {
+    const s = get()
+    const { journey: j, data } = s
+    if (!j || !data || !rows.length) return { ok: false, message: 'Open a trip first.' }
+    let ways: { wayIn: Way; wayHome: Way } | null = null
+    if ('way' in leg && leg.choice) {
+      // the rows being saved are the booking being changed, so they do not hold the ways they replace
+      const changing = new Set(rows.map((r) => r.id).filter(Boolean))
+      const k = keptWays(j, leg.choice.wayIn, leg.choice.wayHome, { ...s, bookings: s.bookings.filter((b) => !changing.has(b.id)) })
+      if (k.kept) return { ok: false, message: heldWayNotice(k.wayIn.id !== leg.choice.wayIn.id ? 'in' : 'home') }
+      ways = k
+    }
+    const saved = await saveBookings(rows)
+    if (!saved.ok) return saved
+    set({ bookings: withSaved(get().bookings, rows, saved.ids) })
+    const now = get().journey
+    // another trip opened while the rows were saved, so this one is left as it is
+    if (!now || now.id !== j.id) return { ok: true, ids: saved.ids }
+    if (ways) {
+      if (ways.wayIn.id !== now.wayIn || ways.wayHome.id !== now.wayHome) get().setJourney(withEnds(now, data.inout, data.map, ways.wayIn, ways.wayHome))
+    } else if ('i' in leg) {
+      const h = now.places[leg.i]?.hop
+      const day = rows[0].depart?.slice(0, 10)
+      const f = leg.flight ?? null
+      if (h && day && (h.date !== day || (f && h.flight?.quote_id !== f.quote_id))) {
+        const base = pinned(now, get())
+        const hop = f ? withFlight(h, f) : { ...h, date: day }
+        get().setJourney({ ...base, places: base.places.map((q, k) => (k === leg.i ? { ...q, hop } : q)) })
+      }
+    }
+    set({ unlocked: null })
+    return { ok: true, ids: saved.ids }
+  },
   unlocked: null,
   setUnlocked: (unlocked) => set({ unlocked }),
   data: null,

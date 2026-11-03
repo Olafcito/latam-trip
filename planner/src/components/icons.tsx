@@ -92,11 +92,12 @@ export const Grip = ({ s = 14 }: { s?: number }) => (
   </svg>
 )
 
-/** Opens elsewhere: an arrow out of a box. */
+/** Done or booked: a check. */
 export const Check = ({ s = 13 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.6} {...base}><path d="M5 12.5l4.5 4.5L19 7" /></svg>
 )
 
+/** Opens elsewhere: an arrow out of a box. */
 export const External = ({ s = 12 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
     <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
@@ -123,5 +124,81 @@ export const Doc = ({ s = 16 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
     <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
     <path d="M14 3v5h5" />
+  </svg>
+)
+
+/** Edit: a pencil. */
+export const Pencil = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4" />
+  </svg>
+)
+
+/** Money back: an arrow turning back on itself. */
+export const Refund = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M4 5v5h5" />
+    <path d="M4.6 14.5A8 8 0 1 0 6 7.5L4 10" />
+  </svg>
+)
+
+/** Another day: a calendar with an arrow on it. */
+export const Rebook = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="3" y="5" width="18" height="16" rx="3" />
+    <path d="M3 10h18M8 3v4M16 3v4M9 15.5h6M13 13l2.5 2.5L13 18" />
+  </svg>
+)
+
+/** A checked bag: a suitcase standing up. */
+export const Suitcase = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="6" y="6" width="12" height="14" rx="2.5" />
+    <path d="M10 6V3.5h4V6M10 10v6M14 10v6M9 20v1.5M15 20v1.5" />
+  </svg>
+)
+
+/** A person, for travellers. */
+export const Person = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
+  </svg>
+)
+
+/** Who sold it: a shop front. */
+export const Shop = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M4 9.5 5.5 4h13L20 9.5M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0M5.5 12v8h13v-8M10 20v-5h4v5" />
+  </svg>
+)
+
+/** A ticket: a stub with its notches. */
+export const Ticket = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z" />
+    <path d="M14 6v12" strokeDasharray="2 2.5" />
+  </svg>
+)
+
+/** A booking reference: a hash. */
+export const Hash = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M9 4 7 20M17 4l-2 16M4.5 9h16M3.5 15h16" />
+  </svg>
+)
+
+/** A web address: two links of a chain. */
+export const Link = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
+    <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
+  </svg>
+)
+
+/** Notes: lines of text. */
+export const Note = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M5 6h14M5 11h14M5 16h9" />
   </svg>
 )

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking, Way } from '../data/types'
-import { bookedCount, bookedElsewhere, bookedMark, bookingOn, endsMatch, heldWayNotice, isBookedFlight, lockedLegs, paidPrice, parkedRow, priceColumn, stayOn, wayBooking, wayHeld, type BookData } from './booked'
+import { bookedCount, bookedDay, bookedGate, bookedElsewhere, bookedMark, bookingOn, endsMatch, heldWayNotice, isBookedFlight, lockedLegs, paidPrice, parkedRow, priceColumn, stayOn, wayBooking, wayHeld, type BookData } from './booked'
 import type { Hop, Journey, Schedule } from './journey'
 
 // Made up rows only. A real reference, price or name never goes in this file.
@@ -139,7 +139,7 @@ describe('paidPrice', () => {
     const list = [back, out]
     expect(paidPrice(list, out)).toBe(8000)
     expect(paidPrice(list, back)).toBe(0)
-    expect(paidPrice(list, out) + paidPrice(list, back)).toBe(8000)
+    expect(paidPrice(list, out)! + paidPrice(list, back)!).toBe(8000)
   })
 
   it('a group that leaves at the same moment goes by id', () => {
@@ -148,9 +148,41 @@ describe('paidPrice', () => {
     expect([paidPrice([b, a], a), paidPrice([b, a], b)]).toEqual([700, 0])
   })
 
-  it('a row without a ticket pays its own price, and no price is 0', () => {
+  it('a row without a ticket pays its own price, and no price is not known', () => {
     expect(paidPrice([], row({ price_dkk: 900 }))).toBe(900)
-    expect(paidPrice([], row({ price_dkk: null }))).toBe(0)
+    expect(paidPrice([], row({ price_dkk: null }))).toBeNull()
+  })
+
+  it('a ticket whose first row has no price is not known on any of its rows', () => {
+    const out = row({ id: 'r-b', ticket: 'T', price_dkk: null, depart: '2026-12-02T09:55' })
+    const back = row({ id: 'r-a', ticket: 'T', price_dkk: 0, depart: '2027-02-04T12:00' })
+    expect([paidPrice([out, back], out), paidPrice([out, back], back)]).toEqual([null, null])
+  })
+})
+
+describe('bookedGate', () => {
+  const pick = (x: string) => x
+  const onRebook = (x: string) => x
+  const b = row({ depart: '2026-12-08T06:15' })
+
+  it('lets a leg with no booking pick as before', () => {
+    expect(bookedGate({ booking: null, unlocked: false, onRebook, pick })).toEqual({ hold: false, choose: pick })
+  })
+
+  it('gives a booked leg no pick at all while it is locked, with or without onRebook', () => {
+    expect(bookedGate({ booking: b, unlocked: false, onRebook, pick })).toEqual({ hold: true, choose: undefined })
+    expect(bookedGate({ booking: b, unlocked: false, pick })).toEqual({ hold: true, choose: undefined })
+  })
+
+  it('sends a pick on an unlocked booked leg to the booking form, never to the plain pick', () => {
+    expect(bookedGate({ booking: b, unlocked: true, onRebook, pick })).toEqual({ hold: false, choose: onRebook })
+    expect(bookedGate({ booking: b, unlocked: true, pick }).choose).toBeUndefined()
+  })
+
+  it('bookedDay is the day the booking leaves, else the leg day, and nothing for no booking', () => {
+    expect(bookedDay(b, '2026-12-09')).toBe('2026-12-08')
+    expect(bookedDay(row({ depart: null }), '2026-12-09')).toBe('2026-12-09')
+    expect(bookedDay(null, '2026-12-09')).toBeNull()
   })
 })
 

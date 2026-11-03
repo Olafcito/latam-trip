@@ -371,7 +371,7 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
   const { inout, map } = data
   const wi = inout.ways[j.wayIn]
   const wh = inout.ways[j.wayHome]
-  /** what was paid for the leg, or null when it is not booked */
+  /** what was paid for the leg, or null when it is not booked or its price is not filled in, so its quote counts */
   const paid = (leg: { from: string; to: string; day: string }) => {
     const b = bookingOn(bookings, data, leg)
     return b ? paidPrice(bookings, b) : null
@@ -402,7 +402,8 @@ export function totals(data: AppData, j: Journey, sched: Schedule | null, bookin
   for (const s of sched?.places ?? []) {
     if (s.outDay <= s.inDay) continue
     for (const b of staysIn(bookings, s.node, { first: s.inDay, last: addDays(s.outDay, -1) })) {
-      if (!stayIds.has(b.id)) staysBooked += paidPrice(bookings, b)
+      // a stay has no quote of its own here, so one with no price filled in adds nothing
+      if (!stayIds.has(b.id)) staysBooked += paidPrice(bookings, b) ?? 0
       stayIds.add(b.id)
     }
   }

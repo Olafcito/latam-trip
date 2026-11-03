@@ -46,6 +46,19 @@ export function flightPricesTask(leg: { from: string; to: string; date: string; 
   )
 }
 
+/**
+ * A booking task: Simon says where the booking is, in his mail or on a site, and Claude fills the row for the leg
+ * with add_booking and the attach tools. The leg carries its kind, the codes of its two ends and its day.
+ */
+export function bookingTask(leg: { kind: string; from: string; to: string; day: string; fromName?: string; toName?: string }, text: string): TaskDraft {
+  const task: Task = { type: 'booking', leg: { kind: leg.kind, from: leg.from, to: leg.to, day: leg.day }, text, from: 'app' }
+  return taskDraft(
+    `${leg.from} to ${leg.to} ${day(leg.day)}`,
+    `Fill in the booking of ${leg.fromName ?? leg.from} to ${leg.toName ?? leg.to} on ${day(leg.day)}.`,
+    task,
+  )
+}
+
 const COLS = 'id,type,status,title,trip_id,trip_version,created_at,done_at,result'
 
 export type InsertResult = { ok: true; id: number } | { ok: false; message: string }

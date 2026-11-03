@@ -1,6 +1,6 @@
 import type { Booking, BookingFile } from '../data/types'
 import { fileProblem } from './bookings'
-import { clock, dec1, hours, kr, nextDayMark, weekdayDay } from './format'
+import { clock, dec1, hours, kr, nextDayMark, thousands, weekdayDay } from './format'
 
 // What the booked box shows, read from the booking row alone (Task 8). The row is the truth, so a box
 // whose leg has no picked flight, or another one, still shows everything the booking holds.
@@ -47,15 +47,21 @@ function terms(answer: string | null | undefined, until: string | null): string 
   return answer ?? (last ? `Until ${last}` : null)
 }
 
+/** An amount in its own currency, Danish style: "100", "1.250,50". */
+function amount(n: number): string {
+  const cents = Math.round(Math.abs(n) * 100) % 100
+  return cents ? `${thousands(Math.trunc(n))},${String(cents).padStart(2, '0')}` : thousands(n)
+}
+
 function paid(b: Booking): string | null {
   // a second row of a shared ticket holds 0, and the first row holds the price
   if (b.price_dkk == null || !Number.isFinite(b.price_dkk)) return null
   if (b.price_dkk <= 0) return b.ticket ? 'On the shared ticket' : null
-  const own = b.price != null && b.currency && b.currency.toUpperCase() !== 'DKK' ? `, paid as ${b.price} ${b.currency.toUpperCase()}` : ''
+  const own = b.price != null && b.currency && b.currency.toUpperCase() !== 'DKK' ? `, paid as ${amount(b.price)} ${b.currency.toUpperCase()}` : ''
   return kr(b.price_dkk) + own
 }
 
-/** The fact rows that are set, in the order seller, price paid, bags, refundable, changeable, travellers. */
+/** The fact rows that are set, in the order seller, price paid, bags, refundable, changeable, travellers above 1. */
 export function boxFacts(b: Booking): Fact[] {
   const text = (s: string | null) => (s && s.trim() ? s.trim() : null)
   const rows: [Fact['key'], string, string | null][] = [
@@ -65,9 +71,52 @@ export function boxFacts(b: Booking): Fact[] {
     ['checked', 'Checked bag', text(b.checked_bag)],
     ['refundable', 'Refundable', terms(b.refundable && REFUND[b.refundable], b.cancel_until)],
     ['changeable', 'Changeable', terms(b.changeable && CHANGE[b.changeable], b.change_until)],
-    ['travellers', 'Travellers', b.travellers > 0 ? String(b.travellers) : null],
+    // the column holds 1 unless more were booked, and one traveller is not worth a row
+    ['travellers', 'Travellers', b.travellers > 1 ? String(b.travellers) : null],
   ]
   return rows.filter((r): r is [Fact['key'], string, string] => r[2] != null).map(([key, label, value]) => ({ key, label, value }))
+}
+
+/** A fact as a chip: a short word or amount on it, the whole fact for its tooltip and for a screen reader. */
+export interface BoxChip {
+  key: Fact['key']
+  text: string
+  /** the last day the answer holds, "Mon 30 Nov" */
+  until?: string
+  /** ok reads green, part amber and no faint */
+  tone?: 'ok' | 'part' | 'no'
+  label: string
+}
+
+const REFUND_CHIP: Record<string, [string, BoxChip['tone']]> = { yes: ['Refundable', 'ok'], partly: ['Part refund', 'part'], no: ['No refund', 'no'] }
+const CHANGE_CHIP: Record<string, [string, BoxChip['tone']]> = { yes: ['Changeable', 'ok'], fee: ['Change for a fee', 'part'], no: ['No changes', 'no'] }
+
+/** A bag reads ok when it is included and no when it is not, else it stays plain. */
+function bagTone(v: string): BoxChip['tone'] {
+  if (/^(no|none|not)\b/i.test(v)) return 'no'
+  return /includ/i.test(v) ? 'ok' : undefined
+}
+
+/** The facts of a booking as chips, in the order boxFacts keeps. */
+export function boxChips(b: Booking): BoxChip[] {
+  return boxFacts(b).map((f): BoxChip => {
+    const label = `${f.label}, ${f.value}`
+    const chip = (text: string, more: Partial<BoxChip> = {}): BoxChip => {
+      const c: BoxChip = { key: f.key, text, label }
+      if (more.until) c.until = more.until
+      if (more.tone) c.tone = more.tone
+      return c
+    }
+    if (f.key === 'paid') return chip(b.price_dkk && b.price_dkk > 0 ? kr(b.price_dkk) : 'Shared ticket')
+    if (f.key === 'cabin' || f.key === 'checked') return chip(f.value, { tone: bagTone(f.value) })
+    if (f.key === 'refundable' || f.key === 'changeable') {
+      const answer = f.key === 'refundable' ? b.refundable : b.changeable
+      const until = f.key === 'refundable' ? b.cancel_until : b.change_until
+      const [text, tone] = (answer && (f.key === 'refundable' ? REFUND_CHIP : CHANGE_CHIP)[answer]) || [f.key === 'refundable' ? 'Refund' : 'Change', undefined]
+      return chip(text, { tone, until: until && answer !== 'no' ? weekdayDay(until) : undefined })
+    }
+    return chip(f.value)
+  })
 }
 
 export type BoxSegment =

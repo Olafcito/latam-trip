@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking } from '../data/types'
-import { boxFacts, boxHead, boxSegments, fileMessage, fileTile } from './bookedBox'
+import { boxChips, boxFacts, boxHead, boxSegments, fileMessage, fileTile } from './bookedBox'
 
 // Made up rows only. A real reference, price or name never goes in this file.
 const row = (over: Partial<Booking>): Booking => ({
@@ -39,8 +39,9 @@ describe('boxHead', () => {
 })
 
 describe('boxFacts', () => {
-  it('shows nothing but the travellers when nothing else is set', () => {
-    expect(boxFacts(row({}))).toEqual([{ key: 'travellers', label: 'Travellers', value: '1' }])
+  it('shows nothing when nothing is set, and one traveller is not worth a row', () => {
+    expect(boxFacts(row({}))).toEqual([])
+    expect(boxFacts(row({ travellers: 0 }))).toEqual([])
   })
 
   it('keeps the order seller, price paid, bags, refundable, changeable, travellers', () => {
@@ -71,6 +72,7 @@ describe('boxFacts', () => {
 
   it('adds the amount in its own currency when it was paid in another', () => {
     expect(boxFacts(row({ price_dkk: 700, price: 100, currency: 'USD' }))[0].value).toBe('700 kr, paid as 100 USD')
+    expect(boxFacts(row({ price_dkk: 9100, price: 1250.5, currency: 'eur' }))[0].value).toBe('9.100 kr, paid as 1.250,50 EUR')
     expect(boxFacts(row({ price_dkk: 700, price: 700, currency: 'DKK' }))[0].value).toBe('700 kr')
   })
 
@@ -81,7 +83,41 @@ describe('boxFacts', () => {
   })
 
   it('drops a blank seller or bag', () => {
-    expect(boxFacts(row({ seller: '  ', cabin_bag: '' })).map((f) => f.key)).toEqual(['travellers'])
+    expect(boxFacts(row({ seller: '  ', cabin_bag: '' })).map((f) => f.key)).toEqual([])
+  })
+})
+
+describe('boxChips', () => {
+  it('turns every fact into a short chip, the whole fact kept for its tooltip', () => {
+    const chips = boxChips(row({
+      seller: 'Test Air', price_dkk: 700, price: 100, currency: 'USD', cabin_bag: 'Included', checked_bag: 'Not included',
+      refundable: 'partly', cancel_until: '2026-11-30', changeable: 'fee', change_until: '2026-12-01', travellers: 2,
+    }))
+    expect(chips).toEqual([
+      { key: 'seller', text: 'Test Air', label: 'Seller, Test Air' },
+      { key: 'paid', text: '700 kr', label: 'Price paid, 700 kr, paid as 100 USD' },
+      { key: 'cabin', text: 'Included', tone: 'ok', label: 'Cabin bag, Included' },
+      { key: 'checked', text: 'Not included', tone: 'no', label: 'Checked bag, Not included' },
+      { key: 'refundable', text: 'Part refund', until: 'Mon 30 Nov', tone: 'part', label: 'Refundable, Partly, until Mon 30 Nov' },
+      { key: 'changeable', text: 'Change for a fee', until: 'Tue 1 Dec', tone: 'part', label: 'Changeable, For a fee, until Tue 1 Dec' },
+      { key: 'travellers', text: '2', label: 'Travellers, 2' },
+    ])
+  })
+
+  it('reads yes and no as a word on the chip', () => {
+    const c = boxChips(row({ refundable: 'yes', changeable: 'no' }))
+    expect(c.map((x) => [x.text, x.tone])).toEqual([['Refundable', 'ok'], ['No changes', 'no']])
+    const n = boxChips(row({ refundable: 'no', changeable: 'yes', change_until: '2026-12-01' }))
+    expect(n.map((x) => [x.text, x.tone, x.until])).toEqual([['No refund', 'no', undefined], ['Changeable', 'ok', 'Tue 1 Dec']])
+  })
+
+  it('keeps a last day with no answer, and names a second row of a shared ticket', () => {
+    expect(boxChips(row({ cancel_until: '2026-11-30' }))).toEqual([{ key: 'refundable', text: 'Refund', until: 'Mon 30 Nov', label: 'Refundable, Until Mon 30 Nov' }])
+    expect(boxChips(row({ price_dkk: 0, ticket: 'T1' }))[0]).toEqual({ key: 'paid', text: 'Shared ticket', label: 'Price paid, On the shared ticket' })
+  })
+
+  it('has no chips when nothing is set', () => {
+    expect(boxChips(row({}))).toEqual([])
   })
 })
 

@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Family } from '@map/data/types'
 import { Flag, hasFlag } from '@map/map/Flag'
-import type { AppData, Booking, MapNode, Way } from '../../data/types'
+import type { AppData, Booking, CrawledFlight, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
@@ -14,11 +14,13 @@ import { countryName } from '../../lib/colors'
 import { hopLink, wayLinks } from '../../lib/links'
 import { dayOf, type WayChoice } from '../../lib/ways'
 import { pickOfDay, rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
+import { remoteEnabled } from '../../lib/supabase'
 import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
 import { Boat, Bus, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
+import { BookingForm, type BookTarget, type FormLeg } from './BookingForm'
 import { CityCard } from './CityCard'
 import { FlightSheet } from './FlightSheet'
 import { LegCard, type LegEnds } from './LegCard'
@@ -177,7 +179,9 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   set: boolean; known: boolean
   /** the calendar, or null for a leg whose day cannot move */
   picker: ReactNode | null
-  travel: ReactNode; card: ReactNode
+  travel: ReactNode
+  /** the card, or one made with the dismiss of its popover, for a button in it that opens something in its place */
+  card: ReactNode | ((dismiss: () => void) => ReactNode)
   /** the flights to choose from, shown in a window in place of the ticket */
   sheet?: (close: () => void) => ReactNode
   /** what the mode button says, Leg adds whether it is booked */
@@ -222,7 +226,7 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
         ) : (
           <span className="pop-wrap" {...pop.wrap}>
             <button type="button" className="st-hop" data-booked={booking ? true : undefined} aria-label={label} {...pop.trigger}>{mode}</button>
-            {pop.open && <div className={`pop${tone ? ' way' : ''}`} role="dialog" aria-label={route} {...pop.panel}><Shut on={pop.dismiss} />{card}</div>}
+            {pop.open && <div className={`pop${tone ? ' way' : ''}`} role="dialog" aria-label={route} {...pop.panel}><Shut on={pop.dismiss} />{typeof card === 'function' ? card(pop.dismiss) : card}</div>}
           </span>
         )}
         {times && <span className="st-arrives">{times}</span>}
@@ -288,6 +292,14 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   }, [inout, wayIn, wayHome, journey.id])
   // the stop whose City card is open. A stop deleted from the card goes once the card has closed
   const [city, setCity] = useState<number | null>(null)
+  // the bus or boat leg whose booking form is open, by its place index
+  const [bookFor, setBookFor] = useState<number | null>(null)
+  let bookForm: ReactNode = null
+  const remote = remoteEnabled()
+  // what a booking form saves to: the rows, then the leg pinned on them
+  const target = <P,>(leg: FormLeg, save: BookTarget<P>['save']): BookTarget<P> => ({
+    leg, inout, data, tripId: journey.id, tripVersion: journey.version ?? null, save,
+  })
   const goes = useRef(false)
   const press = (m: NightMove | null) => (m ? () => moveNights(m) : null)
   // a pick that would change a booked way changes nothing and says why, in the sheet or as a notice
@@ -339,8 +351,13 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const wayBooked = { in: wayBooking(bookings, data, wayIn), home: wayBooking(bookings, data, wayHome) }
   const waySheet = (dir: 'in' | 'home', w: Way, other: Way, rows: Record<string, WayRow[]>) => (close: () => void) => (
     <WaySheet
-      dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} booking={wayBooked[dir]}
-      unlocked={unlocked === dir} onUnlock={(on) => setUnlocked(on ? dir : null)} onPick={tryWay} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
+      dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} booking={wayBooked[dir]} pair={wayBooked}
+      unlocked={unlocked === dir} onUnlock={(on) => setUnlocked(on ? dir : null)} onPick={tryWay} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)}
+      book={remote ? target<WayChoice>(
+        { kind: 'flight', from: w.from, to: w.to, day: dayOf(w), tripId: journey.id, fromName: airportName(w.from), toName: airportName(w.to) },
+        (rows, choice) => useStore.getState().markBooked(rows, { way: dir, choice }),
+      ) : undefined}
+      close={close} />
   )
 
   const items: ReactNode[] = [
@@ -372,6 +389,22 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       const booking = bookingOn(bookings, data, { from: ps[i - 1].node, to: p.node, day: date })
       // a locked leg keeps its day, so a parked flight is shown there without the button that would move it
       const movable = !locked.has(i) || unlocked === i
+      // a bus or a boat has no sheet, so its card marks it, in a form of its own
+      const ground = fam !== 'flight' && remote
+      const kind = fam === 'boat' ? 'boat' : 'bus'
+      if (ground && bookFor === i) {
+        bookForm = (
+          <Modal label={`Mark ${route} as booked`} className="fl-md" onClose={() => setBookFor(null)}>
+            {(close) => (
+              <BookingForm
+                target={target<never>({ kind, from: ps[i - 1].node, to: p.node, day: date, tripId: journey.id, fromName: ends.fromName, toName: ends.toName },
+                  (rows) => useStore.getState().markBooked(rows, { i }))}
+                open={{ start: 'manual' }} onDone={close}
+              />
+            )}
+          </Modal>
+        )
+      }
       items.push(
         <Leg
           key={`h${i}`}
@@ -389,7 +422,12 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${took ? `, ${took}` : ''}${h.overnight ? ', overnight' : ''}`}
           travel={<Travel fam={fam} time={took} overnight={!!h.overnight} off={flightOffDay(h)} />}
           picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} onSet={(d) => setHopDate(i, d)} />}
-          card={<LegCard h={h} ends={ends} family={fam} date={date} time={time} points={fam === 'flight' ? null : pointsOf([h.from, ...time.via, h.to])} link={hopLink(h, inout)} />}
+          card={(dismiss) => (
+            <LegCard
+              h={h} ends={ends} family={fam} date={date} time={time} points={fam === 'flight' ? null : pointsOf([h.from, ...time.via, h.to])} link={hopLink(h, inout)}
+              onBook={ground && !booking ? () => { dismiss(); setBookFor(i) } : undefined}
+            />
+          )}
           sheet={codes ? (close) => (
             <FlightSheet
               from={{ code: codes.from, name: ends.fromName }}
@@ -418,6 +456,10 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
               tripVersion={journey.version}
               airportName={airportName}
               onPick={(x) => setHopFlight(i, x)}
+              book={remote ? target<CrawledFlight>(
+                { kind: 'flight', from: codes.from, to: codes.to, day: date, tripId: journey.id, fromName: ends.fromName, toName: ends.toName },
+                (rows, flight) => useStore.getState().markBooked(rows, { i, flight: flight ?? null }),
+              ) : undefined}
               onUseDay={movable ? (d) => setHopDate(i, d) : undefined}
               close={close}
             />
@@ -477,6 +519,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   return (
     <>
       <ol className="st">{items}</ol>
+      {bookForm}
       {city != null && ps[city] && (
         <Modal
           label={nm(ps[city].node)}

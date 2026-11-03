@@ -4,7 +4,7 @@ import { stopsOf } from '../../lib/fares'
 import type { Hop, LegTime } from '../../lib/journey'
 import { sourceLabel } from '../../lib/prices'
 import type { FlightLink } from '../../lib/links'
-import { External, ModeChip, Moon } from '../icons'
+import { Check, External, ModeChip, Moon } from '../icons'
 import type { Family } from '@map/data/types'
 import type { LegPoint } from './LegMap'
 
@@ -39,7 +39,7 @@ function Track({ codes, waits, family }: { codes: string[]; waits: (number | nul
   )
 }
 
-export function LegCard({ h, ends, family, date, time, points, link }: {
+export function LegCard({ h, ends, family, date, time, points, link, onBook }: {
   h: Hop
   ends: LegEnds
   family: Family
@@ -49,6 +49,8 @@ export function LegCard({ h, ends, family, date, time, points, link }: {
   /** the way on the map, with the places it goes through, or null for no map */
   points: LegPoint[] | null
   link: FlightLink | null
+  /** opens the booking form, for a bus or a boat that is not booked yet */
+  onBook?: () => void
 }) {
   const f = h.flight
   const codes = [ends.fromCode ?? ends.fromName, ...(f?.via ?? []), ends.toCode ?? ends.toName]
@@ -100,9 +102,10 @@ export function LegCard({ h, ends, family, date, time, points, link }: {
         <small>{f ? `${f.source ? sourceLabel(f.source) : 'Picked fare'}${seen ? `, seen ${observed(seen)}` : ''}` : h.price_dkk != null ? 'Typical price for this route' : 'No price yet'}</small>
       </div>
 
-      {link && (
+      {(link || onBook) && (
         <footer className="lc-act">
-          <a className="btn small" href={link.href} target="_blank" rel="noopener noreferrer">{link.saved ? `Open on ${link.site}` : 'Search Momondo'}<External /></a>
+          {link && <a className="btn small" href={link.href} target="_blank" rel="noopener noreferrer">{link.saved ? `Open on ${link.site}` : 'Search Momondo'}<External /></a>}
+          {onBook && <button type="button" className="btn small mark-booked" onClick={onBook}><Check s={14} />Mark as booked</button>}
         </footer>
       )}
     </div>

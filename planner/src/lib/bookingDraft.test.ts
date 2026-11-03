@@ -1,0 +1,153 @@
+import { describe, expect, it } from 'vitest'
+import type { CrawledFlight, InOut, Ticket, Way } from '../data/types'
+import { blank, formRows, fromPicked, fromRow, rowsOf, savedRow, wayRebookIds, withIds, type DraftLeg } from './bookingDraft'
+import type { Booking } from '../data/types'
+import { bookingTask } from './tasks'
+
+// Made up flights and tickets only. A real reference, price or name never goes in this file.
+
+const regional: CrawledFlight = {
+  quote_id: 'q1', depart: '2026-12-20T10:05', arrive: '2026-12-20T15:40', hours: 5.6, price_dkk: 1490,
+  carriers: ['Test Air'], via: ['BOG'], layover_h: [1.5], cabin_bag: 'included', checked_bag: '1 x 23 kg', source: 'momondo',
+}
+const leg: DraftLeg = { kind: 'flight', from: 'MDE', to: 'VVI', day: '2026-12-20', tripId: 'jtest' }
+
+const ticket = (id: string, price: number, over: Partial<Ticket> = {}): Ticket => ({
+  id, quote_id: id, source: 'test', observed_at: '2026-10-01T10:00Z', structure: 'open_jaw', legs: [], price_dkk: price, fare_brand: null,
+  cabin_bag: 'included', checked_bag: 'not included', cabin_bag_fee_dkk: 0, checked_bag_fee_dkk: 300, tickets_inside: 1, self_transfer: false,
+  carriers: ['Test Air'], flags: [], notes: null, link: null, ...over,
+})
+const way = (over: Partial<Way>): Way => ({
+  id: 'I1', direction: 'in', type: 'ticket', from: 'CPH', to: 'CTG', depart: '2026-12-02T06:00', arrive: '2026-12-02T18:30',
+  total_hours: 18.5, flying_hours: 15, flights: 2, hub_nights: 0, changes: 1, us_transit: false, airports: ['CPH', 'AMS', 'CTG'],
+  tickets: ['T1'], shared_ticket: null, paired_with: 'H1', price_dkk: 0,
+  extras: { cabin_bag_fees_dkk: 0, checked_bag_fees_dkk: 300, hub_nights: 0, hub_stay_estimate_dkk: 0 }, score: 5,
+  timeline: [
+    { kind: 'flight', from: 'CPH', to: 'AMS', depart: '2026-12-02T06:00', arrive: '2026-12-02T07:30', hours: 1.5, connections: [], carriers: ['Test Air'], flight_numbers: ['TA1'], overnight_layover: false, self_transfer_inside: false, ticket: 'T1' },
+    { kind: 'connection', airport: 'AMS', arrive: '2026-12-02T07:30', depart: '2026-12-02T09:55', hours: 2.4, nights: 0, same_ticket: true, stay_estimate_dkk: null },
+    { kind: 'flight', from: 'AMS', to: 'CTG', depart: '2026-12-02T09:55', arrive: '2026-12-02T18:30', hours: 14.6, connections: [], carriers: ['Test Air'], flight_numbers: ['TA7'], overnight_layover: false, self_transfer_inside: false, ticket: 'T1' },
+  ],
+  ...over,
+})
+const wIn = way({})
+const wHome = way({
+  id: 'H1', direction: 'home', from: 'GUA', to: 'CPH', depart: '2027-02-03T09:05', arrive: '2027-02-04T09:10', paired_with: 'I1',
+  timeline: [{ kind: 'flight', from: 'GUA', to: 'CPH', depart: '2027-02-03T09:05', arrive: '2027-02-04T09:10', hours: 18, connections: [{ airport: 'AMS', layover_h: 2 }], carriers: ['Test Air'], overnight_layover: false, self_transfer_inside: false, ticket: 'T1' }],
+})
+const lone = way({ id: 'O1', type: 'oneways', tickets: ['T2'], paired_with: null })
+const inout = { tickets: { T1: ticket('T1', 8235), T2: ticket('T2', 3100) }, ways: { I1: wIn, H1: wHome, O1: lone } } as unknown as InOut
+
+describe('fromPicked', () => {
+  it('gives a picked regional flight as one row with its times, airline, stops, price and bags', () => {
+    const rows = fromPicked(leg, regional, inout)
+    expect(rows).toHaveLength(1)
+    expect(rows[0]).toMatchObject({
+      kind: 'flight', source: 'picked', from_code: 'MDE', to_code: 'VVI', depart: '2026-12-20T10:05', arrive: '2026-12-20T15:40',
+      price_dkk: 1490, currency: 'DKK', cabin_bag: 'included', checked_bag: '1 x 23 kg', trip_id: 'jtest', ticket: null,
+    })
+    expect(rows[0].segments).toEqual([
+      { from: 'MDE', to: 'BOG', carrier: 'Test Air', depart: '2026-12-20T10:05', layover_h: 1.5 },
+      { from: 'BOG', to: 'VVI', carrier: 'Test Air', arrive: '2026-12-20T15:40' },
+    ])
+  })
+
+  it('keeps the airline of a direct flight in its one segment', () => {
+    const rows = fromPicked(leg, { ...regional, via: [], layover_h: [] }, inout)
+    expect(rows[0].segments).toEqual([{ from: 'MDE', to: 'VVI', carrier: 'Test Air', depart: '2026-12-20T10:05', arrive: '2026-12-20T15:40' }])
+  })
+
+  it('gives a way on a ticket with the other way as two rows of one new ticket, the price on the first', () => {
+    const rows = fromPicked({ kind: 'flight', from: 'CPH', to: 'CTG', day: '2026-12-02', tripId: 'jtest' }, wHome, inout)
+    expect(rows).toHaveLength(2)
+    expect(rows.map((r) => [r.from_code, r.to_code, r.depart])).toEqual([['CPH', 'CTG', '2026-12-02T06:00'], ['GUA', 'CPH', '2027-02-03T09:05']])
+    expect(rows.map((r) => r.price_dkk)).toEqual([8235, 0])
+    expect(rows[0].ticket).toBeTruthy()
+    expect(rows[1].ticket).toBe(rows[0].ticket)
+    expect(rows.every((r) => r.source === 'picked' && r.cabin_bag === 'included' && r.checked_bag === 'not included')).toBe(true)
+    expect(rows[0].segments).toEqual([
+      { from: 'CPH', to: 'AMS', carrier: 'Test Air', number: 'TA1', depart: '2026-12-02T06:00', arrive: '2026-12-02T07:30' },
+      { from: 'AMS', to: 'CTG', carrier: 'Test Air', number: 'TA7', depart: '2026-12-02T09:55', arrive: '2026-12-02T18:30' },
+    ])
+    expect(rows[1].segments).toEqual([
+      { from: 'GUA', to: 'AMS', carrier: 'Test Air', depart: '2027-02-03T09:05', layover_h: 2 },
+      { from: 'AMS', to: 'CPH', carrier: 'Test Air', arrive: '2027-02-04T09:10' },
+    ])
+    // a second press makes another group, never the same one
+    expect(fromPicked(leg, wIn, inout)[0].ticket).not.toBe(rows[0].ticket)
+  })
+
+  it('gives a way of its own as one row with no ticket group', () => {
+    const rows = fromPicked(leg, lone, inout)
+    expect(rows).toHaveLength(1)
+    expect(rows[0]).toMatchObject({ from_code: 'CPH', to_code: 'CTG', price_dkk: 3100, ticket: null })
+  })
+})
+
+describe('blank', () => {
+  it('holds only the kind, the ends and the day', () => {
+    expect(blank({ kind: 'bus', from: 'BOG', to: 'MDE', day: '2026-12-10', tripId: 'jtest' })).toEqual({ kind: 'bus', from_code: 'BOG', to_code: 'MDE', depart: '2026-12-10' })
+  })
+})
+
+describe('the form rows', () => {
+  it('saves the reference typed on a picked flight on every row of its ticket', () => {
+    const rows = formRows(fromPicked(leg, wIn, inout), { reference: ' TEST01 ' })
+    expect(rows.map((r) => r.reference)).toEqual(['TEST01', 'TEST01'])
+    expect(rows.map((r) => r.price_dkk)).toEqual([8235, 0])
+  })
+
+  it('leaves out what is left empty and reads a price in Danish', () => {
+    const [r] = formRows([blank(leg)], { reference: '', seller: 'Test Seller', price: '1.250,50', notes: '  ', refundable: '', changeable: 'fee', change_until: '2026-12-01' })
+    expect(r).toEqual({ kind: 'flight', from_code: 'MDE', to_code: 'VVI', depart: '2026-12-20', seller: 'Test Seller', price_dkk: 1250.5, changeable: 'fee', change_until: '2026-12-01' })
+  })
+
+  it('a day typed in moves the row, and an empty day keeps the leg day', () => {
+    expect(formRows([blank(leg)], { day: '2026-12-21' })[0].depart).toBe('2026-12-21')
+    expect(formRows([blank(leg)], { day: '' })[0].depart).toBe('2026-12-20')
+  })
+
+  it('reads the fields of a booked row back into the form for Edit', () => {
+    const f = fromRow({ reference: 'TEST01', seller: null, price_dkk: 700, refundable: 'partly', cancel_until: '2026-11-30', depart: '2026-12-20T10:05', notes: null })
+    expect(f).toMatchObject({ reference: 'TEST01', seller: '', price: '700', refundable: 'partly', cancel_until: '2026-11-30', day: '2026-12-20' })
+  })
+
+  it('makes a whole row out of a saved one, booked', () => {
+    const r = savedRow({ kind: 'bus', from_code: 'BOG', to_code: 'MDE', depart: '2026-12-10' }, 'new1')
+    expect(r).toMatchObject({ id: 'new1', status: 'booked', kind: 'bus', from_code: 'BOG', depart: '2026-12-10', travellers: 1, attachments: [], reference: null })
+  })
+})
+
+describe('changing a booking', () => {
+  const row = (id: string, depart: string, ticket: string | null, status: Booking['status'] = 'booked') => savedRow({ kind: 'flight', depart, ticket, status }, id)
+
+  it('puts the ids of the booked rows on the new ones, so saving changes them and adds none', () => {
+    const rows = withIds(fromPicked(leg, wIn, inout), ['bin', undefined])
+    expect(rows.map((r) => r.id)).toEqual(['bin', undefined])
+    expect('id' in rows[1]).toBe(false)
+  })
+
+  it('gives the rows of a booking with the rest of its ticket, in the order they leave', () => {
+    const home = row('bh', '2027-02-03T09:05', 'G1')
+    const out = row('bi', '2026-12-02T06:00', 'G1')
+    const gone = row('bx', '2026-12-09T06:00', 'G1', 'cancelled')
+    const other = row('bo', '2026-12-20T10:05', null)
+    expect(rowsOf([home, other, gone, out], home).map((b) => b.id)).toEqual(['bi', 'bh'])
+    expect(rowsOf([home, other, out], other).map((b) => b.id)).toEqual(['bo'])
+  })
+
+  it('takes the ids of the booked ways for a way changed from its booking', () => {
+    const booked = { in: row('bin', '2026-12-02T06:00', 'G1'), home: null }
+    expect(wayRebookIds(2, booked, 'home')).toEqual(['bin', undefined])
+    expect(wayRebookIds(1, booked, 'in')).toEqual(['bin'])
+    expect(wayRebookIds(1, booked, 'home')).toEqual([undefined])
+  })
+})
+
+describe('bookingTask', () => {
+  it('carries the leg and the text', () => {
+    const d = bookingTask({ kind: 'flight', from: 'MDE', to: 'VVI', day: '2026-12-20', fromName: 'Medellín', toName: 'Santa Cruz' }, 'It is in my mail from Test Air')
+    expect(d.task).toEqual({ type: 'booking', leg: { kind: 'flight', from: 'MDE', to: 'VVI', day: '2026-12-20' }, text: 'It is in my mail from Test Air', from: 'app' })
+    expect(d.title).toBe('[booking] MDE to VVI 20 Dec')
+    expect(d.line).toBe('Fill in the booking of Medellín to Santa Cruz on 20 Dec.')
+  })
+})

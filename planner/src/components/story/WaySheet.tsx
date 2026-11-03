@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { AppData, Booking, Way } from '../../data/types'
-import { isBookedFlight, priceColumn } from '../../lib/booked'
+import { bookedDay, bookedGate, isBookedFlight, priceColumn } from '../../lib/booked'
+import { wayRebookIds } from '../../lib/bookingDraft'
 import { clock, hours, kr, nextDayMark, shortPlace, weekdayDay } from '../../lib/format'
 import type { FlightLink } from '../../lib/links'
 import { wayLinks } from '../../lib/links'
 import { momondoUrl } from '../../lib/prices'
+import { remoteEnabled } from '../../lib/supabase'
 import { dayOf, type WayChoice } from '../../lib/ways'
 import { kindOf, nightsText, rowFares, rowNotes, type WayRow } from '../../lib/wayRows'
 import { FlightLinks } from '../FlightLinks'
 import { Check, Plane, Warn } from '../icons'
 import { BookedBox } from './BookedBox'
+import { useBookingForm, type BookTarget } from './BookingForm'
 import { Chip, Days } from './FlightSheet'
 
 // The way in or the way home opened like any other leg: the days it can leave with a price each, and
@@ -123,7 +126,7 @@ function DayList({ rows, current, booking, dir, other, data, name, onPick, onOpe
   )
 }
 
-export function WaySheet({ dir, way, other, byDay, data, tripId, booking, unlocked, onUnlock, onPick, onRebook, onChangeEnds, close }: {
+export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, unlocked, onUnlock, onPick, book, onChangeEnds, close }: {
   dir: 'in' | 'home'
   /** the way the trip has in this direction */
   way: Way
@@ -136,13 +139,15 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, unlock
   tripId?: string
   /** the booking of the way the trip has, on the day it leaves */
   booking?: Booking | null
+  /** the bookings of both ways, so a way on one ticket with the other changes both rows */
+  pair?: { in: Booking | null; home: Booking | null }
   /** Change booking is on: the days and the ways under the box are open */
   unlocked?: boolean
   onUnlock?: (on: boolean) => void
   /** true when the pick went on, or why it did not. One that would change a booked way does not, and the sheet stays open on the reason */
   onPick: (c: WayChoice) => true | string
-  /** a way picked on a booked way while it is open, for the booking form. Without it the ways are there to look at only */
-  onRebook?: (c: WayChoice) => void
+  /** what the booking form saves to. Without it the way is not marked here, and a booked way's ways are there to look at only */
+  book?: BookTarget<WayChoice>
   /** left out while an older version is open, and the button goes with it */
   onChangeEnds?: () => void
   close: () => void
@@ -177,10 +182,19 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, unlock
     if (r.choice.note) say(r.choice.note)
     else close()
   }
-  // a booked way is held: the box shows the booking and nothing under it changes the way
-  const held = !!booking && !unlocked
-  const choose = booking ? onRebook && ((r: WayRow) => onRebook(r.choice)) : pick
   const box = useRef<HTMLElement>(null)
+  const pill = useRef<HTMLButtonElement>(null)
+  // back from the form, the focus goes to the booking it saved, or to Mark as booked when it was left
+  const form = useBookingForm(book, () => (box.current ? showBox() : pill.current?.focus({ preventScroll: true })))
+  // a booked way is held: the box shows the booking and nothing under it changes the way. Opened with Change
+  // booking, a way picked there opens the form on the booking, so the save changes its rows
+  const { hold: held, choose } = bookedGate<WayRow>({
+    booking, unlocked, pick,
+    onRebook: book && booking ? (r) => form.open({
+      start: 'picked', picked: dir === 'in' ? r.choice.wayIn : r.choice.wayHome, pin: r.choice, booking,
+      ids: (n) => wayRebookIds(n, pair ?? { in: dir === 'in' ? booking : null, home: dir === 'home' ? booking : null }, dir),
+    }) : undefined,
+  })
   const showBox = () => {
     const b = box.current
     if (!b) return
@@ -195,6 +209,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, unlock
     ? wayLinks(way, inout, other)
     : [{ href: momondoUrl(way.from, way.to, at, tripId), site: 'Momondo', saved: false, legs: [{ from: way.from, to: way.to, date: at }] }]
 
+  if (form.node) return form.node
   return (
     <div className="fl ws" data-booked={booking ? true : undefined}>
       <div className="fl-top">
@@ -205,11 +220,11 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, unlock
         {booking && (
           <BookedBox
             ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change}
-            hint={onRebook ? 'Pick a way below to change the booking to it.' : 'The days and the ways below are open to look at. The booking stays as it is.'}
+            onEdit={book ? () => form.open({ start: 'manual', edit: true, booking }) : undefined}
             onRemoved={() => say(`The booking is removed. The ${dir === 'in' ? 'way in' : 'way home'} can change again.`)}
           />
         )}
-        <Days days={days} fares={fares} at={at} leg={dayOf(way)} onChange={setAt} locked={held} booked={booking ? booking.depart?.slice(0, 10) ?? dayOf(way) : null} />
+        <Days days={days} fares={fares} at={at} leg={dayOf(way)} onChange={setAt} locked={held} booked={bookedDay(booking, dayOf(way))} />
         {!held && (
           <div className="fl-bar">
             <b>{weekdayDay(at)}</b>
@@ -231,6 +246,11 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, unlock
         <footer className="fl-foot">
           <FlightLinks links={links} />
           {onChangeEnds && !booking && <button type="button" className="btn small" onClick={() => { close(); onChangeEnds() }}>Change start and end</button>}
+          {book && !booking && remoteEnabled() && (
+            <button ref={pill} type="button" className="btn small mark-booked" onClick={() => form.open({ start: 'picked', picked: way })}>
+              <Check s={14} />Mark as booked
+            </button>
+          )}
         </footer>
       )}
     </div>

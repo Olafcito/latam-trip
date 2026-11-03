@@ -6,6 +6,16 @@ import { legDay, schedule, totals, travelTotal, type Hop, type Journey, type Tot
 import { rowToJourney, withTripWays, type TripRow } from './lib/repoTrips'
 import { chooseWay } from './lib/ways'
 
+// the database is not reached from here: a save hands back the ids it is told to
+const db = vi.hoisted(() => ({ result: { ok: true, ids: ['new1'] } as { ok: true; ids: string[] } | { ok: false; message: string }, sent: [] as unknown[] }))
+vi.mock('./lib/bookings', async (orig) => ({
+  ...(await orig<typeof import('./lib/bookings')>()),
+  saveBookings: vi.fn(async (rows: unknown) => {
+    db.sent.push(rows)
+    return db.result
+  }),
+}))
+
 const trip: Journey = {
   id: 'jtest',
   name: 'Test',
@@ -502,6 +512,76 @@ describe('a booked leg holds its day', () => {
       s().setUnlocked('in')
       s().changeEnds(laterIn, laterHome)
       expect([s().journey!.wayIn, s().unlocked]).toEqual(['W_in2', null])
+    })
+  })
+
+  describe('marking a leg booked', () => {
+    beforeEach(() => {
+      useStore.setState({ bookings: [] })
+      db.result = { ok: true, ids: ['new1'] }
+      db.sent = []
+    })
+
+    it('saves the row and pins the leg to the booking day, which then holds', async () => {
+      expect(await s().markBooked([{ kind: 'bus', from_code: 'D', to_code: 'E', depart: '2026-12-27', reference: 'TEST01' }], { i: 4 })).toEqual({ ok: true, ids: ['new1'] })
+      expect(legDays()).toEqual(['2026-12-10', '2026-12-15', '2026-12-20', '2026-12-27', '2026-12-30', '2027-01-05'])
+      expect(s().bookings).toMatchObject([{ id: 'new1', status: 'booked', from_code: 'D', depart: '2026-12-27', reference: 'TEST01' }])
+      const before = s().journey
+      s().setHopDate(4, '2026-12-28')
+      expect(s().journey).toBe(before)
+    })
+
+    it('pins a floating leg to the booking day and the picked flight with it, as a pick by hand does', async () => {
+      s().setJourney({ ...long, places: long.places.map((p, k) => (k === 4 ? { ...p, hop: { ...p.hop!, date: undefined } } : p)) })
+      await s().markBooked([{ kind: 'flight', from_code: 'D', to_code: 'E', depart: flight.depart }], { i: 4, flight })
+      const h = s().journey!.places[4].hop!
+      expect([h.date, h.flight?.quote_id, h.price_dkk]).toEqual(['2026-12-27', 'q', 900])
+    })
+
+    it('a booking changed from its window updates its row, never a second one, and locks again', async () => {
+      useStore.setState({ bookings: [onLeg4], unlocked: 4 })
+      db.result = { ok: true, ids: ['b4'] }
+      await s().markBooked([{ id: 'b4', depart: flight.depart, arrive: flight.arrive }], { i: 4, flight })
+      expect(db.sent).toEqual([[{ id: 'b4', depart: flight.depart, arrive: flight.arrive }]])
+      expect(s().bookings).toHaveLength(1)
+      expect(s().bookings[0]).toMatchObject({ id: 'b4', depart: flight.depart, reference: 'TEST01' })
+      expect([legDays()[3], s().unlocked]).toEqual(['2026-12-27', null])
+    })
+
+    it('a save that fails changes nothing and says why', async () => {
+      db.result = { ok: false, message: 'Not connected.' }
+      const before = s().journey
+      expect(await s().markBooked([{ kind: 'bus', from_code: 'D', to_code: 'E', depart: '2026-12-27' }], { i: 4 })).toEqual({ ok: false, message: 'Not connected.' })
+      expect([s().journey, s().bookings]).toEqual([before, []])
+    })
+
+    it('a way booked from its window takes the ways picked, with its ticket', async () => {
+      const tIn = way({ id: 'T_in', type: 'ticket', depart: '2026-12-05T06:00', arrive: '2026-12-05T14:30', paired_with: 'T_home' })
+      const tHome = way({ ...wHome, id: 'T_home', type: 'ticket', depart: '2027-02-06T09:05', arrive: '2027-02-07T09:10', paired_with: 'T_in' })
+      const tickets = { ...inout, ways: { ...inout.ways, T_in: tIn, T_home: tHome } } as InOut
+      s().setData({ ...data, inout: tickets })
+      s().setJourney(long)
+      useStore.setState({ bookings: [booking('bin', 'CPH', 'A', '2026-12-03T06:00')], unlocked: 'in' })
+      db.result = { ok: true, ids: ['bin', 'new1'] }
+      const choice = chooseWay(tickets, tHome, { wayIn: wIn, wayHome: wHome })
+      const rows = [{ id: 'bin', depart: tIn.depart, ticket: 'G1' }, { kind: 'flight' as const, from_code: 'G', to_code: 'CPH', depart: tHome.depart, ticket: 'G1', price_dkk: 0 }]
+      expect(await s().markBooked(rows, { way: 'in', choice })).toEqual({ ok: true, ids: ['bin', 'new1'] })
+      expect([s().journey!.wayIn, s().journey!.wayHome, s().unlocked]).toEqual(['T_in', 'T_home', null])
+      expect(s().bookings.map((b) => [b.id, b.depart, b.ticket])).toEqual([['bin', tIn.depart, 'G1'], ['new1', tHome.depart, 'G1']])
+    })
+
+    it('a way pick that would move another booked way is refused before anything is saved', async () => {
+      useStore.setState({ bookings: [booking('bhome', 'G', 'CPH', '2027-02-03T09:05')], unlocked: 'in' })
+      const before = s().journey
+      const r = await s().markBooked([{ kind: 'flight', from_code: 'CPH', to_code: 'A', depart: laterIn.depart }], { way: 'in', choice: { wayIn: laterIn, wayHome: laterHome, note: null } })
+      expect(r).toEqual({ ok: false, message: 'The way home is booked. Change it from its booking.' })
+      expect([s().journey, db.sent]).toEqual([before, []])
+    })
+
+    it('patchBooking changes one row in place', () => {
+      useStore.setState({ bookings: [onLeg4, booking('b5', 'E', 'F', '2026-12-30T08:00')] })
+      s().patchBooking('b4', { notes: 'Seat 3A' })
+      expect(s().bookings.map((b) => [b.id, b.notes])).toEqual([['b4', 'Seat 3A'], ['b5', null]])
     })
   })
 })

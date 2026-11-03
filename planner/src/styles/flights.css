@@ -117,6 +117,7 @@
   @starting-style { .ws-said-in { opacity: 0; transform: translateY(-4px); } }
   @media (prefers-reduced-motion: reduce) { .ws-said-in { transition: opacity var(--t-med) ease; } @starting-style { .ws-said-in { transform: none; } } }
   .ws .fl-foot .btn { margin-left: auto; }
+  .ws .fl-foot .btn + .mark-booked { margin-left: 0; }
 
   .fl-all { margin: 4px 0 16px; }
   /* a day with no fares: the line and its search on one row, then the nearest flights keep the same rows */
@@ -158,20 +159,8 @@
   .bk-ref > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .bk-ref small { font-size: var(--fs-label); font-weight: 600; color: var(--muted); }
   .bk-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-num-lg); font-weight: 600; line-height: 1.2; letter-spacing: 0.12em; color: var(--text); overflow-wrap: anywhere; user-select: all; -webkit-user-select: all; }
-  .bk-ref .btn { flex: none; }
 
   .bk-body { display: flex; flex-direction: column; gap: 16px; padding: 12px 16px 16px; border-top: 1px solid var(--line); }
-  .bk-facts { display: grid; margin: 0; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
-  .bk-facts > div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 8px 0; }
-  .bk-facts > div:first-child { padding-top: 0; }
-  .bk-facts > div + div { border-top: 1px solid var(--line); }
-  .bk-facts dt { flex: none; font-size: var(--fs-small); color: var(--muted); }
-  .bk-facts dd { min-width: 0; margin: 0; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-  /* a wide sheet reads the facts in two columns, so the box stays short enough to show the days under it */
-  @media (min-width: 561px) {
-    .bk-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
-    .bk-facts > div:nth-child(2) { padding-top: 0; border-top: 0; }
-  }
   .bk-part h5 { margin: 0 0 8px; font-size: var(--fs-label); font-weight: 600; color: var(--muted); }
 
   .bk-segs { list-style: none; display: grid; gap: 6px; margin: 0; padding: 0; }
@@ -196,7 +185,6 @@
   .bk-add[data-busy], .bk-add[data-busy] input { cursor: progress; }
 
   .bk-notes { margin: 0; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .bk-hint { margin: 0; font-size: var(--fs-small); color: var(--muted); }
   .bk-said { margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--in); }
   .bk-said:empty { margin-top: -16px; }
   .bk-said[data-bad] { color: var(--err); }
@@ -215,6 +203,88 @@
     .bk-ask .bk-confirm:hover:not(:disabled) { border-color: var(--err); background: color-mix(in srgb, var(--err) 88%, white); }
   }
   @media (prefers-reduced-motion: reduce) { .bk-tile:active { transform: none; } }
+
+  /* the facts as icon chips: the word or amount on the chip, its colour the answer, the whole fact in its tooltip */
+  .bk-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+  .bk-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; max-width: 100%; padding: 0 10px; border-radius: 999px; background: var(--surface-3); color: var(--text); font-size: var(--fs-small); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bk-chip svg { flex: none; color: var(--muted); }
+  .bk-chip > span[aria-hidden] { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bk-chip small { font-size: var(--fs-label); font-weight: 500; color: var(--muted); white-space: nowrap; }
+  .bk-chip[data-tone='ok'] { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked); }
+  .bk-chip[data-tone='part'] { background: color-mix(in srgb, var(--flight) 14%, transparent); color: var(--flight); }
+  .bk-chip[data-tone='no'] { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); }
+  .bk-chip[data-tone] svg, .bk-chip[data-tone] small { color: currentColor; }
+
+  /* a round icon button, Copy on the stub and Edit on the band, with the full hit area around it */
+  .bk-icon { position: relative; flex: none; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: var(--surface-3); color: var(--text); cursor: pointer; touch-action: manipulation; transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease; }
+  .bk-icon::after { content: ''; position: absolute; inset: calc((32px - max(32px, var(--hit))) / 2); }
+  .bk-icon:active { transform: scale(0.94); }
+  .bk-icon:focus-visible { outline: 2px solid var(--booked); outline-offset: 2px; }
+  .bk-band .bk-edit { margin-left: auto; background: color-mix(in srgb, var(--ground) 14%, transparent); color: var(--ground); }
+  .bk-band span + .bk-edit { margin-left: 2px; }
+  .bk-band .bk-edit:focus-visible { outline-color: var(--ground); }
+
+  /* a bus or a boat has names, not codes, so they sit smaller, and the mark between rides level */
+  .bk-route[data-kind] .bk-end b { font-size: var(--fs-head); line-height: 1.2; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+  .bk-route[data-kind] .bk-fly svg { transform: none; }
+
+  /* The booking form, in place of the sheet. The head and its three ways stay put, the fields scroll,
+     and the foot keeps the save under the thumb. Fields sit in inset grouped lists, an icon and a name to a row. */
+  .bf-top { padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .bf-tabs { display: grid; width: 100%; }
+  .bf-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 16px 20px 20px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+  .bf-pass { flex: none; }
+  .bf-pass > .bk-chips { padding: 0 16px 16px; }
+  .bf-leg + .bf-leg { border-top: 1.5px dashed var(--line-2); }
+  .bf-day { display: inline-flex; align-items: center; gap: 6px; margin: 14px 16px 0; font-size: var(--fs-small); font-weight: 600; color: var(--booked); font-variant-numeric: tabular-nums; }
+  .bf-day + .bk-route { padding-top: 10px; }
+  .bf-segs { padding: 0 16px 14px; }
+
+  .bf-list { flex: none; list-style: none; margin: 0; padding: 0; border-radius: 12px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+  .bf-row { position: relative; display: grid; grid-template-columns: 28px auto minmax(0, 1fr); align-items: center; column-gap: 12px; min-height: 48px; padding: 6px 14px; }
+  .bf-row + .bf-row::before { content: ''; position: absolute; top: 0; left: 54px; right: 0; border-top: 1px solid var(--line); }
+  .bf-i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 7px; background: var(--surface-3); color: var(--muted); }
+  .bf-k { font-size: var(--fs-body); font-weight: 500; color: var(--text); white-space: nowrap; }
+  .bf-v { min-width: 0; display: flex; align-items: center; justify-content: flex-end; }
+  .bf-row[data-sub] .bf-i { background: transparent; }
+  .bf-row[data-sub] .bf-k { color: var(--muted); }
+  .bf-in { width: 100%; min-width: 0; min-height: var(--hit); padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--text); font-size: var(--fs-body); font-weight: 500; text-align: right; }
+  .bf-in::placeholder { color: var(--faint); opacity: 1; }
+  .bf-in:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+  .bf-in[aria-invalid='true'] { color: var(--err); }
+  .bf-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .bf-kr { width: 100%; display: flex; align-items: center; gap: 6px; }
+  .bf-kr > span { font-size: var(--fs-small); color: var(--muted); }
+  .bf-in[type='date'] { width: auto; margin-left: auto; font-variant-numeric: tabular-nums; }
+  .bf-notes { grid-template-columns: 28px minmax(0, 1fr); padding-block: 10px 12px; }
+  .bf-notes .bf-in, .bf-ask .bf-in { grid-column: 1 / -1; min-height: 72px; margin-top: 8px; padding: 10px 12px; border-radius: 8px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); text-align: left; line-height: 1.45; resize: vertical; }
+  .bf-ask .bf-in { min-height: 132px; margin-top: 0; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); }
+
+  .bf-chips { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 0; }
+  .bf-chips .bk-chip { padding-right: 4px; }
+  .bf-chips .bk-chip > span { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bf-x { position: relative; width: 22px; height: 22px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; touch-action: manipulation; }
+  .bf-x::after { content: ''; position: absolute; inset: calc((22px - var(--hit)) / 2); }
+  .bf-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
+  .bf-add { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 12px; border: 1px dashed var(--line-2); border-radius: 999px; font-size: var(--fs-small); font-weight: 600; color: var(--text); cursor: pointer; touch-action: manipulation; transition: transform var(--t-fast) var(--ease-out), border-color var(--t-fast) ease; }
+  .bf-add input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; font-size: 16px; }
+  .bf-add:active { transform: scale(0.97); }
+  .bf-add:has(input:focus-visible) { outline: 2px solid var(--flight); outline-offset: 2px; }
+
+  .bf-foot { justify-content: flex-end; }
+  .bf-said { flex: 1 1 160px; min-width: 0; margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--in); }
+  .bf-said[data-bad] { color: var(--err); }
+  .fl-foot .bf-go { border-color: var(--booked); background: var(--booked); color: var(--ground); }
+  .fl-foot .bf-go svg { margin: 0; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .bk-icon:hover { background: var(--line-2); }
+    .bk-band .bk-edit:hover { background: color-mix(in srgb, var(--ground) 26%, transparent); }
+    .bf-x:hover { background: var(--line-2); color: var(--text); }
+    .bf-add:hover { border-color: var(--booked); }
+    .fl-foot .bf-go:hover:not(:disabled) { border-color: var(--booked); background: color-mix(in srgb, var(--booked) 88%, white); }
+  }
+  @media (prefers-reduced-motion: reduce) { .bk-icon:active, .bf-add:active { transform: none; } }
 
   /* a low window scrolls as one, or the list would have no room */
   @media (max-height: 700px) {
@@ -244,6 +314,12 @@
     .bk-end span { font-size: var(--fs-body); }
     .bk-fly { width: 44px; margin-top: 2px; }
     .bk-said:empty { margin-top: -12px; }
+    .bf-body { padding: 16px; }
+    .bk-route[data-kind] .bk-end b { font-size: var(--fs-lead); }
+    /* a choice of three takes its own line under its name, so each answer keeps a full segment */
+    .bf-row:has(.seg) { grid-template-columns: 28px minmax(0, 1fr); row-gap: 8px; padding-block: 10px; }
+    .bf-row:has(.seg) .bf-v { grid-column: 1 / -1; }
+    .bf-v .seg { display: grid; width: 100%; }
   }
 }
 

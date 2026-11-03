@@ -286,6 +286,15 @@ describe('paid prices and booked days', () => {
     expect(totals(data, j, sched, [bus]).ground_dkk).toBe(200)
   })
 
+  it('counts the quote of a booked leg or ticket whose price is not filled in, once', () => {
+    const noPrice = { ...regional, price_dkk: null }
+    expect(totals(data, j, sched, [noPrice]).regional_flights_dkk).toBe(1500)
+    const first = { ...wayIn, price_dkk: null }
+    const second = { ...wayHome, price_dkk: 0 }
+    expect(totals(data, j, sched, [first, second]).tickets_dkk).toBe(6000)
+    expect(totals(data, j, sched, [{ ...bus, price_dkk: null }]).ground_dkk).toBe(150)
+  })
+
   it('adds a booked stay to the stays and leaves it out of the travel total', () => {
     const plain = totals(data, j, sched)
     const t = totals(data, j, sched, [stay])

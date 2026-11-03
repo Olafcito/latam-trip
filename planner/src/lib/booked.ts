@@ -65,16 +65,34 @@ export function stayOn(list: Booking[], placeNode: string, nights: { first: stri
 /** sorts after every depart, so a row with none comes last */
 const LAST = '\uffff'
 
-/** What a row paid. A ticket over several rows is paid once, by its first row: the earliest depart, then the lowest id. */
-export function paidPrice(list: Booking[], b: Booking): number {
-  if (b.ticket == null) return b.price_dkk ?? 0
+/**
+ * What a row paid. A ticket over several rows is paid once, by its first row: the earliest depart, then the lowest id.
+ * null when the price was not filled in, on every row of its ticket, so a total counts the quote in its place.
+ */
+export function paidPrice(list: Booking[], b: Booking): number | null {
+  if (b.ticket == null) return b.price_dkk
   const group = [b, ...booked(list).filter((r) => r.ticket === b.ticket && r.id !== b.id)]
   const first = group.reduce((a, r) => {
     const da = a.depart ?? LAST
     const dr = r.depart ?? LAST
     return dr < da || (dr === da && r.id < a.id) ? r : a
   })
-  return first.id === b.id ? (b.price_dkk ?? 0) : 0
+  if (first.price_dkk == null) return null
+  return first.id === b.id ? first.price_dkk : 0
+}
+
+/** The day a booking holds its leg on, the leg day when it has none, and null for a leg with no booking. */
+export function bookedDay(booking: Pick<Booking, 'depart'> | null | undefined, legDay: string): string | null {
+  return booking ? booking.depart?.slice(0, 10) ?? legDay : null
+}
+
+/**
+ * What a pick in a sheet does. A booked leg is held while it is locked, and nothing picks there. Unlocked with
+ * Change booking, a pick opens the booking form through onRebook. So a plain pick never reaches a booked leg.
+ */
+export function bookedGate<T>(o: { booking: unknown; unlocked?: boolean; onRebook?: (x: T) => void; pick: (x: T) => void }): { hold: boolean; choose: ((x: T) => void) | undefined } {
+  if (!o.booking) return { hold: false, choose: o.pick }
+  return o.unlocked ? { hold: false, choose: o.onRebook } : { hold: true, choose: undefined }
 }
 
 /** The booked row of a way in or home, on the way's two ends and the day it leaves. */
