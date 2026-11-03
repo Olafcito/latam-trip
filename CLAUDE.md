@@ -11,7 +11,10 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 
 ## How plan work runs
 
-Multi step work runs on superpowers. `brainstorming` gives a spec, `writing-plans` turns it into a plan and `subagent-driven-development` runs it. Every subagent runs on Opus (model `opus`). Speed beats ceremony.
+Multi step work runs on superpowers. A user journey comes first, then `brainstorming` gives a spec from it, `writing-plans` turns it into a plan and `subagent-driven-development` runs it. Every subagent runs on Opus (model `opus`). Speed beats ceremony.
+
+- **Journey first.** A spec opens with the user journey it serves, the moments Simon goes through and what he needs to see or do at each. The spec is written from the journey, and the same journey is what the work is judged against at the end.
+- **Roast every finished page.** When a page or pane is built, screenshots of it at 375 and 1440 go to a fresh reviewer together with the user journey and one line on what the app is. It gets nothing about what was built or why. It is asked to roast the design ruthlessly for that journey. Its findings go to a fix round like any review, and the page is done when a fresh roast has nothing load bearing left. Simon gets the screenshots too.
 
 - **The main session coordinates.** It dispatches, keeps the ledger and rules on findings. It does not do the work itself, and controller steps such as applying migrations, data scripts, deploys and history rewrites go to subagents too.
 - **Batch small work.** Related small tasks go to one implementer. Each task stays its own commit, so one reviewer walks the batch commit by commit and gives each task a spec verdict and a quality verdict.
