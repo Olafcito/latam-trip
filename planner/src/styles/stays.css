@@ -1,0 +1,220 @@
+/* Places to stay: the stay cards, and Where to stay on a stop. Unscoped on purpose: the same cards sit in the
+   map's city panel, inside .rmap, where the planner's scoped base styles do not reach. So every class here is
+   its own and every control sets its own chrome. */
+
+.ws, .sc, .ap { --sc-ring: inset 0 0 0 1.5px var(--booked); }
+
+.ws-vh, .sc-vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* the buttons of this file: no chrome of their own, a press that gives */
+:is(.ws, .sc, .ap) button {
+  margin: 0; border: 0; font: inherit; color: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; -webkit-user-select: none;
+}
+:is(.ws, .sc, .ap) button:focus-visible, .sc-strip:focus-visible, .sc-links a:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+:is(.ws, .sc, .ap) button:disabled { cursor: default; }
+
+/* ---------- Where to stay ---------- */
+.ws { margin: 16px 0 4px; container-type: inline-size; }
+.ws-head { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
+.ws-head h4 { margin: 0; font-size: var(--fs-label); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--faint); }
+.ws-n { display: inline-flex; align-items: center; gap: 4px; color: var(--faint); font-size: var(--fs-label); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* the stop's nights as one line, a part as long as its nights */
+.ws-bar { display: flex; gap: 2px; height: 4px; margin: 0 0 6px; border-radius: 999px; overflow: hidden; }
+.ws-bar i { display: block; min-width: 4px; background: var(--text); opacity: .7; }
+.ws-bar i[data-booked] { background: var(--booked); opacity: 1; }
+.ws-bar i[data-free] { background: var(--line-2); opacity: 1; }
+
+.ws-parts { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 4px; }
+.ws-part {
+  display: grid; grid-template-columns: minmax(4.5rem, auto) minmax(0, 1fr) auto; align-items: center; gap: 4px 10px;
+  min-height: 48px; padding: 6px 6px 6px 12px; border-radius: 10px; background: var(--surface-2);
+}
+.ws-part[data-booked] { box-shadow: var(--sc-ring); background: color-mix(in srgb, var(--booked) 10%, var(--surface-2)); }
+.ws-part[data-free] { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); }
+.ws-part[data-off] { opacity: .75; }
+.ws-when { font-size: var(--fs-small); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ws-what { display: grid; min-width: 0; }
+.ws-what b { font-size: var(--fs-body); font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-part[data-free] .ws-what b { color: var(--muted); font-weight: 500; }
+.ws-what small { font-size: var(--fs-small); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-end { display: flex; align-items: center; gap: 6px; }
+.ws-pr { font-size: var(--fs-small); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ws-pr[data-none] { color: var(--faint); font-weight: 500; }
+
+/* nights of a part: a night less, the count, a night more */
+.ws-step { display: inline-flex; align-items: center; border-radius: 999px; background: var(--surface-3); }
+.ws-step button {
+  display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 50%; background: transparent; color: var(--text);
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
+}
+.ws-step button svg { width: 14px; height: 14px; }
+.ws-step button:disabled { color: var(--faint); opacity: .5; }
+.ws-step output { display: inline-flex; align-items: center; gap: 3px; min-width: 2.25rem; justify-content: center; font-size: var(--fs-small); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); }
+.ws-step output svg { color: var(--muted); }
+.ws-x {
+  display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 8px; background: transparent; color: var(--faint);
+  transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease, background-color var(--t-fast) ease;
+}
+.ws-step button:not(:disabled):active, .ws-x:active { transform: scale(0.92); }
+@media (pointer: coarse) {
+  .ws-step button, .ws-x { width: 40px; height: 40px; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ws-step button:not(:disabled):hover { background: var(--line-2); }
+  .ws-x:hover { color: var(--err); background: color-mix(in srgb, var(--err) 12%, transparent); }
+}
+
+/* the marks of this file, the house mark redrawn so it also reads inside the map */
+:is(.ws-mk, .sc-mk) {
+  position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: 999px;
+  background: var(--surface-3); color: var(--muted); font-size: var(--fs-label) !important; font-weight: 600 !important; font-variant-numeric: tabular-nums; white-space: nowrap;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+:is(.ws-mk, .sc-mk):has(> svg:only-child) { width: 24px; padding: 0; justify-content: center; }
+:is(.ws-mk, .sc-mk) svg { flex: none; }
+:is(.ws-mk, .sc-mk)::after { content: ''; position: absolute; inset: -6px -2px; }
+:is(.ws-mk, .sc-mk):active { transform: scale(0.94); }
+:is(.ws-mk, .sc-mk)[data-open] { color: var(--text); }
+.ws-mk[data-tone='booked'] { background: color-mix(in srgb, var(--booked) 16%, transparent); color: var(--booked); }
+.ws-mk[data-tone='warn'] { background: color-mix(in srgb, var(--err) 14%, transparent); color: var(--err); }
+.sc-mk[data-kind='beach'] { color: #7DD3E0; }
+
+/* narrow: the dates and the controls on top, the name under them with the full width */
+@container (max-width: 420px) {
+  .ws-part { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'when end' 'what what'; padding: 6px 6px 10px 10px; }
+  .ws-when { grid-area: when; font-size: var(--fs-label); }
+  .ws-what { grid-area: what; }
+  .ws-end { grid-area: end; flex-wrap: wrap; justify-content: flex-end; }
+}
+
+.ws-cards { display: grid; gap: 12px; }
+.ws-add {
+  display: inline-flex; align-items: center; gap: 6px; min-height: var(--hit); margin-top: 12px; padding: 0 14px 0 10px; border-radius: 999px;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text) !important; font-size: var(--fs-small) !important; font-weight: 600 !important;
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
+}
+.ws-add svg { width: 15px; height: 15px; }
+.ws-add:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .ws-add:hover { background: var(--surface-3); } }
+
+/* ---------- the stay card ---------- */
+.sc {
+  position: relative; container-type: inline-size; overflow: hidden; border-radius: 14px;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
+}
+.sc[data-booked] { box-shadow: var(--sc-ring); background: color-mix(in srgb, var(--booked) 6%, var(--surface-2)); }
+.sc-band { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked); font-size: var(--fs-small); font-weight: 600; }
+.sc-ref { margin-left: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--fs-small); color: var(--text); user-select: all; }
+
+/* photos: a strip that swipes and snaps, one photo a page */
+.sc-top { position: relative; }
+.sc-ph { position: relative; height: clamp(150px, 45cqi, 200px); background: var(--surface-3); }
+.sc-strip {
+  display: flex; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.sc-strip::-webkit-scrollbar { display: none; }
+.sc-strip img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; scroll-snap-stop: always; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.sc-dots { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px 6px; border-radius: 999px; background: #0B172099; pointer-events: none; }
+.sc-dots i { display: block; width: 5px; height: 5px; border-radius: 50%; background: #FFFFFF66; transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out); }
+.sc-dots i[data-on] { background: #FFF; transform: scale(1.2); }
+.sc-flip { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .sc-flip {
+    position: absolute; top: 50%; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border-radius: 50%;
+    background: #0B1720B3; color: #FFF !important; opacity: 0; transform: translateY(-50%);
+    transition: opacity var(--t-med) var(--ease-out), transform var(--t-fast) var(--ease-out);
+  }
+  .sc-flip[data-dir='l'] { left: 8px; }
+  .sc-flip[data-dir='r'] { right: 8px; }
+  .sc-ph:hover .sc-flip:not(:disabled), .sc-flip:focus-visible { opacity: 1; }
+  .sc-flip:active { transform: translateY(-50%) scale(0.92); }
+}
+.sc-on-ph { position: absolute; top: 8px; right: 8px; }
+.sc-rate {
+  position: relative; display: inline-flex; align-items: center; gap: 3px; min-height: 24px; padding: 0 8px; border-radius: 999px;
+  background: var(--flight); color: var(--flight-ink, #0B1720) !important; font-size: var(--fs-label) !important; font-weight: 700 !important; font-variant-numeric: tabular-nums;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.sc-rate::after { content: ''; position: absolute; inset: -6px; }
+.sc-rate:active { transform: scale(0.94); }
+.sc-on-ph .sc-rate { box-shadow: 0 2px 10px -2px #00000080; }
+
+.sc-body { display: grid; gap: 10px; padding: 12px; }
+.sc-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
+.sc-h h4 { margin: 0; font-size: var(--fs-title); font-weight: 600; line-height: 1.25; color: var(--text); overflow-wrap: anywhere; }
+.sc-kind { font-size: var(--fs-small); color: var(--muted); }
+.sc-h .sc-rate { margin-left: auto; align-self: center; }
+
+.sc-facts { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.sc-tag { display: inline-flex; align-items: center; min-height: 24px; padding: 0 9px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); font-size: var(--fs-label); font-weight: 600; }
+
+/* rooms: a row is the control that picks it, its marks sit beside it */
+.sc-rooms { list-style: none; display: grid; gap: 4px; margin: 0; padding: 0; }
+.sc-room { position: relative; display: flex; align-items: center; gap: 6px; border-radius: 10px; background: var(--surface-3); }
+.sc-room[data-on] { box-shadow: inset 0 0 0 1.5px var(--text); }
+.sc-room[data-booked] { box-shadow: var(--sc-ring); }
+.sc-row {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 10px; border-radius: 10px;
+  background: transparent; text-align: left; color: var(--text);
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
+}
+button.sc-row:active { transform: scale(0.985); }
+@media (hover: hover) and (pointer: fine) { button.sc-row:hover { background: color-mix(in srgb, var(--text) 5%, transparent); } }
+.sc-pick { flex: none; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line-2); color: var(--ground); }
+.sc-room[data-on] .sc-pick { background: var(--text); box-shadow: none; }
+.sc-room[data-booked] .sc-pick { background: var(--booked); }
+.sc-rn { flex: 1; min-width: 0; font-size: var(--fs-body); font-weight: 500; overflow-wrap: anywhere; }
+.sc-pr { display: grid; justify-items: end; flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sc-pr b { font-size: var(--fs-body); font-weight: 650; color: var(--text); }
+.sc-pr[data-near] b { font-weight: 500; color: var(--muted); }
+.sc-pr small { font-size: var(--fs-label); color: var(--faint); }
+.sc-pr[data-none] { font-size: var(--fs-small); color: var(--faint); }
+.sc-rmk { flex: none; display: inline-flex; gap: 4px; padding-right: 8px; }
+@container (max-width: 340px) {
+  .sc-room { flex-wrap: wrap; }
+  .sc-row { flex-basis: 100%; }
+  .sc-rmk { padding: 0 10px 8px 36px; margin-top: -4px; }
+}
+
+.sc-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: -2px 0 0; }
+.sc-ask button {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 0 12px; border-radius: 999px;
+  background: color-mix(in srgb, var(--flight) 14%, transparent); color: var(--flight) !important; font-size: var(--fs-small) !important; font-weight: 600 !important;
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
+}
+.sc-ask button:not(:disabled):active { transform: scale(0.97); }
+.sc-ask button[data-state='sent'] { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked) !important; }
+.sc-ask button[data-state='sending'] { opacity: .7; }
+.sc-ask small { font-size: var(--fs-small); color: var(--err); }
+@media (hover: hover) and (pointer: fine) { .sc-ask button:not(:disabled):hover { background: color-mix(in srgb, var(--flight) 22%, transparent); } }
+
+.sc-links { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.sc-links a {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 0 12px; border-radius: 999px;
+  background: var(--surface-3); color: var(--text); font-size: var(--fs-small); font-weight: 600; text-decoration: none;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
+}
+.sc-links a svg { color: var(--muted); }
+.sc-links a:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .sc-links a:hover { background: var(--line-2); } }
+
+.sc-sum { margin: 0; font-size: var(--fs-body); line-height: 1.5; color: color-mix(in srgb, var(--text) 86%, transparent); }
+.sc-note { display: flex; gap: 6px; margin: 0; font-size: var(--fs-small); line-height: 1.45; color: var(--muted); }
+.sc-note svg { flex: none; margin-top: 2px; }
+
+@media (pointer: coarse) {
+  .sc-links a, .sc-ask button { min-height: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.ws, .sc, .ap) :is(button, a):active { transform: none !important; }
+  .sc .sc-flip:active { transform: translateY(-50%) !important; }
+  .sc-dots i { transition: none; }
+}

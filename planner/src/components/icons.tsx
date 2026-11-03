@@ -227,3 +227,40 @@ export const Hop = ({ s = 13 }: { s?: number }) => (
     <path d="M6.5 14.5C8 8.5 16 8.5 17.5 14.5M15 13.8l2.5.7.8-2.6" />
   </svg>
 )
+
+/** A bed, for the beds of a room. */
+export const Bed = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M3 6v13M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6" />
+    <circle cx="7" cy="11.5" r="1.8" />
+  </svg>
+)
+
+/** A bath, for the bathroom of a room. */
+export const Bath = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M3 12h18v2a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM7 19l-1 2M17 19l1 2M6 12V6a2 2 0 0 1 3.7-1" />
+  </svg>
+)
+
+/** A door with its key, for a room of your own. */
+export const Door = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5V21M3 21h18" />
+    <circle cx="15" cy="12" r="1" />
+  </svg>
+)
+
+/** A star, for a rating. */
+export const Star = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.9z" />
+  </svg>
+)
+
+/** A wave, for the beach. */
+export const Wave = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" />
+  </svg>
+)

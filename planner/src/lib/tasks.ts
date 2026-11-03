@@ -1,4 +1,6 @@
-import { day } from './format'
+import type { Lodging, LodgingRoom } from '../data/types'
+import { day, dayRange } from './format'
+import { addDays } from './time'
 import { supabase } from './supabase'
 
 // Tasks for Claude (spec 8.3). A press inserts one row into the tasks table, with the task JSON of
@@ -57,6 +59,17 @@ export function bookingTask(leg: { kind: string; from: string; to: string; day: 
     `Fill in the booking of ${leg.fromName ?? leg.from} to ${leg.toName ?? leg.to} on ${day(leg.day)}.`,
     task,
   )
+}
+
+/**
+ * A stay_prices task for rooms of a place to stay that exists, for the nights from first. Claude writes one price
+ * per room on the place's own links and never adds a place or a room from it. The shape is what tasks.py needs.
+ */
+export function stayPricesTask(lodging: Pick<Lodging, 'id' | 'name'>, rooms: Pick<LodgingRoom, 'id' | 'name'>[], first: string, nights: number): TaskDraft {
+  const check_out = addDays(first, nights)
+  const task: Task = { type: 'stay_prices', lodging_id: lodging.id, room_ids: rooms.map((r) => r.id), check_in: first, check_out, from: 'app' }
+  const what = rooms.length === 1 ? rooms[0].name : `${rooms.length} rooms`
+  return taskDraft(`${lodging.name} ${dayRange(first, check_out)}`, `Prices of ${what} at ${lodging.name} for ${dayRange(first, check_out)}.`, task)
 }
 
 const COLS = 'id,type,status,title,trip_id,trip_version,created_at,done_at,result'

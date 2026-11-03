@@ -24,7 +24,7 @@ vi.mock('./supabase', () => ({
   },
 }))
 
-import { askLabel, flightPricesTask, insertTask, press, subscribeTasks } from './tasks'
+import { askLabel, flightPricesTask, insertTask, press, stayPricesTask, subscribeTasks } from './tasks'
 
 const draft = flightPricesTask({ from: 'BOG', to: 'VVI', date: '2027-01-28', fromName: 'Bogota', toName: 'Santa Cruz' })
 
@@ -80,5 +80,12 @@ describe('tasks', () => {
     subscribeTasks(() => {})()
     expect(topics.length).toBe(2)
     expect(topics[0]).not.toBe(topics[1])
+  })
+  it('a stay price task names the place, its rooms and the nights, as tasks.py needs them', () => {
+    const d = stayPricesTask({ id: 'TEST01', name: 'Casa Test' }, [{ id: 'r1', name: 'Dorm' }, { id: 'r2', name: 'Double' }], '2026-12-09', 5)
+    expect(d.task).toEqual({ type: 'stay_prices', lodging_id: 'TEST01', room_ids: ['r1', 'r2'], check_in: '2026-12-09', check_out: '2026-12-14', from: 'app' })
+    expect(d.title).toBe('[stay_prices] Casa Test 9 to 14 Dec')
+    expect(d.line).toBe('Prices of 2 rooms at Casa Test for 9 to 14 Dec.')
+    expect(stayPricesTask({ id: 'TEST01', name: 'Casa Test' }, [{ id: 'r1', name: 'Dorm' }], '2026-12-30', 3).line).toBe('Prices of Dorm at Casa Test for 30 Dec to 2 Jan.')
   })
 })

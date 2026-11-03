@@ -11,6 +11,7 @@ import { shortPlace } from '../../lib/format'
 import { placeFinds, type FindRow } from '../../lib/placeFinds'
 import { Modal } from '../Modal'
 import { Caret } from '../icons'
+import { WhereToStay } from '../stays/WhereToStay'
 import { FindPopup } from './FindPopup'
 import { Itinerary } from './TripHead'
 
@@ -128,7 +129,9 @@ export function CityCard({ data, journey, sched, i, close, onDelete }: {
               finds={read && node ? read(node.id) : null}
               onClose={close}
               onFind={setFind}
-            />
+            >
+              <WhereToStay i={i} sched={sched} />
+            </Itinerary>
           </div>
           {view === 'delete' ? (
             <footer className="cc-foot" key="delete">
