@@ -80,6 +80,30 @@ describe('stored trips', () => {
     expect(tripRowErrors(next)).toEqual([])
   })
 
+  it("takes the option id of the journey once its ways are not the last row's", () => {
+    const r = rows[0]
+    const inout = { ...io, ways: { ...io.ways, W9999: { ...r.way_in, id: 'W9999' } } } as unknown as InOut
+    expect(journeyToRow({ ...rowToJourney(r), wayIn: 'W9999', optionId: 'GUA-BOG-ticket-1203' }, r, inout, zero).option_id).toBe('GUA-BOG-ticket-1203')
+    expect(journeyToRow({ ...rowToJourney(r), wayIn: 'W9999', optionId: null }, r, inout, zero).option_id).toBeNull()
+  })
+
+  it('a stop put in front keeps the nights, days and stay of the stops after it', () => {
+    const stay = { name: 'Hostel', price_dkk: 300 }
+    const r: TripRow = { ...rows[0], places: [
+      { ...rows[0].places[0], nights: 3, arrive: '2026-12-02', depart: '2026-12-05', stay },
+      { ...rows[0].places[1], nights: 4, stay },
+    ] }
+    const j = rowToJourney(r)
+    const hop = { from: 'SJO', to: 'GUA', mode: 'bus' as const, operator: null, hours: 8, price_dkk: 400, overnight: false, border: true, flight: null }
+    const { why: _, ...moved } = j.places[0]
+    const front = { ...j, places: [{ node: 'SJO', hop: null }, { ...moved, hop }, j.places[1]] }
+    const next = journeyToRow(front, r, io, zero)
+    expect(next.places.map((p) => [p.node, p.nights, p.stay])).toEqual([['SJO', undefined, undefined], ['GUA', 3, stay], ['BOG', 4, stay]])
+    expect([next.places[1].arrive, next.places[1].depart]).toEqual(['2026-12-02', '2026-12-05'])
+    // the moved first stop does not get back the why that said the way in lands there
+    expect(next.places[1].why).toBeUndefined()
+  })
+
   it('keeps parked and the day of each hop', () => {
     const r = rows.find((x) => x.places.some((p) => p.hop && 'date' in p.hop))!
     const j = rowToJourney(r)

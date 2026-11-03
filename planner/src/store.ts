@@ -138,7 +138,10 @@ interface State {
   setHopFlight: (i: number, flight: CrawledFlight | null) => void
   /** a press on a night stepper: the legs it moves and the nights kept at the last stop, as one change */
   moveNights: (m: NightMove) => void
-  /** another way in and way home between the same two cities for the open trip, kept as its draft */
+  /**
+   * another way in and way home for the open trip, kept as its draft. The picked way is between the same two
+   * cities, but the other half of a ticket can land in or leave from another city, and that city comes in as a stop
+   */
   setWays: (choice: WayChoice) => void
   /** the trip whose start and end are being picked, while the picker is open for it. null for a new trip */
   pickFor: string | null

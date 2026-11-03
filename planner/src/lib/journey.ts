@@ -57,10 +57,15 @@ export function nodeForAirport(inout: InOut, code: string): string {
   return inout.airports[code]?.map_node ?? code
 }
 
+/** The name a new trip gets from its ends, "Cartagena in, Guatemala City home". */
+export function tripName(inout: InOut, wayIn: Way, wayHome: Way): string {
+  return `${inout.airports[wayIn.to]?.name ?? wayIn.to} in, ${inout.airports[wayHome.from]?.name ?? wayHome.from} home`
+}
+
 export function newJourney(inout: InOut, wayIn: Way, wayHome: Way, optionId: string | null): Journey {
   return {
     id: `j${Date.now().toString(36)}`,
-    name: `${inout.airports[wayIn.to]?.name ?? wayIn.to} in, ${inout.airports[wayHome.from]?.name ?? wayHome.from} home`,
+    name: tripName(inout, wayIn, wayHome),
     wayIn: wayIn.id,
     wayHome: wayHome.id,
     optionId,

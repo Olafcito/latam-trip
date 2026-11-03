@@ -5,7 +5,7 @@ import type { FlightLink } from '../../lib/links'
 import { wayLinks } from '../../lib/links'
 import { momondoUrl } from '../../lib/prices'
 import { dayOf, type WayChoice } from '../../lib/ways'
-import { kindOf, nightsText, rowFares, rowNotes, wayRowsByDay, type WayRow } from '../../lib/wayRows'
+import { kindOf, nightsText, rowFares, rowNotes, type WayRow } from '../../lib/wayRows'
 import { FlightLinks } from '../FlightLinks'
 import { Check, Plane } from '../icons'
 import { Days } from './FlightSheet'
@@ -63,7 +63,7 @@ function WayRowView({ r, picked, dir, other, data, name, onPick }: {
         <span className="fl-logo" aria-hidden="true">{who ? who.slice(0, 2).toUpperCase() : <Plane s={16} />}</span>
         <div className="fl-who">
           <b title={who || undefined}>{who || 'Airline not listed'}</b>
-          <small>{kindOf(w)}</small>
+          <small>{kindOf(data.inout, r)}</small>
         </div>
       </div>
       <div className="fl-line">
@@ -116,12 +116,14 @@ function DayList({ rows, current, dir, other, data, name, onPick }: {
   )
 }
 
-export function WaySheet({ dir, way, other, data, tripId, onPick, onChangeEnds, close }: {
+export function WaySheet({ dir, way, other, byDay, data, tripId, onPick, onChangeEnds, close }: {
   dir: 'in' | 'home'
   /** the way the trip has in this direction */
   way: Way
   /** the way the trip has in the other direction */
   other: Way
+  /** the rows of each day for this way, as wayRowsByDay makes them */
+  byDay: Record<string, WayRow[]>
   data: AppData
   /** the trip, so a flight picked on Momondo finds its way back */
   tripId?: string
@@ -131,8 +133,6 @@ export function WaySheet({ dir, way, other, data, tripId, onPick, onChangeEnds, 
   close: () => void
 }) {
   const { inout, map } = data
-  const current = useMemo(() => (dir === 'in' ? { wayIn: way, wayHome: other } : { wayIn: other, wayHome: way }), [dir, way, other])
-  const byDay = useMemo(() => wayRowsByDay(inout, way, current), [inout, way, current])
   const days = useMemo(() => Object.keys(byDay).sort(), [byDay])
   const fares = useMemo(() => rowFares(byDay), [byDay])
   const [at, setAt] = useState(() => dayOf(way))

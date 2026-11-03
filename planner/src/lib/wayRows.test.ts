@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut, Ticket, Way } from '../data/types'
 import { withTripWays, type TripRow } from './repoTrips'
-import { kindOf, pairPrice, rowFares, rowNotes, wayRowsByDay } from './wayRows'
+import { cheapestDay, kindOf, pairPrice, pickOfDay, rowFares, rowNotes, wayRowsByDay, type WayRow } from './wayRows'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -29,6 +29,14 @@ const inout = {
   tickets: { TA: ticket('TA', 8000), TB: ticket('TB', 7500), TC: ticket('TC', 7000), TO1: ticket('TO1', 3900), TO2: ticket('TO2', 3600) },
   ways: Object.fromEntries([tIn1202, tHome0205a, tIn1203, tHome0205b, tIn1203c, tHome0206c, oneIn1203, oneHome0205].map((w) => [w.id, w])),
 } as InOut
+
+// an open jaw ticket: in to the same city, but home from San Salvador and not Guatemala City, and cheaper
+const jawIn = way({ id: 'I_jaw_1202', type: 'ticket', depart: '2026-12-02T07:00', tickets: ['TJ'], shared_ticket: 'TJ', paired_with: 'H_jaw_0205' })
+const jawHome = home({ id: 'H_jaw_0205', type: 'ticket', from: 'SAL', depart: '2027-02-05T10:00', tickets: ['TJ'], shared_ticket: 'TJ', paired_with: 'I_jaw_1202' })
+const withJaw = {
+  ...inout, airports: { SAL: { name: 'San Salvador (Comalapa)' } },
+  tickets: { ...inout.tickets, TJ: ticket('TJ', 6000) }, ways: { ...inout.ways, [jawIn.id]: jawIn, [jawHome.id]: jawHome },
+} as unknown as InOut
 
 describe('pricing a pair of ways', () => {
   it('counts a return ticket once', () => {
@@ -87,6 +95,38 @@ describe('the rows of the way sheet', () => {
   })
 })
 
+describe('a ticket that moves the end of the trip to another city', () => {
+  const current = { wayIn: tIn1203, wayHome: tHome0205b }
+  const day = wayRowsByDay(withJaw, tIn1203, current)['2026-12-02']
+
+  it('ranks below a ticket that keeps the city, even when it is cheaper', () => {
+    expect(day.map((r) => r.way.id)).toEqual(['I_t_1202', 'I_jaw_1202'])
+    expect(day.map((r) => r.keepsCity)).toEqual([true, false])
+  })
+  it('a tap on the day takes the way that keeps the city', () => {
+    expect(pickOfDay(day)?.way.id).toBe('I_t_1202')
+  })
+  it('the line under it names the city the way home then leaves from', () => {
+    const r = day.find((x) => x.way.id === 'I_jaw_1202')!
+    expect(rowNotes(withJaw, r, 'in', tHome0205b, (c) => (c === 'SAL' ? 'San Salvador' : c))[0])
+      .toEqual({ text: 'Way home leaves from San Salvador, Fri 5 Feb at 10:00', strong: true })
+  })
+  it('its note names the city and the stop it adds', () => {
+    expect(day.find((x) => x.way.id === 'I_jaw_1202')!.choice.note)
+      .toBe('One ticket. The way home then leaves from San Salvador on Fri 5 Feb, and San Salvador is added as the last stop')
+  })
+})
+
+describe('the cheapest day', () => {
+  const row = (total: number | null, works = true) => ({ total, works }) as WayRow
+  it('is the day whose cheapest way that works is cheapest, not the day of the cheapest first row', () => {
+    expect(cheapestDay({ a: [row(8000), row(6000)], b: [row(7000)], c: [row(9000), row(1, false)] })).toBe('a')
+  })
+  it('is none when no day has a price', () => {
+    expect(cheapestDay({ a: [row(null)], b: [row(1, false)] })).toBeNull()
+  })
+})
+
 describe('the lines under a row', () => {
   const current = { wayIn: tIn1203, wayHome: tHome0205b }
   const rows = wayRowsByDay(inout, tIn1203, current)
@@ -112,7 +152,16 @@ describe('the lines under a row', () => {
     expect(rowNotes(io, r, 'in', tHome0205b, (c) => c)[0].bad).toBe(true)
   })
   it('names the kind of ticket', () => {
-    expect([kindOf(tIn1203), kindOf(oneIn1203), kindOf(way({ type: 'madrid' })), kindOf(way({ tickets: ['a', 'b'] }))])
+    const kind = (way: Way) => kindOf(inout, { way, keepsCity: true })
+    expect([kind(tIn1203), kind(oneIn1203), kind(way({ type: 'madrid' })), kind(way({ tickets: ['a', 'b'] }))])
       .toEqual(['Return ticket', 'One way', 'Via Madrid, 2 tickets', '2 one way tickets'])
+  })
+  it('calls a ticket that moves the other end to another city an open jaw ticket', () => {
+    const rows = wayRowsByDay(withJaw, tIn1203, { wayIn: tIn1203, wayHome: tHome0205b })['2026-12-02']
+    expect(rows.map((r) => kindOf(withJaw, r))).toEqual(['Return ticket', 'Open jaw ticket'])
+  })
+  it('calls a ticket without its other half a ticket', () => {
+    const kind = (paired_with?: string) => kindOf(inout, { way: way({ type: 'ticket', paired_with }), keepsCity: true })
+    expect([kind(), kind('missing')]).toEqual(['Ticket', 'Ticket'])
   })
 })

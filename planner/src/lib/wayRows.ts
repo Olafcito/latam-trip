@@ -1,7 +1,7 @@
 import type { InOut, StopItem, Way } from '../data/types'
 import { clock, kr, weekdayDay } from './format'
 import { priceOfWays } from './options'
-import { chooseWay, dayOf, waysOn, type WayChoice } from './ways'
+import { chooseWay, dayOf, endOf, waysOn, type WayChoice } from './ways'
 
 // The rows of the way sheet and the prices of the day picker on the way in and the way home. A ticket
 // way carries no price of its own, its ticket does, so a row is priced as what the way in and the way
@@ -16,6 +16,8 @@ export interface WayRow {
   total: number | null
   /** the other direction stays on its day */
   keeps: boolean
+  /** the other direction lands in or leaves from the city the trip has there now */
+  keepsCity: boolean
   /** picking it changes the trip, or it is the way the trip has */
   works: boolean
 }
@@ -29,14 +31,14 @@ export function pairPrice(inout: InOut, wayIn: Way, wayHome: Way): number | null
 }
 
 /**
- * The ways of each day between the same two cities as `like`, the way the trip has now. Ways that change
- * nothing go last, then the same kind first as waysOn has them, then those that leave the other direction on
- * its day, then the cheapest for both ways.
+ * The ways of each day between the same two cities as `like`, the way the trip has now, of the trip `tripId`.
+ * Ways that change nothing go last, then those that keep the city at the other end, then the same kind first
+ * as waysOn has them, then those that leave the other direction on its day, then the cheapest for both ways.
  */
-export function wayRowsByDay(inout: InOut, like: Way, current: { wayIn: Way; wayHome: Way }): Record<string, WayRow[]> {
+export function wayRowsByDay(inout: InOut, like: Way, current: { wayIn: Way; wayHome: Way }, tripId?: string): Record<string, WayRow[]> {
   const otherOf = (c: { wayIn: Way; wayHome: Way }) => (like.direction === 'in' ? c.wayHome : c.wayIn)
   const out: Record<string, WayRow[]> = {}
-  for (const [d, list] of Object.entries(waysOn(inout, like))) {
+  for (const [d, list] of Object.entries(waysOn(inout, like, tripId))) {
     const rows = list.map((way): WayRow => {
       const choice = chooseWay(inout, way, current)
       const moved = choice.wayIn.id !== current.wayIn.id || choice.wayHome.id !== current.wayHome.id
@@ -45,23 +47,41 @@ export function wayRowsByDay(inout: InOut, like: Way, current: { wayIn: Way; way
         choice,
         total: pairPrice(inout, choice.wayIn, choice.wayHome),
         keeps: dayOf(otherOf(choice)) === dayOf(otherOf(current)),
+        keepsCity: endOf(inout, otherOf(choice)) === endOf(inout, otherOf(current)),
         works: moved || way.id === like.id,
       }
     })
     const kind = (r: WayRow) => (r.way.type === like.type ? 0 : 1)
     rows.sort((a, b) =>
-      Number(!a.works) - Number(!b.works) || kind(a) - kind(b) || Number(!a.keeps) - Number(!b.keeps) ||
+      Number(!a.works) - Number(!b.works) || Number(!a.keepsCity) - Number(!b.keepsCity) || kind(a) - kind(b) || Number(!a.keeps) - Number(!b.keeps) ||
       (a.total ?? Infinity) - (b.total ?? Infinity))
     out[d] = rows
   }
   return out
 }
 
-/** The price of each day's first row, the shape WhenPicker takes. A day whose first row has no price has none. */
+/** The row a tap on a day in the day picker takes: the first that changes the trip, so one that keeps the city at the other end when there is one. */
+export function pickOfDay(list: readonly WayRow[]): WayRow | undefined {
+  return list.find((r) => r.works)
+}
+
+/** The price of the row a tap on each day takes, the shape WhenPicker takes. A day whose row has no price has none. */
 export function rowFares(rows: Record<string, WayRow[]>): Record<string, number> {
   const fares: Record<string, number> = {}
-  for (const [d, list] of Object.entries(rows)) if (list[0]?.works && list[0].total != null) fares[d] = list[0].total
+  for (const [d, list] of Object.entries(rows)) {
+    const total = pickOfDay(list)?.total
+    if (total != null) fares[d] = total
+  }
   return fares
+}
+
+/** The day with the cheapest way that changes the trip, or null when no such way has a price. */
+export function cheapestDay(rows: Record<string, WayRow[]>): string | null {
+  let best: { day: string; total: number } | null = null
+  for (const [day, list] of Object.entries(rows)) {
+    for (const r of list) if (r.works && r.total != null && (!best || r.total < best.total)) best = { day, total: r.total }
+  }
+  return best?.day ?? null
 }
 
 /** A line under a row. `bad` when picking it changes nothing, `strong` when it moves the other direction to another day. */
@@ -69,9 +89,12 @@ export interface RowNote { text: string; bad?: boolean; strong?: boolean }
 
 export const nightsText = (n: number) => (n === 1 ? '1 night' : `${n} nights`)
 
-/** What kind of ticket the way is, in words. */
-export function kindOf(way: Way): string {
-  if (way.type === 'ticket') return way.paired_with ? 'Return ticket' : 'One ticket'
+/**
+ * What kind of ticket the way of a row is, in words. A ticket whose other half moves the trip's other end to
+ * another city is an open jaw ticket, a ticket without its other half is just a ticket.
+ */
+export function kindOf(inout: InOut, { way, keepsCity }: Pick<WayRow, 'way' | 'keepsCity'>): string {
+  if (way.type === 'ticket') return !way.paired_with || !inout.ways[way.paired_with] ? 'Ticket' : keepsCity ? 'Return ticket' : 'Open jaw ticket'
   if (way.type === 'madrid') return 'Via Madrid, 2 tickets'
   return way.tickets.length > 1 ? `${way.tickets.length} one way tickets` : 'One way'
 }
@@ -103,7 +126,10 @@ export function rowNotes(inout: InOut, r: WayRow, dir: 'in' | 'home', other: Way
     const oneWay = then.type === 'oneways' && other.type !== 'oneways' ? ', as a one way' : ''
     // the same day at another time says the day stays and the time is new
     const still = then.depart === other.depart ? `${word} still ${when}` : `${word} still ${weekdayDay(then.depart)}, now at ${clock(then.depart)}`
-    notes.push({ text: r.keeps ? `${still}${oneWay}` : `${word} moves to ${when}${oneWay}`, strong: !r.keeps })
+    // another city at the other end is said first and in bold, it brings a new stop
+    const moved = dir === 'in' ? `${word} leaves from ${name(then.from)}, ${when}` : `${word} lands in ${name(then.to)}, leaves ${when}`
+    const text = !r.keepsCity ? moved : r.keeps ? still : `${word} moves to ${when}`
+    notes.push({ text: `${text}${oneWay}`, strong: !r.keeps || !r.keepsCity })
   }
   for (const t of r.way.timeline) {
     if (t.kind === 'night') {

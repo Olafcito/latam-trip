@@ -40,7 +40,7 @@ function monthCells(m: string): (string | null)[] {
   return out
 }
 
-export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor, stay, codes, trip, clearable = true, onSet }: {
+export function WhenPicker({ date, set, min, max, days, firstDay, fares, cheapDay, fareFor, stay, codes, trip, clearable = true, onSet }: {
   date: string
   set: boolean
   /** the first and last day the leg can leave */
@@ -52,6 +52,8 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
   firstDay: string
   /** the cheapest fare known for the leg by day */
   fares: Record<string, number>
+  /** the day to mark as the cheapest, when that is not simply the day of the lowest fare */
+  cheapDay?: string | null
   /** what a fare is when it is not the cheapest known for the leg alone, "for both ways" */
   fareFor?: string
   /** the stop before the leg: its name and the day you get there. None for a leg with no stop before it */
@@ -69,7 +71,8 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
   const grid = useRef<HTMLDivElement>(null)
   const moved = useRef(false)
   const pick = (l: Lens) => { setLens(l); saveLens(l) }
-  const tripDay = (d: string) => dayDiff(firstDay, d) + 1
+  /** the day of the trip, or null for a day before it starts, as the way in can leave */
+  const tripDay = (d: string) => (d < firstDay ? null : dayDiff(firstDay, d) + 1)
   const nights = stay ? dayDiff(stay.inDay, date) : 0
   const open = (d: string) => d >= min && d <= max && (!days || days.includes(d))
   /** the next day that can be picked from d in a direction, or null */
@@ -81,6 +84,11 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
   const after = step(date, 1)
   const priced = Object.entries(fares).filter(([d]) => d >= min && d <= max)
   const cheapest = priced.length ? Math.min(...priced.map(([, p]) => p)) : null
+  const isCheap = (d: string) => (cheapDay !== undefined ? d === cheapDay : fares[d] != null && fares[d] === cheapest)
+  const readout = [
+    tripDay(date) != null ? `Day ${tripDay(date)}` : null,
+    fares[date] != null ? `${kr(fares[date])}${fareFor ? ` ${fareFor}` : ''}${isCheap(date) ? ', the cheapest' : ''}` : null,
+  ].filter(Boolean).join(', ')
   // the one day in the grid that Tab lands on: the focused day, or the first open day of the month
   const start = `${month}-01` < min ? min : `${month}-01`
   const first = open(start) ? start : step(start, 1) ?? start
@@ -130,7 +138,7 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
         </div>
         <span className="wp-read" aria-live="polite">
           <b>{weekdayDay(date)}</b>
-          <small>Day {tripDay(date)}{fares[date] != null ? `, ${kr(fares[date])}${fareFor ? ` ${fareFor}` : ''}${fares[date] === cheapest ? ', the cheapest' : ''}` : ''}</small>
+          {readout && <small>{readout}</small>}
         </span>
       </div>
 
@@ -155,13 +163,13 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor
                 tabIndex={d === tabDay ? 0 : -1}
                 data-sel={d === date}
                 data-set={set && d === date}
-                data-cheap={p != null && p === cheapest}
+                data-cheap={isCheap(d)}
                 data-priced={p != null}
                 aria-pressed={d === date}
-                aria-label={`${weekdayDay(d)}, day ${tripDay(d)}${p == null ? '' : fareFor ? `, ${kr(p)} ${fareFor}` : `, from ${kr(p)}`}`}
+                aria-label={`${weekdayDay(d)}${tripDay(d) != null ? `, day ${tripDay(d)}` : ''}${p == null ? '' : fareFor ? `, ${kr(p)} ${fareFor}` : `, from ${kr(p)}`}`}
                 onClick={() => { setFocus(d); onSet(d) }}
               >
-                <b>{lens === 'date' ? +d.slice(8) : tripDay(d)}</b>
+                <b>{lens === 'date' ? +d.slice(8) : tripDay(d) ?? ' '}</b>
                 <small>{p != null ? shortKr(p) : ''}</small>
               </button>
             )

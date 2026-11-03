@@ -82,6 +82,15 @@ describe('ways by day', () => {
       expect(waysOn(io, io.ways['t4:in'])['2026-12-03'].map((w) => w.id).sort()).toEqual(['I_t_B', 't4:in'])
     })
   })
+  it("the trip's own way is still offered on its day after another way is picked", () => {
+    const io = inoutOf([...Object.values(inout.ways), tripOwnIn, tripOwnHome])
+    const c = chooseWay(io, oneIn1202, { wayIn: tripOwnIn, wayHome: tripOwnHome })
+    expect(waysOn(io, c.wayIn, 't1')['2026-12-03'].map((w) => w.id)).toContain('t1:in')
+  })
+  it('with the trip id, still leaves out the own ways of other trips and the built copy of its own way', () => {
+    const io = { ...inout, ways: { ...inout.ways, ...tripWays('t3', ticketIn, ticketHome), ...tripWays('t2', ticketIn, ticketHome) } }
+    expect(waysOn(io, oneIn1202, 't3')['2026-12-03'].map((w) => w.id)).toEqual(['I_oneway_1203', 't3:in'])
+  })
   it('the day of a way is its local depart day', () => {
     expect(dayOf(ticketHome)).toBe('2027-02-05')
   })
@@ -143,6 +152,20 @@ describe('choosing a way', () => {
   it('picking the current way changes nothing', () => {
     expect(chooseWay(inout, ticketIn, { wayIn: ticketIn, wayHome: ticketHome })).toEqual({ wayIn: ticketIn, wayHome: ticketHome, note: null })
   })
+  it('a ticket whose way home leaves from another city names that city', () => {
+    const jawIn = way({ id: 'I_jaw_1202', type: 'ticket', depart: '2026-12-02T07:00', paired_with: 'H_jaw_0206' })
+    const jawHome = home({ id: 'H_jaw_0206', type: 'ticket', from: 'SAL', depart: '2027-02-06T10:00', paired_with: 'I_jaw_1202' })
+    const io = { ...inoutOf([...Object.values(inout.ways), jawIn, jawHome]), airports: { SAL: { name: 'San Salvador (Comalapa)' } } } as unknown as InOut
+    expect(chooseWay(io, jawIn, { wayIn: oneIn, wayHome: oneHome }).note)
+      .toBe('One ticket. The way home then leaves from San Salvador on Sat 6 Feb, and San Salvador is added as the last stop')
+  })
+  it('a ticket whose way in lands in another city names that city', () => {
+    const jawIn = way({ id: 'I_jaw_1202', type: 'ticket', to: 'BOG', depart: '2026-12-02T23:00', arrive: '2026-12-03T09:00', paired_with: 'H_jaw_0206' })
+    const jawHome = home({ id: 'H_jaw_0206', type: 'ticket', depart: '2027-02-06T10:00', paired_with: 'I_jaw_1202' })
+    const io = inoutOf([...Object.values(inout.ways), jawIn, jawHome])
+    expect(chooseWay(io, jawHome, { wayIn: oneIn, wayHome: oneHome }).note)
+      .toBe('One ticket. The way in then lands in BOG on Thu 3 Dec, and BOG is added as the first stop')
+  })
   it('a one way next to a one way sets only that way', () => {
     expect(chooseWay(inout, oneIn1202, { wayIn: oneIn, wayHome: oneHome }).note).toBeNull()
   })
@@ -199,6 +222,12 @@ describe('changing the ends of a trip', () => {
     const planned = { ...j, lastNights: 3 }
     expect(withEnds(planned, inout, map, wayInCTG, wayHomeSAL).lastNights).toBeUndefined()
     expect(withEnds(planned, inout, map, wayInBOG, wayHomeGUA).lastNights).toBe(3)
+  })
+  it('a name made from the ends follows the new ends', () => {
+    expect(withEnds({ ...j, wayHome: wayHomeGUA.id, name: 'CTG in, GUA home' }, inout, map, wayInBOG, wayHomeSAL).name).toBe('BOG in, SAL home')
+  })
+  it('a name Simon typed stays', () => {
+    expect(withEnds({ ...j, wayHome: wayHomeGUA.id, name: 'Caribbean first' }, inout, map, wayInBOG, wayHomeSAL).name).toBe('Caribbean first')
   })
   it('the old first stop loses why it was there once a new arrival city comes before it', () => {
     const why = { ...j, places: [{ ...j.places[0], why: 'the way in lands here' }, ...j.places.slice(1)] }

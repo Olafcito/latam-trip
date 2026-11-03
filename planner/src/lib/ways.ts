@@ -1,8 +1,8 @@
 import type { InOut, MapData, Way } from '../data/types'
-import { dayDiff, weekdayDay } from './format'
-import { nodeForAirport, type Journey, type Place } from './journey'
+import { dayDiff, shortPlace, weekdayDay } from './format'
+import { nodeForAirport, tripName, type Journey, type Place } from './journey'
 import { hopBetween } from './mapTrips'
-import { isTripWayId } from './repoTrips'
+import { isTripWayId, tripWayId } from './repoTrips'
 
 /** The local day a way leaves, "2026-12-03". */
 export function dayOf(w: Way): string {
@@ -14,16 +14,23 @@ function partnerOf(inout: InOut, w: Way): Way | undefined {
   return w.paired_with ? inout.ways[w.paired_with] : undefined
 }
 
+/** The city a way has at the trip's end of it: where a way in lands, where a way home leaves from. */
+export function endOf(inout: InOut, w: Way): string {
+  return nodeForAirport(inout, w.direction === 'in' ? w.to : w.from)
+}
+
 /**
  * Ways with the same direction and the same two cities as `like`. `like` itself is always there,
- * even when it is a trip's own way that the build does not have. The own ways of other trips are left out,
- * they are copies of built ways.
+ * even when it is a trip's own way that the build does not have, and so is the own way of the trip
+ * `tripId`, so it can be picked again after another. The own ways of other trips are left out, they
+ * are copies of built ways.
  */
-function sameRoute(inout: InOut, like: Way): Way[] {
+function sameRoute(inout: InOut, like: Way, tripId?: string): Way[] {
   const byId = new Map<string, Way>()
+  const mine = tripId ? tripWayId(tripId, like.direction) : null
   for (const w of Object.values(inout.ways)) {
     if (w.direction !== like.direction || w.from !== like.from || w.to !== like.to) continue
-    if (isTripWayId(w.id) && w.id !== like.id) continue
+    if (isTripWayId(w.id) && w.id !== like.id && w.id !== mine) continue
     byId.set(w.id, w)
   }
   byId.set(like.id, like)
@@ -42,12 +49,14 @@ function copyOf(inout: InOut, a: Way, b: Way): boolean {
 
 /**
  * Ways between the same two cities as `like`, by day, each day with the same kind first and then the cheapest.
- * When `like` is a saved trip's own way, the built copy of it is left out and `like` stays.
+ * `tripId` is the trip `like` is a way of, so its own way stays on offer. The built copy of a saved trip's
+ * own way is left out and the own way stays.
  */
-export function waysOn(inout: InOut, like: Way): Record<string, Way[]> {
-  const own = isTripWayId(like.id)
+export function waysOn(inout: InOut, like: Way, tripId?: string): Record<string, Way[]> {
+  const route = sameRoute(inout, like, tripId)
+  const own = route.filter((w) => isTripWayId(w.id))
   const days: Record<string, Way[]> = {}
-  for (const w of sameRoute(inout, like)) if (w.id === like.id || !own || !copyOf(inout, w, like)) (days[dayOf(w)] ??= []).push(w)
+  for (const w of route) if (w.id === like.id || isTripWayId(w.id) || !own.some((o) => copyOf(inout, w, o))) (days[dayOf(w)] ??= []).push(w)
   const kind = (w: Way) => (w.type === like.type ? 0 : 1)
   for (const list of Object.values(days)) list.sort((a, b) => kind(a) - kind(b) || a.price_dkk - b.price_dkk)
   return days
@@ -61,6 +70,8 @@ export interface WayChoice {
 }
 
 const label = (direction: Way['direction']) => (direction === 'in' ? 'way in' : 'way home')
+/** An airport's city as the way sheet shows it, "San Salvador". */
+const cityName = (inout: InOut, code: string) => shortPlace(inout.airports[code]?.name ?? code)
 
 function pair(picked: Way, other: Way): { wayIn: Way; wayHome: Way } {
   return picked.direction === 'in' ? { wayIn: picked, wayHome: other } : { wayIn: other, wayHome: picked }
@@ -75,7 +86,8 @@ function oneWayFor(inout: InOut, other: Way): Way | null {
 }
 
 /**
- * Pick a way and get the way in and way home that go with it. A ticket way brings its partner.
+ * Pick a way and get the way in and way home that go with it. A ticket way brings its partner, and when
+ * the partner lands in or leaves from another city than the trip has there, the note names that city.
  * A one way next to half of a ticket turns that other half into a one way, so the pair can always be mixed.
  */
 export function chooseWay(inout: InOut, picked: Way, current: { wayIn: Way; wayHome: Way }): WayChoice {
@@ -86,7 +98,15 @@ export function chooseWay(inout: InOut, picked: Way, current: { wayIn: Way; wayH
   if (picked.type !== 'oneways') {
     const partner = partnerOf(inout, picked)
     if (!partner) return { ...current, note: `This ticket has no ${otherLabel} saved, so nothing changed` }
-    return { ...pair(picked, partner), note: `One ticket. This also sets the ${otherLabel} on ${weekdayDay(partner.depart)}` }
+    if (endOf(inout, partner) === endOf(inout, other)) return { ...pair(picked, partner), note: `One ticket. This also sets the ${otherLabel} on ${weekdayDay(partner.depart)}` }
+    // an open jaw ticket: its other half lands in or leaves from another city, and that city comes in as a stop
+    const city = cityName(inout, partner.direction === 'in' ? partner.to : partner.from)
+    return {
+      ...pair(picked, partner),
+      note: partner.direction === 'home'
+        ? `One ticket. The way home then leaves from ${city} on ${weekdayDay(partner.depart)}, and ${city} is added as the last stop`
+        : `One ticket. The way in then lands in ${city} on ${weekdayDay(partner.arrive)}, and ${city} is added as the first stop`,
+    }
   }
 
   if (other.type === 'oneways') return { ...pair(picked, other), note: null }
@@ -101,6 +121,7 @@ export function chooseWay(inout: InOut, picked: Way, current: { wayIn: Way; wayH
  * old first stop, and a new home city is added as the last stop. A city already at that end is not added again.
  * The old first stop loses its why, which said the way in landed there. A new last stop takes the nights that
  * were planned at the old one, so those are no longer kept. The option id is that of the option with these two ways, else null.
+ * A name made from the old ends, as a new trip gets it, is made again from the new ends. A name typed in stays.
  */
 export function withEnds(j: Journey, inout: InOut, map: MapData, wayIn: Way, wayHome: Way): Journey {
   const places: Place[] = [...j.places]
@@ -117,8 +138,11 @@ export function withEnds(j: Journey, inout: InOut, map: MapData, wayIn: Way, way
   const newLast = last.node !== exit
   if (newLast) places.push({ node: exit, hop: hopBetween(map, last.node, exit, null) })
   const option = inout.options.find((o) => o.way_in === wayIn.id && o.way_home === wayHome.id)
+  const [oldIn, oldHome] = [inout.ways[j.wayIn], inout.ways[j.wayHome]]
+  const made = !!oldIn && !!oldHome && j.name === tripName(inout, oldIn, oldHome)
   return {
     ...rest, ...(newLast || lastNights === undefined ? {} : { lastNights }),
+    name: made ? tripName(inout, wayIn, wayHome) : j.name,
     wayIn: wayIn.id, wayHome: wayHome.id, optionId: option?.id ?? null, places,
   }
 }

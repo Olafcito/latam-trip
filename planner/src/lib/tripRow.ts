@@ -141,14 +141,29 @@ function rowTickets(ways: RowWay[], inout: InOut, last: TripRow | null): TripRow
   return Object.keys(out).length ? out : null
 }
 
-function rowPlace(p: Place, i: number, last: TripRow | null): RowPlace {
-  const was = last?.places[i]
-  const keep = was && was.node === p.node ? was : null
+/**
+ * Where in the last row each place of the journey was: the next place on in the last row with the same node,
+ * so a stop put in front or taken out leaves the others matched. -1 for a place that is new.
+ */
+function lastIndexes(places: Place[], last: TripRow | null): number[] {
+  const was = last?.places ?? []
+  let k = 0
+  return places.map((p) => {
+    const at = was.findIndex((q, n) => n >= k && q.node === p.node)
+    if (at >= 0) k = at + 1
+    return at
+  })
+}
+
+function rowPlace(p: Place, i: number, last: TripRow | null, at: number): RowPlace {
+  const keep = at >= 0 ? last?.places[at] : undefined
   const out: RowPlace = { node: p.node, hop: i === 0 ? null : (p.hop as RowPlace['hop']) }
   if (p.why) out.why = p.why
-  // what the journey does not hold stays as the last version had it
+  // what the journey does not hold stays as the last version had it. A why only stays on a stop that kept its
+  // place, since a first stop that moved on lost the why that said the way in landed there
   if (keep) {
-    for (const k of ['nights', 'arrive', 'depart', 'stay', ...(p.why ? [] : ['why' as const])] as const) if (k in keep) (out as unknown as Record<string, unknown>)[k] = keep[k]
+    const why = !p.why && at === i ? ['why' as const] : []
+    for (const k of ['nights', 'arrive', 'depart', 'stay', ...why] as const) if (k in keep) (out as unknown as Record<string, unknown>)[k] = keep[k]
   }
   return out
 }
@@ -156,6 +171,7 @@ function rowPlace(p: Place, i: number, last: TripRow | null): RowPlace {
 /**
  * The row a Save stores. It starts from the last stored row of the id, so rank, why, option_id and the
  * trip's own ways and tickets survive, and what the journey does not hold (nights, stay) is carried over.
+ * Once the journey is on other ways, option_id is the journey's.
  * A journey that is the last row opened again keeps that row's totals, so opening a trip and pressing Save
  * is the same content. Any other journey takes the totals the screen shows. It throws when a way of the
  * journey is not in inout, as no honest row can be written without it.
@@ -165,6 +181,8 @@ export function journeyToRow(j: Journey, last: TripRow | null, inout: InOut, tot
   const wayHome = rowWay(j, 'home', inout, last)
   if (!wayIn || !wayHome) throw new Error(`The ways of ${j.name} are not in the data, so it cannot be saved.`)
   const unchanged = !!last && sameJourney(rowToJourney(last), j)
+  const ownWays = j.wayIn === tripWayId(j.id, 'in') && j.wayHome === tripWayId(j.id, 'home')
+  const at = lastIndexes(j.places, last)
   const row: TripRow = {
     id: j.id,
     version: (last?.version ?? 0) + 1,
@@ -173,11 +191,12 @@ export function journeyToRow(j: Journey, last: TripRow | null, inout: InOut, tot
     by: 'planner',
     why: last?.why ?? j.why ?? '',
     rank: last && 'rank' in last ? last.rank : j.rank,
-    option_id: last ? (last.option_id ?? j.optionId ?? null) : j.optionId,
+    // the last row's option while the journey is on the last row's ways, else the option of the ways it has now
+    option_id: last && ownWays ? (last.option_id ?? j.optionId ?? null) : j.optionId,
     way_in: wayIn,
     way_home: wayHome,
     tickets: rowTickets([wayIn, wayHome], inout, last),
-    places: j.places.map((p, i) => rowPlace(p, i, last)),
+    places: j.places.map((p, i) => rowPlace(p, i, last, at[i])),
   }
   if (unchanged) {
     if (last && 'totals' in last) row.totals = last.totals

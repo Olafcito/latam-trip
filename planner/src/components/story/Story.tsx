@@ -12,7 +12,7 @@ import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
 import { hopLink, wayLinks } from '../../lib/links'
 import { dayOf } from '../../lib/ways'
-import { rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
+import { cheapestDay, pickOfDay, rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
 import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
@@ -262,11 +262,11 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   // an older version of the trip is open to look at, its ends are not changed from here
   const viewingOld = useStore((s) => s.viewing?.id === journey.id)
   const setNotice = useStore((s) => s.setNotice)
-  // the ways of each day for the way in and the way home, for their calendars
+  // the ways of each day for the way in and the way home, for their calendars and their sheets
   const wayRows = useMemo(() => {
     const ends = { wayIn, wayHome }
-    return { in: wayRowsByDay(inout, wayIn, ends), home: wayRowsByDay(inout, wayHome, ends) }
-  }, [inout, wayIn, wayHome])
+    return { in: wayRowsByDay(inout, wayIn, ends, journey.id), home: wayRowsByDay(inout, wayHome, ends, journey.id) }
+  }, [inout, wayIn, wayHome, journey.id])
   // the stop whose City card is open. A stop deleted from the card goes once the card has closed
   const [city, setCity] = useState<number | null>(null)
   const goes = useRef(false)
@@ -295,20 +295,21 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     const days = Object.keys(rows).filter((d) => d === dayOf(w) || rows[d].some((r) => r.works)).sort()
     return (
       <WhenPicker
-        date={dayOf(w)} set min={days[0]} max={days[days.length - 1]} days={days} firstDay={sched.firstDay} fares={rowFares(rows)} fareFor="for both ways"
+        date={dayOf(w)} set min={days[0]} max={days[days.length - 1]} days={days} firstDay={sched.firstDay}
+        fares={rowFares(rows)} cheapDay={cheapestDay(rows)} fareFor="for both ways"
         codes={{ from: w.from, to: w.to }} trip={journey.id} clearable={false}
         onSet={(d) => {
-          // the day it has already changes nothing, another day takes its first way, the one the sheet lists first
-          const r = d && d !== dayOf(w) ? rows[d]?.find((x) => x.works) : undefined
+          // the day it has already changes nothing, another day takes the way the sheet lists first, one that keeps the other end's city when it can
+          const r = d && d !== dayOf(w) && rows[d] ? pickOfDay(rows[d]) : undefined
           if (!r) return
           setWays(r.choice)
-          setNotice(r.choice.note)
+          if (r.choice.note) setNotice(r.choice.note)
         }}
       />
     )
   }
-  const waySheet = (dir: 'in' | 'home', w: Way, other: Way) => (close: () => void) => (
-    <WaySheet dir={dir} way={w} other={other} data={data} tripId={journey.id} onPick={setWays} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
+  const waySheet = (dir: 'in' | 'home', w: Way, other: Way, rows: Record<string, WayRow[]>) => (close: () => void) => (
+    <WaySheet dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} onPick={setWays} onChangeEnds={viewingOld ? undefined : () => changeEndsOf(journey.id)} close={close} />
   )
 
   const items: ReactNode[] = [
@@ -319,7 +320,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       aria={wayAria(wayIn, cph.name, nm(firstNode))}
       travel={<Travel fam="flight" time={hours(wayIn.total_hours)} overnight={false} />}
       card={<WayCard way={wayIn} other={wayHome} data={data} />}
-      sheet={waySheet('in', wayIn, wayHome)}
+      sheet={waySheet('in', wayIn, wayHome, wayRows.in)}
     />,
   ]
   ps.forEach((p, i) => {
@@ -423,7 +424,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       aria={wayAria(wayHome, nm(exitNode), cph.name)}
       travel={<Travel fam="flight" time={hours(wayHome.total_hours)} overnight={false} />}
       card={<WayCard way={wayHome} other={wayIn} data={data} />}
-      sheet={waySheet('home', wayHome, wayIn)}
+      sheet={waySheet('home', wayHome, wayIn, wayRows.home)}
     />,
     <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />,
   )
