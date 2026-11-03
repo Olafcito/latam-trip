@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut, Ticket, Way } from '../data/types'
 import { withTripWays, type TripRow } from './repoTrips'
-import { kindOf, pairPrice, pickOfDay, rowFares, rowNotes, wayRowsByDay } from './wayRows'
+import { kindOf, otherMark, pairPrice, pickOfDay, rowFares, wayMarks, wayRowsByDay, wayStops } from './wayRows'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -106,10 +106,10 @@ describe('a ticket that moves the end of the trip to another city', () => {
   it('a tap on the day takes the way that keeps the city', () => {
     expect(pickOfDay(day)?.way.id).toBe('I_t_1202')
   })
-  it('the line under it names the city the way home then leaves from', () => {
+  it('its chip carries the city the way home then leaves from, and the sentence is its tooltip', () => {
     const r = day.find((x) => x.way.id === 'I_jaw_1202')!
-    expect(rowNotes(withJaw, r, 'in', tHome0205b, (c) => (c === 'SAL' ? 'San Salvador' : c))[0])
-      .toEqual({ text: 'Way home leaves from San Salvador, Fri 5 Feb at 10:00', strong: true })
+    expect(otherMark(r, 'in', tHome0205b, (c) => (c === 'SAL' ? 'San Salvador' : c)))
+      .toEqual({ kind: 'home', text: 'SAL Fri 5 Feb', label: 'Way home leaves from San Salvador, Fri 5 Feb at 10:00', tone: 'strong' })
   })
   it('its note names the city and the stop it adds', () => {
     expect(day.find((x) => x.way.id === 'I_jaw_1202')!.choice.note)
@@ -118,30 +118,88 @@ describe('a ticket that moves the end of the trip to another city', () => {
 })
 
 
-describe('the lines under a row', () => {
+describe('the marks of a row', () => {
   const current = { wayIn: tIn1203, wayHome: tHome0205b }
   const rows = wayRowsByDay(inout, tIn1203, current)
-  const first = (day: string, id: string) => rowNotes(inout, rows[day].find((r) => r.way.id === id)!, 'in', tHome0205b, (c) => c)[0]
+  const row = (day: string, id: string) => rows[day].find((r) => r.way.id === id)!
+  const home = (day: string, id: string) => otherMark(row(day, id), 'in', tHome0205b, (c) => c)
 
-  it('says the way home stays when it keeps its day and time', () => {
-    expect(first('2026-12-02', 'I_t_1202')).toEqual({ text: 'Way home still Fri 5 Feb at 10:00', strong: false })
+  it('shows no chip for the way home when it keeps its day and time', () => {
+    expect(home('2026-12-02', 'I_t_1202')).toBeNull()
   })
-  it('says the way home moves, in bold, when it goes to another day', () => {
-    expect(first('2026-12-03', 'I_t_1203c')).toEqual({ text: 'Way home moves to Sat 6 Feb at 10:00', strong: true })
+  it('a moved way home shows its new day and time as a strong chip on the row', () => {
+    expect(home('2026-12-03', 'I_t_1203c')).toEqual({ kind: 'home', text: 'Sat 6 Feb 10:00', label: 'Way home moves to Sat 6 Feb at 10:00', tone: 'strong' })
   })
-  it('says the way home becomes a one way, with its new time on the same day', () => {
-    expect(first('2026-12-03', 'I_o_1203')).toEqual({ text: 'Way home still Fri 5 Feb, now at 12:00, as a one way', strong: false })
+  it('a way home on the same day at a new time shows only the time', () => {
+    expect(home('2026-12-03', 'I_o_1203')).toEqual({ kind: 'home', text: '12:00', label: 'Way home still Fri 5 Feb, now at 12:00, as a one way' })
   })
-  it('the way the trip has says nothing about the other direction', () => {
-    expect(rowNotes(inout, rows['2026-12-03'].find((r) => r.way.id === 'I_t_1203')!, 'in', tHome0205b, (c) => c).map((n) => n.text))
-      .toEqual(['Cabin bag included, checked bag included'])
+  it('the way the trip has shows nothing about the other direction', () => {
+    expect(home('2026-12-03', 'I_t_1203')).toBeNull()
   })
-  it('a row that changes nothing carries the reason, marked bad', () => {
+  it('a row that changes nothing greys out its Pick with the reason', () => {
     const lone = way({ id: 'I_t_lone', type: 'ticket', depart: '2026-12-03T05:00', tickets: ['TC'], paired_with: 'missing' })
     const io = { ...inout, ways: { ...inout.ways, [lone.id]: lone } }
     const r = wayRowsByDay(io, tIn1203, current)['2026-12-03'].find((x) => x.way.id === 'I_t_lone')!
-    expect(rowNotes(io, r, 'in', tHome0205b, (c) => c)[0].bad).toBe(true)
+    const m = wayMarks(io, r, 'in', tHome0205b, (c) => c)
+    expect([m.dead, m.badges.some((b) => b.kind === 'home')]).toEqual(['This ticket has no way home saved, so nothing changed', false])
   })
+
+  describe('the bags of its tickets', () => {
+    const bagsOf = (fees: { cabin_bag_fee_dkk?: number | null; checked_bag_fee_dkk?: number | null } | null) => {
+      const io = fees ? { ...inout, tickets: { ...inout.tickets, TB: { ...inout.tickets.TB, ...fees } } } : inout
+      const w = fees ? tIn1203 : way({ id: 'I_none' })
+      const r = { ...row('2026-12-03', 'I_t_1203'), way: w }
+      return wayMarks(io, r, 'in', tHome0205b, (c) => c).badges.filter((b) => b.kind === 'cabin' || b.kind === 'checked')
+    }
+    it('shows no bags when no ticket is known', () => {
+      expect(bagsOf(null)).toEqual([])
+    })
+    it('shows no bag whose fee is not known', () => {
+      expect(bagsOf({ cabin_bag_fee_dkk: null, checked_bag_fee_dkk: null })).toEqual([])
+    })
+    it('shows the cabin bag alone, green, when only it is known and included', () => {
+      expect(bagsOf({ cabin_bag_fee_dkk: 0, checked_bag_fee_dkk: null })).toEqual([{ kind: 'cabin', label: 'Cabin bag included', tone: 'ok' }])
+    })
+    it('shows a checked bag at a price with the price beside it', () => {
+      expect(bagsOf({ cabin_bag_fee_dkk: 0, checked_bag_fee_dkk: 1120 })).toEqual([
+        { kind: 'cabin', label: 'Cabin bag included', tone: 'ok' },
+        { kind: 'checked', label: 'Checked bag 1.120 kr', text: '1.120 kr', tone: 'part' },
+      ])
+    })
+  })
+
+  it('puts the moon on a night arrival and leaves the morning departure alone', () => {
+    const r = { ...row('2026-12-03', 'I_t_1203'), way: way({ depart: '2026-12-03T06:00', arrive: '2026-12-03T23:15' }) }
+    const m = wayMarks(inout, r, 'in', tHome0205b, (c) => c)
+    expect([m.leaves, m.lands]).toEqual([null, { kind: 'moon', label: 'Lands at night, 23:15' }])
+  })
+
+  it('marks a night, a long wait and a self transfer on the stop where each falls', () => {
+    const w = way({
+      timeline: [
+        { kind: 'flight', from: 'CPH', to: 'MAD', depart: '', arrive: '', hours: 3, connections: [], carriers: [], overnight_layover: false, self_transfer_inside: false, ticket: 'T' },
+        { kind: 'night', airport: 'MAD', arrive: '', depart: '', hours: 20, nights: 1, same_ticket: false, stay_estimate_dkk: 450 },
+        { kind: 'flight', from: 'MAD', to: 'BOG', depart: '', arrive: '', hours: 11, connections: [{ airport: 'LIS', layover_h: 5.5 }, { airport: 'OPO', layover_h: 1 }], carriers: [], overnight_layover: false, self_transfer_inside: false, ticket: 'T' },
+        { kind: 'self_transfer', airport: 'BOG', arrive: '', depart: '', hours: 3, nights: 0, same_ticket: false, stay_estimate_dkk: 0 },
+      ],
+    } as unknown as Partial<Way>)
+    const name = (c: string) => ({ MAD: 'Madrid', LIS: 'Lisbon', BOG: 'Bogota' })[c] ?? c
+    expect(wayStops(w, name)).toEqual([
+      { code: 'MAD', text: '1 night', mark: { kind: 'night', label: '1 night in Madrid, stay about 450 kr' } },
+      { code: 'LIS', text: '5h 30m', mark: { kind: 'wait', label: 'Long wait in Lisbon, 5h 30m', tone: 'part' } },
+      { code: 'OPO', text: '1h', mark: null },
+      { code: 'BOG', text: '3h', mark: { kind: 'self', label: 'Self transfer in Bogota, you check in again', tone: 'part' } },
+    ])
+  })
+
+  it('marks a way through the United States', () => {
+    const r = { ...row('2026-12-03', 'I_t_1203'), way: way({ us_transit: true }) }
+    expect(wayMarks(inout, r, 'in', tHome0205b, (c) => c).badges).toEqual([{ kind: 'esta', label: 'Through the United States, ESTA needed', text: 'ESTA' }])
+  })
+
+})
+
+describe('the kind of ticket', () => {
   it('names the kind of ticket', () => {
     const kind = (way: Way) => kindOf(inout, { way, keepsCity: true })
     expect([kind(tIn1203), kind(oneIn1203), kind(way({ type: 'madrid' })), kind(way({ tickets: ['a', 'b'] }))])

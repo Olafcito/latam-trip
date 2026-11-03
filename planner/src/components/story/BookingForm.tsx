@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent, type KeyboardEvent, type ReactNode } from 'react'
 import type { Booking, BookingFile, CrawledFlight, InOut, Way } from '../../data/types'
 import { boxChips, boxHead, boxSegments, fileMessage, type BoxHead } from '../../lib/bookedBox'
-import { blank, formRows, fromPicked, fromRow, readKr, rowsOf, savedRow, withIds, type BookingFields, type DraftLeg } from '../../lib/bookingDraft'
+import { formRows, fromPicked, fromRow, manualRows, readKr, rowsOf, savedRow, withIds, type BookingFields, type DraftLeg } from '../../lib/bookingDraft'
 import { attachFile } from '../../lib/bookings'
 import { weekdayDay } from '../../lib/format'
 import { remoteEnabled } from '../../lib/supabase'
@@ -176,7 +176,8 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
     const was = existing[0] ?? open.booking
     if (edit && was) return noDay(fromRow(was))
     if (rebook && was) return { ...noDay(fromRow(was)), ...factsOf(picked?.[0]) }
-    return { reference: '' }
+    // Fill in yourself starts from the pick, so its seller, price and bags are there to edit
+    return { reference: '', ...factsOf(picked?.[0]) }
   })
   const [files, setFiles] = useState<File[]>([])
   const [busy, setBusy] = useState(false)
@@ -201,7 +202,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
   const base = (): Partial<Booking>[] => {
     if (edit) return existing.map((b) => ({ id: b.id }))
     if ((tab === 'picked' || rebook) && picked) return picked
-    return [{ ...blank(leg), source: 'manual', trip_id: leg.tripId ?? null }]
+    return manualRows(leg, picked)
   }
 
   const addFiles = (e: ChangeEvent<HTMLInputElement>) => {
@@ -272,7 +273,9 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
     tabRefs.current[to]?.focus()
   }
 
-  const pass = tab === 'manual' ? (edit ? existing : base()) : picked ?? base()
+  // Fill in yourself shows the booking as it is typed, so a price or a bag written in shows on the ticket
+  const typedIn = Number.isNaN(readKr(form.price)) ? { ...cleaned(form), price: '' } : cleaned(form)
+  const pass = tab === 'manual' ? (edit ? existing : formRows(base(), typedIn)) : picked ?? base()
   const refundUntil = form.refundable === 'yes' || form.refundable === 'partly'
   const changeUntil = form.changeable === 'yes' || form.changeable === 'fee'
   const done = ask === 'sent'
@@ -293,7 +296,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
       </div>
 
       <div className="bf-body">
-        {tab !== 'claude' && pass.length > 0 && (tab === 'picked' || !edit) && <Pass leg={leg} rows={tab === 'picked' ? pass : pass.slice(0, 1)} data={data} />}
+        {tab !== 'claude' && pass.length > 0 && (tab === 'picked' || !edit) && <Pass leg={leg} rows={pass} data={data} />}
 
         {tab === 'picked' && (
           <ul className="bf-list">

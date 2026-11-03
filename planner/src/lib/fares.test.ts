@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Way } from '../data/types'
-import { fareNotes, fareRows, quoteFlight, sameFlight, seller, sortFares, stopsOf, timed } from './fares'
+import { fareMarks, fareRows, quoteFlight, sameFlight, seller, sortFares, stopsOf, timed } from './fares'
 import { schedule, type Hop, type Journey } from './journey'
 import type { PairQuote } from './prices'
 
@@ -77,38 +77,59 @@ describe('the rows of a day', () => {
   })
 })
 
-describe('what a flight changes around it', () => {
-  const texts = (f = flight(), next: string | null = null) => fareNotes(f, name, next).map((n) => n.text)
+describe('the marks of a flight row', () => {
+  const marks = (f = flight(), next: string | null = null) => fareMarks(f, name, next)
+  const labels = (f = flight(), next: string | null = null) => {
+    const m = marks(f, next)
+    return [...m.stops, m.leaves, m.lands, ...m.badges].flatMap((x) => (x ? [x.label] : []))
+  }
 
-  it('says nothing about an ordinary flight', () => expect(texts()).toEqual([]))
-
-  it('names where a long wait or a night at a stop falls', () => {
-    expect(texts(flight({ v: ['PTY', 'LIM'], w: [1.5, 5.83] }))).toEqual(['Long wait in Lima'])
-    expect(texts(flight({ v: ['LIM'], w: [9], o: true }))).toEqual(['A night in Lima'])
+  it('shows nothing on an ordinary flight with no bags known', () => {
+    expect(marks()).toEqual({ stops: [], leaves: null, lands: null, badges: [] })
   })
 
-  it('names a planned stopover and its nights instead of warning about the wait', () => {
-    expect(texts(flight({ v: ['PTY'], w: [26.95], o: true, f: ['stopover'] }))).toEqual(['Stopover in Panama City, 1 night'])
-    expect(texts(flight({ v: ['PTY'], w: [50], o: true, f: ['stopover'] }))).toEqual(['Stopover in Panama City, 2 nights'])
-    expect(texts(flight({ v: ['LIM', 'PTY'], w: [1.5, 26.95], f: ['stopover'] }))).toEqual(['Stopover in Panama City, 1 night'])
-    expect(texts(flight({ v: ['PTY'], f: ['stopover'] }))).toEqual(['Stopover in Panama City'])
-    expect(texts(flight({ v: ['LIM'], w: [3.9] }))).toEqual([])
+  it('marks a long wait or a night on the stop where it falls', () => {
+    expect(marks(flight({ v: ['PTY', 'LIM'], w: [1.5, 5.83] })).stops).toEqual([null, { kind: 'wait', label: 'Long wait in Lima, 5h 50m', tone: 'part' }])
+    expect(marks(flight({ v: ['LIM'], w: [9], o: true })).stops).toEqual([{ kind: 'night', label: 'A night in Lima' }])
+    expect(marks(flight({ v: ['LIM'], w: [3.9] })).stops).toEqual([null])
   })
 
-  it('reads the hour it leaves and lands, so a stay can be weighed', () => {
-    expect(texts(flight({ d: '01:10', a: '07:05' }))).toEqual(['Leaves at night'])
-    expect(texts(flight({ d: '18:00', a: '23:30' }))).toEqual(['Lands at night'])
-    expect(texts(flight({ d: '05:30', a: '15:55' }))).toEqual([])
+  it('marks a planned stopover and its nights instead of the wait', () => {
+    expect(labels(flight({ v: ['PTY'], w: [26.95], o: true, f: ['stopover'] }))).toEqual(['Stopover in Panama City, 1 night'])
+    expect(labels(flight({ v: ['PTY'], w: [50], o: true, f: ['stopover'] }))).toEqual(['Stopover in Panama City, 2 nights'])
+    expect(marks(flight({ v: ['LIM', 'PTY'], w: [1.5, 26.95], f: ['stopover'] })).stops.map((m) => m?.kind ?? null)).toEqual([null, 'stopover'])
+    expect(labels(flight({ v: ['PTY'], f: ['stopover'] }))).toEqual(['Stopover in Panama City'])
   })
 
-  it('warns of self transfers and airport changes', () => {
-    expect(texts(flight({ f: ['airport_change', 'self_transfer'] }))).toEqual(['Self transfer, you check in again', 'Changes airport on the way'])
+  it('puts a long wait on the row when the stop is not known', () => {
+    expect(marks(flight({ s: 1, w: [6] })).badges).toEqual([{ kind: 'wait', label: 'Long wait, 6h', tone: 'part' }])
   })
 
-  it('marks a flight that lands after the next leg leaves', () => {
+  it('puts the moon on a time in the night', () => {
+    expect([marks(flight({ d: '01:10', a: '07:05' })).leaves, marks(flight({ d: '01:10', a: '07:05' })).lands])
+      .toEqual([{ kind: 'moon', label: 'Leaves at night, 01:10' }, null])
+    expect(marks(flight({ d: '18:00', a: '23:30' })).lands).toEqual({ kind: 'moon', label: 'Lands at night, 23:30' })
+    expect(labels(flight({ d: '05:30', a: '15:55' }))).toEqual([])
+  })
+
+  it('marks a self transfer and an airport change on the row', () => {
+    expect(marks(flight({ f: ['airport_change', 'self_transfer'] })).badges.map((m) => [m.kind, m.label]))
+      .toEqual([['self', 'Self transfer, you check in again'], ['airport', 'Changes airport on the way']])
+  })
+
+  it('marks the bags as the site words them', () => {
+    const bags = (cabin_bag: string | null, checked_bag: string | null) => fareMarks({ ...flight(), cabin_bag, checked_bag }, name, null).badges
+    expect(bags(null, null)).toEqual([])
+    expect(bags('included', null)).toEqual([{ kind: 'cabin', label: 'Cabin bag, included', tone: 'ok' }])
+    expect(bags('8 kg', '1 x 23 kg').map((m) => m.tone)).toEqual(['ok', 'ok'])
+    expect(bags('Not included', 'For a fee').map((m) => m.tone)).toEqual(['no', 'part'])
+    expect(bags('ask the airline', null)[0].tone).toBeUndefined()
+  })
+
+  it('marks a flight that lands after the next leg leaves, red, on its landing', () => {
     const f = flight({ d: '22:10', a: '05:05', n: 1 })
-    expect(fareNotes(f, name, '2026-12-28')[0]).toEqual({ text: 'Lands after the next leg leaves', bad: true })
-    expect(fareNotes(f, name, '2026-12-29').some((n) => n.bad)).toBe(false)
+    expect(fareMarks(f, name, '2026-12-28').lands).toEqual({ kind: 'late', label: 'Lands after the next leg leaves', tone: 'bad' })
+    expect(fareMarks(f, name, '2026-12-29').lands?.kind).toBe('moon')
   })
 })
 

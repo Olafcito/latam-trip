@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CrawledFlight, InOut, Ticket, Way } from '../data/types'
-import { blank, formRows, fromPicked, fromRow, rowsOf, savedRow, wayRebookIds, withIds, type DraftLeg } from './bookingDraft'
+import { blank, formRows, fromPicked, fromRow, manualRows, rowsOf, savedRow, wayRebookIds, withIds, type DraftLeg } from './bookingDraft'
 import type { Booking } from '../data/types'
 import { bookingTask } from './tasks'
 
@@ -86,6 +86,35 @@ describe('fromPicked', () => {
 describe('blank', () => {
   it('holds only the kind, the ends and the day', () => {
     expect(blank({ kind: 'bus', from: 'BOG', to: 'MDE', day: '2026-12-10', tripId: 'jtest' })).toEqual({ kind: 'bus', from_code: 'BOG', to_code: 'MDE', depart: '2026-12-10' })
+  })
+})
+
+describe('Fill in yourself', () => {
+  it('starts from the blank row when nothing is picked', () => {
+    expect(manualRows(leg, null)).toEqual([{ kind: 'flight', from_code: 'MDE', to_code: 'VVI', depart: '2026-12-20', source: 'manual', trip_id: 'jtest' }])
+  })
+  it('starts from the picked flight, the form holding the seller, the bags and the price', () => {
+    const [r] = manualRows(leg, fromPicked(leg, { ...regional, site: 'Test Site' }, inout))
+    expect(r).toMatchObject({ from_code: 'MDE', to_code: 'VVI', depart: '2026-12-20T10:05', arrive: '2026-12-20T15:40', source: 'manual' })
+    expect(r.segments).toHaveLength(2)
+    expect(r).not.toHaveProperty('seller')
+    expect(r).not.toHaveProperty('price_dkk')
+    expect(r).not.toHaveProperty('cabin_bag')
+    expect(r).not.toHaveProperty('checked_bag')
+  })
+  it('keeps both rows of a way on one ticket with the second at 0', () => {
+    const wl: DraftLeg = { kind: 'flight', from: 'CPH', to: 'CTG', day: '2026-12-02', tripId: 'jtest' }
+    const rows = manualRows(wl, fromPicked(wl, wIn, inout))
+    expect(rows).toHaveLength(2)
+    expect(rows[0].ticket).toBe(rows[1].ticket)
+    expect(rows[0]).not.toHaveProperty('price_dkk')
+    expect(rows[1].price_dkk).toBe(0)
+    expect(rows.every(r => r.source === 'manual')).toBe(true)
+  })
+  it('saves what the form holds once the fields come back', () => {
+    const [r] = formRows(manualRows(leg, fromPicked(leg, regional, inout)), { reference: 'TEST01', seller: '', price: '1.490', cabin_bag: 'included', checked_bag: '' })
+    expect(r).toMatchObject({ reference: 'TEST01', price_dkk: 1490, cabin_bag: 'included', depart: '2026-12-20T10:05' })
+    expect(r).not.toHaveProperty('checked_bag')
   })
 })
 

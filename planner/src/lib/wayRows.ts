@@ -1,7 +1,9 @@
 import type { InOut, StopItem, Way } from '../data/types'
-import { clock, kr, weekdayDay } from './format'
+import { clock, hours, kr, weekdayDay } from './format'
+import { feeMark, LONG_WAIT_H, nightMark, type Mark } from './marks'
 import { priceOfWays } from './options'
 import { chooseWay, dayOf, endOf, waysOn, type WayChoice } from './ways'
+import { nights } from './waytrack'
 
 // The rows of the way sheet and the prices of the day picker on the way in and the way home. A ticket
 // way carries no price of its own, its ticket does, so a row is priced as what the way in and the way
@@ -75,12 +77,6 @@ export function rowFares(rows: Record<string, WayRow[]>): Record<string, number>
   return fares
 }
 
-
-/** A line under a row. `bad` when picking it changes nothing, `strong` when it moves the other direction to another day. */
-export interface RowNote { text: string; bad?: boolean; strong?: boolean }
-
-export const nightsText = (n: number) => (n === 1 ? '1 night' : `${n} nights`)
-
 /**
  * What kind of ticket the way of a row is, in words. A ticket whose other half moves the trip's other end to
  * another city is an open jaw ticket, a ticket without its other half is just a ticket.
@@ -91,47 +87,79 @@ export function kindOf(inout: InOut, { way, keepsCity }: Pick<WayRow, 'way' | 'k
   return way.tickets.length > 1 ? `${way.tickets.length} one way tickets` : 'One way'
 }
 
-/** What the bags cost on the way's own tickets, or null when that is not known. */
-function bagsOf(inout: InOut, way: Way): string | null {
-  if (!way.tickets.length || !way.tickets.every((t) => inout.tickets[t])) return null
-  const { cabin, checked } = priceOfWays(inout, [way])
-  const parts = [
-    cabin == null ? null : cabin === 0 ? 'Cabin bag included' : `Cabin bag ${kr(cabin)}`,
-    checked == null ? null : checked === 0 ? 'checked bag included' : `checked bag ${kr(checked)}`,
-  ].filter((x): x is string => !!x)
-  if (!parts.length) return null
-  const s = parts.join(', ')
-  return s[0].toUpperCase() + s.slice(1)
+/** An airport on the way with the wait there, a night stop as its nights, and the mark of what kind of stop it is. */
+export interface StopMark { code: string; text: string | null; mark: Mark | null }
+
+/** The marks of a way row: on its stops, on the times it leaves and lands, and on the row itself. */
+export interface WayMarks {
+  stops: StopMark[]
+  leaves: Mark | null
+  lands: Mark | null
+  /** what the pick does to the other direction first, then the bags and the United States */
+  badges: Mark[]
+  /** why picking it changes nothing, for the Pick it greys out */
+  dead: string | null
+}
+
+/** The airports in between with the wait at each, a night, a day stop, a self transfer or a long wait marked on the stop. */
+export function wayStops(way: Way, name: (code: string) => string): StopMark[] {
+  const wait = (code: string, h: number | null, night?: boolean): Mark | null =>
+    h == null || h < LONG_WAIT_H ? null : night ? { kind: 'night', label: `A night in ${name(code)}, ${hours(h)}` } : { kind: 'wait', label: `Long wait in ${name(code)}, ${hours(h)}`, tone: 'part' }
+  return way.timeline.flatMap((t): StopMark[] => {
+    if (t.kind === 'flight') return t.connections.map((c) => ({ code: c.airport, text: c.layover_h != null ? hours(c.layover_h) : null, mark: wait(c.airport, c.layover_h, t.overnight_layover) }))
+    const s = t as StopItem
+    const at = name(s.airport)
+    if (s.kind === 'night') {
+      const stay = s.stay_estimate_dkk ? `, stay about ${kr(s.stay_estimate_dkk)}` : ''
+      return [{ code: s.airport, text: nights(s.nights), mark: { kind: 'night', label: `${nights(s.nights)} in ${at}${stay}` } }]
+    }
+    if (s.kind === 'day_stop') return [{ code: s.airport, text: hours(s.hours), mark: { kind: 'day', label: `A day in ${at}, ${hours(s.hours)}` } }]
+    if (s.kind === 'self_transfer') return [{ code: s.airport, text: hours(s.hours), mark: { kind: 'self', label: `Self transfer in ${at}, you check in again`, tone: 'part' } }]
+    return [{ code: s.airport, text: hours(s.hours), mark: wait(s.airport, s.hours) }]
+  })
 }
 
 /**
- * The lines under a row: what happens to the other direction, nights and self transfers on the way, the United
- * States, and the bags. `other` is the way the trip has in the other direction, `name` turns an airport into a place.
+ * What the pick does to the other direction, as a chip with only what changes on it: the city it then
+ * leaves from or lands in, the day, or the time. Nothing when it stays as it is. `other` is the way the
+ * trip has in the other direction.
  */
-export function rowNotes(inout: InOut, r: WayRow, dir: 'in' | 'home', other: Way, name: (code: string) => string): RowNote[] {
-  const notes: RowNote[] = []
+export function otherMark(r: WayRow, dir: 'in' | 'home', other: Way, name: (code: string) => string): Mark | null {
   const then = dir === 'in' ? r.choice.wayHome : r.choice.wayIn
+  if (!r.works || then.id === other.id) return null
   const word = dir === 'in' ? 'Way home' : 'Way in'
-  if (!r.works) notes.push({ text: r.choice.note ?? 'Picking it changes nothing', bad: true })
-  else if (then.id !== other.id) {
-    const when = `${weekdayDay(then.depart)} at ${clock(then.depart)}`
-    const oneWay = then.type === 'oneways' && other.type !== 'oneways' ? ', as a one way' : ''
-    // the same day at another time says the day stays and the time is new
-    const still = then.depart === other.depart ? `${word} still ${when}` : `${word} still ${weekdayDay(then.depart)}, now at ${clock(then.depart)}`
-    // another city at the other end is said first and in bold, it brings a new stop
-    const moved = dir === 'in' ? `${word} leaves from ${name(then.from)}, ${when}` : `${word} lands in ${name(then.to)}, leaves ${when}`
-    const text = !r.keepsCity ? moved : r.keeps ? still : `${word} moves to ${when}`
-    notes.push({ text: `${text}${oneWay}`, strong: !r.keeps || !r.keepsCity })
+  const kind = dir === 'in' ? 'home' : 'in'
+  const when = `${weekdayDay(then.depart)} at ${clock(then.depart)}`
+  const oneWay = then.type === 'oneways' && other.type !== 'oneways'
+  const also = oneWay ? ', as a one way' : ''
+  const tone = !r.keeps || !r.keepsCity ? 'strong' : undefined
+  if (!r.keepsCity) {
+    const code = dir === 'in' ? then.from : then.to
+    const label = dir === 'in' ? `${word} leaves from ${name(code)}, ${when}` : `${word} lands in ${name(code)}, leaves ${when}`
+    return { kind, label: label + also, text: `${code} ${weekdayDay(then.depart)}`, tone }
   }
-  for (const t of r.way.timeline) {
-    if (t.kind === 'night') {
-      const s = t as StopItem
-      notes.push({ text: `${nightsText(s.nights)} in ${name(s.airport)}${s.stay_estimate_dkk ? `, stay about ${kr(s.stay_estimate_dkk)}` : ''}` })
-    }
-    if (t.kind === 'self_transfer') notes.push({ text: `Self transfer in ${name(t.airport)}, you check in again` })
+  if (!r.keeps) return { kind, label: `${word} moves to ${when}${also}`, text: `${weekdayDay(then.depart)} ${clock(then.depart)}`, tone }
+  if (then.depart !== other.depart) return { kind, label: `${word} still ${weekdayDay(then.depart)}, now at ${clock(then.depart)}${also}`, text: clock(then.depart) }
+  return oneWay ? { kind, label: `${word} still ${when}${also}`, text: 'One way' } : null
+}
+
+/** The marks of a row. `other` is the way the trip has in the other direction, `name` turns an airport into a place. */
+export function wayMarks(inout: InOut, r: WayRow, dir: 'in' | 'home', other: Way, name: (code: string) => string): WayMarks {
+  const w = r.way
+  const badges: Mark[] = []
+  const moved = otherMark(r, dir, other, name)
+  if (moved) badges.push(moved)
+  // the bags of the way's own tickets, known only when every ticket is
+  if (w.tickets.length && w.tickets.every((t) => inout.tickets[t])) {
+    const { cabin, checked } = priceOfWays(inout, [w])
+    for (const m of [feeMark('cabin', cabin), feeMark('checked', checked)]) if (m) badges.push(m)
   }
-  if (r.way.us_transit) notes.push({ text: 'Through the United States, ESTA needed' })
-  const bags = bagsOf(inout, r.way)
-  if (bags) notes.push({ text: bags })
-  return notes
+  if (w.us_transit) badges.push({ kind: 'esta', label: 'Through the United States, ESTA needed', text: 'ESTA' })
+  return {
+    stops: wayStops(w, name),
+    leaves: nightMark(w.depart, 'leaves'),
+    lands: nightMark(w.arrive, 'lands'),
+    badges,
+    dead: r.works ? null : r.choice.note ?? 'Picking it changes nothing',
+  }
 }

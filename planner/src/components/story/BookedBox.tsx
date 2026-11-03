@@ -116,8 +116,8 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
   data: BoxData
   /** the days and the flights under the box are open */
   changing: boolean
-  /** Change booking and Done */
-  onChange: (on: boolean) => void
+  /** Change booking and Done. Left out where nothing under the box opens, a bus or a boat, and the button goes with it */
+  onChange?: (on: boolean) => void
   /** opens the booking form filled from the row */
   onEdit?: () => void
   /** after the booking is cancelled, so the sheet can say so */
@@ -192,7 +192,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
       setAsking(false)
       return setSaid({ text: r.message, bad: true })
     }
-    if (changing) onChange(false)
+    if (changing) onChange?.(false)
     patch(b.id, { status: 'cancelled' })
     onRemoved?.()
   }
@@ -263,7 +263,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
         ) : (
           <div className="bk-acts">
             {link && <a className="btn small" href={link} target="_blank" rel="noopener noreferrer">Open booking<External /></a>}
-            <button type="button" className="btn small" data-on={changing || undefined} onClick={() => onChange(!changing)}>{changing ? 'Done' : 'Change booking'}</button>
+            {onChange && <button type="button" className="btn small" data-on={changing || undefined} onClick={() => onChange(!changing)}>{changing ? 'Done' : 'Change booking'}</button>}
             <button ref={remove} type="button" className="btn small danger bk-remove" onClick={() => setAsking(true)}>Remove booking</button>
           </div>
         )}

@@ -1,5 +1,6 @@
 import type { CrawledFlight } from '../data/types'
-import { clock } from './format'
+import { hours } from './format'
+import { bagMark, LONG_WAIT_H, nightMark, type Mark } from './marks'
 import { sourceLabel, type PairQuote } from './prices'
 import { addDays } from './time'
 import { nights } from './waytrack'
@@ -14,15 +15,6 @@ export interface FareRow {
   /** the other sites that sell the same flight, dearer or as cheap */
   others: string[]
 }
-
-export interface FareNote {
-  text: string
-  /** the flight does not work with the trip as planned */
-  bad?: boolean
-}
-
-/** A wait this long at a stop is worth saying. */
-const LONG_WAIT_H = 4
 
 /** Whether the flight's times are known. A price can be seen without them. */
 export const timed = (f: CrawledFlight) => f.depart.length > 10 && f.arrive.length > 10
@@ -91,23 +83,41 @@ export function sortFares(rows: FareRow[], by: FareSort): FareRow[] {
   return [...rows].sort((a, b) => known(a, b) || a.flight.depart.localeCompare(b.flight.depart) || price(a, b))
 }
 
-/** What about a flight changes the plan around it. nextDay is the day the next leg leaves. */
-export function fareNotes(f: CrawledFlight, name: (code: string) => string, nextDay: string | null): FareNote[] {
-  const notes: FareNote[] = []
-  if (timed(f) && nextDay && f.arrive.slice(0, 10) > nextDay) notes.push({ text: 'Lands after the next leg leaves', bad: true })
-  if (f.self_transfer) notes.push({ text: 'Self transfer, you check in again' })
-  if (f.airport_change) notes.push({ text: 'Changes airport on the way' })
+/** The marks of a flight row: on its stops by place in via, on the times it leaves and lands, and on the row itself. */
+export interface FareMarks {
+  stops: (Mark | null)[]
+  leaves: Mark | null
+  lands: Mark | null
+  badges: Mark[]
+}
+
+/**
+ * What about a flight changes the plan around it, as marks. The longest wait is marked on its stop as a
+ * stopover, a night or a long wait. nextDay is the day the next leg leaves, a landing after it is marked bad.
+ */
+export function fareMarks(f: CrawledFlight, name: (code: string) => string, nextDay: string | null): FareMarks {
+  const stops: (Mark | null)[] = f.via.map(() => null)
+  const badges: Mark[] = []
+  if (f.self_transfer) badges.push({ kind: 'self', label: 'Self transfer, you check in again', tone: 'part' })
+  if (f.airport_change) badges.push({ kind: 'airport', label: 'Changes airport on the way', tone: 'part' })
   const longest = f.layover_h.reduce<number>((at, h, i) => ((h ?? 0) > (f.layover_h[at] ?? 0) ? i : at), 0)
-  const where = f.via[longest] ? ` in ${name(f.via[longest])}` : ''
+  const code = f.via[longest]
+  const where = code ? ` in ${name(code)}` : ''
   const wait = f.layover_h[longest] ?? 0
-  if (f.stopover) notes.push({ text: `Stopover${where}${wait ? `, ${nights(Math.max(1, Math.round(wait / 24)))}` : ''}` })
-  else if (f.overnight_layover) notes.push({ text: `A night${where}` })
-  else if (wait >= LONG_WAIT_H) notes.push({ text: `Long wait${where}` })
-  if (timed(f)) {
-    const leaves = +clock(f.depart).slice(0, 2)
-    const lands = +clock(f.arrive).slice(0, 2)
-    if (leaves < 5) notes.push({ text: 'Leaves at night' })
-    if (lands >= 22 || lands < 6) notes.push({ text: 'Lands at night' })
+  const stop: Mark | null = f.stopover ? { kind: 'stopover', label: `Stopover${where}${wait ? `, ${nights(Math.max(1, Math.round(wait / 24)))}` : ''}` }
+    : f.overnight_layover ? { kind: 'night', label: `A night${where}` }
+      : wait >= LONG_WAIT_H ? { kind: 'wait', label: `Long wait${where}, ${hours(wait)}`, tone: 'part' }
+        : null
+  // a stop whose airport is not known carries its mark on the row
+  if (stop && code) stops[longest] = stop
+  else if (stop) badges.push(stop)
+  for (const m of [bagMark('cabin', f.cabin_bag), bagMark('checked', f.checked_bag)]) if (m) badges.push(m)
+  if (!timed(f)) return { stops, leaves: null, lands: null, badges }
+  const late = !!nextDay && f.arrive.slice(0, 10) > nextDay
+  return {
+    stops,
+    leaves: nightMark(f.depart, 'leaves'),
+    lands: late ? { kind: 'late', label: 'Lands after the next leg leaves', tone: 'bad' } : nightMark(f.arrive, 'lands'),
+    badges,
   }
-  return notes
 }

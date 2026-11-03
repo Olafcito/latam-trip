@@ -8,12 +8,22 @@
   .fl-h { padding-right: 36px; }
   .fl-h h3 { margin: 0; font-size: var(--fs-title); font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; text-wrap: balance; }
   .fl-h small { display: block; margin-top: 2px; font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+  /* under the title: the route as its codes, the control that changes it where it can change, and the marks of the sheet */
+  .fl-h small.ws-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 4px; }
+  .ws-codes, .ws-ends { display: inline-flex; align-items: center; gap: 4px; color: var(--text); }
+  .ws-codes b, .ws-ends b { font-weight: 600; letter-spacing: 0.02em; }
+  .ws-codes svg, .ws-ends svg { color: var(--muted); }
+  .ws-ends { position: relative; min-height: 28px; margin-block: -2px; padding: 0 8px 0 10px; border: 0; border-radius: 999px; background: var(--surface-3); font: inherit; font-size: var(--fs-small); font-variant-numeric: tabular-nums; cursor: pointer; transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease; }
+  .ws-ends::after { content: ''; position: absolute; inset: calc((28px - var(--hit)) / 2) 0; }
+  .ws-ends:active { transform: scale(0.97); }
+  .ws-ends:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 
   /* what the day leaves you with on either side of the flight */
   .fl-stay { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; }
   .fl-stay dt { font-size: var(--fs-small); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .fl-stay dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; margin: 2px 0 0; font-weight: 600; font-variant-numeric: tabular-nums; }
   .fl-stay dd small { font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
+  .fl-stay dd .mk { align-self: center; }
   .fl-stay dd[data-bad='true'] { color: var(--err); }
 
   /* the days: the one you look at is filled, the day of the leg keeps a ring, the cheapest fare is green */
@@ -44,11 +54,12 @@
     .fl-page:hover { background: var(--surface-2); color: var(--text); }
     .fl-day[aria-checked='false']:not(:disabled):hover { background: var(--surface-2); }
     button.fl-chip[data-booked]:hover { background: color-mix(in srgb, var(--booked) 88%, white); }
+    .ws-ends:hover { background: var(--line-2); }
   }
 
   .fl-bar { display: flex; align-items: center; gap: 8px; min-height: var(--hit); }
   .fl-bar b { font-weight: 600; font-variant-numeric: tabular-nums; }
-  .fl-bar span { font-size: var(--fs-small); color: var(--muted); }
+  .fl-bar > span:not(.mk) { font-size: var(--fs-small); color: var(--muted); }
   .fl-sort { margin-left: auto; }
 
   .fl-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; border-top: 1px solid var(--line); scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
@@ -63,6 +74,10 @@
   .fl-who b, .fl-who small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .fl-who b { font-size: var(--fs-small); font-weight: 600; }
   .fl-who small { font-size: var(--fs-label); color: var(--muted); }
+  /* the site gives way to its ellipsis, the count of the other sites stays whole */
+  .fl-who small.fl-site { display: flex; align-items: center; gap: 4px; }
+  .fl-site > span[title] { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .fl-more { flex: none; padding: 0 5px; border-radius: 999px; background: var(--surface-3); font-weight: 600; font-variant-numeric: tabular-nums; }
 
   .fl-line { display: grid; grid-template-columns: 68px minmax(0, 1fr) 68px; gap: 12px; align-items: start; min-width: 0; }
   .fl-end { min-width: 0; }
@@ -71,6 +86,10 @@
   .fl-end sup { position: absolute; left: 100%; top: 0; margin-left: 1px; line-height: 1.2; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0; color: var(--flight); }
   .fl-end small { display: block; margin-top: 2px; font-size: var(--fs-label); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .fl-end small[data-other='true'] { font-weight: 600; color: var(--text); }
+  .fl-end small[data-tone='bad'] { color: var(--err); }
+  /* a day with a mark keeps the column: the day stays on the outside edge and the mark spills toward the middle */
+  .fl-end small:has(.mk-i) { display: flex; align-items: center; gap: 3px; }
+  .fl-end.to small:has(.mk-i) { justify-content: flex-end; }
   .fl-mid { min-width: 0; display: flex; flex-direction: column; gap: 3px; text-align: center; }
   .fl-dur { font-size: var(--fs-label); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
   .fl-track { position: relative; height: 10px; display: flex; align-items: center; justify-content: space-evenly; }
@@ -78,13 +97,33 @@
   .fl-track i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--fl-bg, var(--surface)); box-shadow: inset 0 0 0 2px var(--flight); }
   .fl-stops { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 10px; font-size: var(--fs-label); line-height: 1.4; color: var(--muted); }
   .fl-stops b { font-weight: 600; color: var(--text); }
+  .fl-stops .mk-i { margin-right: 3px; }
+  .fl-stops [data-tone='part'] { color: var(--flight); }
+  .fl-stops [data-tone='bad'] { color: var(--err); }
   .fl-notime { margin: 0; padding-top: 8px; font-size: var(--fs-small); color: var(--muted); }
 
   .fl-price { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
   .fl-price b { font-size: var(--fs-title); font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .fl-row:has(.fl-notes) .fl-price { grid-row: 1 / span 2; grid-column: 3; }
-  .fl-notes { grid-column: 2; list-style: none; display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 0; padding: 0; font-size: var(--fs-small); color: var(--muted); }
-  .fl-notes [data-bad='true'] { color: var(--err); }
+  .fl-row:has(.fl-marks) .fl-price { grid-row: 1 / span 2; grid-column: 3; }
+  /* a way that changes nothing keeps its price and its Pick, both quiet, and the Pick says why when pressed */
+  .fl-price[data-dead] b { color: var(--muted); }
+  .fl-price[data-dead] .btn { border-style: dashed; color: var(--muted); }
+
+  /* the marks: a fact as an icon in a small pill, its whole sentence in the tooltip and the accessible name */
+  .fl-marks { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+  .fl-row > .fl-marks { grid-column: 2; }
+  .mk { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: 999px; background: var(--surface-3); color: var(--muted); font-size: var(--fs-label); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: default; }
+  .mk:has(> svg:only-child) { width: 24px; padding: 0; justify-content: center; }
+  .mk svg, .mk-i svg { flex: none; }
+  .mk-i { display: inline-flex; vertical-align: -2px; color: var(--muted); cursor: default; }
+  .mk[data-tone='ok'] { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked); }
+  .mk[data-tone='part'] { background: color-mix(in srgb, var(--flight) 14%, transparent); color: var(--flight); }
+  .mk[data-tone='no'] { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
+  .mk[data-tone='bad'] { background: color-mix(in srgb, var(--err) 14%, transparent); color: var(--err); }
+  .mk[data-tone='strong'] { box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); }
+  .mk-i[data-tone='part'] { color: var(--flight); }
+  .mk-i[data-tone='bad'] { color: var(--err); }
+  .mk-i[data-tone='strong'] { color: var(--text); }
 
   /* the flight you have, held above the day you look at, its state under its price where Pick sits on the others */
   .fl-picked { --fl-bg: var(--surface-2); margin: 12px -12px 0; padding: 0 12px; border-radius: 12px; background: var(--surface-2); outline: none; }
@@ -107,7 +146,6 @@
   button.fl-chip::after { content: ''; position: absolute; inset: calc((28px - var(--hit)) / 2) 0; }
   button.fl-chip:active { transform: scale(0.97); }
   button.fl-chip:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
-  .ws .fl-notes [data-strong='true'] { color: var(--text); font-weight: 600; }
   /* what a pick changed beyond this way, until the next pick or the sheet closes. Always there, so it is read out */
   .ws-said { margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--in); outline: none; }
   .ws-said:empty { margin-top: -16px; }
@@ -301,8 +339,8 @@
     .fl-day { width: 60px; }
     .fl-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
     .fl-line, .fl-notime { grid-row: 2; grid-column: 1 / -1; }
-    .fl-price, .fl-row:has(.fl-notes) .fl-price { grid-row: 1; grid-column: 2; }
-    .fl-notes { grid-column: 1 / -1; }
+    .fl-price, .fl-row:has(.fl-marks) .fl-price { grid-row: 1; grid-column: 2; }
+    .fl-row > .fl-marks { grid-column: 1 / -1; }
     .fl-end b { font-size: var(--fs-head); }
     .fl-bar { flex-wrap: wrap; }
     .fl-sort { flex: 1 0 100%; margin-left: 0; }

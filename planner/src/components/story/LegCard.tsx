@@ -1,4 +1,5 @@
 import { Fragment, lazy, Suspense } from 'react'
+import type { Booking } from '../../data/types'
 import { clock, hours, kr, legHours, nextDayMark, observed, weekdayDay } from '../../lib/format'
 import { stopsOf } from '../../lib/fares'
 import type { Hop, LegTime } from '../../lib/journey'
@@ -7,6 +8,9 @@ import type { FlightLink } from '../../lib/links'
 import { Check, External, ModeChip, Moon } from '../icons'
 import type { Family } from '@map/data/types'
 import type { LegPoint } from './LegMap'
+import { bagMark } from '../../lib/marks'
+import { BookedBox, type BoxData } from './BookedBox'
+import { Marks } from './Marks'
 
 // The card behind a leg on the timeline: a ticket stub for a bus or a boat, and for a flight with no
 // airport codes to search. Times sit big at the ends when known, the line between them carries the
@@ -39,7 +43,7 @@ function Track({ codes, waits, family }: { codes: string[]; waits: (number | nul
   )
 }
 
-export function LegCard({ h, ends, family, date, time, points, link, onBook }: {
+export function LegCard({ h, ends, family, date, time, points, link, booking, data, onBook, onEdit }: {
   h: Hop
   ends: LegEnds
   family: Family
@@ -49,8 +53,14 @@ export function LegCard({ h, ends, family, date, time, points, link, onBook }: {
   /** the way on the map, with the places it goes through, or null for no map */
   points: LegPoint[] | null
   link: FlightLink | null
+  /** the booking of a bus or a boat, shown in its box with Edit and Remove */
+  booking?: Booking | null
+  /** the airports and the places, for the cities in the booked box */
+  data?: BoxData
   /** opens the booking form, for a bus or a boat that is not booked yet */
   onBook?: () => void
+  /** opens the booking form on the booking */
+  onEdit?: () => void
 }) {
   const f = h.flight
   const codes = [ends.fromCode ?? ends.fromName, ...(f?.via ?? []), ends.toCode ?? ends.toName]
@@ -60,10 +70,9 @@ export function LegCard({ h, ends, family, date, time, points, link, onBook }: {
     // the overland note already names who runs it
     f?.carriers.join(', ') || (h.overland ? null : h.operator),
     f ? stopsText(stopsOf(f)) : null,
-    f?.cabin_bag ? `Cabin bag ${f.cabin_bag}` : null,
-    f?.checked_bag ? `Checked bag ${f.checked_bag}` : null,
     h.border ? 'Crosses a border' : null,
   ].filter((x): x is string => !!x)
+  const bags = [bagMark('cabin', f?.cabin_bag), bagMark('checked', f?.checked_bag)].filter((m) => m != null)
   const seen = f?.observed_at ?? h.observed_at
   return (
     <div className="lc" data-f={family}>
@@ -72,6 +81,8 @@ export function LegCard({ h, ends, family, date, time, points, link, onBook }: {
         <b className="lc-when">Leaves {weekdayDay(date)}</b>
         {h.overnight && <span className="lc-night"><Moon /> Overnight</span>}
       </header>
+
+      {booking && data && <BookedBox booking={booking} data={data} changing={false} onEdit={onEdit} />}
 
       <div className="lc-ends">
         <div className="lc-end">
@@ -96,11 +107,14 @@ export function LegCard({ h, ends, family, date, time, points, link, onBook }: {
       {h.overland && <p className="lc-note">{h.overland}</p>}
       {through.length > 0 && <p className="lc-note">Through {inWords(through)}. The time adds up those legs, with no waiting.</p>}
       {facts.length > 0 && <ul className="lc-facts">{facts.map((x) => <li key={x}>{x}</li>)}</ul>}
+      <Marks list={bags} />
 
-      <div className="lc-price">
-        {h.price_dkk != null && <b>{kr(h.price_dkk)}</b>}
-        <small>{f ? `${f.source ? sourceLabel(f.source) : 'Picked fare'}${seen ? `, seen ${observed(seen)}` : ''}` : h.price_dkk != null ? 'Typical price for this route' : 'No price yet'}</small>
-      </div>
+      {!booking && (
+        <div className="lc-price">
+          {h.price_dkk != null && <b>{kr(h.price_dkk)}</b>}
+          <small>{f ? `${f.source ? sourceLabel(f.source) : 'Picked fare'}${seen ? `, seen ${observed(seen)}` : ''}` : h.price_dkk != null ? 'Typical price for this route' : 'No price yet'}</small>
+        </div>
+      )}
 
       {(link || onBook) && (
         <footer className="lc-act">

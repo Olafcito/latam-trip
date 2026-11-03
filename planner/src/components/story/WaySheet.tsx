@@ -8,12 +8,13 @@ import { wayLinks } from '../../lib/links'
 import { momondoUrl } from '../../lib/prices'
 import { remoteEnabled } from '../../lib/supabase'
 import { dayOf, type WayChoice } from '../../lib/ways'
-import { kindOf, nightsText, rowFares, rowNotes, type WayRow } from '../../lib/wayRows'
+import { kindOf, rowFares, wayMarks, type WayRow } from '../../lib/wayRows'
 import { FlightLinks } from '../FlightLinks'
-import { Check, Plane, Warn } from '../icons'
+import { Arrow, Caret, Check, Plane, Warn } from '../icons'
 import { BookedBox } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
 import { Chip, Days } from './FlightSheet'
+import { MarkIcon, Marks } from './Marks'
 
 // The way in or the way home opened like any other leg: the days it can leave with a price each, and
 // the ways of the day you look at as tickets, airline, when it leaves and lands with the airports in
@@ -27,14 +28,6 @@ import { Chip, Days } from './FlightSheet'
 /** the ways shown before Show all */
 const SHOWN = 6
 
-/** The airports in between with the wait at each, a night stop as its nights. */
-function stopsOf(way: Way): { code: string; text: string | null }[] {
-  return way.timeline.flatMap((t) => {
-    if (t.kind === 'flight') return t.connections.map((c) => ({ code: c.airport, text: c.layover_h != null ? hours(c.layover_h) : null }))
-    return [{ code: t.airport, text: t.kind === 'night' ? nightsText(t.nights) : hours(t.hours) }]
-  })
-}
-
 function carriersOf(way: Way, data: AppData): string[] {
   const flown = [...new Set(way.timeline.flatMap((t) => (t.kind === 'flight' ? t.carriers : [])))]
   if (flown.length) return flown
@@ -45,27 +38,32 @@ function carriersOf(way: Way, data: AppData): string[] {
  * The right column of a row: what both ways cost with it, and under that what you can do with it. Its
  * own part, so a booked way can show its state here the same way.
  */
-function WayState({ total, picked, booked, works, label, onPick, onOpenBooking }: {
-  total: number | null; picked: boolean; booked: boolean; works: boolean; label: string; onPick?: () => void; onOpenBooking?: () => void
+function WayState({ total, picked, booked, dead, label, onPick, onDead, onOpenBooking }: {
+  total: number | null; picked: boolean; booked: boolean
+  /** why picking it changes nothing: its Pick stays, greyed, and says so when pressed */
+  dead: string | null
+  label: string; onPick?: () => void; onDead?: (why: string) => void; onOpenBooking?: () => void
 }) {
-  const col = priceColumn({ picked, booked, canPick: works && !!onPick, canRemove: false })
+  const col = priceColumn({ picked, booked, canPick: !dead && !!onPick, canRemove: false })
+  const greyed = !picked && !!dead && !!onPick
   return (
-    <div className="fl-price">
-      {(col.chip || col.pick) && <b>{kr(total)}</b>}
+    <div className="fl-price" data-dead={greyed || undefined}>
+      {(col.chip || col.pick || (greyed && total != null)) && <b>{kr(total)}</b>}
       {col.chip && <Chip text={col.chip} onOpen={onOpenBooking} />}
       {col.pick && <button type="button" className="btn small" aria-label={`Pick ${label}${total != null ? `, ${kr(total)} for both ways` : ''}`} onClick={onPick}>Pick</button>}
+      {greyed && <button type="button" className="btn small" aria-disabled="true" title={dead} aria-label={`Pick ${label}. ${dead}`} onClick={() => onDead?.(dead)}>Pick</button>}
     </div>
   )
 }
 
-function WayRowView({ r, picked, booking, dir, other, data, name, onPick, onOpenBooking }: {
-  r: WayRow; picked: boolean; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick?: () => void; onOpenBooking?: () => void
+function WayRowView({ r, picked, booking, dir, other, data, name, onPick, onDead, onOpenBooking }: {
+  r: WayRow; picked: boolean; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string
+  onPick?: () => void; onDead?: (why: string) => void; onOpenBooking?: () => void
 }) {
   const w = r.way
   const air = carriersOf(w, data)
   const who = air.join(', ')
-  const stops = stopsOf(w)
-  const notes = rowNotes(data.inout, r, dir, other, name)
+  const { stops, leaves, lands, badges, dead } = wayMarks(data.inout, r, dir, other, name)
   const label = `${who || 'this way'}, ${weekdayDay(w.depart)} ${clock(w.depart)} to ${clock(w.arrive)}`
   return (
     <div className="fl-row" data-picked={picked || undefined}>
@@ -79,7 +77,7 @@ function WayRowView({ r, picked, booking, dir, other, data, name, onPick, onOpen
       <div className="fl-line">
         <div className="fl-end">
           <b>{clock(w.depart)}</b>
-          <small>{weekdayDay(w.depart)}</small>
+          <small>{weekdayDay(w.depart)}{leaves && <MarkIcon m={leaves} bare />}</small>
         </div>
         <div className="fl-mid">
           <span className="fl-dur">{hours(w.total_hours)}</span>
@@ -87,28 +85,25 @@ function WayRowView({ r, picked, booking, dir, other, data, name, onPick, onOpen
           <div className="fl-stops">
             {stops.length === 0 ? <span>Direct</span> : stops.map((s, i) => {
               const at = name(s.code)
-              return <span key={i}><b>{s.code}</b>{at !== s.code && ` ${at}`}{s.text && ` ${s.text}`}</span>
+              return <span key={i} data-tone={s.mark?.tone}>{s.mark && <MarkIcon m={s.mark} bare />}<b>{s.code}</b>{at !== s.code && ` ${at}`}{s.text && ` ${s.text}`}</span>
             })}
           </div>
         </div>
         <div className="fl-end to">
           <b>{clock(w.arrive)}<sup>{nextDayMark(w.depart, w.arrive)}</sup></b>
-          <small data-other={w.arrive.slice(0, 10) !== w.depart.slice(0, 10)}>{weekdayDay(w.arrive)}</small>
+          <small data-other={w.arrive.slice(0, 10) !== w.depart.slice(0, 10)}>{lands && <MarkIcon m={lands} bare />}{weekdayDay(w.arrive)}</small>
         </div>
       </div>
-      <WayState total={r.total} picked={picked} booked={picked && isBookedFlight(booking, w)} works={r.works} label={label} onPick={onPick} onOpenBooking={onOpenBooking} />
-      {notes.length > 0 && (
-        <ul className="fl-notes">
-          {notes.map((x) => <li key={x.text} data-bad={!!x.bad} data-strong={!!x.strong}>{x.text}</li>)}
-        </ul>
-      )}
+      <WayState total={r.total} picked={picked} booked={picked && isBookedFlight(booking, w)} dead={picked ? null : dead} label={label} onPick={onPick} onDead={onDead} onOpenBooking={onOpenBooking} />
+      <Marks list={badges} />
     </div>
   )
 }
 
 /** The ways of one day. Its own part, so Show all starts over with each day. */
-function DayList({ rows, current, booking, dir, other, data, name, onPick, onOpenBooking }: {
-  rows: WayRow[]; current: string; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string; onPick?: (r: WayRow) => void; onOpenBooking?: () => void
+function DayList({ rows, current, booking, dir, other, data, name, onPick, onDead, onOpenBooking }: {
+  rows: WayRow[]; current: string; booking: Booking | null; dir: 'in' | 'home'; other: Way; data: AppData; name: (code: string) => string
+  onPick?: (r: WayRow) => void; onDead?: (why: string) => void; onOpenBooking?: () => void
 }) {
   const [all, setAll] = useState(false)
   const shown = all ? rows : rows.slice(0, SHOWN)
@@ -117,7 +112,7 @@ function DayList({ rows, current, booking, dir, other, data, name, onPick, onOpe
       <ol className="fl-rows">
         {shown.map((r) => (
           <li key={r.way.id}>
-            <WayRowView r={r} picked={r.way.id === current} booking={booking} dir={dir} other={other} data={data} name={name} onPick={onPick && (() => onPick(r))} onOpenBooking={onOpenBooking} />
+            <WayRowView r={r} picked={r.way.id === current} booking={booking} dir={dir} other={other} data={data} name={name} onPick={onPick && (() => onPick(r))} onDead={onDead} onOpenBooking={onOpenBooking} />
           </li>
         ))}
       </ol>
@@ -215,7 +210,16 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
       <div className="fl-top">
         <header className="fl-h">
           <h3>{name(way.from)} to {name(way.to)}</h3>
-          <small>{dir === 'in' ? 'Way in' : 'Way home'}, {way.from} to {way.to}</small>
+          <small className="ws-sub">
+            {dir === 'in' ? 'Way in' : 'Way home'}
+            {onChangeEnds && !booking
+              ? (
+                <button type="button" className="ws-ends" title="Change start and end" aria-label={`Change start and end, ${way.from} to ${way.to}`} onClick={() => { close(); onChangeEnds() }}>
+                  <b>{way.from}</b><Arrow s={12} /><b>{way.to}</b><Caret s={12} dir="d" />
+                </button>
+              )
+              : <span className="ws-codes" role="img" aria-label={`${way.from} to ${way.to}`}><b>{way.from}</b><Arrow s={12} /><b>{way.to}</b></span>}
+          </small>
         </header>
         {booking && (
           <BookedBox
@@ -228,7 +232,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
         {!held && (
           <div className="fl-bar">
             <b>{weekdayDay(at)}</b>
-            {rows.length > 0 && <span>{rows.length === 1 ? '1 way' : `${rows.length} ways`}, prices for both ways</span>}
+            {rows.length > 0 && <span className="mk" title="Prices are for the way in and the way home together">Both ways</span>}
           </div>
         )}
         <p ref={status} className="ws-said" role="status" tabIndex={-1}>
@@ -239,13 +243,12 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
         <div className="fl-list">
           {rows.length === 0
             ? <div className="fl-none"><p>No ways saved for {weekdayDay(at)}</p></div>
-            : <DayList key={at} rows={rows} current={way.id} booking={booking ?? null} dir={dir} other={other} data={data} name={name} onPick={choose} onOpenBooking={booking ? showBox : undefined} />}
+            : <DayList key={at} rows={rows} current={way.id} booking={booking ?? null} dir={dir} other={other} data={data} name={name} onPick={choose} onDead={(why) => say(why, true)} onOpenBooking={booking ? showBox : undefined} />}
         </div>
       )}
       {!held && (
         <footer className="fl-foot">
           <FlightLinks links={links} />
-          {onChangeEnds && !booking && <button type="button" className="btn small" onClick={() => { close(); onChangeEnds() }}>Change start and end</button>}
           {book && !booking && remoteEnabled() && (
             <button ref={pill} type="button" className="btn small mark-booked" onClick={() => form.open({ start: 'picked', picked: way })}>
               <Check s={14} />Mark as booked

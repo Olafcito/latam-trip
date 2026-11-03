@@ -104,10 +104,10 @@ export const External = ({ s = 12 }: { s?: number }) => (
   </svg>
 )
 
-/** A month back or on, in the calendar. */
-export const Caret = ({ s = 14, dir }: { s?: number; dir: 'l' | 'r' }) => (
+/** A month back or on, in the calendar, or down on a control that opens a choice. */
+export const Caret = ({ s = 14, dir }: { s?: number; dir: 'l' | 'r' | 'd' }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
-    <path d={dir === 'l' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} />
+    <path d={dir === 'l' ? 'M15 5l-7 7 7 7' : dir === 'r' ? 'M9 5l7 7-7 7' : 'M5 9l7 7 7-7'} />
   </svg>
 )
 
@@ -200,5 +200,30 @@ export const Link = ({ s = 13 }: { s?: number }) => (
 export const Note = ({ s = 13 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
     <path d="M5 6h14M5 11h14M5 16h9" />
+  </svg>
+)
+
+/** A long wait between flights: an hourglass. */
+export const Hourglass = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M6 3h12M6 21h12M7 3v3a5 5 0 0 0 10 0V3M7 21v-3a5 5 0 0 1 10 0v3" />
+  </svg>
+)
+
+/** An entry permit such as the ESTA: a passport with a globe. */
+export const Passport = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="5" y="3" width="14" height="18" rx="2.5" />
+    <circle cx="12" cy="10.5" r="3.2" />
+    <path d="M9 17h6" />
+  </svg>
+)
+
+/** A change of airport on the way: a hop from one point to another. */
+export const Hop = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <circle cx="5" cy="17" r="2" />
+    <circle cx="19" cy="17" r="2" />
+    <path d="M6.5 14.5C8 8.5 16 8.5 17.5 14.5M15 13.8l2.5.7.8-2.6" />
   </svg>
 )

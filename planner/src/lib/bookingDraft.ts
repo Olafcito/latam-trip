@@ -110,6 +110,19 @@ export function blank(leg: DraftLeg): Partial<Booking> {
   return { kind: leg.kind, from_code: leg.from, to_code: leg.to, depart: leg.day }
 }
 
+/**
+ * The rows Fill in yourself starts from: the picked flight or way with its codes, day and times, so Simon edits rather
+ * than types. The seller, the bags and the price come out of the rows because the form holds them, so a field he
+ * empties is not saved from the pick. With nothing picked it is the blank row.
+ */
+export function manualRows(leg: DraftLeg, picked: Partial<Booking>[] | null | undefined): Partial<Booking>[] {
+  if (!picked?.length) return [{ ...blank(leg), source: 'manual', trip_id: leg.tripId ?? null }]
+  return picked.map((row, k) => {
+    const { seller: _s, cabin_bag: _c, checked_bag: _b, price_dkk, ...rest } = row
+    return { ...rest, ...(k > 0 ? { price_dkk } : {}), source: 'manual' }
+  })
+}
+
 /** What the form holds, as typed. Every field is a string and may be empty. */
 export interface BookingFields {
   reference?: string

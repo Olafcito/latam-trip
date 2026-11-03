@@ -293,7 +293,8 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   // the stop whose City card is open. A stop deleted from the card goes once the card has closed
   const [city, setCity] = useState<number | null>(null)
   // the bus or boat leg whose booking form is open, by its place index
-  const [bookFor, setBookFor] = useState<number | null>(null)
+  // the leg whose booking form is open, and whether it edits the booking the leg has
+  const [bookFor, setBookFor] = useState<{ i: number; edit: boolean } | null>(null)
   let bookForm: ReactNode = null
   const remote = remoteEnabled()
   // what a booking form saves to: the rows, then the leg pinned on them
@@ -392,14 +393,14 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
       // a bus or a boat has no sheet, so its card marks it, in a form of its own
       const ground = fam !== 'flight' && remote
       const kind = fam === 'boat' ? 'boat' : 'bus'
-      if (ground && bookFor === i) {
+      if (ground && bookFor?.i === i) {
         bookForm = (
-          <Modal label={`Mark ${route} as booked`} className="fl-md" onClose={() => setBookFor(null)}>
+          <Modal label={bookFor.edit ? `Edit the booking of ${route}` : `Mark ${route} as booked`} className="fl-md" onClose={() => setBookFor(null)}>
             {(close) => (
               <BookingForm
                 target={target<never>({ kind, from: ps[i - 1].node, to: p.node, day: date, tripId: journey.id, fromName: ends.fromName, toName: ends.toName },
                   (rows) => useStore.getState().markBooked(rows, { i }))}
-                open={{ start: 'manual' }} onDone={close}
+                open={bookFor.edit && booking ? { start: 'manual', edit: true, booking } : { start: 'manual' }} onDone={close}
               />
             )}
           </Modal>
@@ -425,7 +426,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           card={(dismiss) => (
             <LegCard
               h={h} ends={ends} family={fam} date={date} time={time} points={fam === 'flight' ? null : pointsOf([h.from, ...time.via, h.to])} link={hopLink(h, inout)}
-              onBook={ground && !booking ? () => { dismiss(); setBookFor(i) } : undefined}
+              booking={ground ? booking : null} data={data}
+              onBook={ground && !booking ? () => { dismiss(); setBookFor({ i, edit: false }) } : undefined}
+              onEdit={ground && booking ? () => { dismiss(); setBookFor({ i, edit: true }) } : undefined}
             />
           )}
           sheet={codes ? (close) => (
