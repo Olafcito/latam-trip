@@ -71,14 +71,44 @@ const LAST = '\uffff'
  */
 export function paidPrice(list: Booking[], b: Booking): number | null {
   if (b.ticket == null) return b.price_dkk
-  const group = [b, ...booked(list).filter((r) => r.ticket === b.ticket && r.id !== b.id)]
-  const first = group.reduce((a, r) => {
+  const first = firstOf([b, ...booked(list).filter((r) => r.ticket === b.ticket && r.id !== b.id)])
+  if (first.price_dkk == null) return null
+  return first.id === b.id ? first.price_dkk : 0
+}
+
+/** The row of a ticket that pays for it: the earliest depart, then the lowest id. */
+function firstOf(group: Booking[]): Booking {
+  return group.reduce((a, r) => {
     const da = a.depart ?? LAST
     const dr = r.depart ?? LAST
     return dr < da || (dr === da && r.id < a.id) ? r : a
   })
-  if (first.price_dkk == null) return null
-  return first.id === b.id ? first.price_dkk : 0
+}
+
+/**
+ * The rows to save with the price of a ticket kept. A save that takes the paying row out of its ticket while other
+ * rows of it stay booked hands its price to the row that pays now, so those rows never read 0 paid. That row is
+ * changed in the rows when it is saved too, else added as a row with its id and the price.
+ */
+export function keepPaid(list: Booking[], rows: Partial<Booking>[]): Partial<Booking>[] {
+  const out = [...rows]
+  const leaves = (b: Booking) => out.some((r) => r.id === b.id && 'ticket' in r && r.ticket !== b.ticket)
+  const done = new Set<string>()
+  for (const r of rows) {
+    const was = r.id ? booked(list).find((b) => b.id === r.id) : undefined
+    const t = was?.ticket
+    if (!t || done.has(t)) continue
+    done.add(t)
+    const group = booked(list).filter((b) => b.ticket === t)
+    const payer = firstOf(group)
+    const left = group.filter((b) => !leaves(b))
+    if (!leaves(payer) || !left.length || payer.price_dkk == null) continue
+    const next = firstOf(left)
+    const k = out.findIndex((x) => x.id === next.id)
+    if (k >= 0) out[k] = { ...out[k], price_dkk: payer.price_dkk }
+    else out.push({ id: next.id, price_dkk: payer.price_dkk })
+  }
+  return out
 }
 
 /** The day a booking holds its leg on, the leg day when it has none, and null for a leg with no booking. */

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CrawledFlight, InOut, Ticket, Way } from '../data/types'
-import { blank, formRows, fromPicked, fromRow, manualRows, rowsOf, savedRow, wayRebookIds, withIds, type DraftLeg } from './bookingDraft'
+import { blank, formRows, fromPicked, fromRow, manualRows, rowsOf, savedRow, wayRebookIds, withIds, withSaved, type DraftLeg } from './bookingDraft'
+import { keepPaid, paidPrice } from './booked'
 import type { Booking } from '../data/types'
 import { bookingTask } from './tasks'
 
@@ -179,6 +180,29 @@ describe('changing a booking', () => {
     expect(wayRebookIds(2, booked, 'home')).toEqual(['bin', undefined])
     expect(wayRebookIds(1, booked, 'in')).toEqual(['bin'])
     expect(wayRebookIds(1, booked, 'home')).toEqual([undefined])
+  })
+
+  it('keeps what a shared ticket paid when one way of it is booked again alone', () => {
+    // a round trip on one ticket at 9,800 kr, priced on the way in
+    const bin = { ...row('bin', '2026-12-02T06:00', 'G1'), price_dkk: 9800 }
+    const bhome = { ...row('bhome', '2027-02-03T09:05', 'G1'), price_dkk: 0 }
+    const list = [bin, bhome]
+    const paid = (l: Booking[]) => l.map((b) => paidPrice(l, b))
+    // the way in alone, at 6,000 kr on a ticket of its own
+    const again = withIds([{ kind: 'flight', depart: '2026-12-03T06:00', ticket: null, price_dkk: 6000 }], wayRebookIds(1, { in: bin, home: bhome }, 'in'))
+    expect(paid(withSaved(list, again, ['bin']))).toEqual([6000, 0])
+    const kept = keepPaid(list, again)
+    expect(kept).toEqual([again[0], { id: 'bhome', price_dkk: 9800 }])
+    expect(paid(withSaved(list, kept, ['bin', 'bhome']))).toEqual([6000, 9800])
+    // the way home alone leaves the way in paying for the ticket, so nothing moves
+    const home = withIds([{ kind: 'flight', depart: '2027-02-04T09:05', ticket: null, price_dkk: 5000 }], wayRebookIds(1, { in: bin, home: bhome }, 'home'))
+    expect(keepPaid(list, home)).toEqual(home)
+    expect(paid(withSaved(list, home, ['bhome']))).toEqual([9800, 5000])
+    // both ways again on a new ticket leave nothing on the old one
+    const both = withIds([{ ticket: 'G2', price_dkk: 7000 }, { ticket: 'G2', price_dkk: 0 }], wayRebookIds(2, { in: bin, home: bhome }, 'in'))
+    expect(keepPaid(list, both)).toEqual(both)
+    // an edit changes no ticket, so nothing moves
+    expect(keepPaid(list, [{ id: 'bin', reference: 'TEST01' }])).toEqual([{ id: 'bin', reference: 'TEST01' }])
   })
 })
 

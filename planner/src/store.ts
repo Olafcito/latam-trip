@@ -3,7 +3,7 @@ import { ownKey, readOwn } from '@map/data/ownKey'
 import type { AppData, Booking, CrawledFlight, Lodging, Way } from './data/types'
 import type { PlannedStay } from './lib/stays'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
-import { heldWayNotice, lockedLegs, wayHeld } from './lib/booked'
+import { heldWayNotice, keepPaid, lockedLegs, wayHeld } from './lib/booked'
 import { saveBookings } from './lib/bookings'
 import { withSaved } from './lib/bookingDraft'
 import { dayDiff } from './lib/format'
@@ -259,12 +259,15 @@ export const useStore = create<State>((set, get) => ({
       if (k.kept) return { ok: false, message: heldWayNotice(k.wayIn.id !== leg.choice.wayIn.id ? 'in' : 'home') }
       ways = k
     }
-    const saved = await saveBookings(rows)
+    // a row taken out of a shared ticket hands its price to the rows left on it, so the ids past the rows are theirs
+    const all = keepPaid(s.bookings, rows)
+    const saved = await saveBookings(all)
     if (!saved.ok) return saved
-    set({ bookings: withSaved(get().bookings, rows, saved.ids) })
+    set({ bookings: withSaved(get().bookings, all, saved.ids) })
+    const ids = saved.ids.slice(0, rows.length)
     const now = get().journey
     // another trip opened while the rows were saved, so this one is left as it is
-    if (!now || now.id !== j.id) return { ok: true, ids: saved.ids }
+    if (!now || now.id !== j.id) return { ok: true, ids }
     if (ways) {
       if (ways.wayIn.id !== now.wayIn || ways.wayHome.id !== now.wayHome) get().setJourney(withEnds(now, data.inout, data.map, ways.wayIn, ways.wayHome))
     } else if ('i' in leg) {
@@ -278,7 +281,7 @@ export const useStore = create<State>((set, get) => ({
       }
     }
     set({ unlocked: null })
-    return { ok: true, ids: saved.ids }
+    return { ok: true, ids }
   },
   unlocked: null,
   setUnlocked: (unlocked) => set({ unlocked }),
