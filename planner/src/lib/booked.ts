@@ -87,8 +87,9 @@ function firstOf(group: Booking[]): Booking {
 
 /**
  * The rows to save with the price of a ticket kept. A save that takes the paying row out of its ticket while other
- * rows of it stay booked hands its price to the row that pays now, so those rows never read 0 paid. That row is
- * changed in the rows when it is saved too, else added as a row with its id and the price.
+ * rows of it stay booked hands its price to the row that pays now, so those rows never read 0 paid. A payer with no
+ * price hands on no price, so the rows left read not priced. That row is changed in the rows when it is saved too,
+ * else added as a row with its id and the price.
  */
 export function keepPaid(list: Booking[], rows: Partial<Booking>[]): Partial<Booking>[] {
   const out = [...rows]
@@ -102,7 +103,7 @@ export function keepPaid(list: Booking[], rows: Partial<Booking>[]): Partial<Boo
     const group = booked(list).filter((b) => b.ticket === t)
     const payer = firstOf(group)
     const left = group.filter((b) => !leaves(b))
-    if (!leaves(payer) || !left.length || payer.price_dkk == null) continue
+    if (!leaves(payer) || !left.length) continue
     const next = firstOf(left)
     const k = out.findIndex((x) => x.id === next.id)
     if (k >= 0) out[k] = { ...out[k], price_dkk: payer.price_dkk }

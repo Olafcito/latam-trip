@@ -33,7 +33,12 @@ const LINES = (data: AppData): Line[] => {
     { label: 'Long-haul tickets', text: (s) => kr(s.t.tickets_dkk), value: (s) => known(s.t.tickets_dkk) },
     {
       label: 'Regional flights',
-      text: (s) => (s.t.regional_unknown ? `${kr(s.t.regional_flights_dkk)}, some not priced` : kr(s.t.regional_flights_dkk)),
+      text: (s) =>
+        !s.t.regional_unknown
+          ? kr(s.t.regional_flights_dkk)
+          : s.t.regional_flights_dkk
+            ? `${kr(s.t.regional_flights_dkk)}, some not priced`
+            : 'Not priced',
       value: (s) => (s.t.regional_unknown ? null : s.t.regional_flights_dkk),
     },
     { label: 'Cabin-bag fees', text: (s) => (s.t.cabin_bag_dkk == null ? null : kr(s.t.cabin_bag_dkk)), value: (s) => known(s.t.cabin_bag_dkk) },

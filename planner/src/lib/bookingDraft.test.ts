@@ -204,6 +204,21 @@ describe('changing a booking', () => {
     // an edit changes no ticket, so nothing moves
     expect(keepPaid(list, [{ id: 'bin', reference: 'TEST01' }])).toEqual([{ id: 'bin', reference: 'TEST01' }])
   })
+
+  it('keeps a shared ticket with no price not priced when its payer is booked again alone', () => {
+    // Fill in yourself with the price left empty saves the way in with no price and the way home at 0
+    const bin = { ...row('bin', '2026-12-02T06:00', 'G1'), price_dkk: null }
+    const bhome = { ...row('bhome', '2027-02-03T09:05', 'G1'), price_dkk: 0 }
+    const list = [bin, bhome]
+    const paid = (l: Booking[]) => l.map((b) => paidPrice(l, b))
+    expect(paid(list)).toEqual([null, null])
+    const again = withIds([{ kind: 'flight', depart: '2026-12-03T06:00', ticket: null, price_dkk: 6000 }], wayRebookIds(1, { in: bin, home: bhome }, 'in'))
+    // without it the way home would read 0 paid
+    expect(paid(withSaved(list, again, ['bin']))).toEqual([6000, 0])
+    const kept = keepPaid(list, again)
+    expect(kept).toEqual([again[0], { id: 'bhome', price_dkk: null }])
+    expect(paid(withSaved(list, kept, ['bin', 'bhome']))).toEqual([6000, null])
+  })
 })
 
 describe('bookingTask', () => {
