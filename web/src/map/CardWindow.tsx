@@ -10,7 +10,6 @@ import {
   gymLines,
   gymPrices,
   gymRatings,
-  hostelFacts,
   indexFacts,
   numbeoFacts,
   plainNote,
@@ -219,12 +218,10 @@ function GymCard({ g, api, model, onShow }: { g: GymRow; api: MapModeApi; model:
 function CityCard({ c, api, model, onOpen, onShow }: { c: CityRow; api: MapModeApi; model: Model; onOpen(ref: CardRef): void; onShow(): void }) {
   const d = c.details
   const n = d?.numbeo
-  const h = d?.hostels
   const name = cityName(c)
   const gyms = rankGyms(api.gyms.gymsOf(c))
   const month = numbeoFacts(c)
   const indices = indexFacts(c)
-  const hostels = hostelFacts(c)
   const peopleNote = plainNote(n?.contributors_note)
   return (
     <>
@@ -247,13 +244,6 @@ function CityCard({ c, api, model, onOpen, onShow }: { c: CityRow; api: MapModeA
       <FactGrid facts={cityCostFacts(c)} />
       {d?.monthly_note && <p className="fine">{d.monthly_note}</p>}
       {d?.price_note && <p className="fine">{d.price_note}</p>}
-      {!!(hostels.length || h?.names?.length || h?.source) && (
-        <Part title="Hostels">
-          <FactGrid facts={hostels} />
-          {!!h?.names?.length && <p className="fine">{h.names.join(', ')}</p>}
-          {h?.source && <p className="fine">{h.source}</p>}
-        </Part>
-      )}
       {!!indices.length && (
         <Part title="Rankings">
           <Lines facts={indices} />

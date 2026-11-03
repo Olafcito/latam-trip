@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { capped } from '@map/data/cardFacts'
-import type { Hostel, MapNode } from '../../data/types'
-import { day, kr, shortPlace as short } from '../../lib/format'
+import type { MapNode } from '../../data/types'
+import { day, shortPlace as short } from '../../lib/format'
 import { countryName } from '../../lib/colors'
 import type { FindRow, PlaceFinds } from '../../lib/placeFinds'
 
@@ -28,14 +28,12 @@ export interface ItineraryProps {
   finds: PlaceFinds | null
   onClose: () => void
   onFind: (r: FindRow) => void
-  onBed: (h: Hostel) => void
 }
 
-export function Itinerary({ place, finds, onClose, onFind, onBed }: ItineraryProps) {
+export function Itinerary({ place, finds, onClose, onFind }: ItineraryProps) {
   const n = place.node
   const p = n?.profile
   const todo = p?.things_to_do ?? []
-  const beds = p?.hostels ?? []
   const exps = finds?.experiences ?? []
   const training = finds?.training ?? []
   const credit = [p?.image?.credit, p?.image?.license].filter(Boolean).join(', ')
@@ -52,7 +50,7 @@ export function Itinerary({ place, finds, onClose, onFind, onBed }: ItineraryPro
         </button>
       </div>
       {p?.summary && <p className="tg-about">{p.summary}</p>}
-      {todo.length || beds.length || exps.length || training.length ? (
+      {todo.length || exps.length || training.length ? (
         <div className="tg-cols">
           {!!todo.length && (
             <section>
@@ -61,22 +59,6 @@ export function Itinerary({ place, finds, onClose, onFind, onBed }: ItineraryPro
               {p?.touristy != null && (
                 <p className="tg-tour">Touristy <span className="dots" role="img" aria-label={`${p.touristy} of 5`}>{[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= p.touristy! ? 'f' : ''} />)}</span></p>
               )}
-            </section>
-          )}
-          {!!beds.length && (
-            <section>
-              <h5 className="tg-bh"><span>Hostels</span><span>Dorm</span><span>Private</span></h5>
-              <ul className="tg-beds">
-                {beds.map((h) => (
-                  <li key={h.name} data-sus={h.price_suspect || undefined}>
-                    <button type="button" onClick={() => onBed(h)}>
-                      <span title={h.name}>{h.name}</span>
-                      <span>{h.dorm_dkk != null && kr(h.dorm_dkk)}{h.price_suspect && h.dorm_dkk != null && <small>unsure</small>}</span>
-                      <span>{h.private_dkk != null && kr(h.private_dkk)}{h.price_suspect && h.private_dkk != null && <small>unsure</small>}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
             </section>
           )}
           {!!exps.length && <Finds title="Experiences" rows={exps} onFind={onFind} />}

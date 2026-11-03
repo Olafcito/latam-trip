@@ -3,15 +3,6 @@
 
 export type Tier = 'destination' | 'town' | 'stop_only'
 
-export interface Hostel {
-  name: string
-  dorm_dkk: number | null
-  private_dkk: number | null
-  rating?: number | null
-  price_suspect: boolean
-  url?: string | null
-}
-
 export interface Place {
   id: string
   name: string
@@ -34,8 +25,6 @@ export interface Place {
   touristy?: number | null
   altitude_m?: number | null
   image?: { url: string; page?: string; credit?: string; licence?: string; w?: number; h?: number } | null
-  hostels?: Hostel[]
-  hostel_note?: string | null
   experience_ids?: string[] | null
   saved_in?: string[] | null
 }
@@ -269,14 +258,6 @@ export interface Numbeo {
   observed?: string | null
 }
 
-export interface CityHostels {
-  dorm_night_dkk?: number | null
-  private_night_dkk?: number | null
-  n?: number | null
-  names?: string[] | null
-  source?: string | null
-}
-
 export interface CityIndices {
   backpacker_index_usd_day?: number | null
   backpacker_index_dkk_day?: number | null
@@ -313,7 +294,6 @@ export interface CityDetails {
   what_people_say?: Quote[] | null
   score?: ScoreCard | null
   numbeo?: Numbeo | null
-  hostels?: CityHostels | null
   indices?: CityIndices | null
 }
 

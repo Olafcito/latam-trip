@@ -66,4 +66,11 @@ describe('every card in the data', () => {
     }
     expect(bad).toEqual([])
   })
+
+  it('shows no research hostels on a city card, places to stay come only from what was added', () => {
+    const text = textOf(cardMarkup({ kind: 'city', id: 'city-san-salvador-training' }))
+    // the fixture city still carries a research hostel, the card leaves it out
+    expect(JSON.stringify(data.experiences?.find((r) => r.id === 'city-san-salvador-training')?.details)).toContain('Hostal Volcan')
+    expect(text).not.toMatch(/Hostal Volcan|Hostels|Dorm a night/)
+  })
 })

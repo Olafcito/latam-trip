@@ -90,8 +90,6 @@
 .dots { display: inline-flex; gap: 3px; }
 .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-2); }
 .dots i.f { background: var(--flight); }
-.hostel { display: flex; justify-content: space-between; font-size: var(--fs-small); }
-.hostel.sus { color: var(--faint); }
 }
 
 /* The freshness corner (workstream F): a dot and the age of the flights in mono, amber when any

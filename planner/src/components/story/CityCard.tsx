@@ -3,7 +3,7 @@ import { Flag, hasFlag } from '@map/map/Flag'
 import type { MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
 import { useDataRev } from '../../data/rev'
-import type { AppData, Hostel, MapData, MapNode } from '../../data/types'
+import type { AppData, MapData, MapNode } from '../../data/types'
 import { useStore } from '../../store'
 import { nodeName, type Journey, type Schedule } from '../../lib/journey'
 import { countryName } from '../../lib/colors'
@@ -11,7 +11,7 @@ import { shortPlace } from '../../lib/format'
 import { placeFinds, type FindRow } from '../../lib/placeFinds'
 import { Modal } from '../Modal'
 import { Caret } from '../icons'
-import { FindPopup, HostelPopup } from './FindPopup'
+import { FindPopup } from './FindPopup'
 import { Itinerary } from './TripHead'
 
 // A stop's City card, opened from its name or flag on the route: the same itinerary as the gallery, and
@@ -92,7 +92,6 @@ export function CityCard({ data, journey, sched, i, close, onDelete }: {
   const [from, setFrom] = useState<View | null>(null)
   const [route, setRoute] = useState<RouteData | null>(null)
   const [find, setFind] = useState<FindRow | null>(null)
-  const [bed, setBed] = useState<Hostel | null>(null)
   const read = useMemo(() => (route ? placeFinds(route) : null), [route])
   const rev = useDataRev()
   useEffect(() => {
@@ -129,7 +128,6 @@ export function CityCard({ data, journey, sched, i, close, onDelete }: {
               finds={read && node ? read(node.id) : null}
               onClose={close}
               onFind={setFind}
-              onBed={setBed}
             />
           </div>
           {view === 'delete' ? (
@@ -154,7 +152,6 @@ export function CityCard({ data, journey, sched, i, close, onDelete }: {
         </>
       )}
       {find && route && <Modal label={find.name} className="fp-md" bare onClose={() => setFind(null)}>{(shut) => <FindPopup data={route} first={find.ref} onClose={shut} />}</Modal>}
-      {bed && <Modal label={bed.name} onClose={() => setBed(null)}>{() => <HostelPopup h={bed} place={name} />}</Modal>}
     </div>
   )
 }

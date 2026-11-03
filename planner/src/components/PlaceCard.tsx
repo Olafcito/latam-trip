@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import type { MapNode } from '../data/types'
-import { kr } from '../lib/format'
 import { countryName } from '../lib/colors'
 
 interface HoverState {
@@ -48,12 +47,6 @@ export function PlaceCard() {
         {p.touristy != null && (
           <div className="row small muted">Touristy <span className="dots" aria-label={`${p.touristy} of 5`}>{[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= p.touristy! ? 'f' : ''} />)}</span></div>
         )}
-        {(p.hostels ?? []).slice(0, 3).map((h) => (
-          <div key={h.name} className={'hostel' + (h.price_suspect ? ' sus' : '')} title={h.price_suspect ? 'Price looks wrong in the source' : undefined}>
-            <span>{h.name}</span>
-            <span>dorm {kr(h.dorm_dkk)} · private {kr(h.private_dkk)}</span>
-          </div>
-        ))}
       </div>
     </div>
   )

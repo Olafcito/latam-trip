@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { capped, cardPhoto, cityCostFacts, cityLines, experienceLines, gymLines, gymPrices, gymRatings, hostelFacts, indexFacts, numbeoFacts, plainNote, quoteSource, scoreBars, scoreText } from './cardFacts'
+import { capped, cardPhoto, cityCostFacts, cityLines, experienceLines, gymLines, gymPrices, gymRatings, indexFacts, numbeoFacts, plainNote, quoteSource, scoreBars, scoreText } from './cardFacts'
 import type { CityRow, Experience, GymRow } from './types'
 
 const row = { id: 'x', name: 'X', category: 'training', tags: [], country: 'MX', lat: 1, lon: 2, summary: null, price: null, price_dkk: null }
@@ -92,14 +92,10 @@ describe('city facts', () => {
   it('is empty without Numbeo', () => {
     expect(numbeoFacts(city())).toEqual([])
     expect(cityCostFacts(city())).toEqual([])
-    expect(hostelFacts(city())).toEqual([])
     expect(cityLines(city())).toEqual([])
   })
   it('leaves out what the page did not give', () => {
     expect(labels(cityCostFacts(city({ numbeo, room_month_dkk: 3000 })))).toEqual(['Cheap meal', 'Room a month', 'Cost of living index'])
-  })
-  it('gives dorm, private and the count only when known', () => {
-    expect(hostelFacts(city({ hostels: { dorm_night_dkk: 50, private_night_dkk: null, n: 2, names: [], source: 'x' } }))).toEqual([{ label: 'Dorm a night', value: '50 kr' }, { label: 'Hostels found', value: '2' }])
   })
   it('shows the listed price and the season of the row', () => {
     const row = { ...city(), price_dkk: 2696, season: 'year round', dec_jan: 'Dry' } as CityRow

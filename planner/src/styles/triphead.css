@@ -19,29 +19,22 @@
 .tg-x:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
 .tg-x:active { transform: scale(0.96); }
 .tg-about { max-width: 68ch; margin: 10px 0 0; font-size: var(--fs-body); line-height: 1.5; color: color-mix(in srgb, var(--text) 86%, transparent); }
-.tg-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 28px; margin-top: 14px; }
+/* the sections flow down two columns, so one that a place does not have leaves no hole in the other */
+.tg-cols { columns: 2; column-gap: 28px; margin: 14px 0 -12px; }
+.tg-cols > section { break-inside: avoid; padding-bottom: 12px; }
 .tg-cols h5 { margin: 0 0 6px; font-size: var(--fs-label); font-weight: 500; color: var(--faint); }
 .tg-todo { display: grid; gap: 4px; margin: 0; padding: 0 0 0 16px; font-size: var(--fs-num); line-height: 1.4; }
 .tg-todo li::marker { color: var(--faint); }
 .tg-tour { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: var(--fs-label); color: var(--faint); }
-.tg-bh, .tg-beds button { display: grid; grid-template-columns: minmax(0, 1fr) 64px 64px; gap: 8px; align-items: baseline; }
-.tg-bh span:not(:first-child), .tg-beds button span:not(:first-child) { text-align: right; }
-.tg-beds { display: grid; margin: 0; padding: 0; list-style: none; font-size: var(--fs-num); font-variant-numeric: tabular-nums; }
-.tg-beds li { border-top: 1px solid var(--line); }
-.tg-beds li:first-child { border-top: 0; }
-.tg-beds button { width: 100%; padding: 5px 0; align-content: center; color: var(--text); font-size: var(--fs-num); text-align: left; }
-.tg-beds button > span:first-child { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.tg-beds li[data-sus] button span:not(:first-child) { color: var(--faint); }
-.tg-beds small { display: block; font-size: var(--fs-label); line-height: 1.2; }
 .tg-finds { display: grid; margin: 0; padding: 0; list-style: none; }
 .tg-finds li { border-top: 1px solid var(--line); }
 .tg-finds li:first-child { border-top: 0; }
-.tg-finds button, .tg-beds button, .tg-more {
+.tg-finds button, .tg-more {
   min-height: var(--hit); border: 0; background: none; font: inherit; cursor: pointer; touch-action: manipulation;
   user-select: none; -webkit-user-select: none; transition: transform var(--t-fast) var(--ease-out);
 }
 .tg-finds button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 6px 0; color: var(--text); font-size: var(--fs-num); text-align: left; }
-.tg-finds button:focus-visible, .tg-beds button:focus-visible, .tg-more:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 2px; }
+.tg-finds button:focus-visible, .tg-more:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 2px; }
 .tg-find { display: grid; flex: 1; gap: 1px; min-width: 0; }
 .tg-find b, .tg-find small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .tg-find b { font-weight: 500; }
@@ -54,17 +47,18 @@
 
 @media (hover: hover) and (pointer: fine) {
   .tg-x:hover { background: var(--surface-3); color: var(--text); }
-  .tg-finds button:hover b, .tg-beds button:hover span:first-child, .tg-more:hover { color: var(--flight); }
+  .tg-finds button:hover b, .tg-more:hover { color: var(--flight); }
 }
-.tg-finds button:active, .tg-beds button:active, .tg-more:active { transform: scale(0.98); }
+.tg-finds button:active, .tg-more:active { transform: scale(0.98); }
 
 @media (max-width: 560px) {
-  .tg-cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .tg-finds button, .tg-beds button, .tg-more { min-height: 44px; }
+  .tg-cols { columns: 1; margin-bottom: -16px; }
+  .tg-cols > section { padding-bottom: 16px; }
+  .tg-finds button, .tg-more { min-height: 44px; }
   .tg-x { margin-block-start: -10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tg-finds button, .tg-beds button, .tg-more { transition: none; }
-  .tg-finds button:active, .tg-beds button:active, .tg-more:active { transform: none; }
+  .tg-finds button, .tg-more { transition: none; }
+  .tg-finds button:active, .tg-more:active { transform: none; }
 }

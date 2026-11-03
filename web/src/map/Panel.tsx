@@ -2,7 +2,7 @@ import { useState, type Ref } from 'react'
 import { airportFlights, byCountry, countries, countryName, landing, neighbours, otherEnd, pairFlights, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
 import { tripEnd, type Trip } from '../data/trips'
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
-import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate, thousands } from '../lib/format'
+import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate } from '../lib/format'
 import { Flag as CountryFlag } from './Flag'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 import { PlaceSections } from './PlaceSections'
@@ -331,25 +331,6 @@ function MoreView(p: PanelProps & { city: Place }) {
           <div>
             <p className="sec-k mono">Things to do</p>
             <ul className="todo">{city.things_to_do.map((t) => <li key={t}>{t}</li>)}</ul>
-          </div>
-        )}
-        {!!city.hostels?.length && (
-          <div>
-            <p className="sec-k mono">Hostels · per night</p>
-            <ul className="hostels">
-              {city.hostels.map((h) => (
-                <li key={h.name} className={h.price_suspect ? 'sus' : ''} title={h.price_suspect ? 'Price looks off, check before booking' : undefined}>
-                  {h.url ? <a href={h.url} target="_blank" rel="noreferrer">{h.name}</a> : <span>{h.name}</span>}
-                  <span className="mono">
-                    {h.dorm_dkk != null && `Dorm ${thousands(h.dorm_dkk)}`}
-                    {h.dorm_dkk != null && h.private_dkk != null && ' · '}
-                    {h.private_dkk != null && `Private ${thousands(h.private_dkk)}`}
-                    {h.dorm_dkk == null && h.private_dkk == null && 'no price'}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            {city.hostel_note && <p className="fine">{city.hostel_note}</p>}
           </div>
         )}
         <div>

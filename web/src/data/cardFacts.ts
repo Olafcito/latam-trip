@@ -145,11 +145,6 @@ export function cityCostFacts(c: CityRow): Fact[] {
   ]
 }
 
-export function hostelFacts(c: CityRow): Fact[] {
-  const h = c.details?.hostels
-  return [...money('Dorm a night', h?.dorm_night_dkk), ...money('Private a night', h?.private_night_dkk), ...count('Hostels found', h?.n)]
-}
-
 /** The city's place on the outside rankings. An index that does not list the city has no line. */
 export function indexFacts(c: CityRow): Fact[] {
   const i = c.details?.indices

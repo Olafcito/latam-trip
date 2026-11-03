@@ -218,7 +218,6 @@ function cities(a: Place, b: Place, c: Place, photo: Place['image']): CityRow[] 
           monthly_total_dkk: 128450300,
           contributors_note: 'Very low sample and stale: 5 contributors in 18 months, last update 30 Apr 2025, gym empty. Meal of 4.24 USD looks too low. single_month_no_rent from Managua (no estimate on own page)',
         },
-        hostels: { dorm_night_dkk: 12845, private_night_dkk: 128450, n: 42, names: ['La Zona Hostel', NO_BREAK, 'Hostal Cumbres del Volcan Flor Blanca'], source: PARAGRAPH },
         indices: {
           backpacker_index_dkk_day: 12845.87,
           backpacker_index_year: 2025,
@@ -237,15 +236,15 @@ function cities(a: Place, b: Place, c: Place, photo: Place['image']): CityRow[] 
     }),
     SOME_CITY('worst-city-null', b, { area: null, name: 'Tepoztlán', details: null, sources: undefined, image: null }),
     SOME_CITY('worst-city-hollow', b, {
-      area: 'Hostels and Numbeo with nothing inside',
+      area: 'Numbeo with nothing inside',
       image: { url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/No_such_file_here.jpg/1280px-No_such_file_here.jpg', credit: '', w: 1280, h: 720 },
       image_source: 'place',
-      details: { hostels: { n: 0, names: [] }, numbeo: {}, indices: {}, what_people_say: [], gyms: [], score: { training: null, evidence: null, local_life: null, cost: null, water: null, total: null } },
+      details: { numbeo: {}, indices: {}, what_people_say: [], gyms: [], score: { training: null, evidence: null, local_life: null, cost: null, water: null, total: null } },
     }),
     SOME_CITY('worst-city-nobreak', c, {
       area: NO_BREAK,
       summary: NO_BREAK_URL,
-      details: { gyms: ['worst-gym-nobreak', 'worst-gym-thai', 'worst-gym-mixed', 'worst-gym-parts', 'worst-gym-total'], best_gym: 'worst-gym-nobreak', score: { training: 2, evidence: 2, local_life: null, cost: null, water: 2, total: null }, numbeo: { monthly_total_dkk: 0, contributors_note: NO_BREAK_URL }, hostels: { names: [NO_BREAK] }, safety: NO_BREAK_URL },
+      details: { gyms: ['worst-gym-nobreak', 'worst-gym-thai', 'worst-gym-mixed', 'worst-gym-parts', 'worst-gym-total'], best_gym: 'worst-gym-nobreak', score: { training: 2, evidence: 2, local_life: null, cost: null, water: 2, total: null }, numbeo: { monthly_total_dkk: 0, contributors_note: NO_BREAK_URL }, safety: NO_BREAK_URL },
     }),
     SOME_CITY('worst-city-thai', c, {
       area: 'เมืองเชียงใหม่ جوهانسبرغ 渋谷区',

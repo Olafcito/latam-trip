@@ -138,16 +138,6 @@ export interface InOut {
 
 export type Mode = 'bus' | 'shuttle' | 'chicken_bus' | 'colectivo' | 'train' | 'boat' | 'flight'
 
-export interface Hostel {
-  name: string
-  dorm_dkk: number | null
-  private_dkk: number | null
-  rating?: number | null
-  source?: string
-  source_year?: number
-  price_suspect?: boolean
-}
-
 export interface Profile {
   checked_at?: string
   image?: { url: string; page?: string; credit?: string; license?: string; w?: number; h?: number } | null
@@ -155,7 +145,6 @@ export interface Profile {
   summary?: string | null
   things_to_do?: string[]
   touristy?: number | null
-  hostels?: Hostel[]
 }
 
 export interface MapNode {
