@@ -196,6 +196,9 @@ TABLES = {
     "task_log": ("task_log.jsonl", {None: TASK}),
     "trips": ("trips.jsonl", {None: TRIP}),
 }
+# Tables kept out of data/built/trip.db. Built files go to the public bucket, and a trip's text can hold booking
+# references and prices paid.
+PRIVATE = ("trips",)
 DOCS = ("trip.json", "bag_rules.json", "known_prices.json", "scenarios.json",
         "experience_categories.json", "lists.json", "elevation.json", "image_queries.json")
 
@@ -763,22 +766,6 @@ def cmd_delete_trip(paths, ids):
     return 0 if len(found) == len(set(ids)) else 1
 
 
-def export_trips(paths):
-    """data/web/trips.json: the latest version of every trip, with a short list of its earlier versions."""
-    latest, every = latest_trips(rows_of(paths.src(TABLES["trips"][0])))
-    trips = []
-    for tid, row in latest.items():
-        out = dict(row)
-        out["history"] = [{"version": r.get("version"), "saved_at": r.get("saved_at"), "by": r.get("by"), "why": r.get("why")}
-                          for r in reversed(every[tid][:-1])]
-        trips.append(out)
-    trips.sort(key=lambda t: (t.get("rank") is None, t.get("rank") or 0, t.get("saved_at") or ""))
-    doc = {"generated_at": now_utc(), "source": "trips", "trips": trips}
-    os.makedirs(paths.web, exist_ok=True)
-    write_atomic(os.path.join(paths.web, "trips.json"), json.dumps(doc, ensure_ascii=False, indent=1) + "\n")
-    return len(trips)
-
-
 # ---- check --------------------------------------------------------------------------------------
 
 def run_check(paths, quiet=False, st=None):
@@ -855,9 +842,12 @@ def _sql_value(v):
 
 
 def load_tables(paths):
-    """Every source table into data/built/trip.db next to the quotes table that ingest.py writes."""
+    """Every source table but the PRIVATE ones into data/built/trip.db next to the quotes table that ingest.py writes."""
     con = sqlite3.connect(os.path.join(paths.built, "trip.db"))
     for table, (fname, _) in TABLES.items():
+        if table in PRIVATE:
+            con.execute(f'DROP TABLE IF EXISTS "{table}"')
+            continue
         rows = [r for r in rows_of(paths.src(fname)) if isinstance(r, dict)]
         cols = []
         for r in rows:
@@ -1048,7 +1038,6 @@ def cmd_build(paths, fetch_elevation=False, sync=True):
             shutil.copyfile(os.path.join(paths.root, "data", where, name), os.path.join(paths.web, name))
         print("data/web: copied " + ", ".join(n for _, n in PUBLISH))
         print(write_pair_dates(paths))
-        print(f"data/web/trips.json: {export_trips(paths)} trips")
     if sync and os.path.isdir(os.path.join(paths.root, "plugin")):
         for l in _run(paths, os.path.join(HERE, "sync_claude_dir.py")):
             print("sync_claude_dir.py:", l)

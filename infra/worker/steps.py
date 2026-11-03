@@ -208,7 +208,8 @@ def prune_hash_copies(rest, files, now):
 
 
 def upload(rest, work_dir, meta=None, now=None):
-    """Uploads the changed files of data/web, each also under its hash, then data/built, then meta.json last. Returns
+    """Uploads the changed files of data/web, each also under its hash, then data/built, then meta.json. Files the old
+    meta.json named that the build no longer makes are deleted after it. Returns
     {"files": name to hash, "uploaded": names, "manifest_hash": hash of the map}."""
     now = now or dt.datetime.now(dt.timezone.utc)
     web, built = os.path.join(work_dir, "data", "web"), os.path.join(work_dir, "data", "built")
@@ -233,6 +234,10 @@ def upload(rest, work_dir, meta=None, now=None):
     store.write_atomic(os.path.join(web, "meta.json"), json.dumps(meta, ensure_ascii=False, indent=1) + "\n")
     rest.storage_put(BUCKET, f"{WEB}/meta.json", json.dumps(meta, ensure_ascii=False, indent=1).encode("utf-8"),
                      "application/json", cache_control="no-cache")
+    gone = [f"{WEB}/{n}" for n in (old or {}).get("files", {}) if n not in files]
+    gone += [f"built/{n}" for n in (old or {}).get("built_files", {}) if n not in built_files]
+    if gone:
+        rest.storage_delete(BUCKET, gone)
     prune_hash_copies(rest, files, now)
     manifest = hashlib.sha1(json.dumps(files, sort_keys=True).encode()).hexdigest()
     return {"files": files, "uploaded": changed, "manifest_hash": manifest}

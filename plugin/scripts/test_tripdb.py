@@ -416,18 +416,19 @@ class SaveTripTest(Base):
         errors, _ = tripdb.run_check(self.paths, quiet=True)
         self.assertTrue(any("versions [1, 3]" in e for e in errors), errors)
 
-    def test_export_keeps_the_latest_version_and_a_history(self):
-        self.save(trip(why="First idea"))
-        self.save(trip(why="Second idea"))
-        self.save(trip(id="other", name="Other", rank=1))
-        self.assertEqual(tripdb.export_trips(self.paths), 2)
-        with open(os.path.join(self.paths.web, "trips.json"), encoding="utf-8") as fh:
-            doc = json.load(fh)
-        self.assertEqual([t["id"] for t in doc["trips"]], ["other", "costa-rica"])
-        cr = doc["trips"][1]
-        self.assertEqual((cr["version"], cr["why"]), (2, "Second idea"))
-        self.assertEqual([(h["version"], h["why"]) for h in cr["history"]], [(1, "First idea")])
-        self.assertEqual(doc["trips"][0]["history"], [])
+    def test_trip_db_leaves_the_trips_out(self):
+        import sqlite3
+        self.save(trip(why="Booked: Travellink 11111111111, LATAM booking TEST01"))
+        os.makedirs(self.paths.built, exist_ok=True)
+        tripdb.load_tables(self.paths)
+        con = sqlite3.connect(os.path.join(self.paths.built, "trip.db"))
+        names = {n for (n,) in con.execute("SELECT name FROM sqlite_master WHERE type = 'table'")}
+        dump = "\n".join(con.iterdump())
+        con.close()
+        self.assertIn("places", names)
+        self.assertNotIn("trips", names)
+        self.assertNotIn("TEST01", dump)
+        self.assertFalse(hasattr(tripdb, "export_trips"))
 
     def test_delete_trip_removes_every_version_and_only_that_trip(self):
         self.save(trip(why="First idea"))

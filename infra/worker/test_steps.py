@@ -377,6 +377,16 @@ class FilesTest(unittest.TestCase):
         self.assertEqual(meta["built_at"], "t1")
         self.assertIn("built/trip.db", rest.files)
 
+    def test_a_file_the_build_no_longer_makes_goes(self):
+        rest = FakeRest()
+        write(os.path.join(self.web, "trips.json"), json.dumps({"trips": [1]}))
+        steps.upload(rest, self.tmp, now=NOW)
+        os.remove(os.path.join(self.web, "trips.json"))
+        steps.upload(rest, self.tmp, now=NOW)
+        self.assertNotIn("data/web/trips.json", rest.files)
+        self.assertNotIn("trips.json", json.loads(rest.files["data/web/meta.json"])["files"])
+        self.assertIn("data/web/places.json", rest.files)
+
     def test_each_changed_file_is_stored_under_its_hash(self):
         rest = FakeRest()
         out = steps.upload(rest, self.tmp, now=NOW)
