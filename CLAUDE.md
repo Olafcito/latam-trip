@@ -18,7 +18,7 @@ Multi step work runs on superpowers. `brainstorming` gives a spec, `writing-plan
 - **Run disjoint work in parallel, in this checkout.** Plans or batches whose files do not overlap run at the same time in the one working copy, never in a worktree. Each agent stages only its own paths and never stashes, resets or checks out over another agent's work.
 - **Check fixes against the diff.** The main session checks a fix round itself. A separate re-review is only for fixes that touch owner only data, the private bucket or what goes into built files.
 - **Ship together.** The ship steps of several plans go out together, under one final review of the whole branch, which is the safety net.
-- **Rule, do not ask.** Decide an ambiguity, write the ruling in the ledger and keep going. Ask Simon only before merging a long lived branch into main or before something irreversible he has not already approved.
+- **Rule, do not ask.** Decide an ambiguity, write the ruling in the ledger and keep going. Ask Simon only before something irreversible he has not already approved, such as rewriting pushed history.
 
 ## Supabase data
 
