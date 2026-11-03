@@ -1,12 +1,8 @@
-"""Hands stay-price-worker rows to tripdb add-stays, which writes to the configured shared store.
+"""Closed, like tripdb add-stays. The old stays table takes no new rows.
 
-Usage: python -I -X utf8 plugin/skills/trip-checklist/scripts/stays_ingest.py FILE [--root DIR] [--usd 6.45] [--eur 7.46]
-Prefer: python -I -X utf8 plugin/scripts/tripdb.py --root . add-stays FILE [--usd 6.45] [--eur 7.46]
+A stay price is written only for a room of a lodging that exists, with the connector's add_lodging_price.
 """
-import os, subprocess, sys
+import sys
 
-a = sys.argv[1:]
-root = os.path.abspath(a[a.index("--root") + 1]) if "--root" in a else os.getcwd()
-rest = [x for i, x in enumerate(a) if x != "--root" and (i == 0 or a[i - 1] != "--root")]
-tripdb = os.path.join(root, "plugin", "scripts", "tripdb.py")
-sys.exit(subprocess.call([sys.executable, "-I", "-X", "utf8", tripdb, "--root", root, "add-stays", *rest]))
+print("The stays table is closed. Add prices for places that exist with the connector's add_lodging_price.")
+sys.exit(1)

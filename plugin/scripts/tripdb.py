@@ -12,7 +12,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   add-experience FILE                  experiences into experiences.jsonl
   update-experience ID [--set FIELD=VALUE ...] [--json FILE]  change fields of one experience
   add-experience-image FILE [--replace]         experience images into experience_images.jsonl
-  add-stays FILE [--usd RATE] [--eur RATE]      stay-price-worker rows into stays.jsonl, prices in DKK
+  add-stays FILE                       closed, prices go to lodging_prices with the connector's add_lodging_price
   list-add LIST TYPE ID [--note TEXT] [--name NAME]  save a place or experience in a list (lists.json)
   list-remove LIST TYPE ID             take it out again
   save-trip FILE [--by plan-trip|migration|planner]  save a trip's next version (prints id and version)
@@ -512,50 +512,14 @@ def cmd_add_experience_image(paths, file, replace=False):
                      origin=False, extra_check=check, st=st)
 
 
-def _num(v):
-    """A positive number, not a bool."""
-    return isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0
+STAYS_CLOSED = "The stays table is closed. Add prices for places that exist with the connector's add_lodging_price."
 
 
-def _str_id(v):
-    """Booking.com property ids come as numbers or strings, stored as a string."""
-    return None if v is None else str(v)
-
-
-def cmd_add_stays(paths, file, usd=6.45, eur=7.46):
-    """Stay-price-worker rows (price_per_night in DKK, USD or EUR) as stay quotes in DKK per night."""
-    rate = {"DKK": 1.0, "USD": usd, "EUR": eur}
-    st = get_store(paths)
-    good, bad = [], []
-    for n, r, err in read_input(file):
-        if err:
-            bad.append((n, err)); continue
-        cur = (r.get("currency") or "DKK").upper()
-        if cur not in rate:
-            bad.append((n, f"currency {cur} is not DKK, USD or EUR")); continue
-        ci, co = r.get("check_in"), r.get("check_out")
-        nights = (dt.date.fromisoformat(co) - dt.date.fromisoformat(ci)).days if _is(ci, "date") and _is(co, "date") else None
-        # Booking.com gives the total for the stay, so a row with only a total is priced per night here
-        if r.get("price_per_night") is None and _num(r.get("total")) and nights and nights > 0:
-            r = {**r, "price_per_night": r["total"] / nights}
-        if not _num(r.get("price_per_night")):
-            bad.append((n, f"price_per_night is {r.get('price_per_night')!r}")); continue
-        row = {"kind": "stay_quote", "place": r.get("place"), "site": r.get("site"), "name": r.get("name"),
-               "type": r.get("kind"), "room": r.get("room"), "dkk_per_night": round(r["price_per_night"] * rate[cur]), "nights": nights,
-               "rating": r.get("rating"), "reviews": r.get("reviews"), "check_in": ci, "check_out": co,
-               "url": r.get("url"), "property_id": _str_id(r.get("property_id")), "observed_at": r.get("observed_at") or now_utc(), "task_id": r.get("task_id"),
-               "notes": r.get("notes")}
-        errs = row_errors("stays", row)
-        if errs:
-            bad.append((n, "; ".join(errs))); continue
-        good.append(row)
-    res = st.add("stays", good, cols.COLS["stays"].key)
-    for n, why in bad:
-        print(f"refused line {n}: {why}")
-    skipped = {i for i, _, _ in res.skips}
-    warn_unknown_places(st, [r["place"] for i, r in enumerate(good) if i not in skipped], "a stay")
-    print(f"stays: added {res.added}, duplicates {res.skipped}, refused {len(bad)} -> {st.dest('stays')}")
-    return 1 if bad else 0
+def cmd_add_stays(paths, *_):
+    """The old stay quotes are closed. A price is written only for a room of a lodging that exists, with the
+    connector's add_lodging_price, so this refuses and writes nothing."""
+    print(STAYS_CLOSED)
+    return 1
 
 
 # ---- lists, task log, usage ---------------------------------------------------------------------
@@ -1490,8 +1454,7 @@ def main(argv=None):
             replace = _flag(a, "--replace")
             return cmd_add_experience_image(paths, a[0], replace)
         if cmd == "add-stays":
-            usd, eur = float(_opt(a, "--usd", 6.45)), float(_opt(a, "--eur", 7.46))
-            return cmd_add_stays(paths, a[0], usd, eur)
+            return cmd_add_stays(paths)
         if cmd == "list-add":
             note, name = _opt(a, "--note"), _opt(a, "--name")
             return cmd_list_add(paths, a[0], a[1], a[2], note, name)

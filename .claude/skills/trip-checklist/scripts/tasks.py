@@ -16,6 +16,8 @@ import tripdb_store  # noqa: E402
 
 TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh",
          "fix_parser", "import_quotes"}
+# The fields a task of a type must carry. A stay_prices task prices rooms of a lodging that exists, so it names them.
+NEEDS = {"stay_prices": ("lodging_id", "room_ids", "check_in", "check_out")}
 
 
 def rest_of(root):
@@ -33,6 +35,11 @@ def task_of(row):
     return t
 
 
+def missing(t):
+    """The fields the task JSON lacks for its type. An old task can still be closed with done."""
+    return [f for f in NEEDS.get(t.get("type"), ()) if t.get(f) in (None, "", [])]
+
+
 def get_row(rest, n):
     rows = rest.get_all("tasks", {"id": f"eq.{int(n)}", "select": "*"})
     if not rows:
@@ -46,6 +53,8 @@ def cmd_list(rest):
         try:
             t = task_of(r)
             kind = t["type"] if t else "NO TASK JSON"
+            if t and missing(t):
+                kind = f"BAD TASK ({t['type']} needs {', '.join(missing(t))})"
         except ValueError as e:
             kind = f"BAD TASK ({e})"
         print(f"#{r['id']}\t{kind}\t{r['status']}\t{r['title']}")

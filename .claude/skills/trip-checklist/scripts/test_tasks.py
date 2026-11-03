@@ -93,6 +93,16 @@ class TasksTest(unittest.TestCase):
             self.assertEqual(rest.rows[0]["status"], "done")
             self.assertEqual(calls[0][calls[0].index("--type") + 1], kind)
 
+    def test_a_stay_prices_task_names_rooms_of_a_lodging(self):
+        good = {"type": "stay_prices", "lodging_id": "L1", "room_ids": ["R1", "R2"], "check_in": "2026-12-10",
+                "check_out": "2026-12-14", "from": "app"}
+        old = {"type": "stay_prices", "place": "UTIL", "check_in": "2026-12-10", "check_out": "2026-12-14", "kinds": ["hostel"]}
+        rest = FakeRest([{"id": 30000, "type": "stay_prices", "status": "open", "title": "a", "data": good},
+                         {"id": 30001, "type": "stay_prices", "status": "open", "title": "b", "data": old}])
+        text = out(tasks.cmd_list, rest)
+        self.assertIn("#30000	stay_prices	open	a", text)
+        self.assertIn("#30001	BAD TASK (stay_prices needs lodging_id, room_ids)	open	b", text)
+
 
 if __name__ == "__main__":
     unittest.main()

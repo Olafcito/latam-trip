@@ -305,25 +305,24 @@ class WriteSafetyTest(Base):
 
 
 class StaysAndExperiencesTest(Base):
-    def test_add_stays_converts_and_dedupes(self):
-        row = {"place": "SJO", "site": "hostelworld", "name": "Selina", "kind": "hostel", "room": "dorm",
+    @file_only
+    def test_add_stays_is_closed_and_writes_nothing(self):
+        row = {"place": "SJO", "site": "hostelworld", "name": "Test Hostel", "kind": "hostel", "room": "dorm",
                "price_per_night": 20, "currency": "USD", "check_in": "2026-12-04", "check_out": "2026-12-06"}
-        f = self.write(os.path.join(self.root, "stays.jsonl"), [row, row, {**row, "price_per_night": None}])
+        f = self.write(os.path.join(self.root, "stays.jsonl"), [row])
         rc, out = self.run_quiet(tripdb.cmd_add_stays, f)
-        self.assertIn("added 1, duplicates 1, refused 1", out)
-        s = self.rows(self.paths.src("stays.jsonl"))[0]
-        self.assertEqual((s["dkk_per_night"], s["nights"], s["type"]), (129, 2, "hostel"))
+        self.assertNotEqual(rc, 0)
+        self.assertIn("The stays table is closed. Add prices for places that exist with the connector's add_lodging_price.", out)
+        self.assertFalse(os.path.exists(self.paths.src("stays.jsonl")))
 
-    def test_add_stays_booking_total_and_property_id(self):
-        row = {"place": "SJO", "site": "booking", "name": "Casa Lima", "kind": "guesthouse", "room": "private",
-               "total": 1203, "currency": "DKK", "check_in": "2026-12-04", "check_out": "2026-12-07",
-               "property_id": "7731542", "url": "https://www.booking.com/hotel/cr/casa-lima.html"}
-        f = self.write(os.path.join(self.root, "b.jsonl"), [row])
-        rc, out = self.run_quiet(tripdb.cmd_add_stays, f)
-        self.assertIn("added 1, duplicates 0, refused 0", out)
-        s = self.rows(self.paths.src("stays.jsonl"))[0]
-        self.assertEqual((s["dkk_per_night"], s["nights"], s["property_id"], s["url"]),
-                         (401, 3, "7731542", "https://www.booking.com/hotel/cr/casa-lima.html"))
+    @file_only
+    def test_stays_ingest_is_closed_the_same_way(self):
+        f = self.write(os.path.join(self.root, "stays.jsonl"), [{"place": "SJO", "name": "Test Hostel", "total": 100}])
+        script = os.path.join(REPO, "plugin", "skills", "trip-checklist", "scripts", "stays_ingest.py")
+        p = subprocess.run([sys.executable, "-I", "-X", "utf8", script, f, "--root", self.root], capture_output=True, text=True)
+        self.assertNotEqual(p.returncode, 0)
+        self.assertIn("The stays table is closed.", p.stdout + p.stderr)
+        self.assertFalse(os.path.exists(self.paths.src("stays.jsonl")))
 
     def test_experience_add_update_and_refusals(self):
         exp = {"kind": "experience", "id": "arenal-hike", "name": "Arenal hike", "category": "nature", "tags": [],
