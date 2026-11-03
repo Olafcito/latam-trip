@@ -40,7 +40,7 @@ function monthCells(m: string): (string | null)[] {
   return out
 }
 
-export function WhenPicker({ date, set, min, max, days, firstDay, fares, stay, codes, trip, clearable = true, onSet }: {
+export function WhenPicker({ date, set, min, max, days, firstDay, fares, fareFor, stay, codes, trip, clearable = true, onSet }: {
   date: string
   set: boolean
   /** the first and last day the leg can leave */
@@ -52,6 +52,8 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, stay, c
   firstDay: string
   /** the cheapest fare known for the leg by day */
   fares: Record<string, number>
+  /** what a fare is when it is not the cheapest known for the leg alone, "for both ways" */
+  fareFor?: string
   /** the stop before the leg: its name and the day you get there. None for a leg with no stop before it */
   stay?: { name: string; inDay: string }
   /** the trip, so a flight picked on Momondo finds its way back */
@@ -128,7 +130,7 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, stay, c
         </div>
         <span className="wp-read" aria-live="polite">
           <b>{weekdayDay(date)}</b>
-          <small>Day {tripDay(date)}{fares[date] != null ? `, ${kr(fares[date])}${fares[date] === cheapest ? ', the cheapest' : ''}` : ''}</small>
+          <small>Day {tripDay(date)}{fares[date] != null ? `, ${kr(fares[date])}${fareFor ? ` ${fareFor}` : ''}${fares[date] === cheapest ? ', the cheapest' : ''}` : ''}</small>
         </span>
       </div>
 
@@ -156,7 +158,7 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, stay, c
                 data-cheap={p != null && p === cheapest}
                 data-priced={p != null}
                 aria-pressed={d === date}
-                aria-label={`${weekdayDay(d)}, day ${tripDay(d)}${p != null ? `, from ${kr(p)}` : ''}`}
+                aria-label={`${weekdayDay(d)}, day ${tripDay(d)}${p == null ? '' : fareFor ? `, ${kr(p)} ${fareFor}` : `, from ${kr(p)}`}`}
                 onClick={() => { setFocus(d); onSet(d) }}
               >
                 <b>{lens === 'date' ? +d.slice(8) : tripDay(d)}</b>
@@ -179,7 +181,7 @@ export function WhenPicker({ date, set, min, max, days, firstDay, fares, stay, c
       )}
 
       <div className="wp-foot">
-        <span className="wp-key">{cheapest != null ? <><i /> Cheapest known fare</> : codes ? 'No fares saved for these days yet' : 'Overland, no fares to look up'}</span>
+        <span className="wp-key">{cheapest != null ? <><i /> {fareFor ? `Cheapest day, prices ${fareFor}` : 'Cheapest known fare'}</> : codes ? 'No fares saved for these days yet' : 'Overland, no fares to look up'}</span>
         <span className="wp-btns">
           {set && clearable && <button type="button" className="btn link small" onClick={() => onSet(null)}>Back to estimate</button>}
           {codes && <a className="btn small" href={momondoUrl(codes.from, codes.to, date, trip)} target="_blank" rel="noopener noreferrer">Momondo {day(date)}<External /></a>}

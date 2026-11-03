@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut, Ticket, Way } from '../data/types'
 import { withTripWays, type TripRow } from './repoTrips'
-import { pairPrice, rowFares, wayRowsByDay } from './wayRows'
+import { kindOf, pairPrice, rowFares, rowNotes, wayRowsByDay } from './wayRows'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -18,7 +18,7 @@ const tIn1202 = way({ id: 'I_t_1202', type: 'ticket', depart: '2026-12-02T07:00'
 const tHome0205a = home({ id: 'H_t_0205a', type: 'ticket', depart: '2027-02-05T10:00', tickets: ['TA'], shared_ticket: 'TA', paired_with: 'I_t_1202' })
 const tIn1203 = way({ id: 'I_t_1203', type: 'ticket', depart: '2026-12-03T07:00', tickets: ['TB'], shared_ticket: 'TB', paired_with: 'H_t_0205b' })
 const tHome0205b = home({ id: 'H_t_0205b', type: 'ticket', depart: '2027-02-05T10:00', tickets: ['TB'], shared_ticket: 'TB', paired_with: 'I_t_1203' })
-const tIn1203c = way({ id: 'I_t_1203c', type: 'ticket', depart: '2026-12-03T07:40', tickets: ['TC'], shared_ticket: 'TC', paired_with: 'H_t_0206c' })
+const tIn1203c = way({ id: 'I_t_1203c', type: 'ticket', depart: '2026-12-03T07:00', tickets: ['TC'], shared_ticket: 'TC', paired_with: 'H_t_0206c' })
 const tHome0206c = home({ id: 'H_t_0206c', type: 'ticket', depart: '2027-02-06T10:00', tickets: ['TC'], shared_ticket: 'TC', paired_with: 'I_t_1203c' })
 const oneIn1203 = way({ id: 'I_o_1203', depart: '2026-12-03T09:00', tickets: ['TO1'], price_dkk: 3900 })
 const oneHome0205 = home({ id: 'H_o_0205', depart: '2027-02-05T12:00', tickets: ['TO2'], price_dkk: 3600 })
@@ -84,5 +84,35 @@ describe('the rows of the way sheet', () => {
     expect(Object.keys(byDay).sort()).toEqual(['2026-12-02', '2026-12-03'])
     const mine = byDay['2026-12-03'].find((r) => r.way.id === 'trip:in')!
     expect([mine.works, mine.total, mine.choice.note]).toEqual([true, 8946, null])
+  })
+})
+
+describe('the lines under a row', () => {
+  const current = { wayIn: tIn1203, wayHome: tHome0205b }
+  const rows = wayRowsByDay(inout, tIn1203, current)
+  const first = (day: string, id: string) => rowNotes(inout, rows[day].find((r) => r.way.id === id)!, 'in', tHome0205b, (c) => c)[0]
+
+  it('says the way home stays when it keeps its day and time', () => {
+    expect(first('2026-12-02', 'I_t_1202')).toEqual({ text: 'Way home still Fri 5 Feb at 10:00', strong: false })
+  })
+  it('says the way home moves, in bold, when it goes to another day', () => {
+    expect(first('2026-12-03', 'I_t_1203c')).toEqual({ text: 'Way home moves to Sat 6 Feb at 10:00', strong: true })
+  })
+  it('says the way home becomes a one way, with its new time on the same day', () => {
+    expect(first('2026-12-03', 'I_o_1203')).toEqual({ text: 'Way home still Fri 5 Feb, now at 12:00, as a one way', strong: false })
+  })
+  it('the way the trip has says nothing about the other direction', () => {
+    expect(rowNotes(inout, rows['2026-12-03'].find((r) => r.way.id === 'I_t_1203')!, 'in', tHome0205b, (c) => c).map((n) => n.text))
+      .toEqual(['Cabin bag included, checked bag included'])
+  })
+  it('a row that changes nothing carries the reason, marked bad', () => {
+    const lone = way({ id: 'I_t_lone', type: 'ticket', depart: '2026-12-03T05:00', tickets: ['TC'], paired_with: 'missing' })
+    const io = { ...inout, ways: { ...inout.ways, [lone.id]: lone } }
+    const r = wayRowsByDay(io, tIn1203, current)['2026-12-03'].find((x) => x.way.id === 'I_t_lone')!
+    expect(rowNotes(io, r, 'in', tHome0205b, (c) => c)[0].bad).toBe(true)
+  })
+  it('names the kind of ticket', () => {
+    expect([kindOf(tIn1203), kindOf(oneIn1203), kindOf(way({ type: 'madrid' })), kindOf(way({ tickets: ['a', 'b'] }))])
+      .toEqual(['Return ticket', 'One way', 'Via Madrid, 2 tickets', '2 one way tickets'])
   })
 })

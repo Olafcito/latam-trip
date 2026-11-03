@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { AppData, StopItem, Way } from '../../data/types'
+import type { AppData, Way } from '../../data/types'
 import { clock, hours, kr, nextDayMark, shortPlace, weekdayDay } from '../../lib/format'
 import type { FlightLink } from '../../lib/links'
 import { wayLinks } from '../../lib/links'
-import { priceOfWays } from '../../lib/options'
 import { momondoUrl } from '../../lib/prices'
 import { dayOf, type WayChoice } from '../../lib/ways'
-import { rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
+import { kindOf, nightsText, rowFares, rowNotes, wayRowsByDay, type WayRow } from '../../lib/wayRows'
 import { FlightLinks } from '../FlightLinks'
 import { Check, Plane } from '../icons'
 import { Days } from './FlightSheet'
@@ -21,10 +20,6 @@ import { Days } from './FlightSheet'
 /** the ways shown before Show all */
 const SHOWN = 6
 
-interface Note { text: string; bad?: boolean; strong?: boolean }
-
-const nightsText = (n: number) => (n === 1 ? '1 night' : `${n} nights`)
-
 /** The airports in between with the wait at each, a night stop as its nights. */
 function stopsOf(way: Way): { code: string; text: string | null }[] {
   return way.timeline.flatMap((t) => {
@@ -37,51 +32,6 @@ function carriersOf(way: Way, data: AppData): string[] {
   const flown = [...new Set(way.timeline.flatMap((t) => (t.kind === 'flight' ? t.carriers : [])))]
   if (flown.length) return flown
   return [...new Set(way.tickets.flatMap((id) => data.inout.tickets[id]?.carriers ?? []))]
-}
-
-/** What kind of ticket the way is, in words. */
-function kindOf(way: Way): string {
-  if (way.type === 'ticket') return way.paired_with ? 'Return ticket' : 'One ticket'
-  if (way.type === 'madrid') return 'Via Madrid, 2 tickets'
-  return way.tickets.length > 1 ? `${way.tickets.length} one way tickets` : 'One way'
-}
-
-/** What the bags cost on the way's own tickets, or null when that is not known. */
-function bagsOf(way: Way, data: AppData): string | null {
-  if (!way.tickets.length || !way.tickets.every((t) => data.inout.tickets[t])) return null
-  const { cabin, checked } = priceOfWays(data.inout, [way])
-  const parts = [
-    cabin == null ? null : cabin === 0 ? 'Cabin bag included' : `Cabin bag ${kr(cabin)}`,
-    checked == null ? null : checked === 0 ? 'checked bag included' : `checked bag ${kr(checked)}`,
-  ].filter((x): x is string => !!x)
-  if (!parts.length) return null
-  const s = parts.join(', ')
-  return s[0].toUpperCase() + s.slice(1)
-}
-
-function notesOf(r: WayRow, dir: 'in' | 'home', other: Way, data: AppData, name: (code: string) => string): Note[] {
-  const notes: Note[] = []
-  const then = dir === 'in' ? r.choice.wayHome : r.choice.wayIn
-  const word = dir === 'in' ? 'Way home' : 'Way in'
-  if (!r.works) notes.push({ text: r.choice.note ?? 'Picking it changes nothing', bad: true })
-  else if (then.id !== other.id) {
-    const when = `${weekdayDay(then.depart)} at ${clock(then.depart)}`
-    const oneWay = then.type === 'oneways' && other.type !== 'oneways' ? ', as a one way' : ''
-    // the same day at another time says the day stays and the time is new
-    const still = then.depart === other.depart ? `${word} still ${when}` : `${word} still ${weekdayDay(then.depart)}, now at ${clock(then.depart)}`
-    notes.push({ text: r.keeps ? `${still}${oneWay}` : `${word} moves to ${when}${oneWay}`, strong: !r.keeps })
-  }
-  for (const t of r.way.timeline) {
-    if (t.kind === 'night') {
-      const s = t as StopItem
-      notes.push({ text: `${nightsText(s.nights)} in ${name(s.airport)}${s.stay_estimate_dkk ? `, stay about ${kr(s.stay_estimate_dkk)}` : ''}` })
-    }
-    if (t.kind === 'self_transfer') notes.push({ text: `Self transfer in ${name(t.airport)}, you check in again` })
-  }
-  if (r.way.us_transit) notes.push({ text: 'Through the United States, ESTA needed' })
-  const bags = bagsOf(r.way, data)
-  if (bags) notes.push({ text: bags })
-  return notes
 }
 
 /**
@@ -105,7 +55,7 @@ function WayRowView({ r, picked, dir, other, data, name, onPick }: {
   const air = carriersOf(w, data)
   const who = air.join(', ')
   const stops = stopsOf(w)
-  const notes = notesOf(r, dir, other, data, name)
+  const notes = rowNotes(data.inout, r, dir, other, name)
   const label = `${who || 'this way'}, ${weekdayDay(w.depart)} ${clock(w.depart)} to ${clock(w.arrive)}`
   return (
     <div className="fl-row" data-picked={picked || undefined}>

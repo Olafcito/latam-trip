@@ -3,7 +3,7 @@ import type { InOut, MapData, MapEdge, Option, Way } from '../data/types'
 import type { Journey } from './journey'
 import { mixWays } from './options'
 import { withTripWays, type TripRow } from './repoTrips'
-import { chooseWay, dayFares, dayOf, waysOn, withEnds } from './ways'
+import { chooseWay, dayOf, waysOn, withEnds } from './ways'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -66,8 +66,21 @@ describe('ways by day', () => {
     const withOther = inoutOf([...Object.values(inout.ways), way({ id: 't2:in', depart: '2026-12-03T05:00', price_dkk: 1 })])
     expect(waysOn(withOther, oneIn)['2026-12-03'].map((w) => w.id)).toEqual(['I_oneway_1203', 'I_ticket_1203'])
   })
-  it('day fares are the price of the first way that day', () => {
-    expect(dayFares(inout, ticketIn)['2026-12-02']).toBe(8235)
+  describe('tickets as the build has them, at price 0 with the price on the ticket', () => {
+    // two return tickets on the same flight in, home on different days
+    const tA = way({ id: 'I_t_A', type: 'ticket', depart: '2026-12-03T06:00', paired_with: 'H_t_A' })
+    const tAHome = home({ id: 'H_t_A', type: 'ticket', depart: '2027-02-02T13:00', paired_with: 'I_t_A' })
+    const tB = way({ id: 'I_t_B', type: 'ticket', depart: '2026-12-03T06:00', paired_with: 'H_t_B' })
+    const tBHome = home({ id: 'H_t_B', type: 'ticket', depart: '2027-02-03T16:00', paired_with: 'I_t_B' })
+    const built = inoutOf([tA, tAHome, tB, tBHome])
+
+    it('keeps every ticket with the same times when the way looked at is a built way', () => {
+      expect(waysOn(built, tA)['2026-12-03'].map((w) => w.id)).toEqual(['I_t_A', 'I_t_B'])
+    })
+    it('leaves out only the copy of a saved trip way, not the tickets home on other days', () => {
+      const io = { ...built, ways: { ...built.ways, ...tripWays('t4', tA, tAHome) } }
+      expect(waysOn(io, io.ways['t4:in'])['2026-12-03'].map((w) => w.id).sort()).toEqual(['I_t_B', 't4:in'])
+    })
   })
   it('the day of a way is its local depart day', () => {
     expect(dayOf(ticketHome)).toBe('2027-02-05')

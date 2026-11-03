@@ -30,27 +30,27 @@ function sameRoute(inout: InOut, like: Way): Way[] {
   return [...byId.values()]
 }
 
-/** The same flight at the same price. A saved trip's way is a copy of a built way and has no link back to it. */
-const lookalike = (a: Way, b: Way) =>
-  a.depart === b.depart && a.arrive === b.arrive && a.from === b.from && a.to === b.to && a.price_dkk === b.price_dkk
+/**
+ * A built way that is a saved trip's own way under another id: the same kind of way, the same flight at the same price,
+ * and for a ticket the other half on the same day and time too. A saved trip's way has no link back to the built way.
+ * Ticket ways carry no price of their own, so the other half is what tells two tickets apart.
+ */
+function copyOf(inout: InOut, a: Way, b: Way): boolean {
+  if (a.type !== b.type || a.depart !== b.depart || a.arrive !== b.arrive || a.from !== b.from || a.to !== b.to || a.price_dkk !== b.price_dkk) return false
+  return a.type !== 'ticket' || partnerOf(inout, a)?.depart === partnerOf(inout, b)?.depart
+}
 
 /**
  * Ways between the same two cities as `like`, by day, each day with the same kind first and then the cheapest.
- * A way that is the same flight as `like` at the same price is left out, `like` stays.
+ * When `like` is a saved trip's own way, the built copy of it is left out and `like` stays.
  */
 export function waysOn(inout: InOut, like: Way): Record<string, Way[]> {
+  const own = isTripWayId(like.id)
   const days: Record<string, Way[]> = {}
-  for (const w of sameRoute(inout, like)) if (w.id === like.id || !lookalike(w, like)) (days[dayOf(w)] ??= []).push(w)
+  for (const w of sameRoute(inout, like)) if (w.id === like.id || !own || !copyOf(inout, w, like)) (days[dayOf(w)] ??= []).push(w)
   const kind = (w: Way) => (w.type === like.type ? 0 : 1)
   for (const list of Object.values(days)) list.sort((a, b) => kind(a) - kind(b) || a.price_dkk - b.price_dkk)
   return days
-}
-
-/** The price of the first way each day, the shape WhenPicker takes. */
-export function dayFares(inout: InOut, like: Way): Record<string, number> {
-  const fares: Record<string, number> = {}
-  for (const [d, list] of Object.entries(waysOn(inout, like))) fares[d] = list[0].price_dkk
-  return fares
 }
 
 export interface WayChoice {

@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from 'react'
+import { useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Family } from '@map/data/types'
 import { Flag, hasFlag } from '@map/map/Flag'
 import type { AppData, MapNode, Way } from '../../data/types'
@@ -12,7 +12,7 @@ import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
 import { hopLink, wayLinks } from '../../lib/links'
 import { dayOf } from '../../lib/ways'
-import { rowFares, wayRowsByDay } from '../../lib/wayRows'
+import { rowFares, wayRowsByDay, type WayRow } from '../../lib/wayRows'
 import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
@@ -260,6 +260,11 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const setWays = useStore((s) => s.setWays)
   const changeEndsOf = useStore((s) => s.changeEndsOf)
   const setNotice = useStore((s) => s.setNotice)
+  // the ways of each day for the way in and the way home, for their calendars
+  const wayRows = useMemo(() => {
+    const ends = { wayIn, wayHome }
+    return { in: wayRowsByDay(inout, wayIn, ends), home: wayRowsByDay(inout, wayHome, ends) }
+  }, [inout, wayIn, wayHome])
   // the stop whose City card is open. A stop deleted from the card goes once the card has closed
   const [city, setCity] = useState<number | null>(null)
   const goes = useRef(false)
@@ -283,13 +288,12 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   }
   const wayAria = (w: Way, a: string, b: string) => `Flight ${a} to ${b}, leaves ${weekdayDay(w.depart)} ${clock(w.depart)}, ${hours(w.total_hours)}. Details`
   // the way in and the way home open like any other leg: the calendar of the days a way leaves on, and the ways of a day
-  const ends = { wayIn, wayHome }
-  const wayPicker = (w: Way) => {
-    const rows = wayRowsByDay(inout, w, ends)
-    const days = Object.keys(rows).sort()
+  const wayPicker = (w: Way, rows: Record<string, WayRow[]>) => {
+    // a day can be picked when one of its ways changes the trip, or it is the day the trip has
+    const days = Object.keys(rows).filter((d) => d === dayOf(w) || rows[d].some((r) => r.works)).sort()
     return (
       <WhenPicker
-        date={dayOf(w)} set min={days[0]} max={days[days.length - 1]} days={days} firstDay={sched.firstDay} fares={rowFares(rows)}
+        date={dayOf(w)} set min={days[0]} max={days[days.length - 1]} days={days} firstDay={sched.firstDay} fares={rowFares(rows)} fareFor="for both ways"
         codes={{ from: w.from, to: w.to }} trip={journey.id} clearable={false}
         onSet={(d) => {
           // the day it has already changes nothing, another day takes its first way, the one the sheet lists first
@@ -309,7 +313,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="start" />,
     <Leg
       key="in" fam="flight" tone="in" route={`${cph.name} to ${nm(firstNode)}`}
-      date={wayIn.depart.slice(0, 10)} times={timesOf(wayIn.depart, wayIn.arrive)} set known picker={wayPicker(wayIn)} fromName={cph.name}
+      date={wayIn.depart.slice(0, 10)} times={timesOf(wayIn.depart, wayIn.arrive)} set known picker={wayPicker(wayIn, wayRows.in)} fromName={cph.name}
       aria={wayAria(wayIn, cph.name, nm(firstNode))}
       travel={<Travel fam="flight" time={hours(wayIn.total_hours)} overnight={false} />}
       card={<WayCard way={wayIn} other={wayHome} data={data} />}
@@ -413,7 +417,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   items.push(
     <Leg
       key="home" fam="flight" tone="home" route={`${nm(exitNode)} to ${cph.name}`}
-      date={homeDay} times={timesOf(wayHome.depart, wayHome.arrive)} set known picker={wayPicker(wayHome)} fromName={nm(exitNode)}
+      date={homeDay} times={timesOf(wayHome.depart, wayHome.arrive)} set known picker={wayPicker(wayHome, wayRows.home)} fromName={nm(exitNode)}
       aria={wayAria(wayHome, nm(exitNode), cph.name)}
       travel={<Travel fam="flight" time={hours(wayHome.total_hours)} overnight={false} />}
       card={<WayCard way={wayHome} other={wayIn} data={data} />}
