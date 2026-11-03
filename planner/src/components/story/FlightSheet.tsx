@@ -58,7 +58,7 @@ function Stay({ at, stay }: { at: string; stay: LegStay }) {
   )
 }
 
-function Days({ days, fares, at, leg, onChange }: { days: string[]; fares: Record<string, number>; at: string; leg: string; onChange: (d: string) => void }) {
+export function Days({ days, fares, at, leg, onChange }: { days: string[]; fares: Record<string, number>; at: string; leg: string; onChange: (d: string) => void }) {
   const box = useRef<HTMLDivElement>(null)
   const prices = days.flatMap((d) => (fares[d] != null ? [fares[d]] : []))
   const low = prices.length > 1 ? Math.min(...prices) : null

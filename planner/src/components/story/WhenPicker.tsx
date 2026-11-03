@@ -40,21 +40,25 @@ function monthCells(m: string): (string | null)[] {
   return out
 }
 
-export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, trip, onSet }: {
+export function WhenPicker({ date, set, min, max, days, firstDay, fares, stay, codes, trip, clearable = true, onSet }: {
   date: string
   set: boolean
   /** the first and last day the leg can leave */
   min: string
   max: string
+  /** only these days can be picked, when the leg leaves on the days something is known for */
+  days?: readonly string[]
   /** day 1 of the trip, the landing */
   firstDay: string
   /** the cheapest fare known for the leg by day */
   fares: Record<string, number>
-  /** the stop before the leg: its name and the day you get there */
-  stay: { name: string; inDay: string }
+  /** the stop before the leg: its name and the day you get there. None for a leg with no stop before it */
+  stay?: { name: string; inDay: string }
   /** the trip, so a flight picked on Momondo finds its way back */
   trip?: string
   codes: { from: string; to: string } | null
+  /** false when the leg has no estimate to go back to */
+  clearable?: boolean
   onSet: (date: string | null) => void
 }) {
   const [lens, setLens] = useState<Lens>(readLens)
@@ -64,11 +68,20 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
   const moved = useRef(false)
   const pick = (l: Lens) => { setLens(l); saveLens(l) }
   const tripDay = (d: string) => dayDiff(firstDay, d) + 1
-  const nights = dayDiff(stay.inDay, date)
+  const nights = stay ? dayDiff(stay.inDay, date) : 0
+  const open = (d: string) => d >= min && d <= max && (!days || days.includes(d))
+  /** the next day that can be picked from d in a direction, or null */
+  const step = (d: string, dir: number): string | null => {
+    for (let x = addDays(d, dir); x >= min && x <= max; x = addDays(x, dir)) if (open(x)) return x
+    return null
+  }
+  const before = step(date, -1)
+  const after = step(date, 1)
   const priced = Object.entries(fares).filter(([d]) => d >= min && d <= max)
   const cheapest = priced.length ? Math.min(...priced.map(([, p]) => p)) : null
   // the one day in the grid that Tab lands on: the focused day, or the first open day of the month
-  const first = `${month}-01` < min ? min : `${month}-01`
+  const start = `${month}-01` < min ? min : `${month}-01`
+  const first = open(start) ? start : step(start, 1) ?? start
   const tabDay = monthOf(focus) === month ? focus : first
 
   // follow the day when it changes from outside, from the nights stepper or the story
@@ -92,8 +105,15 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
     } else return
     e.preventDefault()
     // up and down keep the weekday, so past the open days they stay put rather than leave the column
-    if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && (d < min || d > max)) return
+    if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && !open(d)) return
     d = d < min ? min : d > max ? max : d
+    // a day that cannot be picked is skipped over, the way the keys move
+    if (!open(d)) {
+      const dir = d < focus ? -1 : 1
+      const near = step(d, dir) ?? step(d, -dir)
+      if (!near) return
+      d = near
+    }
     moved.current = true
     setFocus(d)
     setMonth(monthOf(d))
@@ -129,7 +149,7 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
                 type="button"
                 className="wp-d"
                 data-d={d}
-                disabled={d < min || d > max}
+                disabled={!open(d)}
                 tabIndex={d === tabDay ? 0 : -1}
                 data-sel={d === date}
                 data-set={set && d === date}
@@ -147,19 +167,21 @@ export function WhenPicker({ date, set, min, max, firstDay, fares, stay, codes, 
         </div>
       </div>
 
-      <div className="wp-stay">
-        <span>Nights in <b>{stay.name}</b></span>
-        <span className="wp-step">
-          <button type="button" aria-label="One night less" disabled={date <= min || nights <= 0} onClick={() => onSet(addDays(date, -1))}><Minus /></button>
-          <b>{nights}</b>
-          <button type="button" aria-label="One night more" disabled={date >= max} onClick={() => onSet(addDays(date, 1))}><Plus /></button>
-        </span>
-      </div>
+      {stay && (
+        <div className="wp-stay">
+          <span>Nights in <b>{stay.name}</b></span>
+          <span className="wp-step">
+            <button type="button" aria-label="One night less" disabled={!before || dayDiff(stay.inDay, before) < 0} onClick={() => before && onSet(before)}><Minus /></button>
+            <b>{nights}</b>
+            <button type="button" aria-label="One night more" disabled={!after} onClick={() => after && onSet(after)}><Plus /></button>
+          </span>
+        </div>
+      )}
 
       <div className="wp-foot">
         <span className="wp-key">{cheapest != null ? <><i /> Cheapest known fare</> : codes ? 'No fares saved for these days yet' : 'Overland, no fares to look up'}</span>
         <span className="wp-btns">
-          {set && <button type="button" className="btn link small" onClick={() => onSet(null)}>Back to estimate</button>}
+          {set && clearable && <button type="button" className="btn link small" onClick={() => onSet(null)}>Back to estimate</button>}
           {codes && <a className="btn small" href={momondoUrl(codes.from, codes.to, date, trip)} target="_blank" rel="noopener noreferrer">Momondo {day(date)}<External /></a>}
         </span>
       </div>

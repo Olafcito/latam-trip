@@ -88,6 +88,20 @@
   .fl-picked .fl-row { padding-top: 8px; }
   .fl-picked .fl-logo { background: var(--surface-3); }
 
+  /* the way sheet: the way the trip has is tinted where it is, its state under its price where Pick sits on the others */
+  .ws .fl-row[data-picked] { --fl-bg: var(--surface-2); margin-inline: -12px; padding-inline: 12px; border-radius: 12px; background: var(--surface-2); }
+  .ws .fl-row[data-picked] .fl-logo { background: var(--surface-3); }
+  .ws-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 0 10px; border-radius: 999px; background: color-mix(in srgb, var(--in) 14%, transparent); color: var(--in); font-size: var(--fs-small); font-weight: 600; white-space: nowrap; }
+  .ws .fl-notes [data-strong='true'] { color: var(--text); font-weight: 600; }
+  /* what a pick changed beyond this way, until the next pick or the sheet closes. Always there, so it is read out */
+  .ws-said { margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--in); outline: none; }
+  .ws-said:empty { margin-top: -16px; }
+  .ws-said-in { display: flex; align-items: flex-start; gap: 8px; transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out); }
+  .ws-said-in svg { flex: none; margin-top: 3px; }
+  @starting-style { .ws-said-in { opacity: 0; transform: translateY(-4px); } }
+  @media (prefers-reduced-motion: reduce) { .ws-said-in { transition: opacity var(--t-med) ease; } @starting-style { .ws-said-in { transform: none; } } }
+  .ws .fl-foot .btn { margin-left: auto; }
+
   .fl-all { margin: 4px 0 16px; }
   /* a day with no fares: the line and its search on one row, then the nearest flights keep the same rows */
 .fl-none { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 16px 0; }
@@ -117,6 +131,8 @@
     .fl-end b { font-size: var(--fs-head); }
     .fl-bar { flex-wrap: wrap; }
     .fl-sort { flex: 1 0 100%; margin-left: 0; }
+    .ws-said:empty { margin-top: -12px; }
+    .ws .fl-row[data-picked] { margin-inline: -8px; padding-inline: 8px; }
   }
 }
 

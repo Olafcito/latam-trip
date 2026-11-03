@@ -11,6 +11,8 @@ import { legWindow } from '../../lib/legDates'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
 import { hopLink, wayLinks } from '../../lib/links'
+import { dayOf } from '../../lib/ways'
+import { rowFares, wayRowsByDay } from '../../lib/wayRows'
 import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
@@ -20,6 +22,7 @@ import { CityCard } from './CityCard'
 import { FlightSheet } from './FlightSheet'
 import { LegCard, type LegEnds } from './LegCard'
 import type { LegPoint } from './LegMap'
+import { WaySheet } from './WaySheet'
 import { WhenPicker } from './WhenPicker'
 import { usePop } from './usePop'
 
@@ -168,7 +171,7 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   /** when it leaves and lands, or the day it lands */
   times?: string | null
   set: boolean; known: boolean
-  /** the calendar, or null for a long-haul way whose day the ticket fixes */
+  /** the calendar, or null for a leg whose day cannot move */
   picker: ReactNode | null
   travel: ReactNode; card: ReactNode
   /** the flights to choose from, shown in a window in place of the ticket */
@@ -254,6 +257,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const setHopFlight = useStore((s) => s.setHopFlight)
   const moveNights = useStore((s) => s.moveNights)
   const removeStop = useStore((s) => s.removeStop)
+  const setWays = useStore((s) => s.setWays)
+  const changeEndsOf = useStore((s) => s.changeEndsOf)
+  const setNotice = useStore((s) => s.setNotice)
   // the stop whose City card is open. A stop deleted from the card goes once the card has closed
   const [city, setCity] = useState<number | null>(null)
   const goes = useRef(false)
@@ -276,15 +282,38 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     return ns.every((n) => n) ? ns.map((n) => ({ name: shortPlace(n!.name), lat: n!.lat, lon: n!.lon })) : null
   }
   const wayAria = (w: Way, a: string, b: string) => `Flight ${a} to ${b}, leaves ${weekdayDay(w.depart)} ${clock(w.depart)}, ${hours(w.total_hours)}. Details`
+  // the way in and the way home open like any other leg: the calendar of the days a way leaves on, and the ways of a day
+  const ends = { wayIn, wayHome }
+  const wayPicker = (w: Way) => {
+    const rows = wayRowsByDay(inout, w, ends)
+    const days = Object.keys(rows).sort()
+    return (
+      <WhenPicker
+        date={dayOf(w)} set min={days[0]} max={days[days.length - 1]} days={days} firstDay={sched.firstDay} fares={rowFares(rows)}
+        codes={{ from: w.from, to: w.to }} trip={journey.id} clearable={false}
+        onSet={(d) => {
+          // the day it has already changes nothing, another day takes its first way, the one the sheet lists first
+          const r = d && d !== dayOf(w) ? rows[d]?.find((x) => x.works) : undefined
+          if (!r) return
+          setWays(r.choice)
+          setNotice(r.choice.note)
+        }}
+      />
+    )
+  }
+  const waySheet = (dir: 'in' | 'home', w: Way, other: Way) => (close: () => void) => (
+    <WaySheet dir={dir} way={w} other={other} data={data} tripId={journey.id} onPick={setWays} onChangeEnds={() => { changeEndsOf(journey.id); window.scrollTo({ top: 0 }) }} close={close} />
+  )
 
   const items: ReactNode[] = [
     <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="start" />,
     <Leg
       key="in" fam="flight" tone="in" route={`${cph.name} to ${nm(firstNode)}`}
-      date={wayIn.depart.slice(0, 10)} times={timesOf(wayIn.depart, wayIn.arrive)} set known picker={null} fromName={cph.name}
+      date={wayIn.depart.slice(0, 10)} times={timesOf(wayIn.depart, wayIn.arrive)} set known picker={wayPicker(wayIn)} fromName={cph.name}
       aria={wayAria(wayIn, cph.name, nm(firstNode))}
       travel={<Travel fam="flight" time={hours(wayIn.total_hours)} overnight={false} />}
       card={<WayCard way={wayIn} other={wayHome} data={data} />}
+      sheet={waySheet('in', wayIn, wayHome)}
     />,
   ]
   ps.forEach((p, i) => {
@@ -384,10 +413,11 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   items.push(
     <Leg
       key="home" fam="flight" tone="home" route={`${nm(exitNode)} to ${cph.name}`}
-      date={homeDay} times={timesOf(wayHome.depart, wayHome.arrive)} set known picker={null} fromName={nm(exitNode)}
+      date={homeDay} times={timesOf(wayHome.depart, wayHome.arrive)} set known picker={wayPicker(wayHome)} fromName={nm(exitNode)}
       aria={wayAria(wayHome, nm(exitNode), cph.name)}
       travel={<Travel fam="flight" time={hours(wayHome.total_hours)} overnight={false} />}
       card={<WayCard way={wayHome} other={wayIn} data={data} />}
+      sheet={waySheet('home', wayHome, wayIn)}
     />,
     <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />,
   )
