@@ -9,6 +9,17 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 - Short-lived branches are fine for a feature or an experiment, but they are merged into `main` and deleted as soon as the work is in. Before deleting a branch, confirm `git log main..<branch>` is empty.
 - No git identity is configured on this machine. Commit with `git -c user.name=Claude -c user.email=noreply@anthropic.com`, matching the existing history.
 
+## How plan work runs
+
+Multi step work runs on superpowers. `brainstorming` gives a spec, `writing-plans` turns it into a plan and `subagent-driven-development` runs it. Every subagent runs on Opus (model `opus`). Speed beats ceremony.
+
+- **The main session coordinates.** It dispatches, keeps the ledger and rules on findings. It does not do the work itself, and controller steps such as applying migrations, data scripts, deploys and history rewrites go to subagents too.
+- **Batch small work.** Related small tasks go to one implementer. Each task stays its own commit, so one reviewer walks the batch commit by commit and gives each task a spec verdict and a quality verdict.
+- **Run disjoint work in parallel, in this checkout.** Plans or batches whose files do not overlap run at the same time in the one working copy, never in a worktree. Each agent stages only its own paths and never stashes, resets or checks out over another agent's work.
+- **Check fixes against the diff.** The main session checks a fix round itself. A separate re-review is only for fixes that touch owner only data, the private bucket or what goes into built files.
+- **Ship together.** The ship steps of several plans go out together, under one final review of the whole branch, which is the safety net.
+- **Rule, do not ask.** Decide an ambiguity, write the ruling in the ledger and keep going. Ask Simon only before merging a long lived branch into main or before something irreversible he has not already approved.
+
 ## Supabase data
 
 Supabase is the shared source of truth. Use `tripdb query TABLE` to read rows, `tripdb doc-get NAME` to read documents, `tripdb file NAME` to read built files, and `tripdb status` to inspect worker state. `data/README.md` describes the tables and commands. Never create or commit a local copy of live rows or documents.
