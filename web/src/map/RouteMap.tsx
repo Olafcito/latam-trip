@@ -10,7 +10,8 @@ import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
-import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
+import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_ARROW, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
+import { orientLine, stopPoints } from './tripDraw'
 import { addMarkerImages, addModeLayers, modeHit, type ModeHit } from './modeLayers'
 import { CardWindow } from './CardWindow'
 import { ModePanelSlot } from './ModeSlots'
@@ -224,7 +225,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       const pad = pads(panel)
       const z = m.getZoom()
       const want = m.cameraForBounds(cityBounds(id), { padding: pad })?.zoom ?? z
-      const zoom = want < z ? Math.max(want, z - CITY_EASE_OUT) : z
+      // never out past the region the map opened on, so a city with long haul flights keeps the camera home
+      const zoom = want < z ? Math.max(want, z - CITY_EASE_OUT, Math.min(z, live.current.homeZoom)) : z
       const ll: LonLat = [p.lon, p.lat]
       const opts = { zoom, duration: reducedMotion() ? 0 : 700, easing: EASE }
       if (inView(ll, panel)) {
@@ -234,15 +236,24 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     [map, model, pads, cityBounds, inView],
   )
 
-  /** Bring a route into view only when an end is off screen, and never zoom in for it. */
+  /**
+   * Bring a route into view beside its panel when an end is off screen. It zooms in at most a
+   * step past the region the map opened on, and never out past that region.
+   */
   const showRoute = useCallback(
     (conn: Connection) => {
       const m = map
       if (!m) return
       const ends = [conn.a, conn.b].map((id) => model.byId.get(id)!).map((p): LonLat => [p.lon, p.lat])
       if (ends.every((ll) => inView(ll, 'route', 24))) return
-      const pts = routePoints(model, conn, enabledOptions(conn, live.current.families))
-      m.fitBounds(boundsOf(pts), { padding: pads('route'), maxZoom: m.getZoom(), duration: reducedMotion() ? 0 : 900, easing: EASE })
+      const pts = routePoints(model, conn, enabledOptions(conn, live.current.families).slice(0, 1))
+      const pad = pads('route')
+      const padding = { top: pad.top + 30, left: pad.left + 30, right: pad.right + 30, bottom: pad.bottom + 30 }
+      const z = m.getZoom()
+      const want = m.cameraForBounds(boundsOf(pts), { padding })?.zoom ?? z
+      const home = live.current.homeZoom
+      const zoom = Math.min(Math.max(z, home + 1), Math.max(want, Math.min(z, home)))
+      m.easeTo({ center: new LngLatBounds(boundsOf(pts)).getCenter(), zoom, offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2], duration: reducedMotion() ? 0 : 900, easing: EASE })
     },
     [map, model, pads, inView],
   )
@@ -705,13 +716,15 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
         shown.push(fid)
         cids.add(cid)
       }
-      map.setFeatureState({ source: 'routes', id: fid }, { show })
+      // what the cursor reaches at rest is quiet and neutral, a tapped city's routes take their mode colours
+      map.setFeatureState({ source: 'routes', id: fid }, { show, reach: show && !view.sel })
     }
     live.current.shown = shown
     for (const f of ALL_FAMILIES) {
       if (!map.getLayer(ROUTE_LAYERS[f])) continue
-      // at rest no route is drawn: a hovered city previews its own, a clicked one shows them
-      map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(0))
+      // the atlas at rest draws its whole network faintly, so the first glance says connections. A trip or a selection takes it away.
+      const base = !sel && !trip && !focus ? (f === 'flight' ? 0.16 : 0.22) : 0
+      map.setPaintProperty(ROUTE_LAYERS[f], 'line-opacity', routeOpacity(base))
       map.setLayoutProperty(ROUTE_LAYERS[f], 'visibility', families.has(f) && !mm.mode ? 'visible' : 'none')
     }
     // only a drawn route can be hovered or clicked, so none can at rest
@@ -721,10 +734,11 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const stops = quiet && trip ? tripStops(trip) : []
     setLabelFocus(map, sel ? [...new Set([sel, ...near, ...stops])] : [], sel, quiet, stops)
     setQuiet(map, quiet)
-    // the open trip steps back while a city's own routes are shown
-    const dimTrip = !!view.sel
-    for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', (dimTrip ? 0.2 : 1) * (id === 'trip-casing' ? 0.85 : 1))
-    map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', dimTrip ? 0.12 : 0.55)
+    // the open trip steps back while a city's own routes are shown, and stays drawn under a mode at about 40%
+    const tripOpacity = view.sel ? 0.2 : mm.mode ? 0.4 : 1
+    for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', tripOpacity * (id === 'trip-casing' ? 0.85 : 1))
+    map.setPaintProperty(TRIP_ARROW, 'icon-opacity', tripOpacity * 0.9)
+    map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', view.sel ? 0.12 : 0.55)
   }, [map, model, view.sel, focusId, families, focus, trip, mm.mode])
 
   // the open trip: one line per leg or overland block, in travel order, and a numbered dot per stop
@@ -743,16 +757,13 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       const family = familyOf(piece.leg.mode)
       // a leg with no route in the data (the planner's "own way" hops) gets a straight line
       const line = model.routeLines.get(`${piece.leg.cid}|${family}`) ?? straight
-      if (line) lines.push({ type: 'Feature', properties: { family }, geometry: { type: 'LineString', coordinates: line } })
+      // drawn from where the leg leaves, so its chevrons point the way it goes
+      if (line && a) lines.push({ type: 'Feature', properties: { family }, geometry: { type: 'LineString', coordinates: orientLine(line as LonLat[], [a.lon, a.lat]) } })
     }
-    // a place visited twice gets one dot with both numbers
     const order = trip ? tripStops(trip) : []
-    const nums = new Map<string, number[]>()
-    order.forEach((id, i) => nums.set(id, [...(nums.get(id) ?? []), i + 1]))
-    const points: GeoJSON.Feature[] = [...nums].flatMap(([id, n]) => {
+    const points = stopPoints(order, (id) => {
       const p = model.byId.get(id)
-      if (!p) return []
-      return [{ type: 'Feature' as const, properties: { n: n.join(','), end: id === order.at(-1) }, geometry: { type: 'Point' as const, coordinates: [p.lon, p.lat] } }]
+      return p ? [p.lon, p.lat] : null
     })
     map.getSource<GeoJSONSource>('trip')?.setData({ type: 'FeatureCollection', features: lines })
     map.getSource<GeoJSONSource>('trip-stops')?.setData({ type: 'FeatureCollection', features: points })
@@ -859,6 +870,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       if ((e.originalEvent.target as Element | null)?.closest?.('.io-mark')) return
       if (live.current.space) return
       if (live.current.mode) return act.current.tapMode(modeHit(map, e.point, live.current.mode))
+      // a stack of stops opens up: zoom in on it until its numbers part
+      const stack = map.queryRenderedFeatures(e.point, { layers: ['trip-stop'] }).find((f) => f.properties.cluster)
+      if (stack) {
+        const src = map.getSource<GeoJSONSource>('trip-stops')
+        const at = (stack.geometry as GeoJSON.Point).coordinates as LonLat
+        void src?.getClusterExpansionZoom(stack.properties.cluster_id as number).then((zoom) => map.easeTo({ center: at, zoom: zoom + 0.3, duration: reducedMotion() ? 0 : 600, easing: EASE }))
+        return
+      }
       const hit = hitAt(e.point)
       const sel = live.current.view.sel
       if (!hit) {

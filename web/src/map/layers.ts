@@ -20,6 +20,10 @@ export const HIT_ROUTES = 'route-hit'
 export const HIT_PLACES = 'place-hit'
 export const LABEL_LAYERS = { focus: 'label-focus', dest: 'label-dest', town: 'label-town' }
 export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
+/** The chevrons riding the trip line in travel order. */
+export const TRIP_ARROW = 'trip-arrow'
+/** The stop dots and their numbers. */
+export const TRIP_STOP_LAYERS = ['trip-stack', 'trip-stop', 'trip-num']
 /** Source and layer for the airports highlighted from the Options pane. */
 export const DASH_HI = 'dash-hi'
 export const TRIP_OVERLAND = 'trip-overland'
@@ -31,8 +35,12 @@ export const SAVED_LAYER = 'place-saved'
 
 /** Overview routes are faint. A flight in focus that only flies via layovers hides its direct arc for its via path. Hovering a city previews its routes, and a selection shows only its own. */
 export function routeOpacity(base: number): ExpressionSpecification {
-  return ['case', fs('via'), 0, HL, 1, fs('calm'), 0.4, fs('show'), 0.95, fs('pv'), 0.85, base]
+  return ['case', fs('via'), 0, HL, 1, fs('calm'), 0.16, fs('reach'), 0.42, fs('show'), 0.95, fs('pv'), 0.85, base]
 }
+
+/** What the trip cursor reaches at rest is drawn in one quiet neutral, so the trip stays the only saturated line. A hovered one lights in its mode colour. */
+export const REACH = '#8EA2AD'
+const routeColor = (color: string): ExpressionSpecification => ['case', ['all', fs('reach'), ['!', HL]], REACH, color]
 
 /** Overview routes are thin. A clicked city's routes draw heavier, and in build mode the cursor's draw near trip width. */
 const routeWidth = (reach: boolean): ExpressionSpecification => [
@@ -49,7 +57,7 @@ function routeLayer(family: Family, color: string, dash?: number[]): LineLayerSp
     filter: ['==', ['get', 'family'], family],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
     paint: {
-      'line-color': color,
+      'line-color': routeColor(color),
       'line-width': routeWidth(false),
       'line-opacity': routeOpacity(0),
       'line-offset': ['*', ['get', 'side'], 1.25],
@@ -134,9 +142,18 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
   map.addSource('via', { type: 'geojson', data: empty })
   map.addSource('mover', { type: 'geojson', data: empty })
   map.addSource('trip', { type: 'geojson', data: empty })
-  map.addSource('trip-stops', { type: 'geojson', data: empty })
+  // stops that sit on top of each other merge into one badge with their range until the map zooms in
+  map.addSource('trip-stops', {
+    type: 'geojson',
+    data: empty,
+    cluster: true,
+    clusterRadius: 16,
+    clusterMaxZoom: 9,
+    clusterProperties: { first: ['min', ['get', 'first']], last: ['max', ['get', 'last']], end: ['any', ['get', 'end']] },
+  })
   map.addSource(DASH_HI, { type: 'geojson', data: empty })
   map.addImage('diamond', diamondSdf(), { sdf: true })
+  map.addImage('chevron', chevronSdf(), { sdf: true })
 
   map.addLayer({
     id: 'country-label',
@@ -202,7 +219,24 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     source: 'trip',
     filter: ['==', ['get', 'family'], 'flight'],
     layout: { 'line-join': 'round' },
-    paint: { 'line-color': C.flight, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4], 'line-dasharray': [1.6, 1.1] },
+    paint: { 'line-color': C.flight, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4] },
+  })
+  // small chevrons along the trip in travel order, dark on the line so they read as cut into it
+  map.addLayer({
+    id: TRIP_ARROW,
+    type: 'symbol',
+    source: 'trip',
+    filter: ['!=', ['get', 'family'], 'overland'],
+    layout: {
+      'symbol-placement': 'line',
+      'symbol-spacing': 70,
+      'icon-image': 'chevron',
+      'icon-size': ['interpolate', ['linear'], ['zoom'], 3, 0.32, 8, 0.42],
+      'icon-rotation-alignment': 'map',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+    paint: { 'icon-color': C.ground, 'icon-opacity': 0.9 },
   })
   // overland blocks of a seeded trip: your own route, so only a faint dashed line between the ends
   map.addLayer({
@@ -290,8 +324,9 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     layout: {
       'icon-image': 'diamond',
       'icon-size': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'hub'], 0.5, 0.38], 8, ['case', ['get', 'hub'], 0.68, 0.52]],
+      // always drawn, but labels placed later keep clear of it
       'icon-allow-overlap': true,
-      'icon-ignore-placement': true,
+      'icon-ignore-placement': false,
     },
     paint: {
       'icon-color': ['case', ['any', sel, hot], '#FFFFFF', ['get', 'hub'], C.flight, C.ground],
@@ -339,13 +374,27 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     },
   })
 
-  // numbered stops of the open trip, the last one amber
+  // numbered stops of the open trip, the last one amber. A stack of stops draws a second disc behind, like a pile of cards.
+  const stack: ExpressionSpecification = ['has', 'point_count']
+  map.addLayer({
+    id: 'trip-stack',
+    type: 'circle',
+    source: 'trip-stops',
+    filter: stack,
+    paint: {
+      'circle-radius': 12,
+      'circle-color': '#C6D3D9',
+      'circle-stroke-color': C.ground,
+      'circle-stroke-width': 2,
+      'circle-translate': [3, -3],
+    },
+  })
   map.addLayer({
     id: 'trip-stop',
     type: 'circle',
     source: 'trip-stops',
     paint: {
-      'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'end'], 8.5, 7], 8, ['case', ['get', 'end'], 10, 8.5]],
+      'circle-radius': ['case', stack, 12, ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'end'], 8.5, 7], 8, ['case', ['get', 'end'], 10, 8.5]]],
       'circle-color': ['case', ['get', 'end'], C.flight, '#FFFFFF'],
       'circle-stroke-color': C.ground,
       'circle-stroke-width': 2,
@@ -356,9 +405,9 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     type: 'symbol',
     source: 'trip-stops',
     layout: {
-      'text-field': ['get', 'n'],
+      'text-field': ['case', stack, ['case', ['==', ['get', 'first'], ['get', 'last']], ['to-string', ['get', 'first']], ['concat', ['to-string', ['get', 'first']], '…', ['to-string', ['get', 'last']]]], ['get', 'n']],
       'text-font': FONT_BOLD,
-      'text-size': 10,
+      'text-size': ['case', stack, 9.5, 10],
       'text-allow-overlap': true,
       'text-ignore-placement': true,
     },
@@ -396,6 +445,28 @@ function diamondSdf(r = 16, buffer = 8) {
   for (let y = 0; y < n; y++) {
     for (let x = 0; x < n; x++) {
       const d = (Math.abs(x + 0.5 - n / 2) + Math.abs(y + 0.5 - n / 2) - r) / Math.SQRT2
+      const i = (y * n + x) * 4
+      data[i] = data[i + 1] = data[i + 2] = 255
+      data[i + 3] = Math.round(255 * Math.min(1, Math.max(0, 0.75 - d / 8)))
+    }
+  }
+  return { width: n, height: n, data }
+}
+
+/** A chevron pointing along the line (east), as a signed distance field like the diamond. */
+function chevronSdf(r = 16, buffer = 8) {
+  const n = 2 * (r + buffer)
+  const c = n / 2
+  const pts: [number, number][] = [[c - 7, c - 10], [c + 5, c], [c - 7, c + 10]]
+  const seg = (x: number, y: number, [ax, ay]: [number, number], [bx, by]: [number, number]) => {
+    const dx = bx - ax, dy = by - ay
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)))
+    return Math.hypot(x - ax - t * dx, y - ay - t * dy)
+  }
+  const data = new Uint8Array(n * n * 4)
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      const d = Math.min(seg(x + 0.5, y + 0.5, pts[0], pts[1]), seg(x + 0.5, y + 0.5, pts[1], pts[2])) - 3.2
       const i = (y * n + x) * 4
       data[i] = data[i + 1] = data[i + 2] = 255
       data[i + 3] = Math.round(255 * Math.min(1, Math.max(0, 0.75 - d / 8)))

@@ -6,7 +6,7 @@ import type { SavedEntry } from '../data/experiences'
 import type { CityRow, Experience, GymRow, Place } from '../data/types'
 import type { LonLat } from '../lib/geo'
 import { BOOKMARK, GLOVE } from './icons'
-import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, SAVED_LAYER, TRIP_LINE_LAYERS, TRIP_OVERLAND, VIA_LAYER } from './layers'
+import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, SAVED_LAYER, TRIP_OVERLAND, TRIP_STOP_LAYERS, VIA_LAYER } from './layers'
 import { C, FONT, FONT_BOLD } from './style'
 
 export type MapMode = 'gyms' | 'experiences'
@@ -217,10 +217,10 @@ const MARKS: Record<MapMode, string[]> = {
 }
 const LABELS: Record<MapMode, string[]> = { gyms: [CITY_LABEL, 'gyms-label'], experiences: ['exps-label'] }
 
-/** What a mode hides. The route families stay out of this: the selection effect owns them. */
+/** What a mode hides. The route families and the trip line stay out of this: the selection effect owns them, and the trip stays drawn under a mode. */
 const NORMAL_LAYERS = [
-  VIA_LAYER, HIT_ROUTES, ...TRIP_LINE_LAYERS, TRIP_OVERLAND, HIT_OVERLAND, 'mover-glow', 'mover', 'place-ring', 'place-dot', DASH_HI, 'place-air',
-  HIT_PLACES, SAVED_LAYER, 'stop-dot', 'trip-stop', 'trip-num', LABEL_LAYERS.town, LABEL_LAYERS.dest, 'stop-label', LABEL_LAYERS.focus,
+  VIA_LAYER, HIT_ROUTES, TRIP_OVERLAND, HIT_OVERLAND, 'mover-glow', 'mover', 'place-ring', 'place-dot', DASH_HI, 'place-air',
+  HIT_PLACES, SAVED_LAYER, 'stop-dot', ...TRIP_STOP_LAYERS, LABEL_LAYERS.town, LABEL_LAYERS.dest, 'stop-label', LABEL_LAYERS.focus,
 ]
 
 function paintImage(draw: (g: CanvasRenderingContext2D) => void) {
