@@ -5,9 +5,52 @@ import type { TripState } from '@map/data/trips'
 import type { Family, MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../data/routeMap'
 import { useDataRev } from '../data/rev'
+import { nodeForAirport, nodeName, schedule } from '../lib/journey'
 import { legFactsFrom, toTripState } from '../lib/mapTrips'
 import { useStore } from '../store'
+import { Plus } from './icons'
+import { AddPlace } from './stays/AddPlace'
+import { StayCard } from './stays/StayCard'
+import { WhereToStay } from './stays/WhereToStay'
 import { MapSide } from './TripPanel'
+
+/**
+ * Where to stay at a city on the map. A city the open trip stops at gets the stop's Where to stay, priced for
+ * its nights. Any other city, or any city with no trip open, lists its places to stay without prices.
+ */
+function CityStays({ placeId }: { placeId: string }) {
+  const data = useStore((s) => s.data)
+  const journey = useStore((s) => s.journey)
+  const mapOpen = useStore((s) => s.mapOpen)
+  const bookings = useStore((s) => s.bookings)
+  const lodgings = useStore((s) => s.lodgings)
+  const [adding, setAdding] = useState(false)
+  const j = mapOpen ? journey : null
+  const sched = useMemo(() => {
+    if (!data || !j) return null
+    const wi = data.inout.ways[j.wayIn]
+    const wh = data.inout.ways[j.wayHome]
+    if (!wi || !wh) return null
+    return schedule(j, wi, wh, nodeForAirport(data.inout, wh.from), (n) => nodeName(data.map, data.inout, n), bookings, data, lodgings)
+  }, [data, j, bookings, lodgings])
+  const stops = j && sched ? j.places.flatMap((p, i) => (p.node === placeId && sched.places[i] ? [i] : [])) : []
+  if (sched && stops.length) return <>{stops.map((i) => <WhereToStay key={i} i={i} sched={sched} />)}</>
+
+  const here = lodgings.filter((l) => l.place_id === placeId && !l.hidden)
+  return (
+    <section className="ws" aria-labelledby={`ws-h-${placeId}`}>
+      <header className="ws-head"><h4 id={`ws-h-${placeId}`}>Where to stay</h4></header>
+      {here.length > 0 && <div className="ws-cards">{here.map((l) => <StayCard key={l.id} lodging={l} first={null} />)}</div>}
+      {adding ? (
+        <AddPlace place={placeId} close={() => setAdding(false)} onSaved={() => setAdding(false)} />
+      ) : (
+        <button type="button" className="ws-add" onClick={() => setAdding(true)}><Plus />Add a place</button>
+      )}
+    </section>
+  )
+}
+
+const cityStays = (placeId: string) => <CityStays key={placeId} placeId={placeId} />
 
 /**
  * The route map with the planner's journeys as its trips, where journeys are built. Every edit
@@ -46,7 +89,7 @@ export function PlannerMap() {
     },
     [setPaneMini],
   )
-  const model =useMemo(() => (data ? buildModel(data) : null), [data])
+  const model = useMemo(() => (data ? buildModel(data) : null), [data])
 
   const rev = useDataRev()
   useEffect(() => {
@@ -107,6 +150,7 @@ export function PlannerMap() {
         side={hasPane ? <MapSide reach={model && families ? { model, families } : null} /> : null}
         sideWidth={hasPane && paneMini ? 236 : 360}
         sideMini={hasPane && paneMini}
+        stays={cityStays}
       />
     </div>
   ) : (

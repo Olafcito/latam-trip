@@ -1,4 +1,4 @@
-import { useState, type Ref } from 'react'
+import { useState, type ReactNode, type Ref } from 'react'
 import { airportFlights, byCountry, countries, countryName, landing, neighbours, otherEnd, pairFlights, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
 import { tripEnd, type Trip } from '../data/trips'
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
@@ -47,6 +47,8 @@ export interface PanelProps {
   api: MapModeApi
   /** A row of a place's Experiences or Training opens its window. */
   onCard(ref: CardRef): void
+  /** The places to stay at a city, which a host that has them renders at the top of the city panel. */
+  stays?: (placeId: string) => ReactNode
 }
 
 /** Wikimedia thumbnails come in fixed steps; swap the width in the URL. */
@@ -223,6 +225,7 @@ function CityView(p: PanelProps & { city: Place }) {
         </div>
         <HeadButtons {...p} />
       </div>
+      {p.stays?.(city.id)}
       {p.trip && (
         <p className="tripnote">
           {tripEnd(p.trip) === city.id

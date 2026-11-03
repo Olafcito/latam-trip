@@ -19,6 +19,8 @@
 
 /* ---------- Where to stay ---------- */
 .ws { margin: 16px 0 4px; container-type: inline-size; }
+/* in the map's city panel it keeps the panel's own gutter and does not give its height away to the list below */
+.pview > .ws { margin: 14px 14px 2px; flex: none; }
 .ws-head { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
 .ws-head h4 { margin: 0; font-size: var(--fs-label); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--faint); }
 .ws-n { display: inline-flex; align-items: center; gap: 4px; color: var(--faint); font-size: var(--fs-label); font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -209,8 +211,98 @@ button.sc-row:active { transform: scale(0.985); }
 .sc-note { display: flex; gap: 6px; margin: 0; font-size: var(--fs-small); line-height: 1.45; color: var(--muted); }
 .sc-note svg { flex: none; margin-top: 2px; }
 
+/* ---------- Add a place: grouped lists, as a settings sheet ---------- */
+.ap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 12px; padding: 12px; border-radius: 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); container-type: inline-size; }
+.ap-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ap-head h5 { margin: 0; font-size: var(--fs-title); font-weight: 600; color: var(--text); }
+.ap-list { list-style: none; margin: 0; padding: 0; border-radius: 10px; background: var(--surface-3); overflow: hidden; }
+.ap-list:empty { display: none; }
+.ap-row { position: relative; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 6px 4px 12px; }
+.ap-row + .ap-row::before { content: ''; position: absolute; top: 0; left: 12px; right: 0; border-top: 1px solid var(--line); }
+.ap-wrap { flex-wrap: wrap; padding-block: 8px; }
+.ap-i { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: var(--surface-2); color: var(--muted); }
+/* 16px, so a phone does not zoom in on a field */
+.ap-in {
+  flex: 1; min-width: 0; min-height: 36px; margin: 0; padding: 0 2px; border: 0; border-radius: 4px; background: transparent;
+  color: var(--text); font: inherit; font-size: 16px; font-weight: 500; color-scheme: dark;
+}
+.ap-in::placeholder { color: var(--faint); opacity: 1; }
+.ap-in:focus-visible { outline: 2px solid var(--flight); outline-offset: 1px; }
+.ap-in[aria-invalid='true']::placeholder { color: var(--err); }
+.ap-name { font-weight: 600; }
+.ap-beds { flex: 0 0 3.5rem; text-align: right; font-variant-numeric: tabular-nums; }
+.ap-site { flex: none; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: var(--fs-label); font-weight: 600; white-space: nowrap; }
+.ap-site:not([data-site='own']) { color: var(--text); }
+.ap-thumb { flex: none; width: 24px; height: 24px; border-radius: 6px; object-fit: cover; background: var(--surface-2); }
+.ap-price { flex-wrap: wrap; }
+.ap-dates { flex: 1 1 15rem; min-width: 0; display: flex; align-items: center; gap: 6px; color: var(--faint); font-size: var(--fs-small); }
+.ap-date { flex: 1 1 0; font-variant-numeric: tabular-nums; }
+.ap-kr { flex: 1 1 6rem; display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: var(--fs-small); }
+.ap-kr .ap-in { text-align: right; font-variant-numeric: tabular-nums; }
+/* a narrow form, like the map's city panel or a phone, gives each date a line of its own so a date shows in full */
+@container (max-width: 380px) {
+  .ap-price { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-areas: 'i a a' 't b b' '. k x'; column-gap: 8px; row-gap: 0; padding-block: 6px; }
+  .ap-price > .ap-i { grid-area: i; }
+  .ap-price .ap-dates { display: contents; }
+  .ap-price .ap-dates > input:first-of-type { grid-area: a; }
+  .ap-price .ap-dates > input:last-of-type { grid-area: b; }
+  .ap-price .ap-dates > span { grid-area: t; justify-self: center; }
+  .ap-price > .ap-kr { grid-area: k; }
+  .ap-price > .ap-icon { grid-area: x; }
+  .ap-beds { flex-basis: 2.75rem; }
+}
+
+.ap-seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.ap-seg button, .ap-tags button {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 0 11px; border-radius: 999px;
+  background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); font-size: var(--fs-small); font-weight: 600;
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease, color var(--t-fast) ease;
+}
+.ap-seg button[aria-checked='true'], .ap-tags button[aria-pressed='true'] { background: var(--text); box-shadow: none; color: var(--ground); }
+.ap-seg button:active, .ap-tags button:active { transform: scale(0.96); }
+.ap-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+
+.ap-adds { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+.ap-group > .ap-list:empty + .ap-adds { margin-top: 0; }
+.ap-more {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 0 12px 0 8px; border-radius: 999px;
+  background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); font-size: var(--fs-small); font-weight: 600;
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
+}
+.ap-more svg { width: 13px; height: 13px; }
+.ap-more:active { transform: scale(0.96); }
+.ap-icon {
+  flex: none; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 8px; background: transparent; color: var(--faint);
+  transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease;
+}
+.ap-icon svg { width: 14px; height: 14px; }
+.ap-icon:active { transform: scale(0.92); }
+
+.ap-notes { display: flex; align-items: flex-start; gap: 8px; padding: 8px 6px 8px 12px; border-radius: 10px; background: var(--surface-3); }
+.ap-notes .ap-i { margin-top: 6px; }
+.ap-notes textarea { min-height: 52px; padding: 6px 2px; line-height: 1.45; resize: vertical; }
+
+.ap-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.ap-err { flex: 1 1 12rem; color: var(--err); font-size: var(--fs-small); font-weight: 600; }
+.ap-cancel, .ap-save {
+  min-height: var(--hit); padding: 0 16px; border-radius: 999px; font-size: var(--fs-small); font-weight: 600;
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease, opacity var(--t-fast) ease;
+}
+.ap-cancel { background: transparent; color: var(--muted); }
+.ap-save { background: var(--flight); color: var(--flight-ink); }
+.ap-save:disabled { opacity: .6; }
+.ap-cancel:active, .ap-save:not(:disabled):active { transform: scale(0.97); }
+
+@media (hover: hover) and (pointer: fine) {
+  .ap-seg button:hover, .ap-tags button:hover, .ap-more:hover { background: var(--line-2); color: var(--text); }
+  .ap-seg button[aria-checked='true']:hover, .ap-tags button[aria-pressed='true']:hover { background: var(--text); color: var(--ground); }
+  .ap-icon:hover { color: var(--err); }
+  .ap-cancel:hover { color: var(--text); }
+}
+
 @media (pointer: coarse) {
-  .sc-links a, .sc-ask button { min-height: 40px; }
+  .sc-links a, .sc-ask button, .ap-seg button, .ap-tags button, .ap-more { min-height: 40px; }
+  .ap-icon { width: 40px; height: 40px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

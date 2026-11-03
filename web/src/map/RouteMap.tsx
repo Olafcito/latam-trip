@@ -66,6 +66,8 @@ export interface RouteMapProps {
   onMode?(on: boolean): void
   /** The map's own panel (a city, a route) opened or closed. */
   onPanel?(open: boolean): void
+  /** The places to stay at a city, shown at the top of its panel. The standalone map has none. */
+  stays?: (placeId: string) => ReactNode
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
@@ -96,7 +98,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, cardFrom = null, side = null, sideWidth = 360, sideMini = false, onMode, onPanel }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, cardFrom = null, side = null, sideWidth = 360, sideMini = false, onMode, onPanel, stays }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -1090,6 +1092,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
             legIndex={(cid, from, mode) => (trip ? legIndex(trip, cid, from, mode) : -1)}
             api={mm}
             onCard={openCard}
+            stays={stays}
           />
           {mm.mode && (
             <ModePanelSlot

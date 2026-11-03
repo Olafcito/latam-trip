@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Booking, Lodging } from '../../data/types'
 import { dayRange, kr } from '../../lib/format'
 import type { Schedule } from '../../lib/journey'
@@ -7,6 +8,7 @@ import { addDays } from '../../lib/time'
 import { useStore } from '../../store'
 import { Check, Minus, Moon, Plus, Trash, Warn } from '../icons'
 import { Tip } from '../story/Marks'
+import { AddPlace } from './AddPlace'
 import { StayCard } from './StayCard'
 
 // Where to stay at a stop of the open trip: the stop's nights as a line of parts, each a room of a place to
@@ -64,6 +66,7 @@ export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
   const lodgings = useStore((s) => s.lodgings)
   const bookings = useStore((s) => s.bookings)
   const setStays = useStore((s) => s.setStays)
+  const [adding, setAdding] = useState(false)
   const p = journey?.places[i]
   const sp = sched.places[i]
   if (!journey || !p || !sp) return null
@@ -158,6 +161,18 @@ export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
             )
           })}
         </div>
+      )}
+
+      {adding ? (
+        <AddPlace
+          place={sp.node}
+          first={nights ? (free.nights > 0 ? free.first : sp.inDay) : null}
+          nights={nights ? (free.nights > 0 ? free.nights : sp.days) : 0}
+          close={() => setAdding(false)}
+          onSaved={() => setAdding(false)}
+        />
+      ) : (
+        <button type="button" className="ws-add" onClick={() => setAdding(true)}><Plus />Add a place</button>
       )}
     </section>
   )
