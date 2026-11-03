@@ -13,6 +13,8 @@ const URL_SECONDS = 600
 
 type Result = { ok: true } | { ok: false; message: string }
 
+const GONE = 'The booking is not there any more.'
+
 const failed = (e: unknown) => ({ ok: false as const, message: e instanceof Error ? e.message : String(e) })
 
 /** Every booking, cancelled ones too. Empty without a client. */
@@ -35,7 +37,7 @@ export function subscribeBookings(cb: () => void): () => void {
 
 /**
  * Rows without an id are inserted together, so the rows of one ticket land as one. A row with an id updates that row
- * with the fields it has, or is inserted when there is none. The ids come back in the order of the rows.
+ * with the fields it has and nothing else. The ids come back in the order of the rows.
  */
 export async function saveBookings(rows: Partial<Booking>[]): Promise<{ ok: true; ids: string[] } | { ok: false; message: string }> {
   if (!supabase) return { ok: false, message: 'Not connected.' }
@@ -55,10 +57,11 @@ export async function saveBookings(rows: Partial<Booking>[]): Promise<{ ok: true
         if (!id) ids[k] = made[i++]
       })
     }
-    // one at a time, since a bulk upsert would set the fields a row leaves out to their defaults
-    for (const r of fields.filter((r) => r.id)) {
-      const { error } = await client.from('bookings').upsert(r, { onConflict: 'id', defaultToNull: false })
+    // an update, not an upsert, since an upsert checks the whole row as an insert first and kind has no default
+    for (const { id, ...change } of fields.filter((r) => r.id)) {
+      const { data, error } = await client.from('bookings').update(change).eq('id', id!).select('id')
       if (error) return { ok: false, message: error.message }
+      if (!data?.length) return { ok: false, message: GONE }
     }
     return { ok: true, ids: ids as string[] }
   } catch (e) {
@@ -77,9 +80,22 @@ export async function cancelBooking(id: string): Promise<Result> {
   }
 }
 
-/** The type the bucket stores a file as, from the browser or else from its extension. */
+/** The type the bucket stores a file as: the browser's when the bucket takes it, else the one of its extension. */
 export function fileType(file: Pick<File, 'name' | 'type'>): string {
-  return file.type || FILE_EXT[file.name.split('.').pop()?.toLowerCase() ?? ''] || ''
+  if (FILE_TYPES.includes(file.type)) return file.type
+  return FILE_EXT[file.name.split('.').pop()?.toLowerCase() ?? ''] ?? file.type
+}
+
+const PLAIN: Record<string, string> = { æ: 'ae', Æ: 'AE', ø: 'o', Ø: 'O', ß: 'ss', đ: 'd', Đ: 'D', ł: 'l', Ł: 'L' }
+
+/** The file name as a Storage key: plain letters, digits and dots, the rest as underscores, the extension kept. */
+export function storageName(name: string): string {
+  const dot = name.lastIndexOf('.')
+  const [stem, ext] = dot > 0 ? [name.slice(0, dot), name.slice(dot)] : [name, '']
+  const plain = (t: string) =>
+    t.replace(/[æÆøØßđĐłŁ]/g, (c) => PLAIN[c]).normalize('NFKD').replace(/\p{M}/gu, '').replace(/[^A-Za-z0-9.]+/g, '_')
+  const safe = plain(stem).replace(/^[_.]+|_+$/g, '')
+  return (safe || 'file') + plain(ext)
 }
 
 /** Why the bucket would refuse the file, in a plain sentence, or null when it takes it. */
@@ -92,22 +108,31 @@ export function fileProblem(file: Pick<File, 'name' | 'type' | 'size'>): string 
   return null
 }
 
-/** Uploads the file to bookings/<id>/<name> after the checks, and adds it to the booking in place of one with that name. */
+/**
+ * Uploads the file to bookings/<id>/<key> after the checks, the key a safe form of the name, and adds it to the booking
+ * in place of an entry with that path. The entry is written after the upload, with the size.
+ */
 export async function attachFile(id: string, file: File): Promise<{ ok: true; attachment: BookingFile } | { ok: false; message: string }> {
   const problem = fileProblem(file)
   if (problem) return { ok: false, message: problem }
   if (!supabase) return { ok: false, message: 'Not connected.' }
   const client = supabase
-  const path = `${id}/${file.name}`
+  const path = `${id}/${storageName(file.name)}`
   const type = fileType(file)
+  const read = () => client.from('bookings').select('attachments').eq('id', id).maybeSingle()
   try {
-    const { data: row, error: readError } = await client.from('bookings').select('attachments').eq('id', id).maybeSingle()
-    if (readError) return { ok: false, message: readError.message }
-    if (!row) return { ok: false, message: 'The booking is not there any more.' }
+    // a booking that is gone is refused before the file is sent
+    const before = await read()
+    if (before.error) return { ok: false, message: before.error.message }
+    if (!before.data) return { ok: false, message: GONE }
     const up = await client.storage.from(BUCKET).upload(path, file, { contentType: type, upsert: true })
     if (up.error) return { ok: false, message: up.error.message }
+    // read again, so an entry the connector added during the upload is kept
+    const now = await read()
+    if (now.error) return { ok: false, message: now.error.message }
+    if (!now.data) return { ok: false, message: GONE }
     const attachment: BookingFile = { path, name: file.name, type, size: file.size, added_at: new Date().toISOString() }
-    const files = ((row as { attachments: BookingFile[] | null }).attachments ?? []).filter((a) => a.path !== path).concat(attachment)
+    const files = ((now.data as { attachments: BookingFile[] | null }).attachments ?? []).filter((a) => a.path !== path).concat(attachment)
     const { error } = await client.from('bookings').update({ attachments: files }).eq('id', id)
     return error ? { ok: false, message: error.message } : { ok: true, attachment }
   } catch (e) {

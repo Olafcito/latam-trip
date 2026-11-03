@@ -61,13 +61,16 @@ export function stayOn(list: Booking[], placeNode: string, nights: { first: stri
   return staysIn(list, placeNode, nights)[0] ?? null
 }
 
+/** sorts after every depart, so a row with none comes last */
+const LAST = '\uffff'
+
 /** What a row paid. A ticket over several rows is paid once, by its first row: the earliest depart, then the lowest id. */
 export function paidPrice(list: Booking[], b: Booking): number {
   if (b.ticket == null) return b.price_dkk ?? 0
   const group = [b, ...booked(list).filter((r) => r.ticket === b.ticket && r.id !== b.id)]
   const first = group.reduce((a, r) => {
-    const da = a.depart ?? '￿'
-    const dr = r.depart ?? '￿'
+    const da = a.depart ?? LAST
+    const dr = r.depart ?? LAST
     return dr < da || (dr === da && r.id < a.id) ? r : a
   })
   return first.id === b.id ? (b.price_dkk ?? 0) : 0

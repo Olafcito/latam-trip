@@ -262,7 +262,10 @@ export interface AppData {
 
 export type BookingKind = 'flight' | 'bus' | 'boat' | 'stay' | 'other'
 
-/** A file of a booking in the private bucket. A size of null means the upload is not confirmed yet. */
+/**
+ * A file of a booking in the private bucket. The connector writes the entry before the upload with a size of null,
+ * which means the upload is not confirmed yet. The planner writes it after the upload, with the size.
+ */
 export interface BookingFile {
   path: string
   name: string

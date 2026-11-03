@@ -236,17 +236,19 @@ export function App() {
       setBookings([])
       return
     }
-    let live = true
+    // only the latest read counts, so a slow older answer never overwrites a newer one
+    let latest = 0
     const reload = () => {
+      const n = ++latest
       loadBookings().then((b) => {
-        if (live) setBookings(b)
+        if (n === latest) setBookings(b)
       }, () => {})
     }
     reload()
     const stop = subscribeBookings(reload)
     window.addEventListener('online', reload)
     return () => {
-      live = false
+      latest = -1
       stop()
       window.removeEventListener('online', reload)
     }
