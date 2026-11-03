@@ -1,0 +1,177 @@
+{
+ "trip": "Fixture trip",
+ "pax": 1,
+ "currency": "DKK",
+ "home_airports": [
+  "CPH"
+ ],
+ "alt_origins": [],
+ "main_dates": {
+  "out": "2026-12-03",
+  "home": "2027-02-03",
+  "home_alt": []
+ },
+ "max_hours_one_way": 30,
+ "scoring": {
+  "per_hour": 150,
+  "soft_hours": 23,
+  "extra_per_hour": 150,
+  "overnight": 800,
+  "self_transfer": 1500,
+  "us_transit": 500,
+  "airport_change": 1000,
+  "no_changes": 300,
+  "missing_side_hours": 24,
+  "tight_connection": 700,
+  "tight_connection_h": 1.0
+ },
+ "us_airports": [
+  "MIA"
+ ],
+ "region_sequence": [
+  {
+   "name": "Central America",
+   "airports": [
+    "SAL",
+    "MGA"
+   ],
+   "optional": false
+  },
+  {
+   "name": "Colombia",
+   "airports": [
+    "BOG"
+   ],
+   "optional": true
+  },
+  {
+   "name": "Bolivia",
+   "airports": [
+    "LPB",
+    "VVI"
+   ],
+   "optional": false,
+   "entry": "LPB",
+   "exit": "VVI"
+  }
+ ],
+ "gateways": {
+  "origins": {
+   "CPH": {
+    "out": "2026-12-03",
+    "home": "2027-02-03",
+    "weight": 1.0
+   }
+  },
+  "entries": {
+   "SAL": 3,
+   "MGA": 2,
+   "BOG": 3
+  },
+  "exits": {
+   "VVI": 3,
+   "BOG": 2
+  }
+ },
+ "regional": {
+  "groups": {
+   "CA": [
+    "SAL",
+    "MGA"
+   ],
+   "CO": [
+    "BOG"
+   ],
+   "BO": [
+    "LPB",
+    "VVI"
+   ]
+  },
+  "pairs_between": [
+   [
+    "CA",
+    "CO",
+    "2027-01-10",
+    3
+   ],
+   [
+    "CO",
+    "BO",
+    "2027-01-27",
+    3
+   ],
+   [
+    "CA",
+    "BO",
+    "2027-01-27",
+    2
+   ]
+  ],
+  "within": [
+   [
+    "BO",
+    "2027-01-30"
+   ]
+  ],
+  "skip_from": []
+ },
+ "route_regions": {
+  "CA": [
+   "SAL",
+   "MGA"
+  ],
+  "CO": [
+   "BOG"
+  ],
+  "BO": [
+   "LPB",
+   "VVI"
+  ]
+ },
+ "route_required": [
+  "CA",
+  "CO",
+  "BO"
+ ],
+ "route_optional": [],
+ "route_internal": {
+  "BO": [
+   "LPB>VVI"
+  ]
+ },
+ "route_entry_preferred": {
+  "BO": "LPB"
+ },
+ "route_hop_airports": {
+  "CA": [
+   "SAL",
+   "MGA"
+  ]
+ },
+ "route_positioning": {},
+ "chain": {
+  "out_window": [
+   "2026-12-01",
+   "2026-12-04"
+  ],
+  "in_by": "2026-12-08",
+  "home_from": "2027-01-28",
+  "home_by": "2027-02-05",
+  "max_products": 3,
+  "min_connect_h": 3,
+  "max_stop_nights": 4,
+  "night_dkk": {
+   "default": 350
+  },
+  "stop_penalty": 300,
+  "day_stop": 400,
+  "date_shift": 300,
+  "entry_airports": [
+   "SAL",
+   "MGA",
+   "BOG",
+   "LPB",
+   "VVI"
+  ]
+ }
+}

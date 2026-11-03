@@ -1,0 +1,3 @@
+round,agent,model,tool,searches,tokens,tool_uses,seconds,rows
+1,fixture-1,sonnet,momondo,4,40000,9,120,6
+2,fixture-2,haiku,kiwi,2,,3,60,0

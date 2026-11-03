@@ -1,0 +1,29 @@
+[
+ {
+  "id": "training",
+  "name": "Training",
+  "place_categories": [],
+  "image": {
+   "url": "https://upload.wikimedia.org/fixture/training.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Fixture.jpg",
+   "credit": "Fixture Photographer",
+   "licence": "CC BY-SA 4.0",
+   "w": 1280,
+   "h": 853
+  }
+ },
+ {
+  "id": "hiking",
+  "name": "Hiking",
+  "place_categories": [
+   "Nature"
+  ],
+  "image": null
+ },
+ {
+  "id": "culture",
+  "name": "Culture",
+  "place_categories": [],
+  "image": null
+ }
+]

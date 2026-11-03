@@ -1,0 +1,30 @@
+{
+ "about": "fixture",
+ "order": [
+  "training",
+  "hiking",
+  "culture"
+ ],
+ "categories": [
+  {
+   "id": "training",
+   "name": "Training",
+   "place_categories": [],
+   "image_id": "cat-training"
+  },
+  {
+   "id": "hiking",
+   "name": "Hiking",
+   "place_categories": [
+    "Nature"
+   ],
+   "image_id": null
+  },
+  {
+   "id": "culture",
+   "name": "Culture",
+   "place_categories": [],
+   "image_id": null
+  }
+ ]
+}

@@ -1,0 +1,6 @@
+{"kind": "node", "id": "SAL", "name": "San Salvador", "country": "SV", "lat": 13.69, "lon": -89.19, "type": "city", "iata": "SAL", "popularity": 2, "why": "Capital with volcano day trips", "source": null, "origin": "fixture"}
+{"kind": "node", "id": "TUNCO", "name": "El Tunco", "country": "SV", "lat": 13.49, "lon": -89.38, "type": "beach", "iata": null, "popularity": 1, "why": null, "source": null, "origin": "fixture"}
+{"kind": "node", "id": "MGA", "name": "Managua", "country": "NI", "lat": 12.14, "lon": -86.25, "type": "city", "iata": "MGA", "popularity": 2, "why": "Gateway to Nicaragua", "source": null, "origin": "fixture"}
+{"kind": "node", "id": "BOG", "name": "Bogota", "country": "CO", "lat": 4.71, "lon": -74.07, "type": "city", "iata": "BOG", "popularity": 3, "why": "High capital and hub", "source": null, "origin": "fixture"}
+{"kind": "node", "id": "LPB", "name": "La Paz", "country": "BO", "lat": -16.5, "lon": -68.15, "type": "hub", "iata": "LPB", "popularity": 2, "why": "Highland seat of government", "source": null, "origin": "fixture"}
+{"kind": "node", "id": "VVI", "name": "Santa Cruz", "country": "BO", "lat": -17.78, "lon": -63.18, "type": "city", "iata": "VVI", "popularity": 1, "why": "Lowland city, the way home", "source": null, "origin": "fixture"}

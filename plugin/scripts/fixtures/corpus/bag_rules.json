@@ -1,0 +1,16 @@
+[
+ {
+  "match": "Avianca",
+  "longhaul_dkk": 486,
+  "regional_dkk": 516,
+  "cabin_dkk": 0,
+  "note": "fixture"
+ },
+ {
+  "match": "BoA",
+  "longhaul_dkk": 0,
+  "regional_dkk": 0,
+  "cabin_dkk": 0,
+  "note": "fixture"
+ }
+]

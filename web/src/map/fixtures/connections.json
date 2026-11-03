@@ -1,0 +1,355 @@
+[
+ {
+  "id": "SAL-TUNCO",
+  "a": "SAL",
+  "b": "TUNCO",
+  "options": [
+   {
+    "mode": "bus",
+    "operators": [
+     "Ruta 102"
+    ],
+    "duration_min": 90,
+    "duration_range_h": "1-2",
+    "price_dkk": {
+     "min": null,
+     "typical": null
+    },
+    "price_local": null,
+    "frequency": "hourly",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": null,
+    "observed_at": "2026",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "MGA-SAL",
+  "a": "MGA",
+  "b": "SAL",
+  "options": [
+   {
+    "mode": "shuttle",
+    "operators": [
+     "Tica Bus"
+    ],
+    "duration_min": 600,
+    "duration_range_h": null,
+    "price_dkk": {
+     "min": 350,
+     "typical": null
+    },
+    "price_local": "US$55",
+    "frequency": "daily",
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": null,
+    "observed_at": "2026",
+    "note": "Through Honduras",
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "LPB-VVI",
+  "a": "LPB",
+  "b": "VVI",
+  "options": [
+   {
+    "mode": "bus",
+    "operators": [
+     "Trans Copacabana"
+    ],
+    "duration_min": 960,
+    "duration_range_h": null,
+    "price_dkk": {
+     "min": 120,
+     "typical": null
+    },
+    "price_local": null,
+    "frequency": "nightly",
+    "overnight": true,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": null,
+    "source": "manual",
+    "source_url": null,
+    "observed_at": "2026",
+    "note": null,
+    "booking_url": null
+   },
+   {
+    "mode": "flight",
+    "operators": [
+     "BoA"
+    ],
+    "duration_min": 66,
+    "price_dkk": {
+     "min": 600,
+     "typical": 600
+    },
+    "frequency": "several daily",
+    "overnight": false,
+    "border": false,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": true,
+     "vias": [],
+     "carriers": [
+      "BoA"
+     ],
+     "oneway_dkk": {
+      "min": 600,
+      "observed_at": "2026-10-30T10:00:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2027-01-30"
+     ],
+     "by_date": [
+      {
+       "date": "2027-01-30",
+       "from": "LPB",
+       "to": "VVI",
+       "dkk": 600,
+       "dep": "10:50",
+       "arr": "11:55",
+       "arr_days": 0,
+       "duration_min": 66,
+       "vias": [],
+       "carriers": [
+        "BoA"
+       ],
+       "flights": [
+        "OB 668"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-30",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 600,
+      "duration_min": 66,
+      "vias": [],
+      "carriers": [
+       "BoA"
+      ],
+      "date": "2027-01-30",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 600,
+      "duration_min": 66,
+      "vias": [],
+      "carriers": [
+       "BoA"
+      ],
+      "date": "2027-01-30"
+     },
+     "flags": [],
+     "quotes": 1
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T10:00:00Z",
+    "note": null,
+    "booking_url": null,
+    "source_url": null,
+    "researched": {
+     "duration_min": 72,
+     "price_min": 650,
+     "operators": [
+      "BoA"
+     ],
+     "year": "2026"
+    }
+   }
+  ]
+ },
+ {
+  "id": "BOG-SAL",
+  "a": "BOG",
+  "b": "SAL",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Avianca"
+    ],
+    "duration_min": 210,
+    "price_dkk": {
+     "min": 900,
+     "typical": 900
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": true,
+     "vias": [],
+     "carriers": [
+      "Avianca"
+     ],
+     "oneway_dkk": {
+      "min": 900,
+      "observed_at": "2026-10-30T10:00:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2027-01-10"
+     ],
+     "by_date": [
+      {
+       "date": "2027-01-10",
+       "from": "SAL",
+       "to": "BOG",
+       "dkk": 900,
+       "dep": "08:00",
+       "arr": "12:30",
+       "arr_days": 0,
+       "duration_min": 210,
+       "vias": [],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "AV 41"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-10",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 900,
+      "duration_min": 210,
+      "vias": [],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2027-01-10",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 900,
+      "duration_min": 210,
+      "vias": [],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2027-01-10"
+     },
+     "flags": [],
+     "quotes": 1
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T10:00:00Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ },
+ {
+  "id": "BOG-LPB",
+  "a": "BOG",
+  "b": "LPB",
+  "options": [
+   {
+    "mode": "flight",
+    "operators": [
+     "Avianca"
+    ],
+    "duration_min": 300,
+    "price_dkk": {
+     "min": 1400,
+     "typical": 1400
+    },
+    "frequency": null,
+    "overnight": false,
+    "border": true,
+    "stops": [],
+    "geometry": null,
+    "flight": {
+     "nonstop": true,
+     "vias": [],
+     "carriers": [
+      "Avianca"
+     ],
+     "oneway_dkk": {
+      "min": 1400,
+      "observed_at": "2026-10-30T10:00:00Z"
+     },
+     "return_dkk": null,
+     "dates_searched": [
+      "2027-01-27"
+     ],
+     "by_date": [
+      {
+       "date": "2027-01-27",
+       "from": "BOG",
+       "to": "LPB",
+       "dkk": 1400,
+       "dep": "09:00",
+       "arr": "14:00",
+       "arr_days": 0,
+       "duration_min": 300,
+       "vias": [],
+       "carriers": [
+        "Avianca"
+       ],
+       "flights": [
+        "AV 9"
+       ],
+       "self_transfer": false,
+       "searched": "2027-01-27",
+       "link": null
+      }
+     ],
+     "round_trips": [],
+     "cheapest": {
+      "dkk": 1400,
+      "duration_min": 300,
+      "vias": [],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2027-01-27",
+      "self_transfer": false
+     },
+     "fastest": {
+      "dkk": 1400,
+      "duration_min": 300,
+      "vias": [],
+      "carriers": [
+       "Avianca"
+      ],
+      "date": "2027-01-27"
+     },
+     "flags": [],
+     "quotes": 1
+    },
+    "source": "crawl",
+    "observed_at": "2026-10-30T10:00:00Z",
+    "note": null,
+    "booking_url": null
+   }
+  ]
+ }
+]

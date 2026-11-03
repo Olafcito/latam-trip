@@ -1,0 +1,24 @@
+{
+ "about": "fixture",
+ "updated": "2026-10-31",
+ "lists": [
+  {
+   "id": "want",
+   "name": "Want to check out",
+   "items": [
+    {
+     "type": "place",
+     "id": "TUNCO",
+     "added": "2026-10-29",
+     "note": "Surf town"
+    },
+    {
+     "type": "experience",
+     "id": "boqueron-crater",
+     "added": "2026-10-29",
+     "note": null
+    }
+   ]
+  }
+ ]
+}

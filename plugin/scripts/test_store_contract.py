@@ -298,16 +298,18 @@ class FakeStorageRest:
         return self.tables.get(table, [])
 
 
-@unittest.skipUnless(os.path.isdir(os.path.join(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")), "data", "sources")), "the live source corpus is no longer kept in the repo")
 class ReadBuiltTest(unittest.TestCase):
-    """file, run and status work on what the worker uploaded. A real build of the committed sources stands in for it."""
+    """file, run and status work on what the worker uploaded. A real build of the small source set in
+    fixtures/corpus stands in for it. The build runs on the files and offline, whatever TRIPDB_STORE says."""
     REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+    FIXTURE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures", "corpus")
 
     @classmethod
     def setUpClass(cls):
         cls.tmp = tempfile.mkdtemp(prefix="tripdb-built-")
-        shutil.copytree(os.path.join(cls.REPO, "data", "sources"), os.path.join(cls.tmp, "data", "sources"))
-        with contextlib.redirect_stdout(io.StringIO()):
+        shutil.copytree(cls.FIXTURE, os.path.join(cls.tmp, "data", "sources"))
+        cls.log = io.StringIO()
+        with contextlib.redirect_stdout(cls.log):
             tripdb.cmd_build(tripdb.Paths(cls.tmp), sync=False)
         cls.files, cls.tables = {}, {"documents": [], "agent_usage": []}
         for name in os.listdir(os.path.join(cls.tmp, "data", "built")):
@@ -341,6 +343,17 @@ class ReadBuiltTest(unittest.TestCase):
             rc = fn(*a, **kw)
         return rc, out.getvalue(), err.getvalue()
 
+    def test_build_reads_every_fixture_row(self):
+        log = self.log.getvalue()
+        self.assertIn("sources: places 6, connections 4, profiles 3, place_images 1, experiences 5, experience_images 2, "
+                      "stays 2, task_log 0, trips 0, quotes 6 in 1 files", log)
+        self.assertIn("ingested lines: 6, unique quotes: 6, acceptable (ok=1): 5", log)
+        web = lambda name: json.loads(self.files[("web", "data/web/" + name)])
+        ids = {p["id"] for p in web("places.json")}
+        self.assertLessEqual({"SAL", "TUNCO", "MGA", "BOG", "LPB", "VVI"}, ids)
+        self.assertEqual(len(web("experiences.json")), 5)
+        self.assertIn(("web", "built/trip.db"), self.files)
+
     def test_file_prints_places(self):
         rest = self.rest()
         rc, out, _ = self.printed(tripdb.cmd_file, "places.json", rest=rest)
@@ -365,19 +378,27 @@ class ReadBuiltTest(unittest.TestCase):
         return out
 
     def test_run_evaluate_on_temp_root(self):
-        self.assertIn("total", self.run_script("evaluate"))
+        out = self.run_script("evaluate")
+        self.assertRegex(out, r"## F1 San Salvador in, Santa Cruz home\r?\ntotal 9450 DKK")
+        self.assertNotIn("NOT PRICED", out)
 
     def test_run_frontier_on_temp_root(self):
-        self.assertTrue(self.run_script("frontier", "--kind", "main", "--limit", "3").strip())
+        out = self.run_script("frontier", "--kind", "main", "--limit", "3")
+        self.assertIn("open searches: 4 (main 4, regional 0)", out)
+        self.assertEqual(len([l for l in out.splitlines() if " main " in l]), 3)
 
     def test_run_scenarios_on_temp_root(self):
-        self.assertTrue(self.run_script("scenarios", "--top", "3").strip())
+        out = self.run_script("scenarios", "--top", "3")
+        self.assertIn("main 6200 + SAL>BOG 900 + BOG>LPB 1400", out)
+        self.assertIn("Hops in the table: LPB>VVI 600, SAL>BOG 900, BOG>LPB 1400", out)
 
     def test_run_usage_report_on_temp_root(self):
-        self.assertTrue(self.run_script("usage_report").strip())
+        self.assertIn("Total tokens: 40000", self.run_script("usage_report"))
 
     def test_run_report_md_on_temp_root(self):
-        self.assertIn("|", self.run_script("report_md"))
+        out = self.run_script("report_md")
+        self.assertIn("| Central America | Colombia | San Salvador → Bogotá | 900 | 3.5 | Avianca |", out)
+        self.assertEqual(len([l for l in out.splitlines() if l.startswith("| Copenhagen |")]), 2)
 
     def test_run_leaves_no_temp_root_behind(self):
         before = set(os.listdir(tempfile.gettempdir()))

@@ -1,0 +1,34 @@
+[
+ {
+  "id": "F1",
+  "name": "San Salvador in, Santa Cruz home",
+  "story": "Fixture scenario.",
+  "components": [
+   {
+    "label": "Long-haul CPH-SAL / VVI-CPH",
+    "pattern": "P:CPH>SAL/VVI>CPH"
+   },
+   {
+    "label": "Central America > Colombia",
+    "pattern": [
+     "R:SAL>BOG",
+     "R:MGA>BOG"
+    ]
+   },
+   {
+    "label": "Colombia > La Paz",
+    "pattern": "R:BOG>LPB"
+   },
+   {
+    "label": "La Paz > Santa Cruz",
+    "pattern": "R:LPB>VVI"
+   },
+   {
+    "label": "Shuttle San Salvador to Managua",
+    "price": 350,
+    "hours": 10,
+    "note": "fixture estimate"
+   }
+  ]
+ }
+]

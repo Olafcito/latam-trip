@@ -1,5 +1,5 @@
-// Every row of the locally available data through the real card, when a developer has a test corpus.
-import { existsSync } from 'node:fs'
+// Every row of the small data set in fixtures through the real card. The set is built by the pipeline from
+// plugin/scripts/fixtures/corpus, plus a gym and an experience with no coordinate, which the schema cannot hold.
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -11,17 +11,16 @@ import type { MapData } from '../data/types'
 import { CardWindow } from './CardWindow'
 import type { CardRef, MapModeApi } from './useMapMode'
 
-const DATA_DIR = resolve(import.meta.dirname, '../../../data/web')
-const hasCorpus = existsSync(resolve(DATA_DIR, 'places.json'))
+const DATA_DIR = resolve(import.meta.dirname, 'fixtures')
 const read = <T,>(name: string): T => JSON.parse(readFileSync(resolve(DATA_DIR, `${name}.json`), 'utf8'))
 
 const data: MapData = {
-  places: hasCorpus ? read('places') : [],
-  connections: hasCorpus ? read('connections') : [],
-  countries: hasCorpus ? read('countries') : [],
-  experiences: hasCorpus ? read('experiences') : [],
-  categories: hasCorpus ? read('experience_categories') : [],
-  lists: hasCorpus ? read<{ lists: MapData['lists'] }>('lists').lists : [],
+  places: read('places'),
+  connections: read('connections'),
+  countries: read('countries'),
+  experiences: read('experiences'),
+  categories: read('experience_categories'),
+  lists: read<{ lists: MapData['lists'] }>('lists').lists,
 }
 const model = buildModel(data)
 const gyms = gymWorld(data.experiences, data.places)
@@ -44,12 +43,15 @@ const cards: CardRef[] = [
   ...exps.all.map((e): CardRef => ({ kind: 'experience', id: e.id })),
 ]
 
-describe.skipIf(!hasCorpus)('every card in the data', () => {
+describe('every card in the data', () => {
   it('covers every row', () => {
     const plain = (data.experiences ?? []).filter((r) => !r.tags?.includes('gym') && !r.tags?.includes('city-scorecard'))
-    expect(gyms.gyms.length).toBeGreaterThan(100)
-    expect(gyms.cities.length).toBeGreaterThan(40)
+    // the gym with no coordinate has no card, every other row has one
+    expect(gyms.gyms.map((g) => g.id).sort()).toEqual(['gym-sal-strike', 'gym-sal-unrated'])
+    expect(gyms.cities.map((c) => c.id)).toEqual(['city-san-salvador-training'])
+    expect(exps.all.map((e) => e.id).sort()).toEqual(['boqueron-crater', 'salt-flat-tour', 'titicaca-day'])
     expect(exps.all.length).toBe(plain.length)
+    expect(cards.length).toBe(6)
   })
 
   it('shows a card for each, with no null, no undefined, no NaN, no question mark and no raw field name', () => {
