@@ -104,6 +104,26 @@ describe('importBrowser', () => {
     expect(saved.find((r) => r.id === 'u')).toBeDefined()
   })
 
+  it('a local edit of an old version on the trip own ways imports on the stored ways when the ends still meet', async () => {
+    stored = [storedRow('t', 3)]
+    const copy = journey('t', { version: 2, wayIn: 't:in', wayHome: 't:home', name: 'Older route' })
+    const rep = await importBrowser(deps(withJourneys([copy])))
+    expect(rep.unresolved).toEqual([])
+    expect(rep.imported).toEqual(['t-v2'])
+    const row = saved.find((r) => r.id === 't-v2')!
+    expect(row).toMatchObject({ version: 1, name: 'Older route' })
+    expect(row.way_in.to).toBe('GUA')
+    expect(row.way_home.from).toBe('SAL')
+  })
+
+  it('a local edit of an old version on the trip own ways stays unresolved when the ends moved', async () => {
+    stored = [{ ...storedRow('t', 3), way_in: way('CPH', 'BOG') } as unknown as TripRow]
+    const copy = journey('t', { version: 2, wayIn: 't:in', wayHome: 't:home' })
+    const rep = await importBrowser(deps(withJourneys([copy])))
+    expect(rep.unresolved).toEqual(['t'])
+    expect(saved).toEqual([])
+  })
+
   it('hidden soft deletes only with no newer version', async () => {
     stored = [storedRow('old', 1), storedRow('newer', 4)]
     await importBrowser(deps(withJourneys([], { old: 1, newer: 2, never: 1 })))

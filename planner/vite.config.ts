@@ -2,8 +2,8 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 
-// The Map tab is the route map from ../web, imported as @map. In dev it reads ../data/web
-// straight from the repo, like the web app does.
+// The Map tab is the route map from ../web, imported as @map. Its data comes from the Supabase web bucket
+// named by VITE_DATA_BASE, in dev as in the build.
 const WEB_SRC = resolve(import.meta.dirname, '../web/src')
 
 // base './' so the build works from any GitHub Pages sub path.

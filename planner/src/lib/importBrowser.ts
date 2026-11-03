@@ -1,7 +1,7 @@
 import type { InOut, Way } from '../data/types'
 import { journeyIsValid, nodeForAirport, type Journey, type Totals } from './journey'
 import type { SaveResult } from './remoteTrips'
-import { tripWayId, type TripRow } from './repoTrips'
+import { tripWayId, withTripWays, type TripRow } from './repoTrips'
 import { journeyToRow, tripRowErrors } from './tripRow'
 
 // Moves what one browser holds into Supabase (spec 9.2). It runs after cutover, once per browser and project,
@@ -90,7 +90,9 @@ export async function importBrowser(deps: ImportDeps): Promise<ImportReport> {
     // a local edit of an old version must not overwrite a newer stored one, so it gets an id of its own
     const id = old ? `${j.id}-v${j.version ?? 0}` : j.id
     const own = j.wayIn === tripWayId(j.id, 'in') || j.wayHome === tripWayId(j.id, 'home')
-    const res = old && own ? null : resolve(j, map, deps.inout, top)
+    // an old version on the trip's own ways is read on the stored ways, which hold only while its ends still meet them
+    const inout = old && own ? withTripWays(deps.inout, [top]) : deps.inout
+    const res = resolve(j, map, inout, old ? null : top)
     if (!res) {
       unresolved.push(j)
       report.unresolved.push(j.id)
@@ -99,7 +101,7 @@ export async function importBrowser(deps: ImportDeps): Promise<ImportReport> {
     const fresh = { ...res, id }
     let row: TripRow
     try {
-      row = journeyToRow(fresh, old ? null : top, deps.inout, deps.totals(fresh))
+      row = journeyToRow(fresh, old ? null : top, inout, deps.totals(fresh))
     } catch {
       unresolved.push(j)
       report.unresolved.push(j.id)

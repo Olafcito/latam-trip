@@ -32,7 +32,7 @@ export interface BuildMeta {
 const META_KEY = 'latam-files.meta'
 const WEB = 'data/web/'
 
-/** The VITE_DATA_BASE flag. Unset, the apps read the repo as they did before. */
+/** The VITE_DATA_BASE flag, the Supabase web bucket the built files are read from. Unset, the apps have no data. */
 export function dataBase(): string | null {
   const raw = (import.meta.env.VITE_DATA_BASE as string | undefined)?.trim()
   return raw ? raw.replace(/\/?$/, '/') : null

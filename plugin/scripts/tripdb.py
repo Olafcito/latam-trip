@@ -761,7 +761,7 @@ def export_trips(paths):
                           for r in reversed(every[tid][:-1])]
         trips.append(out)
     trips.sort(key=lambda t: (t.get("rank") is None, t.get("rank") or 0, t.get("saved_at") or ""))
-    doc = {"generated_at": now_utc(), "source": "data/sources/trips.jsonl", "trips": trips}
+    doc = {"generated_at": now_utc(), "source": "trips", "trips": trips}
     os.makedirs(paths.web, exist_ok=True)
     write_atomic(os.path.join(paths.web, "trips.json"), json.dumps(doc, ensure_ascii=False, indent=1) + "\n")
     return len(trips)

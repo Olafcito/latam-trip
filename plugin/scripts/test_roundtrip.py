@@ -1,5 +1,5 @@
 """Tests of the REST client, import and pull. The live ones need TRIPDB_LIVE_TESTS=1 and the project keys, empty the project
-first, and refuse once the cutover_done document exists (test_reset does).
+first, so they skip on a project without test_reset, which the real one dropped at cutover.
 Run: TRIPDB_LIVE_TESTS=1 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_roundtrip.py"
 """
 import csv, glob, http.server, json, os, sys, tempfile, threading, unittest
@@ -125,7 +125,13 @@ class LiveTest(unittest.TestCase):
 
     def setUp(self):
         self.rest = tripdb._rest(REPO)
-        self.rest.rpc("test_reset")
+        try:
+            self.rest.rpc("test_reset")
+        except S.RestError as e:
+            # the real project dropped test_reset at cutover, and these tests empty the project they run on
+            if " gave 404" in str(e):
+                self.skipTest("the project has no test_reset, so it is the real one. Point .env at a throwaway project to run these")
+            raise
 
     def test_import_refuses_when_rows_exist(self):
         self.rest.insert("airports", [{"code": "ZZZ"}])

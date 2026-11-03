@@ -17,6 +17,7 @@ vi.mock('./lib/remoteTrips', () => ({
   },
 }))
 
+import { ownKey } from '@map/data/ownKey'
 import { outbox } from './lib/outbox'
 import { useStore } from './store'
 
@@ -266,6 +267,28 @@ describe('an older version of a trip', () => {
     expect(s.journey?.version).toBe(2)
     expect(s.viewing).toMatchObject({ version: 2, latest: 4 })
     expect(s.rows['trip-a'].version).toBe(4)
+  })
+
+  it('keeps its own ways when the table changes under it', () => {
+    const oldRow = { ...old(), way_in: { ...way('CPH', 'GUA'), price_dkk: 1111 } } as unknown as TripRow
+    useStore.getState().openVersion(oldRow, 3)
+    useStore.getState().applyRemote([{ ...latest(), version: 4 } as TripRow])
+    expect(useStore.getState().data!.inout.ways['trip-a:in'].price_dkk).toBe(1111)
+  })
+
+  it('is not written as the open draft when the build is swapped', () => {
+    const before = localStorage.getItem(ownKey('latam-planner.current'))
+    useStore.getState().openVersion(old(), 3)
+    useStore.getState().setData(data)
+    expect(localStorage.getItem(ownKey('latam-planner.current'))).toBe(before)
+    expect(useStore.getState().journey?.version).toBe(2)
+  })
+
+  it('keeps its own ways when the build is swapped', () => {
+    const oldRow = { ...old(), way_in: { ...way('CPH', 'GUA'), price_dkk: 1111 } } as unknown as TripRow
+    useStore.getState().openVersion(oldRow, 3)
+    useStore.getState().setData(data)
+    expect(useStore.getState().data!.inout.ways['trip-a:in'].price_dkk).toBe(1111)
   })
 
   it('is left by opening a trip', () => {

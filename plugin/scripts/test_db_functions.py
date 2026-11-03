@@ -1,5 +1,5 @@
 """Live tests of the database functions. They need TRIPDB_LIVE_TESTS=1 and the project keys in the environment or in .env.
-They empty the project first, and test_reset refuses once the cutover_done document exists.
+They empty the project first, so they skip on a project without test_reset, which the real one dropped at cutover.
 Run: TRIPDB_LIVE_TESTS=1 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_db_functions.py"
 """
 import hashlib, json, os, re, threading, unittest, urllib.error, urllib.request
@@ -40,6 +40,14 @@ def call(env, method, path, body=None, key="SUPABASE_SECRET_KEY"):
             return e.code, text
 
 
+def reset(test):
+    """Empty the project, or skip: the real project dropped test_reset at cutover, so these tests need a throwaway one."""
+    code, body = call(test.env, "POST", "rpc/test_reset", {})
+    if code == 404:
+        test.skipTest("the project has no test_reset, so it is the real one. Point .env at a throwaway project to run these")
+    test.assertIn(code, (200, 204), body)
+
+
 def quote_row(qid, **over):
     row = {"quote_id": qid, "build_qid": "Q:" + qid[-6:], "agent": "t", "source": "momondo", "structure": "one_way",
            "first_seen": "2026-10-20T10:00:00Z", "last_seen": "2026-10-20T10:00:00Z",
@@ -55,8 +63,7 @@ def quote_row(qid, **over):
 class AddQuotesTest(unittest.TestCase):
     def setUp(self):
         self.env = load_env()
-        code, body = call(self.env, "POST", "rpc/test_reset", {})
-        self.assertIn(code, (200, 204), body)
+        reset(self)
 
     def add(self, rows, key="SUPABASE_SECRET_KEY"):
         return call(self.env, "POST", "rpc/add_quotes", {"rows": rows}, key)
@@ -132,8 +139,7 @@ class AddQuotesTest(unittest.TestCase):
 class SaveTripTest(unittest.TestCase):
     def setUp(self):
         self.env = load_env()
-        code, body = call(self.env, "POST", "rpc/test_reset", {})
-        self.assertIn(code, (200, 204), body)
+        reset(self)
 
     def save(self, trip, key="SUPABASE_SECRET_KEY"):
         return call(self.env, "POST", "rpc/save_trip", {"trip": trip}, key)
@@ -191,8 +197,7 @@ class DirtyTriggerTest(unittest.TestCase):
 
     def setUp(self):
         self.env = load_env()
-        code, body = call(self.env, "POST", "rpc/test_reset", {})
-        self.assertIn(code, (200, 204), body)
+        reset(self)
 
     def state(self):
         code, rows = call(self.env, "GET", "derive_state?select=dirty_at,dirty_since&id=eq.1")
@@ -250,8 +255,7 @@ class UserscriptTest(unittest.TestCase):
 
     def setUp(self):
         self.env = load_env()
-        code, body = call(self.env, "POST", "rpc/test_reset", {})
-        self.assertIn(code, (200, 204), body)
+        reset(self)
         h = hashlib.sha256(self.TOKEN.encode("utf-8")).hexdigest()
         code, body = call(self.env, "POST", "inbox_tokens?on_conflict=name", [{"name": "suite", "token_hash": h}])
         self.assertIn(code, (200, 201, 204), body)

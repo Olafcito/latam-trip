@@ -59,7 +59,13 @@ class Base(unittest.TestCase):
                 if k.startswith("SUPABASE_"):
                     os.environ.setdefault(k, v)
             self.st = tripdb.get_store(self.paths)
-            self.st.rest.rpc("test_reset")
+            try:
+                self.st.rest.rpc("test_reset")
+            except tripdb_store.RestError as e:
+                # the real project dropped test_reset at cutover, and these tests empty the project they run on
+                if " gave 404" in str(e):
+                    self.skipTest("the project has no test_reset, so it is the real one. Point .env at a throwaway project to run these")
+                raise
         self.write(self.paths.src("places.jsonl"), [
             {"kind": "node", "id": "SJO", "name": "San Jose", "country": "CR", "lat": 9.93, "lon": -84.08, "type": "city",
              "iata": "SJO", "popularity": 3, "why": None, "source": None, "origin": "net-ca"}])

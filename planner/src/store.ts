@@ -175,6 +175,14 @@ interface State {
 export const useStore = create<State>((set, get) => ({
   data: null,
   setData: (data) => {
+    const { viewing } = get()
+    // an older version keeps the ways it was saved with, and is never written as this browser's draft
+    if (viewing) {
+      set({ data: { ...data, inout: withTripWays(data.inout, [viewing.row]) } })
+      const j = get().journey
+      if (j) set({ journey: settled(j, get()) })
+      return
+    }
     set({ data })
     // a trip stored before a leg lost its flight on another day
     const j = get().journey
@@ -446,7 +454,8 @@ export const useStore = create<State>((set, get) => ({
     const merged = mergeTrips(local, repo)
     set({ rows, repo, journey, notice, viewing, saved: merged })
     const d = was.data
-    if (d) set({ data: { ...d, inout: withTripWays(d.inout, list) } })
+    // the version on screen keeps its own ways over the latest row's
+    if (d) set({ data: { ...d, inout: withTripWays(d.inout, viewing ? [...list, viewing.row] : list) } })
   },
   runImport: async () => {
     const data = get().data
