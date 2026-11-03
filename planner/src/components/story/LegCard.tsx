@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense } from 'react'
+import { Fragment, lazy, Suspense, useEffect, useRef } from 'react'
 import type { Booking } from '../../data/types'
 import { clock, hours, kr, legHours, nextDayMark, observed, weekdayDay } from '../../lib/format'
 import { stopsOf } from '../../lib/fares'
@@ -8,7 +8,7 @@ import type { FlightLink } from '../../lib/links'
 import { Check, External, ModeChip, Moon } from '../icons'
 import type { Family } from '@map/data/types'
 import type { LegPoint } from './LegMap'
-import { bagMark } from '../../lib/marks'
+import { bagMark, BORDER } from '../../lib/marks'
 import { BookedBox, type BoxData } from './BookedBox'
 import { Marks } from './Marks'
 
@@ -70,10 +70,17 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
     // the overland note already names who runs it
     f?.carriers.join(', ') || (h.overland ? null : h.operator),
     f ? stopsText(stopsOf(f)) : null,
-    h.border ? 'Crosses a border' : null,
   ].filter((x): x is string => !!x)
-  const bags = [bagMark('cabin', f?.cabin_bag), bagMark('checked', f?.checked_bag)].filter((m) => m != null)
+  const marks = [h.border ? BORDER : null, bagMark('cabin', f?.cabin_bag), bagMark('checked', f?.checked_bag)]
   const seen = f?.observed_at ?? h.observed_at
+  // a removed booking hands the focus to Mark as booked once it is back, so the keyboard is not left on nothing
+  const refocus = useRef(false)
+  const bookBtn = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (!refocus.current || booking || !bookBtn.current) return
+    refocus.current = false
+    bookBtn.current.focus({ preventScroll: true })
+  }, [booking, onBook])
   return (
     <div className="lc" data-f={family}>
       <header className="lc-head">
@@ -82,9 +89,10 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
         {h.overnight && <span className="lc-night"><Moon /> Overnight</span>}
       </header>
 
-      {booking && data && <BookedBox booking={booking} data={data} changing={false} onEdit={onEdit} />}
+      {booking && data && <BookedBox booking={booking} data={data} changing={false} onEdit={onEdit} onRemoved={() => { refocus.current = true }} />}
 
-      <div className="lc-ends">
+      {/* the booked box shows the route, so the ends are not said twice */}
+      {!(booking && data) && <div className="lc-ends">
         <div className="lc-end">
           {f && <b className="lc-time">{clock(f.depart)}</b>}
           {f && <span className="lc-day">{weekdayDay(f.depart)}</span>}
@@ -101,13 +109,13 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
           {ends.toCode && <span className="lc-code">{ends.toCode}</span>}
           <small>{ends.toName}</small>
         </div>
-      </div>
+      </div>}
 
       {points && <Suspense fallback={<div className="lm" aria-hidden="true" />}><LegMap points={points} family={family} /></Suspense>}
       {h.overland && <p className="lc-note">{h.overland}</p>}
       {through.length > 0 && <p className="lc-note">Through {inWords(through)}. The time adds up those legs, with no waiting.</p>}
       {facts.length > 0 && <ul className="lc-facts">{facts.map((x) => <li key={x}>{x}</li>)}</ul>}
-      <Marks list={bags} />
+      <Marks list={marks} />
 
       {!booking && (
         <div className="lc-price">
@@ -119,7 +127,7 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
       {(link || onBook) && (
         <footer className="lc-act">
           {link && <a className="btn small" href={link.href} target="_blank" rel="noopener noreferrer">{link.saved ? `Open on ${link.site}` : 'Search Momondo'}<External /></a>}
-          {onBook && <button type="button" className="btn small mark-booked" onClick={onBook}><Check s={14} />Mark as booked</button>}
+          {onBook && <button ref={bookBtn} type="button" className="btn small mark-booked" onClick={onBook}><Check s={14} />Mark as booked</button>}
         </footer>
       )}
     </div>

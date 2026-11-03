@@ -192,6 +192,19 @@ describe('the marks of a row', () => {
     ])
   })
 
+  it('marks the night only on the connection that holds it, and every other long wait as a wait', () => {
+    const w = way({
+      timeline: [
+        { kind: 'flight', from: 'CPH', to: 'BOG', depart: '', arrive: '', hours: 30, connections: [{ airport: 'LIS', layover_h: 5 }, { airport: 'MAD', layover_h: 9 }], carriers: [], overnight_layover: true, self_transfer_inside: false, ticket: 'T' },
+      ],
+    } as unknown as Partial<Way>)
+    const name = (c: string) => ({ MAD: 'Madrid', LIS: 'Lisbon' })[c] ?? c
+    expect(wayStops(w, name).map((s) => s.mark)).toEqual([
+      { kind: 'wait', label: 'Long wait in Lisbon, 5h', tone: 'part' },
+      { kind: 'night', label: 'A night in Madrid, 9h' },
+    ])
+  })
+
   it('marks a way through the United States', () => {
     const r = { ...row('2026-12-03', 'I_t_1203'), way: way({ us_transit: true }) }
     expect(wayMarks(inout, r, 'in', tHome0205b, (c) => c).badges).toEqual([{ kind: 'esta', label: 'Through the United States, ESTA needed', text: 'ESTA' }])

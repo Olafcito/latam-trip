@@ -102,6 +102,16 @@ describe('Fill in yourself', () => {
     expect(r).not.toHaveProperty('cabin_bag')
     expect(r).not.toHaveProperty('checked_bag')
   })
+  it('takes the link of a way from its ticket, and leaves it to the form', () => {
+    const wl: DraftLeg = { kind: 'flight', from: 'CPH', to: 'CTG', day: '2026-12-02', tripId: 'jtest' }
+    const linked = { ...inout, tickets: { ...inout.tickets, T1: ticket('T1', 8235, { link: 'https://example.com/fare' }) } } as unknown as InOut
+    const picked = fromPicked(wl, wIn, linked)
+    expect(picked?.[0].url).toBe('https://example.com/fare')
+    expect(manualRows(wl, picked).some((r) => 'url' in r)).toBe(false)
+    expect(fromPicked(wl, wIn, inout)?.[0]).not.toHaveProperty('url')
+    const odd = { ...inout, tickets: { ...inout.tickets, T1: ticket('T1', 8235, { link: 'javascript:void(0)' }) } } as unknown as InOut
+    expect(fromPicked(wl, wIn, odd)?.[0]).not.toHaveProperty('url')
+  })
   it('keeps both rows of a way on one ticket with the second at 0', () => {
     const wl: DraftLeg = { kind: 'flight', from: 'CPH', to: 'CTG', day: '2026-12-02', tripId: 'jtest' }
     const rows = manualRows(wl, fromPicked(wl, wIn, inout))

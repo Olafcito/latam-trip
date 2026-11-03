@@ -90,8 +90,16 @@ describe('the marks of a flight row', () => {
 
   it('marks a long wait or a night on the stop where it falls', () => {
     expect(marks(flight({ v: ['PTY', 'LIM'], w: [1.5, 5.83] })).stops).toEqual([null, { kind: 'wait', label: 'Long wait in Lima, 5h 50m', tone: 'part' }])
-    expect(marks(flight({ v: ['LIM'], w: [9], o: true })).stops).toEqual([{ kind: 'night', label: 'A night in Lima' }])
+    expect(marks(flight({ v: ['LIM'], w: [9], o: true })).stops).toEqual([{ kind: 'night', label: 'A night in Lima, 9h' }])
     expect(marks(flight({ v: ['LIM'], w: [3.9] })).stops).toEqual([null])
+  })
+
+  it('marks every long wait, and the night only on the stop that holds it', () => {
+    expect(marks(flight({ v: ['PTY', 'LIM'], w: [5, 9], o: true })).stops).toEqual([
+      { kind: 'wait', label: 'Long wait in Panama City, 5h', tone: 'part' },
+      { kind: 'night', label: 'A night in Lima, 9h' },
+    ])
+    expect(marks(flight({ v: ['PTY', 'LIM'], w: [4.5, 6] })).stops.map((m) => m?.kind ?? null)).toEqual(['wait', 'wait'])
   })
 
   it('marks a planned stopover and its nights instead of the wait', () => {
@@ -115,6 +123,7 @@ describe('the marks of a flight row', () => {
   it('marks a self transfer and an airport change on the row', () => {
     expect(marks(flight({ f: ['airport_change', 'self_transfer'] })).badges.map((m) => [m.kind, m.label]))
       .toEqual([['self', 'Self transfer, you check in again'], ['airport', 'Changes airport on the way']])
+    expect(marks(flight({ f: ['airport_change', 'self_transfer'] })).badges.map((m) => m.text)).toEqual(['Self transfer', 'Airport'])
   })
 
   it('marks the bags as the site words them', () => {
@@ -122,6 +131,7 @@ describe('the marks of a flight row', () => {
     expect(bags(null, null)).toEqual([])
     expect(bags('included', null)).toEqual([{ kind: 'cabin', label: 'Cabin bag, included', tone: 'ok' }])
     expect(bags('8 kg', '1 x 23 kg').map((m) => m.tone)).toEqual(['ok', 'ok'])
+    expect(bags('8 kg', '1 x 23 kg').map((m) => m.text)).toEqual(['8 kg', '23 kg'])
     expect(bags('Not included', 'For a fee').map((m) => m.tone)).toEqual(['no', 'part'])
     expect(bags('ask the airline', null)[0].tone).toBeUndefined()
   })

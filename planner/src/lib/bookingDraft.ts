@@ -72,10 +72,12 @@ function sharer(inout: Pick<InOut, 'ways'>, w: Way): Way | null {
 
 function wayRow(leg: DraftLeg, w: Way, inout: Pick<InOut, 'tickets'>): Partial<Booking> {
   const t = w.tickets.map((id) => inout.tickets[id]).find(Boolean)
+  // the page of the ticket, the one the way was found on
+  const url = t?.link && /^https?:\/\//.test(t.link) ? t.link : null
   return {
     kind: 'flight', from_code: w.from, to_code: w.to, depart: w.depart, arrive: w.arrive,
     cabin_bag: t?.cabin_bag ?? null, checked_bag: t?.checked_bag ?? null, segments: waySegments(w),
-    currency: 'DKK', source: 'picked', trip_id: leg.tripId ?? null, ticket: null,
+    currency: 'DKK', source: 'picked', trip_id: leg.tripId ?? null, ticket: null, ...(url ? { url } : {}),
   }
 }
 
@@ -112,13 +114,13 @@ export function blank(leg: DraftLeg): Partial<Booking> {
 
 /**
  * The rows Fill in yourself starts from: the picked flight or way with its codes, day and times, so Simon edits rather
- * than types. The seller, the bags and the price come out of the rows because the form holds them, so a field he
+ * than types. The seller, the link, the bags and the price come out of the rows because the form holds them, so a field he
  * empties is not saved from the pick. With nothing picked it is the blank row.
  */
 export function manualRows(leg: DraftLeg, picked: Partial<Booking>[] | null | undefined): Partial<Booking>[] {
   if (!picked?.length) return [{ ...blank(leg), source: 'manual', trip_id: leg.tripId ?? null }]
   return picked.map((row, k) => {
-    const { seller: _s, cabin_bag: _c, checked_bag: _b, price_dkk, ...rest } = row
+    const { seller: _s, url: _u, cabin_bag: _c, checked_bag: _b, price_dkk, ...rest } = row
     return { ...rest, ...(k > 0 ? { price_dkk } : {}), source: 'manual' }
   })
 }

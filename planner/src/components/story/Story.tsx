@@ -452,6 +452,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
                 onward: fixed ? fixedAt > i + 1 : i < ps.length - 1,
                 nextDay: fixed ? legDay(fixed, homeDay) : homeDay,
                 nextLabel: fixed ? `Leg from ${nm(fixed.from)}` : 'Flight home',
+                nextFamily: fixed ? familyOf(fixed.mode) : 'flight',
               }}
               pd={pd}
               link={hopLink(h, inout)}

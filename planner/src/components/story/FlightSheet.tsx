@@ -1,5 +1,6 @@
-import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactElement } from 'react'
 import type { Booking, CrawledFlight } from '../../data/types'
+import type { Family } from '@map/data/types'
 import { bookedDay, bookedGate, isBookedFlight, parkedRow, priceColumn } from '../../lib/booked'
 import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../../lib/format'
 import { fareMarks, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
@@ -8,11 +9,11 @@ import { checkedAgo, momondoUrl, nearestDay, newestSeen, pricesOn, type PairDate
 import { remoteEnabled } from '../../lib/supabase'
 import { flightPricesTask } from '../../lib/tasks'
 import { AskClaude } from '../AskClaude'
-import { Arrow, Calendar, Caret, Check, Clock, External, Plane } from '../icons'
+import { Arrow, Boat, Bus, Caret, Check, Clock, External, Plane } from '../icons'
 import { BookedBox, type BoxData } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
 import { stopsText } from './LegCard'
-import { MarkIcon, Marks } from './Marks'
+import { MarkIcon, Marks, Tip } from './Marks'
 import type { Mark } from '../../lib/marks'
 
 // The window behind a flight on the route: the days around it, each with its cheapest fare, and the
@@ -41,7 +42,11 @@ export interface LegStay {
   nextDay: string
   /** what leaves that day */
   nextLabel: string
+  /** how it leaves, for its icon */
+  nextFamily: Family
 }
+
+const MODE_ICON: Record<Family, () => ReactElement> = { flight: () => <Plane s={13} />, boat: () => <Boat s={13} />, ground: () => <Bus s={13} /> }
 
 const SORTS: [FareSort, string][] = [['cheap', 'Cheapest'], ['fast', 'Fastest'], ['early', 'Earliest']]
 
@@ -61,7 +66,7 @@ function Stay({ at, stay }: { at: string; stay: LegStay }) {
         <dt>{stay.onward ? `From ${stay.toName} on` : `In ${stay.toName}`}</dt>
         <dd data-bad={after < 0}>
           {after < 0 ? `${stay.nextLabel} leaves first` : after === 0 ? 'Passing through' : nights(after)}
-          <span className="mk" role="img" title={`${stay.nextLabel}, ${weekdayDay(stay.nextDay)}`} aria-label={`${stay.nextLabel}, ${weekdayDay(stay.nextDay)}`}><Calendar /><span aria-hidden="true">{weekdayDay(stay.nextDay)}</span></span>
+          <Tip className="mk" kind="next" label={`${stay.nextLabel}, ${weekdayDay(stay.nextDay)}`}>{MODE_ICON[stay.nextFamily]()}<span aria-hidden="true">{weekdayDay(stay.nextDay)}</span></Tip>
         </dd>
       </div>
     </dl>
@@ -205,7 +210,7 @@ function Flight({ row, name, nextDay, now, onPick, state = {} }: { row: FareRow;
           <b title={air || undefined}>{air || 'Airline not listed'}</b>
           <small className="fl-site">
             <span title={site}>{site}</span>
-            {others.length > 0 && <span className="fl-more" role="img" title={`Also on ${others.join(', ')}`} aria-label={`Also on ${others.join(', ')}`}><span aria-hidden="true">+{others.length}</span></span>}
+            {others.length > 0 && <Tip className="fl-more" label={`Also on ${others.join(', ')}`}><span aria-hidden="true">+{others.length}</span></Tip>}
           </small>
         </div>
       </div>
@@ -347,7 +352,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
           <h3>{from.name} to {to.name}</h3>
           <small className="ws-sub">
             <span className="ws-codes" role="img" aria-label={`${from.code} to ${to.code}`}><b>{from.code}</b><Arrow s={12} /><b>{to.code}</b></span>
-            {!picked && !booking && typical != null && <span className="mk" title={`The route usually costs about ${kr(typical)}`}>Typical {kr(typical)}</span>}
+            {!picked && !booking && typical != null && <Tip className="mk" label={`Typical ${kr(typical)}, what the route usually costs`}><span aria-hidden="true">Typical {kr(typical)}</span></Tip>}
           </small>
         </header>
         {booking && <BookedBox ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} onRemoved={() => setRemoved(true)}
@@ -358,8 +363,8 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
         {!hold && <div className="fl-bar">
           <b>{weekdayDay(at)}</b>
           {rows.length > 0 && seen != null && (() => {
-            const ago = checkedAgo(new Date(seen).toISOString(), now)
-            return <span className="mk" role="img" title={`Prices ${ago}`} aria-label={`Prices ${ago}`}><Clock /><span aria-hidden="true">{ago.replace(/^checked /, '')}</span></span>
+            const at = new Date(seen).toISOString()
+            return <Tip className="mk" label={`Prices ${checkedAgo(at, now)}`}><Clock /><span aria-hidden="true">{checkedAgo(at, now, 'short')}</span></Tip>
           })()}
           {rows.length > 1 && <Sort value={by} onChange={setBy} />}
         </div>}

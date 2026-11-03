@@ -14,7 +14,7 @@ import { Arrow, Caret, Check, Plane, Warn } from '../icons'
 import { BookedBox } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
 import { Chip, Days } from './FlightSheet'
-import { MarkIcon, Marks } from './Marks'
+import { MarkIcon, Marks, Tip } from './Marks'
 
 // The way in or the way home opened like any other leg: the days it can leave with a price each, and
 // the ways of the day you look at as tickets, airline, when it leaves and lands with the airports in
@@ -232,7 +232,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
         {!held && (
           <div className="fl-bar">
             <b>{weekdayDay(at)}</b>
-            {rows.length > 0 && <span className="mk" title="Prices are for the way in and the way home together">Both ways</span>}
+            {rows.length > 0 && <Tip className="mk" label="Both ways, the prices are for the way in and the way home together"><span aria-hidden="true">Both ways</span></Tip>}
           </div>
         )}
         <p ref={status} className="ws-said" role="status" tabIndex={-1}>

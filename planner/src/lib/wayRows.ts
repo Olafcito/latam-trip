@@ -1,6 +1,6 @@
 import type { InOut, StopItem, Way } from '../data/types'
 import { clock, hours, kr, weekdayDay } from './format'
-import { feeMark, LONG_WAIT_H, nightMark, type Mark } from './marks'
+import { feeMark, LONG_WAIT_H, nightMark, waitMarks, type Mark } from './marks'
 import { priceOfWays } from './options'
 import { chooseWay, dayOf, endOf, waysOn, type WayChoice } from './ways'
 import { nights } from './waytrack'
@@ -103,10 +103,14 @@ export interface WayMarks {
 
 /** The airports in between with the wait at each, a night, a day stop, a self transfer or a long wait marked on the stop. */
 export function wayStops(way: Way, name: (code: string) => string): StopMark[] {
-  const wait = (code: string, h: number | null, night?: boolean): Mark | null =>
-    h == null || h < LONG_WAIT_H ? null : night ? { kind: 'night', label: `A night in ${name(code)}, ${hours(h)}` } : { kind: 'wait', label: `Long wait in ${name(code)}, ${hours(h)}`, tone: 'part' }
+  const wait = (code: string, h: number | null): Mark | null =>
+    h == null || h < LONG_WAIT_H ? null : { kind: 'wait', label: `Long wait in ${name(code)}, ${hours(h)}`, tone: 'part' }
   return way.timeline.flatMap((t): StopMark[] => {
-    if (t.kind === 'flight') return t.connections.map((c) => ({ code: c.airport, text: c.layover_h != null ? hours(c.layover_h) : null, mark: wait(c.airport, c.layover_h, t.overnight_layover) }))
+    if (t.kind === 'flight') {
+      // the night is on the connection that holds it, the longest, as on a flight row
+      const marks = waitMarks(t.connections.map((c) => c.layover_h), (i) => name(t.connections[i].airport), { night: t.overnight_layover })
+      return t.connections.map((c, i) => ({ code: c.airport, text: c.layover_h != null ? hours(c.layover_h) : null, mark: marks[i] }))
+    }
     const s = t as StopItem
     const at = name(s.airport)
     if (s.kind === 'night') {

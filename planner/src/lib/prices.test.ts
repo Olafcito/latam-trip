@@ -58,6 +58,12 @@ describe('labels', () => {
     expect(checkedAgo('2026-10-28T10:00Z', NOW)).toBe('checked yesterday')
     expect(checkedAgo('2026-10-27T10:00Z', NOW)).toBe('checked 2 days ago')
   })
+  it('says the age alone in the short form', () => {
+    expect(checkedAgo('2026-10-29T11:30Z', NOW, 'short')).toBe('just now')
+    expect(checkedAgo('2026-10-29T07:00Z', NOW, 'short')).toBe('5 hours ago')
+    expect(checkedAgo('2026-10-28T10:00Z', NOW, 'short')).toBe('yesterday')
+    expect(checkedAgo('2026-10-27T10:00Z', NOW, 'short')).toBe('2 days ago')
+  })
   it('calls a price Simon saved "saved by you"', () => {
     expect(sourceLabel('momondo-manual')).toBe('saved by you')
     expect(sourceLabel('google_flights')).toBe('Google Flights')

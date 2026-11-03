@@ -76,18 +76,18 @@ export function priceState(quotes: PairQuote[], now: number = Date.now()): 'none
   return now - t > STALE_DAYS * DAY_MS ? 'stale' : 'fresh'
 }
 
-/** "checked 2 days ago", "checked 5 hours ago", "checked just now". */
-export function checkedAgo(at: string, now: number = Date.now()): string {
+/**
+ * "checked 2 days ago", "checked 5 hours ago", "checked just now". The short form is the age alone, "2 days ago",
+ * for a chip whose icon already says it was checked.
+ */
+export function checkedAgo(at: string, now: number = Date.now(), form: 'long' | 'short' = 'long'): string {
   const t = Date.parse(at)
   if (!Number.isFinite(t)) return 'not checked'
   const h = Math.max(0, (now - t) / 3_600_000)
-  if (h < 1) return 'checked just now'
-  if (h < 24) {
-    const n = Math.floor(h)
-    return `checked ${n} ${n === 1 ? 'hour' : 'hours'} ago`
-  }
+  const n = Math.floor(h)
   const d = Math.floor(h / 24)
-  return d === 1 ? 'checked yesterday' : `checked ${d} days ago`
+  const age = h < 1 ? 'just now' : h < 24 ? `${n} ${n === 1 ? 'hour' : 'hours'} ago` : d === 1 ? 'yesterday' : `${d} days ago`
+  return form === 'short' ? age : `checked ${age}`
 }
 
 const SOURCE: Record<string, string> = {

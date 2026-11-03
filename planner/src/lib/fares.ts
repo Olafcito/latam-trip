@@ -1,9 +1,7 @@
 import type { CrawledFlight } from '../data/types'
-import { hours } from './format'
-import { bagMark, LONG_WAIT_H, nightMark, type Mark } from './marks'
+import { bagMark, nightMark, waitMarks, type Mark } from './marks'
 import { sourceLabel, type PairQuote } from './prices'
 import { addDays } from './time'
-import { nights } from './waytrack'
 
 // The fares known for a day as the rows of the flight sheet. A quote from pair_dates and a flight
 // picked on a trip take one shape, so a picked flight and the day's list read the same.
@@ -92,25 +90,23 @@ export interface FareMarks {
 }
 
 /**
- * What about a flight changes the plan around it, as marks. The longest wait is marked on its stop as a
- * stopover, a night or a long wait. nextDay is the day the next leg leaves, a landing after it is marked bad.
+ * What about a flight changes the plan around it, as marks. The waits are marked on their stops as waitMarks
+ * reads them, the stopover or the night on the longest. nextDay is the day the next leg leaves, a landing
+ * after it is marked bad.
  */
 export function fareMarks(f: CrawledFlight, name: (code: string) => string, nextDay: string | null): FareMarks {
   const stops: (Mark | null)[] = f.via.map(() => null)
   const badges: Mark[] = []
-  if (f.self_transfer) badges.push({ kind: 'self', label: 'Self transfer, you check in again', tone: 'part' })
-  if (f.airport_change) badges.push({ kind: 'airport', label: 'Changes airport on the way', tone: 'part' })
-  const longest = f.layover_h.reduce<number>((at, h, i) => ((h ?? 0) > (f.layover_h[at] ?? 0) ? i : at), 0)
-  const code = f.via[longest]
-  const where = code ? ` in ${name(code)}` : ''
-  const wait = f.layover_h[longest] ?? 0
-  const stop: Mark | null = f.stopover ? { kind: 'stopover', label: `Stopover${where}${wait ? `, ${nights(Math.max(1, Math.round(wait / 24)))}` : ''}` }
-    : f.overnight_layover ? { kind: 'night', label: `A night${where}` }
-      : wait >= LONG_WAIT_H ? { kind: 'wait', label: `Long wait${where}, ${hours(wait)}`, tone: 'part' }
-        : null
-  // a stop whose airport is not known carries its mark on the row
-  if (stop && code) stops[longest] = stop
-  else if (stop) badges.push(stop)
+  if (f.self_transfer) badges.push({ kind: 'self', label: 'Self transfer, you check in again', text: 'Self transfer', tone: 'part' })
+  if (f.airport_change) badges.push({ kind: 'airport', label: 'Changes airport on the way', text: 'Airport', tone: 'part' })
+  // one wait per stop, and one stop for the night or the stopover when the row knows no waits
+  const n = Math.max(f.via.length, f.layover_h.length, f.stopover || f.overnight_layover ? 1 : 0)
+  const waits = Array.from({ length: n }, (_, i) => f.layover_h[i] ?? null)
+  waitMarks(waits, (i) => (f.via[i] ? name(f.via[i]) : ''), { night: f.overnight_layover, stopover: f.stopover }).forEach((m, i) => {
+    // a stop whose airport is not known carries its mark on the row
+    if (i < f.via.length) stops[i] = m
+    else if (m) badges.push(m)
+  })
   for (const m of [bagMark('cabin', f.cabin_bag), bagMark('checked', f.checked_bag)]) if (m) badges.push(m)
   if (!timed(f)) return { stops, leaves: null, lands: null, badges }
   const late = !!nextDay && f.arrive.slice(0, 10) > nextDay

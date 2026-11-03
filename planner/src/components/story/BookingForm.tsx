@@ -68,7 +68,7 @@ export function useBookingForm<P>(target: BookTarget<P> | undefined, after?: (sa
 const TABS: [Start, string][] = [['picked', 'Picked flight'], ['manual', 'Fill in yourself'], ['claude', 'Ask Claude']]
 const REFUND: [NonNullable<BookingFields['refundable']>, string][] = [['yes', 'Yes'], ['partly', 'Partly'], ['no', 'No']]
 const CHANGE: [NonNullable<BookingFields['changeable']>, string][] = [['yes', 'Yes'], ['fee', 'For a fee'], ['no', 'No']]
-const FACTS = ['seller', 'price', 'cabin_bag', 'checked_bag'] as const
+const FACTS = ['seller', 'url', 'price', 'cabin_bag', 'checked_bag'] as const
 
 /** The arrows, Home and End move along a segmented control, as in the sort of the flight sheet. */
 function arrow(e: KeyboardEvent, i: number, n: number): number {
@@ -176,7 +176,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
     const was = existing[0] ?? open.booking
     if (edit && was) return noDay(fromRow(was))
     if (rebook && was) return { ...noDay(fromRow(was)), ...factsOf(picked?.[0]) }
-    // Fill in yourself starts from the pick, so its seller, price and bags are there to edit
+    // Fill in yourself starts from the pick, so its seller, link, price and bags are there to edit
     return { reference: '', ...factsOf(picked?.[0]) }
   })
   const [files, setFiles] = useState<File[]>([])
