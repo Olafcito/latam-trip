@@ -7,7 +7,7 @@ Model (schema in references/inout-schema.md):
            timeline of flights and stops (connection inside a ticket, self-transfer, day stop, night at a hub), so a
            front end can draw it without parsing text.
   ticket   something you buy. A return or open jaw is one ticket shared by a way in and a way home.
-  option   a way in + a way home for one arrival city and one departure city, priced and rated.
+  option   a way in + a way home for one arrival city and one departure city, priced and rated, one per day pair.
 Way types:
   ticket   one ticket from the home airport (return or open jaw), both ways share it
   madrid   one ticket from an alternative origin (trip.json inout.alt_origins, default MAD) + own one-way hops
@@ -35,6 +35,9 @@ sys.argv = [sys.argv[0], "--root", ROOT]
 spec = importlib.util.spec_from_file_location("chains", os.path.join(os.path.dirname(__file__), "chains.py"))
 ch = importlib.util.module_from_spec(spec)
 _so = sys.stdout; sys.stdout = open(os.devnull, "w"); spec.loader.exec_module(ch); sys.stdout = _so
+spec = importlib.util.spec_from_file_location("inout_pick", os.path.join(os.path.dirname(__file__), "inout_pick.py"))
+pk = importlib.util.module_from_spec(spec); spec.loader.exec_module(pk)
+pick_options = pk.pick_options
 cfg, reg_of, HOME = ch.cfg, ch.reg_of, ch.HOME
 IO = cfg.get("inout", {})
 ANCHOR = IO.get("price_anchor", 7000)
@@ -294,12 +297,7 @@ def option(kind, wi, wh, shared):
                        "on_total": round(2 * (0.5 * PT + 0.3 * b["score"] + 0.2 * a["score"]), 1)}}
 
 
-best_opt = {}
-for kind, wi, wh, shared in OPTIONS:
-    o = option(kind, wi, wh, shared)
-    if o["id"] not in best_opt or (o["rating"]["total"], -o["price_dkk"]) > (best_opt[o["id"]]["rating"]["total"], -best_opt[o["id"]]["price_dkk"]):
-        best_opt[o["id"]] = o
-opts = sorted(best_opt.values(), key=lambda o: (-o["rating"]["total"], o["price_dkk"]))
+opts = pick_options([option(*o) for o in OPTIONS], WAYS)   # one per day pair, the best of each city pair keeps its id
 
 nodes = {}
 mp = os.path.join(ROOT, "data", "built", "map.json")

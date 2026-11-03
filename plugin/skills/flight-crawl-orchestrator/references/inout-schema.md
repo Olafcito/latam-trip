@@ -71,7 +71,7 @@ Timeline items, in travel order:
 ## Option (a way in + a way home)
 | field | meaning |
 |---|---|
-| id | `ENTRY-EXIT-type`, e.g. `SAL-VVI-madrid` |
+| id | `ENTRY-EXIT-type`, e.g. `SAL-VVI-madrid`, for the best of the pair. Other day pairs add the days out and home as MMDD, e.g. `CTG-GUA-ticket-1202-0203` |
 | type, entry, exit | |
 | way_in, way_home | way ids |
 | shared_ticket | ticket id when both ways are one ticket |
@@ -79,8 +79,9 @@ Timeline items, in travel order:
 | extras | `cabin_bag_fees_dkk`, `checked_bag_fees_dkk`, `hub_nights`, `hub_stay_estimate_dkk` |
 | rating | `total` /10, `price` 1-5, `way_in` 1-5, `way_home` 1-5 |
 
-Options list the best per (entry, exit, type). For `oneways`, any way in can be combined with any way home: the
-journey builder adds `price_dkk` and `extras` of the two ways.
+Options list the best per (entry, exit, type) and day pair (day out, day home), best first by rating total and then
+price. For `oneways`, any way in can be combined with any way home: the journey builder adds `price_dkk` and `extras`
+of the two ways.
 
 ## Rating
 - Way score: 5, minus 1 per night at a hub, minus 1 if the way has any change between separate tickets, minus 1 for

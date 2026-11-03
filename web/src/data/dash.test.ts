@@ -148,6 +148,7 @@ describe('airports of a row', () => {
   it('reads the in and home codes from the id', () => {
     expect(airportsOf('SJO-LPB-ticket|CA-CO-BO')).toEqual(['SJO', 'LPB'])
     expect(airportsOf('GUA-SJO-ticket')).toEqual(['GUA', 'SJO'])
+    expect(airportsOf('CTG-GUA-ticket-1202-0203')).toEqual(['CTG', 'GUA'])
     expect(airportsOf('SJO-SJO-oneways')).toEqual(['SJO'])
     expect(airportsOf('MDE>ADZ|Q:b5dabe45f30b')).toEqual([])
   })
