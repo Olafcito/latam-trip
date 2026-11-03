@@ -4,6 +4,7 @@ type Row = Record<string, unknown>
 const inserts: Row[] = []
 let handler: (cb: () => void) => void = () => {}
 let fail: string | null = null
+const topics: string[] = []
 vi.mock('./supabase', () => ({
   remoteEnabled: () => true,
   supabase: {
@@ -13,7 +14,7 @@ vi.mock('./supabase', () => ({
         return { select: () => ({ single: async () => (fail ? { data: null, error: { message: fail } } : { data: { id: 10000 + inserts.length }, error: null }) }) }
       },
     }),
-    channel: () => ({
+    channel: (topic: string) => (topics.push(topic), {
       on: (_k: string, _f: unknown, cb: () => void) => {
         handler(cb)
         return { subscribe: () => ({}) }
@@ -70,5 +71,14 @@ describe('tasks', () => {
     fire()
     expect(seen).toEqual(['changed'])
     stop()
+  })
+
+  it('a sheet opened again listens on a channel of its own', () => {
+    // the client hands back a channel of the same name that is still subscribed, and adding to it throws
+    topics.length = 0
+    subscribeTasks(() => {})()
+    subscribeTasks(() => {})()
+    expect(topics.length).toBe(2)
+    expect(topics[0]).not.toBe(topics[1])
   })
 })

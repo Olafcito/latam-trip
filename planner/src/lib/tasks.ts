@@ -75,11 +75,11 @@ export async function loadTasks(tripId: string): Promise<TaskRow[]> {
   return (data ?? []) as TaskRow[]
 }
 
-/** Calls cb on every change of tasks. Returns the way to stop listening. */
+/** Calls cb on every change of tasks. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
 export function subscribeTasks(cb: () => void): () => void {
   if (!supabase) return () => {}
   const client = supabase
-  const channel = client.channel('tasks-changes').on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, cb).subscribe()
+  const channel = client.channel(`tasks-changes-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, cb).subscribe()
   return () => {
     void client.removeChannel(channel)
   }

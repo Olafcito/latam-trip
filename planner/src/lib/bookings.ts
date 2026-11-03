@@ -25,11 +25,11 @@ export async function loadBookings(): Promise<Booking[]> {
   return (data ?? []) as Booking[]
 }
 
-/** Calls cb on every change of bookings. Returns the way to stop listening. */
+/** Calls cb on every change of bookings. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
 export function subscribeBookings(cb: () => void): () => void {
   if (!supabase) return () => {}
   const client = supabase
-  const channel = client.channel('bookings-changes').on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, cb).subscribe()
+  const channel = client.channel(`bookings-changes-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, cb).subscribe()
   return () => {
     void client.removeChannel(channel)
   }

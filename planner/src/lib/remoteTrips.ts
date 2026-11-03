@@ -110,11 +110,11 @@ export async function deleteTrip(id: string): Promise<{ ok: true } | { ok: false
   return error ? { ok: false, message: error.message } : { ok: true }
 }
 
-/** Calls cb on every change of trips. Returns the way to stop listening. */
+/** Calls cb on every change of trips. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
 export function subscribeTrips(cb: () => void): () => void {
   if (!supabase) return () => {}
   const client = supabase
-  const channel = client.channel('trips-changes').on('postgres_changes', { event: '*', schema: 'public', table: 'trips' }, cb).subscribe()
+  const channel = client.channel(`trips-changes-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'trips' }, cb).subscribe()
   return () => {
     void client.removeChannel(channel)
   }
