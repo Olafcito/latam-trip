@@ -257,3 +257,54 @@ export interface AppData {
   /** null when meta.json could not be read */
   meta: Meta | null
 }
+
+// ---- bookings (the owner only table of 0013_bookings.sql)
+
+export type BookingKind = 'flight' | 'bus' | 'boat' | 'stay' | 'other'
+
+/** A file of a booking in the private bucket. A size of null means the upload is not confirmed yet. */
+export interface BookingFile {
+  path: string
+  name: string
+  type: string
+  size: number | null
+  added_at: string
+}
+
+/** One leg or one stay that is paid for. depart and arrive are local times, "2026-12-08" or "2026-12-08T06:15". */
+export interface Booking {
+  id: string
+  kind: BookingKind
+  status: 'booked' | 'cancelled'
+  from_code: string | null
+  to_code: string | null
+  depart: string | null
+  arrive: string | null
+  place_id: string | null
+  check_in: string | null
+  check_out: string | null
+  lodging_id: string | null
+  room_id: string | null
+  reference: string | null
+  seller: string | null
+  url: string | null
+  price_dkk: number | null
+  price: number | null
+  currency: string | null
+  refundable: 'yes' | 'no' | 'partly' | null
+  changeable: 'yes' | 'no' | 'fee' | null
+  change_until: string | null
+  cancel_until: string | null
+  cabin_bag: string | null
+  checked_bag: string | null
+  segments: unknown[] | null
+  travellers: number
+  trip_id: string | null
+  /** rows of one ticket share this value, and the first of them holds the price */
+  ticket: string | null
+  source: 'picked' | 'manual' | 'claude' | null
+  notes: string | null
+  attachments: BookingFile[]
+  created_at: string
+  updated_at: string
+}

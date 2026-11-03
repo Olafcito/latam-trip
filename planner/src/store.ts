@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { ownKey, readOwn } from '@map/data/ownKey'
-import type { AppData, CrawledFlight, Way } from './data/types'
+import type { AppData, Booking, CrawledFlight, Way } from './data/types'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
 import { dayDiff } from './lib/format'
 import { applyMove, journeyIsValid, legDay, newJourney, nodeForAirport, nodeName, pinLegs, schedule, stopGoes, totals, type Hop, type Journey, type NightMove, type Place, type Schedule } from './lib/journey'
@@ -198,9 +198,15 @@ interface State {
   clearMapCard: () => void
   /** a trip edit from the route map, read back into journeys */
   applyMapTrips: (after: TripState, facts?: LegFacts) => void
+
+  /** every booking row, cancelled ones too, read live. Empty when signed out */
+  bookings: Booking[]
+  setBookings: (bookings: Booking[]) => void
 }
 
 export const useStore = create<State>((set, get) => ({
+  bookings: [],
+  setBookings: (bookings) => set({ bookings }),
   data: null,
   setData: (data) => {
     const { viewing } = get()

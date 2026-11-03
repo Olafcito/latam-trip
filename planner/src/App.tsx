@@ -20,6 +20,7 @@ import { dataChanged } from './data/rev'
 import { clearRouteData } from './data/routeMap'
 import { clearPairDates } from './data/pairDates'
 import { loadDeletedIds, loadTrips, loadVersions, subscribeTrips } from './lib/remoteTrips'
+import { loadBookings, subscribeBookings } from './lib/bookings'
 import { loadDeriveState, refresh, subscribeBuilds, type DeriveState } from './lib/remoteFiles'
 import { MapScreen } from './screens/MapScreen'
 import { TripsScreen } from './screens/TripsScreen'
@@ -227,6 +228,29 @@ export function App() {
       window.removeEventListener('online', online)
     }
   }, [userId, applyRemote, flushOutbox])
+
+  // Bookings are owner only, so they wait for the signed in user. Signed out the list is empty, and a failed read keeps the last one
+  const setBookings = useStore((s) => s.setBookings)
+  useEffect(() => {
+    if (!remoteEnabled() || !userId) {
+      setBookings([])
+      return
+    }
+    let live = true
+    const reload = () => {
+      loadBookings().then((b) => {
+        if (live) setBookings(b)
+      }, () => {})
+    }
+    reload()
+    const stop = subscribeBookings(reload)
+    window.addEventListener('online', reload)
+    return () => {
+      live = false
+      stop()
+      window.removeEventListener('online', reload)
+    }
+  }, [userId, setBookings])
 
   // a finished build swaps the changed files in with no reload. The strip says when builds have stopped
   const [build, setBuild] = useState<DeriveState | null>(null)
