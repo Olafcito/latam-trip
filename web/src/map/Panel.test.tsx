@@ -124,6 +124,64 @@ describe('the city panel as sections', () => {
     expect(bog).toContain('1.755 kr')
   })
 
+  it('a stop visited twice reads its legs from its own visits', () => {
+    const twice: Trip = {
+      ...trip,
+      legs: [
+        { cid: 'MGA-SAL', from: 'MGA', to: 'SAL', mode: 'shuttle' },
+        { cid: 'BOG-SAL', from: 'SAL', to: 'BOG', mode: 'flight' },
+        { cid: 'BOG-SAL', from: 'BOG', to: 'SAL', mode: 'flight' },
+      ],
+    }
+    const sal = sectionOf(city('SAL', { trip: twice }), 'Overview')
+    expect(sal).toContain('aria-label="Stop 2 and 4 of TEST01"')
+    // it arrives from Managua the first time and is left only by the end of the trip
+    expect(sal).toContain('Managua')
+    expect(sal).toContain('Add leg')
+    const bog = sectionOf(city('BOG', { trip: twice }), 'Overview')
+    expect(bog).toMatch(/ts-no mono">2</)
+    expect(bog).toMatch(/ts-no mono">4</)
+  })
+
+  it('a one stop trip is first and last at once', () => {
+    const one: Trip = { ...trip, legs: [] }
+    const out = sectionOf(city('MGA', { trip: one }), 'Overview')
+    expect(out).toContain('aria-label="Stop 1 of TEST01"')
+    expect(out).toContain('Add leg')
+  })
+
+  it('a trip with no stops offers a way to start at the open city', () => {
+    const none: Trip = { ...trip, start: undefined, legs: [] }
+    expect(sectionOf(city('SAL', { trip: none }), 'Overview')).toContain('Start here')
+  })
+
+  it('a leg to a place the map does not have shows no row and never an id', () => {
+    const lost: Trip = { ...trip, legs: [{ cid: 'MGA-SAL', from: 'MGA', to: 'ZZZ9', mode: 'shuttle' }] }
+    const out = sectionOf(city('MGA', { trip: lost }), 'Overview')
+    expect(out).not.toContain('ZZZ9')
+  })
+
+  it('Fly in and Fly home are rows shaped like a leg, with the Unknown mark where a fact is missing', () => {
+    const flown = {
+      ...trip,
+      legs: [],
+      inout: {
+        entry: 'MGA', exit: 'MGA',
+        way_in: { from: 'CPH', to: 'MGA', depart: null, arrive: '2026-12-02T21:36', total_hours: 18.7, price_dkk: 3000 },
+        way_home: { from: 'MGA', to: 'CPH', depart: '2027-02-03T08:00', arrive: null, total_hours: null },
+      },
+    } as unknown as Trip
+    const out = sectionOf(city('MGA', { trip: flown }), 'Overview')
+    expect(out).toContain('Fly in')
+    expect(out).toContain('2 Dec')
+    expect(out).toContain('18h42m')
+    expect(out).toContain('3.000 kr')
+    expect(out).toContain('Fly home')
+    expect(out).toContain('3 Feb')
+    expect(out).toContain('Travel time not known')
+    expect(out).toContain('Price not known')
+  })
+
   it('a stop with no leg out offers the add leg control', () => {
     const out = sectionOf(city('BOG', { trip }), 'Overview')
     expect(out).toContain('San Salvador')
@@ -175,6 +233,10 @@ describe('the panel in the phone sheet', () => {
     const head = sheetHead(props('SAL'))!
     expect(head.label).toBe('San Salvador')
     expect(renderToStaticMarkup(<>{head.title}</>)).toContain('San Salvador')
+  })
+
+  it('the phone sheet names the stop number with the place', () => {
+    expect(sheetHead(props('SAL', { trip }))!.label).toBe('Stop 2, San Salvador')
   })
 
   it('the sheet head puts the stop number of the open trip on the photo', () => {

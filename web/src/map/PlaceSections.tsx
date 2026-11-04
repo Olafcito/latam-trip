@@ -28,17 +28,13 @@ export interface SavedRow {
   score?: number | null
 }
 
-/** What is saved at a place: its experiences in list order, then its gyms by score. */
+/** What is saved at a place, in list order. Only experiences are saved: a gym is never marked. */
 export function savedAt(api: MapModeApi, categories: ExperienceCategory[] | undefined, placeId: string): SavedRow[] {
   const exps = api.exps.at(placeId).flatMap((e: Experience): SavedRow[] => {
     const mark = api.exps.markOf('experience', e.id)
     return mark ? [{ ref: { kind: 'experience', id: e.id }, name: e.name, note: mark.note, category: categoryLabel(categories, e.category) }] : []
   })
-  const gyms = rankGyms(api.gyms.gymsAtPlace(placeId)).flatMap((g): SavedRow[] => {
-    const mark = api.exps.markOf('experience', g.id)
-    return mark ? [{ ref: { kind: 'gym', id: g.id }, name: g.name, note: mark.note, category: disciplinesOf(g).join(', '), score: totalOf(g) }] : []
-  })
-  return [...exps, ...gyms]
+  return exps
 }
 
 export function PlaceSections({ api, categories, placeId, flush, withSaved, onCard }: PlaceSectionsProps) {

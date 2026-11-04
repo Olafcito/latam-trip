@@ -1,7 +1,7 @@
 import { useRef, useState, type ReactNode, type Ref } from 'react'
 import { airportFlights, byCountry, countries, countryName, landing, neighbours, otherEnd, pairFlights, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
 import { capped } from '../data/cardFacts'
-import { legOption, tripPieces, tripStops, type Piece, type Trip, type TripLeg } from '../data/trips'
+import { legOption, tripPieces, type Piece, type SeedWay, type Trip, type TripLeg } from '../data/trips'
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate } from '../lib/format'
 import { Flag as CountryFlag } from './Flag'
@@ -131,7 +131,7 @@ export function sheetHead(p: PanelProps): SheetHead | null {
   if (!city || (view.panel !== 'city' && view.panel !== 'more')) return null
   const stop = view.panel === 'city' && p.trip ? tripStop(p.trip, city) : null
   return {
-    label: city.short_name,
+    label: stop ? `Stop ${stop.numbers.join(' and ')}, ${city.short_name}` : city.short_name,
     title: view.panel === 'more' ? city.name : city.short_name,
     count: countryName(model, city.country),
     peek: view.panel === 'city' && (
@@ -311,6 +311,17 @@ function CityView(p: PanelProps & { city: Place }) {
         {p.trip && stop && (
           <StopLegs p={p} trip={p.trip} city={city} stop={stop} days={p.stopDays?.(city.id) ?? null} onAdd={list.length ? addLeg : null} />
         )}
+        {p.trip && !stop && list.length > 0 && visits(p.trip).length === 0 && (
+          // a trip with no stops yet starts wherever the first leg is added
+          <ol className="tstop stg" aria-label={`Start ${p.trip.name}`}>
+            <li className="ts-row">
+              <button type="button" className="ts-btn ts-line ts-add" onClick={addLeg}>
+                <span className="ts-dot"><Plus /></span>
+                <span className="ts-name">Start here</span>
+              </button>
+            </li>
+          </ol>
+        )}
         {p.stays?.(city.id)}
         {!!(city.summary || city.things_to_do?.length) && (
           <div className="pmid stg">
@@ -341,26 +352,43 @@ function CityView(p: PanelProps & { city: Place }) {
   )
 }
 
-/** Where a city sits in a trip: its stop numbers and the pieces that arrive at it and leave it, first visit first. */
+/** Where a city sits in a trip: its stop numbers, the piece that arrives at its first visit and the piece that leaves its last. */
 interface TripStop {
   numbers: number[]
   first: boolean
   last: boolean
   in: Piece | null
+  /** The stop number at the other end of `in`. */
+  inN: number
   out: Piece | null
+  outN: number
+}
+
+/** The stops of a trip in visiting order, each with the piece that reached it and the piece that left it. Built the way `tripStops` is. */
+function visits(trip: Trip) {
+  const out: { id: string; in: Piece | null; out: Piece | null }[] = trip.start ? [{ id: trip.start, in: null, out: null }] : []
+  for (const piece of tripPieces(trip)) {
+    if (out.at(-1)?.id !== piece.from) out.push({ id: piece.from, in: null, out: null })
+    out.at(-1)!.out = piece
+    if (out.at(-1)!.id !== piece.to) out.push({ id: piece.to, in: piece, out: null })
+  }
+  return out
 }
 
 function tripStop(trip: Trip, city: Place): TripStop | null {
-  const stops = tripStops(trip)
-  const numbers = stops.flatMap((id, i) => (id === city.id ? [i + 1] : []))
-  if (!numbers.length) return null
-  const pieces = tripPieces(trip)
+  const all = visits(trip)
+  const at = all.flatMap((v, i) => (v.id === city.id ? [i] : []))
+  if (!at.length) return null
+  const first = all[at[0]]
+  const last = all[at.at(-1)!]
   return {
-    numbers,
-    first: numbers[0] === 1,
-    last: numbers.at(-1) === stops.length,
-    in: pieces.find((x) => x.to === city.id) ?? null,
-    out: pieces.find((x) => x.from === city.id) ?? null,
+    numbers: at.map((i) => i + 1),
+    first: at[0] === 0,
+    last: at.at(-1) === all.length - 1,
+    in: first.in,
+    inN: at[0], // the visit before the first one
+    out: last.out,
+    outN: at.at(-1)! + 2, // the visit after the last one
   }
 }
 
@@ -378,19 +406,14 @@ const day = (at: string | null | undefined) => (at ? shortDate(at.slice(0, 10)) 
  * A stop the trip ends at with no way home gets the control that adds the next leg.
  */
 function StopLegs({ p, trip, city, stop, days, onAdd }: { p: PanelProps; trip: Trip; city: Place; stop: TripStop; days: StopDays | null; onAdd: (() => void) | null }) {
-  const stops = tripStops(trip)
   const flyIn = stop.first && !stop.in ? wayAt(trip, city, 'entry') : null
   const flyHome = stop.last && !stop.out ? wayAt(trip, city, 'exit') : null
   return (
     <ol className="tstop stg" aria-label={`Stop ${stop.numbers.join(' and ')} of ${trip.name}`}>
       {stop.in ? (
-        <PieceRow p={p} piece={stop.in} other={stop.in.from} n={stops.indexOf(stop.in.from) + 1} way="in" />
+        <PieceRow p={p} piece={stop.in} other={stop.in.from} n={stop.inN} way="in" />
       ) : flyIn ? (
-        <li className="ts-row ts-line ts-way in">
-          <span className="ts-dot"><ModeChip family="flight" /></span>
-          <span className="ts-name">Fly in</span>
-          <span className="ts-facts mono">{day(flyIn.arrive) ?? <Unknown title="Arrival date not known" />}</span>
-        </li>
+        <WayRow way={flyIn} end="in" />
       ) : null}
       {days && (
         <li className="ts-row ts-line ts-here">
@@ -402,13 +425,9 @@ function StopLegs({ p, trip, city, stop, days, onAdd }: { p: PanelProps; trip: T
         </li>
       )}
       {stop.out ? (
-        <PieceRow p={p} piece={stop.out} other={stop.out.to} n={stops.indexOf(stop.out.to) + 1} way="out" />
+        <PieceRow p={p} piece={stop.out} other={stop.out.to} n={stop.outN} way="out" />
       ) : flyHome ? (
-        <li className="ts-row ts-line ts-way home">
-          <span className="ts-dot"><ModeChip family="flight" /></span>
-          <span className="ts-name">Fly home</span>
-          <span className="ts-facts mono">{day(flyHome.depart) ?? <Unknown title="Departure date not known" />}</span>
-        </li>
+        <WayRow way={flyHome} end="home" />
       ) : onAdd ? (
         <li className="ts-row">
           <button type="button" className="ts-btn ts-line ts-add" onClick={onAdd}>
@@ -421,6 +440,24 @@ function StopLegs({ p, trip, city, stop, days, onAdd }: { p: PanelProps; trip: T
   )
 }
 
+/** The way in or home as a row shaped like a leg: the date, the time door to door and the way's own price, with the Unknown mark where a fact is missing. */
+function WayRow({ way, end }: { way: SeedWay; end: 'in' | 'home' }) {
+  const date = day(end === 'in' ? way.arrive : way.depart)
+  return (
+    <li className={`ts-row ts-line ts-way ${end}`}>
+      <span className="ts-dot"><ModeChip family="flight" /></span>
+      <span className="ts-text">
+        <span className="ts-name">{end === 'in' ? 'Fly in' : 'Fly home'}</span>
+        <span className="ts-facts mono">
+          {date ?? <Unknown title={end === 'in' ? 'Arrival date not known' : 'Departure date not known'} />}
+          {way.total_hours != null ? <b>{duration(Math.round(way.total_hours * 60))}</b> : <Unknown title="Travel time not known" />}
+          {way.price_dkk != null ? kr(way.price_dkk) : <Unknown title="Price not known" />}
+        </span>
+      </span>
+    </li>
+  )
+}
+
 /** The time and price of a leg: what the host's itinerary carries on the leg, else the connection's fastest option of its mode. */
 function legNumbers(leg: TripLeg, opt: RouteOption | undefined) {
   return { minutes: leg.minutes ?? opt?.duration_min ?? null, dkk: leg.dkk ?? opt?.price_dkk.min ?? null }
@@ -428,7 +465,8 @@ function legNumbers(leg: TripLeg, opt: RouteOption | undefined) {
 
 /** A leg or an overland stretch to or from the stop. A leg opens its route, a stretch goes to the stop at its other end. */
 function PieceRow({ p, piece, other, n, way }: { p: PanelProps; piece: Piece; other: string; n: number; way: 'in' | 'out' }) {
-  const name = p.model.byId.get(other)?.short_name ?? other
+  const name = p.model.byId.get(other)?.short_name
+  if (!name) return null // the other end is not on the map: nothing to name, so no row
   const leg = piece.kind === 'leg' ? piece.leg : null
   const found = leg ? legOption(p.model, leg) : null
   const { minutes, dkk } = leg ? legNumbers(leg, found?.opt) : { minutes: null, dkk: null }

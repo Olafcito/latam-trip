@@ -230,6 +230,12 @@ export function ModeSheet({ title, label, count, peek, tools, narrow, collapsed,
     land(nextDetent(rest.current, e.key === 'ArrowUp' ? 'up' : 'down'), speed.current, SPRING_CALM)
   }
 
+  // closing the panel forgets how far its lists were scrolled, so the next one opens at the top
+  const close = () => {
+    for (const k of Object.keys(scrollMemo)) delete scrollMemo[k]
+    onClose()
+  }
+
   const grip = narrow ? { onPointerDown, onPointerMove, onPointerUp, onPointerCancel } : undefined
 
   return (
@@ -238,7 +244,7 @@ export function ModeSheet({ title, label, count, peek, tools, narrow, collapsed,
         <div className="pslim">
           <span className="pslim-name">{title}</span>
           <button className="x sm" aria-label="Expand panel" onClick={() => onCollapse(false)}><Chevron up={false} /></button>
-          <button className="x sm" aria-label="Close" onClick={onClose}><Close /></button>
+          <button className="x sm" aria-label="Close" onClick={close}><Close /></button>
         </div>
       ) : (
         <>
@@ -257,7 +263,7 @@ export function ModeSheet({ title, label, count, peek, tools, narrow, collapsed,
               <div className="hbtns">
                 {tools}
                 {!narrow && <button className="x" aria-label="Collapse panel" onClick={() => onCollapse(true)}><Chevron up /></button>}
-                <button className="x" aria-label="Close" onClick={onClose}><Close /></button>
+                <button className="x" aria-label="Close" onClick={close}><Close /></button>
               </div>
             </div>
           </div>
