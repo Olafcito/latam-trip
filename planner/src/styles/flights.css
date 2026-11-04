@@ -252,12 +252,14 @@
   /* the details: their heading carries the pencil that edits them, then the reference and the facts */
   .bk-facts { display: grid; gap: 8px; }
   .bk-part-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; }
-  .bk-part-h h5 { margin: 0; }
+  .bk-part .bk-part-h h5 { margin: 0; line-height: 32px; }
   .bk-part-h .bk-edit { margin-right: 6px; background: transparent; color: var(--muted); }
   /* the reference on one row, the code at the right with its copy button, read at a desk */
   .bk-refrow { display: grid; grid-template-columns: 24px auto minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 48px; padding: 4px 6px 4px 12px; border-radius: 10px; background: var(--surface-3); }
   .bk-refrow .bk-code { justify-self: end; text-align: right; }
   .bk-refrow .bk-icon { background: transparent; }
+  /* with no reference the row is one quiet tappable row like Paid under it, no box, the plus at its end */
+  button.bk-refrow { width: 100%; margin: 0; border: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; touch-action: manipulation; }
   /* the facts as one grouped list: the icon, the label, the value at the right with what it covers under it */
   .bk-rows { list-style: none; margin: 0; padding: 0; }
   .bk-rows li { display: grid; grid-template-columns: 24px auto minmax(0, 1fr); align-items: center; gap: 10px; min-height: 44px; padding: 8px 0; }
@@ -283,11 +285,14 @@
   .bk-leg[data-here] { background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--faint); color: var(--text); }
   /* a value never saved is the hollow mark. The reference row without one reads dimmed: a ring in place of its fill */
   .bk-unk { display: inline-grid; place-items: center; font-weight: 400; }
-  .bk-refrow[data-empty] { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
+  .bk-refrow[data-empty] { min-height: 44px; padding: 8px 0; background: transparent; box-shadow: none; border-radius: 8px; }
   .bk-refrow[data-empty] .bk-row-i { color: var(--faint); }
+  .bk-refrow[data-empty] .bk-row-l { color: var(--faint); }
   .bk-refrow[data-empty] .bk-unk { justify-self: end; }
-  .bk-refrow[data-empty]:not(:has(.bk-addref)) { padding-right: 12px; }
-  .bk-refrow .bk-addref { color: var(--muted); }
+  .bk-refrow[data-empty]:not(button) { grid-template-columns: 24px auto minmax(0, 1fr); }
+  .bk-plus { width: 24px; height: 24px; display: grid; place-items: center; color: var(--muted); transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease; }
+  button.bk-refrow:active .bk-plus { transform: scale(0.9); }
+  button.bk-refrow:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
   .bk-out { background: transparent; color: var(--muted); }
   .bk-open { grid-column: 2 / -1; align-self: stretch; display: flex; align-items: center; font-size: var(--fs-small); font-weight: 600; color: var(--muted); text-decoration: none; text-underline-offset: 3px; touch-action: manipulation; }
 
@@ -329,6 +334,8 @@
   .bk-said:empty { margin-top: -16px; }
   .bk-said[data-bad] { color: var(--err); }
   .bk-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  /* Change booking is the one secondary button: a filled hairline pill that reads against the card, not bare text */
+  .bk-acts .bk-change { min-height: 36px; padding: 0 14px; border-color: var(--faint); background: var(--surface-3); }
   /* Done is a neutral lift, since green belongs to the Booked mark and the card edge alone */
   .bk-acts .btn[data-on] { border-color: var(--text); background: var(--surface-3); color: var(--text); }
   /* Remove booking is a quiet word at the far end, red only once chosen, in the question that follows */
@@ -337,11 +344,13 @@
   .bk-ask p { margin: 0; font-size: var(--fs-small); }
   .bk-ask .bk-confirm { border-color: var(--err); background: var(--err); color: var(--ground); }
   @media (hover: hover) and (pointer: fine) {
-    .bk .btn:not(.link, .danger, .bk-confirm, [data-on]):hover:not(:disabled) { background: var(--surface-3); }
+    .bk .btn:not(.link, .bk-confirm, [data-on], .bk-change):hover:not(:disabled) { background: var(--surface-3); }
     .bk-out:hover { color: var(--text); }
     .bk-open:hover { color: var(--text); text-decoration: underline; }
     .bk-tile:hover { border-color: var(--faint); background: color-mix(in srgb, var(--surface-3) 70%, var(--line-2)); }
     .bk-add:hover { border-color: var(--faint); background: transparent; }
+    .bk-acts .bk-change:not([data-on]):hover:not(:disabled) { background: var(--line-2); }
+    button.bk-refrow:hover .bk-plus { color: var(--text); }
     .bk-acts .btn[data-on]:hover { background: var(--line-2); }
     .bk-ask .bk-confirm:hover:not(:disabled) { border-color: var(--err); background: color-mix(in srgb, var(--err) 88%, white); }
   }

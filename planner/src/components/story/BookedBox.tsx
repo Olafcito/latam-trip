@@ -13,10 +13,10 @@ import { Arrow, Bag, Boat, Bus, Check, Clock, Copy, Doc, External, Hash, Link, P
 // button, dimmed with the hollow mark and a plus to add it when none was saved, and the facts as one list of icon
 // rows, with the pencil that edits them on their heading. A ticket for more than one leg is one row: its amount
 // once, then a chip per leg with this leg first and filled. The seller's page opens from a mark on the seller row.
-// Simon's own notes sit apart. It reads the booking row alone, so it is whole even when the leg has no picked flight. One action row ends the box: Change booking is its only button
-// and opens the days and the flights under it to look at, Remove booking is a quiet word at the far end that asks
-// once, here in the box, and sets the booking to cancelled. A bus or a boat has no Change booking, so its row
-// holds the quiet Remove alone.
+// Simon's own notes sit apart. It reads the booking row alone, so it is whole even when the leg has no picked
+// flight. One action row ends the box: Change booking is its only button and opens the days and the flights
+// under it to look at, Remove booking is a quiet word at the far end that asks once, here in the box, and sets
+// the booking to cancelled. A bus or a boat has no Change booking, so its row holds the quiet Remove alone.
 
 export interface BoxData {
   inout: Pick<InOut, 'airports'>
@@ -351,21 +351,27 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
             <h5 id={`${id}-facts`}>Details</h5>
             {onEdit && <button type="button" className="bk-icon bk-edit" onClick={onEdit} aria-label="Edit the booking details" title="Edit the booking details"><Pencil s={16} /></button>}
           </div>
-          <div className="bk-refrow" data-empty={!reference || undefined}>
-            <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
-            <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
-            {reference ? (
-              <>
-                <code className="bk-code" aria-labelledby={`${id}-ref`}>{reference}</code>
-                <CopyButton text={reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
-              </>
-            ) : (
-              <>
-                <Unsaved what="No reference saved" />
-                {onEdit && <button type="button" className="bk-icon bk-addref" onClick={onEdit} aria-label="Add the booking reference" title="Add reference"><Plus /></button>}
-              </>
-            )}
-          </div>
+          {reference ? (
+            <div className="bk-refrow">
+              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
+              <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
+              <code className="bk-code" aria-labelledby={`${id}-ref`}>{reference}</code>
+              <CopyButton text={reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
+            </div>
+          ) : onEdit ? (
+            <button type="button" className="bk-refrow" data-empty onClick={onEdit} aria-label="Add the booking reference" title="Add reference">
+              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
+              <span className="bk-row-l">Reference</span>
+              <Unsaved what="No reference saved" />
+              <span className="bk-plus" aria-hidden="true"><Plus /></span>
+            </button>
+          ) : (
+            <div className="bk-refrow" data-empty>
+              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
+              <span className="bk-row-l">Reference</span>
+              <Unsaved what="No reference saved" />
+            </div>
+          )}
           <BoxRows rows={rows} link={link} onCopied={copied} />
         </section>
 
@@ -403,7 +409,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
           </div>
         ) : (
           <div className="bk-acts">
-            {onChange && <button type="button" className="btn small" data-on={changing || undefined} onClick={() => onChange(!changing)}>{changing ? 'Done' : 'Change booking'}</button>}
+            {onChange && <button type="button" className="btn small bk-change" data-on={changing || undefined} onClick={() => onChange(!changing)}>{changing ? 'Done' : 'Change booking'}</button>}
             <button ref={remove} type="button" className="btn link small bk-remove" onClick={() => setAsking(true)}>Remove booking</button>
           </div>
         )}
