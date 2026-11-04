@@ -11,3 +11,6 @@ planner/public/data/
 .env.*
 data/crawl.db
 .mcp.json
+
+# Roast shots show private trip data
+docs/design/shots/
