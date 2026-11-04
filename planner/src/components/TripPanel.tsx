@@ -12,6 +12,7 @@ import { useSchedule } from '../lib/useSchedule'
 import { legWindow, type LegWindow } from '../lib/legDates'
 import { countryName } from '../lib/colors'
 import { Flag } from '@map/map/Flag'
+import { Unknown } from '@map/map/Unknown'
 import { arcsSorted, shortestPath, type PathMetric } from '../lib/graph'
 import { hopFromArc } from '../lib/journey'
 import { Modal } from './Modal'
@@ -32,7 +33,7 @@ import { WhenPicker } from './story/WhenPicker'
 const family = (mode: string): Family => (mode === 'flight' ? 'flight' : mode === 'boat' ? 'boat' : 'ground')
 
 function Money({ v }: { v: number | null }) {
-  return v == null ? <span className="q" title="Unknown for at least one part">not known</span> : <>{kr(v)}</>
+  return v == null ? <Unknown title="Unknown for at least one part" /> : <>{kr(v)}</>
 }
 
 /** The day a leg leaves. The calendar opens over the map, the pane is too narrow and clips it. */

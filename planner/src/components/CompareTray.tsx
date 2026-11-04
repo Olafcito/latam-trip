@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Unknown } from '@map/map/Unknown'
 import type { AppData } from '../data/types'
 import { day, hours, kr } from '../lib/format'
 import type { Journey } from '../lib/journey'
@@ -58,10 +59,6 @@ const LINES = (data: AppData): Line[] => {
   ]
 }
 
-const Unknown = () => (
-  <span className="cmp-q">not known</span>
-)
-
 /** "A", "A and B", "A, B and C" */
 const listOf = (names: string[]) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`)
 
@@ -70,7 +67,7 @@ export function CompareTray({ data, items, onClear }: { data: AppData; items: Co
   const lines = LINES(data)
   const cell = (line: Line, s: Summary | null, best: boolean): ReactNode => {
     const text = s ? line.text(s) : null
-    if (text == null) return <Unknown />
+    if (text == null) return <Unknown title={`${line.label} not known`} />
     // a ", some not priced" tail marks a floor, faint like any unknown
     const TAIL = ', some not priced'
     const floor = text.endsWith(TAIL)

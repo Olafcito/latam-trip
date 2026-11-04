@@ -7,6 +7,7 @@ import { sourceLabel } from '../../lib/prices'
 import type { FlightLink } from '../../lib/links'
 import { Check, External, ModeChip, Moon } from '../icons'
 import type { Family } from '@map/data/types'
+import { Unknown } from '@map/map/Unknown'
 import type { LegPoint } from './LegMap'
 import { bagMark, BORDER } from '../../lib/marks'
 import { BookedBox, type BoxData } from './BookedBox'
@@ -64,7 +65,7 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
 }) {
   const f = h.flight
   const codes = [ends.fromCode ?? ends.fromName, ...(f?.via ?? []), ends.toCode ?? ends.toName]
-  const dur = legHours(time) ?? (family === 'flight' ? null : 'Time not known')
+  const dur = legHours(time)
   const through = time.about ? points?.slice(1, -1).map((p) => p.name) ?? [] : []
   const facts = [
     // the overland note already names who runs it
@@ -100,7 +101,7 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
           <small>{ends.fromName}</small>
         </div>
         <div className="lc-mid">
-          {dur && <span className="lc-dur">{dur}</span>}
+          {dur ? <span className="lc-dur">{dur}</span> : family !== 'flight' && <span className="lc-dur"><Unknown title="Travel time not known" /></span>}
           <Track codes={codes} waits={f?.layover_h ?? []} family={family} />
         </div>
         <div className="lc-end to">

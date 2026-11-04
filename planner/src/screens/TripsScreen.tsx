@@ -16,6 +16,7 @@ import { Unresolved } from '../components/Unresolved'
 import { VersionMenu } from '../components/VersionMenu'
 import { remoteEnabled } from '../lib/supabase'
 import { TripDashboard } from './TripDashboard'
+import { Unknown } from '@map/map/Unknown'
 
 // The Trips tab. Its home is a list: one row per trip with its name, its route as flags from the
 // landing to the way out, and the all-in price. Every trip runs early December to early February, so
@@ -268,7 +269,7 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
   )
 }
 
-const Q = () => <span className="tt-q">not known</span>
+const Q = () => <Unknown title="Trip total not known" />
 
 const Ticket = () => (
   <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

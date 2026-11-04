@@ -35,4 +35,11 @@ describe('CostStrip', () => {
     expect(cell(html({ hub_stay_dkk: null, cabin_bag_dkk: null, ground_unknown: 1 }), 'Travel total')).toBe(`${kr(6000)}, 3 not priced`)
     expect(cell(html({}), 'Travel total')).toBe(kr(6000))
   })
+
+  it('marks a single unknown cabin or checked bag fee with the hollow mark, never the words not known', () => {
+    const out = html({ cabin_bag_dkk: null, checked_bag_dkk: null })
+    expect(cell(out, 'Cabin-bag fees')).toContain('class="unk"')
+    expect(cell(out, 'Checked-bag fees')).toContain('class="unk"')
+    expect(out).not.toContain('not known')
+  })
 })

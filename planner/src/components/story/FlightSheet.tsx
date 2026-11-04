@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactElement } from 'react'
 import type { Booking, CrawledFlight } from '../../data/types'
 import type { Family } from '@map/data/types'
+import { Unknown } from '@map/map/Unknown'
 import { bookedDay, bookedGate, isBookedFlight, paidPrice, parkedRow, priceColumn } from '../../lib/booked'
 import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../../lib/format'
 import { fareMarks, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
@@ -303,7 +304,7 @@ function Flight({ row, name, nextDay, now, onPick, state = {} }: { row: FareRow;
             <small data-other={f.arrive.slice(0, 10) !== f.depart.slice(0, 10)} data-tone={lands?.tone}>{lands && <MarkIcon m={lands} bare />}{weekdayDay(f.arrive)}</small>
           </div>
         </div>
-      ) : <p className="fl-notime">Times not known</p>}
+      ) : <p className="fl-notime"><Unknown title="Flight times not known" /></p>}
       <div className="fl-price">
         <b title={f.observed_at ? checkedAgo(f.observed_at, now) : undefined}>{kr(f.price_dkk)}</b>
         {col.chip && <Chip text={col.chip} onOpen={state.onOpenBooking} />}

@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
+import { Unknown } from '@map/map/Unknown'
 import { groundCost, regionalCost, staysCost, travelCost, type Totals } from '../lib/journey'
 import { hours, kr } from '../lib/format'
 import { Chevron, DisclosurePanel, useDisclosure } from './Disclosure'
 
 function V({ v, what }: { v: number | null; what: string }) {
-  return v == null ? <span className="q" title={`${what} unknown for at least one ticket`}>not known</span> : <>{kr(v)}</>
+  return v == null ? <Unknown title={`${what} unknown for at least one ticket`} /> : <>{kr(v)}</>
 }
 
 function Cell({ k, children }: { k: string; children: ReactNode }) {
