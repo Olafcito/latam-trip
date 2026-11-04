@@ -426,10 +426,11 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
       <div className="fl-top">
         <header className="fl-h">
           <h3>{from.name} to {to.name}</h3>
-          <small className="ws-sub">
-            <span className="ws-codes" role="img" aria-label={`${from.code} to ${to.code}`}><b>{from.code}</b><Arrow s={12} /><b>{to.code}</b></span>
-            {!picked && !booking && typical != null && <Tip className="mk" label={`Typical ${kr(typical)}, what the route usually costs`}><span aria-hidden="true">Typical {kr(typical)}</span></Tip>}
-          </small>
+          {!picked && !booking && typical != null && (
+            <small className="ws-sub">
+              <Tip className="mk" label={`Typical ${kr(typical)}, what the route usually costs`}><span aria-hidden="true">Typical {kr(typical)}</span></Tip>
+            </small>
+          )}
         </header>
         {booking && <BookedBox ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} onRemoved={() => setRemoved(true)}
           onEdit={book ? () => form.open({ start: 'manual', edit: true, booking }) : undefined} />}
