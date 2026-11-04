@@ -54,7 +54,11 @@
 }
 /* a phone: the header stays one line, the dates give way, they stand on every trip */
 @media (max-width: 400px) {
+  .brand { flex: none; }
   .brand-dates { display: none; }
+  /* the freshness corner keeps its icon and its name, the age waits in the popover */
+  .fresh-age { display: none; }
+  .fresh-btn { margin-right: 0; }
 }
 
 /* loading and the load error */
