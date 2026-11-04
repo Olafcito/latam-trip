@@ -13,7 +13,6 @@
   max-width: 100%; margin: 0;
   font-size: var(--fs-display); font-weight: 650; line-height: 1.15; letter-spacing: -0.02em; color: var(--text);
 }
-.pk-title .flag { display: block; flex: none; border-radius: 2px; }
 .pk-city { min-width: 0; overflow-wrap: anywhere; }
 .pk-arrow { display: inline-grid; place-items: center; flex: none; color: var(--faint); }
 

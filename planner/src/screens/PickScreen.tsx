@@ -149,7 +149,6 @@ function Head({ inout, trip, own, shown }: { inout: InOut; trip: Journey | null;
       </button>
       {trip && own && <p className="pk-eyebrow">In the trip: {cityName(inout, own.in)} in, {cityName(inout, own.home)} home</p>}
       <h2 className="pk-title">
-        <Flag code={h?.country ?? inout.airports[home]?.country ?? ''} size={14} title={shown ? `From ${homeCity}` : undefined} />
         {shown ? (
           <>
             <span className="pk-city">{cityName(inout, shown.in)}</span>
