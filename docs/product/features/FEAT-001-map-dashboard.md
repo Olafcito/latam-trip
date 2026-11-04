@@ -97,7 +97,7 @@ Story 7
 - DES-017. One phone sheet standard across every moment of this journey: a grabber, the peek, half and full detents, one close, and a compact control column inside the safe area that moves with the sheet. No zoom buttons on touch, and the legend lives behind the layers button.
 - DES-029. The selected thing draws as the hero with its connections lit, the past quiet, the future plain, and the camera follows the selection through every moment.
 - DES-030. A layer sits on the trip, never replaces it. The route stays drawn and dimmed, the trip card stays, and the default scope is along the route.
-- DES-015 is still Proposed, and Q-001 is open and REC-018 and REC-019 are flagged. The colour choices this spec needs, selection, booked, layer markers and the mode vocabulary, wait on that palette rather than inventing one here.
+- DES-015 is rewritten by review-012 and still Proposed. Q-001 is answered there, Proposed until Simon accepts it. The colour choices this spec needs, selection, booked, layer markers and the mode vocabulary, follow that palette (selected is a neutral ring on a lift, booked is green, layers are shapes, pattern means mode, saturation means in the trip) and are built only after it is accepted.
 - Whether the panel's five sections are collapsible sections or tabs is not decided anywhere in the design log. The existing pattern on this screen, CityBody and PlaceSections, already folds long lists behind a Show all control rather than tabs, and the experiences layer already renders a Saved group the same way. This spec proposes keeping that one pattern, collapsible sections in a fixed order, for the product lead to confirm rather than introducing tabs as a new control.
 
 ## 9. Edge cases
@@ -147,7 +147,7 @@ Privacy. Lodgings and bookings are owner only tables per PROD-005. The signed ou
 
 ## 12. Open questions
 
-- Q-001 (design log). Which palette carries flight, selected, planned and primary action together. Blocks the colour parts of section 8. Decided by the senior designer.
+- Q-001 (design log). Answered 2026-11-04 by review-012, Proposed. The colour parts of section 8 wait on Simon accepting DES-015 as rewritten.
 - Q-003 (design log). Whether the connection network is on by default for a planner versus a guest. Decided by the product lead.
 - REC-018, REC-019 (flagged, design log). The semantic colour rule for the map and a route line pattern per transport mode. Decided by the senior designer.
 - Whether the panel's five sections are collapsible sections or tabs. This spec proposes collapsible sections, following the existing CityBody, PlaceSections and experiences layer pattern. Decided by the product lead.
