@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ComponentType, type FocusEvent, type KeyboardEvent, type PointerEvent, type ReactNode, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ComponentType, type FocusEvent, type KeyboardEvent, type PointerEvent, type ReactNode, type RefObject } from 'react'
 import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, Option, Ticket, Way, WayType } from '../data/types'
 import { changing, useStore, type Pair } from '../store'
@@ -107,14 +107,25 @@ export function PickScreen({ data }: { data: AppData }) {
   const openRow = useMemo(() => (openKey ? every.find((r) => r.key === openKey) ?? null : null), [every, openKey])
   // what the trip flies now, to say how far the open pair is from it
   const nowRow = useMemo(() => (ownKey ? every.find((r) => r.key === ownKey) ?? null : null), [every, ownKey])
+  // a pair picked in the grid on a narrow window opens under it, so it is brought into view
+  const reveal = useRef(false)
   const toggle = (r: PairRow) => {
-    if (r.key !== openKey) return setPair({ in: r.in, home: r.home })
+    if (r.key !== openKey) {
+      reveal.current = true
+      return setPair({ in: r.in, home: r.home })
+    }
     setPair(null)
     setOwnClosed(true)
   }
   const pane = (row: PairRow) => <PairPane key={row.key} data={data} row={row} trip={trip} now={nowRow} />
   const side = useRef<HTMLDivElement>(null)
   useFitToWindow(side, !inline && openRow ? openRow.key : null)
+  useEffect(() => {
+    if (!reveal.current || !inline || !openKey) return
+    reveal.current = false
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches
+    document.getElementById('pk-pair')?.scrollIntoView({ block: 'nearest', behavior: calm ? 'auto' : 'smooth' })
+  }, [openKey, inline])
   // the picker opens at its top when a trip's sheet sends you here
   useEffect(() => {
     if (pickFor) window.scrollTo({ top: 0 })
@@ -237,8 +248,8 @@ function Controls({ inout, ownShown }: { inout: InOut; ownShown: boolean }) {
   )
 }
 
-/** What a cell says: the score, or the all in price in thousands with one decimal, 7.428 kr as 7,4k. */
-const cellFigure = (v: number, sort: PairSort) => (sort === 'best' ? dec1(v) : `${dec1(v / 1000)}k`)
+/** What a cell says: the score, or the all in price in thousands with one decimal, 7.428 kr as 7,4 with a small k. */
+const cellFigure = (v: number, sort: PairSort) => (sort === 'best' ? dec1(v) : dec1(v / 1000))
 
 /**
  * Every pair at once: the cities flown in to as rows, the cities flown home from as columns, both by region.
@@ -302,7 +313,7 @@ function Matrix({ inout, frame, rows, sort, ownKey, openKey, onPick }: {
   }
 
   return (
-    <section className="mx" aria-label="Pairs">
+    <section className="mx">
       <div className="mx-box">
         <table
           ref={table} className="matrix" role="grid" aria-label="Pairs"
@@ -325,9 +336,8 @@ function Matrix({ inout, frame, rows, sort, ownKey, openKey, onPick }: {
               ))}
             </tr>
           </thead>
-          <tbody>
-            {ins.map((g) => (
-              <Fragment key={g.region}>
+          {ins.map((g) => (
+            <tbody key={g.region}>
                 <tr className="grp"><th colSpan={allHomes.length + 1} scope="rowgroup"><span>{REGION_NAME[g.region] ?? 'Other'}</span></th></tr>
                 {g.codes.map((en) => (
                   <tr key={en} data-hl={hlIn === en || undefined}>
@@ -350,16 +360,15 @@ function Matrix({ inout, frame, rows, sort, ownKey, openKey, onPick }: {
                             title={`${kr(allIn(c.row.best))} all in, score ${dec1(scoreParts(c.row.best.rating).total)}`}
                             onClick={() => onPick(c.row)}
                           >
-                            {fig}
+                            {fig}{sort === 'cheapest' && <small className="mx-k">k</small>}
                           </button>
                         </td>
                       )
                     })}
                   </tr>
                 ))}
-              </Fragment>
-            ))}
-          </tbody>
+            </tbody>
+          ))}
         </table>
       </div>
     </section>
