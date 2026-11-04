@@ -25,9 +25,10 @@ The roaster's instructions live in `plugin/agents/design-roaster.md` and nowhere
 
 1. The shot must be a file. If it only exists as a paste in the conversation, ask Simon to drop it in `docs/design/shots/<screen>/<date>/` (git ignored) or give the path. One shot is enough, and Playwright is an option when nobody has one, not a step. When Playwright takes it, give `browser_take_screenshot` the absolute path, because a relative one resolves against the folder above the repo. Confirm the file exists before dispatching, a roaster sent to a missing file wastes a Read and a retry.
 2. Dispatch `design-roaster`: "Roast this screenshot: <path>", the screen name and, when useful, one line on what the screen is for or which journey step it serves. Give it no design decisions, no earlier reviews and no explanation of why the screen looks the way it does. Independence means context about what the screen should achieve, not instructions about what it should look like. The roaster reads the screen as a stranger would, so it will question things the code explains, such as a tooltip or a conditional label. That is the point, not a flaw to correct in the brief.
-3. Relay the roast as it is. Discuss. Simon agrees, disagrees, challenges and refines. Nothing is recorded yet.
-4. Decide what happens next: implement the agreed direction, explore alternatives with `prototype`, run an audit for the questions the roast could not settle, or leave it.
-5. Record only what was accepted. An accepted rule becomes a DES entry. A problem seen before on other screens becomes or updates a REC entry. An unsettled question becomes a Q entry. A roast with nothing accepted leaves no file behind. Keep the roast text only if Simon asks, as `docs/design/reviews/roast-<screen>-<date>.md`.
+3. Deliver it so Simon can see it on any device. Write the roast as it came to `docs/design/shots/<screen>/<date>/roast.md`, next to the shot and git ignored like it, with a header naming the screen, the shot, the purpose given to the roaster and a Rulings line. Send the shot and the roast file to Simon with `SendUserFile`, display render, and put the roast text in the reply as well. Simon reads the roast against the shot on his phone or his PC. The session that dispatched the roaster does this, never the roaster. A roast that is only named in a reply has not been delivered.
+4. Discuss. Simon rules per numbered finding, accept, reject or later, and can challenge or refine any of them. Nothing is recorded yet. The coordinating agent gives its own view where it differs, and says when the code explains something the roaster could not see, such as a tooltip.
+5. Decide what happens next: implement the agreed direction, explore alternatives with `prototype`, run an audit for the questions the roast could not settle, or leave it.
+6. Record only what was accepted. An accepted rule becomes a DES entry. A problem seen before on other screens becomes or updates a REC entry. An unsettled question becomes a Q entry. The rulings are written into the roast file's Rulings line. The roast stays in the git ignored shots folder, so it may quote whatever the shot showed. It moves to `docs/design/reviews/roast-<screen>-<date>.md` only if Simon asks and only after a check that it quotes nothing private.
 
 ## Design Audit
 
@@ -62,6 +63,8 @@ Scope it. Name the screens, the journey and the question. Shots at 1440x900 and 
 11. **Rulings.** Empty until Simon rules.
 
 Priority scale: critical means the screen fails its core job, high means a journey step fails, medium and low are polish.
+
+When the review file is written, the session that dispatched the audit sends it to Simon with `SendUserFile` together with the shots it cites, display render, so he can read the findings against the screens on any device. Same for a retrospective and a fixes file. Rulings come back per finding number.
 
 ## The living design log
 

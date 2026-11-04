@@ -54,6 +54,7 @@ Every requirement, decision and feature is in one of four states, and a doc neve
 | A run, build or test command changes | The readme for that app, and `CLAUDE.md` if it lists the command |
 | A skill or agent is added, renamed or changes model | `CLAUDE.md` and this map |
 | A plan is merged | The FEAT status to Built, the plan marked done |
+| A roast, audit or retro is finished | Sent to Simon with `SendUserFile` together with its shots, before any discussion. A roast lives next to its shot in the git ignored `docs/design/shots/<screen>/<date>/` |
 | Simon rules on a roast or an audit | The design log, principles and decisions, accepted outcomes only |
 | A decision changes | Every doc that cites its id, found with Grep |
 | A meaningful decision or harness failure outside the id logs | `docs/harness-log.md` |
