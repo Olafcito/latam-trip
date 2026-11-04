@@ -36,3 +36,10 @@ Ids never change. Status is Proposed, Accepted or Reconsidered. Only Simon accep
 - **Reasoning.** The repo and the web bucket are public.
 - **Applies to.** Every feature that stores or shows a booking.
 - **Date.** 2026-11-01. **Status.** Accepted.
+
+## PROD-006 The map is both the overview and the dashboard
+
+- **Decision.** The planner Map tab and the public web map are a geographic interface that doubles as the central management dashboard for places, experiences, training, stays and transport, in one surface. Not a pure geographic overview, not a pure operational planner, and never split into separate overview and management modes or screens.
+- **Reasoning.** Review-010 raised Q-011 because the sidebar architecture and the map composition cannot be fixed without knowing which job the map serves. Simon settled it directly during the FEAT-001 discovery chat on 2026-11-04.
+- **Applies to.** Map tab (`planner/src`), public web map (`web/src/map`), FEAT-001 and any later map work.
+- **Date.** 2026-11-04. **Status.** Accepted.
