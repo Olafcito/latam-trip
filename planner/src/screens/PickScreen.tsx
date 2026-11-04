@@ -535,7 +535,7 @@ function Score({ option, wi, wh }: { option: Option; wi: Way; wh: Way }) {
     { key: 'home', label: 'Way home', v: p.home, of: 3, lost: pointsLost(wh).map(lossLabel) },
     { key: 'in', label: 'Way in', v: p.in, of: 2, lost: pointsLost(wi).map(lossLabel) },
   ]
-  const said = `Score ${dec1(p.total)} of 10: ` + parts.map((x) => `${x.label.toLowerCase()} ${dec1(x.v)} of ${x.of}`).join(', ')
+  const said = `Score ${dec1(p.total)} of 10. ` + parts.map((x) => [`${x.label} ${dec1(x.v)} of ${x.of}`, ...x.lost].join(', ')).join('. ')
   return (
     <div className="pk-score">
       <p className="pk-score-head"><span className="pk-label">Score</span><b>{dec1(p.total)}</b></p>
