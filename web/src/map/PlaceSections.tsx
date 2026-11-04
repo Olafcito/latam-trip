@@ -1,9 +1,9 @@
-// Experiences and Training in the place panel. A row names the thing and opens its window, the detail stays there.
+// Saved places, Experiences and Training in the place panel. A row names the thing and opens its window, the detail stays there.
 import { useState, type ReactNode } from 'react'
 import { capped } from '../data/cardFacts'
 import { categoryLabel } from '../data/experiences'
 import { cityName, disciplinesOf, rankGyms, totalOf } from '../data/gyms'
-import type { ExperienceCategory } from '../data/types'
+import type { ExperienceCategory, Experience } from '../data/types'
 import { CardRow, SavedLine, ScoreChip } from './CardParts'
 import type { CardRef, MapModeApi } from './useMapMode'
 
@@ -13,15 +13,53 @@ export interface PlaceSectionsProps {
   placeId: string
   /** In a view with its own padding, where a section needs none. */
   flush?: boolean
+  /** Lead with what is saved at the place, and keep those rows out of the sections under it. */
+  withSaved?: boolean
   onCard(ref: CardRef): void
 }
 
-export function PlaceSections({ api, categories, placeId, flush, onCard }: PlaceSectionsProps) {
-  const exps = api.exps.at(placeId)
+/** Something saved at a place, an experience or a gym, with the note it was saved with. */
+export interface SavedRow {
+  ref: CardRef
+  name: string
+  note: string | null
+  /** The category of an experience, the disciplines of a gym. */
+  category: string
+  score?: number | null
+}
+
+/** What is saved at a place: its experiences in list order, then its gyms by score. */
+export function savedAt(api: MapModeApi, categories: ExperienceCategory[] | undefined, placeId: string): SavedRow[] {
+  const exps = api.exps.at(placeId).flatMap((e: Experience): SavedRow[] => {
+    const mark = api.exps.markOf('experience', e.id)
+    return mark ? [{ ref: { kind: 'experience', id: e.id }, name: e.name, note: mark.note, category: categoryLabel(categories, e.category) }] : []
+  })
+  const gyms = rankGyms(api.gyms.gymsAtPlace(placeId)).flatMap((g): SavedRow[] => {
+    const mark = api.exps.markOf('experience', g.id)
+    return mark ? [{ ref: { kind: 'gym', id: g.id }, name: g.name, note: mark.note, category: disciplinesOf(g).join(', '), score: totalOf(g) }] : []
+  })
+  return [...exps, ...gyms]
+}
+
+export function PlaceSections({ api, categories, placeId, flush, withSaved, onCard }: PlaceSectionsProps) {
+  const saved = withSaved ? savedAt(api, categories, placeId) : []
+  const held = new Set(saved.map((s) => s.ref.id))
+  const exps = api.exps.at(placeId).filter((e) => !held.has(e.id))
   const city = api.gyms.cityOfPlace(placeId)
-  const gyms = rankGyms(api.gyms.gymsAtPlace(placeId))
+  const gyms = rankGyms(api.gyms.gymsAtPlace(placeId)).filter((g) => !held.has(g.id))
   return (
     <>
+      {!!saved.length && (
+        <Section title="Saved places" flush={flush} rows={saved} render={(r) => (
+          <CardRow
+            key={r.ref.id}
+            name={r.name}
+            sub={r.note || r.category}
+            lead={r.score !== undefined ? <ScoreChip total={r.score} /> : undefined}
+            onClick={() => onCard(r.ref)}
+          />
+        )} />
+      )}
       {!!exps.length && (
         <Section title="Experiences" flush={flush} rows={exps} render={(e) => {
           const saved = api.exps.markOf('experience', e.id)
@@ -58,7 +96,7 @@ export function PlaceSections({ api, categories, placeId, flush, onCard }: Place
   )
 }
 
-interface SectionProps<T> {
+export interface SectionProps<T> {
   title: string
   flush?: boolean
   rows: T[]
@@ -67,7 +105,7 @@ interface SectionProps<T> {
   render(row: T): ReactNode
 }
 
-function Section<T>({ title, flush, rows, head, render }: SectionProps<T>) {
+export function Section<T>({ title, flush, rows, head, render }: SectionProps<T>) {
   const [open, setOpen] = useState(false)
   const { shown, folded } = capped(rows, open)
   return (

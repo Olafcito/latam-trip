@@ -20,7 +20,7 @@
 /* ---------- Where to stay ---------- */
 .ws { margin: 16px 0 4px; container-type: inline-size; }
 /* in the map's city panel it keeps the panel's own gutter and does not give its height away to the list below */
-.pview > .ws { margin: 14px 14px 2px; flex: none; }
+.pview .overview > .ws { margin: 14px 14px 2px; flex: none; }
 .ws-head { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
 .ws-head h4 { margin: 0; font-size: var(--fs-label); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--faint); }
 

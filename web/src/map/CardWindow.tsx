@@ -144,8 +144,8 @@ function Photo({ row, name }: { row: Pick<Experience, 'image' | 'image_source'>;
         <img src={sized(img.url, 960)} alt={name} width={img.w ?? undefined} height={img.h ?? undefined} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailed(true)} />
       </div>
       <p className="credit mono">
-        Photo: <a href={img.page ?? img.url} {...away}>{img.credit || 'Unknown'}</a>
-        {img.licence ? ` · ${img.licence}` : ''}, Wikimedia Commons
+        Photo: <a href={img.page ?? img.url} {...away}>{img.credit || 'Wikimedia Commons'}</a>
+        {img.licence ? ` · ${img.licence}` : ''}{img.credit ? ', Wikimedia Commons' : ''}
       </p>
     </div>
   )

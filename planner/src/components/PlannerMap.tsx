@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
+import type { StopDays } from '@map/map/Panel'
 import { RouteMap } from '@map/map/RouteMap'
 import { buildModel } from '@map/data/model'
 import type { TripState } from '@map/data/trips'
@@ -87,6 +88,17 @@ export function PlannerMap() {
     [setPaneMini],
   )
   const model = useMemo(() => (data ? buildModel(data) : null), [data])
+  const appData = useStore((s) => s.data)
+  const sched = useSchedule(appData, mapOpen ? journey : null)?.sched ?? null
+  // a stop's nights and dates for the map's city panel, from its first visit in the open trip
+  const stopDays = useCallback(
+    (placeId: string): StopDays | null => {
+      if (!journey || !sched) return null
+      const at = sched.places[journey.places.findIndex((p, i) => p.node === placeId && sched.places[i])]
+      return at ? { nights: at.days, inDay: at.inDay, outDay: at.outDay, exact: at.exact } : null
+    },
+    [journey, sched],
+  )
 
   const rev = useDataRev()
   useEffect(() => {
@@ -148,6 +160,7 @@ export function PlannerMap() {
         sideWidth={hasPane && paneMini ? 236 : 360}
         sideMini={hasPane && paneMini}
         stays={cityStays}
+        stopDays={stopDays}
       />
     </div>
   ) : (

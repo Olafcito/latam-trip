@@ -269,7 +269,9 @@
 
 .pbody { padding: 14px; display: flex; flex-direction: column; gap: 16px; }
 .hero { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: var(--surface-2); }
-.credit { margin-top: 5px !important; font-size: 10px; color: var(--muted); }
+/* the photo's credit is fine print under it, not a link to look at */
+.credit { margin-top: 6px !important; font-size: 10px; line-height: 1.4; color: var(--faint); }
+:scope .credit a { color: inherit; text-decoration: none; }
 .p-why { font-size: 16px; font-weight: 700; line-height: 1.3; }
 .p-sum { font-size: 14px; line-height: 1.55; color: var(--text); text-wrap: pretty; }
 .facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; }
@@ -383,6 +385,9 @@
   .more:hover .arr { transform: translateX(4px); }
   .crow:hover { background: var(--surface-2); }
   .crow:hover .cr-arrow { transform: translateX(3px); }
+  .ts-btn:hover { background: var(--surface-3); }
+  .ts-btn:hover .cr-arrow { transform: translateX(3px); }
+  :scope .credit a:hover { color: var(--muted); text-decoration: underline; }
   .cr-fl:hover { background: var(--chrome-line); }
   .ocard:hover { border-color: var(--faint); background: var(--surface-2); }
   .ocard.cur:hover { border-color: var(--flight); }
@@ -421,12 +426,51 @@
 .tb-x { padding: 0; }
 .tb-name:focus-visible, .tb-btn:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
 
-/* an amber tint says "this is about your trip", no side bar */
-.tripnote {
-  margin: 12px 14px 0 !important; padding: 9px 12px; border-radius: 10px; background: #F2B5441F;
-  font-size: 12.5px; line-height: 1.4; color: var(--text);
+/* the stop in the open trip: its number on the photo as on the map, then the leg in, the nights and the leg out on one rail */
+.thumb-wrap { position: relative; flex: none; }
+.stopno {
+  position: absolute; right: -5px; bottom: -5px; min-width: 22px; height: 22px; padding: 0 6px; display: grid; place-items: center;
+  border-radius: 999px; background: var(--text); color: var(--ground); font-size: 11px; font-weight: 700;
+  box-shadow: 0 0 0 2px var(--panel), 0 0 0 3.5px var(--flight);
 }
-.tripnote b { color: var(--flight); }
+.tstop {
+  --in: #58D68D; --home: #FF8A4C;
+  list-style: none; margin: 12px 14px 0; padding: 4px; display: flex; flex-direction: column; border-radius: 14px; background: var(--surface-2);
+}
+.ts-row { position: relative; }
+/* the rail joins the dots, under them */
+.ts-row:not(:first-child)::before, .ts-row:not(:last-child)::after {
+  content: ''; position: absolute; left: 21px; width: 2px; height: 50%; background: var(--chrome-line);
+}
+.ts-row::before { top: 0; }
+.ts-row::after { bottom: 0; }
+.ts-line { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 10px 6px 8px; }
+.ts-btn {
+  width: 100%; border: 0; border-radius: 10px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  touch-action: manipulation; -webkit-user-select: none; user-select: none; transition: var(--tint), var(--press);
+}
+.ts-btn:active { transform: scale(.98); }
+.ts-dot { position: relative; z-index: 1; flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--surface-2); color: var(--text); }
+.ts-no { min-width: 20px; height: 20px; padding: 0 5px; display: grid; place-items: center; border-radius: 999px; background: var(--text); color: var(--ground); font-size: 10.5px; font-weight: 700; }
+.ts-name { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ts-name b { font-weight: 700; }
+.ts-facts { flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.ts-facts b { font-weight: 600; color: var(--text); }
+.ts-facts .mchip { width: 20px; height: 20px; }
+/* a leg reads its stop on top and its mode, time and price under it, so the name never gives way to the facts */
+.ts-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.ts-text .ts-name { flex: none; }
+.ts-text .ts-facts { gap: 5px; font-size: 11.5px; }
+.ts-text .ts-facts .mchip { width: 16px; height: 16px; }
+.ts-facts svg { flex: none; }
+.ts-facts.soft { color: var(--faint); }
+.ts-here .ts-facts { color: var(--text); }
+.ts-way.in .ts-dot .mchip { background: var(--in); color: var(--ground); }
+.ts-way.home .ts-dot .mchip { background: var(--home); color: var(--ground); }
+.ts-way .ts-facts { color: var(--text); }
+.ts-add { color: var(--flight) !important; }
+.ts-add .ts-dot { background: var(--flight); color: var(--flight-ink); }
+.ts-add .ts-name { font-weight: 700; }
 
 .rname {
   padding: 0 4px; margin: 0 -4px; border: 0; border-radius: 6px; background: transparent; font: inherit; color: inherit !important;

@@ -1,10 +1,11 @@
-import { useState, type ReactNode, type Ref } from 'react'
+import { useRef, useState, type ReactNode, type Ref } from 'react'
 import { airportFlights, byCountry, countries, countryName, landing, neighbours, otherEnd, pairFlights, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
-import { tripEnd, type Trip } from '../data/trips'
+import { capped } from '../data/cardFacts'
+import { legOption, tripPieces, tripStops, type Piece, type Trip } from '../data/trips'
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate } from '../lib/format'
 import { Flag as CountryFlag } from './Flag'
-import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
+import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon, Plus } from './icons'
 import { PlaceSections } from './PlaceSections'
 import { Unknown } from './Unknown'
 import type { CardRef, MapModeApi } from './useMapMode'
@@ -50,6 +51,16 @@ export interface PanelProps {
   onCard(ref: CardRef): void
   /** The places to stay at a city, which a host that has them renders at the top of the city panel. */
   stays?: (placeId: string) => ReactNode
+  /** A stop's nights and dates, which a host with a schedule gives. */
+  stopDays?: (placeId: string) => StopDays | null
+}
+
+/** The nights at a stop and the days it is reached and left. `exact` is false while an earlier stop has no date. */
+export interface StopDays {
+  nights: number
+  inDay: string
+  outDay: string
+  exact: boolean
 }
 
 /** Wikimedia thumbnails come in fixed steps; swap the width in the URL. */
@@ -213,49 +224,179 @@ function Thumb({ city, w, className }: { city: Place; w: number; className: stri
 function CityView(p: PanelProps & { city: Place }) {
   const { model, city, dir } = p
   const list = neighbours(model, city.id, p.families)
+  const [all, setAll] = useState(false)
+  const conns = useRef<HTMLElement>(null)
+  const { shown, folded } = capped(list, all)
   // the in or out switch only once the airport has crawled fares to read either way
   const flown = !!city.iata && (airportFlights(model, city.iata, 'in').length > 0 || airportFlights(model, city.iata, 'out').length > 0)
+  const stop = p.trip ? tripStop(p.trip, city) : null
+  /** The trip ends here: read the connections out and bring them up, where a leg is added. */
+  const addLeg = () => {
+    p.onDir('out')
+    const sec = conns.current
+    if (!sec) return
+    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    sec.scrollIntoView({ block: 'start', behavior: still ? 'auto' : 'smooth' })
+    sec.querySelector<HTMLButtonElement>('.cr-main')?.focus({ preventScroll: true })
+  }
   return (
     <div className="pview">
-      <div className="phead stg">
-        <Thumb city={city} w={250} className="thumb" />
-        <div className="ptext">
-          <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
-          <h2 className="pname">{city.short_name}</h2>
-          {city.why && <p className="why">{city.why}</p>}
+      <section className="mc-sec overview" aria-label="Overview">
+        <div className="phead stg">
+          <div className="thumb-wrap">
+            <Thumb city={city} w={250} className="thumb" />
+            {stop && <span className="stopno mono" aria-hidden="true">{stop.numbers.join(',')}</span>}
+          </div>
+          <div className="ptext">
+            <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
+            <h2 className="pname">{city.short_name}</h2>
+            {city.why && <p className="why">{city.why}</p>}
+          </div>
+          <HeadButtons {...p} />
         </div>
-        <HeadButtons {...p} />
-      </div>
-      {p.stays?.(city.id)}
-      {p.trip && (
-        <p className="tripnote">
-          {tripEnd(p.trip) === city.id
-            ? <>Your trip <b>{p.trip.name}</b> ends here. Pick a connection to add the next leg.</>
-            : p.trip.legs.length
-              ? <>Adding to <b>{p.trip.name}</b>. Pick a connection to add a leg from here.</>
-              : <>Pick a connection to start <b>{p.trip.name}</b> here.</>}
-        </p>
-      )}
-      <div className="pmid stg">
-        {!!(city.summary || city.things_to_do?.length) && (
-          <button className="more" onClick={p.onMore}>More about {city.short_name} <span className="arr"><Arrow /></span></button>
+        {p.trip && stop && (
+          <StopLegs p={p} trip={p.trip} city={city} stop={stop} days={p.stopDays?.(city.id) ?? null} onAdd={list.length ? addLeg : null} />
         )}
-      </div>
-      <PlaceSections key={city.id} api={p.api} categories={model.data.categories} placeId={city.id} onCard={p.onCard} />
-      <div className="sechead">
-        <p className="sub">Connections</p>
-        <span className="sechead-r">
-          {flown && (
-            <span className="dirseg" role="group" aria-label="Read flights in or out">
-              <button type="button" aria-pressed={dir === 'in'} onClick={() => p.onDir('in')}>In</button>
-              <button type="button" aria-pressed={dir === 'out'} onClick={() => p.onDir('out')}>Out</button>
+        {p.stays?.(city.id)}
+        {!!(city.summary || city.things_to_do?.length) && (
+          <div className="pmid stg">
+            <button className="more" onClick={p.onMore}>More about {city.short_name} <span className="arr"><Arrow /></span></button>
+          </div>
+        )}
+      </section>
+      <PlaceSections key={city.id} api={p.api} categories={model.data.categories} placeId={city.id} withSaved onCard={p.onCard} />
+      {list.length > 0 && (
+        <section ref={conns} className="mc-sec" aria-label="Connections">
+          <div className="sechead">
+            <p className="sub">Connections</p>
+            <span className="sechead-r">
+              {flown && (
+                <span className="dirseg" role="group" aria-label="Read flights in or out">
+                  <button type="button" aria-pressed={dir === 'in'} onClick={() => p.onDir('in')}>In</button>
+                  <button type="button" aria-pressed={dir === 'out'} onClick={() => p.onDir('out')}>Out</button>
+                </span>
+              )}
+              <p className="sub mono">{list.length}</p>
+            </span>
+          </div>
+          <ConnList p={p} list={shown} from={city.id} dir={dir} />
+          {folded > 0 && <button type="button" className="mc-more" onClick={() => setAll(true)}>Show all {list.length}</button>}
+        </section>
+      )}
+    </div>
+  )
+}
+
+/** Where a city sits in a trip: its stop numbers and the pieces that arrive at it and leave it, first visit first. */
+interface TripStop {
+  numbers: number[]
+  first: boolean
+  last: boolean
+  in: Piece | null
+  out: Piece | null
+}
+
+function tripStop(trip: Trip, city: Place): TripStop | null {
+  const stops = tripStops(trip)
+  const numbers = stops.flatMap((id, i) => (id === city.id ? [i + 1] : []))
+  if (!numbers.length) return null
+  const pieces = tripPieces(trip)
+  return {
+    numbers,
+    first: numbers[0] === 1,
+    last: numbers.at(-1) === stops.length,
+    in: pieces.find((x) => x.to === city.id) ?? null,
+    out: pieces.find((x) => x.from === city.id) ?? null,
+  }
+}
+
+/** The way in or home of a planned trip, when it lands or leaves at this city's airport. */
+function wayAt(trip: Trip, city: Place, end: 'entry' | 'exit') {
+  const io = trip.inout
+  if (!io || (io[end] !== city.iata && io[end] !== city.id)) return null
+  return end === 'entry' ? io.way_in : io.way_home
+}
+
+const day = (at: string | null | undefined) => (at ? shortDate(at.slice(0, 10)) : null)
+
+/**
+ * This trip's facts for the stop as a short timeline: the leg in, the nights and the dates, the leg out.
+ * A stop the trip ends at with no way home gets the control that adds the next leg.
+ */
+function StopLegs({ p, trip, city, stop, days, onAdd }: { p: PanelProps; trip: Trip; city: Place; stop: TripStop; days: StopDays | null; onAdd: (() => void) | null }) {
+  const stops = tripStops(trip)
+  const flyIn = stop.first && !stop.in ? wayAt(trip, city, 'entry') : null
+  const flyHome = stop.last && !stop.out ? wayAt(trip, city, 'exit') : null
+  return (
+    <ol className="tstop stg" aria-label={`Stop ${stop.numbers.join(' and ')} of ${trip.name}`}>
+      {stop.in ? (
+        <PieceRow p={p} piece={stop.in} other={stop.in.from} n={stops.indexOf(stop.in.from) + 1} way="in" />
+      ) : flyIn ? (
+        <li className="ts-row ts-line ts-way in">
+          <span className="ts-dot"><ModeChip family="flight" /></span>
+          <span className="ts-name">Fly in</span>
+          <span className="ts-facts mono">{day(flyIn.arrive) ?? <Unknown title="Arrival date not known" />}</span>
+        </li>
+      ) : null}
+      {days && (
+        <li className="ts-row ts-line ts-here">
+          <span className="ts-dot"><Moon /></span>
+          <span className="ts-name"><b className="mono">{days.nights}</b> {days.nights === 1 ? 'night' : 'nights'}</span>
+          <span className={`ts-facts mono${days.exact ? '' : ' soft'}`} title={days.exact ? undefined : 'Dates follow from the nights before'}>
+            {shortDate(days.inDay)} <Arrow s={11} /> {shortDate(days.outDay)}
+          </span>
+        </li>
+      )}
+      {stop.out ? (
+        <PieceRow p={p} piece={stop.out} other={stop.out.to} n={stops.indexOf(stop.out.to) + 1} way="out" />
+      ) : flyHome ? (
+        <li className="ts-row ts-line ts-way home">
+          <span className="ts-dot"><ModeChip family="flight" /></span>
+          <span className="ts-name">Fly home</span>
+          <span className="ts-facts mono">{day(flyHome.depart) ?? <Unknown title="Departure date not known" />}</span>
+        </li>
+      ) : onAdd ? (
+        <li className="ts-row">
+          <button type="button" className="ts-btn ts-line ts-add" onClick={onAdd}>
+            <span className="ts-dot"><Plus /></span>
+            <span className="ts-name">Add leg</span>
+          </button>
+        </li>
+      ) : null}
+    </ol>
+  )
+}
+
+/** A leg or an overland stretch to or from the stop. A leg opens its route, a stretch goes to the stop at its other end. */
+function PieceRow({ p, piece, other, n, way }: { p: PanelProps; piece: Piece; other: string; n: number; way: 'in' | 'out' }) {
+  const name = p.model.byId.get(other)?.short_name ?? other
+  const leg = piece.kind === 'leg' ? piece.leg : null
+  const found = leg ? legOption(p.model, leg) : null
+  const open = () => (leg && found ? p.onRoute(leg.cid, leg.from) : p.onGoTo(other))
+  return (
+    <li className="ts-row">
+      <button
+        type="button"
+        className="ts-btn ts-line"
+        aria-label={`${way === 'in' ? 'From' : 'To'} ${name}`}
+        onClick={open}
+        onMouseEnter={() => leg && found && p.onHoverRoute(leg.cid, leg.from)}
+        onMouseLeave={() => p.onHoverRoute(null)}
+      >
+        <span className="ts-dot"><span className="ts-no mono">{n}</span></span>
+        <span className="ts-text">
+          <span className="ts-name">{name}</span>
+          {leg && (
+            <span className="ts-facts mono">
+              <ModeChip family={familyOf(leg.mode)} />
+              {found?.opt.duration_min != null ? <b>{duration(found.opt.duration_min)}</b> : <Unknown title="Travel time not known" />}
+              {found?.opt.price_dkk.min != null ? kr(found.opt.price_dkk.min) : <Unknown title="Price not known" />}
             </span>
           )}
-          <p className="sub">{list.length}</p>
         </span>
-      </div>
-      {list.length ? <ConnList p={p} list={list} from={city.id} dir={dir} /> : <p className="empty">No connections with the selected modes.</p>}
-    </div>
+        <span className="cr-arrow"><Arrow s={14} /></span>
+      </button>
+    </li>
   )
 }
 
@@ -315,8 +456,8 @@ function MoreView(p: PanelProps & { city: Place }) {
           <Thumb city={city} w={960} className="hero" />
           {img && (
             <p className="credit mono">
-              Photo: <a href={img.page ?? img.url} target="_blank" rel="noreferrer">{img.credit || 'Unknown'}</a>
-              {img.licence ? ` · ${img.licence}` : ''}, Wikimedia Commons
+              Photo: <a href={img.page ?? img.url} target="_blank" rel="noreferrer">{img.credit || 'Wikimedia Commons'}</a>
+              {img.licence ? ` · ${img.licence}` : ''}{img.credit ? ', Wikimedia Commons' : ''}
             </p>
           )}
         </div>

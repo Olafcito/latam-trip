@@ -16,7 +16,7 @@ import { addMarkerImages, addModeLayers, modeHit, type ModeHit } from './modeLay
 import { CardWindow } from './CardWindow'
 import { ModePanelSlot } from './ModeSlots'
 import { MODE_SHEET, SHEET_PEEK, reducedMotion } from './sheet'
-import { Panel, type FlightDir, type PanelView, type View } from './Panel'
+import { Panel, type FlightDir, type PanelProps, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
 import { IoLegend, WayPanel } from './WayPanel'
@@ -69,6 +69,8 @@ export interface RouteMapProps {
   onPanel?(open: boolean): void
   /** The places to stay at a city, shown at the top of its panel. The standalone map has none. */
   stays?: (placeId: string) => ReactNode
+  /** A trip stop's nights and dates, which only a host with a schedule has. */
+  stopDays?: PanelProps['stopDays']
 }
 
 const EMPTY: View = { sel: null, panel: null, route: null, from: null, opt: 0, back: null }
@@ -99,7 +101,7 @@ function connBetween(model: Model, a: string, b: string): Connection | undefined
   return model.conns.get([a, b].sort().join('-'))
 }
 
-export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, cardFrom = null, side = null, sideWidth = 360, sideMini = false, onMode, onPanel, stays }: RouteMapProps) {
+export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fitTripOnLoad = false, focus = false, focusAt = null, onStop, onLeg, onFamilies, card = null, onCardOpen, cardFrom = null, side = null, sideWidth = 360, sideMini = false, onMode, onPanel, stays, stopDays }: RouteMapProps) {
   const model = useMemo(() => buildModel(data), [data])
   const available = useMemo(
     () => ALL_FAMILIES.filter((f) => model.routes.features.some((r: { properties: { family: Family } }) => r.properties.family === f)),
@@ -1112,6 +1114,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
             api={mm}
             onCard={openCard}
             stays={stays}
+            stopDays={stopDays}
           />
           {mm.mode && (
             <ModePanelSlot
