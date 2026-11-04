@@ -1,52 +1,33 @@
 ---
 name: ui-roast
-description: The two design reviews of latam-trip and the living design log in docs/design/. Design Roast is a short creative critique of one screenshot by the Opus senior-designer, given the shot directly. Design Audit is the deeper, structured investigation of screens, journeys and the design system. Use when Simon or an agent shares a screenshot and wants to know what is wrong with it, asks for a roast, a design review or an audit, or asks what the design principles, recurring problems or settled decisions are.
+description: The Design Audit of latam-trip and the living design log in docs/design/. The audit is the deeper, structured investigation of screens, journeys and the design system by the Opus senior-designer, written to a review file. Also says how a Design Roast (the design-roaster agent, one screenshot, in the conversation) is run and what of it gets recorded. Use when Simon or an agent asks for a roast, a design review, an audit or a retrospective, or asks what the design principles, recurring problems or settled decisions are.
 ---
 
-# Design Roast and Design Audit
+# Design Audit and the design log
 
-Two different questions, kept apart.
+Two reviews, two agents, two mindsets.
 
 | | Design Roast | Design Audit |
 |---|---|---|
 | Asks | What is fundamentally wrong with this screen | Why is it wrong, and what should we systematically change |
-| Input | One screenshot, given to the reviewer directly | Several screens, a journey, the log, the code where needed |
-| Who | `senior-designer` on Opus, fresh context | `senior-designer` on Opus, with the design skills it needs |
-| Output | 3 to 5 big problems and a direction, short, in the conversation | A structured review file in `docs/design/reviews/` |
+| Who | `design-roaster` on Opus, an outside creative director | `senior-designer` on Opus, the internal investigator |
+| Input | One screenshot, the screen name, one line on what the screen is for | Several screens, a journey, the principles, decisions and history, the code where needed |
+| Knows | The product and the screen's purpose, not the design decisions, reviews or code | The whole record, and builds on it |
+| Output | A short, opinionated roast with a score, in the conversation | A structured review file in `docs/design/reviews/` |
 | Record | Only what Simon accepts afterwards | Findings, evidence, proposed decisions, log updates |
 | When | Whenever someone wants an honest look at a screen | When a roast or discussion raises a cross screen, structural or design system question, or Simon asks |
 
 Neither is mandatory. A straightforward change goes straight to implementation. A roast does not require an audit, and an audit does not require a roast first. Simon decides, and "Simon" here means Simon or the agent coordinating the work.
 
-## Design Roast
+## Running a roast
 
-The screenshot is the input. No preparation agent, no brief, no mandatory Playwright run, no skill pipeline. The reviewer is given the path of the shot and the name of the screen, and, if it helps, the journey step the screen serves in one line. It forms its own judgement from what it sees.
+The roaster's instructions live in `plugin/agents/design-roaster.md` and nowhere else. This skill only says how to run one and what happens with it.
 
-Independence matters. The reviewer is not told what was built or why, and it is not handed another agent's interpretation. It may open `docs/design/design-principles.md` and the last review of the screen if it wants context, but existing decisions inform its opinion, they do not dictate it. It is allowed to challenge a decision, saying so plainly.
-
-How to run one:
-
-1. The shot must be a file. If it only exists as a paste in the conversation, ask Simon to drop it in `docs/design/shots/<screen>/` (git ignored) or give the path. Shots at 375 wide and 1440 wide are both welcome but one is enough. Playwright is an option when nobody has a shot, not a step.
-2. Dispatch `senior-designer` with the path, the screen name and the word roast. Relay what it returns as it is.
-3. Discuss. Simon agrees, disagrees, challenges and refines. Nothing is recorded yet.
+1. The shot must be a file. If it only exists as a paste in the conversation, ask Simon to drop it in `docs/design/shots/<screen>/` (git ignored) or give the path. One shot is enough, and Playwright is an option when nobody has one, not a step.
+2. Dispatch `design-roaster`: "Roast this screenshot: <path>", the screen name and, when useful, one line on what the screen is for or which journey step it serves. Give it no design decisions, no earlier reviews and no explanation of why the screen looks the way it does. Independence means context about what the screen should achieve, not instructions about what it should look like.
+3. Relay the roast as it is. Discuss. Simon agrees, disagrees, challenges and refines. Nothing is recorded yet.
 4. Decide what happens next: implement the agreed direction, explore alternatives with `prototype`, run an audit for the questions the roast could not settle, or leave it.
-5. Record only what was accepted. An accepted rule becomes a DES entry. A problem seen before on other screens becomes or updates a REC entry. An unsettled question becomes a Q entry. A roast with nothing accepted leaves no file behind. Keep the roast text itself only if Simon asks, as `docs/design/reviews/roast-<screen>-<date>.md`.
-
-The reviewer's brief, which the agent file repeats:
-
-> Your job is not to conduct a comprehensive UI audit. Your job is to look at this screen, identify what makes it feel poorly designed, and tell us what fundamentally needs to change. Think like a creative director reviewing a product, not a QA engineer inspecting a component.
-
-The shape of a roast, as a guide not a template:
-
-| Section | Holds |
-|---|---|
-| Overall impression | How the screen feels and where it stands, honestly |
-| Biggest problems | 3 to 5 high impact issues, most important first |
-| Why they matter | A sentence or two per problem on what it costs the traveller |
-| Design direction | What should change conceptually, with possible directions, not implementation detail |
-| What works | What to preserve through any change |
-
-Emerging design system problems go in when the shot shows them. Taste is marked as taste. The whole thing is short enough to read in two minutes and is written in the reviewer's own voice.
+5. Record only what was accepted. An accepted rule becomes a DES entry. A problem seen before on other screens becomes or updates a REC entry. An unsettled question becomes a Q entry. A roast with nothing accepted leaves no file behind. Keep the roast text only if Simon asks, as `docs/design/reviews/roast-<screen>-<date>.md`.
 
 ## Design Audit
 
@@ -107,7 +88,7 @@ The log records what is meaningful: accepted and rejected recommendations with t
 
 **Periodic synthesis.** A retrospective, `reviews/retro-NNN.md`, is written when the evidence warrants it, not on a counter: several reviews since the last one, the same problem resurfacing, decisions that start to contradict each other, or Simon asking. It names the commonest problems, what helped most, contradictions between decisions, and which patterns have proven themselves through implementation and belong in the design system. That last part is what moves knowledge into `design-principles.md` and the apps' tokens and shared components. The design system changes through validated patterns and synthesis, not after every roast or feature.
 
-## Rules for both
+## Rules for the audit and the log
 
 The project's rules lead over any framework. Meaning lives in the form (icons, size, colour, position, the control itself), not in sentences. No question marks in the UI, no summary prose lines, no semicolons or dashes as separators. Restraint, but never hide what Simon needs. Prices are Danish kroner, times are local. Apple Wallet, Maps and Flighty are the references for the booking views.
 

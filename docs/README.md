@@ -19,7 +19,7 @@ Documentation is part of the work, not a step after it. Every doc in this repo d
 | Build reports | `docs/superpowers/reports/` | Whoever ran the job | Never edited after writing |
 | Design log index | `docs/design/design-log.md` | `ui-roast`, recorded by whoever has the ruling | An audit is written, a ruling lands, a REC or Q changes |
 | Design principles | `docs/design/design-principles.md` | `ui-roast`, on Simon's ruling | A principle is accepted or retired |
-| Design decisions | `docs/design/design-decisions.md` | `senior-designer` proposes, Simon rules, `ui-roast` records | A DES decision is proposed, ruled on, built or reconsidered |
+| Design decisions | `docs/design/design-decisions.md` | `senior-designer` proposes, Simon rules, `ui-roast` records. A `design-roaster` roast proposes nothing, Simon accepts from it | A DES decision is proposed, ruled on, built or reconsidered |
 | Reviews, retros | `docs/design/reviews/` | `senior-designer` writes, `ui-roast` records | Each audit, a roast Simon asks to keep, a retro when the evidence warrants one |
 | Decision and harness log | `docs/harness-log.md` | Main session | A meaningful decision outside the PROD, DES and TECH logs, or a meaningful harness failure |
 | Connector | `docs/connector.md` | The agent changing `infra/mcp` | A tool is added, renamed or removed, or sign in changes |

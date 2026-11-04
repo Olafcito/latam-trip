@@ -49,8 +49,8 @@ Not every task goes through every box. Most work is the short path: understand i
 
 | Review | Question | Lives in |
 |---|---|---|
-| Design Roast | What is fundamentally wrong with this screen | `ui-roast`, run by `senior-designer` on Opus from the screenshot alone |
-| Design Audit | Why is it wrong, and what should change systematically | `ui-roast`, the detailed review format, written to `docs/design/reviews/` |
+| Design Roast | What is fundamentally wrong with this screen | `design-roaster` on Opus, an outside creative director given the screenshot and the screen's purpose, nothing else |
+| Design Audit | Why is it wrong, and what should change systematically | `senior-designer` on Opus through `ui-roast`, the detailed review format, written to `docs/design/reviews/` |
 | Code Review | Is the implementation correct and maintainable | Implementation, on the diff, with `/code-review` or `feature-dev:code-reviewer` |
 
 A design issue is not automatically a code finding and a code finding is not a design issue. Each review reports in its own place.
@@ -61,8 +61,8 @@ A design issue is not automatically a code finding and a code finding is not a d
 
 ### Design work
 
-- **Roast** when someone wants an honest look at a screen. The shot goes to `senior-designer` directly, no prep agent, no brief, no mandatory Playwright run. The roast comes back short and opinionated, it is discussed, and only what Simon accepts is recorded. It is independent on purpose: the reviewer is not told what was built or why, and existing decisions inform its view but do not dictate it.
-- **Audit** when a roast or a discussion leaves a cross screen, structural or design system question. Scoped, multi screen, evidence based, `apple-design`, `impeccable` and `emil-design-eng` loaded when they help. Writes a review file.
+- **Roast** when someone wants an honest look at a screen. "Roast this screenshot: <path>" goes to `design-roaster`, with the screen name and one line on what the screen is for. No prep agent, no brief, no mandatory Playwright run, no design decisions or earlier reviews handed over. The roast comes back short, opinionated and scored, it is discussed, and only what Simon accepts is recorded. `ui-roast` says how.
+- **Audit** when a roast or a discussion leaves a cross screen, structural or design system question. `senior-designer` runs it: scoped, multi screen, evidence based, built on the principles and decisions, with `apple-design`, `impeccable` and `emil-design-eng` loaded when they help. Writes a review file.
 - **Explore** when the direction is unclear or there are real alternatives. `prototype` builds several distinct versions behind a switcher in the actual stack, 21st.dev gives components and inspiration. No Figma dependency. Compare, pick, then implement the winner. Not for minor changes.
 - **Implement** with the frontend skills below.
 - **Evaluate** the built thing against the journey, with a roast when it warrants one.
@@ -76,7 +76,7 @@ Do the work yourself when that is simplest. Dispatch an agent when the work need
 - Sonnet for ordinary implementation and recording.
 - Opus for complex reasoning, design judgement, high impact decisions, and complex frontend work such as motion, animation and component design.
 
-Agents in `plugin/agents/`: `senior-designer` (Opus, roast and audit), `doc-keeper` (Sonnet, doc audit on demand). A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first. Related small tasks go to one implementer, each task its own commit. Disjoint work runs in parallel in this one checkout, each agent staging only its own paths and never stashing, resetting or checking out over another agent's work. Decide an ambiguity, write it down and keep going. Ask Simon only before something irreversible he has not already approved.
+Agents in `plugin/agents/`: `design-roaster` (Opus, the roast, knows the product but not the design record), `senior-designer` (Opus, audits and retrospectives, knows the whole record), `doc-keeper` (Sonnet, doc audit on demand). A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first. Related small tasks go to one implementer, each task its own commit. Disjoint work runs in parallel in this one checkout, each agent staging only its own paths and never stashing, resetting or checking out over another agent's work. Decide an ambiguity, write it down and keep going. Ask Simon only before something irreversible he has not already approved.
 
 ### Code review
 
@@ -154,7 +154,7 @@ Recommendations for which skill serves which job, not a mandatory sequence. Load
 - **Before a frontend commit:** `web-design-guidelines` for alignment, spacing, accessibility and interaction details, and `break-ui` for worst-case data.
 - **Design reviews:** `ui-roast` for a roast or an audit.
 
-`prototype`, `review-animations` and `pick-ui-library` are installed with model invocation disabled, so Simon invokes them by name. Ideas from Claude Design (the Claude app) are welcome, but its look is not the reference. `hyperframes` and its siblings make videos, not the app.
+`prototype`, `review-animations` and `pick-ui-library` ship upstream with `disable-model-invocation: true`. The installed copies in `.claude/skills/` are set to `false` so agents can load them. `npx skills update -p` reverts that, so set it to `false` again after an update. Ideas from Claude Design (the Claude app) are welcome, but its look is not the reference. `hyperframes` and its siblings make videos, not the app.
 
 ### Skills in .claude/
 
