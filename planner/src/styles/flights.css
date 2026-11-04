@@ -25,6 +25,7 @@
   .fl-stay dd small { font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
   .fl-stay dd .mk { align-self: center; }
   .fl-stay dd[data-bad='true'] { color: var(--err); }
+  .fl-stay dd[data-home] { color: var(--muted); }
 
   /* the days: the one you look at is filled, the day of the leg keeps a ring, the cheapest fare is green */
   .fl-strip { display: flex; align-items: center; gap: 4px; min-width: 0; margin-inline: -2px; }

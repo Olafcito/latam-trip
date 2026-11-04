@@ -24,7 +24,7 @@ import { FlightLinks } from '../FlightLinks'
 import { Boat, Bus, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
 import { BookingForm, type BookTarget, type FormLeg } from './BookingForm'
 import { CityCard } from './CityCard'
-import { FlightSheet } from './FlightSheet'
+import { FlightSheet, type LegStay } from './FlightSheet'
 import { LegCard, type LegEnds } from './LegCard'
 import type { LegPoint } from './LegMap'
 import { WaySheet } from './WaySheet'
@@ -394,6 +394,26 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   }, [bookings, lodgings, data, map, inout, journey, sched, wayIn, wayHome])
   const dayItems = useMemo(() => (d: string) => tripDay(tripInput, d), [tripInput])
 
+  // the nights on either side of a long haul flight, home as one side. The way in stays in the first stop until
+  // the next leg with a fixed day, the same rule the regional legs use below
+  const wayStay = (dir: 'in' | 'home'): LegStay => {
+    if (dir === 'home') {
+      const last = ps.length - 1
+      return {
+        fromName: nm(ps[last]?.node), fromIn: sched.places[last]?.inDay ?? homeDay,
+        toName: cph.name, toHome: true, onward: false, nextDay: homeDay, nextLabel: 'Flight home', nextFamily: 'flight',
+      }
+    }
+    const fixedAt = ps.findIndex((q, k) => k > 0 && (q.hop?.date || q.hop?.flight))
+    const fixed = fixedAt > 0 ? ps[fixedAt].hop! : null
+    return {
+      fromName: cph.name, fromHome: true, fromIn: dayOf(wayIn),
+      toName: nm(firstNode), onward: fixed ? fixedAt > 1 : ps.length > 1,
+      nextDay: fixed ? legDay(fixed, homeDay) : homeDay,
+      nextLabel: fixed ? `Leg from ${nm(fixed.from)}` : 'Flight home',
+      nextFamily: fixed ? familyOf(fixed.mode) : 'flight',
+    }
+  }
   const waySheet = (dir: 'in' | 'home', w: Way, other: Way, rows: Record<string, WayRow[]>) => (close: () => void) => (
     <WaySheet
       dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} booking={wayBooked[dir]} pair={wayBooked}
@@ -402,6 +422,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         { kind: 'flight', from: w.from, to: w.to, day: dayOf(w), tripId: journey.id, fromName: airportName(w.from), toName: airportName(w.to) },
         (rows, choice) => useStore.getState().markBooked(rows, { way: dir, choice }),
       ) : undefined}
+      stay={wayStay(dir)}
       trip={{ items: dayItems, leg: dir }}
       close={close} />
   )

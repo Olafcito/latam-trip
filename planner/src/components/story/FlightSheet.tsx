@@ -2,7 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type R
 import type { Booking, CrawledFlight } from '../../data/types'
 import type { Family } from '@map/data/types'
 import { Unknown } from '@map/map/Unknown'
-import { bookedDay, bookedGate, isBookedFlight, paidPrice, parkedRow, priceColumn } from '../../lib/booked'
+import { bookedDay, bookedGate, isBookedFlight, parkedRow, priceColumn } from '../../lib/booked'
 import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../../lib/format'
 import { fareMarks, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
 import type { FlightLink } from '../../lib/links'
@@ -11,8 +11,7 @@ import { remoteEnabled } from '../../lib/supabase'
 import { flightPricesTask } from '../../lib/tasks'
 import { AskClaude } from '../AskClaude'
 import { dayValue, type DayItem, type DayKind, type DayValue } from '../../lib/tripDay'
-import { useStore } from '../../store'
-import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Land, Plane, Sun, Ticket } from '../icons'
+import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Home, Land, Plane, Sun, Ticket } from '../icons'
 import { BookedBox, type BoxData } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
 import { stopsText } from './LegCard'
@@ -37,9 +36,13 @@ const FIT_DAYS = 8
 
 export interface LegStay {
   fromName: string
+  /** the place left is home, so it shows a home mark and no nights */
+  fromHome?: boolean
   /** the day you get to where the leg leaves from */
   fromIn: string
   toName: string
+  /** the place reached is home, so it shows a home mark and no nights, and nothing leaves after */
+  toHome?: boolean
   /** stops come after toName before that day, so the nights are for all of them */
   onward: boolean
   /** the day you have to be gone: the next leg with a fixed day, or the flight home */
@@ -56,23 +59,37 @@ const SORTS: [FareSort, string][] = [['cheap', 'Cheapest'], ['fast', 'Fastest'],
 
 const nights = (n: number) => (n === 1 ? '1 night' : `${n} nights`)
 
-/** How long the day you are looking at leaves you on either side of the flight. */
-function Stay({ at, stay }: { at: string; stay: LegStay }) {
+/** Home as a side of the stay row: its name and a home mark, never a count of nights. */
+function HomeSide({ name }: { name: string }) {
+  return (
+    <div>
+      <dt>{name}</dt>
+      <dd data-home><Tip className="mk" label={`${name}, home`}><Home s={15} /></Tip></dd>
+    </div>
+  )
+}
+
+/** How long the day you are looking at leaves you on either side of the flight. A flight that lands on a later day counts the place reached from that day. */
+export function Stay({ at, lands = at, stay }: { at: string; lands?: string; stay: LegStay }) {
   const before = dayDiff(stay.fromIn, at)
-  const after = dayDiff(at, stay.nextDay)
+  const after = dayDiff(lands, stay.nextDay)
   return (
     <dl className="fl-stay">
-      <div>
-        <dt>In {stay.fromName}</dt>
-        <dd data-bad={before < 0}>{before < 0 ? 'Leaves before you get here' : before === 0 ? 'Passing through' : nights(before)}</dd>
-      </div>
-      <div>
-        <dt>{stay.onward ? `From ${stay.toName} on` : `In ${stay.toName}`}</dt>
-        <dd data-bad={after < 0}>
-          {after < 0 ? `${stay.nextLabel} leaves first` : after === 0 ? 'Passing through' : nights(after)}
-          <Tip className="mk" kind="next" label={`${stay.nextLabel}, ${weekdayDay(stay.nextDay)}`}>{MODE_ICON[stay.nextFamily]()}<span aria-hidden="true">{weekdayDay(stay.nextDay)}</span></Tip>
-        </dd>
-      </div>
+      {stay.fromHome ? <HomeSide name={stay.fromName} /> : (
+        <div>
+          <dt>In {stay.fromName}</dt>
+          <dd data-bad={before < 0}>{before < 0 ? 'Leaves before you get here' : before === 0 ? 'Passing through' : nights(before)}</dd>
+        </div>
+      )}
+      {stay.toHome ? <HomeSide name={stay.toName} /> : (
+        <div>
+          <dt>{stay.onward ? `From ${stay.toName} on` : `In ${stay.toName}`}</dt>
+          <dd data-bad={after < 0}>
+            {after < 0 ? `${stay.nextLabel} leaves first` : after === 0 ? 'Passing through' : nights(after)}
+            <Tip className="mk" kind="next" label={`${stay.nextLabel}, ${weekdayDay(stay.nextDay)}`}>{MODE_ICON[stay.nextFamily]()}<span aria-hidden="true">{weekdayDay(stay.nextDay)}</span></Tip>
+          </dd>
+        </div>
+      )}
     </dl>
   )
 }
@@ -370,7 +387,6 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
   close: () => void
 }) {
   const [at, setAt] = useState(date)
-  const bookings = useStore((st) => st.bookings)
   const [by, setBy] = useState<FareSort>('cheap')
   const quotes = useMemo(() => (pd ? pricesOn(pd, from.code, to.code, at) : []), [pd, from.code, to.code, at])
   const rows = useMemo(() => fareRows(quotes, from.code, to.code, at), [quotes, from.code, to.code, at])
@@ -436,9 +452,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
           onEdit={book ? () => form.open({ start: 'manual', edit: true, booking }) : undefined} />}
         <p ref={said} className="ws-said" role="status" tabIndex={-1}>{removed && !booking ? 'The booking is removed. The leg can change again.' : ''}</p>
         <Stay at={hold ? date : at} stay={stay} />
-        <Days days={days} fares={fares} at={at} leg={date} onChange={setAt} locked={hold} booked={bookedDay(booking, date)}
-          paid={booking ? paidPrice(bookings, booking) : null} trip={trip} />
-        {hold && trip && <DayView day={at} trip={trip} />}
+        {!hold && <Days days={days} fares={fares} at={at} leg={date} onChange={setAt} booked={bookedDay(booking, date)} />}
         {!hold && <div className="fl-bar">
           <b>{weekdayDay(at)}</b>
           {rows.length > 0 && seen != null && (() => {
