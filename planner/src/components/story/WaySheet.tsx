@@ -226,7 +226,8 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
                   <b>{way.from}</b><Arrow s={12} /><b>{way.to}</b><Caret s={12} dir="d" />
                 </button>
               )
-              : <span className="ws-codes" role="img" aria-label={`${way.from} to ${way.to}`}><b>{way.from}</b><Arrow s={12} /><b>{way.to}</b></span>}
+              : booking ? null
+                : <span className="ws-codes" role="img" aria-label={`${way.from} to ${way.to}`}><b>{way.from}</b><Arrow s={12} /><b>{way.to}</b></span>}
           </small>
         </header>
         {booking && (
