@@ -1,6 +1,6 @@
-// Ordering for the Trips timetable, and the best value per line of the compare tray.
+// Ordering for the trips list, and the best value per line of compare.
 
-export type SortKey = 'rank' | 'price' | 'air'
+export type SortKey = 'rank' | 'price' | 'nights'
 
 export interface SortRow {
   /** a ranked trip from the trips table (data/web/trips.json) */
@@ -10,8 +10,8 @@ export interface SortRow {
   draft: boolean
   /** all in, in kr. Null when the trip cannot be priced. */
   total: number | null
-  /** hours in the air. Null when unknown. */
-  air: number | null
+  /** nights from the landing to the flight home. Null when unknown. */
+  nights: number | null
 }
 
 const known = (n: number | null): n is number => n != null && Number.isFinite(n)
@@ -34,19 +34,19 @@ function byRank(a: SortRow, b: SortRow): number {
 
 /** A new array in the order of the key. Ties keep the order they came in. */
 export function sortTrips<T extends SortRow>(rows: readonly T[], key: SortKey): T[] {
-  const cmp = key === 'rank' ? byRank : key === 'price' ? (a: T, b: T) => byValue(a.total, b.total) : (a: T, b: T) => byValue(a.air, b.air)
+  const cmp = key === 'rank' ? byRank : key === 'price' ? (a: T, b: T) => byValue(a.total, b.total) : (a: T, b: T) => byValue(a.nights, b.nights)
   return rows
     .map((row, i) => ({ row, i }))
     .sort((a, b) => cmp(a.row, b.row) || a.i - b.i)
     .map((x) => x.row)
 }
 
-export const SORT_LABEL: Record<SortKey, string> = { rank: 'rank', price: 'price', air: 'air time' }
+export const SORT_LABEL: Record<SortKey, string> = { rank: 'rank', price: 'price', nights: 'length' }
 
 /**
- * The columns holding the lowest known value of a line, for the amber dot. Nothing is marked when
- * fewer than two values are known or every known value is the same, so a dot always means "less
- * than another trip".
+ * The columns holding the lowest known value of a line, set in bold. Nothing is marked when fewer
+ * than two values are known or every known value is the same, so bold always means "less than
+ * another trip".
  */
 export function lowest(values: readonly (number | null)[]): Set<number> {
   const k = values.map((v, i) => ({ v, i })).filter((x): x is { v: number; i: number } => known(x.v))

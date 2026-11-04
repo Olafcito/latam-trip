@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { RouteStop } from '../../lib/bundle'
 import { routeView, type RouteLand } from './routeView'
-import { hereAt, revealOf, ribbon } from './tripBar'
+import { hereAt, ribbon, spanAt, spread, tierOf, timeline } from './tripBar'
 
 const stop = (id: string, country: string, nights: number, mode: RouteStop['mode'], inDay: string, outDay: string, booked = false): RouteStop =>
   ({ id, name: id, country, nights, mode, type: 'city', lat: 0, lon: 0, inDay, outDay, booked })
 
-const land: RouteLand = { at: (lon, lat) => [500 + lon * 20, 600 - lat * 20], land: '', lit: '', borders: '' }
+const land: RouteLand = { at: (lon, lat) => [500 + lon * 20, 600 - lat * 20], land: '', lit: [], borders: '' }
 const canvas = { w: 1000, h: 1250, tilted: false }
 
 // in by air to the first, a bus on, a booked flight to the last, two stops in the last
@@ -57,23 +57,78 @@ describe('hereAt', () => {
   })
 })
 
-describe('revealOf', () => {
-  it('lights everything when nothing is chosen', () => {
-    const r = revealOf(view, null)
-    expect(r.legs.every(Boolean)).toBe(true)
-    expect(r.countries.every(Boolean)).toBe(true)
-    expect(r.home).toBe(true)
+describe('tierOf', () => {
+  it('leaves everything plain when nothing is chosen', () => {
+    const t = tierOf(view, null)
+    expect(t.countries).toEqual(['plain', 'plain', 'plain'])
+    expect(t.legs).toEqual(['plain', 'plain', 'plain'])
+    expect([t.from, t.to]).toEqual(['plain', 'plain'])
   })
-  it('lights the route up to the chosen country and dims the rest', () => {
-    const r = revealOf(view, view.countries[1].key)
-    // legs into b, c, d
-    expect(r.legs).toEqual([true, false, false])
-    expect(r.countries).toEqual([true, true, false])
-    expect(r.home).toBe(false)
+  it('makes the chosen country the hero with its legs in and out, before it quiet, after it plain', () => {
+    const t = tierOf(view, view.countries[1].key)
+    expect(t.countries).toEqual(['past', 'hero', 'future'])
+    // legs into b, c, d: into the pass, out of it, then on inside the last country
+    expect(t.legs).toEqual(['hero', 'hero', 'future'])
+    expect([t.from, t.to]).toEqual(['past', 'future'])
   })
-  it('the last country lights the way home too', () => {
-    const r = revealOf(view, view.countries[2].key)
-    expect(r.legs).toEqual([true, true, true])
-    expect(r.home).toBe(true)
+  it('the first country owns the way in, the last the way home and the legs inside it', () => {
+    expect(tierOf(view, view.countries[0].key).from).toBe('hero')
+    const t = tierOf(view, view.countries[2].key)
+    expect(t.legs).toEqual(['past', 'hero', 'hero'])
+    expect(t.to).toBe('hero')
+  })
+})
+
+describe('timeline', () => {
+  const bar = ribbon(view, true)
+  const line = timeline(bar, { today: '2026-11-03', homeBooked: false })
+
+  it('places each country by its days, butted from the first day to the last', () => {
+    // 2 Dec to 22 Dec is 20 days
+    expect(line.spans.map((s) => [s.x0, s.x1])).toEqual([[0, 0.5], [0.5, 0.5], [0.5, 1]])
+  })
+  it('has a glyph for every leg, the way out at the start and the way home at the end', () => {
+    expect(line.legs.map((l) => [l.at, l.mode, l.booked])).toEqual([
+      [0, 'flight', true], [0.5, 'ground', false], [0.5, 'flight', true], [1, 'flight', false],
+    ])
+  })
+  it('names the month at the start and draws a hairline where a new one begins', () => {
+    expect(line.months).toEqual([{ at: 0, name: 'Dec', line: false }])
+    const long = timeline([{ ...bar[0], last: '2027-01-11' }], { today: null, homeBooked: false })
+    expect(long.months).toEqual([{ at: 0, name: 'Dec', line: false }, { at: 0.75, name: 'Jan', line: true }])
+  })
+  it('puts today at its day, nowhere before or after the trip', () => {
+    expect(line.today).toBeNull()
+    expect(timeline(bar, { today: '2026-12-12', homeBooked: false }).today).toBeCloseTo(10.5 / 20)
+    expect(timeline(bar, { today: '2026-12-22', homeBooked: false }).today).toBeNull()
+  })
+  it('falls back on the nights when the days are not known', () => {
+    const blind = bar.map((s) => ({ ...s, first: null, last: null }))
+    expect(timeline(blind, { today: null, homeBooked: false }).spans.map((s) => s.x1)).toEqual([0.5, 0.5, 1])
+  })
+})
+
+describe('spread', () => {
+  it('leaves glyphs that are apart where they are', () => {
+    expect(spread([10, 50, 90], 20, 0, 100)).toEqual([10, 50, 90])
+  })
+  it('steps touching glyphs apart and keeps them inside', () => {
+    expect(spread([40, 42, 44], 20, 0, 100)).toEqual([40, 60, 80])
+    expect(spread([90, 95, 100], 20, 0, 100)).toEqual([60, 80, 100])
+  })
+})
+
+describe('spanAt', () => {
+  const spans = [{ key: 'a', x0: 0, x1: 0.5 }, { key: 'p', x0: 0.5, x1: 0.5 }, { key: 'b', x0: 0.5, x1: 1 }]
+  it('finds the stay under the point', () => {
+    expect(spanAt(spans, 0.2, 0.02)).toBe('a')
+    expect(spanAt(spans, 0.8, 0.02)).toBe('b')
+  })
+  it('a pass through near the point wins', () => {
+    expect(spanAt(spans, 0.51, 0.02)).toBe('p')
+  })
+  it('a point past either end takes the end', () => {
+    expect(spanAt(spans, -0.1, 0.02)).toBe('a')
+    expect(spanAt(spans, 1.2, 0.02)).toBe('b')
   })
 })

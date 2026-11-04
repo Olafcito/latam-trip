@@ -157,3 +157,18 @@ export function nowIn(sched: Schedule, legs: LegState[], ends: { start: string; 
   if (last && sched.free > 0 && today >= stopEnd(last) && today < home) return { at: 'free', nightsLeft: dayDiff(today, home), next }
   return { at: null, nightsLeft: 0, next }
 }
+
+/** The id of a leg's row in the story, so the status can take you to it. */
+export const legId = (key: LegKey) => `lg-${key}`
+
+/** The stops that booked legs hold on both sides, by place index. Their nights cannot move. */
+export function heldStops(legs: LegState[], places: number): Set<number> {
+  const at = new Map(legs.map((l) => [l.key, l]))
+  const held = new Set<number>()
+  for (let i = 0; i < places; i++) {
+    const inn = at.get(i === 0 ? 'in' : i)
+    const out = at.get(i === places - 1 ? 'home' : i + 1)
+    if (inn?.booked && out?.booked) held.add(i)
+  }
+  return held
+}

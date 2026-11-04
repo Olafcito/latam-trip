@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dayTime, hours, ioMarkers, wayFacts, wayRows } from './inout'
+import { dayTime, hours, ioMarkers, wayFacts, wayHead, wayRows } from './inout'
 import type { SeedWay, Trip } from './trips'
 
 const way = (over: Partial<SeedWay>): SeedWay => ({
@@ -48,23 +48,48 @@ describe('way pane rows', () => {
 
   it('gives a flight row its times, hours, carriers, numbers and connections', () => {
     const [first, , last] = wayRows(w)
-    expect(first).toMatchObject({ kind: 'flight', from: 'CPH', to: 'MAD', depart: 'Wed 2 Dec 06:10', arrive: 'Wed 2 Dec 09:35', hours: '3,4 h', carriers: 'Ryanair', numbers: 'Ryanair 606', connections: [] })
-    expect(last).toMatchObject({ carriers: 'Iberia, Copa', numbers: 'IB 6341, CM 391', connections: [{ airport: 'SJO', hours: '2,4 h' }, { airport: 'PTY', hours: 'time unknown' }] })
+    expect(first).toMatchObject({ kind: 'flight', from: 'CPH', to: 'MAD', depart: 'Wed 2 Dec 06:10', arrive: 'Wed 2 Dec 09:35', hours: '3h 25m', carriers: 'Ryanair', numbers: 'Ryanair 606', connections: [] })
+    expect(last).toMatchObject({ carriers: 'Iberia, Copa', numbers: 'IB 6341, CM 391', connections: [{ airport: 'SJO', hours: '2h 25m' }, { airport: 'PTY', hours: '' }] })
   })
 
   it('gives a stop row its kind, nights and hours on the ground', () => {
-    expect(wayRows(w)[1]).toEqual({ kind: 'stop', label: 'Night (1 night)', airport: 'MAD', ground: '29,8 h on the ground', arrive: 'Wed 2 Dec 09:35', depart: 'Thu 3 Dec 15:20' })
+    expect(wayRows(w)[1]).toEqual({ kind: 'stop', label: 'Night (1 night)', airport: 'MAD', ground: '29h 45m on the ground', arrive: 'Wed 2 Dec 09:35', depart: 'Thu 3 Dec 15:20' })
     const st = wayRows(way({ timeline: [{ kind: 'self_transfer', airport: 'MAD', arrive: null, depart: null, hours: 3.17 }] }))[0]
-    expect(st).toMatchObject({ label: 'Self-transfer', ground: '3,2 h on the ground', arrive: 'time unknown' })
+    expect(st).toMatchObject({ label: 'Self transfer', ground: '3h 10m on the ground', arrive: '' })
     const bare = wayRows(way({ timeline: [{ kind: 'connection', airport: 'MAD', arrive: null, depart: null, hours: null }] }))[0]
     expect(bare).toMatchObject({ ground: '' })
   })
 
-  it('formats hours and times the Danish way', () => {
-    expect(hours(1.333)).toBe('1,3 h')
-    expect(hours(12)).toBe('12 h')
-    expect(hours(null)).toBe('time unknown')
+  it('leaves out a carrier or flight number the way does not list', () => {
+    const r = wayRows(way({ timeline: [{ kind: 'flight', from: 'CPH', to: 'MAD', depart: null, arrive: null, hours: null }] }))[0]
+    expect(r).toMatchObject({ carriers: '', numbers: '', hours: '', depart: '' })
+  })
+
+  it('formats durations in hours and minutes', () => {
+    expect(hours(1.333)).toBe('1h 20m')
+    expect(hours(12)).toBe('12h')
+    expect(hours(0.5)).toBe('30m')
+    expect(hours(null)).toBe('')
     expect(dayTime('2027-02-04T17:00')).toBe('Thu 4 Feb 17:00')
+  })
+})
+
+describe('way header', () => {
+  const w = way({
+    total_hours: 39.43,
+    timeline: [
+      { kind: 'flight', from: 'CPH', to: 'MAD', depart: '2026-12-02T06:10', arrive: '2026-12-02T09:35', hours: 3.42 },
+      { kind: 'night', airport: 'MAD', arrive: '2026-12-02T09:35', depart: '2026-12-03T15:20', hours: 29.75, nights: 1 },
+      { kind: 'flight', from: 'MAD', to: 'GUA', depart: '2026-12-03T15:20', arrive: '2026-12-03T21:36', hours: 13.27, connections: [{ airport: 'SJO', layover_h: 2.42 }] },
+    ],
+  })
+  it('reads the two ends, their clock times, the total and the stops on the way', () => {
+    expect(wayHead(w)).toEqual({
+      from: 'CPH', to: 'GUA', depart: '06:10', arrive: '21:36', departDay: 'Wed 2 Dec', arriveDay: 'Thu 3 Dec', total: '39h 26m', marks: ['MAD', 'SJO'],
+    })
+  })
+  it('falls back to the way ends when the timeline is empty', () => {
+    expect(wayHead(way({ total_hours: null }))).toMatchObject({ from: 'CPH', to: 'GUA', depart: '09:55', arrive: '21:36', total: '', marks: [] })
   })
 })
 
@@ -74,11 +99,15 @@ describe('way pane facts', () => {
     expect(wayFacts(t, 'home')).toEqual([
       { label: 'Ticket price', value: '7.850 kr' },
       { label: 'Ticket covers', value: 'Both ways' },
-      { label: 'Cabin-bag fee', value: 'included' },
+      { label: 'Cabin bag fee', value: 'included' },
       { label: 'US transit', value: 'No' },
-      { label: 'Lands in Copenhagen', value: 'Thu 4 Feb 17:00' },
     ])
-    expect(wayFacts(t, 'in').at(-1)).toEqual({ label: 'Leaves Copenhagen', value: 'Wed 2 Dec 09:55' })
+  })
+
+  it('leaves out a price it does not know', () => {
+    const base = trip('GUA', 'BOG').inout!
+    const t = trip('GUA', 'BOG', { inout: { ...base, type: 'oneways', way_in: way({}) } })
+    expect(wayFacts(t, 'in').map((f) => f.label)).toEqual(['US transit'])
   })
 
   it('reads the long-haul cabin fee from the totals for seeds stored without extras', () => {
@@ -86,7 +115,7 @@ describe('way pane facts', () => {
       totals: { long_haul_dkk: 7850, in_between_dkk: 4601, flights_total_dkk: 12451, cabin_bag_fees_dkk: 500, hub_nights: 0, us_transit: false },
       segments: [{ kind: 'flight', from: 'SJO', to: 'LPB', cabin_bag_fee_dkk: 250 }, { kind: 'overland', from: 'GUA', to: 'SJO' }],
     })
-    expect(wayFacts(t, 'in')).toContainEqual({ label: 'Cabin-bag fee', value: '250 kr' })
+    expect(wayFacts(t, 'in')).toContainEqual({ label: 'Cabin bag fee', value: '250 kr' })
   })
 
   it('prices separate one-ways per direction and flags US transit', () => {
@@ -96,9 +125,8 @@ describe('way pane facts', () => {
     })
     expect(wayFacts(t, 'in')).toEqual([
       { label: 'Ticket price', value: '3.120 kr' },
-      { label: 'Cabin-bag fee', value: '180 kr' },
+      { label: 'Cabin bag fee', value: '180 kr' },
       { label: 'US transit', value: 'Yes' },
-      { label: 'Leaves Copenhagen', value: 'Wed 2 Dec 09:55' },
     ])
   })
 })

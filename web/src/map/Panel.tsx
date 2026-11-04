@@ -4,8 +4,9 @@ import { tripEnd, type Trip } from '../data/trips'
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate } from '../lib/format'
 import { Flag as CountryFlag } from './Flag'
-import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
+import { Arrow, ArrowIn, ArrowOut, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 import { PlaceSections } from './PlaceSections'
+import { cleanCarriers, sameNames } from './routeFacts'
 import type { CardRef, MapModeApi } from './useMapMode'
 
 export type PanelView = 'city' | 'more' | 'route' | 'trips' | 'way'
@@ -103,7 +104,7 @@ function OptChip({ o }: { o: RouteOption }) {
   return (
     <span className="copt mono" title={[modeLabel(o.mode), time, price == null ? null : fromPrice(price)].filter(Boolean).join(', ')}>
       <ModeChip family={familyOf(o.mode)} />
-      {time && <b>{time}</b>} {price != null && kr(price)}
+      {time} {price != null && <b>{kr(price)}</b>}
     </span>
   )
 }
@@ -173,14 +174,14 @@ function ConnRow({ p, n, from, dir, i }: { p: PanelProps; n: Neighbour; from: st
               onClick={() => setOpen(!open)}
             >
               <ModeChip family={familyOf(o.mode)} />
-              <b>{duration(o.duration_min)}</b> {kr(pair[0].dkk)}
+              {o.duration_min != null && duration(o.duration_min)} <b>{kr(pair[0].dkk)}</b>
               <Chevron up={open} />
             </button>
           ) : o.mode === 'flight' && dir === 'in' && here ? (
             // the crawl did not search this way in, so there is no price to read
             <span key={j} className="copt mono" title={`Flight, no crawled fares from ${n.other.short_name}`}>
               <ModeChip family={familyOf(o.mode)} />
-              {o.duration_min != null && <b>{duration(o.duration_min)}</b>}
+              {o.duration_min != null && duration(o.duration_min)}
             </span>
           ) : (
             <OptChip key={j} o={o} />
@@ -246,8 +247,8 @@ function CityView(p: PanelProps & { city: Place }) {
         <span className="sechead-r">
           {flown && (
             <span className="dirseg" role="group" aria-label="Read flights in or out">
-              <button type="button" aria-pressed={dir === 'in'} onClick={() => p.onDir('in')}>In</button>
-              <button type="button" aria-pressed={dir === 'out'} onClick={() => p.onDir('out')}>Out</button>
+              <button type="button" aria-pressed={dir === 'in'} aria-label="Flights in" title="Flights in" onClick={() => p.onDir('in')}><ArrowIn /></button>
+              <button type="button" aria-pressed={dir === 'out'} aria-label="Flights out" title="Flights out" onClick={() => p.onDir('out')}><ArrowOut /></button>
             </span>
           )}
           <p className="sub">{list.length}</p>
@@ -365,11 +366,11 @@ function Stops({ model, conn, o, from }: { model: Model; conn: Connection; o: Ro
           ? 'Nonstop'
           : o.flight?.vias.length
             ? `Connections vary: via ${o.flight.vias.join(' or ')}`
-            : 'No stop data'
+            : null
         : o.border
           ? 'Direct, with a border crossing'
           : 'Direct, no changes'
-    return <p className="tl-none">{msg}</p>
+    return msg ? <p className="tl-none">{msg}</p> : null
   }
   return (
     <ol className="tl">
@@ -471,28 +472,33 @@ function RoundTrips({ model, rows }: { model: Model; rows: RoundTrip[] }) {
 function FlightFacts({ model, o, from }: { model: Model; o: RouteOption; from: string }) {
   const f = o.flight
   if (!f) return null
+  const carriers = cleanCarriers(f.carriers)
   const itin = (q: NonNullable<typeof f.cheapest>) =>
-    `${kr(q.dkk)} · ${duration(q.duration_min)} · ${q.vias.length ? 'via ' + q.vias.join(', ') : 'nonstop'} · ${q.carriers.join(', ')} · ${shortDate(q.date)}`
+    [kr(q.dkk), q.duration_min != null ? duration(q.duration_min) : null, q.vias.length ? 'via ' + q.vias.join(', ') : 'nonstop', cleanCarriers(q.carriers).join(', ') || null, shortDate(q.date)].filter(Boolean).join(' · ')
   return (
     <div className="ffacts">
       <div className="facts">
-        <div className="fact"><span className="mono">One-way</span><span className="mono">{fromPrice(f.oneway_dkk.min)}</span></div>
-        <div className="fact"><span className="mono">Return</span><span className="mono">{f.return_dkk?.min != null ? fromPrice(f.return_dkk.min) : 'not searched'}</span></div>
-        <div className="fact"><span className="mono">Routing</span><span>{f.nonstop ? 'Nonstop' + (f.vias.length ? ' or via ' + f.vias.join(', ') : '') : f.vias.length ? 'via ' + f.vias.join(', ') : 'not listed'}</span></div>
-        <div className="fact"><span className="mono">Carriers</span><span>{f.carriers.join(', ') || 'not listed'}</span></div>
+        {f.oneway_dkk.min != null && <div className="fact"><span className="mono">One way</span><span className="mono">{fromPrice(f.oneway_dkk.min)}</span></div>}
+        {f.return_dkk?.min != null && <div className="fact"><span className="mono">Return</span><span className="mono">{fromPrice(f.return_dkk.min)}</span></div>}
+        {(f.nonstop || f.vias.length > 0) && <div className="fact"><span className="mono">Routing</span><span>{f.nonstop ? 'Nonstop' + (f.vias.length ? ' or via ' + f.vias.join(', ') : '') : 'via ' + f.vias.join(', ')}</span></div>}
+        {carriers.length > 0 && <div className="fact"><span className="mono">Carriers</span><span>{carriers.join(', ')}</span></div>}
       </div>
       {f.cheapest && <p className="ops"><b>Cheapest</b> · <span className="mono">{itin(f.cheapest)}</span>{f.cheapest.self_transfer ? ' · self transfer' : ''}</p>}
       {f.fastest && f.fastest.dkk !== f.cheapest?.dkk && <p className="ops"><b>Fastest</b> · <span className="mono">{itin(f.fastest)}</span></p>}
       {f.by_date?.length ? <ByDate model={model} rows={f.by_date} from={from} /> : null}
       {f.round_trips?.length ? <RoundTrips model={model} rows={f.round_trips} /> : null}
-      {f.by_date?.length || f.round_trips?.length ? null : o.source !== 'crawl' ? (
-        <p className="ops"><b>No dated search</b> · this price comes from {o.source_url ? 'a fare page' : 'research'}, not from a search for your dates</p>
-      ) : null}
-      {o.observed_at && (
+      {o.observed_at && f.oneway_dkk.min != null && (
         <p className="ops"><b>Price observed</b> · <span className="mono">{observed(f.oneway_dkk.observed_at ?? o.observed_at)}</span>{f.quotes ? ` · ${f.quotes} quotes` : ''}</p>
       )}
     </div>
   )
+}
+
+/** "Researched 2025: 9h, from 300 kr", with what is unknown left out. */
+function researchedLine(r: NonNullable<RouteOption['researched']>): string | null {
+  const facts = [r.duration_min != null ? duration(r.duration_min) : null, r.price_min != null ? fromPrice(r.price_min) : null].filter(Boolean)
+  if (!facts.length) return null
+  return `Researched${r.year ? ' ' + r.year : ''}: ${facts.join(', ')}`
 }
 
 function RouteView(p: PanelProps & { conn: Connection }) {
@@ -527,8 +533,8 @@ function RouteView(p: PanelProps & { conn: Connection }) {
             {opts.map((o, i) => (
               <button key={i} className={`ocard${o === cur ? ' cur' : ''}`} aria-pressed={o === cur} onClick={() => p.onOption(i)}>
                 <span className="oc-mode"><ModeChip family={familyOf(o.mode)} />{modeLabel(o.mode)}</span>
-                <span className="oc-dur mono">{duration(o.duration_min)}</span>
-                <span className="oc-cost mono">{fromPrice(o.price_dkk.min)}</span>
+                {o.duration_min != null && <span className="oc-dur mono">{duration(o.duration_min)}</span>}
+                {o.price_dkk.min != null ? <span className="oc-cost mono">{fromPrice(o.price_dkk.min)}</span> : o.duration_min == null ? <span className="oc-none mono" aria-label="No time or price yet">–</span> : null}
                 <span className="oc-via">{viaText(model, conn, o, from)}</span>
                 {(o.overnight || o.border) && (
                   <span className="oc-flags">
@@ -548,17 +554,17 @@ function RouteView(p: PanelProps & { conn: Connection }) {
             <Stops model={model} conn={conn} o={cur} from={from} />
             {cur.mode === 'flight' ? <FlightFacts model={model} o={cur} from={from} /> : (
               <div className="facts">
-                <div className="fact"><span className="mono">Frequency</span><span>{cur.frequency || 'not listed'}</span></div>
-                <div className="fact"><span className="mono">Local price</span><span>{cur.price_local || kr(cur.price_dkk.min)}</span></div>
+                {cur.frequency && <div className="fact"><span className="mono">Frequency</span><span>{cur.frequency}</span></div>}
+                {(cur.price_local || cur.price_dkk.min != null) && <div className="fact"><span className="mono">Local price</span><span>{cur.price_local || kr(cur.price_dkk.min)}</span></div>}
                 {cur.duration_range_h && <div className="fact"><span className="mono">Range</span><span className="mono">{cur.duration_range_h.replace('-', ' to ')} h</span></div>}
                 {cur.observed_at && <div className="fact"><span className="mono">Researched</span><span className="mono">{observed(cur.observed_at)}</span></div>}
               </div>
             )}
-            {!!cur.operators.length && <p className="ops"><b>Operators</b> · {cur.operators.join(', ')}</p>}
+            {!!cur.operators.length && !(cur.flight && sameNames(cur.operators, cur.flight.carriers)) && <p className="ops"><b>Operators</b> · {cleanCarriers(cur.operators).join(', ')}</p>}
             {cur.note && <p className="note">{cur.note}</p>}
-            {cur.researched && (
+            {cur.researched && researchedLine(cur.researched) && (
               <p className="fine mono">
-                Researched {cur.researched.year}: {duration(cur.researched.duration_min)}, {fromPrice(cur.researched.price_min)}
+                {researchedLine(cur.researched)}
               </p>
             )}
           </div>
@@ -569,15 +575,20 @@ function RouteView(p: PanelProps & { conn: Connection }) {
             {added >= 0 ? (
               <button className="pbtn ghost done" onClick={() => p.onRemoveLeg(added)}>In {p.trip.name} · remove</button>
             ) : (
-              <>
-                <button className="pbtn add" onClick={() => p.onAddLeg!(conn, cur, from, true)}>
-                  Add leg and continue
-                  <span>then show what leaves {b.short_name}</span>
-                </button>
-                <button className="pbtn ghost" onClick={() => p.onAddLeg!(conn, cur, from, false)}>Add leg, stay here</button>
-              </>
+              cur.price_dkk.min == null ? (
+                // no fare yet: finding one leads, the leg can still go in
+                <div className="pact-pair">
+                  <a className="pbtn primary" href={liveUrl(model, conn, cur, from)} target="_blank" rel="noreferrer">Search live prices</a>
+                  <button className="pbtn ghost" onClick={() => p.onAddLeg!(conn, cur, from, true)}>Add leg</button>
+                </div>
+              ) : (
+                <>
+                  <button className="pbtn add" onClick={() => p.onAddLeg!(conn, cur, from, true)}>Add leg and continue</button>
+                  <button className="pbtn ghost" onClick={() => p.onAddLeg!(conn, cur, from, false)}>Add leg, stay here</button>
+                </>
+              )
             )}
-            <a className="pbtn ghost" href={liveUrl(model, conn, cur, from)} target="_blank" rel="noreferrer">Search live prices</a>
+            {(added >= 0 || cur.price_dkk.min != null) && <a className="pbtn ghost" href={liveUrl(model, conn, cur, from)} target="_blank" rel="noreferrer">Search live prices</a>}
           </div>
         ) : (
           <div className="pactions">

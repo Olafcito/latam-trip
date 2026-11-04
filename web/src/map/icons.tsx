@@ -120,3 +120,35 @@ export function ModeChip({ family, lg }: { family: Family; lg?: boolean }) {
     </span>
   )
 }
+
+/** Flights landing here: an arrow coming down into the city dot. */
+export const ArrowIn = ({ s = 14 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M4 4l9 9M13 6.5V13H6.5" />
+    <circle cx="18" cy="18" r="2.6" />
+  </svg>
+)
+
+/** Flights leaving here: an arrow going up out of the city dot. */
+export const ArrowOut = ({ s = 14 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M9 15l10-10M12.5 5H19v6.5" />
+    <circle cx="6" cy="18" r="2.6" />
+  </svg>
+)
+
+export const Person = ({ s = 18 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
+    <circle cx="12" cy="8.5" r="3.8" />
+    <path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4" />
+  </svg>
+)
+
+/** The map layers: two sheets stacked. */
+export const Layers = ({ s = 18 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
+    <path d="M12 3.5l8.5 4.5-8.5 4.5L3.5 8z" />
+    <path d="M3.5 12.5l8.5 4.5 8.5-4.5" />
+    <path d="M3.5 16.5l8.5 4.5 8.5-4.5" />
+  </svg>
+)

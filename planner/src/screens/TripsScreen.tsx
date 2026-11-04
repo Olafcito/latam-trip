@@ -3,13 +3,14 @@ import type { AppData } from '../data/types'
 import { useStore } from '../store'
 import { kr } from '../lib/format'
 import { bookedCount, bookedMark } from '../lib/booked'
-import type { Journey } from '../lib/journey'
-import { tripRoute, type TripRoute } from '../lib/route'
+import { travelUnknown, type Journey } from '../lib/journey'
+import { usePlan } from '../lib/plan'
+import { axisOf, monthTicks, type Axis, type Line } from '../lib/tripTimeline'
 import { SORT_LABEL, sortTrips, type SortKey } from '../lib/tripsort'
 import { summarize, type Summary } from '../lib/tripsummary'
-import { CompareTray } from '../components/CompareTray'
-import { RouteLine } from '../components/RouteLine'
-import { Download, Pin, Plus, Trash } from '../components/icons'
+import { Compare } from '../components/CompareTray'
+import { NightsBar, tripLine } from '../components/NightsBar'
+import { Caret, Check, Coin, Columns, Download, Moon, More, Pin, Plus, Star, Ticket, Trash, Warn } from '../components/icons'
 import { PickScreen } from './PickScreen'
 import { Notice } from '../components/Notice'
 import { Unresolved } from '../components/Unresolved'
@@ -17,10 +18,11 @@ import { VersionMenu } from '../components/VersionMenu'
 import { remoteEnabled } from '../lib/supabase'
 import { TripDashboard } from './TripDashboard'
 
-// The Trips tab. Its home is a list: one row per trip with its name, its route as flags from the
-// landing to the way out, and the all-in price. Every trip runs early December to early February, so
-// dates and nights stay off the list. A trip with something bought has a green ticket mark with the
-// count. Compare docks to the bottom.
+// The Trips tab. Its home is the list of whole trip options. The current plan sits pinned on top with
+// the accent edge. Every row is its trip's nights as a bar on one axis shared by all rows, with the
+// landing city under the left end and the city of the flight home under the right end, the nights, the
+// travel total and what is booked. The whole row opens the trip. Compare docks on the right on a wide
+// screen and is a sheet on a phone.
 
 export function TripsScreen({ data }: { data: AppData }) {
   const view = useStore((s) => s.view)
@@ -30,18 +32,23 @@ export function TripsScreen({ data }: { data: AppData }) {
   return <Timetable data={data} />
 }
 
-interface Row {
+export interface Row {
   j: Journey
   s: Summary | null
-  route: TripRoute | null
+  line: Line | null
   draft: boolean
   rank?: number
   savedAt?: string
   total: number | null
-  air: number | null
+  nights: number | null
+  /** parts of the travel total with no price */
+  unpriced: number
   /** its legs, ways and stays that are booked */
   booked: number
 }
+
+export const TOTAL_TIP = 'Travel: the long haul tickets, regional flights, ground legs, hub stays and cabin bags. Stays at the stops are apart.'
+export const unpricedTip = (n: number) => `${n} ${n === 1 ? 'part has' : 'parts have'} no price yet, so the total is what is priced`
 
 function Timetable({ data }: { data: AppData }) {
   const journey = useStore((s) => s.journey)
@@ -55,9 +62,16 @@ function Timetable({ data }: { data: AppData }) {
   const go = useStore((s) => s.go)
   const bookings = useStore((s) => s.bookings)
   const lodgings = useStore((s) => s.lodgings)
+  const plan = usePlan((s) => s.id)
+  const planReady = usePlan((s) => s.ready)
+  const setPlan = usePlan((s) => s.set)
   const file = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<string | null>(null)
   const [sort, setSort] = useState<SortKey>('rank')
+
+  useEffect(() => {
+    if (!planReady) void usePlan.getState().load()
+  }, [planReady])
 
   const unsaved = journey && !saved.some((s) => s.id === journey.id) ? journey : null
   const rows = useMemo<Row[]>(() => {
@@ -66,22 +80,25 @@ function Timetable({ data }: { data: AppData }) {
       const s = summarize(data, j, bookings, lodgings)
       return {
         j, s,
-        route: s ? tripRoute(data, j) : null,
+        line: s ? tripLine(data, j, s) : null,
         draft: j === unsaved,
         rank: j.rank,
         savedAt: j.savedAt,
         total: s ? s.total : null,
-        air: s ? s.t.air_hours : null,
+        nights: s ? s.nights : null,
+        unpriced: s ? travelUnknown(s.t) : 0,
         booked: s ? bookedCount(bookings, data, j, s.sched) : 0,
       }
     })
   }, [data, saved, unsaved, bookings, lodgings])
-  const sorted = useMemo(() => sortTrips(rows, sort), [rows, sort])
+  const axis = useMemo(() => axisOf(rows.flatMap((r) => (r.line ? [r.line] : []))), [rows])
+  const months = useMemo(() => monthTicks(axis), [axis])
+  const current = rows.find((r) => !r.draft && r.j.id === plan) ?? null
+  const sorted = useMemo(() => sortTrips(rows.filter((r) => r !== current), sort), [rows, current, sort])
 
   const cmp = compare
-    .map((id) => rows.find((r) => r.j.id === id && !r.draft))
+    .map((id) => rows.find((r) => r.j.id === id && !r.draft && r.s))
     .filter((r): r is Row => !!r)
-    .map((r) => ({ j: r.j, s: r.s }))
 
   const exportAll = () => {
     const blob = new Blob([JSON.stringify(saved, null, 2)], { type: 'application/json' })
@@ -102,8 +119,8 @@ function Timetable({ data }: { data: AppData }) {
   }
 
   const newTrip = (
-    <button type="button" className="btn primary" onClick={() => go('trips', 'pick')}>
-      <Plus />New trip
+    <button type="button" className="btn tt-new" onClick={() => go('trips', 'pick')} aria-label="New trip" title="New trip">
+      <Plus /><span>New trip</span>
     </button>
   )
   const io = (
@@ -122,17 +139,40 @@ function Timetable({ data }: { data: AppData }) {
         <Notice />
         <Unresolved />
         <p>No trips yet. Start with the way in and the way home.</p>
-        {newTrip}
+        <button type="button" className="btn primary" onClick={() => go('trips', 'pick')}><Plus />New trip</button>
         {io}
       </div>
     )
   }
 
+  const card = (r: Row) => (
+    <TripRow
+      key={r.j.id}
+      row={r}
+      axis={axis}
+      months={months}
+      current={r === current}
+      selected={compare.includes(r.j.id)}
+      onOpen={() => openTrip(r.j)}
+      onMap={() => openSaved(r.j)}
+      onCompare={() => toggleCompare(r.j.id)}
+      onPlan={() => void setPlan(r.j.id)}
+      onDelete={() => deleteSaved(r.j.id)}
+    />
+  )
+
   return (
-    <div className="tt">
+    <div className="tt" data-cmp={cmp.length > 0 || undefined}>
       <h2 className="sr">Trips</h2>
       <Notice />
       <Unresolved />
+
+      {current && (
+        <section className="tt-current" aria-label="Current plan">
+          <ol className="tt-rows">{card(current)}</ol>
+        </section>
+      )}
+
       <div className="tt-bar">
         <SortSeg value={sort} onChange={setSort} />
         <span className="tt-count mono">{rows.length} {rows.length === 1 ? 'trip' : 'trips'}</span>
@@ -143,37 +183,31 @@ function Timetable({ data }: { data: AppData }) {
 
       <div className="tt-table">
         <div className="tt-head" aria-hidden="true">
-          <span className="tt-h tt-h-name">trip</span>
-          <span className="tt-h">route</span>
-          <span className="tt-h num">all in</span>
-          <span className="tt-h" />
+          <span className="tt-h-route">
+            {months.map((m) => <span key={m.day} className="tt-mon" style={{ left: `${m.x * 100}%` }}>{m.label}</span>)}
+          </span>
         </div>
-
-        <ol className="tt-rows" aria-label="Trips">
-          {sorted.map((r) => (
-            <TripRow
-              key={r.j.id}
-              row={r}
-              selected={compare.includes(r.j.id)}
-              onOpen={() => openTrip(r.j)}
-              onMap={() => openSaved(r.j)}
-              onCompare={() => toggleCompare(r.j.id)}
-              onDelete={() => deleteSaved(r.j.id)}
-            />
-          ))}
-        </ol>
+        <ol className="tt-rows" aria-label="Trips">{sorted.map(card)}</ol>
       </div>
 
       {io}
 
-      {cmp.length > 0 && <CompareTray data={data} items={cmp} onClear={() => compare.forEach((id) => toggleCompare(id))} />}
+      {cmp.length > 0 && (
+        <Compare
+          data={data}
+          items={cmp}
+          onOpen={(j) => openTrip(j)}
+          onRemove={(id) => toggleCompare(id)}
+          onClear={() => compare.forEach((id) => toggleCompare(id))}
+        />
+      )}
     </div>
   )
 }
 
-/** Sort by rank, price or air time. A radio group: arrows move and pick, wrapping, Home and End jump. */
+/** Sort by rank, price or length. A radio group: arrows move and pick, wrapping, Home and End jump. */
 function SortSeg({ value, onChange }: { value: SortKey; onChange: (k: SortKey) => void }) {
-  const keys: SortKey[] = ['rank', 'price', 'air']
+  const keys: SortKey[] = ['rank', 'price', 'nights']
   const refs = useRef<(HTMLButtonElement | null)[]>([])
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     const i = keys.indexOf(value)
@@ -209,114 +243,159 @@ function SortSeg({ value, onChange }: { value: SortKey; onChange: (k: SortKey) =
 
 interface RowProps {
   row: Row
+  axis: Axis
+  months: { day: string; x: number }[]
+  current: boolean
   selected: boolean
   onOpen: () => void
   onMap: () => void
   onCompare: () => void
+  onPlan: () => void
   onDelete: () => void
 }
 
-function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps) {
-  const { j, s, route, draft } = row
+/** The total as a number, with a hollow coin and the count when parts have no price. */
+export function Total({ total, unpriced, big = true }: { total: number | null; unpriced: number; big?: boolean }) {
+  if (total == null) return <span className="tt-unknown">No price</span>
+  return (
+    <span className="tt-price" title={TOTAL_TIP}>
+      <span className={big ? 'tt-big' : undefined}>{kr(total)}</span>
+      {unpriced > 0 && (
+        <span className="tt-unpriced" title={unpricedTip(unpriced)} aria-label={unpricedTip(unpriced)}>
+          <Coin s={12} />{unpriced}
+        </span>
+      )}
+    </span>
+  )
+}
+
+function TripRow({ row, axis, months, current, selected, onOpen, onMap, onCompare, onPlan, onDelete }: RowProps) {
+  const { j, s, line, draft } = row
   const mark = bookedMark(row.booked)
   const name = j.name
   const versioned = remoteEnabled() && (j.version ?? 0) > 1
-  // the whole row opens the trip, except a click on a control in it or one that ends a text selection
+  // a click anywhere on the row opens the trip, except on a control or at the end of a text selection
   const onRowClick = (e: MouseEvent<HTMLLIElement>) => {
     if (!s) return
-    if ((e.target as HTMLElement).closest('a, button, input, label')) return
+    if ((e.target as HTMLElement).closest('a, button, input, label, [role="menu"]')) return
     if (window.getSelection()?.toString()) return
     onOpen()
   }
 
   return (
-    <li className="tt-row" data-selected={selected || undefined} data-off={!s || undefined} onClick={onRowClick}>
+    <li className="tt-row" data-current={current || undefined} data-selected={selected || undefined} data-off={!s || undefined} onClick={onRowClick}>
       <div className="tt-name">
-        <button type="button" className="tt-open" onClick={onOpen} disabled={!s} title={s ? name : 'Its flights are no longer in the data'}>
-          {name}
-        </button>
-        <span className="tt-tagline">
-          {draft ? <span className="tag draft">not saved</span>
-            : j.rank != null ? <span className="tag" title="Rank among the planned trips">#{j.rank}</span>
-              : j.version != null ? (versioned ? null : <span className="tag" title={`Version ${j.version} in the trips table`}>v{j.version}</span>)
-                : <span className="tag mine">mine</span>}
+        {current && <span className="tt-cur"><Check s={12} />Current plan</span>}
+        <h3 className="tt-title">
+          <button type="button" className="tt-open" onClick={onOpen} disabled={!s}>{name}</button>
+        </h3>
+        <span className="tt-marks">
+          {draft && <span className="tag draft">not saved</span>}
+          {!draft && j.rank != null && (
+            <span className="tt-rank" title={`Rank ${j.rank} among the planned trips`} aria-label={`Rank ${j.rank}`}><Star s={11} />{j.rank}</span>
+          )}
           {!draft && versioned && <VersionMenu id={j.id} version={j.version!} />}
           {mark && <span className="tt-booked" title="Legs, ways and stays booked"><Ticket />{mark}</span>}
+          {!s && <span className="tt-gone" title="Its flights are no longer in the data" aria-label="Its flights are no longer in the data"><Warn s={12} />gone</span>}
         </span>
       </div>
 
       <div className="tt-route">
-        {route ? <RouteLine route={route} />
-          : <span className="tt-gone">{s ? 'No stops to draw yet' : 'Its flights are no longer in the data'}</span>}
+        {line && s && <NightsBar line={line} axis={axis} months={months} from={s.route[0]} to={s.route[s.route.length - 1]} />}
       </div>
 
-      <span className="tt-n tt-total">
-        {s ? (
-          <>
-            <span className="tt-big">
-              {s.partial && <span className="tt-q" title="Some legs have no price yet, so this is a floor">from </span>}
-              {kr(s.total)}
-            </span>
-            <span className="tt-sub">{kr(s.t.tickets_dkk)} long haul</span>
-          </>
-        ) : <Q />}
-        <span className="sr"> all in</span>
-      </span>
+      <div className="tt-figs">
+        {row.nights != null && (
+          <span className="tt-nights" title={`${row.nights} nights from the landing to the flight home`} aria-label={`${row.nights} nights`}>
+            <Moon s={12} />{row.nights}
+          </span>
+        )}
+        <Total total={row.total} unpriced={row.unpriced} />
+      </div>
 
-      <RowActions name={name} draft={draft} canOpen={!!s} selected={selected} onMap={onMap} onCompare={onCompare} onDelete={onDelete} />
+      <div className="tt-act">
+        {!draft && s && (
+          <button type="button" className="tt-chip" aria-pressed={selected} onClick={onCompare} aria-label={`Compare ${name}`}>
+            <Columns s={13} /><span>Compare</span>
+          </button>
+        )}
+        <RowMenu name={name} draft={draft} canOpen={!!s} current={current} booked={row.booked} onMap={onMap} onPlan={onPlan} onDelete={onDelete} />
+        {s && <span className="tt-chev" aria-hidden><Caret dir="r" s={16} /></span>}
+      </div>
     </li>
   )
 }
 
-const Q = () => <span className="tt-q">not known</span>
-
-const Ticket = () => (
-  <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
-    <path d="M13 5v2M13 11v2M13 17v2" />
-  </svg>
-)
-
-const Check = () => (
-  <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M5 12.5l4.5 4.5L19 7.5" />
-  </svg>
-)
-
-/** Map, compare and delete. Delete asks in place: the trash turns into "Delete? yes / no", Escape backs out. */
-function RowActions({ name, draft, canOpen, selected, onMap, onCompare, onDelete }: {
-  name: string; draft: boolean; canOpen: boolean; selected: boolean; onMap: () => void; onCompare: () => void; onDelete: () => void
+/** More: make it the plan, build on the map, delete. Delete asks in the menu and names the bookings it leaves. */
+function RowMenu({ name, draft, canOpen, current, booked, onMap, onPlan, onDelete }: {
+  name: string; draft: boolean; canOpen: boolean; current: boolean; booked: number; onMap: () => void; onPlan: () => void; onDelete: () => void
 }) {
+  const [open, setOpen] = useState(false)
   const [asking, setAsking] = useState(false)
-  const noRef = useRef<HTMLButtonElement>(null)
-  const trashRef = useRef<HTMLButtonElement>(null)
-  const back = useRef(false)
-  useEffect(() => {
-    if (asking) noRef.current?.focus()
-    else if (back.current) { back.current = false; trashRef.current?.focus() }
-  }, [asking])
-  const cancel = () => { back.current = true; setAsking(false) }
+  const wrap = useRef<HTMLDivElement>(null)
+  const btn = useRef<HTMLButtonElement>(null)
+  const pop = useRef<HTMLDivElement>(null)
 
-  if (asking) {
-    return (
-      <div className="tt-act asking" role="group" aria-label={`Delete ${name}?`} onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); cancel() } }}>
-        <span className="tt-ask" aria-hidden="true">Delete?</span>
-        <button type="button" className="tt-yes" onClick={onDelete} aria-label={`Yes, delete ${name}`}><Check />yes</button>
-        <button type="button" className="tt-no" ref={noRef} onClick={cancel} aria-label={`No, keep ${name}`}>no</button>
-      </div>
-    )
+  const close = (focus = true) => {
+    setOpen(false)
+    setAsking(false)
+    if (focus) btn.current?.focus()
   }
+  useEffect(() => {
+    if (!open) return
+    pop.current?.querySelector<HTMLElement>('[role="menuitem"]:not(:disabled)')?.focus()
+    const onDown = (e: PointerEvent) => {
+      if (!wrap.current?.contains(e.target as Node)) close(false)
+    }
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
+  }, [open, asking])
+
+  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') {
+      e.stopPropagation()
+      if (asking) setAsking(false)
+      else close()
+      return
+    }
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+    const items = [...(pop.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? [])]
+    const i = items.indexOf(document.activeElement as HTMLElement)
+    e.preventDefault()
+    items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]?.focus()
+  }
+  const act = (f: () => void) => () => { close(); f() }
+
   return (
-    <div className="tt-act">
-      <button type="button" className="tt-icon" onClick={onMap} disabled={!canOpen} aria-label={`Build ${name} on the map`} title="Build on the map"><Pin s={15} /></button>
-      {!draft && (
-        <label className="tt-icon tt-cmp" title="Compare">
-          <input type="checkbox" checked={selected} onChange={onCompare} aria-label={`Compare ${name}`} />
-        </label>
-      )}
-      {!draft && (
-        <button type="button" className="tt-icon" ref={trashRef} onClick={() => setAsking(true)} aria-label={`Delete ${name}`} title="Delete"><Trash s={15} /></button>
-      )}
+    <div className="tt-more" ref={wrap}>
+      <button
+        type="button" ref={btn} className="tt-icon" aria-haspopup="menu" aria-expanded={open}
+        aria-label={`More for ${name}`} title="More" onClick={() => (open ? close() : setOpen(true))}
+      >
+        <More />
+      </button>
+      <div ref={pop} className="tt-pop" role="menu" aria-label={name} data-open={open || undefined} onKeyDown={onKey}>
+        {asking ? (
+          <>
+            <p className="tt-pop-name">{name}</p>
+            {booked > 0 && (
+              <p className="tt-pop-warn"><Ticket />{`${booked} ${booked === 1 ? 'booking' : 'bookings'} will have no trip`}</p>
+            )}
+            <button type="button" role="menuitem" className="tt-item danger" onClick={act(onDelete)}><Trash s={15} />Delete the trip</button>
+            <button type="button" role="menuitem" className="tt-item" onClick={() => setAsking(false)}>Keep it</button>
+          </>
+        ) : (
+          <>
+            {!draft && (
+              <button type="button" role="menuitem" className="tt-item" aria-disabled={current || undefined} disabled={!canOpen || current} onClick={act(onPlan)}>
+                {current ? <Check s={15} /> : <Star s={15} />}{current ? 'Your current plan' : 'Make it my plan'}
+              </button>
+            )}
+            <button type="button" role="menuitem" className="tt-item" disabled={!canOpen} onClick={act(onMap)}><Pin s={15} />Build on the map</button>
+            {!draft && <button type="button" role="menuitem" className="tt-item danger" onClick={() => setAsking(true)}><Trash s={15} />Delete</button>}
+          </>
+        )}
+      </div>
     </div>
   )
 }

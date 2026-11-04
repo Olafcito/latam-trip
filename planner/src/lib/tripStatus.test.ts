@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Booking, Way } from '../data/types'
 import type { BookData } from './booked'
 import type { Hop, Journey, Schedule, Totals } from './journey'
-import { costItems, costParts, legAction, legCounts, nextOpen, nowIn, stopEnd, ticketSplit, tripCost, tripLegs, type LegState } from './tripStatus'
+import { costItems, costParts, heldStops, legAction, legCounts, legId, nextOpen, nowIn, stopEnd, ticketSplit, tripCost, tripLegs, type LegState } from './tripStatus'
 
 // Made up rows only. A real reference, price or name never goes in this file.
 const row = (over: Partial<Booking>): Booking => ({
@@ -215,5 +215,20 @@ describe('nowIn', () => {
 
   it('ends a stop on its last night, not at the flight home', () => {
     expect(stopEnd(sched.places[3])).toBe('2026-12-12')
+  })
+})
+
+describe('legId and heldStops', () => {
+  it('names the row of each leg', () => {
+    expect([legId('in'), legId(3), legId('home')]).toEqual(['lg-in', 'lg-3', 'lg-home'])
+  })
+
+  it('holds a stop only when the legs on both sides are booked, the ways included', () => {
+    const legs = tripLegs(data, journey, sched, wi, wh, [])
+    const book = (...keys: (string | number)[]) => legs.map((l) => ({ ...l, booked: keys.includes(l.key) }))
+    expect([...heldStops(legs, 4)]).toEqual([])
+    expect([...heldStops(book('in', 1), 4)]).toEqual([0])
+    expect([...heldStops(book(1, 2, 3), 4)]).toEqual([1, 2])
+    expect([...heldStops(book(3, 'home'), 4)]).toEqual([3])
   })
 })

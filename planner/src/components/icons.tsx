@@ -236,6 +236,28 @@ export const Bed = ({ s = 13 }: { s?: number }) => (
   </svg>
 )
 
+/** Held in place: a padlock, for a stop booked legs hold on both sides. */
+export const Lock = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="5" y="10.5" width="14" height="10" rx="2" />
+    <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
+  </svg>
+)
+
+/** Still to do: an open ring, the mark of a leg not booked. */
+export const Open = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.6} {...base}>
+    <circle cx="12" cy="12" r="7.5" />
+  </svg>
+)
+
+/** Three dots: more actions behind one button. */
+export const Dots = ({ s = 15 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={3} {...base}>
+    <path d="M5.5 12h.01M12 12h.01M18.5 12h.01" />
+  </svg>
+)
+
 /** A bath, for the bathroom of a room. */
 export const Bath = ({ s = 13 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
@@ -262,5 +284,35 @@ export const Star = ({ s = 13 }: { s?: number }) => (
 export const Wave = ({ s = 13 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
     <path d="M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" />
+  </svg>
+)
+
+/** A price not known yet: a hollow coin with a dashed rim. */
+export const Coin = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <circle cx="12" cy="12" r="8.5" strokeDasharray="3.2 2.6" />
+  </svg>
+)
+
+/** More actions: three dots. */
+export const More = ({ s = 15 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={3} {...base}>
+    <path d="M5.5 12h.01M12 12h.01M18.5 12h.01" />
+  </svg>
+)
+
+/** Compare: two columns side by side. */
+export const Columns = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="3.5" y="4.5" width="7" height="15" rx="1.5" />
+    <rect x="13.5" y="4.5" width="7" height="15" rx="1.5" />
+  </svg>
+)
+
+/** A sent link: an envelope. */
+export const Mail = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="3" y="5.5" width="18" height="13" rx="2" />
+    <path d="M3.5 7l8.5 6.5L20.5 7" />
   </svg>
 )

@@ -19,7 +19,7 @@ import { MODE_SHEET, SHEET_PEEK, reducedMotion } from './sheet'
 import { Panel, type FlightDir, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
-import { IoLegend, WayPanel } from './WayPanel'
+import { WayPanel } from './WayPanel'
 import { C, baseStyle } from './style'
 import { Tooltip } from './Tooltip'
 import { MODE_TITLE, useMapMode, type CardRef, type MapMode } from './useMapMode'
@@ -120,7 +120,6 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   const [view, setView] = useState<View>(EMPTY)
   const [families, setFamilies] = useState<Set<Family>>(() => new Set(available))
   const [collapsed, setCollapsed] = useState(false)
-  const [hint, setHint] = useState<'show' | 'fading' | 'gone'>('show')
   const [space, setSpace] = useState(false)
   const [narrow, setNarrow] = useState(false)
   const [dock, setDock] = useState(false)
@@ -259,14 +258,6 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   )
 
   // ---- actions -----------------------------------------------------------------------------
-
-  const dismissHint = useCallback(() => {
-    setHint((h) => {
-      if (h !== 'show') return h
-      setTimeout(() => setHint('gone'), 600)
-      return 'fading'
-    })
-  }, [])
 
   /** A card belongs to what is open under it, so it goes when that does. */
   const dropCards = useCallback(() => {
@@ -424,7 +415,6 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   /** A map mode button. The same one again leaves the mode, and leaving keeps the camera where it is. */
   const toggleMode = (m: MapMode) => {
-    dismissHint()
     if (live.current.mode === m) return setMode(null)
     store.set(null)
     setView(EMPTY)
@@ -499,8 +489,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     onCardOpen?.()
   }, [card, onCardOpen])
 
-  const act = useRef({ select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode, dropCards })
-  act.current = { select, deselect, openRoute, openWay, back, dismissHint, onStop, tapMode, escMode, dropCards }
+  const act = useRef({ select, deselect, openRoute, openWay, back, onStop, tapMode, escMode, dropCards })
+  act.current = { select, deselect, openRoute, openWay, back, onStop, tapMode, escMode, dropCards }
 
   /** What the first card covers when there is no room beside the panel. */
   const underCard = mm.mode ? MODE_TITLE[mm.mode] : (view.sel && model.byId.get(view.sel)?.short_name) || null
@@ -865,7 +855,6 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     }
     const onOut = () => setHover(null)
     const onClick = (e: MapMouseEvent) => {
-      act.current.dismissHint()
       // a marker handles its own click
       if ((e.originalEvent.target as Element | null)?.closest?.('.io-mark')) return
       if (live.current.space) return
@@ -906,24 +895,18 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       if (h?.kind === 'route') act.current.openRoute(h.cid, h.from, back)
       else act.current.select(hit.id)
     }
-    const onDrag = () => {
-      setHover(null)
-      act.current.dismissHint()
-    }
-    const onWheel = () => act.current.dismissHint()
+    const onDrag = () => setHover(null)
 
     map.on('mousemove', onMove)
     map.on('mouseout', onOut)
     map.on('click', onClick)
     map.on('dragstart', onDrag)
-    map.on('wheel', onWheel)
     return () => {
       map.off('mousemove', onMove)
       map.off('mouseout', onOut)
       map.off('click', onClick)
       map.off('dragstart', onDrag)
-      map.off('wheel', onWheel)
-    }
+      }
   }, [map, model, store])
 
   // ---- keyboard ----------------------------------------------------------------------------
@@ -935,7 +918,6 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       if (e.key !== 'Escape' || e.defaultPrevented) return
       if (t !== document.body && !root.current?.contains(t)) return
       e.preventDefault()
-      act.current.dismissHint()
       if (!act.current.escMode()) act.current.back()
     }
     window.addEventListener('keydown', onEsc)
@@ -962,7 +944,6 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   // ---- controls ----------------------------------------------------------------------------
 
   const toggle = (f: Family) => {
-    act.current.dismissHint()
     setFamilies((cur) => {
       const next = new Set(cur)
       if (next.has(f)) {
@@ -1019,20 +1000,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
             available={available}
             families={families}
             onToggle={toggle}
-            onZoom={(d) => {
-              act.current.dismissHint()
-              map.zoomTo(map.getZoom() + d, { duration: reducedMotion() ? 0 : 400 })
-            }}
+            onZoom={(d) => map.zoomTo(map.getZoom() + d, { duration: reducedMotion() ? 0 : 400 })}
             onHome={() => {
-              act.current.dismissHint()
               if (mm.mode) return fitMode(mm.mode)
               deselect()
               fit(null, null)
             }}
-            hint={hint}
             controlsRef={controlsRef}
             bottomRef={bottomRef}
-            extraLegend={markers.length ? <IoLegend markers={markers} /> : null}
             mode={mm.mode}
             modes={mm.modes}
             onMode={toggleMode}

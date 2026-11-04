@@ -3,7 +3,6 @@
 /* Keyframes are global. Every rule below is scoped to the map, so the map can sit inside another app. */
 @keyframes rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 @keyframes chipIn { from { opacity: 0; transform: translateY(-8px) scale(.92) } to { opacity: 1; transform: none } }
-@keyframes hintIn { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 @keyframes blink { 50% { opacity: .25 } }
 @keyframes tipIn { from { opacity: 0; transform: scale(.95) } to { opacity: 1; transform: none } }
 @keyframes panelIn { from { opacity: 0; transform: translateX(-24px) scale(.97); filter: blur(4px) } to { opacity: 1; transform: none; filter: blur(0) } }
@@ -97,8 +96,15 @@
 .mbtn:hover { color: var(--text) !important; }
 .mbtn.on { background: var(--text); color: #0F1D26 !important; }
 .mbtn:focus-visible, .zbtn:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
-.mbtn .mdot { opacity: .4; transition: opacity .25s ease, transform .35s cubic-bezier(.3, 1.6, .5, 1); }
+.mbtn .mdot, .mbtn .lmark { opacity: .4; transition: opacity .25s ease, transform .35s cubic-bezier(.3, 1.6, .5, 1); }
 .mbtn.on .mdot { opacity: 1; transform: scale(1.25); }
+.mbtn.on .lmark { opacity: 1; }
+/* on a light pill the line keeps its colour but needs an edge to read */
+.mbtn.on .lmark path { filter: drop-shadow(0 0 .6px #0F1D26); }
+.lmark { flex: none; }
+/* the layers button and its menu exist for a phone, on a desktop the menu is the row of pills */
+.lbtn { display: none; }
+.lmenu { display: contents; }
 .mdot { width: 8px; height: 8px; border-radius: 50%; flex: none; display: inline-block; }
 .mdot.ground { background: var(--bus); }
 .mdot.boat { background: var(--boat); }
@@ -114,19 +120,11 @@
 .zbtn:hover { background: #17303D; color: #FFFFFF !important; }
 .zbtn + .zbtn { box-shadow: inset 0 1px 0 var(--chrome-line); }
 
-/* hint and legend share one row so they wrap instead of colliding */
+/* the legend sits bottom right, the attribution in the map corner */
 .ctl-bottom {
   left: 14px; right: 14px; bottom: 14px; display: flex; flex-wrap: wrap-reverse; justify-content: space-between;
   align-items: flex-end; gap: 8px; pointer-events: none;
 }
-.hint {
-  display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: 999px; background: #0F1F29E6;
-  box-shadow: inset 0 0 0 1px var(--chrome-line); font-size: 12px; color: #C6D3D9;
-  animation: hintIn .7s 1s cubic-bezier(.2, 1.2, .4, 1) both; transition: opacity .6s ease, transform .6s ease;
-}
-.hint.out { opacity: 0; transform: translateY(8px); }
-.hint kbd { font-family: inherit; font-size: 11px; padding: 1px 6px; border-radius: 4px; background: #1A3240; color: var(--text); }
-.hint-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--flight); animation: blink 1.6s ease-in-out infinite; }
 .legend-col { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .legend {
   display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 6px 14px; padding: 8px 14px;
@@ -134,7 +132,9 @@
   animation: chipIn .6s .6s cubic-bezier(.2, 1.3, .4, 1) both;
 }
 .legend span { display: flex; align-items: center; gap: 6px; }
-.attrib { margin: 0 6px 0 0; font-size: 10px; color: #6C8593; pointer-events: auto; text-align: right; }
+.attrib {
+  position: absolute; z-index: 5; left: 12px; bottom: 6px; margin: 0; font-size: 10px; color: #6C8593; pointer-events: auto;
+}
 :scope .attrib a { color: #8FA4AF; text-decoration: none; }
 :scope .attrib a:hover { color: var(--text); text-decoration: underline; }
 
@@ -298,6 +298,7 @@
 .oc-dur { font-size: 22px; font-weight: 600; letter-spacing: -.02em; line-height: 1; }
 .oc-cost { font-size: 13px; color: var(--flight); font-weight: 600; }
 .oc-via { font-size: 12px; color: var(--muted); line-height: 1.35; }
+.oc-none { font-size: 22px; font-weight: 500; line-height: 1; color: var(--faint); }
 .oc-via:empty { display: none; }
 .oc-flags { display: flex; gap: 8px; color: var(--muted); }
 .oc-flags span { display: flex; align-items: center; gap: 4px; font-size: 11px; }
@@ -320,7 +321,7 @@
 .sechead-r { display: inline-flex; align-items: center; gap: 10px; }
 .dirseg { display: inline-flex; padding: 2px; border-radius: 999px; background: var(--surface-2); }
 .dirseg button {
-  min-height: 22px; padding: 0 9px; border: 0; border-radius: 999px; background: transparent; font: inherit; font-size: 11px;
+  display: inline-flex; align-items: center; justify-content: center; min-width: 30px; min-height: 24px; padding: 0 8px; border: 0; border-radius: 999px; background: transparent; font: inherit; font-size: 11px;
   font-weight: 700; color: var(--muted); cursor: pointer; transition: var(--tint), var(--press);
 }
 .dirseg button[aria-pressed="true"] { background: var(--flight); color: var(--flight-ink); }
@@ -439,6 +440,10 @@
   box-shadow: 0 -14px 14px -6px var(--panel);
 }
 .tripacts .pbtn.ghost { min-height: 40px; padding: 0 10px; font-size: 13px; white-space: nowrap; }
+/* no fare yet: the search leads and the leg sits beside it as one button */
+.pact-pair { display: flex; gap: 8px; flex: 1 1 100%; }
+:scope .pact-pair .pbtn.primary { flex: 2 1 auto; }
+.pact-pair .pbtn.ghost { flex: 1 1 auto; }
 
 .panel.trips { width: 340px; }
 .tcards { display: flex; flex-direction: column; gap: 10px; }
@@ -632,8 +637,22 @@
   .ctl-tr { top: 10px; right: 10px; }
   .seg { flex-direction: column; border-radius: 18px; }
   .mbtn { min-height: 40px; }
-  .ctl-bottom { left: 10px; right: 10px; bottom: 10px; }
-  .hint { font-size: 11px; padding: 8px 12px; }
+  .ctl-bottom { left: 10px; right: 10px; bottom: 22px; }
+  /* pinch zooms, so the zoom buttons go and one layers button holds the modes and the travel pills */
+  .zbtns { display: none; }
+  .lbtn {
+    position: relative; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 14px;
+    background: var(--chrome); color: #C6D3D9 !important; cursor: pointer;
+    box-shadow: inset 0 0 0 1px var(--chrome-line), 0 10px 30px -12px #000; transition: var(--press);
+  }
+  .lbtn[aria-expanded="true"] { background: var(--text); color: #0F1D26 !important; }
+  .lbtn.lit::after { content: ""; position: absolute; top: 8px; right: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--flight); }
+  .lmenu { display: none; }
+  .menu-open .lmenu {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px; transform-origin: top right;
+    animation: chipIn .22s cubic-bezier(.2, 1, .4, 1) both;
+  }
+  .attrib { left: 10px; bottom: 4px; font-size: 9.5px; }
   .legend { font-size: 11px; gap: 4px 10px; padding: 6px 12px; border-radius: 14px; }
   .panel, .panel.wide, .panel.collapsed {
     left: 0; right: 0; top: auto; bottom: 0; width: auto; max-width: none; max-height: 52%;
@@ -654,12 +673,15 @@
   :scope.has-side .ctl-tr { right: 10px; }
   :scope.has-side .ctl-bottom { right: 10px; bottom: calc(42% + 10px); }
   :scope.has-side.has-panel .ctl-bottom { bottom: calc(52% + 10px); }
-  /* with a trip open the map above the pane is small: the hint and the legend give it back */
-  :scope.has-side:not(.side-mini) :is(.hint, .legend) { display: none; }
+  /* with a trip open the map above the pane is small: the legend gives it back */
+  :scope.has-side:not(.side-mini) .legend { display: none; }
+  :scope.has-side .attrib { bottom: calc(42% + 4px); }
+  :scope.has-side.has-panel .attrib { bottom: calc(52% + 4px); }
   .panel.plan { left: 0; right: 0; width: auto; max-height: 42%; animation-name: sheetIn; }
-  .panel.plan.mini { left: auto; right: 10px; top: 10px; width: min(var(--side), calc(100% - 20px)); animation-name: chipIn; }
-  :scope.side-mini .ctl-tr { right: calc(var(--side) + 20px); }
-  :scope.side-mini .ctl-bottom { bottom: 10px; }
+  .panel.plan.mini { left: 10px; right: 10px; top: auto; bottom: 18px; width: auto; animation-name: chipIn; }
+  /* the controls never shift sideways: the mini card sits at the foot of the map instead */
+  :scope.side-mini .ctl-bottom { bottom: 96px; }
+  :scope.side-mini .attrib { bottom: 4px; }
   :scope.has-panel .panel.plan { display: none; }
 }
 

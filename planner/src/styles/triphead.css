@@ -1,8 +1,123 @@
-/* The trip at a glance above the rail: a title, its costs and the small map. Under it the itinerary of
+/* The trip at a glance above the rail: where it stands, then the small map. Under it the itinerary of
    a place, which the city card shows. */
-.tg { display: grid; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
-.tg-title { display: flex; align-items: baseline; gap: 10px; margin: 0 0 12px; font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
-.tg-title span { font-size: var(--fs-small); font-weight: 400; letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--muted); }
+.tg { display: grid; gap: 16px; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+
+/* ---- where the trip stands: four figures, the cost opening All costs in place ---- */
+.ts { display: grid; }
+.ts-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 32px; }
+.ts-fig { display: grid; gap: 6px; min-width: 0; }
+.ts-top { display: inline-flex; align-items: baseline; gap: 6px; }
+.ts-top > svg { align-self: center; width: 15px; height: 15px; color: var(--muted); }
+.ts-n { font-size: var(--fs-num-lg); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--text); white-space: nowrap; }
+.ts-top small, .ts-sub { font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ts-cost {
+  position: relative; min-width: 10rem; margin: -6px -10px; padding: 6px 10px; border: 0; border-radius: 10px; background: none; color: inherit;
+  font: inherit; text-align: left; cursor: pointer; transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.ts-cost .disc-chev { align-self: center; }
+.ts-cost:active { transform: scale(0.98); }
+.ts-cost[aria-expanded='true'] { background: var(--surface-2); }
+.ts-cost:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.ts-chips { display: flex; gap: 8px; margin-left: auto; padding-bottom: 2px; }
+.ts-chip {
+  position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 12px; border: 0; border-radius: 999px;
+  font: inherit; font-size: var(--fs-num); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.ts-booked, .ts-done { color: var(--booked); background: color-mix(in srgb, var(--booked) 10%, transparent); }
+.ts-open {
+  color: var(--flight); background: color-mix(in srgb, var(--flight) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 45%, transparent);
+  cursor: pointer; transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.ts-open::after { content: ''; position: absolute; inset: calc((30px - var(--hit)) / 2) 0; }
+.ts-open:active { transform: scale(0.96); }
+.ts-open:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+
+/* the cost as a bar: paid green, estimated grey, a hatched end with the count of parts with no price */
+.cb { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.cb-track {
+  flex: none; width: var(--w, 100%); min-width: 4px; height: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--booked) 0 var(--paid), color-mix(in srgb, var(--muted) 40%, transparent) var(--paid) 100%);
+}
+.ts-cost .cb-track { flex: 1; width: auto; }
+.cb-track[data-empty] { min-width: 0; width: 0; }
+.cb-q {
+  flex: none; display: inline-grid; place-items: center; min-width: 18px; height: 14px; padding: 0 4px; border-radius: 4px;
+  background: repeating-linear-gradient(135deg, var(--line-2) 0 2px, transparent 2px 5px); box-shadow: inset 0 0 0 1px var(--line-2);
+  font-size: var(--fs-label); font-weight: 600; line-height: 1; color: var(--muted); font-variant-numeric: tabular-nums;
+}
+
+/* All costs: a line a category, its bar to the scale of the biggest, then the five biggest things */
+.ac { padding-top: 16px; }
+.ac-parts, .ac-items { list-style: none; margin: 0; padding: 0; }
+.ac-parts { display: grid; gap: 10px; }
+.ac-part { display: grid; grid-template-columns: 10rem minmax(0, 1fr) 7.5rem; align-items: center; gap: 4px 14px; font-size: var(--fs-num); }
+.ac-part[data-optional] { padding-top: 10px; border-top: 1px dashed var(--line-2); color: var(--muted); }
+.ac-name { display: inline-flex; align-items: center; gap: 8px; min-width: 0; font-weight: 500; }
+.ac-opt { padding: 1px 7px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-2); font-size: var(--fs-label); font-weight: 500; color: var(--muted); }
+.ac-kr { display: grid; justify-items: end; gap: 1px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ac-kr b { font-weight: 600; }
+.ac-part[data-optional] .ac-kr b { font-weight: 500; }
+.ac-paid { display: inline-flex; align-items: center; gap: 3px; font-size: var(--fs-label); font-weight: 500; color: var(--booked); }
+.ac-items { display: grid; margin-top: 14px; padding-top: 8px; border-top: 1px solid var(--line); }
+.ac-item {
+  display: flex; align-items: center; gap: 10px; width: calc(100% + 16px); min-height: var(--hit); margin: 0 -8px; padding: 4px 8px;
+  border: 0; border-radius: 8px; background: none; color: var(--text); font: inherit; font-size: var(--fs-num); text-align: left; cursor: pointer;
+  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.ac-item > svg { flex: none; color: var(--bus); }
+.ac-item[data-f='flight'] > svg { color: var(--flight); }
+.ac-item[data-f='boat'] > svg { color: var(--boat); }
+.ac-route { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ac-price { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+.ac-price[data-paid='true'] { color: var(--booked); }
+.ac-tilde { font-weight: 500; }
+.ac-item:active { background: var(--surface-3); transform: scale(0.99); }
+.ac-item:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+
+/* today, during the trip: tonight's stop and the next leg */
+.ts-now {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 16px; padding: 8px 8px 8px 12px; border-radius: 12px;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
+}
+.ts-today { padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--in) 16%, transparent); color: var(--in); font-size: var(--fs-label); font-weight: 600; }
+.ts-here { font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; }
+.ts-left { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-num); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ts-next {
+  display: inline-flex; align-items: center; gap: 8px; min-width: 0; min-height: var(--hit); margin-left: auto; padding: 0 12px; border: 0; border-radius: 10px;
+  background: var(--surface-3); color: var(--text); font: inherit; font-size: var(--fs-num); font-weight: 500; cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.ts-next > svg { flex: none; color: var(--bus); }
+.ts-next[data-f='flight'] > svg { color: var(--flight); }
+.ts-next[data-f='boat'] > svg { color: var(--boat); }
+.ts-next-r { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ts-next-d { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ts-mark { display: inline-flex; }
+.ts-mark.booked { color: var(--booked); }
+.ts-mark.open { color: var(--flight); }
+.ts-next:active { transform: scale(0.98); }
+.ts-next:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .ts-cost:hover { background: var(--surface-2); }
+  .ts-cost:hover .disc-chev { color: var(--muted); }
+  .ts-open:hover { background: color-mix(in srgb, var(--flight) 20%, transparent); }
+  .ac-item:hover { background: var(--surface-2); }
+  .ts-next:hover { background: var(--line-2); }
+}
+@media (max-width: 560px) {
+  .ts-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px 24px; }
+  .ts-cost { min-width: 0; }
+  .ts-chips { grid-column: 1 / -1; margin-left: 0; }
+  .ac-part { grid-template-columns: minmax(0, 1fr) auto; }
+  .ac-part .cb { grid-column: 1 / -1; grid-row: 2; }
+  .ts-next { width: 100%; margin-left: 0; }
+  .ts-next-r { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ts-cost:active, .ts-open:active, .ac-item:active, .ts-next:active { transform: none; }
+}
+
 .tg-card { padding: 16px 2px 2px; }
 .tg-top { display: flex; align-items: flex-start; gap: 12px; }
 .tg-id { flex: 1; min-width: 0; }

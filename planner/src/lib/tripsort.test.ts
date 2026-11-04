@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { lowest, sortTrips, type SortRow } from './tripsort'
 
-const row = (id: string, over: Partial<SortRow> = {}): SortRow & { id: string } => ({ id, draft: false, total: null, air: null, ...over })
+const row = (id: string, over: Partial<SortRow> = {}): SortRow & { id: string } => ({ id, draft: false, total: null, nights: null, ...over })
 const ids = (rows: { id: string }[]) => rows.map((r) => r.id)
 
 describe('sortTrips', () => {
   const rows = [
-    row('mine-late', { savedAt: '2026-10-20', total: 9000, air: 30 }),
-    row('draft', { draft: true, total: 7000, air: null }),
-    row('seed-2', { rank: 2, total: 8000, air: 28 }),
-    row('mine-early', { savedAt: '2026-10-01', total: null, air: 25 }),
-    row('seed-1', { rank: 1, total: 8000, air: 40 }),
+    row('mine-late', { savedAt: '2026-10-20', total: 9000, nights: 30 }),
+    row('draft', { draft: true, total: 7000, nights: null }),
+    row('seed-2', { rank: 2, total: 8000, nights: 28 }),
+    row('mine-early', { savedAt: '2026-10-01', total: null, nights: 25 }),
+    row('seed-1', { rank: 1, total: 8000, nights: 40 }),
   ]
 
   it('puts ranked trips first, then saved ones by save time, then the draft', () => {
@@ -21,8 +21,8 @@ describe('sortTrips', () => {
     expect(ids(sortTrips(rows, 'price'))).toEqual(['draft', 'seed-2', 'seed-1', 'mine-late', 'mine-early'])
   })
 
-  it('sorts by air time with unknown hours last', () => {
-    expect(ids(sortTrips(rows, 'air'))).toEqual(['mine-early', 'seed-2', 'mine-late', 'seed-1', 'draft'])
+  it('sorts by length with unknown nights last', () => {
+    expect(ids(sortTrips(rows, 'nights'))).toEqual(['mine-early', 'seed-2', 'mine-late', 'seed-1', 'draft'])
   })
 
   it('leaves the input alone', () => {
