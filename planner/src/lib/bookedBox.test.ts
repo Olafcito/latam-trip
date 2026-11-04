@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking } from '../data/types'
-import { boxChips, boxFacts, boxHead, boxSegments, fileMessage, fileTile } from './bookedBox'
+import { boxChips, boxFacts, boxHead, boxRows, boxSegments, fileMessage, fileTile, flightHours } from './bookedBox'
 
 // Made up rows only. A real reference, price or name never goes in this file.
 const row = (over: Partial<Booking>): Booking => ({
@@ -159,6 +159,67 @@ describe('boxSegments', () => {
     expect(s).toHaveLength(3)
     expect(s[0]).toMatchObject({ kind: 'flight', mark: '+1', what: '' })
     expect(s[1]).toEqual({ kind: 'stop', airport: 'BOG', time: '5h 30m' })
+  })
+})
+
+describe('boxSegments with one flight', () => {
+  it('shows a lone flight when it names its airline or number, and nothing for a bare one', () => {
+    const one = row({ segments: [{ from: 'CTG', to: 'ADZ', depart: '2026-12-03T06:00', arrive: '2026-12-03T07:35', carrier: 'Test Air', number: 'TA 1' }] })
+    expect(boxSegments(one, { single: true })).toEqual([{ kind: 'flight', from: 'CTG', to: 'ADZ', depart: '06:00', arrive: '07:35', mark: '', what: 'Test Air TA 1' }])
+    expect(boxSegments(one)).toEqual([])
+    expect(boxSegments(row({ segments: [{ from: 'CTG', to: 'ADZ' }] }), { single: true })).toEqual([])
+  })
+})
+
+describe('flightHours', () => {
+  const offset = (code: string) => ({ CTG: -5, ADZ: -5, MAD: 1, BOG: -5 })[code] ?? null
+
+  it('takes the time between the local stamps and the offsets of the two airports', () => {
+    expect(flightHours(row({}), offset)).toBeCloseTo(1 + 35 / 60)
+    expect(flightHours(row({ from_code: 'MAD', to_code: 'BOG', depart: '2026-12-03T12:00', arrive: '2026-12-03T16:30' }), offset)).toBeCloseTo(10.5)
+  })
+
+  it('is null without both offsets, without times, or when it would be negative', () => {
+    expect(flightHours(row({ to_code: 'XXX' }), offset)).toBe(null)
+    expect(flightHours(row({ depart: '2026-12-03' }), offset)).toBe(null)
+    expect(flightHours(row({ arrive: '2026-12-03T05:00' }), offset)).toBe(null)
+  })
+})
+
+describe('boxRows', () => {
+  const second = row({ id: 'b2', from_code: 'ADZ', to_code: 'SMR', depart: '2026-12-09T10:00', arrive: '2026-12-09T11:30', ticket: 'G1', price_dkk: 0 })
+  const first = row({ ticket: 'G1', price_dkk: 2400, price: 320, currency: 'EUR', seller: 'Test Seller', seller_reference: 'TEST02' })
+
+  it('shows nothing when nothing is set', () => {
+    expect(boxRows(row({}), [row({})])).toEqual([])
+  })
+
+  it('names the seller with its own number to copy', () => {
+    const r = boxRows(row({ seller: 'Test Seller', seller_reference: 'TEST02' }), [])
+    expect(r[0]).toEqual({ key: 'seller', label: 'Booked through', value: 'Test Seller', mono: 'TEST02' })
+  })
+
+  it('shows the ticket total on every flight of it, with the amount paid in its own currency and how many it covers', () => {
+    const list = [first, second]
+    expect(boxRows(second, list).find((x) => x.key === 'paid')).toEqual({ key: 'paid', label: 'Paid', value: '2.400 kr', more: ['320 EUR', 'For 2 flights'] })
+    expect(boxRows(first, list).find((x) => x.key === 'paid')?.value).toBe('2.400 kr')
+  })
+
+  it('lists the other flights on the same ticket with their codes and day', () => {
+    const r = boxRows(first, [first, second, row({ id: 'gone', ticket: 'G1', status: 'cancelled' })]).find((x) => x.key === 'ticket')
+    expect(r).toEqual({ key: 'ticket', label: 'Same ticket', value: 'ADZ to SMR', more: ['Wed 9 Dec'] })
+  })
+
+  it('gives the fare, the bags, the rules and more than one traveller as rows', () => {
+    const keys = boxRows(row({ fare: 'Light', cabin_bag: '8 kg', checked_bag: '23 kg', refundable: 'no', changeable: 'fee', change_until: '2026-12-01', travellers: 2 }), []).map((x) => [x.key, x.value])
+    expect(keys).toEqual([
+      ['fare', 'Light'], ['cabin', '8 kg'], ['checked', '23 kg'], ['refundable', 'No'], ['changeable', 'For a fee, until Tue 1 Dec'], ['travellers', '2'],
+    ])
+  })
+
+  it('reads a price paid in kroner alone, and never 0 kr', () => {
+    expect(boxRows(row({ price_dkk: 700, currency: 'DKK', price: 700 }), [])[0]).toEqual({ key: 'paid', label: 'Paid', value: '700 kr' })
+    expect(boxRows(row({ price_dkk: 0 }), [])).toEqual([])
   })
 })
 

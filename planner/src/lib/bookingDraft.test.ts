@@ -153,7 +153,34 @@ describe('the form rows', () => {
 
   it('makes a whole row out of a saved one, booked', () => {
     const r = savedRow({ kind: 'bus', from_code: 'BOG', to_code: 'MDE', depart: '2026-12-10' }, 'new1')
-    expect(r).toMatchObject({ id: 'new1', status: 'booked', kind: 'bus', from_code: 'BOG', depart: '2026-12-10', travellers: 1, attachments: [], reference: null })
+    expect(r).toMatchObject({ id: 'new1', status: 'booked', kind: 'bus', from_code: 'BOG', depart: '2026-12-10', travellers: 1, attachments: [], reference: null, seller_reference: null, fare: null })
+  })
+
+  it('shares the seller number over the ticket and gives the fare to every row of a new one', () => {
+    const rows = formRows(fromPicked(leg, wIn, inout), { seller_reference: ' TEST02 ', fare: 'Light' })
+    expect(rows.map((r) => r.seller_reference)).toEqual(['TEST02', 'TEST02'])
+    expect(rows.map((r) => r.fare)).toEqual(['Light', 'Light'])
+  })
+
+  it('on Edit keeps the reference and the fare on the row that was opened, so the other flight keeps its own', () => {
+    const rows = formRows([{ id: 'b1' }, { id: 'b2' }], { reference: 'TEST03', fare: 'Plus', seller: 'Test Seller' }, { edit: true, own: 'b2' })
+    expect(rows[0]).toEqual({ id: 'b1', seller: 'Test Seller' })
+    expect(rows[1]).toEqual({ id: 'b2', reference: 'TEST03', fare: 'Plus', seller: 'Test Seller' })
+  })
+
+  it('clears an emptied reference on the opened row alone', () => {
+    const rows = formRows([{ id: 'b1' }, { id: 'b2' }], { reference: '' }, { edit: true, own: 'b1' })
+    expect(rows).toEqual([{ id: 'b1', reference: null }, { id: 'b2' }])
+  })
+
+  it('gives the reference to every row when the opened row is not among them', () => {
+    const rows = formRows([{ id: 'b1' }, { id: 'b2' }], { reference: 'TEST01' }, { edit: true, own: 'gone' })
+    expect(rows.map((r) => r.reference)).toEqual(['TEST01', 'TEST01'])
+  })
+
+  it('reads the seller number and the fare back for Edit', () => {
+    expect(fromRow({ seller_reference: 'TEST02', fare: 'Light' })).toMatchObject({ seller_reference: 'TEST02', fare: 'Light' })
+    expect(fromRow({})).toMatchObject({ seller_reference: '', fare: '' })
   })
 })
 

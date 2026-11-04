@@ -279,6 +279,10 @@ export interface Booking {
   room_id: string | null
   reference: string | null
   seller: string | null
+  /** the seller's own order number, shared by the rows of one ticket (0015) */
+  seller_reference?: string | null
+  /** the fare name, "Light" or "Classic" (0015) */
+  fare?: string | null
   url: string | null
   price_dkk: number | null
   price: number | null

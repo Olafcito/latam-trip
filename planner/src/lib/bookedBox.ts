@@ -21,6 +21,9 @@ export interface BoxHead {
 
 const timeOf = (t: string | null) => (t && t.length >= 16 ? clock(t) : null)
 
+/** sorts after every depart, so a row with none comes last */
+const LAST = String.fromCharCode(0xffff)
+
 /** The two codes with their cities, the day and the times. */
 export function boxHead(b: Booking, city: (code: string) => string | null): BoxHead {
   const end = (code: string | null, t: string | null): BoxEnd => ({ code: code ?? '', city: code ? city(code) : null, time: timeOf(t) })
@@ -146,10 +149,13 @@ function between(a: string | null, b: string | null): number | null {
   return Number.isFinite(h) && h >= 0 ? h : null
 }
 
-/** The flights inside the booking with the time in each airport between. Empty for a single flight. */
-export function boxSegments(b: Booking): BoxSegment[] {
+/**
+ * The flights inside the booking with the time in each airport between. Empty for a single flight, unless single
+ * is set and that flight names its airline or number, so the box can show which flight it is.
+ */
+export function boxSegments(b: Booking, opts: { single?: boolean } = {}): BoxSegment[] {
   const segs = (b.segments ?? []).map(readSegment).filter((s): s is RawSegment => s != null)
-  if (segs.length < 2) return []
+  if (segs.length < 2 && !(opts.single && segs.length === 1 && segs[0].what)) return []
   return segs.flatMap((s, i): BoxSegment[] => {
     const flight: BoxSegment = {
       kind: 'flight', from: s.from, to: s.to, depart: timeOf(s.depart) ?? '', arrive: timeOf(s.arrive) ?? '',
@@ -160,6 +166,74 @@ export function boxSegments(b: Booking): BoxSegment[] {
     const wait = between(s.arrive, next.depart) ?? s.layover
     return [flight, { kind: 'stop', airport: s.to, time: hours(wait) }]
   })
+}
+
+/**
+ * How long the booking takes, door to door, from its local times and the UTC offset of each end. null without
+ * both offsets or both times, so a guess never shows.
+ */
+export function flightHours(b: Pick<Booking, 'from_code' | 'to_code' | 'depart' | 'arrive'>, offset: (code: string) => number | null): number | null {
+  const a = b.from_code ? offset(b.from_code) : null
+  const z = b.to_code ? offset(b.to_code) : null
+  if (a == null || z == null || !b.depart || !b.arrive || b.depart.length < 16 || b.arrive.length < 16) return null
+  // the local times alone, then the clocks moved back to one zone. Eastward a flight can land before it leaves in local time
+  const local = (Date.parse(b.arrive.slice(0, 16) + 'Z') - Date.parse(b.depart.slice(0, 16) + 'Z')) / 3.6e6
+  const h = local - (z - a)
+  return Number.isFinite(h) && h > 0 ? h : null
+}
+
+/** A fact as a row of the box: its label, its value, a code to copy in mono, and the smaller facts after it. */
+export interface BoxRow {
+  key: Fact['key'] | 'fare' | 'ticket'
+  label: string
+  value: string
+  /** a code read in mono and copied with one press, the seller's own number */
+  mono?: string
+  more?: string[]
+}
+
+/** The rows of the box, in the order seller, paid, same ticket, fare, bags, refund, change and travellers above 1. */
+export function boxRows(b: Booking, list: readonly Booking[]): BoxRow[] {
+  const text = (v: string | null | undefined) => (v && v.trim() ? v.trim() : null)
+  const ticket = b.ticket ? list.filter((x) => x.status === 'booked' && x.ticket === b.ticket && x.id !== b.id) : []
+  const group = [b, ...ticket]
+  // the first row of a ticket holds its price, the others 0: the earliest depart, then the lowest id, as paidPrice reads it
+  const payer = group.reduce((p, r) => {
+    const dp = p.depart ?? LAST
+    const dr = r.depart ?? LAST
+    return dr < dp || (dr === dp && r.id < p.id) ? r : p
+  })
+  const out: BoxRow[] = []
+  const add = (key: BoxRow['key'], label: string, value: string | null, extra: Partial<BoxRow> = {}) => {
+    if (value == null) return
+    const r: BoxRow = { key, label, value }
+    if (extra.mono) r.mono = extra.mono
+    if (extra.more?.length) r.more = extra.more
+    out.push(r)
+  }
+  const seller = text(b.seller)
+  const number = text(b.seller_reference)
+  add('seller', 'Booked through', seller ?? (number ? 'Seller' : null), { mono: number ?? undefined })
+  const dkk = payer.price_dkk
+  if (dkk != null && Number.isFinite(dkk) && dkk > 0) {
+    const cur = payer.currency?.toUpperCase()
+    const more = [
+      ...(payer.price != null && cur && cur !== 'DKK' ? [`${amount(payer.price)} ${cur}`] : []),
+      ...(group.length > 1 ? [`For ${group.length} flights`] : []),
+    ]
+    add('paid', 'Paid', kr(dkk), { more })
+  }
+  for (const t of ticket) {
+    const day = t.depart ? weekdayDay(t.depart) : null
+    add('ticket', 'Same ticket', `${t.from_code ?? ''} to ${t.to_code ?? ''}`.trim(), { more: day ? [day] : [] })
+  }
+  add('fare', 'Fare', text(b.fare))
+  add('cabin', 'Cabin bag', text(b.cabin_bag))
+  add('checked', 'Checked bag', text(b.checked_bag))
+  add('refundable', 'Refundable', terms(b.refundable && REFUND[b.refundable], b.cancel_until))
+  add('changeable', 'Changeable', terms(b.changeable && CHANGE[b.changeable], b.change_until))
+  add('travellers', 'Travellers', b.travellers > 1 ? String(b.travellers) : null)
+  return out
 }
 
 /** Why a chosen file cannot be added, in a plain sentence, or null when it can. Nothing is uploaded on a message. */

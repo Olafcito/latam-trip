@@ -129,6 +129,10 @@ export function manualRows(leg: DraftLeg, picked: Partial<Booking>[] | null | un
 export interface BookingFields {
   reference?: string
   seller?: string
+  /** the seller's own order number */
+  seller_reference?: string
+  /** the fare name */
+  fare?: string
   /** in kroner, "1.250" or "1250,50" */
   price?: string
   refundable?: '' | 'yes' | 'no' | 'partly'
@@ -144,7 +148,9 @@ export interface BookingFields {
 }
 
 /** The fields one ticket shares, written to every row of it. The price and the day belong to the first row. */
-const SHARED = ['reference', 'seller', 'refundable', 'cancel_until', 'changeable', 'change_until', 'cabin_bag', 'checked_bag', 'url', 'notes'] as const
+const SHARED = ['seller', 'seller_reference', 'refundable', 'cancel_until', 'changeable', 'change_until', 'cabin_bag', 'checked_bag', 'url', 'notes'] as const
+/** The fields each flight of a ticket may hold on its own: an airline gives each flight its reference. */
+const OWN = ['reference', 'fare'] as const
 
 /** A price in kroner read the Danish way, "1.250,50" or "1250". null for an empty one, NaN for one that is not a number. */
 export function readKr(s: string | undefined): number | null {
@@ -163,8 +169,11 @@ function onDay(stamp: string, from: string, to: string): string {
 /**
  * The rows to save: each draft row with what the form holds. A new row leaves out what is empty. With edit,
  * an emptied field is cleared, since it held something. A day typed in moves the first row, its times kept.
+ * With own, the id of the row the form was opened on, the reference and the fare go to that row alone, so the
+ * other flights of the ticket keep theirs. Without it, or when no row has that id, every row takes them.
  */
-export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { edit?: boolean } = {}): Partial<Booking>[] {
+export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { edit?: boolean; own?: string } = {}): Partial<Booking>[] {
+  const mine = opts.own != null && rows.some((r) => r.id === opts.own) ? opts.own : null
   const put = (r: Partial<Booking>, key: keyof Booking, raw: string | undefined, value: unknown) => {
     if (raw === undefined) return
     if (raw.trim()) (r as Record<string, unknown>)[key] = value
@@ -173,6 +182,7 @@ export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { 
   return rows.map((row, k) => {
     const r: Partial<Booking> = { ...row }
     for (const key of SHARED) put(r, key, form[key], form[key]?.trim())
+    if (mine == null || row.id === mine) for (const key of OWN) put(r, key, form[key], form[key]?.trim())
     if (k > 0) return r
     const price = readKr(form.price)
     put(r, 'price_dkk', form.price, price)
@@ -190,7 +200,7 @@ export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { 
 export function fromRow(b: Partial<Booking>): BookingFields {
   const s = (v: string | null | undefined) => v ?? ''
   return {
-    reference: s(b.reference), seller: s(b.seller), price: b.price_dkk == null ? '' : String(b.price_dkk).replace('.', ','),
+    reference: s(b.reference), seller: s(b.seller), seller_reference: s(b.seller_reference), fare: s(b.fare), price: b.price_dkk == null ? '' : String(b.price_dkk).replace('.', ','),
     refundable: b.refundable ?? '', cancel_until: s(b.cancel_until), changeable: b.changeable ?? '', change_until: s(b.change_until),
     cabin_bag: s(b.cabin_bag), checked_bag: s(b.checked_bag), url: s(b.url), notes: s(b.notes), day: s(b.depart?.slice(0, 10)),
   }
@@ -201,7 +211,7 @@ export function savedRow(r: Partial<Booking>, id: string): Booking {
   const at = new Date().toISOString()
   return {
     kind: 'other', status: 'booked', from_code: null, to_code: null, depart: null, arrive: null, place_id: null, check_in: null, check_out: null,
-    lodging_id: null, room_id: null, reference: null, seller: null, url: null, price_dkk: null, price: null, currency: null, refundable: null,
+    lodging_id: null, room_id: null, reference: null, seller: null, seller_reference: null, fare: null, url: null, price_dkk: null, price: null, currency: null, refundable: null,
     changeable: null, change_until: null, cancel_until: null, cabin_bag: null, checked_bag: null, segments: null, travellers: 1, trip_id: null,
     ticket: null, source: null, notes: null, attachments: [], created_at: at, updated_at: at,
     ...r, id,

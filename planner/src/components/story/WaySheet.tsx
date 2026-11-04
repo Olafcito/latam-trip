@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { AppData, Booking, Way } from '../../data/types'
-import { bookedDay, bookedGate, isBookedFlight, priceColumn } from '../../lib/booked'
+import { bookedDay, bookedGate, isBookedFlight, paidPrice, priceColumn } from '../../lib/booked'
 import { wayRebookIds } from '../../lib/bookingDraft'
 import { clock, hours, kr, nextDayMark, shortPlace, weekdayDay } from '../../lib/format'
 import type { FlightLink } from '../../lib/links'
@@ -13,7 +13,8 @@ import { FlightLinks } from '../FlightLinks'
 import { Arrow, Caret, Check, Plane, Warn } from '../icons'
 import { BookedBox } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
-import { Chip, Days } from './FlightSheet'
+import { Chip, Days, DayView, type TripDays } from './FlightSheet'
+import { useStore } from '../../store'
 import { MarkIcon, Marks, Tip } from './Marks'
 
 // The way in or the way home opened like any other leg: the days it can leave with a price each, and
@@ -23,7 +24,8 @@ import { MarkIcon, Marks, Tip } from './Marks'
 // sheet. A pick that also moves or changes the other way keeps it open and says so, where you pressed,
 // so the change to the other end of the trip is never a surprise. A pick the trip refuses, one that
 // would change a booked way, keeps it open too and says why. A booked way opens on its booking, the
-// days locked and the ways folded away until Change booking opens them to look at.
+// booked day showing what was paid, the other days no fare, and the ways folded away until Change
+// booking opens them to look at. A press on a day shows the whole trip on that day under the strip.
 
 /** the ways shown before Show all */
 const SHOWN = 6
@@ -121,7 +123,7 @@ function DayList({ rows, current, booking, dir, other, data, name, onPick, onDea
   )
 }
 
-export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, unlocked, onUnlock, onPick, book, onChangeEnds, close }: {
+export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, unlocked, onUnlock, onPick, book, onChangeEnds, trip, close }: {
   dir: 'in' | 'home'
   /** the way the trip has in this direction */
   way: Way
@@ -145,9 +147,12 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
   book?: BookTarget<WayChoice>
   /** left out while an older version is open, and the button goes with it */
   onChangeEnds?: () => void
+  /** the whole trip on any day, for the day view under the strip and the marks of a booked way */
+  trip?: TripDays
   close: () => void
 }) {
   const { inout, map } = data
+  const bookings = useStore((st) => st.bookings)
   const days = useMemo(() => Object.keys(byDay).sort(), [byDay])
   const fares = useMemo(() => rowFares(byDay), [byDay])
   const [at, setAt] = useState(() => dayOf(way))
@@ -228,7 +233,9 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
             onRemoved={() => say(`The booking is removed. The ${dir === 'in' ? 'way in' : 'way home'} can change again.`)}
           />
         )}
-        <Days days={days} fares={fares} at={at} leg={dayOf(way)} onChange={setAt} locked={held} booked={bookedDay(booking, dayOf(way))} />
+        <Days days={days} fares={fares} at={at} leg={dayOf(way)} onChange={setAt} locked={held} booked={bookedDay(booking, dayOf(way))}
+          paid={booking ? paidPrice(bookings, booking) : null} trip={trip} />
+        {held && trip && <DayView day={at} trip={trip} />}
         {!held && (
           <div className="fl-bar">
             <b>{weekdayDay(at)}</b>
@@ -241,6 +248,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
       </div>
       {!held && (
         <div className="fl-list">
+          {trip && <DayView day={at} trip={trip} />}
           {rows.length === 0
             ? <div className="fl-none"><p>No ways saved for {weekdayDay(at)}</p></div>
             : <DayList key={at} rows={rows} current={way.id} booking={booking ?? null} dir={dir} other={other} data={data} name={name} onPick={choose} onDead={(why) => say(why, true)} onOpenBooking={booking ? showBox : undefined} />}

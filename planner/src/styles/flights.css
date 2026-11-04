@@ -34,17 +34,20 @@
   .fl-day { flex: none; width: 68px; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 0 5px; border: 0; border-radius: 10px; background: transparent; color: var(--text); font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; transition: background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out); }
   .fl-day small { font-size: var(--fs-label); color: var(--muted); }
   .fl-day b { font-size: var(--fs-num); font-weight: 600; white-space: nowrap; }
-  .fl-day span { min-height: 1.4em; font-size: var(--fs-label); color: var(--muted); }
-  .fl-day[data-low='true'] span { color: var(--in); }
+  /* what a day says under its date: the fare from, or on a booked leg the paid mark and the icons of the other days */
+  .fl-day-v { display: inline-flex; align-items: center; justify-content: center; gap: 2px; min-height: 1.4em; font-size: var(--fs-label); font-weight: 500; color: var(--muted); white-space: nowrap; }
+  .fl-day-v svg { flex: none; }
+  .fl-day-v[data-paid] { color: var(--booked); font-weight: 600; }
+  .fl-day-v[data-marks] { gap: 3px; opacity: 0.85; }
+  .fl-day[data-low='true'] .fl-day-v { color: var(--in); }
   .fl-day[data-leg='true'] { box-shadow: inset 0 0 0 1px var(--flight); }
   .fl-day[aria-checked='true'] { background: var(--flight); color: var(--flight-ink); }
-  .fl-day[aria-checked='true'] :is(small, span) { color: var(--flight-ink); }
-  .fl-day:active:not(:disabled) { transform: scale(0.97); }
-  /* a booked leg: its day in the booked green, and the strip only shows, it does not press */
-  .fl-day:disabled { cursor: default; }
+  .fl-day[aria-checked='true'] :is(small, .fl-day-v) { color: var(--flight-ink); opacity: 1; }
+  .fl-day:active { transform: scale(0.97); }
+  /* a booked leg: its day in the booked green. The other days still press, to see the trip on them */
   .fl-day[data-booked] { box-shadow: inset 0 0 0 1.5px var(--booked); }
   .fl-day[data-booked][aria-checked='true'] { background: var(--booked); color: var(--ground); }
-  .fl-day[data-booked][aria-checked='true'] :is(small, span) { color: var(--ground); }
+  .fl-day[data-booked][aria-checked='true'] :is(small, .fl-day-v) { color: var(--ground); }
   .fl-day:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
   .fl-page { display: none; flex: none; width: var(--hit); height: var(--hit); place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
   .fl-page:active { transform: scale(0.94); }
@@ -52,7 +55,7 @@
   @media (hover: hover) and (pointer: fine) {
     .fl-page { display: grid; }
     .fl-page:hover { background: var(--surface-2); color: var(--text); }
-    .fl-day[aria-checked='false']:not(:disabled):hover { background: var(--surface-2); }
+    .fl-day[aria-checked='false']:hover { background: var(--surface-2); }
     button.fl-chip[data-booked]:hover { background: color-mix(in srgb, var(--booked) 88%, white); }
     .ws-ends:hover { background: var(--line-2); }
   }
@@ -64,6 +67,28 @@
 
   .fl-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; border-top: 1px solid var(--line); scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
   .fl-rows { list-style: none; margin: 0; padding: 0; }
+
+  /* the trip on the day you look at, one row each: the icon, the time, what it is, its tag and the booked tick.
+     The rows share their columns, so the times line up. The sheet's own leg sits on a tint. */
+  .dv { flex: none; padding: 6px; border-radius: 12px; background: var(--surface-3); }
+  .fl-list > .dv { margin: 12px 0 4px; }
+  .dv-none { margin: 0; padding: 8px 10px; font-size: var(--fs-small); color: var(--muted); }
+  .dv ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 18px auto minmax(0, 1fr) auto 14px; column-gap: 10px; }
+  .dv li { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; min-height: 36px; padding: 6px 8px; border-radius: 8px; }
+  .dv li[data-own] { background: color-mix(in srgb, var(--flight) 14%, transparent); }
+  .dv-i { display: grid; place-items: center; color: var(--muted); }
+  .dv li[data-own] .dv-i, .dv li[data-kind='flight'] .dv-i { color: var(--flight); }
+  .dv li[data-kind='night'] .dv-i, .dv li[data-kind='in'] .dv-i, .dv li[data-kind='out'] .dv-i { color: var(--text); }
+  .dv-when { display: inline-flex; align-items: center; gap: 3px; font-size: var(--fs-small); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .dv-when svg { color: var(--muted); }
+  .dv-when sup { font-size: var(--fs-label); color: var(--flight); }
+  .dv-what { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .dv-what b { font-size: var(--fs-small); font-weight: 600; overflow-wrap: anywhere; }
+  .dv-what small { font-size: var(--fs-label); color: var(--muted); overflow-wrap: anywhere; }
+  .dv-tag { padding: 2px 7px; border-radius: 999px; background: var(--surface-2); font-size: var(--fs-label); font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .dv-ok { display: grid; place-items: center; color: var(--booked); }
+  .dv li > .dv-tag { grid-column: 4; }
+  .dv li > .dv-ok { grid-column: 5; }
   .fl-rows > li + li { border-top: 1px solid var(--line); }
 
   /* a flight: who, when, how much */
@@ -199,35 +224,60 @@
   .fl[data-booked] { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
   .fl[data-booked] .fl-list { flex: none; overflow: visible; }
 
-  /* The booked box, read like a boarding pass: the green band, the two codes, the reference on its stub
-     behind a perforation, then the facts, the flights inside, the files and the notes. */
+  /* The booked box, read like a boarding pass: a small green mark, the two codes with the flight line between,
+     the flights inside, the reference row, the facts as icon rows, the files and Simon's notes. Green stays a mark. */
   .bk { --bk-bg: var(--surface-2); --bk-ring: color-mix(in srgb, var(--booked) 30%, var(--line)); flex: none; display: flex; flex-direction: column; border-radius: 14px; background: var(--bk-bg); box-shadow: inset 0 0 0 1px var(--bk-ring); overflow: hidden; outline: none; scroll-margin-top: 16px; }
   .bk:focus-visible { box-shadow: inset 0 0 0 2px var(--booked); }
-  .bk-band { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; background: var(--booked); color: var(--ground); }
-  .bk-band svg { flex: none; }
-  .bk-band h4 { margin: 0; font-size: var(--fs-title); font-weight: 700; letter-spacing: -0.005em; }
-  .bk-band span { margin-left: auto; font-size: var(--fs-small); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bk-mark { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px 0 16px; }
+  .bk-tick { flex: none; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: var(--booked); color: var(--ground); }
+  .bk-mark h4 { margin: 0; font-size: var(--fs-body); font-weight: 600; color: var(--booked); }
+  .bk-mark > span:not(.bk-tick) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .bk-mark .bk-edit { margin-left: auto; background: transparent; color: var(--muted); }
 
-  .bk-route { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; gap: 12px; padding: 18px 16px 16px; }
+  .bk-route { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; gap: 12px; padding: 6px 16px 18px; }
   .bk-end { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
   .bk-end.to { align-items: flex-end; text-align: right; }
   .bk-end b { font-size: var(--fs-hero); font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
   .bk-end small { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-small); color: var(--muted); }
-  .bk-end span { margin-top: 6px; font-size: var(--fs-title); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bk-time { margin-top: 6px; font-size: var(--fs-title); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bk-time i { margin-left: 5px; font-size: var(--fs-label); font-style: normal; font-weight: 500; color: var(--muted); }
   .bk-end sup { margin-left: 1px; font-size: var(--fs-label); color: var(--flight); }
-  .bk-fly { position: relative; width: 72px; height: 20px; margin-top: 6px; display: grid; place-items: center; color: var(--booked); }
-  .bk-fly::before { content: ''; position: absolute; inset: 50% 0 auto; border-top: 1.5px dashed color-mix(in srgb, var(--booked) 45%, transparent); }
-  .bk-fly svg { position: relative; box-sizing: content-box; padding: 0 6px; background: var(--bk-bg); transform: rotate(45deg); }
+  /* the flight line: solid in the flight colour, the plane on it, the time it takes over it. The rows stay put without a time */
+  .bk-fly { width: 104px; display: grid; grid-template-rows: 14px 24px; justify-items: center; align-items: center; gap: 2px; margin-top: -12px; color: var(--flight); }
+  .bk-fly small { grid-row: 1; font-size: var(--fs-label); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bk-line { grid-row: 2; position: relative; width: 100%; height: 24px; display: grid; place-items: center; }
+  .bk-line::before { content: ''; position: absolute; inset: 50% 2px auto; height: 2px; margin-top: -1px; border-radius: 1px; background: currentColor; }
+  .bk-line svg { position: relative; box-sizing: content-box; padding: 0 6px; background: var(--bk-bg); transform: rotate(45deg); }
+  .bk-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-body); font-weight: 600; line-height: 1.3; letter-spacing: 0.08em; color: var(--text); overflow-wrap: anywhere; user-select: all; -webkit-user-select: all; }
 
-  .bk-ref { position: relative; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1.5px dashed var(--line-2); }
-  .bk-ref::before, .bk-ref::after { content: ''; position: absolute; top: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 1px var(--bk-ring); }
-  .bk-ref::before { left: -8px; }
-  .bk-ref::after { right: -8px; }
-  .bk-ref > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .bk-ref small { font-size: var(--fs-label); font-weight: 600; color: var(--muted); }
-  .bk-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--fs-num-lg); font-weight: 600; line-height: 1.2; letter-spacing: 0.12em; color: var(--text); overflow-wrap: anywhere; user-select: all; -webkit-user-select: all; }
+  .bk-body { display: flex; flex-direction: column; gap: 16px; padding: 14px 16px 16px; border-top: 1px solid var(--line); }
 
-  .bk-body { display: flex; flex-direction: column; gap: 16px; padding: 12px 16px 16px; border-top: 1px solid var(--line); }
+  /* the reference on one row, the code at the right with its copy button, read at a desk */
+  .bk-refrow { display: grid; grid-template-columns: 24px auto minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 48px; padding: 4px 6px 4px 12px; border-radius: 10px; background: var(--surface-3); }
+  .bk-refrow .bk-code { justify-self: end; text-align: right; }
+  .bk-refrow .bk-icon { background: transparent; }
+  /* the facts as one grouped list: the icon, the label, the value at the right with what it covers under it */
+  .bk-rows { list-style: none; margin: 0; padding: 0; }
+  .bk-rows li { display: grid; grid-template-columns: 24px auto minmax(0, 1fr); align-items: center; gap: 10px; min-height: 44px; padding: 8px 0; }
+  .bk-rows li + li { border-top: 1px solid var(--line); }
+  .bk-row-i { display: grid; place-items: center; color: var(--muted); }
+  .bk-refrow .bk-row-i { color: var(--text); }
+  .bk-row-l { font-size: var(--fs-small); color: var(--muted); white-space: nowrap; }
+  .bk-row-v { min-width: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .bk-row-v small { font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
+  .bk-row-code { display: inline-flex; align-items: center; gap: 4px; margin-right: -6px; }
+  .bk-row-code .bk-icon { background: transparent; }
+  .bk-rows li[data-k='paid'] .bk-row-v > span { color: var(--booked); }
+
+  /* copy turns into a check for a moment: the two icons crossfade with a touch of blur */
+  .bk-copy > span { grid-area: 1 / 1; display: grid; place-items: center; transition: opacity 160ms var(--ease-out), filter 160ms var(--ease-out), transform 160ms var(--ease-out); }
+  .bk-copy > span + span { opacity: 0; filter: blur(2px); transform: scale(0.8); color: var(--booked); }
+  .bk-copy[data-done] > span:first-child { opacity: 0; filter: blur(2px); transform: scale(0.8); }
+  .bk-copy[data-done] > span + span { opacity: 1; filter: none; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .bk-copy > span { transition: opacity 160ms ease; }
+    .bk-copy > span, .bk-copy[data-done] > span { filter: none; transform: none; }
+  }
   .bk-part h5 { margin: 0 0 8px; font-size: var(--fs-label); font-weight: 600; color: var(--muted); }
 
   .bk-segs { list-style: none; display: grid; gap: 6px; margin: 0; padding: 0; }
@@ -287,13 +337,11 @@
   .bk-icon::after { content: ''; position: absolute; inset: calc((32px - max(32px, var(--hit))) / 2); }
   .bk-icon:active { transform: scale(0.94); }
   .bk-icon:focus-visible { outline: 2px solid var(--booked); outline-offset: 2px; }
-  .bk-band .bk-edit { margin-left: auto; background: color-mix(in srgb, var(--ground) 14%, transparent); color: var(--ground); }
-  .bk-band span + .bk-edit { margin-left: 2px; }
-  .bk-band .bk-edit:focus-visible { outline-color: var(--ground); }
 
   /* a bus or a boat has names, not codes, so they sit smaller, and the mark between rides level */
   .bk-route[data-kind] .bk-end b { font-size: var(--fs-head); line-height: 1.2; letter-spacing: -0.01em; overflow-wrap: anywhere; }
-  .bk-route[data-kind] .bk-fly svg { transform: none; }
+  .bk-route[data-kind] .bk-line svg { transform: none; }
+  .bk-route[data-kind] .bk-fly { color: var(--muted); }
 
   /* The booking form, in place of the sheet. The head and its three ways stay put, the fields scroll,
      and the foot keeps the save under the thumb. Fields sit in inset grouped lists, an icon and a name to a row. */
@@ -366,6 +414,9 @@
     .fl-foot { padding-inline: 16px; }
     .fl-strip { margin-inline: -4px; }
     .fl-day { width: 60px; }
+    .dv { padding: 4px; }
+    .dv ol { column-gap: 8px; }
+    .dv li { padding: 6px; }
     .fl-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
     .fl-line, .fl-notime { grid-row: 2; grid-column: 1 / -1; }
     .fl-price, .fl-row:has(.fl-marks) .fl-price { grid-row: 1; grid-column: 2; }
@@ -375,11 +426,12 @@
     .fl-sort { flex: 1 0 100%; margin-left: 0; }
     .ws-said:empty { margin-top: -12px; }
     .ws .fl-row[data-picked] { margin-inline: -8px; padding-inline: 8px; }
-    .bk-band, .bk-route, .bk-ref, .bk-body { padding-inline: 14px; }
-    .bk-route { gap: 8px; padding-block: 16px 14px; }
+    .bk-mark { padding-left: 14px; }
+    .bk-route, .bk-body { padding-inline: 14px; }
+    .bk-route { gap: 8px; padding-block: 4px 14px; }
     .bk-end b { font-size: var(--fs-display); }
-    .bk-end span { font-size: var(--fs-body); }
-    .bk-fly { width: 44px; margin-top: 2px; }
+    .bk-time { font-size: var(--fs-body); }
+    .bk-fly { width: 64px; margin-top: -14px; }
     .bk-said:empty { margin-top: -12px; }
     .bf-body { padding: 16px; }
     .bk-route[data-kind] .bk-end b { font-size: var(--fs-lead); }

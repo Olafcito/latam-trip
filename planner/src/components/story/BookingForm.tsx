@@ -7,7 +7,7 @@ import { weekdayDay } from '../../lib/format'
 import { remoteEnabled } from '../../lib/supabase'
 import { askLabel, bookingTask, insertTask, press, type AskState } from '../../lib/tasks'
 import { useStore } from '../../store'
-import { Bag, Calendar, Check, Close, Doc, Hash, Link, Note, Plus, Rebook, Refund, Shop, Suitcase, Ticket } from '../icons'
+import { Bag, Calendar, Check, Close, Doc, Hash, Link, Note, Plus, Rebook, Refund, Shop, Star, Suitcase, Ticket } from '../icons'
 import { BoxChips, BoxRoute, BoxSegs, cityOf, type BoxData } from './BookedBox'
 
 // The booking form, in place of the sheet it opens from. Three ways in, one segmented control: Picked
@@ -174,7 +174,11 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
   const [tab, setTab] = useState<Start>(() => (edit ? 'manual' : tabs.some(([k]) => k === open.start) ? open.start : 'manual'))
   const [form, setForm] = useState<BookingFields>(() => {
     const was = existing[0] ?? open.booking
-    if (edit && was) return noDay(fromRow(was))
+    // the reference and the fare are the opened row's own, so a second flight of a ticket keeps its airline reference
+    if (edit && was) {
+      const own = fromRow(open.booking!)
+      return { ...noDay(fromRow(was)), reference: own.reference, fare: own.fare }
+    }
     if (rebook && was) return { ...noDay(fromRow(was)), ...factsOf(picked?.[0]) }
     // Fill in yourself starts from the pick, so its seller, link, price and bags are there to edit
     return { reference: '', ...factsOf(picked?.[0]) }
@@ -225,7 +229,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
       return
     }
     const fields = full ? cleaned(form) : { reference: form.reference ?? '' }
-    let rows = formRows(base(), fields, { edit: edit || rebook || !!savedIds })
+    let rows = formRows(base(), fields, { edit: edit || rebook || !!savedIds, own: edit ? open.booking!.id : undefined })
     if (savedIds) rows = withIds(rows, savedIds)
     setBusy(true)
     setSaid(null)
@@ -321,10 +325,19 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
               <Row icon={<Shop s={16} />} label="Seller" htmlFor={`${id}-seller`}>
                 <input id={`${id}-seller`} name="seller" className="bf-in" value={form.seller ?? ''} onChange={typed('seller')} autoComplete="off" placeholder="Airline or site…" />
               </Row>
+              <Row icon={<Hash s={16} />} label="Seller's number" htmlFor={`${id}-sref`} sub>
+                <input
+                  id={`${id}-sref`} name="seller_reference" className="bf-in bf-code" value={form.seller_reference ?? ''} onChange={typed('seller_reference')}
+                  autoCapitalize="characters" autoCorrect="off" autoComplete="off" spellCheck={false} placeholder="Order number"
+                />
+              </Row>
+              <Row icon={<Star s={16} />} label="Fare" htmlFor={`${id}-fare`}>
+                <input id={`${id}-fare`} name="fare" className="bf-in" value={form.fare ?? ''} onChange={typed('fare')} autoComplete="off" placeholder="Light, Classic" />
+              </Row>
               <Row icon={<Ticket s={16} />} label="Price" htmlFor={`${id}-price`}>
                 <span className="bf-kr">
                   <input
-                    ref={price} id={`${id}-price`} name="price" className="bf-in" value={form.price ?? ''} onChange={typed('price')} inputMode="decimal" autoComplete="off" placeholder="0"
+                    ref={price} id={`${id}-price`} name="price" className="bf-in" value={form.price ?? ''} onChange={typed('price')} inputMode="decimal" autoComplete="off"
                     aria-invalid={Number.isNaN(readKr(form.price)) || undefined}
                   />
                   <span aria-hidden="true">kr</span>

@@ -1,20 +1,21 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode, type Ref } from 'react'
 import type { Booking, BookingFile, InOut, MapNode } from '../../data/types'
-import { boxChips, boxHead, boxSegments, fileMessage, fileTile, type BoxChip, type BoxHead, type BoxSegment } from '../../lib/bookedBox'
+import { boxHead, boxRows, boxSegments, fileMessage, fileTile, flightHours, type BoxChip, type BoxHead, type BoxRow, type BoxSegment } from '../../lib/bookedBox'
 import { attachFile, cancelBooking, fileUrl } from '../../lib/bookings'
-import { shortPlace } from '../../lib/format'
+import { hours, shortPlace } from '../../lib/format'
 import { useStore } from '../../store'
-import { Arrow, Bag, Boat, Bus, Check, Clock, Copy, Doc, External, Pencil, Person, Plane, Plus, Rebook, Refund, Shop, Suitcase, Ticket } from '../icons'
+import { Arrow, Bag, Boat, Bus, Check, Clock, Copy, Doc, External, Hash, Link, Pencil, Person, Plane, Plus, Rebook, Refund, Shop, Star, Suitcase, Ticket } from '../icons'
 
-// The booking at the top of its sheet, read like a boarding pass: a green band that says Booked, the two
-// codes large with the cities under them, the reference on its own stub, then the facts as icon chips,
-// the flights inside with the time in each airport between, the files and the notes. It reads the booking
-// row alone, so it is whole even when the leg has no picked flight. Change booking opens the days and the
-// flights under it to look at. Remove asks once, here in the box, and sets the booking to cancelled.
+// The booking at the top of its sheet, read like a boarding pass: a small green mark that says Booked, the two
+// codes large with the cities and the local times under them and the flight time on the line between, the
+// flights inside with the time in each airport between, the reference on one row with a copy button, then the
+// facts as one list of icon rows and Simon's own notes apart. It reads the booking row alone, so it is whole
+// even when the leg has no picked flight. Change booking opens the days and the flights under it to look at.
+// Remove asks once, here in the box, and sets the booking to cancelled.
 
 export interface BoxData {
   inout: Pick<InOut, 'airports'>
-  map: { nodes: readonly Pick<MapNode, 'iata' | 'name'>[] }
+  map: { nodes: readonly Pick<MapNode, 'iata' | 'name' | 'country'>[] }
 }
 
 /** Puts a change into the store's bookings at once, so the box agrees with what was saved before the live reload lands. */
@@ -28,6 +29,21 @@ export function cityOf(data: BoxData) {
   }
 }
 
+/**
+ * The UTC offset of an airport code: its own from the long-haul airports, else that of another airport in the
+ * same country, found through the map place that carries the code. null when neither is known.
+ */
+export function offsetOf(data: BoxData) {
+  return (code: string): number | null => {
+    const own = data.inout.airports[code]?.utc_offset
+    if (typeof own === 'number') return own
+    const country = data.map.nodes.find((n) => n.iata === code)?.country
+    if (!country) return null
+    const near = Object.values(data.inout.airports).find((a) => a.country === country && typeof a.utc_offset === 'number')
+    return near ? near.utc_offset : null
+  }
+}
+
 /** A web address the box may link to. Anything else, a javascript: one too, gives no link. */
 const safeUrl = (u: string | null) => (u && /^https?:\/\//i.test(u.trim()) ? u.trim() : null)
 
@@ -37,23 +53,92 @@ function DayMark({ mark }: { mark: string }) {
   return <><sup aria-hidden="true">{mark}</sup><span className="vh">, {mark} day</span></>
 }
 
-/** The two codes large with the cities under them and the times, as on a boarding pass. The mark between is the way it goes. */
-export function BoxRoute({ head, kind }: { head: BoxHead; kind?: string | null }) {
+/** A local time with its small mark, so the time is read as the airport's own. */
+function Local({ time, mark }: { time: string; mark?: string }) {
+  return <span className="bk-time">{time}<DayMark mark={mark ?? ''} /><i aria-hidden="true">local</i><span className="vh"> local time</span></span>
+}
+
+/**
+ * The two codes large with the cities under them and the local times, as on a boarding pass. The line between is
+ * the way it goes, with the time it takes over it when both ends know their clock.
+ */
+export function BoxRoute({ head, kind, took }: { head: BoxHead; kind?: string | null; took?: number | null }) {
   const Way = kind === 'bus' ? Bus : kind === 'boat' ? Boat : Plane
+  const span = hours(took)
   return (
     <div className="bk-route" data-kind={kind && kind !== 'flight' ? kind : undefined}>
       <div className="bk-end">
         <b>{head.from.code || 'From'}</b>
-        {head.from.city && <small>{head.from.city}</small>}
-        {head.from.time && <span>{head.from.time}</span>}
+        {head.from.city && <small title={head.from.city}>{head.from.city}</small>}
+        {head.from.time && <Local time={head.from.time} />}
       </div>
-      <span className="bk-fly" aria-hidden="true"><Way s={18} /></span>
+      <span className="bk-fly">
+        {span && <small><span className="vh">Takes </span>{span}</small>}
+        <span className="bk-line" aria-hidden="true"><Way s={22} /></span>
+      </span>
       <div className="bk-end to">
         <b>{head.to.code || 'To'}</b>
-        {head.to.city && <small>{head.to.city}</small>}
-        {head.to.time && <span>{head.to.time}<DayMark mark={head.to.mark} /></span>}
+        {head.to.city && <small title={head.to.city}>{head.to.city}</small>}
+        {head.to.time && <Local time={head.to.time} mark={head.to.mark} />}
       </div>
     </div>
+  )
+}
+
+/** A copy button that turns into a check for a moment once the text is on the clipboard. */
+function CopyButton({ text, label, onDone }: { text: string; label: string; onDone: (ok: boolean) => void }) {
+  const [done, setDone] = useState(false)
+  useEffect(() => {
+    if (!done) return
+    const t = window.setTimeout(() => setDone(false), 1500)
+    return () => window.clearTimeout(t)
+  }, [done])
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setDone(true)
+      onDone(true)
+    } catch {
+      onDone(false)
+    }
+  }
+  return (
+    <button type="button" className="bk-icon bk-copy" data-done={done || undefined} onClick={copy} aria-label={label} title="Copy">
+      <span aria-hidden="true"><Copy s={16} /></span>
+      <span aria-hidden="true"><Check s={16} /></span>
+    </button>
+  )
+}
+
+const ROW_ICON: Record<BoxRow['key'], (p: { s?: number }) => ReactNode> = {
+  seller: Shop, paid: Ticket, ticket: Link, fare: Star, cabin: Bag, checked: Suitcase, refundable: Refund, changeable: Rebook, travellers: Person,
+}
+
+/** The facts as one grouped list of icon rows: the label at the left, the value at the right with what it covers under it. */
+export function BoxRows({ rows, onCopied }: { rows: BoxRow[]; onCopied?: (what: string, ok: boolean) => void }) {
+  if (!rows.length) return null
+  return (
+    <ul className="bk-rows">
+      {rows.map((r, i) => {
+        const Icon = ROW_ICON[r.key]
+        return (
+          <li key={`${r.key}-${i}`} data-k={r.key}>
+            <span className="bk-row-i" aria-hidden="true"><Icon s={16} /></span>
+            <span className="bk-row-l">{r.label}</span>
+            <span className="bk-row-v">
+              <span>{r.value}</span>
+              {r.more?.map((m) => <small key={m}>{m}</small>)}
+              {r.mono && (
+                <span className="bk-row-code">
+                  <code className="bk-code">{r.mono}</code>
+                  {onCopied && <CopyButton text={r.mono} label={`Copy the number from ${r.value}`} onDone={(ok) => onCopied('Number', ok)} />}
+                </span>
+              )}
+            </span>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
@@ -126,8 +211,10 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
 }) {
   const id = useId()
   const head = boxHead(b, cityOf(data))
-  const chips = boxChips(b)
-  const segs = boxSegments(b)
+  const bookings = useStore((st) => st.bookings)
+  const rows = boxRows(b, bookings)
+  const segs = boxSegments(b, { single: true })
+  const took = flightHours(b, offsetOf(data))
   const link = safeUrl(b.url)
   const [said, setSaid] = useState<{ text: string; bad?: boolean } | null>(null)
   const [adding, setAdding] = useState<string | null>(null)
@@ -143,15 +230,8 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
     asked.current = asking
   }, [asking])
 
-  const copy = async () => {
-    if (!b.reference) return
-    try {
-      await navigator.clipboard.writeText(b.reference)
-      setSaid({ text: 'Reference copied.' })
-    } catch {
-      setSaid({ text: 'Copying did not work. Select the reference and copy it by hand.', bad: true })
-    }
-  }
+  const copied = (what: string, ok: boolean) =>
+    setSaid(ok ? { text: `${what} copied.` } : { text: `Copying did not work. Select the ${what.toLowerCase()} and copy it by hand.`, bad: true })
 
   const open = async (f: BookingFile) => {
     // the tab opens on the press, so no popup blocker stops it, and gets its address once the bucket gives one
@@ -199,34 +279,28 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
 
   return (
     <section ref={ref} className="bk" aria-labelledby={`${id}-h`} tabIndex={-1}>
-      <header className="bk-band">
-        <Check s={18} />
+      <header className="bk-mark">
+        <span className="bk-tick" aria-hidden="true"><Check s={13} /></span>
         <h4 id={`${id}-h`}>Booked</h4>
         {head.day && <span>{head.day}</span>}
-        {onEdit && <button type="button" className="bk-icon bk-edit" onClick={onEdit} aria-label="Edit" title="Edit"><Pencil s={16} /></button>}
+        {onEdit && <button type="button" className="bk-icon bk-edit" onClick={onEdit} aria-label="Edit the booking" title="Edit"><Pencil s={16} /></button>}
       </header>
 
-      <BoxRoute head={head} kind={b.kind} />
-
-      {b.reference && (
-        <div className="bk-ref">
-          <div>
-            <small id={`${id}-ref`}>Booking reference</small>
-            <output className="bk-code" aria-labelledby={`${id}-ref`}>{b.reference}</output>
-          </div>
-          <button type="button" className="bk-icon" onClick={copy} aria-label="Copy the booking reference" title="Copy"><Copy s={16} /></button>
-        </div>
-      )}
+      <BoxRoute head={head} kind={b.kind} took={took} />
 
       <div className="bk-body">
-        <BoxChips chips={chips} />
+        <BoxSegs segs={segs} label={b.kind === 'flight' ? 'Flights' : 'Legs'} />
 
-        {segs.length > 0 && (
-          <section className="bk-part" aria-labelledby={`${id}-segs`}>
-            <h5 id={`${id}-segs`}>Flights</h5>
-            <BoxSegs segs={segs} label="Flights" />
-          </section>
+        {b.reference && (
+          <div className="bk-refrow">
+            <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
+            <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
+            <code className="bk-code" aria-labelledby={`${id}-ref`}>{b.reference}</code>
+            <CopyButton text={b.reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
+          </div>
         )}
+
+        <BoxRows rows={rows} onCopied={copied} />
 
         <section className="bk-part" aria-labelledby={`${id}-files`}>
           <h5 id={`${id}-files`}>Files</h5>
@@ -245,7 +319,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
 
         {b.notes && b.notes.trim() && (
           <section className="bk-part" aria-labelledby={`${id}-notes`}>
-            <h5 id={`${id}-notes`}>Notes</h5>
+            <h5 id={`${id}-notes`}>Your notes</h5>
             <p className="bk-notes">{b.notes.trim()}</p>
           </section>
         )}

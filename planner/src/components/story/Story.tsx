@@ -7,7 +7,9 @@ import { useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
 import { flightOffDay, giveNight, legDay, legTime, nightStop, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
-import { bookedDay, bookingOn, heldWayNotice, lockedLegs, wayBooking, wayHeld } from '../../lib/booked'
+import { bookedDay, bookingOn, heldWayNotice, lockedLegs, stayOn, wayBooking, wayHeld } from '../../lib/booked'
+import { addDays } from '../../lib/time'
+import { tripDay, type DayInput } from '../../lib/tripDay'
 import { legWindow } from '../../lib/legDates'
 import { familyOf } from '../../lib/route'
 import { countryName } from '../../lib/colors'
@@ -284,6 +286,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const viewingOld = useStore((s) => s.viewing?.id === journey.id)
   const setNotice = useStore((s) => s.setNotice)
   const bookings = useStore((s) => s.bookings)
+  const lodgings = useStore((s) => s.lodgings)
   const unlocked = useStore((s) => s.unlocked)
   const setUnlocked = useStore((s) => s.setUnlocked)
   // a booked leg keeps its day, so the night steppers move only the legs up to it
@@ -354,6 +357,43 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   }
   // the booked rows of the way in and the way home, on the day each leaves
   const wayBooked = { in: wayBooking(bookings, data, wayIn), home: wayBooking(bookings, data, wayHome) }
+  // the whole trip day by day, for the day view of a sheet and the marks of a booked leg's other days: the legs
+  // with their local times, the stops with the stay booked there, and the booked activities
+  const tripInput = useMemo((): DayInput => {
+    const name = (id: string) => nodeName(map, inout, id)
+    const port = (code: string) => shortPlace(inout.airports[code]?.name ?? map.nodes.find((n) => n.iata === code)?.name ?? code)
+    const bin = wayBooking(bookings, data, wayIn)
+    const bhome = wayBooking(bookings, data, wayHome)
+    const legs: DayInput['legs'] = [
+      { key: 'in', fam: 'flight', from: port(wayIn.from), to: port(wayIn.to), depart: bin?.depart ?? wayIn.depart, arrive: bin?.arrive ?? wayIn.arrive, booked: !!bin },
+    ]
+    journey.places.forEach((q, i) => {
+      if (!q.hop || i === 0) return
+      const h = q.hop
+      const prev = sched.places[i - 1]
+      if (!prev) return
+      const day = legDay(h, prev.outDay)
+      const b = bookingOn(bookings, data, { from: journey.places[i - 1].node, to: q.node, day })
+      const fl = h.flight && timed(h.flight) && h.flight.depart.slice(0, 10) === day ? h.flight : null
+      legs.push({
+        key: `h${i}`, fam: familyOf(h.mode), from: name(h.from), to: name(h.to),
+        depart: b?.depart ?? fl?.depart ?? day, arrive: b ? b.arrive : fl?.arrive ?? null, booked: !!b,
+      })
+    })
+    legs.push({ key: 'home', fam: 'flight', from: port(wayHome.from), to: port(wayHome.to), depart: bhome?.depart ?? wayHome.depart, arrive: bhome?.arrive ?? wayHome.arrive, booked: !!bhome })
+    const stops: DayInput['stops'] = sched.places.map((sp) => {
+      const b = sp.inDay < sp.outDay ? stayOn(bookings, sp.node, { first: sp.inDay, last: addDays(sp.outDay, -1) }) : null
+      const stop: DayInput['stops'][number] = { name: name(sp.node), inDay: sp.inDay, outDay: sp.outDay }
+      if (b) stop.stay = { name: lodgings.find((l) => l.id === b.lodging_id)?.name ?? null, booked: true }
+      return stop
+    })
+    const others = bookings
+      .filter((b) => b.status === 'booked' && b.kind === 'other' && b.depart)
+      .map((b) => ({ title: b.seller?.trim() || 'Booked activity', at: b.depart! }))
+    return { legs, stops, others }
+  }, [bookings, lodgings, data, map, inout, journey, sched, wayIn, wayHome])
+  const dayItems = useMemo(() => (d: string) => tripDay(tripInput, d), [tripInput])
+
   const waySheet = (dir: 'in' | 'home', w: Way, other: Way, rows: Record<string, WayRow[]>) => (close: () => void) => (
     <WaySheet
       dir={dir} way={w} other={other} byDay={rows} data={data} tripId={journey.id} booking={wayBooked[dir]} pair={wayBooked}
@@ -362,6 +402,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         { kind: 'flight', from: w.from, to: w.to, day: dayOf(w), tripId: journey.id, fromName: airportName(w.from), toName: airportName(w.to) },
         (rows, choice) => useStore.getState().markBooked(rows, { way: dir, choice }),
       ) : undefined}
+      trip={{ items: dayItems, leg: dir }}
       close={close} />
   )
 
@@ -469,6 +510,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
                 (rows, flight) => useStore.getState().markBooked(rows, { i, flight: flight ?? null }),
               ) : undefined}
               onUseDay={movable ? (d) => setHopDate(i, d) : undefined}
+              trip={{ items: dayItems, leg: `h${i}` }}
               close={close}
             />
           ) : undefined}
