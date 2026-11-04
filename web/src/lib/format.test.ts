@@ -11,12 +11,12 @@ describe('thousands', () => {
 })
 
 describe('duration', () => {
-  it('formats minutes as in the handoff', () => {
+  it('always carries its unit, hours and minutes, never a decimal', () => {
     expect(duration(55)).toBe('55m')
     expect(duration(60)).toBe('1h')
-    expect(duration(65)).toBe('1h05')
+    expect(duration(65)).toBe('1h05m')
     expect(duration(540)).toBe('9h')
-    expect(duration(402)).toBe('6h42')
+    expect(duration(402)).toBe('6h42m')
     expect(duration(null)).toBe('time unknown')
   })
 })

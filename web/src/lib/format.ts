@@ -6,14 +6,14 @@ export function thousands(n: number): string {
   return (n < 0 ? '-' : '') + s.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 }
 
-/** Minutes to the compact handoff format: 55 -> "55m", 65 -> "1h05", 540 -> "9h". */
+/** Minutes to hours and minutes, always with the unit: 55 -> "55m", 65 -> "1h05m", 540 -> "9h". */
 export function duration(min: number | null | undefined): string {
   if (min == null || !Number.isFinite(min)) return 'time unknown'
   const m = Math.round(min)
   if (m < 60) return `${m}m`
   const h = Math.floor(m / 60)
   const r = m % 60
-  return r === 0 ? `${h}h` : `${h}h${String(r).padStart(2, '0')}`
+  return r === 0 ? `${h}h` : `${h}h${String(r).padStart(2, '0')}m`
 }
 
 /** "from 1.040 kr", or "no price" when there is none. */
