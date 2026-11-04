@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ComponentType, type ReactNode } from 'react'
 import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, Option, Ticket, Way, WayType } from '../data/types'
 import { changing, useStore, type Pair } from '../store'
@@ -6,16 +6,17 @@ import type { Journey } from '../lib/journey'
 import { clock, dec1, hours, kr, observed, shortPlace, timeUncertain, weekdayDay } from '../lib/format'
 import type { FlightLink } from '../lib/links'
 import {
-  allIn, cheapestKey, cityChoices, flagChip, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles,
+  allIn, cheapestKey, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles,
   type PairFilters, type PairRow,
 } from '../lib/pairs'
+import { heldWayNotice } from '../lib/booked'
 import { bagWords, carriersOf, flightNumbersOf, legEnds, lossLabel, pairMarks, stopsLabel, type PairMark } from '../lib/pickMarks'
 import { HOMES } from '../lib/homes'
 import { WayTrack } from '../components/WayCard'
 import { HomePill } from '../components/HomePill'
 import { PillSelect, type PillOption } from '../components/PillSelect'
 import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosure'
-import { Arrow, Bag, Caret, Check, Clock, External, Land, Moon, Plane, Suitcase, Ticket as TicketIcon, TicketHop, Transfer, TwoTickets } from '../components/icons'
+import { Arrow, Bag, Caret, Check, Clock, External, Land, Lock, Moon, Pin, Plane, Suitcase, Ticket as TicketIcon, TicketHop, Transfer, TwoTickets } from '../components/icons'
 
 // Picking the way in and the way home: the pair as the title, one row of pills that narrow the pairs,
 // the pairs ranked by the score or the price, and the open pair with its options, ways, cost, score and tickets.
@@ -35,6 +36,16 @@ function ownPair(inout: InOut, j: Journey | null): Pair | null {
   return wi && wh ? { in: wi.to, home: wh.from } : null
 }
 
+// Below this width the open pair opens in place under its row. Above it the pair is a column beside the list.
+const INLINE = '(max-width: 959px)'
+const watchInline = (fn: () => void) => {
+  const m = matchMedia(INLINE)
+  m.addEventListener('change', fn)
+  return () => m.removeEventListener('change', fn)
+}
+const isInline = () => matchMedia(INLINE).matches
+const useInline = () => useSyncExternalStore(watchInline, isInline, () => false)
+
 export function PickScreen({ data }: { data: AppData }) {
   const { inout } = data
   const pickFor = useStore((s) => s.pickFor)
@@ -47,13 +58,26 @@ export function PickScreen({ data }: { data: AppData }) {
     () => pairRows(inout, home, { arrival, departure, noUS, maxHubNights }, sort),
     [inout, home, arrival, departure, noUS, maxHubNights, sort],
   )
+  const setPair = useStore((s) => s.setPair)
+  const inline = useInline()
   const own = ownPair(inout, trip)
+  const ownKey = own && pairKey(own)
+  // the trip's own pair stands open until any pair is closed
+  const [ownClosed, setOwnClosed] = useState(false)
+  const openKey = pair ? pairKey(pair) : ownClosed ? null : ownKey
   // the open pair is found among all the pairs, so a filter never closes it under the user
-  const openRow = useMemo(() => {
-    if (!pair) return null
-    const key = pairKey(pair)
-    return pairRows(inout, home, NO_FILTERS, sort).find((r) => r.key === key) ?? null
-  }, [inout, home, sort, pair])
+  const openRow = useMemo(
+    () => (openKey ? pairRows(inout, home, NO_FILTERS, sort).find((r) => r.key === openKey) ?? null : null),
+    [inout, home, sort, openKey],
+  )
+  const toggle = (r: PairRow) => {
+    if (r.key !== openKey) return setPair({ in: r.in, home: r.home })
+    setPair(null)
+    setOwnClosed(true)
+  }
+  const pane = (row: PairRow) => <PairPane key={row.key} data={data} row={row} trip={trip} />
+  // in place, a pair the pills hide has no row to open under, so it opens under the list
+  const orphan = inline && openRow && !rows.some((r) => r.key === openRow.key)
   // the picker opens at its top when a trip's sheet sends you here
   useEffect(() => {
     if (pickFor) window.scrollTo({ top: 0 })
@@ -63,8 +87,12 @@ export function PickScreen({ data }: { data: AppData }) {
       <Head inout={inout} trip={trip} shown={pair ?? ownPair(inout, trip)} />
       <Controls inout={inout} />
       <div className="pk-body">
-        <PairList inout={inout} rows={rows} ownKey={own && pairKey(own)} filtered={!!arrival || !!departure || noUS || maxHubNights != null} />
-        {openRow && <PairPane key={openRow.key} inout={inout} row={openRow} trip={trip} />}
+        <PairList
+          inout={inout} rows={rows} ownKey={ownKey} openKey={openKey} onToggle={toggle}
+          inline={inline ? (r) => pane(r.key === openRow?.key ? openRow : r) : null}
+          filtered={!!arrival || !!departure || noUS || maxHubNights != null}
+        />
+        {openRow && (!inline || orphan) && <div className="pk-side" id="pk-pair" key={openRow.key}>{pane(openRow)}</div>}
       </div>
     </div>
   )
@@ -188,14 +216,28 @@ function MarkIcon({ m }: { m: PairMark }) {
 }
 
 /** The ranked pairs: the top ten by the sort, then all of them on request. The open pair stays in view past the top ten. */
-function PairList({ inout, rows, ownKey, filtered }: { inout: InOut; rows: PairRow[]; ownKey: string | null; filtered: boolean }) {
-  const pair = useStore((s) => s.pair)
-  const setPair = useStore((s) => s.setPair)
+function PairList({ inout, rows, ownKey, openKey, onToggle, inline, filtered }: {
+  inout: InOut; rows: PairRow[]; ownKey: string | null; openKey: string | null; onToggle: (r: PairRow) => void
+  /** on a narrow screen: the open pair, drawn in place under its row */
+  inline: ((r: PairRow) => ReactNode) | null
+  filtered: boolean
+}) {
   const setFilters = useStore((s) => s.setFilters)
   const home = useStore((s) => s.home)
   const [all, setAll] = useState(false)
   const cheap = useMemo(() => cheapestKey(rows), [rows])
-  const openKey = pair ? pairKey(pair) : null
+  // one pair drawn in place: the open one, or the one closing while its height runs down
+  const [drawn, setDrawn] = useState<string | null>(null)
+  if (openKey && openKey !== drawn) setDrawn(openKey)
+  // in place, the row tapped stays under the finger while the pair above it closes
+  const list = useRef<HTMLOListElement>(null)
+  const anchor = useRef<{ key: string; top: number } | null>(null)
+  useLayoutEffect(() => {
+    const a = anchor.current
+    anchor.current = null
+    const el = a && list.current?.querySelector(`[data-key="${CSS.escape(a.key)}"]`)
+    if (a && el) window.scrollBy(0, el.getBoundingClientRect().top - a.top)
+  }, [openKey])
 
   if (!rows.length) {
     const city = HOMES.find((h) => h.code === home)?.city ?? cityName(inout, home)
@@ -211,16 +253,21 @@ function PairList({ inout, rows, ownKey, filtered }: { inout: InOut; rows: PairR
   const shown = rows.map((r, i) => ({ r, i })).filter(({ i }) => all || i < TOP || i === at)
   return (
     <section className="pk-list" aria-label="Pairs">
-      <ol className="pk-rows">
+      <ol className="pk-rows" ref={list}>
         {shown.map(({ r, i }) => {
           const wi = inout.ways[r.best.way_in]
           const wh = inout.ways[r.best.way_home]
           const open = r.key === openKey
+          const panelId = `pk-pair-${r.in}-${r.home}`
           return (
             <li key={r.key} data-gap={i >= TOP && !all ? '' : undefined}>
               <button
-                type="button" className="pk-row" aria-expanded={open} aria-controls={open ? 'pk-pair' : undefined}
-                onClick={() => setPair(open ? null : { in: r.in, home: r.home })}
+                type="button" className="pk-row" data-key={r.key} aria-expanded={open}
+                aria-controls={inline ? panelId : open ? 'pk-pair' : undefined}
+                onClick={(e) => {
+                  if (inline) anchor.current = { key: r.key, top: e.currentTarget.getBoundingClientRect().top }
+                  onToggle(r)
+                }}
               >
                 <span className="pk-rank" data-first={i === 0 || undefined}><span className="vh">Rank </span>{i + 1}</span>
                 <span className="pk-cities">
@@ -246,6 +293,11 @@ function PairList({ inout, rows, ownKey, filtered }: { inout: InOut; rows: PairR
                   <small title="Score out of 10"><span className="vh">Score </span>{dec1(scoreParts(r.best.rating).total)}</small>
                 </span>
               </button>
+              {inline && (
+                <DisclosurePanel id={panelId} open={open} className="pk-inline">
+                  {drawn === r.key && inline(r)}
+                </DisclosurePanel>
+              )}
             </li>
           )
         })}
@@ -279,8 +331,11 @@ function Fee({ v }: { v: number | null | undefined }) {
  * One pair opened: what each ticket type costs, the options as radio cards, the one ways to swap on two one
  * ways, the two ways, the cost, the score in its parts and every ticket behind them.
  */
-function PairPane({ inout, row, trip }: { inout: InOut; row: PairRow; trip: Journey | null }) {
+function PairPane({ data, row, trip }: { data: AppData; row: PairRow; trip: Journey | null }) {
+  const { inout } = data
   const home = useStore((s) => s.home)
+  const bookings = useStore((s) => s.bookings)
+  const unlocked = useStore((s) => s.unlocked)
   const chosen = useStore((s) => s.chosen)
   const setChosen = useStore((s) => s.setChosen)
   const mixIn = useStore((s) => s.mixIn)
@@ -297,8 +352,9 @@ function PairPane({ inout, row, trip }: { inout: InOut; row: PairRow; trip: Jour
     setMix('home', null)
   }
   const name = `pk-opt-${row.key}`
+  const held = heldSides(bookings, data, trip, picked.wi, picked.wh, unlocked)
   return (
-    <section className="pk-pair" id="pk-pair" aria-label={`${cityName(inout, row.in)} to ${cityName(inout, row.home)}`}>
+    <section className="pk-pair" aria-label={`${cityName(inout, row.in)} to ${cityName(inout, row.home)}`}>
       {tiles.length > 1 && (
         <div className="pk-tiles" role="group" aria-label="Ticket type">
           {tiles.map((t) => {
@@ -349,8 +405,8 @@ function PairPane({ inout, row, trip }: { inout: InOut; row: PairRow; trip: Jour
       )}
 
       <div className="pk-legs">
-        <Leg inout={inout} way={picked.wi} dir="in" />
-        <Leg inout={inout} way={picked.wh} dir="home" />
+        <Leg inout={inout} way={picked.wi} dir="in" held={held.in} />
+        <Leg inout={inout} way={picked.wh} dir="home" held={held.home} />
       </div>
 
       <div className="pk-facts">
@@ -359,7 +415,49 @@ function PairPane({ inout, row, trip }: { inout: InOut; row: PairRow; trip: Jour
       </div>
 
       <Tickets inout={inout} wi={picked.wi} wh={picked.wh} />
+
+      <Apply inout={inout} wi={picked.wi} wh={picked.wh} optionId={picked.option.id} trip={trip} held={held} />
     </section>
+  )
+}
+
+/** What a held pick reads on the button, and the tooltip that says where to change it. */
+function heldWords(held: { in: boolean; home: boolean }): { label: string; notice: string } | null {
+  if (held.in && held.home) return { label: 'Both ways booked', notice: 'Both ways are booked. Change them from their bookings.' }
+  if (held.in) return { label: 'Way in booked', notice: heldWayNotice('in') }
+  if (held.home) return { label: 'Way home booked', notice: heldWayNotice('home') }
+  return null
+}
+
+/**
+ * The pick, pinned to the foot of the pair: start the trip on these two ways, or change the trip to them.
+ * Off, and still focusable for its tooltip, when the trip already flies them or a side of it is booked.
+ */
+function Apply({ inout, wi, wh, optionId, trip, held }: {
+  inout: InOut; wi: Way; wh: Way; optionId: string; trip: Journey | null; held: { in: boolean; home: boolean }
+}) {
+  const pickWays = useStore((s) => s.pickWays)
+  const same = !!trip && trip.wayIn === wi.id && trip.wayHome === wh.id
+  const lock = same ? null : heldWords(held)
+  const off = same || !!lock
+  return (
+    <div className="pk-apply">
+      <button
+        type="button" className="btn primary wide" aria-disabled={off || undefined} data-held={lock ? '' : undefined}
+        title={same ? 'The trip flies these two ways' : lock?.notice}
+        onClick={() => {
+          if (!off) pickWays(wi, wh, optionId)
+        }}
+      >
+        {same ? (
+          <><Check s={15} />In the trip</>
+        ) : lock ? (
+          <><Lock s={15} />{lock.label}</>
+        ) : (
+          <><Pin s={15} />Start {cityName(inout, wi.to)}, end {cityName(inout, wh.from)}</>
+        )}
+      </button>
+    </div>
   )
 }
 
@@ -385,7 +483,7 @@ function MixList({ label, ways, at, price, onPick }: { label: string; ways: Way[
 }
 
 /** One way: its ends with their clock times on the track, the flights, the time it takes. */
-function Leg({ inout, way, dir }: { inout: InOut; way: Way; dir: 'in' | 'home' }) {
+function Leg({ inout, way, dir, held }: { inout: InOut; way: Way; dir: 'in' | 'home'; held: boolean }) {
   const nums = flightNumbersOf(way)
   const air = Math.abs(way.total_hours - way.flying_hours) >= 0.1
   return (
@@ -393,6 +491,7 @@ function Leg({ inout, way, dir }: { inout: InOut; way: Way; dir: 'in' | 'home' }
       <header className="pk-leg-head">
         <span className="pk-dir" aria-hidden="true">{dir === 'in' ? <Land s={14} /> : <Plane s={14} />}</span>
         <h3>{dir === 'in' ? 'Way in' : 'Way home'}</h3>
+        {held && <span className="pk-held" title={heldWayNotice(dir)}><Lock s={12} />Booked</span>}
         <span className="pk-leg-time">
           <Said label={`Total time ${hours(way.total_hours)}`} className="pk-fig"><Clock s={13} /><span aria-hidden="true">{hours(way.total_hours)}</span></Said>
           {air && <Said label={`Time in the air ${hours(way.flying_hours)}`} className="pk-fig"><Plane s={12} /><span aria-hidden="true">{hours(way.flying_hours)}</span></Said>}

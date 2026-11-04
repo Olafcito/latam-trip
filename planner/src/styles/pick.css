@@ -200,9 +200,48 @@
 .pk-t-foot .btn svg { margin-left: 4px; }
 .pk-t-note { margin: 4px 0 0; color: var(--muted); white-space: pre-line; overflow-wrap: anywhere; }
 
+/* a booked side, on its way */
+.pk-held { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-label); font-weight: 600; color: var(--booked); white-space: nowrap; }
+
+/* the pick, pinned to the foot of the pair while the pair scrolls past, the content fading under it */
+.pk-apply {
+  position: sticky; bottom: 0; z-index: 1;
+  margin: 0 -16px -16px; padding: 12px 16px 16px;
+  border-radius: 0 0 var(--radius) var(--radius); background: var(--surface);
+}
+.pk-apply::before {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 20px;
+  background: linear-gradient(to top, var(--surface), transparent); pointer-events: none;
+}
+.pk-apply .btn { min-height: 44px; padding-block: 8px; white-space: normal; text-wrap: balance; }
+.pk-apply .btn svg { flex: none; }
+.pk-apply .btn[aria-disabled] { border-color: var(--line-2); background: var(--surface-2); color: var(--muted); cursor: default; }
+.pk-apply .btn[aria-disabled]:active { transform: none; }
+.pk-apply .btn[aria-disabled]:not([data-held]) svg { color: var(--booked); }
+@media (hover: hover) and (pointer: fine) {
+  .pk-apply .btn.primary[aria-disabled]:hover { border-color: var(--line-2); background: var(--surface-2); }
+}
+
+/* ---- layout: the pair beside the list on a wide screen, in place under its row below that ---- */
+@media (min-width: 960px) {
+  .pk-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 440px); align-items: start; gap: 24px; }
+  .pk-side {
+    position: sticky; top: 16px; max-height: calc(100dvh - 32px);
+    overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+    border-radius: var(--radius);
+    animation: pk-in var(--t-med) var(--ease-out);
+  }
+  .pk-side .pk-tiles { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+}
+/* the shared disclosure clips without becoming a scroller, so the pick can still pin to the screen */
+.pk-inline > .disc-in { overflow: clip; }
+.pk-inline .pk-pair { margin: 4px 0 12px; }
+
 :root[data-input='key'] :is(.pk-tile, .pk-opt, .pk-mix-row) { transition: none; }
+:root[data-input='key'] .pk-side { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   :is(.pk-tile, .pk-opt):active { transform: none; }
+  .pk-side { animation-name: pk-fade; }
 }
 
 /* ---- phone ---------------------------------------------------------------------------------- */
@@ -213,6 +252,7 @@
   .pk-price b { font-size: var(--fs-lead); }
   .pk-more { margin-left: 8px; }
   .pk-pair { padding: 14px 12px; }
+  .pk-apply { margin: 0 -12px -14px; padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px)); }
   .pk-opt { padding-inline: 10px; column-gap: 10px; }
 }
 
@@ -313,3 +353,7 @@
   }
 }
 }
+
+/* the open pair beside the list fades in on a change. Reduced motion keeps the fade and drops the lift */
+@keyframes pk-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes pk-fade { from { opacity: 0; } to { opacity: 1; } }
