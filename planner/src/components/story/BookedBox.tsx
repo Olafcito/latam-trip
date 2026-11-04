@@ -359,17 +359,15 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
               <CopyButton text={reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
             </div>
           ) : onEdit ? (
-            <button type="button" className="bk-refrow" data-empty onClick={onEdit} aria-label="Add the booking reference" title="Add reference">
+            <button type="button" className="bk-refrow" data-empty onClick={onEdit}>
               <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
-              <span className="bk-row-l">Reference</span>
-              <Unsaved what="No reference saved" />
-              <span className="bk-plus" aria-hidden="true"><Plus /></span>
+              <span className="bk-row-add">Add reference</span>
             </button>
           ) : (
             <div className="bk-refrow" data-empty>
               <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
               <span className="bk-row-l">Reference</span>
-              <Unsaved what="No reference saved" />
+              <span className="bk-row-none">None saved</span>
             </div>
           )}
           <BoxRows rows={rows} link={link} onCopied={copied} />
