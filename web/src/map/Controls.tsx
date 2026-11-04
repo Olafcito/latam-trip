@@ -31,6 +31,8 @@ interface Props {
 }
 
 export function Controls(p: Props) {
+  // a touch screen pans and pinches, so the zoom buttons only take room there
+  const coarse = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches
   return (
     <>
       <div className="ctl ctl-tr" ref={p.controlsRef}>
@@ -59,11 +61,13 @@ export function Controls(p: Props) {
             })}
           </div>
         )}
-        <div className="zbtns">
-          <button className="zbtn" aria-label="Zoom in" onClick={() => p.onZoom(1)}><Plus /></button>
-          <button className="zbtn" aria-label="Zoom out" onClick={() => p.onZoom(-1)}><Minus /></button>
-          <button className="zbtn" aria-label="Show whole map" onClick={p.onHome}><Fit /></button>
-        </div>
+        {!coarse && (
+          <div className="zbtns">
+            <button className="zbtn" aria-label="Zoom in" onClick={() => p.onZoom(1)}><Plus /></button>
+            <button className="zbtn" aria-label="Zoom out" onClick={() => p.onZoom(-1)}><Minus /></button>
+            <button className="zbtn" aria-label="Show whole map" onClick={p.onHome}><Fit /></button>
+          </div>
+        )}
       </div>
 
       {/* hint and legend share one bottom row, so they wrap instead of colliding */}

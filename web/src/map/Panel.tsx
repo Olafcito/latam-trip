@@ -6,6 +6,7 @@ import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate } fro
 import { Flag as CountryFlag } from './Flag'
 import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon } from './icons'
 import { PlaceSections } from './PlaceSections'
+import { Unknown } from './Unknown'
 import type { CardRef, MapModeApi } from './useMapMode'
 
 export type PanelView = 'city' | 'more' | 'route' | 'trips' | 'way'
@@ -527,8 +528,8 @@ function RouteView(p: PanelProps & { conn: Connection }) {
             {opts.map((o, i) => (
               <button key={i} className={`ocard${o === cur ? ' cur' : ''}`} aria-pressed={o === cur} onClick={() => p.onOption(i)}>
                 <span className="oc-mode"><ModeChip family={familyOf(o.mode)} />{modeLabel(o.mode)}</span>
-                <span className="oc-dur mono">{duration(o.duration_min)}</span>
-                <span className="oc-cost mono">{fromPrice(o.price_dkk.min)}</span>
+                <span className="oc-dur mono">{o.duration_min == null ? <Unknown title="Duration not known" /> : duration(o.duration_min)}</span>
+                <span className="oc-cost mono">{o.price_dkk.min == null ? <Unknown title="Price not known" /> : fromPrice(o.price_dkk.min)}</span>
                 <span className="oc-via">{viaText(model, conn, o, from)}</span>
                 {(o.overnight || o.border) && (
                   <span className="oc-flags">
@@ -549,7 +550,7 @@ function RouteView(p: PanelProps & { conn: Connection }) {
             {cur.mode === 'flight' ? <FlightFacts model={model} o={cur} from={from} /> : (
               <div className="facts">
                 <div className="fact"><span className="mono">Frequency</span><span>{cur.frequency || 'not listed'}</span></div>
-                <div className="fact"><span className="mono">Local price</span><span>{cur.price_local || kr(cur.price_dkk.min)}</span></div>
+                <div className="fact"><span className="mono">Local price</span><span>{cur.price_local || (cur.price_dkk.min == null ? <Unknown title="Price not known" /> : kr(cur.price_dkk.min))}</span></div>
                 {cur.duration_range_h && <div className="fact"><span className="mono">Range</span><span className="mono">{cur.duration_range_h.replace('-', ' to ')} h</span></div>}
                 {cur.observed_at && <div className="fact"><span className="mono">Researched</span><span className="mono">{observed(cur.observed_at)}</span></div>}
               </div>
