@@ -190,7 +190,10 @@
     .modeseg .mbtn { justify-content: center; padding: 0 12px; }
     .modeseg .mbtn.experiences .mbtn-name, :scope.mode-on .mbtn-name { display: none; }
     /* the key and the credit ride on top of the sheet, as they do on the plan's. --mode-sheet comes from MODE_SHEET */
-    :scope.mode-on .ctl-bottom { bottom: calc(var(--mode-sheet) + 8px); }
+    :scope:is(.mode-on, .sheet-on) .ctl-bottom { bottom: calc(var(--mode-sheet) + 8px); }
+    /* the sheet takes the plan's place, so the buttons it pushed aside come back to the edge */
+    :scope.sheet-on .panel.plan { display: none; }
+    :scope.sheet-on .ctl-tr { right: 10px; }
     .legend.scorekey { flex-wrap: nowrap; gap: 8px; padding: 7px 9px; font-size: 11px; white-space: nowrap; }
     .legend.scorekey span { gap: 4px; }
     /* the sheet keeps its full height and only ever moves, by a transform set in ModeSheet.tsx. The shadow's second
@@ -207,6 +210,16 @@
     .mhead .pname { font-size: 20px; }
     .mhead .hbtns { margin: 0 -8px 0 0; }
     .mhead .x { width: 44px; height: 44px; }
+    /* a city in the sheet: its photo and stop number lead the head, so the lowest detent still says which stop it is */
+    .mhead-thumb + .mhead-t { flex: 1; }
+    .mhead-thumb .thumb { width: 42px; height: 42px; border-radius: 10px; }
+    .mhead-thumb .thumb-fallback { font-size: 18px; }
+    .mhead-thumb .stopno { right: -4px; bottom: -4px; min-width: 18px; height: 18px; padding: 0 5px; font-size: 10px; }
+    .mhead .rtitle.in-head { font-size: inherit; gap: 2px 8px; }
+    /* the panel's own body scrolls in the sheet's. Its pinned trip buttons stick inside the sheet's bottom padding,
+       which ModeSheet sets to what hangs below the screen, so they rest on the visible edge */
+    .mscroll > .pview { overflow: visible; }
+    .why.hosted { margin: 2px 14px 0 !important; }
     .mbar { padding-bottom: 8px; }
     .mscroll { padding-bottom: 8px; }
     .chips.line { flex-wrap: nowrap; overflow-x: auto; margin: 0 -14px; padding: 0 14px; scrollbar-width: none; overscroll-behavior-x: contain; }

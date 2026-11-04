@@ -702,7 +702,7 @@
   .panel.way { width: auto; }
   :scope.has-side .ctl-tr { right: 10px; }
   :scope.has-side .ctl-bottom { right: 10px; bottom: calc(42% + 10px); }
-  :scope.has-side.has-panel .ctl-bottom { bottom: calc(52% + 10px); }
+  :scope.has-side.has-panel:not(.sheet-on) .ctl-bottom { bottom: calc(52% + 10px); }
   /* with a trip open the map above the pane is small: the hint and the legend give it back */
   :scope.has-side:not(.side-mini) :is(.hint, .legend) { display: none; }
   .panel.plan { left: 0; right: 0; width: auto; max-height: 42%; animation-name: sheetIn; }

@@ -15,8 +15,9 @@ import { orientLine, stopPoints } from './tripDraw'
 import { addMarkerImages, addModeLayers, modeHit, type ModeHit } from './modeLayers'
 import { CardWindow } from './CardWindow'
 import { ModePanelSlot } from './ModeSlots'
-import { MODE_SHEET, SHEET_PEEK, reducedMotion } from './sheet'
-import { Panel, type FlightDir, type PanelProps, type PanelView, type View } from './Panel'
+import { ModeSheet } from './ModeSheet'
+import { MODE_SHEET, SHEET_PEEK, reducedMotion, type Detent } from './sheet'
+import { Panel, sheetHead, type FlightDir, type PanelProps, type PanelView, type View } from './Panel'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
 import { IoLegend, WayPanel } from './WayPanel'
@@ -135,6 +136,13 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   useEffect(() => onMode?.(!!mm.mode), [mm.mode, onMode])
   const panelOpen = !!view.panel
   useEffect(() => onPanel?.(panelOpen), [panelOpen, onPanel])
+  // on a phone a city, its More and a route open in the one sheet the modes use, which keeps where it rested while it is open
+  const sheeted = narrow && (view.panel === 'city' || view.panel === 'more' || view.panel === 'route')
+  const panelDetent = useRef<Detent | null>(null)
+  const panelScroll = useRef<Record<string, number>>({}).current
+  useEffect(() => {
+    if (!view.panel) panelDetent.current = null
+  }, [view.panel])
 
   // latest values for the map's event handlers, which are bound once
   const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!pane, sideMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false })
@@ -161,8 +169,10 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const open = panel && !live.current.collapsed
     // on a phone the window covers the map, and folds down to a bar over the sheet to show it, so the sheet is what counts
     const card = W >= NARROW && !!panel && live.current.cardOpen
-    const folded = panel === 'mode' && !!live.current.collapsed
-    const sheet = open ? (panel === 'mode' ? MODE_SHEET : 0.52) : 0
+    // a city, its More and a route sit in the same sheet as a mode on a phone, so they pad the same way
+    const sheeted = panel === 'mode' || panel === 'city' || panel === 'more' || panel === 'route'
+    const folded = sheeted && !!live.current.collapsed
+    const sheet = open ? (sheeted ? MODE_SHEET : 0.52) : 0
     const sideW = live.current.side && !live.current.sideMini ? sideWidth : 0
     // on a phone the score key sits on top of the sheet, and the mode buttons leave the top of the map to the markers
     const key = panel === 'mode' && !card && live.current.mode === 'gyms' ? 80 : 0
@@ -1000,7 +1010,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   return (
     <div
       ref={root}
-      className={`rmap${space ? ' grab' : ''}${pane ? ' has-side' : ''}${pane && sideMini ? ' side-mini' : ''}${(view.panel || mm.mode) && !collapsed ? ' has-panel' : ''}${mm.mode ? ` mode-on mode-${mm.mode}` : ''}`}
+      className={`rmap${space ? ' grab' : ''}${pane ? ' has-side' : ''}${pane && sideMini ? ' side-mini' : ''}${(view.panel || mm.mode) && !collapsed ? ' has-panel' : ''}${mm.mode ? ` mode-on mode-${mm.mode}` : ''}${sheeted && !mm.mode ? ' sheet-on' : ''}`}
       style={{ '--mode-sheet': `${MODE_SHEET * 100}%`, ...(pane && { '--side': `${sideWidth}px` }) } as CSSProperties}
       tabIndex={0}
       role="region"
@@ -1086,36 +1096,59 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
               onGoTo={select}
             />
           )}
-          <Panel
-            model={model}
-            view={view}
-            dir={dir}
-            onDir={setDir}
-            families={families}
-            collapsed={collapsed}
-            trip={trip}
-            panelRef={panelRef}
-            onCollapse={setCollapsed}
-            onClose={deselect}
-            onMore={() => setView((v) => ({ ...v, panel: 'more' }))}
-            onCity={toCity}
-            onBack={back}
-            onRoute={(cid, from) => openRoute(cid, from)}
-            onOption={(i) => setView((v) => ({ ...v, opt: i }))}
-            onGoTo={select}
-            onHoverRoute={(cid, from) => {
-              if (!cid || !from) return store.set(null)
-              const conn = model.conns.get(cid)
-              if (conn) store.set({ kind: 'route', cid, from, to: otherEnd(conn, from) })
-            }}
-            onAddLeg={trip ? addTripLeg : undefined}
-            onRemoveLeg={(i) => trip && onTrips((s) => removeLeg(s, trip.id, i))}
-            legIndex={(cid, from, mode) => (trip ? legIndex(trip, cid, from, mode) : -1)}
-            api={mm}
-            onCard={openCard}
-            stays={stays}
-            stopDays={stopDays}
-          />
+          {(() => {
+            const props: PanelProps = {
+              model,
+              view,
+              dir,
+              onDir: setDir,
+              families,
+              collapsed,
+              trip,
+              panelRef,
+              onCollapse: setCollapsed,
+              onClose: deselect,
+              onMore: () => setView((v) => ({ ...v, panel: 'more' })),
+              onCity: toCity,
+              onBack: back,
+              onRoute: (cid, from) => openRoute(cid, from),
+              onOption: (i) => setView((v) => ({ ...v, opt: i })),
+              onGoTo: select,
+              onHoverRoute: (cid, from) => {
+                if (!cid || !from) return store.set(null)
+                const conn = model.conns.get(cid)
+                if (conn) store.set({ kind: 'route', cid, from, to: otherEnd(conn, from) })
+              },
+              onAddLeg: trip ? addTripLeg : undefined,
+              onRemoveLeg: (i) => trip && onTrips((s) => removeLeg(s, trip.id, i)),
+              legIndex: (cid, from, mode) => (trip ? legIndex(trip, cid, from, mode) : -1),
+              api: mm,
+              onCard: openCard,
+              stays,
+              stopDays,
+            }
+            const head = sheeted ? sheetHead(props) : null
+            if (!head) return <Panel {...props} />
+            return (
+              <ModeSheet
+                title={head.title}
+                label={head.label}
+                count={head.count}
+                peek={head.peek}
+                narrow
+                collapsed={collapsed}
+                cardOpen={!!mm.card}
+                panelRef={panelRef}
+                onCollapse={setCollapsed}
+                onClose={deselect}
+                detentMemo={panelDetent}
+                scrollMemo={panelScroll}
+                scrollKey={`${view.panel}:${view.sel}:${view.route}:${view.from}`}
+              >
+                <Panel {...props} hosted />
+              </ModeSheet>
+            )
+          })()}
           {mm.mode && (
             <ModePanelSlot
               api={mm}

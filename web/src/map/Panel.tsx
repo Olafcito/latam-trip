@@ -53,6 +53,16 @@ export interface PanelProps {
   stays?: (placeId: string) => ReactNode
   /** A stop's nights and dates, which a host with a schedule gives. */
   stopDays?: (placeId: string) => StopDays | null
+  /** The phone sheet holds the panel: the sheet carries the name, the photo and the close, the panel only its body. */
+  hosted?: boolean
+}
+
+/** What the phone sheet shows in its head for the open view: the name, the country, and for a city its photo. */
+export interface SheetHead {
+  label: string
+  title: ReactNode
+  count: string
+  peek?: ReactNode
 }
 
 /** The nights at a stop and the days it is reached and left. `exact` is false while an earlier stop has no date. */
@@ -73,6 +83,15 @@ export function Panel(p: PanelProps) {
   if (!view.panel || (!city && !conn)) return null
   const wide = view.panel !== 'city'
   const title = view.panel === 'route' && conn ? routeTitle(model, conn, view.from ?? conn.a) : city?.short_name ?? ''
+  const body =
+    view.panel === 'city' && city ? (
+      <CityView key={`c:${city.id}`} {...p} city={city} />
+    ) : view.panel === 'more' && city ? (
+      <MoreView key={`m:${city.id}`} {...p} city={city} />
+    ) : conn ? (
+      <RouteView key={`r:${conn.id}:${view.from}`} {...p} conn={conn} />
+    ) : null
+  if (p.hosted) return body
 
   return (
     <section ref={p.panelRef} className={`panel${wide ? ' wide' : ''}${p.collapsed ? ' collapsed' : ''}`} aria-label="Details">
@@ -82,15 +101,46 @@ export function Panel(p: PanelProps) {
           <button className="x sm" aria-label="Expand panel" onClick={() => p.onCollapse(false)}><Chevron up={false} /></button>
           <button className="x sm" aria-label="Close" onClick={p.onClose}><Close /></button>
         </div>
-      ) : view.panel === 'city' && city ? (
-        <CityView key={`c:${city.id}`} {...p} city={city} />
-      ) : view.panel === 'more' && city ? (
-        <MoreView key={`m:${city.id}`} {...p} city={city} />
-      ) : conn ? (
-        <RouteView key={`r:${conn.id}:${view.from}`} {...p} conn={conn} />
-      ) : null}
+      ) : body}
     </section>
   )
+}
+
+/** The head of the phone sheet for the open view, or null when nothing is open. */
+export function sheetHead(p: PanelProps): SheetHead | null {
+  const { model, view } = p
+  const city = view.sel ? model.byId.get(view.sel) : undefined
+  const conn = view.route ? model.conns.get(view.route) : undefined
+  if (view.panel === 'route' && conn) {
+    const a = model.byId.get(view.from ?? conn.a)
+    const b = model.byId.get(otherEnd(conn, view.from ?? conn.a))
+    if (!a || !b) return null
+    return {
+      label: `${a.short_name} to ${b.short_name}`,
+      // either name opens that city, the same as tapping its dot
+      title: (
+        <span className="rtitle in-head">
+          <button className="rname" title={`Open ${a.short_name}`} onClick={() => p.onGoTo(a.id)}>{a.short_name}</button>
+          <Arrow s={16} />
+          <button className="rname" title={`Open ${b.short_name}`} onClick={() => p.onGoTo(b.id)}>{b.short_name}</button>
+        </span>
+      ),
+      count: countries(model, a, b),
+    }
+  }
+  if (!city || (view.panel !== 'city' && view.panel !== 'more')) return null
+  const stop = view.panel === 'city' && p.trip ? tripStop(p.trip, city) : null
+  return {
+    label: city.short_name,
+    title: view.panel === 'more' ? city.name : city.short_name,
+    count: countryName(model, city.country),
+    peek: view.panel === 'city' && (
+      <div className="thumb-wrap mhead-thumb">
+        <Thumb city={city} w={120} className="thumb" />
+        {stop && <span className="stopno mono" aria-hidden="true">{stop.numbers.join(',')}</span>}
+      </div>
+    ),
+  }
 }
 
 function routeTitle(model: Model, conn: Connection, from: string) {
@@ -242,18 +292,22 @@ function CityView(p: PanelProps & { city: Place }) {
   return (
     <div className="pview">
       <section className="mc-sec overview" aria-label="Overview">
-        <div className="phead stg">
-          <div className="thumb-wrap">
-            <Thumb city={city} w={250} className="thumb" />
-            {stop && <span className="stopno mono" aria-hidden="true">{stop.numbers.join(',')}</span>}
+        {p.hosted ? (
+          city.why && <p className="why hosted stg">{city.why}</p>
+        ) : (
+          <div className="phead stg">
+            <div className="thumb-wrap">
+              <Thumb city={city} w={250} className="thumb" />
+              {stop && <span className="stopno mono" aria-hidden="true">{stop.numbers.join(',')}</span>}
+            </div>
+            <div className="ptext">
+              <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
+              <h2 className="pname">{city.short_name}</h2>
+              {city.why && <p className="why">{city.why}</p>}
+            </div>
+            <HeadButtons {...p} />
           </div>
-          <div className="ptext">
-            <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
-            <h2 className="pname">{city.short_name}</h2>
-            {city.why && <p className="why">{city.why}</p>}
-          </div>
-          <HeadButtons {...p} />
-        </div>
+        )}
         {p.trip && stop && (
           <StopLegs p={p} trip={p.trip} city={city} stop={stop} days={p.stopDays?.(city.id) ?? null} onAdd={list.length ? addLeg : null} />
         )}
@@ -450,7 +504,7 @@ function MoreView(p: PanelProps & { city: Place }) {
       <div className="pbody stg">
         <div className="prow">
           <button className="back" onClick={p.onCity}><Back />{city.short_name}</button>
-          <HeadButtons {...p} />
+          {!p.hosted && <HeadButtons {...p} />}
         </div>
         <div>
           <Thumb city={city} w={960} className="hero" />
@@ -461,10 +515,12 @@ function MoreView(p: PanelProps & { city: Place }) {
             </p>
           )}
         </div>
-        <div>
-          <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
-          <h2 className="pname" style={{ marginTop: 4 }}>{city.name}</h2>
-        </div>
+        {!p.hosted && (
+          <div>
+            <p className="kicker"><CountryFlag code={city.country} size={11} />{countryName(model, city.country)}</p>
+            <h2 className="pname" style={{ marginTop: 4 }}>{city.name}</h2>
+          </div>
+        )}
         {city.why && <p className="p-why">{city.why}</p>}
         {city.summary && <p className="p-sum">{city.summary}</p>}
         <div className="facts">
@@ -653,17 +709,23 @@ function RouteView(p: PanelProps & { conn: Connection }) {
   return (
     <div className="pview">
       <div className="pbody stg">
-        <div className="prow">
-          {backLabel ? <button className="back" onClick={p.onBack}><Back />{backLabel}</button> : <span />}
-          <HeadButtons {...p} />
-        </div>
-        {/* either name opens that city, the same as tapping its dot */}
-        <h2 className="rtitle">
-          <button className="rname" title={`Open ${a.short_name}`} onClick={() => p.onGoTo(a.id)}>{a.short_name}</button>
-          <Arrow s={22} />
-          <button className="rname" title={`Open ${b.short_name}`} onClick={() => p.onGoTo(b.id)}>{b.short_name}</button>
-        </h2>
-        <p className="rcountries mono">{countries(model, a, b)}</p>
+        {p.hosted ? (
+          backLabel && <div className="prow"><button className="back" onClick={p.onBack}><Back />{backLabel}</button></div>
+        ) : (
+          <>
+            <div className="prow">
+              {backLabel ? <button className="back" onClick={p.onBack}><Back />{backLabel}</button> : <span />}
+              <HeadButtons {...p} />
+            </div>
+            {/* either name opens that city, the same as tapping its dot */}
+            <h2 className="rtitle">
+              <button className="rname" title={`Open ${a.short_name}`} onClick={() => p.onGoTo(a.id)}>{a.short_name}</button>
+              <Arrow s={22} />
+              <button className="rname" title={`Open ${b.short_name}`} onClick={() => p.onGoTo(b.id)}>{b.short_name}</button>
+            </h2>
+            <p className="rcountries mono">{countries(model, a, b)}</p>
+          </>
+        )}
         {opts.length > 0 ? (
           <div className="compare">
             {opts.map((o, i) => (

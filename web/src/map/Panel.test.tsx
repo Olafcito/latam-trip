@@ -8,7 +8,8 @@ import { gymWorld } from '../data/gyms'
 import { buildModel } from '../data/model'
 import type { Trip } from '../data/trips'
 import type { Family, MapData } from '../data/types'
-import { Panel, type PanelProps } from './Panel'
+import { ModeSheet } from './ModeSheet'
+import { Panel, sheetHead, type PanelProps } from './Panel'
 import type { MapModeApi } from './useMapMode'
 
 const DATA_DIR = resolve(import.meta.dirname, 'fixtures')
@@ -138,5 +139,64 @@ describe('the city panel', () => {
     const out = more('SAL')
     expect(out).toContain('San Salvador')
     expect(out).not.toMatch(/Hostal Volcan|Hostels|per night|Dorm/)
+  })
+})
+
+describe('the panel in the phone sheet', () => {
+  const props = (sel: string, extra: Partial<PanelProps> = {}) =>
+    ({
+      model, api, trip: null, panelRef: null, collapsed: false, dir: 'out', families: ALL,
+      view: { sel, panel: 'city', route: null, from: null, opt: 0, back: null },
+      onDir: noop, onCollapse: noop, onClose: noop, onMore: noop, onCity: noop, onBack: noop, onRoute: noop,
+      onOption: noop, onGoTo: noop, onHoverRoute: noop, onRemoveLeg: noop, legIndex: () => -1, onCard: noop,
+      ...extra,
+    }) as unknown as PanelProps
+
+  it('a hosted panel renders no close of its own', () => {
+    expect(city('SAL')).toContain('aria-label="Close"')
+    const hosted = city('SAL', { hosted: true })
+    expect(hosted).not.toContain('aria-label="Close"')
+    expect(hosted).not.toContain('aria-label="Collapse panel"')
+    expect(hosted).not.toContain('aria-label="Details"')
+  })
+
+  it('a hosted panel leaves its name to the sheet head', () => {
+    expect(city('SAL', { hosted: true })).not.toContain('class="pname"')
+    const head = sheetHead(props('SAL'))!
+    expect(head.label).toBe('San Salvador')
+    expect(renderToStaticMarkup(<>{head.title}</>)).toContain('San Salvador')
+  })
+
+  it('the sheet head puts the stop number of the open trip on the photo', () => {
+    const peek = sheetHead(props('SAL', { trip }))!.peek
+    expect(renderToStaticMarkup(<>{peek}</>)).toMatch(/class="stopno[^"]*"[^>]*>2</)
+  })
+
+  it('the title sits outside the scroll body, so the peek shows the name', () => {
+    const head = sheetHead(props('SAL'))!
+    const html = renderToStaticMarkup(
+      <ModeSheet
+        title={head.title}
+        label={head.label}
+        count={head.count}
+        peek={head.peek}
+        narrow
+        collapsed
+        cardOpen={false}
+        panelRef={{ current: null }}
+        onCollapse={noop}
+        onClose={noop}
+        detentMemo={{ current: null }}
+        scrollMemo={{}}
+        scrollKey="city:SAL"
+      >
+        <Panel {...props('SAL', { hosted: true })} />
+      </ModeSheet>,
+    )
+    const name = html.indexOf('San Salvador')
+    expect(name).toBeGreaterThan(-1)
+    expect(name).toBeLessThan(html.indexOf('class="mscroll"'))
+    expect(html).toContain('aria-label="San Salvador"')
+    expect(html.match(/aria-label="Close"/g)).toHaveLength(1)
   })
 })

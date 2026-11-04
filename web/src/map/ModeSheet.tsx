@@ -21,8 +21,12 @@ export interface ModeShell {
 }
 
 interface ModeSheetProps extends ModeShell {
-  title: string
-  count: string
+  title: ReactNode
+  /** The sheet's name for a screen reader, when the title is more than words. */
+  label?: string
+  count?: string
+  /** Sits before the title in the head, so the sheet at its lowest still shows what it holds. */
+  peek?: ReactNode
   /** Stands between the title and the list, and never scrolls away. */
   bar?: ReactNode
   /** The list's name in scrollMemo. */
@@ -43,7 +47,7 @@ interface Drag {
 
 const HANDLE_LABEL: Record<Detent, string> = { peek: 'Open the list', half: 'Expand the list', full: 'Shrink the list' }
 
-export function ModeSheet({ title, count, narrow, collapsed, cardOpen, panelRef, onCollapse, onClose, detentMemo, scrollMemo, scrollKey, bar, children }: ModeSheetProps) {
+export function ModeSheet({ title, label, count, peek, narrow, collapsed, cardOpen, panelRef, onCollapse, onClose, detentMemo, scrollMemo, scrollKey, bar, children }: ModeSheetProps) {
   const body = useRef<HTMLDivElement>(null)
   const [detent, setDetent] = useState<Detent>(() => (collapsed ? 'peek' : detentMemo.current === 'full' ? 'full' : 'half'))
   const rest = useRef(detent)
@@ -227,7 +231,7 @@ export function ModeSheet({ title, count, narrow, collapsed, cardOpen, panelRef,
   const grip = narrow ? { onPointerDown, onPointerMove, onPointerUp, onPointerCancel } : undefined
 
   return (
-    <section ref={panelRef} className={`panel mode${collapsed ? ' collapsed' : ''}`} aria-label={title}>
+    <section ref={panelRef} className={`panel mode${collapsed ? ' collapsed' : ''}`} aria-label={label ?? (typeof title === 'string' ? title : undefined)}>
       {!narrow && collapsed ? (
         <div className="pslim">
           <span className="pslim-name">{title}</span>
@@ -243,9 +247,10 @@ export function ModeSheet({ title, count, narrow, collapsed, cardOpen, panelRef,
               </button>
             )}
             <div className="mhead">
+              {peek}
               <div className="mhead-t">
                 <h2 className="pname">{title}</h2>
-                <p className="mcount" aria-live="polite">{count}</p>
+                {count != null && <p className="mcount" aria-live="polite">{count}</p>}
               </div>
               <div className="hbtns">
                 {!narrow && <button className="x" aria-label="Collapse panel" onClick={() => onCollapse(true)}><Chevron up /></button>}
