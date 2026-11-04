@@ -23,7 +23,7 @@ export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
 /** The chevrons riding the trip line in travel order. */
 export const TRIP_ARROW = 'trip-arrow'
 /** The stop dots and their numbers. */
-export const TRIP_STOP_LAYERS = ['trip-stack', 'trip-stop', 'trip-num']
+export const TRIP_STOP_LAYERS = ['trip-stack', 'trip-stop', 'trip-num', 'trip-one']
 /** Source and layer for the airports highlighted from the Options pane. */
 export const DASH_HI = 'dash-hi'
 export const TRIP_OVERLAND = 'trip-overland'
@@ -154,6 +154,8 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
   map.addSource(DASH_HI, { type: 'geojson', data: empty })
   map.addImage('diamond', diamondSdf(), { sdf: true })
   map.addImage('chevron', chevronSdf(), { sdf: true })
+  map.addImage('stack-pill', pillImage('#FFFFFF', C.ground), { pixelRatio: 2, stretchX: [[22, 34]], stretchY: [[21, 23]], content: [14, 8, 42, 36] })
+  map.addImage('stack-back', pillImage('#9FB2BC', C.ground), { pixelRatio: 2, stretchX: [[22, 34]], stretchY: [[21, 23]], content: [14, 8, 42, 36] })
 
   map.addLayer({
     id: 'country-label',
@@ -374,40 +376,51 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     },
   })
 
-  // numbered stops of the open trip, the last one amber. A stack of stops draws a second disc behind, like a pile of cards.
+  // numbered stops of the open trip, the last one amber. A stack of stops is a pill with its range, a second pill behind it like a pile of cards.
   const stack: ExpressionSpecification = ['has', 'point_count']
-  map.addLayer({
-    id: 'trip-stack',
-    type: 'circle',
+  const range: ExpressionSpecification = ['case', ['==', ['get', 'first'], ['get', 'last']], ['to-string', ['get', 'first']], ['concat', ['to-string', ['get', 'first']], '…', ['to-string', ['get', 'last']]]]
+  const pill = (id: string, image: string, shift: [number, number]): SymbolLayerSpecification => ({
+    id,
+    type: 'symbol',
     source: 'trip-stops',
     filter: stack,
-    paint: {
-      'circle-radius': 12,
-      'circle-color': '#C6D3D9',
-      'circle-stroke-color': C.ground,
-      'circle-stroke-width': 2,
-      'circle-translate': [3, -3],
+    layout: {
+      'icon-image': image,
+      'icon-text-fit': 'both',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+      'text-field': range,
+      'text-font': FONT_BOLD,
+      'text-size': 10.5,
+      'text-allow-overlap': true,
+      'text-ignore-placement': true,
+      'icon-offset': shift,
+      'text-offset': [shift[0] / 10.5, shift[1] / 10.5],
     },
+    paint: { 'text-color': id === 'trip-stack' ? 'rgba(0,0,0,0)' : C.ground },
   })
+  map.addLayer(pill('trip-stack', 'stack-back', [3, -3]))
   map.addLayer({
     id: 'trip-stop',
     type: 'circle',
     source: 'trip-stops',
     paint: {
-      'circle-radius': ['case', stack, 12, ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'end'], 8.5, 7], 8, ['case', ['get', 'end'], 10, 8.5]]],
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', stack, 0, ['get', 'end'], 8.5, 7], 8, ['case', stack, 0, ['get', 'end'], 10, 8.5]],
       'circle-color': ['case', ['get', 'end'], C.flight, '#FFFFFF'],
       'circle-stroke-color': C.ground,
-      'circle-stroke-width': 2,
+      'circle-stroke-width': ['case', stack, 0, 2],
     },
   })
+  map.addLayer(pill('trip-num', 'stack-pill', [0, 0]))
   map.addLayer({
-    id: 'trip-num',
+    id: 'trip-one',
     type: 'symbol',
     source: 'trip-stops',
+    filter: ['!', stack],
     layout: {
-      'text-field': ['case', stack, ['case', ['==', ['get', 'first'], ['get', 'last']], ['to-string', ['get', 'first']], ['concat', ['to-string', ['get', 'first']], '…', ['to-string', ['get', 'last']]]], ['get', 'n']],
+      'text-field': ['get', 'n'],
       'text-font': FONT_BOLD,
-      'text-size': ['case', stack, 9.5, 10],
+      'text-size': 10,
       'text-allow-overlap': true,
       'text-ignore-placement': true,
     },
@@ -454,6 +467,26 @@ function diamondSdf(r = 16, buffer = 8) {
 }
 
 /** A chevron pointing along the line (east), as a signed distance field like the diamond. */
+/** A rounded pill, two device pixels per point, that stretches in its middle to fit a stop range. */
+function pillImage(fill: string, edge: string, w = 56, h = 44) {
+  const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  const [f, e] = [rgb(fill), rgb(edge)]
+  const r = h / 2
+  const data = new Uint8Array(w * h * 4)
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const cx = Math.min(Math.max(x + 0.5, r), w - r)
+      const d = Math.hypot(x + 0.5 - cx, y + 0.5 - r)
+      const a = Math.min(1, Math.max(0, r - d))
+      const col = d > r - 4 ? e : f
+      const i = (y * w + x) * 4
+      data[i] = col[0]; data[i + 1] = col[1]; data[i + 2] = col[2]
+      data[i + 3] = Math.round(255 * a)
+    }
+  }
+  return { width: w, height: h, data }
+}
+
 function chevronSdf(r = 16, buffer = 8) {
   const n = 2 * (r + buffer)
   const c = n / 2

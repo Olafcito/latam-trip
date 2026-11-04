@@ -871,7 +871,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       if (live.current.space) return
       if (live.current.mode) return act.current.tapMode(modeHit(map, e.point, live.current.mode))
       // a stack of stops opens up: zoom in on it until its numbers part
-      const stack = map.queryRenderedFeatures(e.point, { layers: ['trip-stop'] }).find((f) => f.properties.cluster)
+      const stack = map.queryRenderedFeatures(e.point, { layers: ['trip-num'] }).find((f) => f.properties.cluster)
       if (stack) {
         const src = map.getSource<GeoJSONSource>('trip-stops')
         const at = (stack.geometry as GeoJSON.Point).coordinates as LonLat
