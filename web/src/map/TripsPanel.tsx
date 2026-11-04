@@ -91,7 +91,7 @@ function TripCard(p: Props & { trip: Trip; color: string; active: boolean }) {
       <p className="tc-path">{tripStops(trip).map(name).join(' → ') || 'No legs yet'}</p>
       <p className="tc-tot mono">
         <span>{tot.legs} {tot.legs === 1 ? 'leg' : 'legs'} · {duration(tot.min)}</span>
-        <b>{kr(tot.dkk)}{tot.unknown ? '+' : ''}</b>
+        <b className="total-mark" data-complete={!tot.unknown}>{kr(tot.dkk)}</b>
       </p>
       {p.active && trip.legs.length > 0 && (
         <ol className="tc-legs">

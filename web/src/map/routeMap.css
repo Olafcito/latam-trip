@@ -278,6 +278,9 @@
 .fact span:last-child { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
 /* DES-013: the hollow mark for an unknown value, never the words "unknown" or zero. */
 .unk { color: var(--faint); cursor: help; font-size: .9em; }
+/* DES-013: a total with every part priced reads as a solid chip, one with parts not priced as an outline. */
+.total-mark { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--chrome-line); }
+.total-mark[data-complete='true'] { background: var(--surface-3); box-shadow: none; }
 .meter { display: flex; gap: 5px; align-items: center; height: 20px; }
 .meter i { width: 9px; height: 9px; border-radius: 50%; background: var(--chrome-line); }
 .meter i.f { background: var(--flight); }

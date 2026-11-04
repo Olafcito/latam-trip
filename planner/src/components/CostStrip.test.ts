@@ -13,6 +13,11 @@ const html = (t: Partial<Totals>) => renderToStaticMarkup(createElement(CostStri
 /** the Stays cell of the strip, or null when it has none */
 const stays = (out: string) => out.match(/<dt>Stays<\/dt><dd>(.*?)<\/dd>/)?.[1] ?? null
 const cell = (out: string, k: string) => out.match(new RegExp(`<dt>${k}</dt><dd>(.*?)</dd>`))?.[1] ?? null
+/** the Travel total's text, with whether its chip reads complete */
+const total = (out: string) => {
+  const m = out.match(/<dt>Travel total<\/dt><dd><span class="total-mark" data-complete="(true|false)">(.*?)<\/span><\/dd>/)
+  return m ? { complete: m[1] === 'true', text: m[2] } : null
+}
 
 describe('CostStrip', () => {
   it('shows stays with no price as not priced, never as 0 kr', () => {
@@ -29,11 +34,11 @@ describe('CostStrip', () => {
   it('shows a regional flight with no price as not priced, in its line and in the travel total', () => {
     const out = html({ regional_flights_dkk: 900, regional_unknown: 1 })
     expect(cell(out, 'Regional flights')).toBe(`${kr(900)}, 1 not priced`)
-    expect(cell(out, 'Travel total')).toBe(`${kr(6900)}, 1 not priced`)
+    expect(total(out)).toEqual({ complete: false, text: `${kr(6900)}, 1 not priced` })
     expect(cell(html({ regional_unknown: 2 }), 'Regional flights')).toBe('Not priced')
     // a hub stay and cabin bags with no price count too, as the total leaves them out
-    expect(cell(html({ hub_stay_dkk: null, cabin_bag_dkk: null, ground_unknown: 1 }), 'Travel total')).toBe(`${kr(6000)}, 3 not priced`)
-    expect(cell(html({}), 'Travel total')).toBe(kr(6000))
+    expect(total(html({ hub_stay_dkk: null, cabin_bag_dkk: null, ground_unknown: 1 }))).toEqual({ complete: false, text: `${kr(6000)}, 3 not priced` })
+    expect(total(html({}))).toEqual({ complete: true, text: kr(6000) })
   })
 
   it('marks a single unknown cabin or checked bag fee with the hollow mark, never the words not known', () => {
@@ -41,5 +46,10 @@ describe('CostStrip', () => {
     expect(cell(out, 'Cabin-bag fees')).toContain('class="unk"')
     expect(cell(out, 'Checked-bag fees')).toContain('class="unk"')
     expect(out).not.toContain('not known')
+  })
+
+  it('marks the travel total as an outline chip when part of it is not priced, a solid one once it is all in', () => {
+    expect(total(html({}))?.complete).toBe(true)
+    expect(total(html({ regional_unknown: 1 }))?.complete).toBe(false)
   })
 })

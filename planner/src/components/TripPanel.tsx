@@ -7,7 +7,7 @@ import type { AppData } from '../data/types'
 import { usePairDates } from '../data/pairDates'
 import { useStore } from '../store'
 import { day, hours, kr, legHours, weekdayDay } from '../lib/format'
-import { flightOffDay, groundCost, legTime, nodeForAirport, nodeName, regionalCost, staysCost, totals, travelTotal, type Journey } from '../lib/journey'
+import { flightOffDay, groundCost, legTime, nodeForAirport, nodeName, regionalCost, staysCost, totals, travelTotal, travelUnknown, type Journey } from '../lib/journey'
 import { useSchedule } from '../lib/useSchedule'
 import { legWindow, type LegWindow } from '../lib/legDates'
 import { countryName } from '../lib/colors'
@@ -228,7 +228,7 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
         <button className="x" onClick={closeTrip} aria-label="Close trip"><Close /></button>
       </div>
       <div className="plan-sum">
-        <span className="plan-total"><b>{kr(allIn)}</b><small>all in</small></span>
+        <span className="plan-total total-mark" data-complete={!travelUnknown(t)}><b>{kr(allIn)}</b><small>all in</small></span>
         <span><b>{journey.places.length}</b><small>{journey.places.length === 1 ? 'stop' : 'stops'}</small></span>
         <span><b>{sched.totalDays}</b><small>days</small></span>
       </div>

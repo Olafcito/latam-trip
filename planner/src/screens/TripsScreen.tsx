@@ -254,7 +254,7 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
       <span className="tt-n tt-total">
         {s ? (
           <>
-            <span className="tt-big">
+            <span className="tt-big total-mark" data-complete={!s.partial}>
               {s.partial && <span className="tt-q" title="Some legs have no price yet, so this is a floor">from </span>}
               {kr(s.total)}
             </span>
