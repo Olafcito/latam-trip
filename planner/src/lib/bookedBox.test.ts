@@ -199,15 +199,34 @@ describe('boxRows', () => {
     expect(r[0]).toEqual({ key: 'seller', label: 'Booked through', value: 'Test Seller', mono: 'TEST02' })
   })
 
-  it('shows the ticket total on every flight of it, with the amount paid in its own currency and how many it covers', () => {
+  it('shows the ticket total once on every leg of it, with the amount in its own currency and a chip per leg', () => {
     const list = [first, second]
-    expect(boxRows(second, list).find((x) => x.key === 'paid')).toEqual({ key: 'paid', label: 'Paid', value: '2.400 kr', more: ['320 EUR', 'For 2 flights'] })
+    expect(boxRows(second, list).find((x) => x.key === 'paid')).toEqual({
+      key: 'paid', label: 'Paid', value: '2.400 kr', more: ['320 EUR'],
+      legs: [{ from: 'ADZ', to: 'SMR', day: 'Wed 9 Dec', here: true }, { from: 'CTG', to: 'ADZ', day: 'Thu 3 Dec', here: false }],
+    })
     expect(boxRows(first, list).find((x) => x.key === 'paid')?.value).toBe('2.400 kr')
   })
 
-  it('lists the other flights on the same ticket with their codes and day', () => {
-    const r = boxRows(first, [first, second, row({ id: 'gone', ticket: 'G1', status: 'cancelled' })]).find((x) => x.key === 'ticket')
-    expect(r).toEqual({ key: 'ticket', label: 'Same ticket', value: 'ADZ to SMR', more: ['Wed 9 Dec'] })
+  it('puts this leg first and the others in the order they fly, and leaves out a cancelled leg', () => {
+    const third = row({ id: 'b3', from_code: 'SMR', to_code: 'BOG', depart: '2026-12-14T08:00', arrive: '2026-12-14T09:30', ticket: 'G1', price_dkk: 0 })
+    const gone = row({ id: 'gone', from_code: 'XXA', to_code: 'XXB', ticket: 'G1', status: 'cancelled' })
+    const legs = boxRows(third, [second, gone, third, first]).find((x) => x.key === 'paid')?.legs
+    expect(legs?.map((l) => [l.from, l.to, l.here])).toEqual([['SMR', 'BOG', true], ['CTG', 'ADZ', false], ['ADZ', 'SMR', false]])
+  })
+
+  it('keeps the legs of a shared ticket whose price is not known, with no amount', () => {
+    const a = row({ ticket: 'G2' })
+    const b = row({ id: 'b2', from_code: 'ADZ', to_code: 'SMR', depart: null, ticket: 'G2' })
+    expect(boxRows(a, [a, b])).toEqual([{
+      key: 'paid', label: 'Paid', value: null,
+      legs: [{ from: 'CTG', to: 'ADZ', day: 'Thu 3 Dec', here: true }, { from: 'ADZ', to: 'SMR', day: null, here: false }],
+    }])
+  })
+
+  it('shows the amount alone for a ticket of one leg', () => {
+    const own = row({ ticket: 'G3', price_dkk: 900 })
+    expect(boxRows(own, [own, row({ id: 'gone', ticket: 'G3', status: 'cancelled' })])).toEqual([{ key: 'paid', label: 'Paid', value: '900 kr' }])
   })
 
   it('gives the fare, the bags, the rules and more than one traveller as rows', () => {

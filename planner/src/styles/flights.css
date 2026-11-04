@@ -272,6 +272,22 @@
   /* the seller's page: a mark after the seller's name, or a quiet row of its own without a seller */
   .bk-row-line { max-width: 100%; display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; margin-right: -6px; }
   .bk-row-line > span { min-width: 0; }
+  /* the legs one ticket covers, under its amount: a link mark, then a chip per leg. This leg is filled, the others a hollow ring */
+  .bk-rows li:has(.bk-legs) { align-items: start; }
+  .bk-rows li:has(.bk-legs) > :not(.bk-row-v) { margin-top: 2px; }
+  .bk-legs { max-width: 100%; display: flex; align-items: flex-start; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+  .bk-legs-i { flex: none; height: 24px; display: grid; place-items: center; color: var(--muted); }
+  .bk-legchips { min-width: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+  .bk-leg { flex: none; height: 24px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-2); font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.02em; color: var(--muted); white-space: nowrap; }
+  .bk-leg > span[aria-hidden] { display: inline-flex; align-items: center; gap: 3px; }
+  .bk-leg[data-here] { background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--faint); color: var(--text); }
+  /* a value never saved is the hollow mark. The reference row without one reads dimmed: a ring in place of its fill */
+  .bk-unk { display: inline-grid; place-items: center; font-weight: 400; }
+  .bk-refrow[data-empty] { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); }
+  .bk-refrow[data-empty] .bk-row-i { color: var(--faint); }
+  .bk-refrow[data-empty] .bk-unk { justify-self: end; }
+  .bk-refrow[data-empty]:not(:has(.bk-addref)) { padding-right: 12px; }
+  .bk-refrow .bk-addref { color: var(--muted); }
   .bk-out { background: transparent; color: var(--muted); }
   .bk-open { grid-column: 2 / -1; align-self: stretch; display: flex; align-items: center; font-size: var(--fs-small); font-weight: 600; color: var(--muted); text-decoration: none; text-underline-offset: 3px; touch-action: manipulation; }
   .bk-rows li[data-k='paid'] .bk-row-v > span { color: var(--booked); }

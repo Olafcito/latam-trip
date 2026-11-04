@@ -1,17 +1,19 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode, type Ref } from 'react'
 import type { Booking, BookingFile, InOut, MapNode } from '../../data/types'
-import { boxHead, boxRows, boxSegments, fileMessage, fileTile, flightHours, type BoxChip, type BoxHead, type BoxRow, type BoxSegment } from '../../lib/bookedBox'
+import { boxHead, boxRows, boxSegments, fileMessage, fileTile, flightHours, type BoxChip, type BoxHead, type BoxRow, type BoxSegment, type TicketLeg } from '../../lib/bookedBox'
 import { attachFile, cancelBooking, fileUrl } from '../../lib/bookings'
 import { hours, shortPlace } from '../../lib/format'
 import { useStore } from '../../store'
+import { Unknown } from '@map/map/Unknown'
 import { Arrow, Bag, Boat, Bus, Check, Clock, Copy, Doc, External, Hash, Link, Pencil, Person, Plane, Plus, Rebook, Refund, Shop, Star, Suitcase, Ticket } from '../icons'
 
 // The booking at the top of its sheet, read like a boarding pass: a small green mark that says Booked, the two
 // codes large with the cities and the local times under them and the flight time on the line between, the
 // flights inside with the time in each airport between, then the details: the reference on one row with a copy
-// button and the facts as one list of icon rows, with the pencil that edits them on their heading. The seller's
-// page opens from a mark on the seller row. Simon's own notes sit apart. It reads the booking row alone, so it is
-// whole even when the leg has no picked flight. One action row ends the box: Change booking is its only button
+// button, dimmed with the hollow mark and a plus to add it when none was saved, and the facts as one list of icon
+// rows, with the pencil that edits them on their heading. A ticket for more than one leg is one row: its amount
+// once, then a chip per leg with this leg first and filled. The seller's page opens from a mark on the seller row.
+// Simon's own notes sit apart. It reads the booking row alone, so it is whole even when the leg has no picked flight. One action row ends the box: Change booking is its only button
 // and opens the days and the flights under it to look at, Remove booking is a quiet word at the far end that asks
 // once, here in the box, and sets the booking to cancelled. A bus or a boat has no Change booking, so its row
 // holds the quiet Remove alone.
@@ -114,7 +116,7 @@ function CopyButton({ text, label, onDone }: { text: string; label: string; onDo
 }
 
 const ROW_ICON: Record<BoxRow['key'], (p: { s?: number }) => ReactNode> = {
-  seller: Shop, paid: Ticket, ticket: Link, fare: Star, cabin: Bag, checked: Suitcase, refundable: Refund, changeable: Rebook, travellers: Person,
+  seller: Shop, paid: Ticket, fare: Star, cabin: Bag, checked: Suitcase, refundable: Refund, changeable: Rebook, travellers: Person,
 }
 
 /** The seller's own page, opened in a new tab: a mark on the seller row. */
@@ -123,6 +125,32 @@ function OutLink({ href, seller }: { href: string; seller: string }) {
     <a className="bk-icon bk-out" href={href} target="_blank" rel="noopener noreferrer" aria-label={`Open the booking at ${seller}, in a new tab`} title="Open booking">
       <External s={14} />
     </a>
+  )
+}
+
+/** A value that was never saved, as the hollow mark with its reason for the tooltip and a screen reader. */
+function Unsaved({ what }: { what: string }) {
+  return <span className="bk-unk" role="img" aria-label={what}><Unknown title={what} /></span>
+}
+
+/** The legs one ticket covers, under its amount: a link mark, then a chip per leg with this leg first and filled. */
+function TicketLegs({ legs }: { legs: TicketLeg[] }) {
+  const all = `One ticket for ${legs.length} legs`
+  return (
+    <span className="bk-legs">
+      <span className="bk-legs-i" role="img" aria-label={all} title={all}><Link s={14} /></span>
+      <span className="bk-legchips" role="list">
+        {legs.map((l, i) => {
+          const name = [`${l.from} to ${l.to}`, l.day, l.here && 'this leg'].filter(Boolean).join(', ')
+          return (
+            <span key={i} className="bk-leg" role="listitem" data-here={l.here || undefined} title={name}>
+              <span aria-hidden="true">{l.from}<Arrow s={10} />{l.to}</span>
+              <span className="vh">{name}</span>
+            </span>
+          )
+        })}
+      </span>
+    </span>
   )
 }
 
@@ -148,14 +176,17 @@ export function BoxRows({ rows, link, onCopied }: { rows: BoxRow[]; link?: strin
             <span className="bk-row-i" aria-hidden="true"><Icon s={16} /></span>
             <span className="bk-row-l">{r.label}</span>
             <span className="bk-row-v">
-              {link && r === seller
-                ? <span className="bk-row-line"><span>{r.value}</span><OutLink href={link} seller={r.value} /></span>
-                : <span>{r.value}</span>}
+              {r.value == null
+                ? <Unsaved what="No price saved" />
+                : link && r === seller
+                  ? <span className="bk-row-line"><span>{r.value}</span><OutLink href={link} seller={r.value} /></span>
+                  : <span>{r.value}</span>}
               {r.more?.map((m) => <small key={m}>{m}</small>)}
+              {r.legs && <TicketLegs legs={r.legs} />}
               {r.mono && (
                 <span className="bk-row-code">
                   <code className="bk-code">{r.mono}</code>
-                  {onCopied && <CopyButton text={r.mono} label={`Copy the number from ${r.value}`} onDone={(ok) => onCopied('Number', ok)} />}
+                  {onCopied && <CopyButton text={r.mono} label={`Copy the number from ${r.value ?? 'the seller'}`} onDone={(ok) => onCopied('Number', ok)} />}
                 </span>
               )}
             </span>
@@ -237,6 +268,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
   const head = boxHead(b, cityOf(data))
   const bookings = useStore((st) => st.bookings)
   const rows = boxRows(b, bookings)
+  const reference = b.reference?.trim() || null
   const segs = boxSegments(b, { single: true })
   const took = flightHours(b, offsetOf(data))
   const link = safeUrl(b.url)
@@ -319,14 +351,21 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
             <h5 id={`${id}-facts`}>Details</h5>
             {onEdit && <button type="button" className="bk-icon bk-edit" onClick={onEdit} aria-label="Edit the booking details" title="Edit the booking details"><Pencil s={16} /></button>}
           </div>
-          {b.reference && (
-            <div className="bk-refrow">
-              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
-              <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
-              <code className="bk-code" aria-labelledby={`${id}-ref`}>{b.reference}</code>
-              <CopyButton text={b.reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
-            </div>
-          )}
+          <div className="bk-refrow" data-empty={!reference || undefined}>
+            <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
+            <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
+            {reference ? (
+              <>
+                <code className="bk-code" aria-labelledby={`${id}-ref`}>{reference}</code>
+                <CopyButton text={reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
+              </>
+            ) : (
+              <>
+                <Unsaved what="No reference saved" />
+                {onEdit && <button type="button" className="bk-icon bk-addref" onClick={onEdit} aria-label="Add the booking reference" title="Add reference"><Plus /></button>}
+              </>
+            )}
+          </div>
           <BoxRows rows={rows} link={link} onCopied={copied} />
         </section>
 

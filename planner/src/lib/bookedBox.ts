@@ -182,51 +182,60 @@ export function flightHours(b: Pick<Booking, 'from_code' | 'to_code' | 'depart' 
   return Number.isFinite(h) && h > 0 ? h : null
 }
 
+/** One leg of a shared ticket, as a chip on the ticket row: its codes, its day, and whether it is this leg. */
+export interface TicketLeg {
+  from: string
+  to: string
+  /** "Wed 9 Dec", or null without a day */
+  day: string | null
+  here: boolean
+}
+
 /** A fact as a row of the box: its label, its value, a code to copy in mono, and the smaller facts after it. */
 export interface BoxRow {
-  key: Fact['key'] | 'fare' | 'ticket'
+  key: Fact['key'] | 'fare'
   label: string
-  value: string
+  /** null only on a shared ticket whose price is not known, so the legs still show */
+  value: string | null
   /** a code read in mono and copied with one press, the seller's own number */
   mono?: string
   more?: string[]
+  /** every leg of a ticket that covers more than one, this leg first */
+  legs?: TicketLeg[]
 }
 
-/** The rows of the box, in the order seller, paid, same ticket, fare, bags, refund, change and travellers above 1. */
+/** The rows of the box, in the order seller, paid with the legs of its ticket, fare, bags, refund, change and travellers above 1. */
 export function boxRows(b: Booking, list: readonly Booking[]): BoxRow[] {
   const text = (v: string | null | undefined) => (v && v.trim() ? v.trim() : null)
   const ticket = b.ticket ? list.filter((x) => x.status === 'booked' && x.ticket === b.ticket && x.id !== b.id) : []
   const group = [b, ...ticket]
-  // the first row of a ticket holds its price, the others 0: the earliest depart, then the lowest id, as paidPrice reads it
-  const payer = group.reduce((p, r) => {
+  const order = (p: Booking, r: Booking) => {
     const dp = p.depart ?? LAST
     const dr = r.depart ?? LAST
-    return dr < dp || (dr === dp && r.id < p.id) ? r : p
-  })
+    return dr < dp || (dr === dp && r.id < p.id)
+  }
+  // the first row of a ticket holds its price, the others 0: the earliest depart, then the lowest id, as paidPrice reads it
+  const payer = group.reduce((p, r) => (order(p, r) ? r : p))
   const out: BoxRow[] = []
   const add = (key: BoxRow['key'], label: string, value: string | null, extra: Partial<BoxRow> = {}) => {
-    if (value == null) return
+    if (value == null && !extra.legs) return
     const r: BoxRow = { key, label, value }
     if (extra.mono) r.mono = extra.mono
     if (extra.more?.length) r.more = extra.more
+    if (extra.legs) r.legs = extra.legs
     out.push(r)
   }
   const seller = text(b.seller)
   const number = text(b.seller_reference)
   add('seller', 'Booked through', seller ?? (number ? 'Seller' : null), { mono: number ?? undefined })
   const dkk = payer.price_dkk
-  if (dkk != null && Number.isFinite(dkk) && dkk > 0) {
-    const cur = payer.currency?.toUpperCase()
-    const more = [
-      ...(payer.price != null && cur && cur !== 'DKK' ? [`${amount(payer.price)} ${cur}`] : []),
-      ...(group.length > 1 ? [`For ${group.length} flights`] : []),
-    ]
-    add('paid', 'Paid', kr(dkk), { more })
-  }
-  for (const t of ticket) {
-    const day = t.depart ? weekdayDay(t.depart) : null
-    add('ticket', 'Same ticket', `${t.from_code ?? ''} to ${t.to_code ?? ''}`.trim(), { more: day ? [day] : [] })
-  }
+  const known = dkk != null && Number.isFinite(dkk) && dkk > 0
+  const cur = payer.currency?.toUpperCase()
+  const more = known && payer.price != null && cur && cur !== 'DKK' ? [`${amount(payer.price)} ${cur}`] : []
+  const leg = (r: Booking): TicketLeg => ({ from: r.from_code ?? '', to: r.to_code ?? '', day: r.depart ? weekdayDay(r.depart) : null, here: r.id === b.id })
+  // this leg first, then the others in the order they fly
+  const legs = ticket.length ? [leg(b), ...[...ticket].sort((x, y) => (order(y, x) ? -1 : order(x, y) ? 1 : 0)).map(leg)] : undefined
+  add('paid', 'Paid', known ? kr(dkk) : null, { more, legs })
   add('fare', 'Fare', text(b.fare))
   add('cabin', 'Cabin bag', text(b.cabin_bag))
   add('checked', 'Checked bag', text(b.checked_bag))
