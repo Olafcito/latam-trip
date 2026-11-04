@@ -11,7 +11,7 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 
 ## How plan work runs
 
-Multi step work runs on superpowers. A user journey comes first, then `brainstorming` gives a spec from it, `writing-plans` turns it into a plan and `subagent-driven-development` runs it. Speed beats ceremony, and tokens are a budget.
+Multi step work runs on superpowers. No feature goes from an idea to code without a problem, a journey, a scope and acceptance criteria. The `feature-spec` skill writes them to `docs/product/features/FEAT-NNN-<slug>.md`: discovery with Simon, a Sonnet `product-analyst` drafts, an Opus `product-lead` reviews. Then `writing-plans` turns the approved spec into a plan, `subagent-driven-development` runs it and `ui-roast` judges the result against the same journey. Speed beats ceremony, and tokens are a budget.
 
 - **Cheap models first.** Subagents run on Sonnet (model `sonnet`), Haiku for mechanical work such as copying, sweeps and transcription. Opus only for a hard design or architecture call that Sonnet got wrong. A few agents at a time, stopped as soon as they are not needed.
 - **Journey first.** A spec opens with the user journey it serves, the moments Simon goes through and what he needs to see or do at each. The spec is written from the journey, and the same journey is what the work is judged against at the end.
