@@ -84,3 +84,7 @@ cd web && npx tsc --noEmit && npx vitest run
 ```
 
 Screenshots with Playwright at 1440x900 and 390x844. Animations stay pending until a screenshot forces a frame, so take two. The Impeccable detector checks design findings: `C:/Users/Simon/.claude/skills/impeccable/scripts/impeccable detect --json <absolute paths>` from the repo root.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. A change to a table, a column or a `tripdb` command updates `data/README.md`. A change to a connector tool updates `docs/connector.md`.

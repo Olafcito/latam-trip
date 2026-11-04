@@ -53,3 +53,7 @@ Every write goes through tripdb (`python -I -X utf8 plugin/scripts/tripdb.py --r
 ### 5. Adjust with him
 - When he says "add a week in X", "more buses", "skip Honduras", "cheaper flights" or "what if I start in San José", re-plan from the point that changes with the same method, price new legs live, save a new version of the same trip, and reply with a short diff (what changed, price and hours before and after) and the link.
 - When he states a new preference, add it to `preferences.md`.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. A rule about how trips are planned that Simon settles is recorded as a PROD decision in `docs/product/product-decisions.md`.

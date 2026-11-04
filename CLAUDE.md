@@ -22,6 +22,7 @@ Multi step work runs on superpowers. No feature goes from an idea to code withou
   | `senior-designer` | Opus | The roast itself, retrospectives every 5th review, audits every 15th |
   | `product-analyst` | Sonnet | Fills a FEAT spec from its problem and journey |
   | `product-lead` | Opus | Reviews a drafted FEAT spec for scope, data and privacy |
+  | `doc-keeper` | Sonnet | The doc audit after every 5 built features, with the `claude-md-improver` rubric on this file |
 
   A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first.
 - **Journey first.** A spec opens with the user journey it serves, the moments Simon goes through and what he needs to see or do at each. The spec is written from the journey, and the same journey is what the work is judged against at the end.
@@ -34,6 +35,14 @@ Multi step work runs on superpowers. No feature goes from an idea to code withou
 - **Check fixes against the diff.** The main session checks a fix round itself. A separate re-review is only for fixes that touch owner only data, the private bucket or what goes into built files.
 - **Ship together.** The ship steps of several plans go out together, under one final review of the whole branch, which is the safety net.
 - **Rule, do not ask.** Decide an ambiguity, write the ruling in the ledger and keep going. Ask Simon only before something irreversible he has not already approved, such as rewriting pushed history.
+
+## Documentation
+
+Docs are part of the work and describe the app as it is. `docs/README.md` is the map: every doc with its place, owner and triggers, the status words, and the doc audit counters. The rules there apply to every task and every skill, installed ones included.
+
+- Before a task, read the docs that cover it and check the work against their decisions. During it, update those docs in the same commit or branch as the code. Never show planned work as built, and write down uncertainty instead of guessing.
+- Every task that changes code or docs ends its report with docs read, docs updated, decisions recorded, known gaps and open discrepancies.
+- Decisions carry ids that never change: PROD in `docs/product/`, DES in `docs/design/`, TECH in `docs/technical/`.
 
 ## Privacy
 
@@ -65,7 +74,7 @@ Planned trips live in the trips table. `tripdb save-trip FILE` saves a trip as i
 - `plugin/`: the flight crawler plugin, its agents, skills and scripts, `tripdb.py` among them.
 - `infra/`: deploy scripts for the build worker (`deploy.sh`, `worker/`), the trip MCP (`mcp/`) and the planner site (`site_setup.sh`, `site_upload.sh`, `preview.sh`). The repo is public, so no AWS account id or profile name goes in any file.
 - `data/`: `README.md` only. Shared tables and documents live in Supabase.
-- `docs/`: the Claude task hand-over (`docs/claude-tasks.md`) and `docs/learnings/`, the notes each crawl round left about the sites.
+- `docs/`: `README.md` maps every doc and its owner. Also the Claude task hand-over (`docs/claude-tasks.md`), `docs/learnings/` with the notes each crawl round left about the sites, `docs/technical/` with TECH decisions and `docs/audits/` with the doc audits.
   - `docs/product/`: the product overview, product decisions (PROD ids) and feature specs (`features/FEAT-NNN-<slug>.md`), kept by `feature-spec`.
   - `docs/design/`: the living design log kept by `ui-roast`. `design-log.md` is the index of reviews, recurring problems (REC), open questions (Q) and counters, `design-principles.md` holds accepted principles, `design-decisions.md` holds DES ids, and `reviews/` holds each review, brief, fixes file, retro and audit. Files here are the record, not conversation history.
   - `docs/superpowers/specs/` and `plans/`: the older specs and the implementation plans.

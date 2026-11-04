@@ -30,7 +30,7 @@ The older specs in `docs/superpowers/specs/` stay where they are and count as fe
 
 ## The spec
 
-A `FEAT` file has these sections, in order. Its header gives the id, the date and the status: Discovery, Drafted, Reviewed, Approved, Planned, Built or Roasted.
+A `FEAT` file has these sections, in order. Its header gives the id, the date and the status: Discovery, Drafted, Reviewed, Approved, Planned, Built, Roasted or Retired.
 
 1. **Problem.** What is wrong or missing today, in Simon's words.
 2. **Journey.** The moments Simon goes through, numbered, on his laptop or his phone, before or during the trip, and what he needs to see or do at each. Everything below is written from it.
@@ -71,3 +71,7 @@ A trivial feature (one screen, no new data, no new pattern) skips step 3 and the
 ## Rules
 
 Simon's planner rules hold in every spec: the earliest stop wins, no silent spare days, items open in place, the frontend shows all data the database holds. Plain sentences, no semicolons, no em or en dashes, no dashes as separators, no question marks in UI copy. The repo is public: no names, booking references or prices paid in any file.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. This skill owns `docs/product/`. Setting a FEAT to Built adds one to the features counter in `docs/README.md`, and the fifth one since the last audit dispatches `doc-keeper`. A spec that is dropped is set to Retired, never deleted.

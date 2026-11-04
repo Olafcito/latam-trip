@@ -15,3 +15,7 @@ The worker procedure is in `agents/momondo-worker.md`. This skill holds the tool
 - `references/howto-r1.md`: the first worker's detailed notes on the page structure (dialog text, labels, pitfalls).
 
 Known page facts (Danish UI, Oct 2026): results are `div[role=group][aria-label="Resultat nr. N"]`; a click opens a `[role=dialog]` (URL `#dialog`); legs expand via `.E69K-leg-dropdown-header[role=button]` (class may change: re-inspect if legs come back empty); booking offers follow "Bookingmuligheder". `parseDlg` assumes Jan/Feb dates are 2027 and other months 2026: change that line for other trips.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. Site behaviour that changed goes in the report to the orchestrator, which writes it to `docs/learnings/`. A worker never edits docs. A change to the save script updates `docs/momondo-save.md`.

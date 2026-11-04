@@ -84,3 +84,7 @@ Do not invent problems to fill a review. Do not redesign what works. Say whether
 ## Privacy
 
 The repo is public. Nothing in `docs/design/` may hold names, booking references, prices paid or anything read off a ticket. Describe what a shot shows instead of quoting it.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. This skill owns `docs/design/`. A ruling that changes a DES decision updates every doc that cites its id.

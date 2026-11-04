@@ -45,3 +45,7 @@ Priority = gain x novelty x gap / cost. A branch is saturated after 8 tasks with
 3. Dashboard (Simon's main view, https://claude.ai/artifact/6uswkG2eQzuiwAVESHxKjA, type Dashboard): the worker wrote dash_trips.json, dash_journeys.json and dash_flights.json. Upload each with the Artifact tool (`url` = the dashboard, `asset: true`, `file_path`), then ArtifactData `update` of `datasets/trips`, `datasets/journeys` and `datasets/flights` (`source.url` = the new `/_blob/...`, `updated.at`), pinned to their version. The page (`files/index.html`) only changes when its columns change; the doc keeps prose and links, never the generated tables.
 4. Update `briefs/scenarios.md` and the plan doc with what changed; fold worker `next:` and `problems:` lines into the agent files and references/lessons.md.
 5. Pick the next round by the priority rule. Tell the user only what changed their options.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. This skill owns `docs/learnings/`, one file per crawl round, written when the round ends.

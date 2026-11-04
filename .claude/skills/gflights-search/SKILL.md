@@ -14,3 +14,7 @@ The worker procedure is in `agents/gflights-worker.md`.
 - `references/howto.md`: full notes (consent page, aria-label format, pitfalls).
 
 Facts: the first-leg price is the whole-trip total with the cheapest second leg; trust the booking-page price; Boliviana (BoA) is never listed; absurd rows (50k+) appear and are ignored.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. Site behaviour that changed goes in the report to the orchestrator, which writes it to `docs/learnings/`. A worker never edits docs.

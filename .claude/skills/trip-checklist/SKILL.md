@@ -36,3 +36,7 @@ Tasks from the Momondo userscript (docs/momondo-save.md) arrive in the tasks tab
 ## Experience row (the experiences table, one JSON object per row)
 `{"kind": "experience", "id": "kebab-id", "name": "...", "category": "<category id>", "tags": [], "places": ["<map ids>"], "area": "<name when no map place>", "country": "XX", "lat": 0.0, "lon": 0.0, "summary": "...", "season": "...", "dec_jan": "...", "price": "as published", "price_dkk": 0, "duration": "...", "requirements": "...", "details": {}, "researched": true, "checked_at": "YYYY-MM-DD", "sources": ["..."]}`
 Category-specific facts go in `details` (diving: water, animals, shark_chance, depth, cert, logged_dives_min). Images: an `experience_image` row added with `tripdb add-experience-image FILE` (`{"kind": "experience_image", "id": ..., "image": {url, page, credit, license, w, h}}`), Wikimedia Commons, free licence, no identifiable people.
+
+## Documentation
+
+Follow `docs/README.md`. Read the docs that cover the work before starting, update them in the same commit as the change, and end the report with five lines: docs read, docs updated, decisions recorded, known gaps and open discrepancies. A new or changed task kind updates `docs/claude-tasks.md`.
