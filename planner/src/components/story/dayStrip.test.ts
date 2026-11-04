@@ -17,7 +17,7 @@ const trip = { items: (d: string) => tripDay(input, d), leg: 'h1' }
 const days = ['2026-12-04', '2026-12-05', '2026-12-06', '2026-12-07']
 const fares = { '2026-12-04': 410, '2026-12-05': 520, '2026-12-06': 380, '2026-12-07': 450 }
 const strip = (p: Partial<Parameters<typeof Days>[0]>) =>
-  renderToStaticMarkup(createElement(Days, { days, fares, at: '2026-12-05', leg: '2026-12-05', onChange: () => {}, trip, ...p }))
+  renderToStaticMarkup(createElement(Days, { days, fares, at: '2026-12-05', leg: '2026-12-05', onChange: () => {}, ...p }))
 
 describe('the day strip', () => {
   it('shows the fare from on each day of a leg that is not booked, the cheapest marked', () => {
@@ -27,24 +27,17 @@ describe('the day strip', () => {
     expect(out.match(/data-low="true"/g)).toHaveLength(1)
   })
 
-  it('shows no live fare on a booked leg, only what was paid on its day', () => {
-    const out = strip({ locked: true, booked: '2026-12-05', paid: 1234 })
-    expect(out).toContain(kr(1234))
-    expect(out).toContain(`</svg>${shortKr(1234)}</span>`)
-    for (const p of Object.values(fares)) expect(out).not.toContain(kr(p))
-    expect(out).not.toContain('data-low="true"')
+  it('shows a check on the booked day and never its price or a ticket', () => {
+    const out = strip({ booked: '2026-12-05' })
+    expect(out).not.toContain(kr(520))
+    expect(out).not.toContain(shortKr(520))
+    expect(out).toContain('booked')
+    expect(out).toContain(kr(380))
+    expect(out.match(/data-booked="true"/g)).toHaveLength(1)
   })
 
-  it('keeps the days of a booked leg pressable, to look at the trip on them', () => {
-    const out = strip({ locked: true, booked: '2026-12-05', paid: 1234 })
-    expect(out).not.toContain('disabled')
-    expect(out).toContain('data-held="true"')
-  })
-
-  it('marks a booked leg sharing a ticket without a price', () => {
-    const out = strip({ locked: true, booked: '2026-12-05', paid: 0 })
-    expect(out).toContain('the same ticket')
-    expect(out).not.toContain(kr(0))
+  it('keeps the days pressable, to look at the trip on them', () => {
+    expect(strip({ booked: '2026-12-05' })).not.toContain('disabled')
   })
 })
 

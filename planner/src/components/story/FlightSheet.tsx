@@ -11,7 +11,7 @@ import { remoteEnabled } from '../../lib/supabase'
 import { flightPricesTask } from '../../lib/tasks'
 import { AskClaude } from '../AskClaude'
 import { dayValue, type DayItem, type DayKind, type DayValue } from '../../lib/tripDay'
-import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Home, Land, Plane, Sun, Ticket } from '../icons'
+import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Home, Land, Plane, Sun } from '../icons'
 import { BookedBox, type BoxData } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
 import { stopsText } from './LegCard'
@@ -104,44 +104,26 @@ export interface TripDays {
 const KIND_ICON: Record<DayKind, (p: { s?: number }) => ReactElement> = {
   flight: Plane, boat: Boat, ground: Bus, out: Door, in: Door, night: Bed, other: Sun,
 }
-const KIND_WORD: Record<DayKind, string> = {
-  flight: 'a flight', boat: 'a boat', ground: 'a bus', out: 'a check out', in: 'a check in', night: 'a night', other: 'an activity',
-}
 
-/** What a day says under its date: the fare from, the paid amount, the ticket, or the marks of the day. */
+/** What a day says under its date: the fare from, or a check on the booked day. */
 function DayNote({ v }: { v: DayValue }) {
-  // short, so a four or five figure amount fits a 60px day. The label and the box carry the full amount
+  // short, so a four or five figure amount fits a 60px day
   if (v.kind === 'fare') return <span className="fl-day-v">{shortKr(v.price)}</span>
-  if (v.kind === 'paid') return <span className="fl-day-v" data-paid><Check s={11} />{shortKr(v.price)}</span>
-  if (v.kind === 'ticket') return <span className="fl-day-v" data-paid><Ticket s={13} /></span>
   if (v.kind === 'booked') return <span className="fl-day-v" data-paid><Check s={13} /></span>
-  if (v.kind === 'marks') return <span className="fl-day-v" data-marks>{v.marks.map((k) => { const I = KIND_ICON[k]; return <I key={k} s={13} /> })}</span>
   return <span className="fl-day-v" />
 }
 
-const said = (v: DayValue, held: boolean) =>
-  v.kind === 'fare' ? `from ${kr(v.price)}`
-    : v.kind === 'paid' ? `booked, paid ${kr(v.price)}`
-    : v.kind === 'ticket' ? 'booked, paid on the same ticket as another flight'
-    : v.kind === 'booked' ? 'booked'
-    : v.kind === 'marks' ? v.marks.map((k) => KIND_WORD[k]).join(' and ')
-    : held ? 'nothing else planned' : 'no fare seen'
+const said = (v: DayValue) => (v.kind === 'fare' ? `from ${kr(v.price)}` : v.kind === 'booked' ? 'booked' : 'no fare seen')
 
-export function Days({ days, fares, at, leg, onChange, locked, booked, paid, trip }: {
+export function Days({ days, fares, at, leg, onChange, booked }: {
   days: string[]; fares: Record<string, number>; at: string; leg: string; onChange: (d: string) => void
-  /** the leg is booked: the days show no live fare, only the paid day and the marks of the others */
-  locked?: boolean
-  /** the day of the booking, in green */
+  /** the day of the booking, marked by a check and a thin green ring */
   booked?: string | null
-  /** what the booking paid, 0 on a later flight of a ticket, null when not filled in */
-  paid?: number | null
-  /** the trip on each day, for the marks of a booked leg */
-  trip?: TripDays
 }) {
   const box = useRef<HTMLDivElement>(null)
   // the cheapest is read among the days of the strip only
   const own = useMemo(() => Object.fromEntries(days.flatMap((d) => (fares[d] != null ? [[d, fares[d]]] : []))), [days, fares])
-  const value = (d: string) => dayValue(d, { fares: own, hold: !!locked, booked: booked ?? null, paid: paid ?? null, items: trip?.items ?? (() => []), leg: trip?.leg })
+  const value = (d: string) => dayValue(d, { fares: own, booked: booked ?? null })
   // the window opens in the parent's layout effect, so the strip has its width by now
   useEffect(() => {
     const b = box.current
@@ -173,10 +155,10 @@ export function Days({ days, fares, at, leg, onChange, locked, booked, paid, tri
           return (
             <button
               key={d} type="button" role="radio" className="fl-day" data-d={d} data-leg={d === leg}
-              data-low={v.kind === 'fare' && v.low} data-held={locked || undefined}
+              data-low={v.kind === 'fare' && v.low}
               data-booked={d === booked || undefined}
               aria-checked={d === at} tabIndex={d === at ? 0 : -1}
-              aria-label={`${wd} ${n} ${mon}, ${said(v, !!locked)}${d !== booked && d === leg ? ', the day of this leg' : ''}`}
+              aria-label={`${wd} ${n} ${mon}, ${said(v)}${d !== booked && d === leg ? ', the day of this leg' : ''}`}
               onClick={() => onChange(d)}
             >
               <small>{wd}</small>

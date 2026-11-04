@@ -100,39 +100,12 @@ export function tripDay(input: DayInput, day: string): DayItem[] {
 
 export type DayValue =
   | { kind: 'fare'; price: number; low: boolean }
-  | { kind: 'paid'; price: number }
-  | { kind: 'ticket' }
   | { kind: 'booked' }
-  | { kind: 'marks'; marks: DayKind[] }
   | { kind: 'none' }
 
-/**
- * What a day of the strip shows under its date. The booked day shows what was paid, a ticket mark when another
- * flight of the ticket holds the price, or the word booked without a price. A held leg shows no live fare on its
- * other days, only up to two marks of what else happens then. A leg open to choose shows the cheapest fare.
- */
-export function dayValue(day: string, o: {
-  fares: Record<string, number>
-  hold: boolean
-  booked: string | null
-  /** what the booking paid, 0 on a later flight of a ticket, null when not filled in */
-  paid: number | null
-  items: (day: string) => DayItem[]
-  /** the key of the sheet's own leg, which its strip does not mark */
-  leg?: string
-}): DayValue {
-  if (o.booked && day === o.booked) {
-    if (o.paid != null && o.paid > 0) return { kind: 'paid', price: o.paid }
-    return o.paid === 0 ? { kind: 'ticket' } : { kind: 'booked' }
-  }
-  if (o.hold) {
-    const marks: DayKind[] = []
-    for (const it of o.items(day)) {
-      if (it.kind === 'night' || (o.leg && it.leg === o.leg) || marks.includes(it.kind)) continue
-      marks.push(it.kind)
-    }
-    return marks.length ? { kind: 'marks', marks: marks.slice(0, 2) } : { kind: 'none' }
-  }
+/** What a day of the strip shows under its date: a check on the booked day, else the cheapest fare. A booked day never shows a price. */
+export function dayValue(day: string, o: { fares: Record<string, number>; booked: string | null }): DayValue {
+  if (o.booked && day === o.booked) return { kind: 'booked' }
   const p = o.fares[day]
   if (p == null) return { kind: 'none' }
   const known = Object.values(o.fares)

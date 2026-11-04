@@ -39,16 +39,13 @@
   .fl-day-v { display: inline-flex; align-items: center; justify-content: center; gap: 2px; min-height: 1.4em; font-size: var(--fs-label); font-weight: 500; color: var(--muted); white-space: nowrap; }
   .fl-day-v svg { flex: none; }
   .fl-day-v[data-paid] { color: var(--booked); font-weight: 600; }
-  .fl-day-v[data-marks] { gap: 3px; opacity: 0.85; }
   .fl-day[data-low='true'] .fl-day-v { color: var(--in); }
   .fl-day[data-leg='true'] { box-shadow: inset 0 0 0 1px var(--flight); }
   .fl-day[aria-checked='true'] { background: var(--flight); color: var(--flight-ink); }
   .fl-day[aria-checked='true'] :is(small, .fl-day-v) { color: var(--flight-ink); opacity: 1; }
   .fl-day:active { transform: scale(0.97); }
-  /* a booked leg: its day in the booked green. The other days still press, to see the trip on them */
+  /* the booked day: a thin green ring, and when it is the day you look at, the same lift as any other day */
   .fl-day[data-booked] { box-shadow: inset 0 0 0 1.5px var(--booked); }
-  .fl-day[data-booked][aria-checked='true'] { background: var(--booked); color: var(--ground); }
-  .fl-day[data-booked][aria-checked='true'] :is(small, .fl-day-v) { color: var(--ground); }
   .fl-day:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
   .fl-page { display: none; flex: none; width: var(--hit); height: var(--hit); place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out); }
   .fl-page:active { transform: scale(0.94); }

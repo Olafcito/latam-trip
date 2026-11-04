@@ -58,30 +58,17 @@ describe('tripDay', () => {
 
 describe('dayValue', () => {
   const fares = { '2026-12-04': 1450, '2026-12-05': 980, '2026-12-06': 12345 }
-  const items = (d: string) => tripDay(input, d)
 
   it('shows the cheapest fare of a day on a leg that is not booked, the lowest marked', () => {
-    const o = { fares, hold: false, booked: null, paid: null, items, leg: 'h1' }
+    const o = { fares, booked: null }
     expect(dayValue('2026-12-05', o)).toEqual({ kind: 'fare', price: 980, low: true })
     expect(dayValue('2026-12-06', o)).toEqual({ kind: 'fare', price: 12345, low: false })
     expect(dayValue('2026-12-07', o)).toEqual({ kind: 'none' })
   })
 
-  it('shows what was paid on the booked day and never a live fare', () => {
-    const o = { fares, hold: true, booked: '2026-12-05', items, leg: 'h1' }
-    expect(dayValue('2026-12-05', { ...o, paid: 2400 })).toEqual({ kind: 'paid', price: 2400 })
-    expect(dayValue('2026-12-05', { ...o, paid: 0 })).toEqual({ kind: 'ticket' })
-    expect(dayValue('2026-12-05', { ...o, paid: null })).toEqual({ kind: 'booked' })
-  })
-
-  it('keeps the paid amount on the booked day while the leg is open to change', () => {
-    expect(dayValue('2026-12-05', { fares, hold: false, booked: '2026-12-05', paid: 2400, items, leg: 'h1' })).toEqual({ kind: 'paid', price: 2400 })
-  })
-
-  it('shows marks of what else happens on the other days of a held leg, not its own leg and not the nights', () => {
-    const o = { fares, hold: true, booked: '2026-12-05', paid: 2400, items, leg: 'h1' }
-    expect(dayValue('2026-12-04', o)).toEqual({ kind: 'none' })
-    expect(dayValue('2026-12-02', o)).toEqual({ kind: 'marks', marks: ['flight', 'in'] })
-    expect(dayValue('2026-12-08', o)).toEqual({ kind: 'marks', marks: ['out', 'ground'] })
+  it('shows a check on the booked day and never a price, whatever fare it has', () => {
+    const o = { fares, booked: '2026-12-05' }
+    expect(dayValue('2026-12-05', o)).toEqual({ kind: 'booked' })
+    expect(dayValue('2026-12-04', o)).toEqual({ kind: 'fare', price: 1450, low: false })
   })
 })
