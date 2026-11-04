@@ -54,6 +54,11 @@ function ticketLegs(ticket: string, ways: readonly Way[]): Leg[] {
   return legs
 }
 
+/** The link of one ticket over the ways it flies, both ways for a return or open jaw. */
+export function ticketLink(inout: InOut, id: string, ways: readonly Way[]): FlightLink | null {
+  return linkFor(inout.tickets[id], ticketLegs(id, ways.filter((w) => w.tickets.includes(id))))
+}
+
 /** One link per ticket of a way. A ticket shared with the other way (open jaw, return) searches both legs. */
 export function wayLinks(way: Way, inout: InOut, other?: Way | null): FlightLink[] {
   other ??= way.paired_with ? inout.ways[way.paired_with] : null
