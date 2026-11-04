@@ -80,75 +80,129 @@
   .pk-row:active { transform: none; }
 }
 
-/* ---- section heads: a word title, a mono count, a short note -------------------------------- */
-.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 10px; }
-.sec-title { margin: 0; font-family: var(--font-word); font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
-.count { font-family: var(--font-num); font-size: var(--fs-num); font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.sec-note { font-size: var(--fs-small); color: var(--muted); }
-.sec-head .btn { align-self: center; }
-
-/* ---- options table: the shared hairline grid ------------------------------------------------ */
-.opts-wrap { container-type: inline-size; }
-table.grid.opts { font-size: var(--fs-small); }
-.opts :is(th, td) { padding-inline: 8px; }
-.opts td { white-space: nowrap; }
-.opts th .sort {
-  position: relative;
-  padding: 0; border: 0; background: none;
-  font: inherit; color: inherit; text-transform: inherit;
-  cursor: pointer;
-  transition: color var(--t-fast) ease;
+/* ---- the open pair: tiles, options, the mix, the ways, cost and score, tickets -------------- */
+.pk-pair {
+  display: flex; flex-direction: column; gap: 18px; min-width: 0;
+  padding: 16px; border-radius: var(--radius); background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
 }
-.opts th .sort::after { content: ''; position: absolute; left: 50%; top: 50%; width: max(100%, var(--hit)); height: var(--hit); transform: translate(-50%, -50%); }
-.opts th[aria-sort] { color: var(--flight); }
-.opts tbody tr.orow { cursor: pointer; transition: background-color var(--t-fast) ease; }
-.opts tbody tr.orow:active { background: var(--surface-2); }
-.opts tbody tr.orow.open { background: var(--surface); }
-.opts tbody tr.orow.open td { border-bottom-color: transparent; }
-.opts tbody tr.orow:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
-.opts td.price { font-weight: 600; color: var(--text); }
-.opts td.city b { font-weight: 600; }
-.opts td .code { margin-left: 6px; font-family: var(--font-num); font-size: var(--fs-label); color: var(--faint); }
+.pk-label { margin: 0 0 6px; font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.pk-faint { color: var(--faint); }
+.pk-fig { display: inline-flex; align-items: center; gap: 4px; flex: none; color: var(--muted); }
+.pk-dir { display: inline-grid; place-items: center; flex: none; color: var(--faint); }
+.pk-when { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pk-when b { font-weight: 600; }
+.pk-when .warnmark { margin-left: 3px; }
+.pk-stops { white-space: nowrap; color: var(--muted); }
+
+/* a tile a ticket type: its cheapest all in and how far it sits above the cheapest */
+.pk-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.pk-tile {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 2px 10px;
+  min-height: var(--hit); padding: 10px 12px;
+  border: 0; border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2);
+  font: inherit; color: var(--text); text-align: left;
+  cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease, background-color var(--t-fast) ease;
+}
+.pk-tile:active { transform: scale(0.97); }
+.pk-tile[aria-pressed='true'] { background: var(--surface-3); box-shadow: inset 0 0 0 1.5px var(--flight); }
+.pk-tile:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+.pk-tile-name { grid-column: 1 / -1; display: inline-flex; align-items: center; gap: 6px; min-width: 0; font-size: var(--fs-small); font-weight: 600; }
+.pk-tile-name svg { flex: none; }
+.pk-tile-price { font-family: var(--font-num); font-size: var(--fs-title); font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-tile-delta { font-family: var(--font-num); font-size: var(--fs-small); font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; text-align: right; }
+.pk-tile-delta[data-best] { color: var(--flight); }
+
+/* the options as radio cards, the picked one ringed */
+.pk-opts { display: flex; flex-direction: column; gap: 6px; }
+.pk-opt {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px 12px;
+  min-height: 56px; padding: 8px 12px;
+  border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
+  cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease;
+}
+.pk-opt:active { transform: scale(0.98); }
+.pk-opt[data-on] { box-shadow: inset 0 0 0 1.5px var(--flight); }
+.pk-opt:has(input:focus-visible), .pk-mix-row:has(input:focus-visible) { outline: 2px solid var(--flight); outline-offset: 2px; }
+.pk-opt-type { display: inline-grid; place-items: center; color: var(--muted); }
+.pk-opt[data-on] .pk-opt-type { color: var(--flight); }
+.pk-opt-ways { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: var(--fs-small); }
+.pk-opt-way { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; min-width: 0; }
+.pk-opt-air { color: var(--muted); overflow-wrap: anywhere; }
+.pk-opt-price { font-family: var(--font-num); font-size: var(--fs-title); font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* two one ways: the other days of each side, priced all in */
+.pk-mix { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.pk-mix-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px;
+  min-height: var(--hit); padding: 4px 10px; border-radius: 8px;
+  font-size: var(--fs-small); cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  transition: background-color var(--t-fast) ease;
+}
+.pk-mix-row + .pk-mix-row { margin-top: 2px; }
+.pk-mix-row[data-on] { background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); }
+.pk-mix-price { font-family: var(--font-num); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 @media (hover: hover) and (pointer: fine) {
-  .opts th .sort:hover { color: var(--text); }
-  .opts th[aria-sort] .sort:hover { color: var(--flight); }
+  .pk-tile:hover { background: var(--surface-3); }
+  .pk-opt:hover { box-shadow: inset 0 0 0 1px var(--line-2); }
+  .pk-opt[data-on]:hover { box-shadow: inset 0 0 0 1.5px var(--flight); }
+  .pk-mix-row:hover { background: var(--surface-2); }
 }
-.pill.ticket { color: var(--text); }
-.pill.madrid { color: var(--flight); }
-.pill.oneways { color: var(--bus); }
-.rate { display: inline-flex; align-items: center; gap: 8px; }
-.rate .bar { width: 34px; height: 4px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
-.rate .bar i { display: block; height: 100%; background: var(--flight); }
-.rate b { min-width: 26px; text-align: right; font-family: var(--font-num); font-weight: 500; }
-.ico { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
-.ico svg { color: var(--faint); }
-.stamp { display: inline-flex; align-items: baseline; gap: 4px; white-space: nowrap; }
-.stamp b { font-family: var(--font-num); font-weight: 500; }
-.stamp small { font-family: var(--font-num); font-size: var(--fs-label); color: var(--muted); }
 
-/* the expanded option steps up to the surface and stays in view while the table scrolls sideways */
-.opts tr.expand td { padding: 0; background: var(--surface); white-space: normal; border-bottom: 1px solid var(--line-2); }
-.expand-in {
-  position: sticky; left: 0;
-  width: min(100%, 100cqi); max-width: 1400px;
-  padding: 16px;
-  display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px;
-  animation: fade var(--t-med) var(--ease-out);
-}
-.expand-in > .ways, .expand-in > .side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.ways .h3 { margin: 0 0 4px; }
-.side .tot { padding: 12px 14px; border-radius: 8px; background: var(--surface-2); }
-.side .tot .v.big { font-size: var(--fs-head); }
-.prov { margin: 0; overflow-wrap: anywhere; }
-@media (max-width: 1100px) { .expand-in { grid-template-columns: minmax(0, 1fr); } }
+/* the two ways side by side */
+.pk-legs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.pk-leg { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 12px; border-radius: 10px; background: var(--surface-2); }
+.pk-leg-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.pk-leg-head h3 { margin: 0; font-size: var(--fs-small); font-weight: 600; }
+.pk-leg-time { display: inline-flex; flex-wrap: wrap; gap: 4px 10px; margin-left: auto; font-family: var(--font-num); font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+.pk-leg-air { margin: 0; font-size: var(--fs-small); color: var(--muted); overflow-wrap: anywhere; }
 
-/* ---- a keyboard press changes state at once ------------------------------------------------- */
-:root[data-input='key'] .opts tr.orow { transition: none; }
-:root[data-input='key'] .expand-in { animation: none; }
+/* cost and score side by side */
+.pk-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 24px; align-items: start; }
+.pk-cost { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; margin: 0; font-size: var(--fs-small); }
+.pk-cost dt { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.pk-cost dd { margin: 0; text-align: right; font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-cost .pk-all { padding-top: 8px; border-top: 1px solid var(--line); font-size: var(--fs-title); font-weight: 650; color: var(--text); }
+.pk-cost dd.pk-all .warnmark { margin-left: 4px; }
+.pk-cost .pk-extra { padding-top: 6px; color: var(--faint); }
+.pk-cost dt.pk-extra { color: var(--faint); }
+.pk-score-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 6px; }
+.pk-score-head .pk-label { margin: 0; }
+.pk-score-head b { font-family: var(--font-num); font-size: var(--fs-title); font-weight: 650; font-variant-numeric: tabular-nums; }
+.pk-meter, .pk-parts { display: flex; gap: 3px; }
+.pk-meter span { flex-basis: 0; height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.pk-meter i { display: block; height: 100%; background: var(--flight); }
+.pk-parts { margin-top: 6px; font-size: var(--fs-label); color: var(--muted); }
+.pk-parts > div { flex-basis: 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pk-part-v { font-family: var(--font-num); font-variant-numeric: tabular-nums; color: var(--text); }
+.pk-lost { color: var(--faint); overflow-wrap: anywhere; }
 
-/* ---- touch: every target 44px --------------------------------------------------------------- */
-@media (pointer: coarse), (max-width: 640px) {
-  .opts tbody tr.orow td { height: 44px; }
+/* the tickets behind the two ways */
+.pk-tickets ul { list-style: none; margin: 0; padding: 0; }
+.pk-ticket { display: flex; flex-direction: column; gap: 6px; padding: 12px 0; font-size: var(--fs-small); }
+.pk-ticket + .pk-ticket { border-top: 1px solid var(--line); }
+.pk-t-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.pk-t-site { font-weight: 600; }
+.pk-t-price { margin-left: auto; font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-t-legs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-family: var(--font-num); }
+.pk-t-leg { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+.pk-t-leg svg { color: var(--faint); }
+.pk-t-fare { font-family: var(--font-word, inherit); color: var(--muted); overflow-wrap: anywhere; }
+.pk-t-bags { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; color: var(--muted); }
+.pk-t-bag { display: inline-flex; align-items: center; gap: 5px; }
+.pk-t-flags { display: flex; flex-wrap: wrap; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.pk-flag { padding: 1px 7px; border-radius: 999px; font-size: var(--fs-label); font-weight: 600; background: var(--surface-3); color: var(--muted); }
+.pk-flag[data-tone='warn'] { color: var(--flight); }
+.pk-flag[data-tone='good'] { color: var(--booked); }
+.pk-t-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.pk-t-foot .btn svg { margin-left: 4px; }
+.pk-t-note { margin: 4px 0 0; color: var(--muted); white-space: pre-line; overflow-wrap: anywhere; }
+
+:root[data-input='key'] :is(.pk-tile, .pk-opt, .pk-mix-row) { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.pk-tile, .pk-opt):active { transform: none; }
 }
 
 /* ---- phone ---------------------------------------------------------------------------------- */
@@ -158,8 +212,8 @@ table.grid.opts { font-size: var(--fs-small); }
   .pk-row { column-gap: 10px; padding-inline: 8px; }
   .pk-price b { font-size: var(--fs-lead); }
   .pk-more { margin-left: 8px; }
-  .expand-in { padding: 14px 12px; }
-  .opts td .code { margin-left: 4px; }
+  .pk-pair { padding: 14px 12px; }
+  .pk-opt { padding-inline: 10px; column-gap: 10px; }
 }
 
 /* ---- the pill select: a round pill, a short list under it, a sheet on a phone --------------- */

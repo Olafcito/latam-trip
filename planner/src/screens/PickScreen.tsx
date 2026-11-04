@@ -1,29 +1,26 @@
-import { Fragment, useEffect, useMemo, useState, type ComponentType, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from 'react'
 import { Flag } from '@map/map/Flag'
-import type { AppData, InOut, Option, Way, WayType } from '../data/types'
+import type { AppData, InOut, Option, Ticket, Way, WayType } from '../data/types'
 import { changing, useStore, type Pair } from '../store'
 import type { Journey } from '../lib/journey'
-import { clock, day, dec1, kr, nextDayMark, observed, shortPlace, timeUncertain, TYPE_LABEL } from '../lib/format'
-import { passesFilters, type Filters } from '../lib/options'
-import { allIn, cheapestKey, cityChoices, homeChoices, pairRows, scoreParts, type PairFilters, type PairRow } from '../lib/pairs'
-import { pairMarks, type PairMark } from '../lib/pickMarks'
+import { clock, dec1, hours, kr, observed, shortPlace, timeUncertain, weekdayDay } from '../lib/format'
+import type { FlightLink } from '../lib/links'
+import {
+  allIn, cheapestKey, cityChoices, flagChip, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles,
+  type PairFilters, type PairRow,
+} from '../lib/pairs'
+import { bagWords, carriersOf, flightNumbersOf, legEnds, lossLabel, pairMarks, stopsLabel, type PairMark } from '../lib/pickMarks'
 import { HOMES } from '../lib/homes'
-import { WayCard } from '../components/WayCard'
-import { MiniMap } from '../components/MiniMap'
+import { WayTrack } from '../components/WayCard'
 import { HomePill } from '../components/HomePill'
 import { PillSelect, type PillOption } from '../components/PillSelect'
-import { Arrow, Bag, Caret, Check, Clock, Land, Moon, Pin, Plane, Ticket, TicketHop, Transfer, TwoTickets } from '../components/icons'
+import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosure'
+import { Arrow, Bag, Caret, Check, Clock, External, Land, Moon, Plane, Suitcase, Ticket as TicketIcon, TicketHop, Transfer, TwoTickets } from '../components/icons'
 
 // Picking the way in and the way home: the pair as the title, one row of pills that narrow the pairs,
-// the pairs ranked by the score or the price, and the flight options of the open pair.
-
-type SortKey = 'rating' | 'price' | 'leave' | 'home'
-type Row = { o: Option; wi: Way; wh: Way }
+// the pairs ranked by the score or the price, and the open pair with its options, ways, cost, score and tickets.
 
 const REGION_NAME: Record<string, string> = { CA: 'Central America', CO: 'Colombia', MX: 'Mexico', BO: 'Bolivia' }
-/** Best rated sorts high to low, the rest low to high. */
-const SORT_DIR: Record<SortKey, 'ascending' | 'descending'> = { rating: 'descending', price: 'ascending', leave: 'ascending', home: 'ascending' }
-
 const NO_FILTERS: PairFilters = { arrival: '', departure: '', noUS: false, maxHubNights: null }
 
 /** A city as it reads on screen: the name without the note in brackets. */
@@ -36,63 +33,6 @@ function ownPair(inout: InOut, j: Journey | null): Pair | null {
   const wi = j ? inout.ways[j.wayIn] : undefined
   const wh = j ? inout.ways[j.wayHome] : undefined
   return wi && wh ? { in: wi.to, home: wh.from } : null
-}
-
-function Stamp({ s, from }: { s: string; from?: string }) {
-  if (!s) return <span className="q" title="Time unknown">no time</span>
-  const nd = from ? nextDayMark(from, s) : ''
-  return (
-    <span className="stamp">
-      <b>{clock(s)}</b>
-      {nd && <sup className="nd">{nd}</sup>}
-      {timeUncertain(s) && <span className="warnmark" title="Time not known exactly">!</span>}
-      <small>{day(s)}</small>
-    </span>
-  )
-}
-
-function Rate({ v }: { v: number }) {
-  return (
-    <span className="rate" title="Rating out of 10">
-      <span className="bar" aria-hidden="true"><i style={{ width: `${v * 10}%` }} /></span>
-      <b>{dec1(v)}</b>
-    </span>
-  )
-}
-
-function Num({ v, what }: { v: number | null | undefined; what: string }) {
-  return v == null ? <span className="q" title={`${what} unknown`}>not known</span> : <>{kr(v)}</>
-}
-
-/** Enter and space open a row the way a click does. */
-const onActivate = (fn: () => void) => (e: KeyboardEvent) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault()
-    fn()
-  }
-}
-
-/** The filters without the airport pair: the matrix picks the pair. */
-const noPair = (f: Filters): Filters => ({ ...f, arrival: '', departure: '' })
-
-/** The options that leave from home and come back to it, before the filters. */
-function useHomeRows(inout: InOut): Row[] {
-  const home = useStore((s) => s.home)
-  return useMemo(
-    () =>
-      inout.options
-        .map((o) => ({ o, wi: inout.ways[o.way_in], wh: inout.ways[o.way_home] }))
-        .filter((r) => r.wi && r.wh && r.wi.from === home && r.wh.to === home),
-    [inout, home],
-  )
-}
-
-function useRows(all: Row[]): Row[] {
-  const filters = useStore((s) => s.filters)
-  return useMemo(() => {
-    const f = noPair(filters)
-    return all.filter((r) => passesFilters(r.o, r.wi, r.wh, f))
-  }, [all, filters])
 }
 
 export function PickScreen({ data }: { data: AppData }) {
@@ -108,6 +48,12 @@ export function PickScreen({ data }: { data: AppData }) {
     [inout, home, arrival, departure, noUS, maxHubNights, sort],
   )
   const own = ownPair(inout, trip)
+  // the open pair is found among all the pairs, so a filter never closes it under the user
+  const openRow = useMemo(() => {
+    if (!pair) return null
+    const key = pairKey(pair)
+    return pairRows(inout, home, NO_FILTERS, sort).find((r) => r.key === key) ?? null
+  }, [inout, home, sort, pair])
   // the picker opens at its top when a trip's sheet sends you here
   useEffect(() => {
     if (pickFor) window.scrollTo({ top: 0 })
@@ -118,7 +64,7 @@ export function PickScreen({ data }: { data: AppData }) {
       <Controls inout={inout} />
       <div className="pk-body">
         <PairList inout={inout} rows={rows} ownKey={own && pairKey(own)} filtered={!!arrival || !!departure || noUS || maxHubNights != null} />
-        {pair && <OptionsView data={data} />}
+        {openRow && <PairPane key={openRow.key} inout={inout} row={openRow} trip={trip} />}
       </div>
     </div>
   )
@@ -222,7 +168,7 @@ function Controls({ inout }: { inout: InOut }) {
 const TOP = 10
 
 const TYPE_ICON: Record<WayType, { label: string; Icon: ComponentType<{ s?: number }> }> = {
-  ticket: { label: 'One ticket', Icon: Ticket },
+  ticket: { label: 'One ticket', Icon: TicketIcon },
   madrid: { label: 'Madrid ticket', Icon: TicketHop },
   oneways: { label: 'Two one ways', Icon: TwoTickets },
 }
@@ -313,142 +259,261 @@ function PairList({ inout, rows, ownKey, filtered }: { inout: InOut; rows: PairR
   )
 }
 
-function OptionsView({ data }: { data: AppData }) {
-  const { inout } = data
-  const all = useHomeRows(inout)
-  const rows = useRows(all)
+/** A local time as the day and the clock, with a mark when the clock is a guess. */
+function When({ s }: { s: string }) {
+  if (!s) return <span className="pk-faint">Time not known</span>
+  return (
+    <span className="pk-when">
+      <b>{weekdayDay(s)}</b> {clock(s)}
+      {timeUncertain(s) && <span className="warnmark" role="img" aria-label="Time not known exactly" title="Time not known exactly">!</span>}
+    </span>
+  )
+}
+
+/** A figure, or "not known" when the data has none. */
+function Fee({ v }: { v: number | null | undefined }) {
+  return v == null ? <span className="pk-faint">not known</span> : <>{kr(v)}</>
+}
+
+/**
+ * One pair opened: what each ticket type costs, the options as radio cards, the one ways to swap on two one
+ * ways, the two ways, the cost, the score in its parts and every ticket behind them.
+ */
+function PairPane({ inout, row, trip }: { inout: InOut; row: PairRow; trip: Journey | null }) {
   const home = useStore((s) => s.home)
-  const pair = useStore((s) => s.pair)
-  const setPair = useStore((s) => s.setPair)
-  const [expanded, setExpanded] = useState<string | null>(null)
-  const toggle = (id: string) => setExpanded((e) => (e === id ? null : id))
-  const [sort, setSort] = useState<SortKey>('rating')
-  const ap = (c: string) => inout.airports[c]?.name ?? c
-
-  const list = useMemo(() => {
-    const val = (r: Row): number | string => {
-      switch (sort) {
-        case 'rating': return -r.o.rating.total
-        case 'price': return r.o.price_dkk
-        case 'leave': return r.wi.depart
-        case 'home': return r.wh.arrive
-      }
-    }
-    return rows
-      .filter((r) => !pair || (r.o.entry === pair.in && r.o.exit === pair.home))
-      .sort((a, b) => {
-        const x = val(a), y = val(b)
-        return (x < y ? -1 : x > y ? 1 : 0) || b.o.rating.total - a.o.rating.total
-      })
-  }, [rows, pair, sort])
-
-  const th = (key: SortKey | null, label: string, num = false) => (
-    <th scope="col" className={num ? 'num' : undefined} aria-sort={key && sort === key ? SORT_DIR[key] : undefined}>
-      {key ? <button type="button" className="sort" onClick={() => setSort(key)}>{label}</button> : label}
-    </th>
-  )
-
+  const chosen = useStore((s) => s.chosen)
+  const setChosen = useStore((s) => s.setChosen)
+  const mixIn = useStore((s) => s.mixIn)
+  const mixHome = useStore((s) => s.mixHome)
+  const setMix = useStore((s) => s.setMix)
+  const [type, setType] = useState<WayType | null>(null)
+  const picked = pickedOf(inout, row, { chosen, tripIn: trip?.wayIn, tripHome: trip?.wayHome, mixIn, mixHome })
+  const tiles = typeTiles(row.options)
+  const list = type ? row.options.filter((o) => o.type === type) : row.options
+  const mix = picked.base.type === 'oneways' ? oneWaysFor(inout, home, row.in, row.home) : null
+  const choose = (id: string) => {
+    setChosen(id)
+    setMix('in', null)
+    setMix('home', null)
+  }
+  const name = `pk-opt-${row.key}`
   return (
-    <>
-      <section className="opt-sec" id="pick-list" aria-labelledby="opt-title">
-        <div className="sec-head">
-          {pair ? (
-            <>
-              <h3 className="sec-title" id="opt-title">{ap(pair.in)} in, {ap(pair.home)} home</h3>
-              <span className="count">{list.length} {list.length === 1 ? 'option' : 'options'}</span>
-              <span className="spacer" />
-              <button type="button" className="btn small" onClick={() => setPair(null)}>Show all pairs</button>
-            </>
-          ) : (
-            <>
-              <h3 className="sec-title" id="opt-title">All pairs</h3>
-              <span className="count">{list.length} of {all.length} options</span>
-            </>
-          )}
+    <section className="pk-pair" id="pk-pair" aria-label={`${cityName(inout, row.in)} to ${cityName(inout, row.home)}`}>
+      {tiles.length > 1 && (
+        <div className="pk-tiles" role="group" aria-label="Ticket type">
+          {tiles.map((t) => {
+            const { label, Icon } = TYPE_ICON[t.type]
+            return (
+              <button key={t.type} type="button" className="pk-tile" aria-pressed={type === t.type} onClick={() => {
+                if (type === t.type) return setType(null)
+                setType(t.type)
+                if (picked.base.type !== t.type) choose(t.option.id)
+              }}>
+                <span className="pk-tile-name"><Icon s={15} />{label}</span>
+                <b className="pk-tile-price">{kr(t.price)}</b>
+                <small className="pk-tile-delta" data-best={t.delta === 0 || undefined}>{t.delta === 0 ? 'Cheapest' : `+${kr(t.delta)}`}</small>
+              </button>
+            )
+          })}
         </div>
-        <div className="tablewrap opts-wrap">
-          <table className="grid opts">
-            <thead>
-              <tr>
-                {!pair && th(null, 'In')}
-                {!pair && th(null, 'Home')}
-                {th(null, 'Ticket')}
-                {th('price', 'Flights', true)}
-                {th(null, 'Bags', true)}
-                {th('rating', 'Rating')}
-                {th('leave', `Leaves ${home}`)}
-                {th(null, 'Lands')}
-                {th(null, 'Departs')}
-                {th('home', `Home in ${home}`)}
-                {th(null, 'Hub nights', true)}
-              </tr>
-            </thead>
-            <tbody>
-              {list.map(({ o, wi, wh }) => {
-                const open = expanded === o.id
-                return (
-                  <Fragment key={o.id}>
-                    <tr className={'orow' + (open ? ' open' : '')} tabIndex={0} onClick={() => toggle(o.id)} onKeyDown={onActivate(() => toggle(o.id))} aria-expanded={open}>
-                      {!pair && <td className="city"><b>{ap(o.entry)}</b><span className="code">{o.entry}</span></td>}
-                      {!pair && <td className="city"><b>{ap(o.exit)}</b><span className="code">{o.exit}</span></td>}
-                      <td><span className={'pill ' + o.type}>{TYPE_LABEL[o.type]}</span></td>
-                      <td className="num price">{kr(o.price_dkk)}</td>
-                      <td className="num"><span className="ico"><Bag /><Num v={o.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /></span></td>
-                      <td><Rate v={o.rating.total} /></td>
-                      <td><Stamp s={wi.depart} /></td>
-                      <td><Stamp s={wi.arrive} from={wi.depart} /></td>
-                      <td><Stamp s={wh.depart} /></td>
-                      <td><Stamp s={wh.arrive} from={wh.depart} /></td>
-                      <td className="num">{o.extras.hub_nights ? <span className="ico"><Moon />{o.extras.hub_nights}</span> : <span className="faint">0</span>}</td>
-                    </tr>
-                    {open && (
-                      <tr className="expand">
-                        <td colSpan={pair ? 9 : 11}><Expanded data={data} option={o} wi={wi} wh={wh} /></td>
-                      </tr>
-                    )}
-                  </Fragment>
-                )
-              })}
-            </tbody>
-          </table>
-          {list.length === 0 && <div className="empty">No option matches the filters.</div>}
-        </div>
-      </section>
-    </>
-  )
-}
+      )}
 
-/** The words of the build button: a new trip goes onto the map, a trip being changed takes the ways. */
-function useBuildLabel(): string {
-  return useStore((s) => (changing(s) ? 'Use these ways for the trip' : 'Build this trip on the map'))
-}
-
-function Expanded({ data, option, wi, wh }: { data: AppData; option: Option; wi: Way; wh: Way }) {
-  const pickWays = useStore((s) => s.pickWays)
-  const label = useBuildLabel()
-  const tickets = [...new Set([...wi.tickets, ...wh.tickets])].map((t) => data.inout.tickets[t]).filter(Boolean)
-  const build = () => pickWays(wi, wh, option.id)
-  return (
-    <div className="expand-in">
-      <div className="ways">
-        <WayCard way={wi} inout={data.inout} dir="in" />
-        <WayCard way={wh} inout={data.inout} dir="home" />
+      <div className="pk-opts" role="radiogroup" aria-label="Options">
+        {list.map((o) => {
+          const wi = inout.ways[o.way_in]
+          const wh = inout.ways[o.way_home]
+          if (!wi || !wh) return null
+          const { label, Icon } = TYPE_ICON[o.type]
+          const air = unique([...carriersOf(wi), ...carriersOf(wh)])
+          const on = o.id === picked.base.id
+          return (
+            <label key={o.id} className="pk-opt" data-on={on || undefined}>
+              <input type="radio" className="vh" name={name} checked={on} onChange={() => choose(o.id)} />
+              <Said label={label} className="pk-opt-type"><Icon s={16} /></Said>
+              <span className="pk-opt-ways">
+                <span className="pk-opt-way"><span className="pk-dir" aria-hidden="true"><Land s={13} /></span><span className="vh">Out </span><When s={wi.depart} /><span className="pk-stops">{stopsLabel(wi)}</span></span>
+                <span className="pk-opt-way"><span className="pk-dir" aria-hidden="true"><Plane s={13} /></span><span className="vh">Home </span><When s={wh.depart} /><span className="pk-stops">{stopsLabel(wh)}</span></span>
+                {air.length > 0 && <span className="pk-opt-air">{air.join(', ')}</span>}
+              </span>
+              <b className="pk-opt-price">{kr(allIn(o))}</b>
+            </label>
+          )
+        })}
       </div>
-      <div className="side">
-        <MiniMap data={data.inout} ways={[wi, wh]} onOpen={build} />
-        <div className="tot">
-          <span className="k">Flights, {tickets.length} {tickets.length === 1 ? 'ticket' : 'tickets'}</span><span className="v big">{kr(option.price_dkk)}</span>
-          <span className="k">Cabin bags</span><span className="v"><Num v={option.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /></span>
-          <span className="k">Checked bags</span><span className="v"><Num v={option.extras.checked_bag_fees_dkk} what="Checked-bag fee" /></span>
-          <span className="k">Hub nights, stay est.</span><span className="v">{option.extras.hub_nights} · <Num v={option.extras.hub_stay_estimate_dkk} what="Stay estimate" /></span>
-          <span className="sep" />
-          <span className="k">Rating: price, in, home</span><span className="v">{dec1(option.rating.price)} · {option.rating.way_in} · {option.rating.way_home}</span>
+
+      {mix && (mix.ins.length > 1 || mix.homes.length > 1) && (
+        <div className="pk-mix">
+          <MixList label="Way in" ways={mix.ins} at={picked.wi.id} price={(w) => allIn(mixOption(inout, w, picked.wh))} onPick={(id) => setMix('in', id === picked.base.way_in ? null : id)} />
+          <MixList label="Way home" ways={mix.homes} at={picked.wh.id} price={(w) => allIn(mixOption(inout, picked.wi, w))} onPick={(id) => setMix('home', id === picked.base.way_home ? null : id)} />
         </div>
-        <button type="button" className="btn primary wide" onClick={build}><Pin />{label}</button>
-        <p className="prov small faint">
-          {tickets.map((t) => `${t.legs.join(' + ')} ${kr(t.price_dkk)}, ${t.source} ${observed(t.observed_at)}`).join(' · ')}
-        </p>
+      )}
+
+      <div className="pk-legs">
+        <Leg inout={inout} way={picked.wi} dir="in" />
+        <Leg inout={inout} way={picked.wh} dir="home" />
+      </div>
+
+      <div className="pk-facts">
+        <Cost option={picked.option} />
+        <Score option={picked.option} wi={picked.wi} wh={picked.wh} />
+      </div>
+
+      <Tickets inout={inout} wi={picked.wi} wh={picked.wh} />
+    </section>
+  )
+}
+
+const unique = (xs: string[]) => [...new Set(xs)]
+
+/** The one ways of one side that can swap in, each priced all in with the other side kept, the one in use checked. */
+function MixList({ label, ways, at, price, onPick }: { label: string; ways: Way[]; at: string; price: (w: Way) => number; onPick: (id: string) => void }) {
+  const name = `pk-mix-${label}`
+  if (ways.length < 2) return null
+  return (
+    <div className="pk-mix-side" role="radiogroup" aria-label={label}>
+      <p className="pk-label">{label}</p>
+      {ways.map((w) => (
+        <label key={w.id} className="pk-mix-row" data-on={w.id === at || undefined}>
+          <input type="radio" className="vh" name={name} checked={w.id === at} onChange={() => onPick(w.id)} />
+          <When s={w.depart} />
+          <span className="pk-stops">{stopsLabel(w)}</span>
+          <span className="pk-mix-price" title="All in with this way">{kr(price(w))}</span>
+        </label>
+      ))}
+    </div>
+  )
+}
+
+/** One way: its ends with their clock times on the track, the flights, the time it takes. */
+function Leg({ inout, way, dir }: { inout: InOut; way: Way; dir: 'in' | 'home' }) {
+  const nums = flightNumbersOf(way)
+  const air = Math.abs(way.total_hours - way.flying_hours) >= 0.1
+  return (
+    <article className="pk-leg">
+      <header className="pk-leg-head">
+        <span className="pk-dir" aria-hidden="true">{dir === 'in' ? <Land s={14} /> : <Plane s={14} />}</span>
+        <h3>{dir === 'in' ? 'Way in' : 'Way home'}</h3>
+        <span className="pk-leg-time">
+          <Said label={`Total time ${hours(way.total_hours)}`} className="pk-fig"><Clock s={13} /><span aria-hidden="true">{hours(way.total_hours)}</span></Said>
+          {air && <Said label={`Time in the air ${hours(way.flying_hours)}`} className="pk-fig"><Plane s={12} /><span aria-hidden="true">{hours(way.flying_hours)}</span></Said>}
+        </span>
+      </header>
+      <WayTrack way={way} airports={inout.airports} />
+      {nums.length > 0 && <p className="pk-leg-air">{nums.join(', ')}</p>}
+    </article>
+  )
+}
+
+/** What the option costs: the parts of the all in price, the total, then the checked bags it leaves out. */
+function Cost({ option }: { option: Option }) {
+  const x = option.extras
+  const guess = x.cabin_bag_fees_dkk == null || (x.hub_nights > 0 && x.hub_stay_estimate_dkk == null)
+  return (
+    <dl className="pk-cost">
+      <dt>Flights</dt><dd>{kr(option.price_dkk)}</dd>
+      <dt>Cabin bags</dt><dd><Fee v={x.cabin_bag_fees_dkk} /></dd>
+      {x.hub_nights > 0 && (
+        <>
+          <dt>Hub stays<Said label={x.hub_nights === 1 ? '1 night' : `${x.hub_nights} nights`} className="pk-fig pk-faint"><Moon /><span aria-hidden="true">{x.hub_nights}</span></Said></dt>
+          <dd><Fee v={x.hub_stay_estimate_dkk} /></dd>
+        </>
+      )}
+      <dt className="pk-all">All in</dt>
+      <dd className="pk-all">
+        {kr(allIn(option))}
+        {guess && <span className="warnmark" role="img" aria-label="A fee is not known" title="A fee is not known">!</span>}
+      </dd>
+      <dt className="pk-extra">Checked bags</dt><dd className="pk-extra"><Fee v={x.checked_bag_fees_dkk} /></dd>
+    </dl>
+  )
+}
+
+/** The score out of 10 as a meter in three parts, the marks that cost points under the part they hit. */
+function Score({ option, wi, wh }: { option: Option; wi: Way; wh: Way }) {
+  const p = scoreParts(option.rating)
+  const parts = [
+    { key: 'price', label: 'Price', v: p.price, of: 5, lost: [] as string[] },
+    { key: 'home', label: 'Way home', v: p.home, of: 3, lost: pointsLost(wh).map(lossLabel) },
+    { key: 'in', label: 'Way in', v: p.in, of: 2, lost: pointsLost(wi).map(lossLabel) },
+  ]
+  const said = `Score ${dec1(p.total)} of 10: ` + parts.map((x) => `${x.label.toLowerCase()} ${dec1(x.v)} of ${x.of}`).join(', ')
+  return (
+    <div className="pk-score">
+      <p className="pk-score-head"><span className="pk-label">Score</span><b>{dec1(p.total)}</b></p>
+      <div className="pk-meter" role="img" aria-label={said}>
+        {parts.map((x) => (
+          <span key={x.key} style={{ flexGrow: x.of }}><i style={{ width: `${Math.max(0, Math.min(1, x.v / x.of)) * 100}%` }} /></span>
+        ))}
+      </div>
+      <div className="pk-parts" aria-hidden="true">
+        {parts.map((x) => (
+          <div key={x.key} style={{ flexGrow: x.of }}>
+            <span className="pk-part-name">{x.label}</span> <span className="pk-part-v">{dec1(x.v)}</span>
+            {x.lost.map((l, i) => <span key={i} className="pk-lost">{l}</span>)}
+          </div>
+        ))}
       </div>
     </div>
+  )
+}
+
+const SOURCE: Record<string, string> = { momondo: 'Momondo', 'momondo-manual': 'Momondo', kiwi: 'Kiwi.com', google_flights: 'Google Flights', 'google-flights-manual': 'Google Flights', expedia: 'Expedia' }
+
+/** Every ticket behind the two ways: where and when it was seen, the fare, the legs, the price, the bags, its flags, one link and its notes. */
+function Tickets({ inout, wi, wh }: { inout: InOut; wi: Way; wh: Way }) {
+  const list = ticketsOf(inout, wi, wh)
+  if (!list.length) return null
+  return (
+    <div className="pk-tickets">
+      <p className="pk-label">{list.length === 1 ? '1 ticket' : `${list.length} tickets`}</p>
+      <ul>
+        {list.map(({ ticket: t, link }) => <TicketRow key={t.id} t={t} link={link} />)}
+      </ul>
+    </div>
+  )
+}
+
+function TicketRow({ t, link }: { t: Ticket; link: FlightLink | null }) {
+  const notes = useDisclosure()
+  const site = link?.site ?? SOURCE[t.source] ?? t.source
+  return (
+    <li className="pk-ticket">
+      <div className="pk-t-head">
+        <b className="pk-t-site">{site}</b>
+        <span className="pk-faint">Seen {observed(t.observed_at)}</span>
+        <b className="pk-t-price">{kr(t.price_dkk)}</b>
+      </div>
+      <div className="pk-t-legs">
+        {t.legs.map((l, i) => {
+          const e = legEnds(l)
+          return (
+            <span key={i} className="pk-t-leg">
+              {e ? <>{e[0]}<span aria-hidden="true"><Arrow s={11} /></span><span className="vh"> to </span>{e[1]}</> : l}
+            </span>
+          )
+        })}
+        {t.fare_brand && <span className="pk-t-fare">{t.fare_brand}</span>}
+      </div>
+      <div className="pk-t-bags">
+        <span className="pk-t-bag"><Said label="Cabin bag" className="pk-fig"><Bag s={13} /></Said>{bagWords(t.cabin_bag, t.cabin_bag_fee_dkk)}</span>
+        <span className="pk-t-bag"><Said label="Checked bag" className="pk-fig"><Suitcase s={13} /></Said>{bagWords(t.checked_bag, t.checked_bag_fee_dkk, true)}</span>
+      </div>
+      {t.flags.length > 0 && (
+        <ul className="pk-t-flags" aria-label="Flags">
+          {t.flags.map((f) => { const c = flagChip(f); return <li key={f} className="pk-flag" data-tone={c.tone}>{c.label}</li> })}
+        </ul>
+      )}
+      <div className="pk-t-foot">
+        {link && (
+          <a className="btn small" href={link.href} target="_blank" rel="noreferrer" title={link.saved ? `The page the price was seen on, at ${link.site}` : `A fresh search at ${link.site}`}>
+            {link.saved ? `Open on ${link.site}` : `Search ${link.site}`}<External />
+          </a>
+        )}
+        {t.notes && (
+          <button className="btn link small pk-t-notes" {...notes.trigger}>Notes<Chevron open={notes.open} /></button>
+        )}
+      </div>
+      {t.notes && <DisclosurePanel {...notes.panel}><p className="pk-t-note">{t.notes}</p></DisclosurePanel>}
+    </li>
   )
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { Way } from '../data/types'
-import { lossLabel, pairMarks } from './pickMarks'
+import type { TimelineItem, Way } from '../data/types'
+import { bagWords, carriersOf, flightNumbersOf, legEnds, lossLabel, pairMarks, stopsLabel } from './pickMarks'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -35,5 +35,39 @@ describe('pairMarks', () => {
       { kind: 'us', label: 'Through the United States, way in' },
       { kind: 'long', label: 'Over 23 hours flying, way home' },
     ])
+  })
+})
+
+const fly = (carriers: string[], flight_numbers?: string[]): TimelineItem =>
+  ({ kind: 'flight', from: 'CPH', to: 'MAD', depart: '', arrive: '', hours: 3, connections: [], carriers, flight_numbers, overnight_layover: false, self_transfer_inside: false, ticket: 'TEST01' })
+
+describe('the words of a way', () => {
+  it('counts the stops from the flights', () => {
+    expect(stopsLabel(way({ flights: 1 }))).toBe('Direct')
+    expect(stopsLabel(way({ flights: 2 }))).toBe('1 stop')
+    expect(stopsLabel(way({ flights: 4 }))).toBe('3 stops')
+  })
+
+  it('names each airline once and falls back to it for a flight without numbers', () => {
+    const w = way({ timeline: [fly(['Iberia'], ['Iberia 1']), fly(['Iberia', ' ']), fly([], [])] })
+    expect(carriersOf(w)).toEqual(['Iberia'])
+    expect(flightNumbersOf(w)).toEqual(['Iberia 1', 'Iberia'])
+  })
+})
+
+describe('the words of a ticket', () => {
+  it('splits a leg into its airports', () => {
+    expect(legEnds('CPH>MAD')).toEqual(['CPH', 'MAD'])
+    expect(legEnds('Madrid to Bogota')).toBeNull()
+  })
+
+  it('puts a bag in plain words', () => {
+    expect(bagWords(null, null)).toBe('not known')
+    expect(bagWords('unknown', null)).toBe('not known')
+    expect(bagWords('1 carry-on', 0)).toBe('1 carry-on')
+    expect(bagWords('incl', null, true)).toBe('included')
+    expect(bagWords('none', null, true)).toBe('not included')
+    expect(bagWords('paid', null, true)).toBe('paid, fee not known')
+    expect(bagWords('paid', 300, true)).toBe('paid, 300 kr')
   })
 })
