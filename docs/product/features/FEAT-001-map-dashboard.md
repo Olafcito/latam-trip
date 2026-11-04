@@ -1,7 +1,7 @@
 # FEAT-001: The map as the trip dashboard
 
 - Date: 2026-11-04
-- Status: Planned (`docs/superpowers/plans/2026-11-04-map-dashboard.md`)
+- Status: Built 2026-11-04 from `docs/superpowers/plans/2026-11-04-map-dashboard.md`, roasted before at 4/10 and after at 5/10 with one fix round, shots and the two roasts in `docs/design/shots/map-tab/2026-11-04/`. Deviations from the plan: the control column does not move with the sheet, the layer scope is the trip's stop coordinates rather than the drawn route, and the route scope rule is tested as a pure function instead of through a hook. Open after the build: the leg panel hero and its fare row can disagree on stops, the phone fit at peek gives the route half the map, the mode pills are not folded, and the gym filters open above the list on desktop.
 
 ## 1. Problem
 
@@ -109,6 +109,7 @@ Story 7
 - A date outside the trip. A stay or a training entry saved for a place still shows in that place's panel even when its date range falls outside the open trip's current stop dates, per PROD-004.
 - The phone. Opening a stop's panel never covers the zoom buttons or the legend, and the sheet's peek detent still shows the stop's name.
 - The guest. Signed out, a stop with a lodging or a booking saved against it shows no trace of that record anywhere in the panel.
+- Saving a gym. A list holds places and experiences only, so a gym shown in the training section cannot be saved to the trip from the panel. The panel shows it and offers no save until the lists carry training entries.
 
 ## 10. Dependencies
 
@@ -152,6 +153,8 @@ Privacy. Lodgings and bookings are owner only tables per PROD-005. The signed ou
 - REC-018, REC-019 (flagged, design log). The semantic colour rule for the map and a route line pattern per transport mode. Decided by the senior designer.
 - Whether the panel's five sections are collapsible sections or tabs. This spec proposes collapsible sections, following the existing CityBody, PlaceSections and experiences layer pattern. Decided by the product lead.
 - What a saved places section holds exactly, only experiences and training already marked at that place, or also a bookmarked place itself with no marked item under it. Decided by the product lead, since no existing component draws this section today.
+- Whether the two panels, the trip pane and the stop panel on opposite sides, become one panel that pushes trip to stop to leg. Both roasts ask for it. Decided by Simon.
+- Whether the three mode pills fold into one control on the phone. The after roast asks for it. Decided by Simon.
 
 ## Completeness
 
