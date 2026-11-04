@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { InOut, Option, Ticket, Way } from '../data/types'
+import type { Booking, InOut, Option, Ticket, Way } from '../data/types'
 import { DEFAULT_FILTERS } from './options'
-import { allIn, cityChoices, flagChip, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
+import type { BookData } from './booked'
+import type { Journey } from './journey'
+import { allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -217,5 +219,29 @@ describe('the flags of a ticket', () => {
   })
   it('reads a new flag as its own words', () => {
     expect(flagChip('red_eye_out')).toEqual({ label: 'Red eye out', tone: 'plain' })
+  })
+})
+
+describe('heldSides', () => {
+  const data: BookData = { inout: { airports: {}, ways: { I_o: oIn, H_o: oHome } }, map: { nodes: [] } }
+  const journey = { wayIn: 'I_o', wayHome: 'H_o' } as Journey
+  const booking = (w: Way) => ({ kind: 'flight', status: 'booked', from_code: w.from, to_code: w.to, depart: w.depart }) as Booking
+  const bookedIn = booking(oIn)
+  const bookedHome = booking(oHome)
+
+  it('holds nothing without a journey or a booking', () => {
+    expect(heldSides([bookedIn, bookedHome], data, null, oIn2, tHome, null)).toEqual({ in: false, home: false })
+    expect(heldSides([], data, journey, oIn2, tHome, null)).toEqual({ in: false, home: false })
+  })
+
+  it('holds the side whose booked way the pick would replace', () => {
+    expect(heldSides([bookedIn], data, journey, oIn2, tHome, null)).toEqual({ in: true, home: false })
+    expect(heldSides([bookedIn], data, journey, oIn, tHome, null)).toEqual({ in: false, home: false })
+  })
+
+  it('holds both sides, and not a side being unlocked', () => {
+    expect(heldSides([bookedIn, bookedHome], data, journey, oIn2, tHome, null)).toEqual({ in: true, home: true })
+    expect(heldSides([bookedIn, bookedHome], data, journey, oIn2, tHome, 'in')).toEqual({ in: false, home: true })
+    expect(heldSides([bookedIn, bookedHome], data, journey, oIn2, tHome, 'home')).toEqual({ in: true, home: false })
   })
 })

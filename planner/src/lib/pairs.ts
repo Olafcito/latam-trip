@@ -1,6 +1,8 @@
 // The pairs of the way picker: every way in and way home that leave from one home, one row per pair of
 // cities, ranked by the project's score or by the all in price, with what each pair loses points for.
-import type { Airport, InOut, Option, Rating, Ticket, Way, WayType } from '../data/types'
+import type { Airport, Booking, InOut, Option, Rating, Ticket, Way, WayType } from '../data/types'
+import { wayHeld, type BookData } from './booked'
+import type { Journey } from './journey'
 import { mixWays, type Filters } from './options'
 import { ticketLink, type FlightLink } from './links'
 
@@ -243,4 +245,17 @@ export function flagChip(flag: string): { label: string; tone: FlagTone } {
   if (f) return { label: f[0], tone: f[1] }
   const words = flag.replace(/_/g, ' ').trim()
   return { label: words.charAt(0).toUpperCase() + words.slice(1), tone: 'plain' }
+}
+
+/**
+ * The sides of the trip whose booked way a pick of wi and wh would replace. A side being unlocked is not held,
+ * and no journey holds nothing.
+ */
+export function heldSides(bookings: Booking[], data: BookData, journey: Journey | null, wi: Way, wh: Way, unlocked: 'in' | 'home' | number | null): { in: boolean; home: boolean } {
+  if (!journey) return { in: false, home: false }
+  const ways = data.inout.ways
+  return {
+    in: wayHeld(bookings, data, ways[journey.wayIn], wi, unlocked === 'in'),
+    home: wayHeld(bookings, data, ways[journey.wayHome], wh, unlocked === 'home'),
+  }
 }
