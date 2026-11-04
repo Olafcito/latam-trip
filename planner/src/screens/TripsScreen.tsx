@@ -239,7 +239,7 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
         <span className="tt-tagline">
           {draft ? <span className="tag draft">not saved</span>
             : j.rank != null ? <span className="tag" title="Rank among the planned trips">#{j.rank}</span>
-              : j.version != null ? (versioned ? null : <span className="tag" title={`Version ${j.version} in the trips table`}>v{j.version}</span>)
+              : j.version != null ? (versioned ? null : <span className="tag" title="Version in the trips table">version {j.version}</span>)
                 : <span className="tag mine">mine</span>}
           {!draft && versioned && <VersionMenu id={j.id} version={j.version!} />}
           {mark && <span className="tt-booked" title="Legs, ways and stays booked"><Ticket />{mark}</span>}
