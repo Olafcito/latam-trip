@@ -19,7 +19,7 @@
 
 /* ---- controls: one wrapping row of pills ---------------------------------------------------- */
 .pk-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.pk-sort { margin-inline: 2px; }
+.pk-sortbox { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-inline: 2px; }
 .pk-chip { padding-inline: 12px; }
 
 /* ---- the grid: every pair, quiet cells, amber only for the top, gaps where no pair exists ---- */
@@ -77,8 +77,8 @@ table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-
 /* keyboard focus sits inside the cell, so it never hides behind the neighbours */
 .matrix td.t button:focus-visible { z-index: 1; outline: 2px solid var(--text); outline-offset: -5px; }
 
-/* the key: amber fill for the top 10, amber figures for the next 20, the green ring for the trip */
-.mx-key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 0; padding-left: 4px; font-size: var(--fs-label); font-weight: 500; color: var(--muted); }
+/* the key beside the order: amber fill for the top 10, amber figures for the next 20, the green ring for the trip */
+.mx-key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0; font-size: var(--fs-label); font-weight: 500; color: var(--muted); }
 .mx-key > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .mx-key i { width: 12px; height: 12px; border-radius: 3px; }
 .mx-k1 i { background: var(--flight); }

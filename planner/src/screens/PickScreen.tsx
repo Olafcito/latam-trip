@@ -122,7 +122,7 @@ export function PickScreen({ data }: { data: AppData }) {
   return (
     <div className="pick">
       <Head inout={inout} trip={trip} shown={openRow ?? own} />
-      <Controls inout={inout} />
+      <Controls inout={inout} ownShown={!!ownKey && rows.some((r) => r.key === ownKey)} />
       <div className="pk-body">
         <div className="pk-main">
           {rows.length > 0 && <Matrix inout={inout} frame={frame} rows={rows} sort={sort} ownKey={ownKey} openKey={openKey} onPick={toggle} />}
@@ -188,7 +188,7 @@ const HUB: { value: string; label: string; short: string; max: number | null }[]
 ]
 
 /** One wrapping row: where from, where in, where home, the order, and the two filters. */
-function Controls({ inout }: { inout: InOut }) {
+function Controls({ inout, ownShown }: { inout: InOut; ownShown: boolean }) {
   const home = useStore((s) => s.home)
   const setHome = useStore((s) => s.setHome)
   const filters = useStore((s) => s.filters)
@@ -215,9 +215,16 @@ function Controls({ inout }: { inout: InOut }) {
       <HomePill value={home} onChange={setHome} best={homeBest} />
       <PillSelect name="Fly in" value={arrival} options={ins} onChange={(v) => setFilters({ arrival: v })} icon={<Land s={14} />} set={!!arrival} />
       <PillSelect name="Fly home" value={departure} options={homes} onChange={(v) => setFilters({ departure: v })} icon={<Plane s={14} />} set={!!departure} />
-      <div className="seg pk-sort" role="group" aria-label="Order">
-        <button type="button" aria-pressed={sort === 'best'} onClick={() => setSort('best')}>Best</button>
-        <button type="button" aria-pressed={sort === 'cheapest'} onClick={() => setSort('cheapest')}>Cheapest</button>
+      <div className="pk-sortbox">
+        <div className="seg pk-sort" role="group" aria-label="Order">
+          <button type="button" aria-pressed={sort === 'best'} onClick={() => setSort('best')}>Best</button>
+          <button type="button" aria-pressed={sort === 'cheapest'} onClick={() => setSort('cheapest')}>Cheapest</button>
+        </div>
+        <p className="mx-key" role="img" aria-label={`Amber cells are the ${sort === 'best' ? 'top 10' : 'cheapest 10'} pairs, amber figures the next 20${ownShown ? ', the green ring is the trip' : ''}`}>
+          <span className="mx-k1"><i />{sort === 'best' ? 'Top 10' : 'Cheapest 10'}</span>
+          <span className="mx-k2">Next 20</span>
+          {ownShown && <span className="mx-k3"><i />In the trip</span>}
+        </p>
       </div>
       <button type="button" className="ps-pill pk-chip" aria-pressed={noUS} data-set={noUS || undefined} title="Leave out ways through the United States" onClick={() => setFilters({ noUS: !noUS })}>
         No US
@@ -231,8 +238,8 @@ function Controls({ inout }: { inout: InOut }) {
   )
 }
 
-/** What a cell says: the score, or the all in price in thousands with one decimal, 7.428 kr as 7,4. */
-const cellFigure = (v: number, sort: PairSort) => (sort === 'best' ? dec1(v) : dec1(v / 1000))
+/** What a cell says: the score, or the all in price in thousands with one decimal, 7.428 kr as 7,4k. */
+const cellFigure = (v: number, sort: PairSort) => (sort === 'best' ? dec1(v) : `${dec1(v / 1000)}k`)
 
 /**
  * Every pair at once: the cities flown in to as rows, the cities flown home from as columns, both by region.
@@ -356,11 +363,6 @@ function Matrix({ inout, frame, rows, sort, ownKey, openKey, onPick }: {
           </tbody>
         </table>
       </div>
-      <p className="mx-key" role="img" aria-label={`Amber cells are the top 10 pairs by the order, amber figures the next 20${ownKey && cells.has(ownKey) ? ', the green ring is the trip' : ''}`}>
-        <span className="mx-k1"><i />Top 10</span>
-        <span className="mx-k2">Next 20</span>
-        {ownKey && cells.has(ownKey) && <span className="mx-k3"><i />In the trip</span>}
-      </p>
     </section>
   )
 }
