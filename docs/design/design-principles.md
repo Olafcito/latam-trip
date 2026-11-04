@@ -13,3 +13,5 @@ Accepted principles only. They are what the accepted decisions in `design-decisi
 | P-007 | Local and honest numbers. Prices in Danish kroner, times as local clock times. | DES-011 |
 | P-008 | Apple design leads. Wallet, Maps and Flighty are the references for the booking views. | DES-001 |
 | P-009 | A warning shows only when something needs attention. No build line, log text or chip appears while everything is fine. | DES-022 |
+| P-010 | An unknown value is never zero and never the word for it. It gets its own mark, dimmed and distinct, so an absence is never mistaken for a number. | DES-013 |
+| P-011 | One formatter, used everywhere. Money and durations each have exactly one function, always carrying their unit, never a bare decimal. | DES-025 |
