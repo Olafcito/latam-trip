@@ -57,7 +57,13 @@ export function journeyToTrip(j: Journey, updated = Date.parse(j.savedAt ?? '') 
   const legs: TripLeg[] = legPlaces(j).map((k) => {
     const from = j.places[k - 1].node
     const to = j.places[k].node
-    return { cid: [from, to].sort().join('-'), from, to, mode: j.places[k].hop?.mode ?? 'bus' }
+    const hop = j.places[k].hop
+    const leg: TripLeg = { cid: [from, to].sort().join('-'), from, to, mode: hop?.mode ?? 'bus' }
+    // the itinerary's own numbers ride on the leg, so the map's stop panel cannot say anything else
+    const own = hop?.flight?.hours ?? hop?.hours
+    if (own != null) leg.minutes = Math.round(own * 60)
+    if (hop?.price_dkk != null) leg.dkk = hop.price_dkk
+    return leg
   })
   const trip: Trip = { id: j.id, name: j.name, legs, updated, start: j.places[0]?.node }
   // overland blocks only exist as segments, so a journey that has one lists every hop as a segment

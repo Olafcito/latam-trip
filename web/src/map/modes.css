@@ -271,3 +271,10 @@
     .panel.mcard, .pview.mc-back, .mc-bar i { animation: none; }
   }
 }
+
+/* the hero card's cheapest fare mark, and the fares by date for the way back folded under the travelled way */
+.oc-cost { display: inline-flex; align-items: center; gap: 5px; }
+.oc-fare { display: inline-flex; color: var(--flight); }
+.bd-rev > summary { cursor: pointer; font-size: 12px; color: var(--muted); padding: 4px 0; list-style: none; min-height: 32px; display: flex; align-items: center; }
+.bd-rev > summary::-webkit-details-marker { display: none; }
+.bd-rev[open] > summary { display: none; }

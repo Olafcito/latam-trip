@@ -114,6 +114,16 @@ describe('the city panel as sections', () => {
     expect(out).not.toMatch(/Pick a connection|ends here|Adding to/)
   })
 
+  it('the leg rows show the numbers the itinerary shows for the same leg', () => {
+    const itinerary: Trip = { ...trip, legs: [trip.legs[0], { ...trip.legs[1], minutes: 465, dkk: 1755 }] }
+    const out = sectionOf(city('SAL', { trip: itinerary }), 'Overview')
+    expect(out).toContain('7h45m')
+    expect(out).toContain('1.755 kr')
+    const bog = sectionOf(city('BOG', { trip: itinerary }), 'Overview')
+    expect(bog).toContain('7h45m')
+    expect(bog).toContain('1.755 kr')
+  })
+
   it('a stop with no leg out offers the add leg control', () => {
     const out = sectionOf(city('BOG', { trip }), 'Overview')
     expect(out).toContain('San Salvador')

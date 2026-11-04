@@ -1,11 +1,11 @@
 import { useRef, useState, type ReactNode, type Ref } from 'react'
 import { airportFlights, byCountry, countries, countryName, landing, neighbours, otherEnd, pairFlights, stopsFrom, viaText, type Model, type Neighbour } from '../data/model'
 import { capped } from '../data/cardFacts'
-import { legOption, tripPieces, tripStops, type Piece, type Trip } from '../data/trips'
+import { legOption, tripPieces, tripStops, type Piece, type Trip, type TripLeg } from '../data/trips'
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate } from '../lib/format'
 import { Flag as CountryFlag } from './Flag'
-import { Arrow, Back, Chevron, Close, Flag, ModeChip, Moon, Plus } from './icons'
+import { Arrow, Back, Chevron, Close, Fare, Flag, ModeChip, Moon, Plus } from './icons'
 import { PlaceSections } from './PlaceSections'
 import { Unknown } from './Unknown'
 import type { CardRef, MapModeApi } from './useMapMode'
@@ -421,11 +421,17 @@ function StopLegs({ p, trip, city, stop, days, onAdd }: { p: PanelProps; trip: T
   )
 }
 
+/** The time and price of a leg: what the host's itinerary carries on the leg, else the connection's fastest option of its mode. */
+function legNumbers(leg: TripLeg, opt: RouteOption | undefined) {
+  return { minutes: leg.minutes ?? opt?.duration_min ?? null, dkk: leg.dkk ?? opt?.price_dkk.min ?? null }
+}
+
 /** A leg or an overland stretch to or from the stop. A leg opens its route, a stretch goes to the stop at its other end. */
 function PieceRow({ p, piece, other, n, way }: { p: PanelProps; piece: Piece; other: string; n: number; way: 'in' | 'out' }) {
   const name = p.model.byId.get(other)?.short_name ?? other
   const leg = piece.kind === 'leg' ? piece.leg : null
   const found = leg ? legOption(p.model, leg) : null
+  const { minutes, dkk } = leg ? legNumbers(leg, found?.opt) : { minutes: null, dkk: null }
   const open = () => (leg && found ? p.onRoute(leg.cid, leg.from) : p.onGoTo(other))
   return (
     <li className="ts-row">
@@ -443,8 +449,8 @@ function PieceRow({ p, piece, other, n, way }: { p: PanelProps; piece: Piece; ot
           {leg && (
             <span className="ts-facts mono">
               <ModeChip family={familyOf(leg.mode)} />
-              {found?.opt.duration_min != null ? <b>{duration(found.opt.duration_min)}</b> : <Unknown title="Travel time not known" />}
-              {found?.opt.price_dkk.min != null ? kr(found.opt.price_dkk.min) : <Unknown title="Price not known" />}
+              {minutes != null ? <b>{duration(minutes)}</b> : <Unknown title="Travel time not known" />}
+              {dkk != null ? kr(dkk) : <Unknown title="Price not known" />}
             </span>
           )}
         </span>
@@ -587,36 +593,45 @@ const weekday = (iso: string) => new Date(iso + 'T00:00:00Z').toLocaleDateString
 /** The cheapest crawled fare per departure date, the travelled direction first. */
 function ByDate({ model, rows, from }: { model: Model; rows: DatedFare[]; from: string }) {
   const name = (id: string) => model.byId.get(id)?.short_name ?? id
-  const groups = [rows.filter((r) => r.from === from), rows.filter((r) => r.from !== from)].filter((g) => g.length)
+  const travelled = rows.filter((r) => r.from === from)
+  const back = rows.filter((r) => r.from !== from)
+  const group = (g: DatedFare[]) => {
+    const low = Math.min(...g.map((r) => r.dkk ?? Infinity))
+    return (
+      <div key={g[0].from}>
+        <p className="sec-k mono">Fares by date · {name(g[0].from)} to {name(g[0].to)}</p>
+        <ul>
+          {g.map((r) => {
+            const url = `https://www.momondo.dk/flight-search/${model.byId.get(r.from)?.iata ?? r.from}-${model.byId.get(r.to)?.iata ?? r.to}/${r.date}`
+            const route = r.vias.length ? 'via ' + r.vias.map(name).join(', ') : 'nonstop'
+            return (
+              <li key={r.date} className={g.length > 1 && r.dkk === low ? 'low' : ''}>
+                <a href={url} target="_blank" rel="noreferrer" title={r.flights.join(', ') || undefined}>
+                  <span className="bd-day mono">{weekday(r.date)} {shortDate(r.date)}</span>
+                  <span className="bd-price mono">{kr(r.dkk)}</span>
+                  <span className="bd-meta">
+                    {r.dep && r.arr ? <span className="mono">{times(r)}</span> : null}
+                    <span>{duration(r.duration_min)} · {route}</span>
+                    <span>{r.carriers.join(', ')}{r.self_transfer ? ' · self transfer' : ''}</span>
+                  </span>
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    )
+  }
   return (
     <div className="bydate">
-      {groups.map((g) => {
-        const low = Math.min(...g.map((r) => r.dkk ?? Infinity))
-        return (
-          <div key={g[0].from}>
-            <p className="sec-k mono">Fares by date · {name(g[0].from)} to {name(g[0].to)}</p>
-            <ul>
-              {g.map((r) => {
-                const url = `https://www.momondo.dk/flight-search/${model.byId.get(r.from)?.iata ?? r.from}-${model.byId.get(r.to)?.iata ?? r.to}/${r.date}`
-                const route = r.vias.length ? 'via ' + r.vias.map(name).join(', ') : 'nonstop'
-                return (
-                  <li key={r.date} className={g.length > 1 && r.dkk === low ? 'low' : ''}>
-                    <a href={url} target="_blank" rel="noreferrer" title={r.flights.join(', ') || undefined}>
-                      <span className="bd-day mono">{weekday(r.date)} {shortDate(r.date)}</span>
-                      <span className="bd-price mono">{kr(r.dkk)}</span>
-                      <span className="bd-meta">
-                        {r.dep && r.arr ? <span className="mono">{times(r)}</span> : null}
-                        <span>{duration(r.duration_min)} · {route}</span>
-                        <span>{r.carriers.join(', ')}{r.self_transfer ? ' · self transfer' : ''}</span>
-                      </span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        )
-      })}
+      {travelled.length > 0 && group(travelled)}
+      {back.length > 0 && (
+        // the way the header reads leads, the other way waits one tap deeper
+        <details className="bd-rev" open={travelled.length === 0}>
+          <summary className="sec-k mono">Fares by date · {name(back[0].from)} to {name(back[0].to)}</summary>
+          {group(back)}
+        </details>
+      )}
     </div>
   )
 }
@@ -693,6 +708,13 @@ function FlightFacts({ model, o, from }: { model: Model; o: RouteOption; from: s
   )
 }
 
+/** One real option for the hero: a flight reads as its cheapest crawled fare with that fare's own duration, anything else as it is. */
+function heroFare(o: RouteOption) {
+  const q = o.mode === 'flight' ? o.flight?.cheapest : null
+  if (q) return { minutes: q.duration_min, dkk: q.dkk, cheapest: true }
+  return { minutes: o.duration_min, dkk: o.price_dkk.min, cheapest: false }
+}
+
 function RouteView(p: PanelProps & { conn: Connection }) {
   const { model, view, conn } = p
   const from = view.from ?? conn.a
@@ -728,11 +750,16 @@ function RouteView(p: PanelProps & { conn: Connection }) {
         )}
         {opts.length > 0 ? (
           <div className="compare">
-            {opts.map((o, i) => (
+            {opts.map((o, i) => {
+              const real = heroFare(o)
+              return (
               <button key={i} className={`ocard${o === cur ? ' cur' : ''}`} aria-pressed={o === cur} onClick={() => p.onOption(i)}>
                 <span className="oc-mode"><ModeChip family={familyOf(o.mode)} />{modeLabel(o.mode)}</span>
-                <span className="oc-dur mono">{o.duration_min == null ? <Unknown title="Duration not known" /> : duration(o.duration_min)}</span>
-                <span className="oc-cost mono">{o.price_dkk.min == null ? <Unknown title="Price not known" /> : fromPrice(o.price_dkk.min)}</span>
+                <span className="oc-dur mono">{real.minutes == null ? <Unknown title="Duration not known" /> : duration(real.minutes)}</span>
+                <span className="oc-cost mono">
+                  {real.cheapest && <span className="oc-fare" role="img" aria-label="Cheapest fare" title="Cheapest fare"><Fare /></span>}
+                  {real.dkk == null ? <Unknown title="Price not known" /> : real.cheapest ? kr(real.dkk) : fromPrice(real.dkk)}
+                </span>
                 <span className="oc-via">{viaText(model, conn, o, from)}</span>
                 {(o.overnight || o.border) && (
                   <span className="oc-flags">
@@ -741,7 +768,8 @@ function RouteView(p: PanelProps & { conn: Connection }) {
                   </span>
                 )}
               </button>
-            ))}
+              )
+            })}
           </div>
         ) : (
           <p className="empty">All modes on this route are switched off.</p>

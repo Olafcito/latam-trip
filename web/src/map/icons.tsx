@@ -112,6 +112,21 @@ export const Info = ({ s = 14 }: { s?: number }) => (
   </svg>
 )
 
+/** The cheapest fare: a price tag. */
+export const Fare = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M3 12.6V4.5A1.5 1.5 0 0 1 4.5 3h8.1a1.5 1.5 0 0 1 1.06.44l7 7a1.5 1.5 0 0 1 0 2.12l-8.1 8.1a1.5 1.5 0 0 1-2.12 0l-7-7A1.5 1.5 0 0 1 3 12.6z" />
+    <path d="M8 8h.01" />
+  </svg>
+)
+
+/** The fastest fare: a bolt. */
+export const Quick = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M13 2 4 14h7l-1 8 9-12h-7z" />
+  </svg>
+)
+
 export function ModeChip({ family, lg }: { family: Family; lg?: boolean }) {
   const s = lg ? 15 : 12
   return (

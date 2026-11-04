@@ -10,6 +10,9 @@ export interface TripLeg {
   from: string
   to: string
   mode: Mode
+  /** What a host's itinerary shows for this leg, so the stop panel reads the same numbers. Absent: the connection's fastest option. */
+  minutes?: number | null
+  dkk?: number | null
 }
 
 /** A flight in a long-haul way's timeline, connections inside the ticket included. Times are local. */
