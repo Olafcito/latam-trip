@@ -26,6 +26,12 @@
 .pk-body { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 .pk-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 .mx { display: flex; flex-direction: column; gap: 10px; width: fit-content; min-width: 0; max-width: 100%; }
+/* a window narrower than the grid scrolls it inside its own box, the city names held on the left,
+   and a cell reached by the keyboard scrolls clear of them */
+.mx-box {
+  max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin;
+  scroll-padding: 48px 0 0 164px;
+}
 table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-size: var(--fs-small); }
 .matrix th { background: var(--ground); font-weight: 500; color: var(--muted); white-space: nowrap; transition: background-color var(--t-fast) ease, color var(--t-fast) ease; }
 .matrix thead th { position: sticky; top: 0; z-index: 3; }
@@ -262,6 +268,16 @@ table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-
   .pk-pair { padding: 14px 12px; }
   .pk-apply { margin: 0 -12px -14px; padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px)); }
   .pk-opt { padding-inline: 10px; column-gap: 10px; }
+  /* the grid in a box of its own, both heads held while it scrolls, the page never sideways */
+  .mx { width: auto; }
+  .mx-box {
+    max-height: min(70dvh, 620px); overflow: auto; overscroll-behavior: contain;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    scroll-padding: 48px 0 0 116px;
+  }
+  .matrix th.corner { width: 116px; min-width: 116px; }
+  .matrix th.rowh { width: 116px; min-width: 116px; max-width: 116px; padding: 2px 8px 2px 6px; white-space: normal; line-height: 1.2; }
+  .matrix .rowh-in { gap: 6px; overflow-wrap: anywhere; }
 }
 
 /* ---- the pill select: a round pill, a short list under it, a sheet on a phone --------------- */
