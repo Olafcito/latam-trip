@@ -5,6 +5,7 @@ import { wayHeld, type BookData } from './booked'
 import type { Journey } from './journey'
 import { mixWays, type Filters } from './options'
 import { ticketLink, type FlightLink } from './links'
+import { topTiers, type Tier } from './tiers'
 
 /** An option as the build writes it: the all in price and the score on it ride along, outside the shared types. */
 export type FullOption = Option & { total_dkk?: number; rating: Rating & { on_total?: number } }
@@ -132,6 +133,47 @@ export function cityChoices(rows: PairRow[], side: 'in' | 'home', airports: Reco
   return [...best.entries()]
     .map(([code, p]) => ({ code, best: p, region: airports[code]?.region ?? 'other' }))
     .sort((a, b) => rank(a.region) - rank(b.region) || a.best - b.best || a.code.localeCompare(b.code))
+}
+
+export interface MatrixCell {
+  row: PairRow
+  /** what the cell says: the score on the best sort, the all in price on the cheapest */
+  value: number
+  /** 1 for the best 10 by the sort, 2 for the next 20, 0 for the rest */
+  tier: Tier
+}
+
+export interface PairMatrix {
+  /** the cities flown in to, the rows, by region and then by name */
+  ins: { region: string; codes: string[] }[]
+  /** the cities flown home from, the columns, by region and then by name */
+  homes: { region: string; codes: string[] }[]
+  /** the pairs that pass every filter, by key. A pair of the grid missing here is an empty cell */
+  cells: Map<string, MatrixCell>
+}
+
+/**
+ * The pairs as a grid: the cities of `frame` as rows and columns, grouped by region, and a cell for each
+ * pair of `rows`, holding the figure the sort is on and its tier.
+ */
+export function pairMatrix(frame: PairRow[], rows: PairRow[], airports: Record<string, Pick<Airport, 'name' | 'region'>>, sort: PairSort): PairMatrix {
+  const group = (codes: string[]) => {
+    const byRegion = new Map<string, string[]>()
+    for (const c of codes) {
+      const g = airports[c]?.region ?? 'other'
+      byRegion.set(g, [...(byRegion.get(g) ?? []), c])
+    }
+    const name = (c: string) => airports[c]?.name ?? c
+    return [...REGION_ORDER, ...[...byRegion.keys()].filter((g) => !REGION_ORDER.includes(g)).sort()]
+      .filter((g) => byRegion.has(g))
+      .map((g) => ({ region: g, codes: byRegion.get(g)!.sort((a, b) => name(a).localeCompare(name(b))) }))
+  }
+  const ins = group([...new Set([...frame, ...rows].map((r) => r.in))])
+  const homes = group([...new Set([...frame, ...rows].map((r) => r.home))])
+  const values = rows.map((r) => (sort === 'best' ? scoreParts(r.best.rating).total : allIn(r.cheapest)))
+  const tiers = topTiers(values, sort === 'best' ? 'desc' : 'asc')
+  const cells = new Map(rows.map((row, i) => [row.key, { row, value: values[i], tier: tiers[i] }]))
+  return { ins, homes, cells }
 }
 
 /** Each home airport with the all in price of its cheapest pair, or null when the data has no fares from there. */

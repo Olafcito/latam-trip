@@ -3,7 +3,7 @@ import type { Booking, InOut, Option, Ticket, Way } from '../data/types'
 import { DEFAULT_FILTERS } from './options'
 import type { BookData } from './booked'
 import type { Journey } from './journey'
-import { allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
+import { allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -157,6 +157,44 @@ describe('the cities to fly in to and home from', () => {
       { code: 'CUN', best: 6100, region: 'MX' },
     ])
     expect(cityChoices(rows, 'home', inout.airports).map((c) => c.code)).toEqual(['GUA', 'MEX'])
+  })
+})
+
+describe('the grid of pairs', () => {
+  it('puts the cities in by region as rows and the cities home by region as columns', () => {
+    const rows = pairRows(inout, 'CPH', DEFAULT_FILTERS, 'best')
+    const m = pairMatrix(rows, rows, inout.airports, 'best')
+    expect(m.ins).toEqual([{ region: 'CO', codes: ['CTG'] }, { region: 'MX', codes: ['CUN'] }])
+    expect(m.homes).toEqual([{ region: 'CA', codes: ['GUA'] }, { region: 'MX', codes: ['MEX'] }])
+  })
+  it('says the score on the best sort and the all in price on the cheapest', () => {
+    const best = pairRows(inout, 'CPH', DEFAULT_FILTERS, 'best')
+    expect([...pairMatrix(best, best, inout.airports, 'best').cells].map(([k, c]) => [k, c.value, c.tier])).toEqual([
+      ['CTG|GUA', 9.6, 1],
+      ['CUN|MEX', 9, 1],
+    ])
+    const cheap = pairRows(inout, 'CPH', DEFAULT_FILTERS, 'cheapest')
+    expect([...pairMatrix(cheap, cheap, inout.airports, 'cheapest').cells].map(([k, c]) => [k, c.value])).toEqual([
+      ['CUN|MEX', 6100],
+      ['CTG|GUA', 6600],
+    ])
+  })
+  it('keeps the cities of a pair a filter hides and leaves its cell empty', () => {
+    const frame = pairRows(inout, 'CPH', DEFAULT_FILTERS, 'best')
+    const rows = pairRows(inout, 'CPH', { ...DEFAULT_FILTERS, noUS: true }, 'best')
+    const m = pairMatrix(frame, rows, inout.airports, 'best')
+    expect(m.ins.flatMap((g) => g.codes)).toEqual(['CTG', 'CUN'])
+    expect([...m.cells.keys()]).toEqual(['CTG|GUA'])
+  })
+  it('gives the best 10 tier 1 and the next 20 tier 2', () => {
+    const many = Array.from({ length: 35 }, (_, i) => {
+      const r = pairRows(inout, 'CPH', DEFAULT_FILTERS, 'cheapest')[0]
+      return { ...r, key: `K${i}`, cheapest: { ...r.cheapest, total_dkk: 5000 + i * 100 } }
+    })
+    const tiers = [...pairMatrix(many, many, inout.airports, 'cheapest').cells.values()].map((c) => c.tier)
+    expect(tiers.filter((t) => t === 1)).toHaveLength(10)
+    expect(tiers.filter((t) => t === 2)).toHaveLength(20)
+    expect(tiers.slice(0, 10).every((t) => t === 1)).toBe(true)
   })
 })
 
