@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { boundsOf } from '../lib/geo'
 import type { Place } from '../data/types'
-import { legBounds, padBounds, tripBounds } from './camera'
+import type { Trip } from '../data/trips'
+import { initialBounds, legBounds, padBounds, tripBounds } from './camera'
 
 const at = (id: string, lon: number, lat: number) => [id, { id, lon, lat } as Place] as const
 const byId = new Map<string, Place>([at('A', -90, 14), at('B', -86, 12), at('C', -84, 10)])
@@ -35,5 +36,19 @@ describe('camera bounds', () => {
   })
   it('never returns NaN for a point box', () => {
     expect(padBounds(tripBounds(['B'], byId)!, 0.2).flat().every(Number.isFinite)).toBe(true)
+  })
+})
+
+describe('initialBounds', () => {
+  const home = boundsOf([[-100, 0], [-60, 20]])
+  const model = { byId, home }
+  const trip = { id: 't', name: 't', legs: [], updated: 0, start: 'A' } as Trip
+  it('pads the trip box by 15 percent', () => {
+    const t = { ...trip, legs: [{ cid: 'x', from: 'A', to: 'C', mode: 'flight' }] } as Trip
+    expect(initialBounds(t, model)).toEqual(padBounds(boundsOf([[-90, 14], [-84, 10]]), 0.15))
+  })
+  it('falls back to home with no trip or no resolving stop', () => {
+    expect(initialBounds(null, model)).toBe(home)
+    expect(initialBounds({ ...trip, start: 'X' } as Trip, model)).toBe(home)
   })
 })

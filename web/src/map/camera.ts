@@ -1,3 +1,5 @@
+import type { Model } from '../data/model'
+import { tripStops, type Trip } from '../data/trips'
 import type { Connection, Place } from '../data/types'
 import { boundsOf, type Bounds, type LonLat } from '../lib/geo'
 
@@ -26,4 +28,10 @@ export function padBounds(b: Bounds, share: number): Bounds {
   const padX = Math.max((b[1][0] - b[0][0]) * share, MIN_PAD)
   const padY = Math.max((b[1][1] - b[0][1]) * share, MIN_PAD)
   return [[b[0][0] - padX, b[0][1] - padY], [b[1][0] + padX, b[1][1] + padY]]
+}
+
+/** What the map opens on: the open trip with a margin, else the core of the map. */
+export function initialBounds(trip: Trip | null, model: Pick<Model, 'byId' | 'home'>): Bounds {
+  const box = trip ? tripBounds(tripStops(trip), model.byId) : null
+  return box ? padBounds(box, 0.15) : model.home
 }

@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, 
 import { LngLatBounds, Map as MLMap, Marker, setWorkerUrl, type GeoJSONSource, type MapMouseEvent, type PointLike } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, viaLine, type Model } from '../data/model'
+import { ALL_FAMILIES, buildModel, neighbours, otherEnd, stopsFrom, viaLine, type Model } from '../data/model'
 import { IO_LABEL, ioMarkers, type Dir } from '../data/inout'
 import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripEnd, tripPieces, tripStops, type Trip, type TripLeg, type TripState } from '../data/trips'
 import { familyOf, type Connection, type Family, type MapData, type RouteOption } from '../data/types'
 import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
+import { initialBounds, legBounds } from './camera'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
 import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_ARROW, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
@@ -128,6 +129,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   const [narrow, setNarrow] = useState(false)
   const [dock, setDock] = useState(false)
   const store = useMemo(() => createStore<Hover>(null), [])
+  const trip = activeTrip(trips)
   const mm = useMapMode(map, data)
   // a map mode has the map to itself, so the host's pane waits
   const pane = mm.mode ? null : side
@@ -145,7 +147,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   }, [view.panel])
 
   // latest values for the map's event handlers, which are bound once
-  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!pane, sideMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false })
+  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!pane, sideMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false, trip })
   // which way the selected city's routes read: out of it (the default for every city) or into it
   const [dir, setDir] = useState<FlightDir>('out')
   useEffect(() => setDir('out'), [view.sel, view.panel])
@@ -153,6 +155,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   live.current.families = families
   live.current.side = !!pane
   live.current.mode = mm.mode
+  live.current.trip = trip
   live.current.cardOpen = !!mm.card
   live.current.sideMini = sideMini
   live.current.dir = dir
@@ -248,26 +251,13 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     [map, model, pads, cityBounds, inView],
   )
 
-  /**
-   * Bring a route into view beside its panel when an end is off screen. It zooms in at most a
-   * step past the region the map opened on, and never out past that region.
-   */
+  /** Brings a leg into view beside its panel: both ends, with room for their labels. */
   const showRoute = useCallback(
     (conn: Connection) => {
-      const m = map
-      if (!m) return
-      const ends = [conn.a, conn.b].map((id) => model.byId.get(id)!).map((p): LonLat => [p.lon, p.lat])
-      if (ends.every((ll) => inView(ll, 'route', 24))) return
-      const pts = routePoints(model, conn, enabledOptions(conn, live.current.families).slice(0, 1))
-      const pad = pads('route')
-      const padding = { top: pad.top + 30, left: pad.left + 30, right: pad.right + 30, bottom: pad.bottom + 30 }
-      const z = m.getZoom()
-      const want = m.cameraForBounds(boundsOf(pts), { padding })?.zoom ?? z
-      const home = live.current.homeZoom
-      const zoom = Math.min(Math.max(z, home + 1), Math.max(want, Math.min(z, home)))
-      m.easeTo({ center: new LngLatBounds(boundsOf(pts)).getCenter(), zoom, offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2], duration: reducedMotion() ? 0 : 900, easing: EASE })
+      const bounds = legBounds(conn, model.byId)
+      if (bounds) fit(bounds, 'route', 6, 90)
     },
-    [map, model, pads, inView],
+    [model, fit],
   )
 
   // ---- actions -----------------------------------------------------------------------------
@@ -338,7 +328,6 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   // ---- trips ---------------------------------------------------------------------------------
 
-  const trip = activeTrip(trips)
   /** In build mode the host's cursor (or the trip's end) stands in for a selection while nothing is selected. */
   const focusId = focus && trip && !view.sel && focusAt !== false ? focusAt ?? tripEnd(trip) : null
   live.current.focusId = focusId
@@ -525,11 +514,13 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   useEffect(() => {
     const el = canvasBox.current!
     const narrow = el.clientWidth < NARROW
+    // the open trip's pane sits on the right, so the first view already leaves it room
+    const side54 = live.current.side && !live.current.sideMini ? sideWidth + 54 : 90
     const m = new MLMap({
       container: el,
       style: baseStyle(),
-      bounds: model.home,
-      fitBoundsOptions: { padding: narrow ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: 90, bottom: 80 } },
+      bounds: initialBounds(live.current.trip, model),
+      fitBoundsOptions: { padding: narrow ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: side54, bottom: 80 } },
       attributionControl: false,
       dragRotate: false,
       pitchWithRotate: false,
@@ -1039,7 +1030,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
               act.current.dismissHint()
               if (mm.mode) return fitMode(mm.mode)
               deselect()
-              fit(null, null)
+              if (trip) fitTrip(trip, null)
+              else fit(null, null)
             }}
             hint={hint}
             controlsRef={controlsRef}
