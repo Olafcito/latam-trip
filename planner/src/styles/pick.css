@@ -300,15 +300,17 @@ table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-
   }
   .pk-side .pk-tiles { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 }
+/* below that the open pair opens under the grid */
+.pk-under { animation: pk-in var(--t-med) var(--ease-out); }
 /* the shared disclosure clips without becoming a scroller, so the pick can still pin to the screen */
 .pk-inline > .disc-in { overflow: clip; }
 .pk-inline .pk-pair { margin: 4px 0 12px; }
 
 :root[data-input='key'] :is(.pk-tile, .pk-opt, .pk-mix-row) { transition: none; }
-:root[data-input='key'] .pk-side { animation: none; }
+:root[data-input='key'] :is(.pk-side, .pk-under) { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   :is(.pk-tile, .pk-opt):active { transform: none; }
-  .pk-side { animation-name: pk-fade; }
+  :is(.pk-side, .pk-under) { animation-name: pk-fade; }
 }
 
 /* ---- phone ---------------------------------------------------------------------------------- */

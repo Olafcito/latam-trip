@@ -112,8 +112,6 @@ export function PickScreen({ data }: { data: AppData }) {
     setOwnClosed(true)
   }
   const pane = (row: PairRow) => <PairPane key={row.key} data={data} row={row} trip={trip} />
-  // in place, a pair the pills hide has no row to open under, so it opens under the list
-  const orphan = inline && openRow && !rows.some((r) => r.key === openRow.key)
   const side = useRef<HTMLDivElement>(null)
   useFitToWindow(side, !inline && openRow ? openRow.key : null)
   // the picker opens at its top when a trip's sheet sends you here
@@ -127,13 +125,15 @@ export function PickScreen({ data }: { data: AppData }) {
       <div className="pk-body">
         <div className="pk-main">
         {rows.length > 0 && <Matrix inout={inout} frame={frame} rows={rows} sort={sort} ownKey={ownKey} openKey={openKey} onPick={toggle} />}
+        {/* on a narrow window the open pair opens under the grid */}
+        {openRow && inline && <div className="pk-under" id="pk-pair" key={openRow.key}>{pane(openRow)}</div>}
         <PairList
           inout={inout} rows={rows} ownKey={ownKey} openKey={openKey} onToggle={toggle}
-          inline={inline ? (r) => pane(r.key === openRow?.key ? openRow : r) : null}
+          inline={null}
           filtered={!!arrival || !!departure || noUS || maxHubNights != null}
         />
         </div>
-        {openRow && (!inline || orphan) && <div className="pk-side" id="pk-pair" key={openRow.key} ref={side}>{pane(openRow)}</div>}
+        {openRow && !inline && <div className="pk-side" id="pk-pair" key={openRow.key} ref={side}>{pane(openRow)}</div>}
       </div>
     </div>
   )
