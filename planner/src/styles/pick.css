@@ -38,7 +38,7 @@ table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-
 .matrix thead tr:first-child th { height: 24px; }
 .matrix thead tr + tr th { top: 24px; }
 .matrix th.corner { position: sticky; left: 0; z-index: 4; width: 164px; min-width: 164px; }
-.matrix th.corner > span { position: absolute; display: inline-grid; place-items: center; color: var(--faint); }
+.matrix th.corner > span { position: absolute; display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-label); font-weight: 500; color: var(--muted); }
 .matrix th.corner .mx-in { left: 4px; bottom: 6px; }
 .matrix th.corner .mx-out { right: 10px; top: 6px; }
 .matrix th.grp { padding: 0 4px; text-align: left; vertical-align: bottom; font-size: var(--fs-label); color: var(--faint); box-shadow: inset 0 -1px 0 var(--line); }

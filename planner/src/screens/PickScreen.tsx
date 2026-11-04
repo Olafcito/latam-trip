@@ -227,7 +227,7 @@ function Controls({ inout, ownShown }: { inout: InOut; ownShown: boolean }) {
         </p>
       </div>
       <button type="button" className="ps-pill pk-chip" aria-pressed={noUS} data-set={noUS || undefined} title="Leave out ways through the United States" onClick={() => setFilters({ noUS: !noUS })}>
-        No US
+        No US transit
       </button>
       <PillSelect
         name="Hub nights" value={maxHubNights == null ? '' : String(maxHubNights)} options={hubs}
@@ -313,8 +313,8 @@ function Matrix({ inout, frame, rows, sort, ownKey, openKey, onPick }: {
           <thead>
             <tr>
               <th className="corner" rowSpan={2} scope="col">
-                <Said label="Fly in to" className="mx-in"><Land s={14} /></Said>
-                <Said label="Fly home from" className="mx-out"><Plane s={14} /></Said>
+                <span className="mx-in" title="Fly in to"><Land s={14} />Fly in</span>
+                <span className="mx-out" title="Fly home from"><Plane s={14} />Fly home</span>
               </th>
               {homes.map((g) => <th key={g.region} className="grp" colSpan={g.codes.length} scope="colgroup"><span>{REGION_NAME[g.region] ?? 'Other'}</span></th>)}
             </tr>
