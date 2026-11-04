@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut, Option, Ticket, Way } from '../data/types'
 import { DEFAULT_FILTERS } from './options'
-import { allIn, cityChoices, flagChip, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption } from './pairs'
+import { allIn, cityChoices, flagChip, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -121,7 +121,7 @@ describe('the pairs of a home', () => {
     expect(pairRows(inout, 'CPH', { ...DEFAULT_FILTERS, departure: 'GUA' }, 'best').map((r) => r.key)).toEqual(['CTG|GUA'])
   })
   it('ignores the stored filters the screen no longer shows', () => {
-    const rows = pairRows(inout, 'CPH', { ...DEFAULT_FILTERS, maxPrice: 100, minRating: 10, maxHours: 1, type: 'madrid' }, 'best')
+    const rows = pairRows(inout, 'CPH', { ...DEFAULT_FILTERS, maxPrice: 100, minRating: 10, maxHours: 1, type: 'madrid' } as unknown as PairFilters, 'best')
     expect(rows).toHaveLength(2)
   })
 })
