@@ -239,6 +239,14 @@ describe('the panel in the phone sheet', () => {
     expect(sheetHead(props('SAL', { trip }))!.label).toBe('Stop 2, San Salvador')
   })
 
+  it('the stop sheet peek line carries the number, the nights and the next place', () => {
+    const head = sheetHead(props('SAL', { trip, stopDays: () => ({ nights: 3, inDay: '2026-12-04', outDay: '2026-12-07', exact: true }) }))!
+    const html = renderToStaticMarkup(<>{head.count}</>)
+    expect(html).toContain('Stop 2')
+    expect(html).toContain('3 nights')
+    expect(html).toMatch(/aria-label="[A-Za-z ]+"/)
+  })
+
   it('the sheet head puts the stop number of the open trip on the photo', () => {
     const peek = sheetHead(props('SAL', { trip }))!.peek
     expect(renderToStaticMarkup(<>{peek}</>)).toMatch(/class="stopno[^"]*"[^>]*>2</)

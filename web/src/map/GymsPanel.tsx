@@ -21,6 +21,8 @@ export interface GymsPanelProps {
   model: Model
   shell: ModeShell
   onPick(ref: CardRef): void
+  /** The countries the open trip passes through. With the layer scoped along the route only these get a chip. */
+  tripCountries?: string[]
 }
 
 interface RankRowProps {
@@ -80,12 +82,14 @@ const CityList = memo(function CityList({ rows, model, onOpen }: { rows: CityRow
   )
 })
 
-export function GymsPanel({ api, model, shell, onPick }: GymsPanelProps) {
+export function GymsPanel({ api, model, shell, onPick, tripCountries }: GymsPanelProps) {
   const { gyms: world, gymFilter: f, setGymFilter, tab, setTab, shownGyms, shownCities } = api
   const [filtersOpen, setFiltersOpen] = useState(!shell.narrow)
   const countries = useMemo<Chip[]>(
-    () => countryCounts(world.gyms).map(([code, count]) => ({ id: code, label: countryName(model, code), count, lead: <Flag code={code} size={11} /> })),
-    [world, model],
+    () => countryCounts(world.gyms)
+      .filter(([code]) => !api.scoped || !tripCountries?.length || tripCountries.includes(code) || f.countries.includes(code))
+      .map(([code, count]) => ({ id: code, label: countryName(model, code), count, lead: <Flag code={code} size={11} /> })),
+    [world, model, api.scoped, tripCountries, f.countries],
   )
   const cost = useMemo(() => costRange(world, COST_STEP), [world])
   const top = useMemo(() => topScore(world), [world])
@@ -149,9 +153,10 @@ export function GymsPanel({ api, model, shell, onPick }: GymsPanelProps) {
           <button type="button" className="mclear" onClick={() => setGymFilter(NO_FILTER)}>Clear filters</button>
         </div>
       )}
-      {shown === 0 && api.scoped && active === 0 ? (
+      {shown === 0 && api.scoped ? (
         <div className="mempty">
           <p>{onGyms ? 'No gyms along this route' : 'No cities along this route'}</p>
+          <button type="button" className="mclear" onClick={() => api.setWide(true)}>Show the whole map</button>
         </div>
       ) : shown === 0 ? (
         <div className="mempty">

@@ -1,5 +1,5 @@
 // The experiences mode: what is saved first, then everything else by place, filtered with the markers on the map.
-import { memo, useCallback, useLayoutEffect, useMemo, useRef } from 'react'
+import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { NO_EXPERIENCE_FILTER, categoriesIn, categoryLabel, countriesOf, type PlaceGroup, type SavedEntry } from '../data/experiences'
 import { countText, experienceFiltersActive, keepCategories, placeGroups, toggled } from '../data/modePanels'
 import { countryName, type Model } from '../data/model'
@@ -18,6 +18,8 @@ export interface ExperiencesPanelProps {
   shell: ModeShell
   onPick(ref: CardRef): void
   onPlace(id: string): void
+  /** The countries the open trip passes through. With the layer scoped along the route only these get a chip. */
+  tripCountries?: string[]
 }
 
 interface ListProps {
@@ -52,13 +54,15 @@ const ExperienceList = memo(function ExperienceList({ saved, groups, categories,
   )
 })
 
-export function ExperiencesPanel({ api, model, shell, onPick, onPlace }: ExperiencesPanelProps) {
+export function ExperiencesPanel({ api, model, shell, onPick, onPlace, tripCountries }: ExperiencesPanelProps) {
   const { exps: world, expFilter: f, setExpFilter, shownExps, shownSaved } = api
   const { categories, places } = model.data
 
   const countries = useMemo<Chip[]>(
-    () => countriesOf(world).map(([code, count]) => ({ id: code, label: countryName(model, code), count, lead: <Flag code={code} size={11} /> })),
-    [world, model],
+    () => countriesOf(world)
+      .filter(([code]) => !api.scoped || !tripCountries?.length || tripCountries.includes(code) || f.countries.includes(code))
+      .map(([code, count]) => ({ id: code, label: countryName(model, code), count, lead: <Flag code={code} size={11} /> })),
+    [world, model, api.scoped, tripCountries, f.countries],
   )
   const inCountries = useMemo(() => categoriesIn(world, f.countries), [world, f.countries])
   const categoryChips = useMemo<Chip[]>(() => inCountries.map(([id, count]) => ({ id, label: categoryLabel(categories, id), count })), [inCountries, categories])
@@ -88,21 +92,31 @@ export function ExperiencesPanel({ api, model, shell, onPick, onPlace }: Experie
   const empty = !shownSaved.length && !groups.length
   const count = f.saved ? `${shownSaved.length} saved` : countText(shownExps.length, world.all.length)
   const clear = () => setExpFilter(NO_EXPERIENCE_FILTER)
+  // the list leads on a phone, so its filters wait behind the Filters button there
+  const [filtersOpen, setFiltersOpen] = useState(!shell.narrow)
+  const bar = (
+    <button type="button" className="mtoggle" aria-expanded={filtersOpen} onClick={() => setFiltersOpen(!filtersOpen)}>
+      Filters{active > 0 && <span className="mtoggle-n">{active}</span>}
+    </button>
+  )
 
   return (
-    <ModeSheet {...shell} title={MODE_TITLE.experiences} count={count} tools={<ScopeToggle api={api} />} scrollKey="experiences">
-      <div className="mfilters">
-        <ChipGroup label="Country" line chips={countries} picked={f.countries.length ? f.countries : [ALL]} pinned={[{ id: ALL, label: 'All' }]} cap={4} onToggle={toggleCountry} />
-        <ChipGroup label="Category" line chips={categoryChips} picked={f.saved ? [SAVED, ...f.categories] : f.categories} pinned={[{ id: SAVED, label: 'Saved', count: shownSaved.length }]} cap={5} onToggle={toggleCategory} />
-      </div>
+    <ModeSheet {...shell} title={MODE_TITLE.experiences} count={count} tools={<ScopeToggle api={api} />} bar={bar} scrollKey="experiences">
+      {filtersOpen && (
+        <div className="mfilters">
+          <ChipGroup label="Country" line chips={countries} picked={f.countries.length ? f.countries : [ALL]} pinned={[{ id: ALL, label: 'All' }]} cap={4} onToggle={toggleCountry} />
+          <ChipGroup label="Category" line chips={categoryChips} picked={f.saved ? [SAVED, ...f.categories] : f.categories} pinned={[{ id: SAVED, label: 'Saved', count: shownSaved.length }]} cap={5} onToggle={toggleCategory} />
+        </div>
+      )}
       {active > 0 && !empty && (
         <div className="mstatus end">
           <button type="button" className="mclear" onClick={clear}>Clear filters</button>
         </div>
       )}
-      {empty && api.scoped && active === 0 ? (
+      {empty && api.scoped ? (
         <div className="mempty">
           <p>No experiences along this route</p>
+          <button type="button" className="mclear" onClick={() => api.setWide(true)}>Show the whole map</button>
         </div>
       ) : empty ? (
         <div className="mempty">

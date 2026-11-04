@@ -24,7 +24,7 @@ interface ModeSheetProps extends ModeShell {
   title: ReactNode
   /** The sheet's name for a screen reader, when the title is more than words. */
   label?: string
-  count?: string
+  count?: ReactNode
   /** Sits before the title in the head, so the sheet at its lowest still shows what it holds. */
   peek?: ReactNode
   /** Sits in the head beside the close button. */

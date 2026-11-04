@@ -61,7 +61,7 @@ export interface PanelProps {
 export interface SheetHead {
   label: string
   title: ReactNode
-  count: string
+  count: ReactNode
   peek?: ReactNode
 }
 
@@ -106,6 +106,25 @@ export function Panel(p: PanelProps) {
   )
 }
 
+/** A stop at its lowest sheet: the number, the nights and where the next leg goes, as marks and no sentence. */
+function StopLine({ p, model, city, stop }: { p: PanelProps; model: Model; city: Place; stop: TripStop }) {
+  const nights = p.stopDays?.(city.id)?.nights ?? null
+  const to = stop.out ? model.byId.get(stop.out.to) : undefined
+  const mode = stop.out?.kind === 'leg' ? stop.out.leg.mode : 'bus'
+  return (
+    <span className="mline">
+      <b>Stop {stop.numbers.join(' and ')}</b>
+      {nights != null && <span>{nights} {nights === 1 ? 'night' : 'nights'}</span>}
+      {to && (
+        <span className="mline-next">
+          <span role="img" aria-label={modeLabel(mode)} title={modeLabel(mode)}><ModeChip family={familyOf(mode)} /></span>
+          {to.short_name}
+        </span>
+      )}
+    </span>
+  )
+}
+
 /** The head of the phone sheet for the open view, or null when nothing is open. */
 export function sheetHead(p: PanelProps): SheetHead | null {
   const { model, view } = p
@@ -133,7 +152,7 @@ export function sheetHead(p: PanelProps): SheetHead | null {
   return {
     label: stop ? `Stop ${stop.numbers.join(' and ')}, ${city.short_name}` : city.short_name,
     title: view.panel === 'more' ? city.name : city.short_name,
-    count: countryName(model, city.country),
+    count: stop ? <StopLine p={p} model={model} city={city} stop={stop} /> : countryName(model, city.country),
     peek: view.panel === 'city' && (
       <div className="thumb-wrap mhead-thumb">
         <Thumb city={city} w={120} className="thumb" />
