@@ -21,7 +21,7 @@ beforeEach(() => {
 describe('VersionMenu', () => {
   it('is a quiet tag with the version', () => {
     const h = html('t', 6)
-    expect(h).toContain('>v6<')
+    expect(h).toContain('>version 6<')
     expect(h).not.toContain('Latest')
   })
 

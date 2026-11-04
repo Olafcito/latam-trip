@@ -6,7 +6,7 @@ import { savedWhen, versionEntries, type VersionEntry } from '../lib/versions'
 import { useStore } from '../store'
 
 // The version tag as a quiet control. It lists the stored versions of a trip, newest first, and opens the one picked
-// in the normal trip view. While an older version is open it reads "v3 of 6" with a way back to the latest.
+// in the normal trip view. While an older version is open it reads "version 3 of 6" with a way back to the latest.
 // Only a trip with more than one stored version has it, and only with Supabase.
 
 export function VersionMenu({ id, version }: { id: string; version: number }) {
