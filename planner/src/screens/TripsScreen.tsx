@@ -315,8 +315,9 @@ function RowActions({ name, draft, canOpen, selected, onMap, onCompare, onDelete
     <div className="tt-act">
       <button type="button" className="tt-icon" onClick={onMap} disabled={!canOpen} aria-label={`Build ${name} on the map`} title="Build on the map"><Pin s={15} /></button>
       {!draft && (
-        <label className="tt-icon tt-cmp" title="Compare">
+        <label className="tt-icon tt-cmp" title="Add to the comparison">
           <input type="checkbox" checked={selected} onChange={onCompare} aria-label={`Compare ${name}`} />
+          Compare
         </label>
       )}
       {!draft && (

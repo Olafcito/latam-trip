@@ -8,7 +8,7 @@
 
 .tt {
   /* name, route, all in, actions */
-  --cols: clamp(240px, 24vw, 340px) minmax(0, 1fr) 128px 148px;
+  --cols: clamp(240px, 24vw, 340px) minmax(0, 1fr) 128px 184px;
   display: flex; flex-direction: column; gap: 14px;
 }
 
@@ -95,6 +95,19 @@
 }
 .tt-icon:active:not(:disabled) { transform: scale(0.97); }
 .tt-icon:disabled { opacity: 0.4; cursor: default; }
+.tt-icon:not(.tt-cmp) { opacity: 0.5; transition: opacity var(--t-fast) ease, background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out); }
+.tt-row:focus-within .tt-icon:not(.tt-cmp), .tt-icon:not(.tt-cmp):focus-visible { opacity: 1; }
+.tt-icon:not(.tt-cmp):disabled { opacity: 0.3; }
+/* the compare control is a labelled pill, checked state shown by the box and a tint */
+.tt-icon.tt-cmp {
+  display: inline-flex; align-items: center; gap: 6px;
+  width: auto; padding: 0 10px 0 8px; margin-right: 4px;
+  min-height: 28px; height: 28px; border-radius: 999px;
+  border: 1px solid var(--line-2);
+  font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; color: var(--muted);
+}
+.tt-cmp:has(input:checked) { background: color-mix(in srgb, var(--flight) 14%, transparent); border-color: var(--flight); color: var(--text); }
+.tt-cmp:has(input:focus-visible) { outline: 2px solid var(--flight); outline-offset: 2px; }
 .tt-cmp input {
   appearance: none; -webkit-appearance: none;
   display: grid; place-items: center;
@@ -126,6 +139,7 @@
   .tt-row[data-selected]:hover { background: color-mix(in srgb, var(--flight) 9%, var(--surface)); }
   .tt-row:hover { z-index: 5; }
   .tt-row:hover .tt-act { color: var(--text); }
+  .tt-row:hover .tt-icon:not(.tt-cmp):not(:disabled) { opacity: 1; }
   .tt-open:not(:disabled):hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
   .tt-icon:not(:disabled):hover, .tt-no:hover { background: var(--surface-2); }
   .tt-yes:hover { background: color-mix(in srgb, var(--err) 12%, transparent); }
@@ -133,6 +147,7 @@
 /* on touch nothing hovers, so the actions stay readable */
 @media (hover: none) {
   .tt-act { color: var(--muted); }
+  .tt-icon:not(.tt-cmp):not(:disabled) { opacity: 0.8; }
 }
 
 /* ---- export and import ----------------------------------------------------------------- */
