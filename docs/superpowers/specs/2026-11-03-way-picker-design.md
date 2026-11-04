@@ -24,7 +24,7 @@ Which pane this is: the picker of the way in and the way home, `planner/src/scre
 
 ## Anti goals
 
-- No grid of scores. The 17 by 16 matrix goes.
+- No ranked list of pairs. The grid of pairs is the main stage (brought back on 11-04 after the list lost the whole picture), with the pair pane and the apply button beside it. Each cell is the score or the all in price in thousands as the sort says, with the key in the controls row.
 - No separate Mix mode. Mixing lives in the pair.
 - No prose lines that explain the screen.
 - No new database fields and no change to `types.ts`. `total_dkk` and `on_total` are read through a local type.
