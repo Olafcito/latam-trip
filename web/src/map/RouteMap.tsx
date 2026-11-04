@@ -144,6 +144,11 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     return line.length ? { id: trip.id, line } : null
   }, [trip, model])
   const mm = useMapMode(map, data, undefined, scope)
+  // along the route a mode's country chips are the trip's countries, in the order it reaches them
+  const tripCountries = useMemo(() => {
+    if (!trip || mm.wide) return undefined
+    return [...new Set(tripStops(trip).flatMap((id) => model.byId.get(id)?.country ?? []))]
+  }, [trip, model, mm.wide])
   // the host's pane stays under a mode, folded to its small card, so the trip is still in sight
   const pane = side
   const paneMini = sideMini || !!mm.mode
@@ -1233,6 +1238,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
               onClose={() => setMode(null)}
               onPick={pickCard}
               onPlace={openPlace}
+              tripCountries={tripCountries}
             />
           )}
           {mm.card && (
