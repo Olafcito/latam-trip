@@ -3,6 +3,7 @@ import { ownKey, readOwn } from '@map/data/ownKey'
 import type { AppData, Booking, CrawledFlight, Lodging, Way } from './data/types'
 import type { PlannedStay } from './lib/stays'
 import { DEFAULT_FILTERS, type Filters } from './lib/options'
+import type { PairSort } from './lib/pairs'
 import { heldWayNotice, keepPaid, lockedLegs, wayHeld } from './lib/booked'
 import { saveBookings } from './lib/bookings'
 import { withSaved } from './lib/bookingDraft'
@@ -51,14 +52,18 @@ function write(key: string, value: unknown) {
   }
 }
 
-/** The filters and the home airport, kept together under the filters key. A home the list does not have is Copenhagen. */
-function readFilters(): { filters: Filters; home: string } {
-  const { home, ...filters } = read<Partial<Filters> & { home?: unknown }>(FILTERS_KEY, {})
-  return { filters: { ...DEFAULT_FILTERS, ...filters }, home: HOMES.find((h) => h.code === home)?.code ?? 'CPH' }
+/** The filters, the home airport and the pair order, kept together under the filters key. A home the list does not have is Copenhagen and an order it does not know is best. */
+function readFilters(): { filters: Filters; home: string; pairSort: PairSort } {
+  const { home, pairSort, ...filters } = read<Partial<Filters> & { home?: unknown; pairSort?: unknown }>(FILTERS_KEY, {})
+  return {
+    filters: { ...DEFAULT_FILTERS, ...filters },
+    home: HOMES.find((h) => h.code === home)?.code ?? 'CPH',
+    pairSort: pairSort === 'cheapest' ? 'cheapest' : 'best',
+  }
 }
 
-function writeFilters(filters: Filters, home: string) {
-  write(FILTERS_KEY, { ...filters, home })
+function writeFilters(filters: Filters, home: string, pairSort: PairSort) {
+  write(FILTERS_KEY, { ...filters, home, pairSort })
 }
 
 function forget(key: string) {
@@ -93,12 +98,15 @@ interface State {
   home: string
   setHome: (code: string) => void
 
-  pickMode: 'options' | 'mix'
-  setPickMode: (m: 'options' | 'mix') => void
-  expanded: string | null
-  toggleExpanded: (id: string) => void
+  /** the order of the pairs in the picker, kept with the filters */
+  pairSort: PairSort
+  setPairSort: (s: PairSort) => void
   pair: Pair | null
+  /** opening a pair clears the option and the one ways picked inside the one before */
   setPair: (p: Pair | null) => void
+  /** the id of the option picked inside the open pair */
+  chosen: string | null
+  setChosen: (id: string | null) => void
   mixIn: string | null
   mixHome: string | null
   setMix: (dir: 'in' | 'home', id: string | null) => void
@@ -309,26 +317,27 @@ export const useStore = create<State>((set, get) => ({
   ...readFilters(),
   setFilters: (f) => {
     const filters = { ...get().filters, ...f }
-    writeFilters(filters, get().home)
+    writeFilters(filters, get().home, get().pairSort)
     set({ filters })
   },
   resetFilters: () => {
-    writeFilters(DEFAULT_FILTERS, get().home)
+    writeFilters(DEFAULT_FILTERS, get().home, get().pairSort)
     set({ filters: { ...DEFAULT_FILTERS } })
   },
   setHome: (home) => {
     if (home === get().home) return
-    writeFilters(get().filters, home)
+    writeFilters(get().filters, home, get().pairSort)
     // a pair or a way picked from the old home does not fly from the new one
-    set({ home, pair: null, expanded: null, mixIn: null, mixHome: null })
+    set({ home, pair: null, chosen: null, mixIn: null, mixHome: null })
   },
-
-  pickMode: 'options',
-  setPickMode: (pickMode) => set({ pickMode }),
-  expanded: null,
-  toggleExpanded: (id) => set({ expanded: get().expanded === id ? null : id }),
+  setPairSort: (pairSort) => {
+    writeFilters(get().filters, get().home, pairSort)
+    set({ pairSort })
+  },
   pair: null,
-  setPair: (pair) => set({ pair, expanded: null }),
+  setPair: (pair) => set({ pair, chosen: null, mixIn: null, mixHome: null }),
+  chosen: null,
+  setChosen: (chosen) => set({ chosen }),
   mixIn: null,
   mixHome: null,
   setMix: (dir, id) => set(dir === 'in' ? { mixIn: id } : { mixHome: id }),

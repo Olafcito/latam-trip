@@ -638,6 +638,45 @@ describe('the home airport', () => {
     }
   })
 
+  it('keeps the pair order with the filters, and an order it does not know is best', async () => {
+    try {
+      const first = await fresh()
+      expect(first.getState().pairSort).toBe('best')
+      first.getState().setPairSort('cheapest')
+      expect(JSON.parse(kept.get(ownKey(FILTERS))!)).toMatchObject({ pairSort: 'cheapest' })
+      first.getState().resetFilters()
+      first.getState().setHome('BLL')
+      expect(JSON.parse(kept.get(ownKey(FILTERS))!)).toMatchObject({ home: 'BLL', pairSort: 'cheapest' })
+      vi.resetModules()
+      const again = (await fresh()).getState()
+      expect([again.pairSort, again.home]).toEqual(['cheapest', 'BLL'])
+      expect(again.filters).not.toHaveProperty('pairSort')
+      kept.set(ownKey(FILTERS), JSON.stringify({ pairSort: 'sideways', maxPrice: 5000 }))
+      vi.resetModules()
+      const odd = (await fresh()).getState()
+      expect([odd.pairSort, odd.filters.maxPrice]).toEqual(['best', 5000])
+    } finally {
+      restore()
+    }
+  })
+
+  it('opening a pair clears what was picked inside the one before, and a new home clears it all', async () => {
+    try {
+      const store = await fresh()
+      const s = store.getState
+      store.setState({ pair: { in: 'CTG', home: 'GUA' }, chosen: 'o1', mixIn: 'a', mixHome: 'b' })
+      s().setPair({ in: 'CUN', home: 'MEX' })
+      expect([s().chosen, s().mixIn, s().mixHome]).toEqual([null, null, null])
+      s().setChosen('o2')
+      expect(s().chosen).toBe('o2')
+      s().setMix('in', 'a')
+      s().setHome('BLL')
+      expect([s().pair, s().chosen, s().mixIn]).toEqual([null, null, null])
+    } finally {
+      restore()
+    }
+  })
+
   it('a stored home the list does not have is Copenhagen', async () => {
     try {
       kept.set(ownKey(FILTERS), JSON.stringify({ home: 'XXX', noUS: true }))

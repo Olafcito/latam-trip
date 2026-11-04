@@ -79,8 +79,7 @@ function useRows(all: Row[]): Row[] {
 }
 
 export function PickScreen({ data }: { data: AppData }) {
-  const mode = useStore((s) => s.pickMode)
-  const setMode = useStore((s) => s.setPickMode)
+  const [mode, setMode] = useState<'options' | 'mix'>('options')
   const go = useStore((s) => s.go)
   const home = useStore((s) => s.home)
   const setHome = useStore((s) => s.setHome)
@@ -340,8 +339,8 @@ function OptionsView({ data }: { data: AppData }) {
   const home = useStore((s) => s.home)
   const pair = useStore((s) => s.pair)
   const setPair = useStore((s) => s.setPair)
-  const expanded = useStore((s) => s.expanded)
-  const toggle = useStore((s) => s.toggleExpanded)
+  const [expanded, setExpanded] = useState<string | null>(null)
+  const toggle = (id: string) => setExpanded((e) => (e === id ? null : id))
   const [sort, setSort] = useState<SortKey>('rating')
   const ap = (c: string) => inout.airports[c]?.name ?? c
 
