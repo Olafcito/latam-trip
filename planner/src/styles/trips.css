@@ -74,7 +74,9 @@
 .tt-big { font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; }
 .tt-sub { font-size: var(--fs-label); color: var(--faint); }
 .tt-q { color: var(--faint); }
-.tt-big .tt-q { margin-left: 3px; cursor: help; }
+/* plain text, no pill or outline that reads as a button. The gap stands in for the space a flex box drops after from */
+.tt-big.total-mark { gap: 5px; padding: 0; border-radius: 0; background: none; box-shadow: none; }
+.tt-big .tt-q { cursor: help; }
 
 /* row actions: faint until the row is pointed at or holds focus */
 .tt-act {
