@@ -1,6 +1,8 @@
 # In and out pane: long-haul tickets
 
 Design for picking where to fly in and where to fly home from. Every trip starts and ends in Copenhagen.
+
+In the planner the heat matrix is gone. The way picker that replaced it, a ranked list of pairs with the pair open beside it, is specified in `docs/superpowers/specs/2026-11-03-way-picker-design.md`. This page stays as the record of the prototype.
 `in-out-prototype.dc.html` beside this file is the clickable prototype, running on a snapshot of `data/crawl.db` (28 Oct, `ok = 1`, cheapest effective cost per pattern).
 
 ## Layout
