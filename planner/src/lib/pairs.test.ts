@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { InOut, Option, Ticket, Way } from '../data/types'
 import { DEFAULT_FILTERS } from './options'
-import { allIn, cityChoices, homeChoices, mixOption, oneWaysFor, pairRows, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption } from './pairs'
+import { allIn, cityChoices, flagChip, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption } from './pairs'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -175,5 +175,47 @@ describe('the tickets of a pair', () => {
   it('lists two one ways as two tickets, each with its own link', () => {
     const t = ticketsOf(inout, oIn, oHome)
     expect(t.map((x) => x.ticket.id)).toEqual(['TO1', 'TO2'])
+  })
+})
+
+describe('what the pair shows as picked', () => {
+  const rowOf = () => pairRows(inout, 'CPH', DEFAULT_FILTERS, 'best')[0]
+  const none = { chosen: null, mixIn: null, mixHome: null }
+  it('is the first option by the sort with nothing chosen', () => {
+    expect(pickedOf(inout, rowOf(), none).option.id).toBe('CTG-GUA-ticket')
+  })
+  it('is the trip own option when the trip flies it', () => {
+    expect(pickedOf(inout, rowOf(), { ...none, tripIn: 'I_o', tripHome: 'H_o' }).option.id).toBe('CTG-GUA-oneways')
+  })
+  it('is the option chosen over the trip own', () => {
+    expect(pickedOf(inout, rowOf(), { ...none, chosen: 'CTG-GUA-ticket', tripIn: 'I_o', tripHome: 'H_o' }).option.id).toBe('CTG-GUA-ticket')
+  })
+  it('swaps a one way in for another of the same cities and prices the mix', () => {
+    const p = pickedOf(inout, rowOf(), { ...none, chosen: 'CTG-GUA-oneways', mixIn: 'I_o2' })
+    expect(p.wi.id).toBe('I_o2')
+    expect(p.base.id).toBe('CTG-GUA-oneways')
+    expect(allIn(p.option)).toBe(6000)
+  })
+  it('does not swap the ways of one ticket', () => {
+    const p = pickedOf(inout, rowOf(), { ...none, chosen: 'CTG-GUA-ticket', mixIn: 'I_o2' })
+    expect(p.wi.id).toBe('I_t')
+  })
+  it('ignores a swap to a way of other cities', () => {
+    const p = pickedOf(inout, rowOf(), { ...none, chosen: 'CTG-GUA-oneways', mixIn: 'I_m' })
+    expect(p.wi.id).toBe('I_o')
+  })
+  it('shows a trip on its own mixed one ways', () => {
+    const p = pickedOf(inout, rowOf(), { ...none, tripIn: 'I_o2', tripHome: 'H_o' })
+    expect([p.wi.id, p.wh.id]).toEqual(['I_o2', 'H_o'])
+  })
+})
+
+describe('the flags of a ticket', () => {
+  it('reads a known flag in words with its tone', () => {
+    expect(flagChip('us_transit')).toEqual({ label: 'Through the US', tone: 'warn' })
+    expect(flagChip('price_verified_booking').tone).toBe('good')
+  })
+  it('reads a new flag as its own words', () => {
+    expect(flagChip('red_eye_out')).toEqual({ label: 'Red eye out', tone: 'plain' })
   })
 })

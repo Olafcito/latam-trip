@@ -172,3 +172,75 @@ export function ticketsOf(inout: InOut, wi: Way, wh: Way): { ticket: Ticket; lin
     return ticket ? [{ ticket, link: ticketLink(inout, id, [wi, wh]) }] : []
   })
 }
+
+export interface Picked {
+  /** the option as it stands, a mix of two one ways when the ways were swapped */
+  option: FullOption
+  /** the option of the pair the pick started from */
+  base: FullOption
+  wi: Way
+  wh: Way
+}
+
+/**
+ * What the pair shows as picked: the option chosen, else the trip's own option, else the first by the sort.
+ * On two one ways the way in and the way home can be swapped for other one ways of the same cities. With no
+ * choice made, a trip on mixed one ways of this pair shows its own two ways.
+ */
+export function pickedOf(
+  inout: InOut, row: PairRow,
+  s: { chosen: string | null; tripIn?: string; tripHome?: string; mixIn: string | null; mixHome: string | null },
+): Picked {
+  const own = row.options.find((o) => o.way_in === s.tripIn && o.way_home === s.tripHome)
+  const fits = (id: string | null | undefined, dir: 'in' | 'home', like: Way): Way | null => {
+    const w = id ? inout.ways[id] : undefined
+    if (!w || w.type !== 'oneways' || w.direction !== dir) return null
+    return w.from === like.from && w.to === like.to ? w : null
+  }
+  const tripMix = !s.chosen && !own ? fits(s.tripIn, 'in', inout.ways[row.cheapest.way_in]) && fits(s.tripHome, 'home', inout.ways[row.cheapest.way_home]) : null
+  const base = row.options.find((o) => o.id === s.chosen) ?? own ?? (tripMix ? row.options.filter((o) => o.type === 'oneways').sort(byOption('cheapest'))[0] : undefined) ?? row.best
+  const bi = inout.ways[base.way_in]
+  const bh = inout.ways[base.way_home]
+  if (base.type !== 'oneways') return { option: base, base, wi: bi, wh: bh }
+  const wi = fits(s.mixIn, 'in', bi) ?? (tripMix ? fits(s.tripIn, 'in', bi) : null) ?? bi
+  const wh = fits(s.mixHome, 'home', bh) ?? (tripMix ? fits(s.tripHome, 'home', bh) : null) ?? bh
+  if (wi.id === bi.id && wh.id === bh.id) return { option: base, base, wi, wh }
+  const known = row.options.find((o) => o.way_in === wi.id && o.way_home === wh.id)
+  return { option: known ?? mixOption(inout, wi, wh), base, wi, wh }
+}
+
+export type FlagTone = 'warn' | 'good' | 'plain'
+
+const FLAGS: Record<string, [string, FlagTone]> = {
+  us_transit: ['Through the US', 'warn'],
+  basic_fare: ['Basic fare', 'warn'],
+  basic_economy: ['Basic economy', 'warn'],
+  no_link: ['No saved page', 'plain'],
+  long_layover: ['Long layover', 'warn'],
+  overnight_layover: ['Overnight layover', 'warn'],
+  tight_connection: ['Tight connection', 'warn'],
+  self_transfer: ['Self transfer', 'warn'],
+  airport_change: ['Airport change', 'warn'],
+  multi_ticket: ['Several tickets', 'plain'],
+  over_acceptable: ['Over the limit', 'warn'],
+  price_unverified: ['Price not checked', 'warn'],
+  price_verified_booking: ['Price checked at booking', 'good'],
+  date_assumed: ['Date assumed', 'warn'],
+  date_shifted_out: ['Out day moved', 'plain'],
+  date_shifted_home: ['Home day moved', 'plain'],
+  home_2feb: ['Home 2 Feb', 'plain'],
+  best_value: ['Best value', 'good'],
+  fastest: ['Fastest', 'good'],
+  kiwi_discovery: ['Found on Kiwi', 'plain'],
+  mix_match: ['Mixed match', 'plain'],
+  alt_home_listing: ['Listed from another home', 'plain'],
+  picked_detail: ['Detail page read', 'good'],
+}
+
+/** A ticket flag as the words on its chip and its tone. A flag the build adds later reads as its own words. */
+export function flagChip(flag: string): { label: string; tone: FlagTone } {
+  const f = FLAGS[flag]
+  if (f) return { label: f[0], tone: f[1] }
+  const words = flag.replace(/_/g, ' ').trim()
+  return { label: words.charAt(0).toUpperCase() + words.slice(1), tone: 'plain' }
+}
