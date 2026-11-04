@@ -321,6 +321,22 @@ describe('changing the ways and the ends of a trip', () => {
     expect([s().view, s().pickFor]).toEqual(['pick', 't1'])
   })
 
+  it('the picker opened again starts with no pair open and nothing picked, and a look at the map keeps them', () => {
+    const picked = { pair: { in: 'CTG', home: 'GUA' }, chosen: 'o1', mixIn: 'a', mixHome: 'b' }
+    const left = () => [s().pair, s().chosen, s().mixIn, s().mixHome]
+    s().changeEndsOf('t1')
+    useStore.setState(picked)
+    s().go('map')
+    s().go('trips')
+    expect(left()).toEqual([picked.pair, 'o1', 'a', 'b'])
+    s().changeEndsOf('t1')
+    expect(left()).toEqual([null, null, null, null])
+    useStore.setState(picked)
+    s().go('trips', 'home')
+    s().go('trips', 'pick')
+    expect(left()).toEqual([null, null, null, null])
+  })
+
   it('a new trip picked after change mode is a new trip', () => {
     s().changeEndsOf('t1')
     s().go('map')

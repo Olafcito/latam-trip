@@ -66,6 +66,9 @@ function writeFilters(filters: Filters, home: string, pairSort: PairSort) {
   write(FILTERS_KEY, { ...filters, home, pairSort })
 }
 
+// the picker opened again, for another trip or a new one, starts with no pair open and nothing picked in it
+const PICK_FRESH = { pair: null, chosen: null, mixIn: null, mixHome: null } as const
+
 function forget(key: string) {
   try {
     localStorage.removeItem(ownKey(key))
@@ -312,7 +315,7 @@ export const useStore = create<State>((set, get) => ({
   view: 'home',
   // a view of its own leaves the picker or opens it for a new trip, so it forgets the trip being changed.
   // A tab press keeps it, so a look at the map and back is still the change of that trip
-  go: (screen, view) => set({ mapCardFrom: null, ...(view ? { screen, view, pickFor: null } : { screen }) }),
+  go: (screen, view) => set({ mapCardFrom: null, ...(view ? { screen, view, pickFor: null, ...(view === 'pick' ? PICK_FRESH : {}) } : { screen }) }),
 
   ...readFilters(),
   setFilters: (f) => {
@@ -488,7 +491,7 @@ export const useStore = create<State>((set, get) => ({
     // an older version on screen is only looked at, its ends are not changed
     if (get().viewing?.id === tripId) return
     get().go('trips', 'pick')
-    set({ pickFor: tripId })
+    set({ pickFor: tripId, ...PICK_FRESH })
   },
   changeEnds: (wayIn, wayHome) => {
     const s = get()
@@ -681,7 +684,7 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const r = applyTrips(data.inout, data.map, journey, saved, mapOpen, after, facts)
     // a new trip needs a way in and a way home to start from
-    if (!r) return set({ screen: 'trips', view: 'pick', pickFor: null })
+    if (!r) return set({ screen: 'trips', view: 'pick', pickFor: null, ...PICK_FRESH })
     write(SAVED_KEY, localOnly(r.saved, get().repo))
     if (r.current) write(CURRENT_KEY, r.current)
     else write(CURRENT_KEY, null)
