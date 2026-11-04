@@ -70,8 +70,11 @@
 .pk-cheap { color: var(--text); }
 .pk-own { color: var(--booked); }
 .pk-price { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
-.pk-price b { font-family: var(--font-num); font-size: var(--fs-head); font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pk-price small { font-family: var(--font-num); font-size: var(--fs-small); font-variant-numeric: tabular-nums; color: var(--muted); }
+.pk-price > b { font-family: var(--font-num); font-size: var(--fs-head); font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* the score under the price: the number bright, out of 10 beside it */
+.pk-rate { font-family: var(--font-num); font-size: var(--fs-small); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+.pk-rate-v { font-weight: 600; color: var(--text); }
+.pk-of { margin-left: 1px; font-size: 0.85em; font-weight: 500; color: var(--muted); }
 .pk-more { margin: 8px 0 0 calc(3ch + 26px); }
 .pk-empty { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 28px 12px; border: 1px dashed var(--line-2); border-radius: var(--radius); }
 .pk-empty-title { margin: 0; font-size: var(--fs-title); font-weight: 600; color: var(--muted); }
@@ -250,7 +253,7 @@
   .pick { gap: 18px; }
   .pk-title { font-size: var(--fs-num-lg); }
   .pk-row { column-gap: 10px; padding-inline: 8px; }
-  .pk-price b { font-size: var(--fs-lead); }
+  .pk-price > b { font-size: var(--fs-lead); }
   .pk-more { margin-left: 8px; }
   .pk-pair { padding: 14px 12px; }
   .pk-apply { margin: 0 -12px -14px; padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px)); }

@@ -322,7 +322,7 @@ function PairList({ inout, rows, ownKey, openKey, onToggle, inline, filtered }: 
                 </span>
                 <span className="pk-price">
                   <b>{kr(allIn(r.best))}</b>
-                  <small title="Score out of 10"><span className="vh">Score </span>{dec1(scoreParts(r.best.rating).total)}</small>
+                  <OutOf10 v={scoreParts(r.best.rating).total} />
                 </span>
               </button>
               {inline && (
@@ -559,6 +559,15 @@ function Cost({ option }: { option: Option }) {
   )
 }
 
+/** A row's score, small under its price, read as so many out of 10. */
+function OutOf10({ v }: { v: number }) {
+  return (
+    <small className="pk-rate" title="Score out of 10">
+      <span className="vh">Score </span><span className="pk-rate-v">{dec1(v)}</span><span className="pk-of" aria-hidden="true">/10</span><span className="vh"> of 10</span>
+    </small>
+  )
+}
+
 /** The score out of 10 as a meter in three parts, the marks that cost points under the part they hit. */
 function Score({ option, wi, wh }: { option: Option; wi: Way; wh: Way }) {
   const p = scoreParts(option.rating)
@@ -570,7 +579,7 @@ function Score({ option, wi, wh }: { option: Option; wi: Way; wh: Way }) {
   const said = `Score ${dec1(p.total)} of 10. ` + parts.map((x) => [`${x.label} ${dec1(x.v)} of ${x.of}`, ...x.lost].join(', ')).join('. ')
   return (
     <div className="pk-score">
-      <p className="pk-score-head"><span className="pk-label">Score</span><b>{dec1(p.total)}</b></p>
+      <p className="pk-score-head"><span className="pk-label">Score</span><b>{dec1(p.total)}<span className="pk-of" aria-hidden="true">/10</span><span className="vh"> of 10</span></b></p>
       <div className="pk-meter" role="img" aria-label={said}>
         {parts.map((x) => (
           <span key={x.key} style={{ flexGrow: x.of }}><i style={{ width: `${Math.max(0, Math.min(1, x.v / x.of)) * 100}%` }} /></span>
