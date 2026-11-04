@@ -35,3 +35,18 @@ export function initialBounds(trip: Trip | null, model: Pick<Model, 'byId' | 'ho
   const box = trip ? tripBounds(tripStops(trip), model.byId) : null
   return box ? padBounds(box, 0.15) : model.home
 }
+
+export interface Padding { top: number; left: number; right: number; bottom: number }
+
+/**
+ * The zoom that fits a box in a map of this size with this padding, the way MapLibre's cameraForBounds does
+ * for an unrotated map with 512 pixel tiles. It needs no map, so the first view can be capped before the map exists.
+ */
+export function fitZoom(b: Bounds, width: number, height: number, pad: Padding): number {
+  const y = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360))
+  const dx = Math.max((b[1][0] - b[0][0]) / 360, 1e-9)
+  const dy = Math.max((y(b[1][1]) - y(b[0][1])) / (2 * Math.PI), 1e-9)
+  const w = Math.max(width - pad.left - pad.right, 1)
+  const h = Math.max(height - pad.top - pad.bottom, 1)
+  return Math.log2(Math.min(w / (dx * 512), h / (dy * 512)))
+}

@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, 
 import { LngLatBounds, Map as MLMap, Marker, setWorkerUrl, type GeoJSONSource, type MapMouseEvent, type PointLike } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { ALL_FAMILIES, buildModel, neighbours, otherEnd, stopsFrom, viaLine, type Model } from '../data/model'
+import { ALL_FAMILIES, buildModel, neighbours, otherEnd, routePoints, stopsFrom, viaLine, type Model } from '../data/model'
 import { IO_LABEL, ioMarkers, type Dir } from '../data/inout'
 import { activeTrip, addLeg, createTrip, deleteTrip, legIndex, openTrip, removeLeg, renameTrip, tripEnd, tripPieces, tripStops, type Trip, type TripLeg, type TripState } from '../data/trips'
 import { familyOf, type Connection, type Family, type MapData, type RouteOption } from '../data/types'
 import { EASE, along, boundsOf, type Bounds, type LonLat } from '../lib/geo'
 import type { Rect } from '../lib/tooltip'
-import { initialBounds, legBounds } from './camera'
+import { fitZoom, initialBounds, legBounds, tripBounds } from './camera'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
 import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, LEG_LIT, ROUTE_LAYERS, TRIP_ARROW, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
@@ -96,6 +96,9 @@ type PadView = PanelView | 'mode' | null
 
 /** A card's left edge: beside the panel, folded or open, or over it when the map has no room for both. */
 const cardEdge = (dock: boolean, collapsed: boolean, panel: PadView) => (!panel ? 14 : collapsed ? COLLAPSED_W + 28 : dock ? PANEL_W[panel] + 28 : 14)
+
+/** The padding the whole map is fitted with, from the home button and as the zoom every cap is measured from. */
+const homePad = (narrow: boolean) => (narrow ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: 90, bottom: 80 })
 
 const enabledOptions = (conn: Connection, families: Set<Family>) =>
   conn.options.filter((o) => families.has(familyOf(o.mode))).sort((x, y) => (x.duration_min ?? 1e9) - (y.duration_min ?? 1e9))
@@ -199,7 +202,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const key = panel === 'mode' && !card && live.current.mode === 'gyms' ? 80 : 0
     const padding =
       W < NARROW
-        ? { top: panel === 'mode' ? 24 : 70, left: 28, right: 64, bottom: folded ? SHEET_PEEK + 16 + key : sheet ? Math.round(H * sheet) + 16 + key : sideW ? Math.round(H * 0.42) + 16 : 70 }
+        ? { top: panel === 'mode' ? (live.current.side ? 64 : 24) : 70, left: 28, right: 64, bottom: folded ? SHEET_PEEK + 16 + key : sheet ? Math.round(H * sheet) + 16 + key : sideW ? Math.round(H * 0.42) + 16 : 70 }
         : { top: 70, left: card ? cardEdge(W >= DOCK_MIN, !!live.current.collapsed, panel) + CARD_W + 26 : open ? PANEL_W[panel!] + 54 : 40, right: sideW ? sideW + 54 : 90, bottom: 70 }
     if (padding.left + padding.right > W - 40 || padding.top + padding.bottom > H - 40) return { top: 20, left: 20, right: 20, bottom: 20 }
     return padding
@@ -226,7 +229,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       const room = Math.min(margin, (root.current.clientWidth - pad.left - pad.right) / 4, (root.current.clientHeight - pad.top - pad.bottom) / 4)
       const padding = { top: pad.top + room, left: pad.left + room, right: pad.right + room, bottom: pad.bottom + room }
       const opts = { padding, duration: reducedMotion() ? 0 : 1000, easing: EASE }
-      if (!bounds) return m.fitBounds(model.home, { ...opts, padding: root.current.clientWidth < NARROW ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: 90, bottom: 80 } })
+      if (!bounds) return m.fitBounds(model.home, { ...opts, padding: homePad(root.current.clientWidth < NARROW) })
       const maxZoom = live.current.homeZoom + Math.log2(zoomMul)
       const camera = m.cameraForBounds(bounds, { padding, maxZoom })
       // too wide for the map's lowest zoom: fitBounds would keep the padding of the zoom it wanted and land off centre
@@ -269,13 +272,18 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     [map, model, pads, cityBounds, inView],
   )
 
-  /** Brings a leg into view beside its panel: both ends, with room for their labels. */
+  /**
+   * Brings a leg into view beside its panel: both ends and the stops of its quickest way, with room for their
+   * labels. A leg already in view stays put, so opening it does not move the map under the tap.
+   */
   const showRoute = useCallback(
     (conn: Connection) => {
-      const bounds = legBounds(conn, model.byId)
+      const pts = routePoints(model, conn, enabledOptions(conn, live.current.families).slice(0, 1))
+      if (pts.length >= 2 && pts.every((ll) => inView(ll, 'route', 24))) return
+      const bounds = pts.length >= 2 ? boundsOf(pts) : legBounds(conn, model.byId)
       if (bounds) fit(bounds, 'route', 6, 90)
     },
-    [model, fit],
+    [model, fit, inView],
   )
 
   // ---- actions -----------------------------------------------------------------------------
@@ -382,9 +390,9 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   /** Opening a trip fits all of it once, the one time the camera may zoom out far. */
   const fitTrip = useCallback(
     (t: Trip, panel: PanelView | null = 'trips') => {
-      const pts = tripStops(t).map((id) => model.byId.get(id)).filter((p) => !!p).map((p): LonLat => [p.lon, p.lat])
+      const bounds = tripBounds([...new Set(tripStops(t))], model.byId)
       // the margin keeps both ends and their labels clear of the edges
-      if (pts.length) fit(boundsOf(pts), panel, 6, 90)
+      if (bounds) fit(bounds, panel, 6, 90)
     },
     [fit, model],
   )
@@ -543,13 +551,14 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   useEffect(() => {
     const el = canvasBox.current!
     const narrow = el.clientWidth < NARROW
-    // the open trip's pane sits on the right, so the first view already leaves it room
-    const side54 = live.current.side && !live.current.sideMini ? sideWidth + 54 : 90
+    // the open trip's pane sits on the right, or under the map on a phone, so the first view already leaves it room.
+    // It zooms in no further than opening a trip may, measured from the whole map the way fit() measures it
+    const maxZoom = fitZoom(model.home, el.clientWidth, el.clientHeight, homePad(narrow)) + Math.log2(6)
     const m = new MLMap({
       container: el,
       style: baseStyle(),
       bounds: initialBounds(live.current.trip, model),
-      fitBoundsOptions: { padding: narrow ? { top: 70, left: 20, right: 64, bottom: 80 } : { top: 70, left: 40, right: side54, bottom: 80 } },
+      fitBoundsOptions: { padding: pads(null), maxZoom },
       attributionControl: false,
       dragRotate: false,
       pitchWithRotate: false,
@@ -566,7 +575,9 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       addMarkerImages(m)
       addRouteLayers(m, model, savedPlaces)
       addModeLayers(m)
-      live.current.homeZoom = m.getZoom()
+      // the zoom the whole map fits at, not the zoom the map opened on, so an open trip does not move every cap
+      const home = m.cameraForBounds(model.home, { padding: homePad(narrow) })?.zoom
+      live.current.homeZoom = Math.max(home ?? m.getZoom(), m.getMinZoom())
       if (import.meta.env.DEV) (window as { __rmap?: MLMap }).__rmap = m
       setBuilt({ map: m, model })
     })
