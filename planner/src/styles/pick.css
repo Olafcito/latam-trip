@@ -57,11 +57,11 @@ table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-
 .matrix td.none { height: calc(var(--cell) + 2px); }
 .matrix td.t button {
   position: relative;
-  display: grid; place-items: center;
+  display: block; text-align: center; white-space: nowrap;
   width: var(--cell); height: var(--cell); padding: 0;
   border: 0; border-radius: 5px;
   background: var(--surface-2); color: var(--muted);
-  font: inherit; font-family: var(--font-num); font-size: var(--fs-num); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums;
+  font: inherit; font-family: var(--font-num); font-size: var(--fs-num); font-weight: 600; line-height: var(--cell); font-variant-numeric: tabular-nums;
   cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none;
   transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease, background-color var(--t-med) ease, color var(--t-med) ease;
 }
@@ -78,8 +78,9 @@ table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-
 /* keyboard focus sits inside the cell, so it never hides behind the neighbours */
 .matrix td.t button:focus-visible { z-index: 1; outline: 2px solid var(--text); outline-offset: -5px; }
 
-/* the k after a price in thousands, smaller than the figure */
-.matrix td.t button .mx-k { margin-left: 1px; font-size: 0.8em; font-weight: 500; }
+/* the k after a price in thousands, smaller than the figure, and the figure a touch smaller so 12,6k fits the cell on one line */
+.matrix td.t button:has(.mx-k) { font-size: calc(var(--fs-num) - 1px); }
+.matrix td.t button .mx-k { margin-left: 1px; font-size: 0.72em; font-weight: 500; }
 
 /* the key beside the order: amber fill for the top 10, amber figures for the next 20, the green ring for the trip */
 .mx-key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0; font-size: var(--fs-label); font-weight: 500; color: var(--muted); }
