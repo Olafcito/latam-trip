@@ -3,7 +3,7 @@ import type { Booking, InOut, Option, Ticket, Way } from '../data/types'
 import { DEFAULT_FILTERS } from './options'
 import type { BookData } from './booked'
 import type { Journey } from './journey'
-import { allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
+import { allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -205,6 +205,13 @@ describe('what the pair shows as picked', () => {
   it('ignores a swap to a way of other cities', () => {
     const p = pickedOf(inout, rowOf(), { ...none, chosen: 'CTG-GUA-oneways', mixIn: 'I_m' })
     expect(p.wi.id).toBe('I_o')
+  })
+  it('goes on as the option of the pair, and a mix the data does not hold goes on as no option', () => {
+    const row = rowOf()
+    expect(pickOptionId(row, pickedOf(inout, row, { ...none, chosen: 'CTG-GUA-oneways' }))).toBe('CTG-GUA-oneways')
+    const mixed = pickedOf(inout, row, { ...none, chosen: 'CTG-GUA-oneways', mixIn: 'I_o2' })
+    expect(mixed.option.id).not.toBe('CTG-GUA-oneways')
+    expect(pickOptionId(row, mixed)).toBeNull()
   })
   it('shows a trip on its own mixed one ways', () => {
     const p = pickedOf(inout, rowOf(), { ...none, tripIn: 'I_o2', tripHome: 'H_o' })

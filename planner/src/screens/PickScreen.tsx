@@ -6,7 +6,7 @@ import type { Journey } from '../lib/journey'
 import { clock, dec1, hours, kr, observed, shortPlace, timeUncertain, weekdayDay } from '../lib/format'
 import type { FlightLink } from '../lib/links'
 import {
-  allIn, cheapestKey, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pointsLost, scoreParts, ticketsOf, typeTiles,
+  allIn, cheapestKey, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles,
   type PairFilters, type PairRow,
 } from '../lib/pairs'
 import { heldWayNotice } from '../lib/booked'
@@ -416,7 +416,7 @@ function PairPane({ data, row, trip }: { data: AppData; row: PairRow; trip: Jour
 
       <Tickets inout={inout} wi={picked.wi} wh={picked.wh} />
 
-      <Apply inout={inout} wi={picked.wi} wh={picked.wh} optionId={picked.option.id} trip={trip} held={held} />
+      <Apply inout={inout} wi={picked.wi} wh={picked.wh} optionId={pickOptionId(row, picked)} trip={trip} held={held} />
     </section>
   )
 }
@@ -434,7 +434,7 @@ function heldWords(held: { in: boolean; home: boolean }): { label: string; notic
  * Off, and still focusable for its tooltip, when the trip already flies them or a side of it is booked.
  */
 function Apply({ inout, wi, wh, optionId, trip, held }: {
-  inout: InOut; wi: Way; wh: Way; optionId: string; trip: Journey | null; held: { in: boolean; home: boolean }
+  inout: InOut; wi: Way; wh: Way; optionId: string | null; trip: Journey | null; held: { in: boolean; home: boolean }
 }) {
   const pickWays = useStore((s) => s.pickWays)
   const same = !!trip && trip.wayIn === wi.id && trip.wayHome === wh.id

@@ -211,6 +211,11 @@ export function pickedOf(
   return { option: known ?? mixOption(inout, wi, wh), base, wi, wh }
 }
 
+/** The option a pick goes on as: the id of an option of the pair, or null for a mix of one ways the data does not hold. */
+export function pickOptionId(row: PairRow, picked: Picked): string | null {
+  return row.options.some((o) => o.id === picked.option.id) ? picked.option.id : null
+}
+
 export type FlagTone = 'warn' | 'good' | 'plain'
 
 const FLAGS: Record<string, [string, FlagTone]> = {
