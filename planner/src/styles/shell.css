@@ -49,11 +49,11 @@
 @media (max-width: 560px) {
   .top-in { gap: 16px; }
   .brand { flex-direction: column; align-items: flex-start; gap: 3px; }
-  .brand-dates { font-size: var(--fs-label); white-space: normal; }
+  .brand-dates { font-size: var(--fs-label); white-space: nowrap; }
   .tab { padding: 0 10px; }
 }
-/* the narrowest phones: the dates give way, they stand on every trip */
-@media (max-width: 340px) {
+/* a phone: the header stays one line, the dates give way, they stand on every trip */
+@media (max-width: 400px) {
   .brand-dates { display: none; }
 }
 
