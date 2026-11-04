@@ -1,17 +1,18 @@
-import { Fragment, useEffect, useMemo, useState, type KeyboardEvent } from 'react'
+import { Fragment, useEffect, useMemo, useState, type ComponentType, type KeyboardEvent, type ReactNode } from 'react'
 import { Flag } from '@map/map/Flag'
-import type { AppData, InOut, Option, Way } from '../data/types'
+import type { AppData, InOut, Option, Way, WayType } from '../data/types'
 import { changing, useStore, type Pair } from '../store'
 import type { Journey } from '../lib/journey'
 import { clock, day, dec1, kr, nextDayMark, observed, shortPlace, timeUncertain, TYPE_LABEL } from '../lib/format'
 import { passesFilters, type Filters } from '../lib/options'
-import { allIn, cityChoices, homeChoices, pairRows, type PairFilters } from '../lib/pairs'
+import { allIn, cheapestKey, cityChoices, homeChoices, pairRows, scoreParts, type PairFilters, type PairRow } from '../lib/pairs'
+import { pairMarks, type PairMark } from '../lib/pickMarks'
 import { HOMES } from '../lib/homes'
 import { WayCard } from '../components/WayCard'
 import { MiniMap } from '../components/MiniMap'
 import { HomePill } from '../components/HomePill'
 import { PillSelect, type PillOption } from '../components/PillSelect'
-import { Arrow, Bag, Caret, Land, Moon, Pin, Plane } from '../components/icons'
+import { Arrow, Bag, Caret, Check, Clock, Land, Moon, Pin, Plane, Ticket, TicketHop, Transfer, TwoTickets } from '../components/icons'
 
 // Picking the way in and the way home: the pair as the title, one row of pills that narrow the pairs,
 // the pairs ranked by the score or the price, and the flight options of the open pair.
@@ -27,6 +28,8 @@ const NO_FILTERS: PairFilters = { arrival: '', departure: '', noUS: false, maxHu
 
 /** A city as it reads on screen: the name without the note in brackets. */
 const cityName = (inout: InOut, code: string) => shortPlace(inout.airports[code]?.name ?? code)
+
+const pairKey = (p: Pair) => `${p.in}|${p.home}`
 
 /** The pair of cities a trip flies in to and home from. */
 function ownPair(inout: InOut, j: Journey | null): Pair | null {
@@ -97,6 +100,14 @@ export function PickScreen({ data }: { data: AppData }) {
   const pickFor = useStore((s) => s.pickFor)
   const pair = useStore((s) => s.pair)
   const trip = useStore(changing)
+  const home = useStore((s) => s.home)
+  const sort = useStore((s) => s.pairSort)
+  const { arrival, departure, noUS, maxHubNights } = useStore((s) => s.filters)
+  const rows = useMemo(
+    () => pairRows(inout, home, { arrival, departure, noUS, maxHubNights }, sort),
+    [inout, home, arrival, departure, noUS, maxHubNights, sort],
+  )
+  const own = ownPair(inout, trip)
   // the picker opens at its top when a trip's sheet sends you here
   useEffect(() => {
     if (pickFor) window.scrollTo({ top: 0 })
@@ -105,7 +116,10 @@ export function PickScreen({ data }: { data: AppData }) {
     <div className="pick">
       <Head inout={inout} trip={trip} shown={pair ?? ownPair(inout, trip)} />
       <Controls inout={inout} />
-      <OptionsView data={data} />
+      <div className="pk-body">
+        <PairList inout={inout} rows={rows} ownKey={own && pairKey(own)} filtered={!!arrival || !!departure || noUS || maxHubNights != null} />
+        {pair && <OptionsView data={data} />}
+      </div>
     </div>
   )
 }
@@ -202,6 +216,100 @@ function Controls({ inout }: { inout: InOut }) {
       />
       {on && <button type="button" className="btn link small pk-clear" onClick={() => setFilters(NO_FILTERS)}>Clear</button>}
     </div>
+  )
+}
+
+const TOP = 10
+
+const TYPE_ICON: Record<WayType, { label: string; Icon: ComponentType<{ s?: number }> }> = {
+  ticket: { label: 'One ticket', Icon: Ticket },
+  madrid: { label: 'Madrid ticket', Icon: TicketHop },
+  oneways: { label: 'Two one ways', Icon: TwoTickets },
+}
+
+/** An icon that says a fact: its words for a screen reader and as a tooltip. */
+function Said({ label, className, children }: { label: string; className?: string; children: ReactNode }) {
+  return <span className={className} role="img" aria-label={label} title={label}>{children}</span>
+}
+
+function MarkIcon({ m }: { m: PairMark }) {
+  switch (m.kind) {
+    case 'night': return <Said label={m.label} className="pk-mark"><Moon /><span aria-hidden="true">{m.text}</span></Said>
+    case 'us': return <Said label={m.label} className="pk-mark pk-us"><span aria-hidden="true">US</span></Said>
+    case 'change': return <Said label={m.label} className="pk-mark"><Transfer s={13} /></Said>
+    case 'long': return <Said label={m.label} className="pk-mark"><Clock s={13} /></Said>
+  }
+}
+
+/** The ranked pairs: the top ten by the sort, then all of them on request. The open pair stays in view past the top ten. */
+function PairList({ inout, rows, ownKey, filtered }: { inout: InOut; rows: PairRow[]; ownKey: string | null; filtered: boolean }) {
+  const pair = useStore((s) => s.pair)
+  const setPair = useStore((s) => s.setPair)
+  const setFilters = useStore((s) => s.setFilters)
+  const home = useStore((s) => s.home)
+  const [all, setAll] = useState(false)
+  const cheap = useMemo(() => cheapestKey(rows), [rows])
+  const openKey = pair ? pairKey(pair) : null
+
+  if (!rows.length) {
+    const city = HOMES.find((h) => h.code === home)?.city ?? cityName(inout, home)
+    return (
+      <section className="pk-list pk-empty" aria-label="Pairs">
+        <p className="pk-empty-title">{filtered ? 'No pairs' : `No fares from ${city}`}</p>
+        {filtered && <button type="button" className="btn small" onClick={() => setFilters(NO_FILTERS)}>Clear</button>}
+      </section>
+    )
+  }
+
+  const at = openKey ? rows.findIndex((r) => r.key === openKey) : -1
+  const shown = rows.map((r, i) => ({ r, i })).filter(({ i }) => all || i < TOP || i === at)
+  return (
+    <section className="pk-list" aria-label="Pairs">
+      <ol className="pk-rows">
+        {shown.map(({ r, i }) => {
+          const wi = inout.ways[r.best.way_in]
+          const wh = inout.ways[r.best.way_home]
+          const open = r.key === openKey
+          return (
+            <li key={r.key} data-gap={i >= TOP && !all ? '' : undefined}>
+              <button
+                type="button" className="pk-row" aria-expanded={open} aria-controls={open ? 'pk-pair' : undefined}
+                onClick={() => setPair(open ? null : { in: r.in, home: r.home })}
+              >
+                <span className="pk-rank" data-first={i === 0 || undefined}><span className="vh">Rank </span>{i + 1}</span>
+                <span className="pk-cities">
+                  <span className="pk-c"><Flag code={inout.airports[r.in]?.country ?? ''} size={12} />{cityName(inout, r.in)}</span>
+                  <span className="pk-to" aria-hidden="true"><Arrow s={13} /></span>
+                  <span className="vh"> to </span>
+                  <span className="pk-c"><Flag code={inout.airports[r.home]?.country ?? ''} size={12} />{cityName(inout, r.home)}</span>
+                </span>
+                <span className="pk-meta">
+                  <span className="pk-types">
+                    {r.types.map((t) => {
+                      const { label, Icon } = TYPE_ICON[t]
+                      return <Said key={t} label={label} className="pk-type"><Icon s={14} /></Said>
+                    })}
+                  </span>
+                  {wi && wh && pairMarks(wi, wh).map((m) => <MarkIcon key={m.kind} m={m} />)}
+                  {r.options.length > 1 && <span className="pk-count">{r.options.length} options</span>}
+                  {r.key === cheap && <span className="tag pk-cheap">Cheapest</span>}
+                  {r.key === ownKey && <Said label="In the trip" className="pk-own"><Check s={14} /></Said>}
+                </span>
+                <span className="pk-price">
+                  <b>{kr(allIn(r.best))}</b>
+                  <small title="Score out of 10"><span className="vh">Score </span>{dec1(scoreParts(r.best.rating).total)}</small>
+                </span>
+              </button>
+            </li>
+          )
+        })}
+      </ol>
+      {rows.length > TOP && (
+        <button type="button" className="btn link small pk-more" aria-expanded={all} onClick={() => setAll((a) => !a)}>
+          {all ? `Show the top ${TOP}` : `Show all ${rows.length} pairs`}
+        </button>
+      )}
+    </section>
   )
 }
 

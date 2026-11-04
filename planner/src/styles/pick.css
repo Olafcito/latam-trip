@@ -22,6 +22,64 @@
 .pk-sort { margin-inline: 2px; }
 .pk-chip { padding-inline: 12px; }
 
+/* ---- the list: one row a pair, ranked, the price large on the right ------------------------- */
+.pk-body { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.pk-list { min-width: 0; }
+.pk-rows { list-style: none; margin: 0; padding: 0; }
+.pk-rows > li + li { border-top: 1px solid var(--line); }
+.pk-rows > li[data-gap] { margin-top: 10px; border-top: 1px dashed var(--line-2); padding-top: 10px; }
+.pk-row {
+  display: grid; grid-template-columns: 3ch minmax(0, 1fr) auto; column-gap: 14px; row-gap: 5px; align-items: center;
+  width: 100%; min-height: 64px; margin: 0; padding: 10px 12px;
+  border: 0; border-radius: var(--radius); background: transparent;
+  font: inherit; color: var(--text); text-align: left;
+  cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease;
+}
+.pk-row:active { transform: scale(0.98); }
+.pk-row[aria-expanded='true'] { background: var(--surface); }
+.pk-row:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+@media (hover: hover) and (pointer: fine) {
+  .pk-row:hover { background: var(--surface); }
+}
+.pk-rank {
+  grid-row: 1 / span 2; align-self: start; padding-top: 1px;
+  font-family: var(--font-num); font-size: var(--fs-num); font-weight: 600; font-variant-numeric: tabular-nums; text-align: right;
+  color: var(--faint);
+}
+.pk-rank[data-first] { color: var(--flight); }
+.pk-cities {
+  grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; min-width: 0;
+  font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3;
+}
+.pk-c { display: inline-flex; align-items: center; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.pk-c .flag, .pk-to { flex: none; }
+.pk-to { display: inline-grid; color: var(--faint); }
+.pk-meta {
+  grid-column: 2; grid-row: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; min-width: 0;
+  font-size: var(--fs-small); color: var(--muted);
+}
+.pk-types { display: inline-flex; gap: 6px; color: var(--text); }
+.pk-type, .pk-mark, .pk-own { display: inline-flex; align-items: center; gap: 3px; flex: none; }
+.pk-mark { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.pk-us {
+  padding: 0 4px; border: 1px solid currentColor; border-radius: 4px;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.04em; line-height: 14px;
+}
+.pk-count { font-family: var(--font-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-cheap { color: var(--text); }
+.pk-own { color: var(--booked); }
+.pk-price { grid-column: 3; grid-row: 1 / span 2; display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.pk-price b { font-family: var(--font-num); font-size: var(--fs-head); font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pk-price small { font-family: var(--font-num); font-size: var(--fs-small); font-variant-numeric: tabular-nums; color: var(--muted); }
+.pk-more { margin: 8px 0 0 calc(3ch + 26px); }
+.pk-empty { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 28px 12px; border: 1px dashed var(--line-2); border-radius: var(--radius); }
+.pk-empty-title { margin: 0; font-size: var(--fs-title); font-weight: 600; color: var(--muted); }
+:root[data-input='key'] .pk-row { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .pk-row:active { transform: none; }
+}
+
 /* ---- section heads: a word title, a mono count, a short note -------------------------------- */
 .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 10px; }
 .sec-title { margin: 0; font-family: var(--font-word); font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
@@ -97,6 +155,9 @@ table.grid.opts { font-size: var(--fs-small); }
 @media (max-width: 640px) {
   .pick { gap: 18px; }
   .pk-title { font-size: var(--fs-num-lg); }
+  .pk-row { column-gap: 10px; padding-inline: 8px; }
+  .pk-price b { font-size: var(--fs-lead); }
+  .pk-more { margin-left: 8px; }
   .expand-in { padding: 14px 12px; }
   .opts td .code { margin-left: 4px; }
 }
