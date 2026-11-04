@@ -67,7 +67,7 @@ export function VersionMenu({ id, version }: { id: string; version: number }) {
         aria-label={viewing ? `Version ${shown} of ${latest}, other versions` : `Version ${shown}, other versions`}
         onClick={() => setOpen((o) => !o)}
       >
-        {viewing ? `v${shown} of ${latest}` : `v${shown}`}
+        {viewing ? `version ${shown} of ${latest}` : `version ${shown}`}
       </button>
       {viewing && <button type="button" className="vers-back" onClick={goLatest}>Latest</button>}
       <div id={listId} className="vers-pop" role="group" aria-label="Versions of this trip" data-open={open || undefined}>

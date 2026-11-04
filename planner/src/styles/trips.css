@@ -27,7 +27,7 @@
   background: var(--ground);
   border-bottom: 1px solid var(--line-2);
 }
-.tt-head, .tt-row { padding-left: 12px; }
+.tt-head { padding-left: 12px; }
 .tt-h { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--faint); padding-bottom: 6px; align-self: end; }
 .tt-h.num { text-align: right; }
 
@@ -35,7 +35,7 @@
 .tt-row {
   position: relative; z-index: 1;
   min-height: 72px;
-  padding: 10px 0;
+  padding: 10px 0 10px 12px;
   border-bottom: 1px solid var(--line);
   cursor: pointer;
   transition: background-color var(--t-fast) ease;
