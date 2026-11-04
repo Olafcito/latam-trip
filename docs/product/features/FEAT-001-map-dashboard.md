@@ -1,7 +1,7 @@
 # FEAT-001: The map as the trip dashboard
 
 - Date: 2026-11-04
-- Status: Drafted
+- Status: Planned (`docs/superpowers/plans/2026-11-04-map-dashboard.md`)
 
 ## 1. Problem
 
@@ -97,7 +97,7 @@ Story 7
 - DES-017. One phone sheet standard across every moment of this journey: a grabber, the peek, half and full detents, one close, and a compact control column inside the safe area that moves with the sheet. No zoom buttons on touch, and the legend lives behind the layers button.
 - DES-029. The selected thing draws as the hero with its connections lit, the past quiet, the future plain, and the camera follows the selection through every moment.
 - DES-030. A layer sits on the trip, never replaces it. The route stays drawn and dimmed, the trip card stays, and the default scope is along the route.
-- DES-015 is still Proposed, and Q-001, Q-018 and Q-019 are open. The colour choices this spec needs, selection, booked, layer markers and the mode vocabulary, wait on that palette rather than inventing one here.
+- DES-015 is still Proposed, and Q-001 is open and REC-018 and REC-019 are flagged. The colour choices this spec needs, selection, booked, layer markers and the mode vocabulary, wait on that palette rather than inventing one here.
 - Whether the panel's five sections are collapsible sections or tabs is not decided anywhere in the design log. The existing pattern on this screen, CityBody and PlaceSections, already folds long lists behind a Show all control rather than tabs, and the experiences layer already renders a Saved group the same way. This spec proposes keeping that one pattern, collapsible sections in a fixed order, for the product lead to confirm rather than introducing tabs as a new control.
 
 ## 9. Edge cases
@@ -149,10 +149,10 @@ Privacy. Lodgings and bookings are owner only tables per PROD-005. The signed ou
 
 - Q-001 (design log). Which palette carries flight, selected, planned and primary action together. Blocks the colour parts of section 8. Decided by the senior designer.
 - Q-003 (design log). Whether the connection network is on by default for a planner versus a guest. Decided by the product lead.
-- Q-018, Q-019 (REC-018, REC-019, flagged). The semantic colour rule for the map and a route line pattern per transport mode. Decided by the senior designer.
+- REC-018, REC-019 (flagged, design log). The semantic colour rule for the map and a route line pattern per transport mode. Decided by the senior designer.
 - Whether the panel's five sections are collapsible sections or tabs. This spec proposes collapsible sections, following the existing CityBody, PlaceSections and experiences layer pattern. Decided by the product lead.
 - What a saved places section holds exactly, only experiences and training already marked at that place, or also a bookmarked place itself with no marked item under it. Decided by the product lead, since no existing component draws this section today.
 
 ## Completeness
 
-Every journey step has a story, and every story has acceptance criteria with a named check. Still thin: the saved places section has no existing component to copy and its exact shape is an open question, Q-001, Q-018 and Q-019 leave the colour pass of section 8 undecided, and whether the five sections are tabs or collapsible sections is a proposal here, not a decision.
+Every journey step has a story, and every story has acceptance criteria with a named check. Still thin: the saved places section has no existing component to copy and its exact shape is an open question, Q-001, REC-018 and REC-019 leave the colour pass of section 8 undecided, and whether the five sections are tabs or collapsible sections is a proposal here, not a decision.
