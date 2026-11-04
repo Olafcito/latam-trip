@@ -102,6 +102,11 @@ export function pairRows(inout: InOut, home: string, f: PairFilters, sort: PairS
 
 export interface TypeTile { type: WayType; option: FullOption; price: number; delta: number }
 
+/** How much more the pair's cheapest all in is than the other pair's, in kroner. Negative when it is less. */
+export function cheapestDelta(row: PairRow, against: PairRow): number {
+  return allIn(row.cheapest) - allIn(against.cheapest)
+}
+
 /** The cheapest option of each ticket type, and how much more it is than the cheapest of them. */
 export function typeTiles(options: FullOption[]): TypeTile[] {
   const tiles = TYPE_ORDER.flatMap((type) => {

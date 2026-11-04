@@ -6,7 +6,7 @@ import type { Journey } from '../lib/journey'
 import { clock, dec1, hours, kr, observed, shortPlace, timeUncertain, weekdayDay } from '../lib/format'
 import type { FlightLink } from '../lib/links'
 import {
-  allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles,
+  allIn, cheapestDelta, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles,
   type PairFilters, type PairRow, type PairSort,
 } from '../lib/pairs'
 import { heldWayNotice } from '../lib/booked'
@@ -103,16 +103,16 @@ export function PickScreen({ data }: { data: AppData }) {
   const [ownClosed, setOwnClosed] = useState(false)
   const openKey = pair ? pairKey(pair) : ownClosed ? null : ownKey
   // the open pair is found among all the pairs, so a filter never closes it under the user
-  const openRow = useMemo(
-    () => (openKey ? pairRows(inout, home, NO_FILTERS, sort).find((r) => r.key === openKey) ?? null : null),
-    [inout, home, sort, openKey],
-  )
+  const every = useMemo(() => pairRows(inout, home, NO_FILTERS, sort), [inout, home, sort])
+  const openRow = useMemo(() => (openKey ? every.find((r) => r.key === openKey) ?? null : null), [every, openKey])
+  // what the trip flies now, to say how far the open pair is from it
+  const nowRow = useMemo(() => (ownKey ? every.find((r) => r.key === ownKey) ?? null : null), [every, ownKey])
   const toggle = (r: PairRow) => {
     if (r.key !== openKey) return setPair({ in: r.in, home: r.home })
     setPair(null)
     setOwnClosed(true)
   }
-  const pane = (row: PairRow) => <PairPane key={row.key} data={data} row={row} trip={trip} />
+  const pane = (row: PairRow) => <PairPane key={row.key} data={data} row={row} trip={trip} now={nowRow} />
   const side = useRef<HTMLDivElement>(null)
   useFitToWindow(side, !inline && openRow ? openRow.key : null)
   // the picker opens at its top when a trip's sheet sends you here
@@ -121,7 +121,7 @@ export function PickScreen({ data }: { data: AppData }) {
   }, [pickFor])
   return (
     <div className="pick">
-      <Head inout={inout} trip={trip} shown={openRow ?? own} />
+      <Head inout={inout} trip={trip} own={own} shown={openRow ?? own} />
       <Controls inout={inout} ownShown={!!ownKey && rows.some((r) => r.key === ownKey)} />
       <div className="pk-body">
         <div className="pk-main">
@@ -137,7 +137,7 @@ export function PickScreen({ data }: { data: AppData }) {
 }
 
 /** Back on the left, the trip small, and the answer as the title: from home, in to one city, home from another. */
-function Head({ inout, trip, shown }: { inout: InOut; trip: Journey | null; shown: Pair | null }) {
+function Head({ inout, trip, own, shown }: { inout: InOut; trip: Journey | null; own: Pair | null; shown: Pair | null }) {
   const go = useStore((s) => s.go)
   const home = useStore((s) => s.home)
   const h = HOMES.find((x) => x.code === home)
@@ -147,7 +147,7 @@ function Head({ inout, trip, shown }: { inout: InOut; trip: Journey | null; show
       <button type="button" className="btn link small pk-back" onClick={() => go('trips', trip ? 'trip' : 'home')}>
         <Caret dir="l" />{trip ? 'Back to the trip' : 'Trips'}
       </button>
-      <p className="pk-eyebrow">{trip?.name || 'New trip'}</p>
+      {trip && own && <p className="pk-eyebrow">In the trip: {cityName(inout, own.in)} in, {cityName(inout, own.home)} home</p>}
       <h2 className="pk-title">
         <Flag code={h?.country ?? inout.airports[home]?.country ?? ''} size={14} title={shown ? `From ${homeCity}` : undefined} />
         {shown ? (
@@ -411,7 +411,7 @@ function Fee({ v }: { v: number | null | undefined }) {
  * One pair opened: what each ticket type costs, the options as radio cards, the one ways to swap on two one
  * ways, the two ways, the cost, the score in its parts and every ticket behind them.
  */
-function PairPane({ data, row, trip }: { data: AppData; row: PairRow; trip: Journey | null }) {
+function PairPane({ data, row, trip, now }: { data: AppData; row: PairRow; trip: Journey | null; now: PairRow | null }) {
   const { inout } = data
   const home = useStore((s) => s.home)
   const bookings = useStore((s) => s.bookings)
@@ -453,6 +453,7 @@ function PairPane({ data, row, trip }: { data: AppData; row: PairRow; trip: Jour
           })}
         </div>
       )}
+      {now && now.key !== row.key && <FromNow delta={cheapestDelta(row, now)} />}
 
       <div className="pk-opts" role="radiogroup" aria-label="Options">
         {list.map((o) => {
@@ -499,6 +500,12 @@ function PairPane({ data, row, trip }: { data: AppData; row: PairRow; trip: Jour
       <Apply inout={inout} wi={picked.wi} wh={picked.wh} optionId={pickOptionId(row, picked)} trip={trip} held={held} />
     </section>
   )
+}
+
+/** How far the pair's cheapest all in sits from what the trip flies now. */
+function FromNow({ delta }: { delta: number }) {
+  if (delta === 0) return <p className="pk-now">Same price as now</p>
+  return <p className="pk-now">{kr(Math.abs(delta))} {delta > 0 ? 'more' : 'less'} than now</p>
 }
 
 /** What a held pick reads on the button, and the tooltip that says where to change it. */

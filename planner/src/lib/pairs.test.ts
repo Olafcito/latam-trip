@@ -3,7 +3,7 @@ import type { Booking, InOut, Option, Ticket, Way } from '../data/types'
 import { DEFAULT_FILTERS } from './options'
 import type { BookData } from './booked'
 import type { Journey } from './journey'
-import { allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
+import { allIn, cheapestDelta, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles, type FullOption, type PairFilters } from './pairs'
 
 const way = (over: Partial<Way>): Way => ({
   id: 'I1', direction: 'in', type: 'oneways', from: 'CPH', to: 'CTG', depart: '2026-12-03T06:00', arrive: '2026-12-03T14:30',
@@ -292,5 +292,16 @@ describe('heldSides', () => {
     expect(heldSides([bookedIn, bookedHome], data, journey, oIn2, tHome, null)).toEqual({ in: true, home: true })
     expect(heldSides([bookedIn, bookedHome], data, journey, oIn2, tHome, 'in')).toEqual({ in: false, home: true })
     expect(heldSides([bookedIn, bookedHome], data, journey, oIn2, tHome, 'home')).toEqual({ in: true, home: false })
+  })
+})
+
+describe('the difference between two pairs', () => {
+  const rows = pairRows(inout, 'CPH', { arrival: '', departure: '', noUS: false, maxHubNights: null }, 'cheapest')
+  const ctg = rows.find((r) => r.key === 'CTG|GUA')!
+  const cun = rows.find((r) => r.key === 'CUN|MEX')!
+  it('is the cheapest all in of the pair minus the other', () => {
+    expect(cheapestDelta(ctg, cun)).toBe(500)
+    expect(cheapestDelta(cun, ctg)).toBe(-500)
+    expect(cheapestDelta(ctg, ctg)).toBe(0)
   })
 })
