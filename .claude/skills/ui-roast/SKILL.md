@@ -30,7 +30,7 @@ Ids never change once given. A finding is an observation. It becomes a rule only
 
 1. **Prep.** `design-analyst` on Sonnet, mode prep. Before shots at 1440x900 and 375x812 of every journey state with Playwright, then a brief: the journey, the shots, the components, the decisions and problems that apply, the open findings of the last review, candidate issues, and the escalation block.
 2. **Review.** `senior-designer` on Opus, given only the brief path. It writes the review.
-3. **Simon rules.** The main session shows him the shots and the findings table: id, finding, priority, suggested fix. He accepts, rejects or changes each.
+3. **Simon rules.** The main session sends him one shot, or one for the phone and one for the laptop if the findings differ by size, picked as the shot that carries the most and the highest priority findings, plus the review file itself. Not the whole shot folder, too many screenshots at once costs context for no benefit. Alongside, show the findings table: id, finding, priority, suggested fix. He accepts, rejects or changes each.
 4. **Record.** `design-analyst` on Sonnet, mode record, with his rulings. It updates the log and writes the fixes file.
 5. **Fix.** A fresh implementer on Sonnet takes the fixes file, through the usual journey, spec and test first rules in CLAUDE.md.
 6. **Check.** The next review of that screen starts at step 1 and marks every earlier finding resolved, partly resolved or regressed.
