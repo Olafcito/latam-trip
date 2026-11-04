@@ -61,11 +61,11 @@ A design issue is not automatically a code finding and a code finding is not a d
 
 ### Design work
 
-- **Roast** when someone wants an honest look at a screen. "Roast this screenshot: <path>" goes to `design-roaster`, with the screen name and one line on what the screen is for. No prep agent, no brief, no mandatory Playwright run, no design decisions or earlier reviews handed over. The roast comes back short, opinionated and scored, it is discussed, and only what Simon accepts is recorded. `ui-roast` says how.
+- **Roast** is the first line of review for UI work. A built or changed screen is roasted before Simon looks at it, and any ongoing task can be picked up with a shot. "Roast this screenshot: <path>" goes to `design-roaster`, with the screen name and one line on what the screen is for. No prep agent, no brief, no mandatory Playwright run, no design decisions or earlier reviews handed over. The roast comes back short, opinionated and scored, it is discussed, and only what Simon accepts is recorded. `ui-roast` says how.
 - **Audit** when a roast or a discussion leaves a cross screen, structural or design system question. `senior-designer` runs it: scoped, multi screen, evidence based, built on the principles and decisions, with `apple-design`, `impeccable` and `emil-design-eng` loaded when they help. Writes a review file.
 - **Explore** when the direction is unclear or there are real alternatives. `prototype` builds several distinct versions behind a switcher in the actual stack, 21st.dev gives components and inspiration. No Figma dependency. Compare, pick, then implement the winner. Not for minor changes.
 - **Implement** with the frontend skills below.
-- **Evaluate** the built thing against the journey, with a roast when it warrants one.
+- **Evaluate** the built thing against the journey, starting with a roast of the built screen.
 - **Consolidate** validated patterns into `design-principles.md`, the tokens in `planner/src/styles` and the shared components, through a retrospective when the evidence has built up, not on a schedule.
 
 ### Agents and models

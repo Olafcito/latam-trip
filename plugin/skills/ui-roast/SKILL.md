@@ -17,14 +17,14 @@ Two reviews, two agents, two mindsets.
 | Record | Only what Simon accepts afterwards | Findings, evidence, proposed decisions, log updates |
 | When | Whenever someone wants an honest look at a screen | When a roast or discussion raises a cross screen, structural or design system question, or Simon asks |
 
-Neither is mandatory. A straightforward change goes straight to implementation. A roast does not require an audit, and an audit does not require a roast first. Simon decides, and "Simon" here means Simon or the agent coordinating the work.
+The roast is the first line of review for UI work. A screen that was built or changed gets roasted before Simon looks at it, and an ongoing task can be picked up with a shot at any time. The audit is not mandatory. A roast does not require an audit, and an audit does not require a roast first. Simon decides what follows, and "Simon" here means Simon or the agent coordinating the work.
 
 ## Running a roast
 
 The roaster's instructions live in `plugin/agents/design-roaster.md` and nowhere else. This skill only says how to run one and what happens with it.
 
-1. The shot must be a file. If it only exists as a paste in the conversation, ask Simon to drop it in `docs/design/shots/<screen>/` (git ignored) or give the path. One shot is enough, and Playwright is an option when nobody has one, not a step.
-2. Dispatch `design-roaster`: "Roast this screenshot: <path>", the screen name and, when useful, one line on what the screen is for or which journey step it serves. Give it no design decisions, no earlier reviews and no explanation of why the screen looks the way it does. Independence means context about what the screen should achieve, not instructions about what it should look like.
+1. The shot must be a file. If it only exists as a paste in the conversation, ask Simon to drop it in `docs/design/shots/<screen>/<date>/` (git ignored) or give the path. One shot is enough, and Playwright is an option when nobody has one, not a step. When Playwright takes it, give `browser_take_screenshot` the absolute path, because a relative one resolves against the folder above the repo. Confirm the file exists before dispatching, a roaster sent to a missing file wastes a Read and a retry.
+2. Dispatch `design-roaster`: "Roast this screenshot: <path>", the screen name and, when useful, one line on what the screen is for or which journey step it serves. Give it no design decisions, no earlier reviews and no explanation of why the screen looks the way it does. Independence means context about what the screen should achieve, not instructions about what it should look like. The roaster reads the screen as a stranger would, so it will question things the code explains, such as a tooltip or a conditional label. That is the point, not a flaw to correct in the brief.
 3. Relay the roast as it is. Discuss. Simon agrees, disagrees, challenges and refines. Nothing is recorded yet.
 4. Decide what happens next: implement the agreed direction, explore alternatives with `prototype`, run an audit for the questions the roast could not settle, or leave it.
 5. Record only what was accepted. An accepted rule becomes a DES entry. A problem seen before on other screens becomes or updates a REC entry. An unsettled question becomes a Q entry. A roast with nothing accepted leaves no file behind. Keep the roast text only if Simon asks, as `docs/design/reviews/roast-<screen>-<date>.md`.
