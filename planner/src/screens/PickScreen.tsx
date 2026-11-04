@@ -1,25 +1,39 @@
-import { Fragment, useEffect, useMemo, useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent } from 'react'
+import { Fragment, useEffect, useMemo, useState, type KeyboardEvent } from 'react'
 import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, Option, Way } from '../data/types'
 import { changing, useStore, type Pair } from '../store'
-import { clock, day, dec1, hours, kr, nextDayMark, observed, timeUncertain, TYPE_LABEL } from '../lib/format'
-import { mixWays, oneWayWays, passesFilters, type Filters } from '../lib/options'
-import { topTiers } from '../lib/tiers'
+import type { Journey } from '../lib/journey'
+import { clock, day, dec1, kr, nextDayMark, observed, shortPlace, timeUncertain, TYPE_LABEL } from '../lib/format'
+import { passesFilters, type Filters } from '../lib/options'
+import { allIn, cityChoices, homeChoices, pairRows, type PairFilters } from '../lib/pairs'
+import { HOMES } from '../lib/homes'
 import { WayCard } from '../components/WayCard'
 import { MiniMap } from '../components/MiniMap'
 import { HomePill } from '../components/HomePill'
-import { Bag, Caret, Moon, Pin } from '../components/icons'
+import { PillSelect, type PillOption } from '../components/PillSelect'
+import { Arrow, Bag, Caret, Land, Moon, Pin, Plane } from '../components/icons'
 
-// Picking the way in and way home: the matrix of airport pairs first, then the options of the
-// picked pair, each opening into a picture of its two ways and one button to build on the map.
+// Picking the way in and the way home: the pair as the title, one row of pills that narrow the pairs,
+// the pairs ranked by the score or the price, and the flight options of the open pair.
 
 type SortKey = 'rating' | 'price' | 'leave' | 'home'
 type Row = { o: Option; wi: Way; wh: Way }
 
 const REGION_NAME: Record<string, string> = { CA: 'Central America', CO: 'Colombia', MX: 'Mexico', BO: 'Bolivia' }
-const REGION_ORDER = ['CA', 'CO', 'MX', 'BO']
 /** Best rated sorts high to low, the rest low to high. */
 const SORT_DIR: Record<SortKey, 'ascending' | 'descending'> = { rating: 'descending', price: 'ascending', leave: 'ascending', home: 'ascending' }
+
+const NO_FILTERS: PairFilters = { arrival: '', departure: '', noUS: false, maxHubNights: null }
+
+/** A city as it reads on screen: the name without the note in brackets. */
+const cityName = (inout: InOut, code: string) => shortPlace(inout.airports[code]?.name ?? code)
+
+/** The pair of cities a trip flies in to and home from. */
+function ownPair(inout: InOut, j: Journey | null): Pair | null {
+  const wi = j ? inout.ways[j.wayIn] : undefined
+  const wh = j ? inout.ways[j.wayHome] : undefined
+  return wi && wh ? { in: wi.to, home: wh.from } : null
+}
 
 function Stamp({ s, from }: { s: string; from?: string }) {
   if (!s) return <span className="q" title="Time unknown">no time</span>
@@ -79,11 +93,9 @@ function useRows(all: Row[]): Row[] {
 }
 
 export function PickScreen({ data }: { data: AppData }) {
-  const [mode, setMode] = useState<'options' | 'mix'>('options')
-  const go = useStore((s) => s.go)
-  const home = useStore((s) => s.home)
-  const setHome = useStore((s) => s.setHome)
+  const { inout } = data
   const pickFor = useStore((s) => s.pickFor)
+  const pair = useStore((s) => s.pair)
   const trip = useStore(changing)
   // the picker opens at its top when a trip's sheet sends you here
   useEffect(() => {
@@ -91,244 +103,105 @@ export function PickScreen({ data }: { data: AppData }) {
   }, [pickFor])
   return (
     <div className="pick">
-      <div className="pick-head">
-        {trip ? (
-          <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'trip')}><Caret dir="l" />Back to the trip</button>
+      <Head inout={inout} trip={trip} shown={pair ?? ownPair(inout, trip)} />
+      <Controls inout={inout} />
+      <OptionsView data={data} />
+    </div>
+  )
+}
+
+/** Back on the left, the trip small, and the answer as the title: from home, in to one city, home from another. */
+function Head({ inout, trip, shown }: { inout: InOut; trip: Journey | null; shown: Pair | null }) {
+  const go = useStore((s) => s.go)
+  const home = useStore((s) => s.home)
+  const h = HOMES.find((x) => x.code === home)
+  const homeCity = h?.city ?? cityName(inout, home)
+  return (
+    <header className="pk-head">
+      <button type="button" className="btn link small pk-back" onClick={() => go('trips', trip ? 'trip' : 'home')}>
+        <Caret dir="l" />{trip ? 'Back to the trip' : 'Trips'}
+      </button>
+      <p className="pk-eyebrow">{trip?.name || 'New trip'}</p>
+      <h2 className="pk-title">
+        <Flag code={h?.country ?? inout.airports[home]?.country ?? ''} size={14} title={shown ? `From ${homeCity}` : undefined} />
+        {shown ? (
+          <>
+            <span className="pk-city">{cityName(inout, shown.in)}</span>
+            <span className="pk-arrow" aria-hidden="true"><Arrow s={20} /></span>
+            <span className="vh"> to </span>
+            <span className="pk-city">{cityName(inout, shown.home)}</span>
+          </>
         ) : (
-          <button type="button" className="btn link small pick-back" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
+          <span className="pk-city">{homeCity}</span>
         )}
-        <div className="pick-title">
-          <h2 className="h2">{trip ? `Change start and end of ${trip.name}` : 'New trip: where in, where home'}</h2>
-          <div className="seg" role="group" aria-label="Mode">
-            <button type="button" className={mode === 'options' ? 'on' : ''} aria-pressed={mode === 'options'} onClick={() => setMode('options')}>Rated pairs</button>
-            <button type="button" className={mode === 'mix' ? 'on' : ''} aria-pressed={mode === 'mix'} onClick={() => setMode('mix')}>Mix one-ways</button>
-          </div>
-        </div>
-        <div className="pick-sub">
-          <span className="lbl">Leaves from and comes home to</span>
-          <HomePill value={home} onChange={setHome} />
-        </div>
-      </div>
-      {mode === 'options' ? <OptionsView data={data} /> : <MixView data={data} />}
-    </div>
+      </h2>
+    </header>
   )
 }
 
-function FiltersBar({ sort, onSort }: { sort: SortKey; onSort: (k: SortKey) => void }) {
-  const f = useStore((s) => s.filters)
-  const set = useStore((s) => s.setFilters)
-  const reset = useStore((s) => s.resetFilters)
-  const [more, setMore] = useState(false)
-  const num = (v: string) => (v === '' ? null : Number(v))
-  const active = f.maxPrice != null || f.minRating != null || f.maxHours != null || f.maxHubNights != null || f.noUS || !!f.type
-  return (
-    <div className="filters" role="group" aria-label="Filters">
-      <div className="seg" role="group" aria-label="Sort">
-        <button type="button" className={sort === 'rating' ? 'on' : ''} aria-pressed={sort === 'rating'} onClick={() => onSort('rating')}>Best rated</button>
-        <button type="button" className={sort === 'price' ? 'on' : ''} aria-pressed={sort === 'price'} onClick={() => onSort('price')}>Cheapest</button>
-      </div>
-      <label className="chk"><input type="checkbox" checked={f.noUS} onChange={(e) => set({ noUS: e.target.checked })} /> No US transit</label>
-      <label className="fld">Max price (kr)
-        <input type="number" inputMode="numeric" step={500} min={0} placeholder="any" value={f.maxPrice ?? ''} onChange={(e) => set({ maxPrice: num(e.target.value) })} />
-      </label>
-      <label className="fld">Max hub nights
-        <input type="number" inputMode="numeric" step={1} min={0} placeholder="any" value={f.maxHubNights ?? ''} onChange={(e) => set({ maxHubNights: num(e.target.value) })} />
-      </label>
-      {more && (
-        <>
-          <label className="fld">Type
-            <select value={f.type} onChange={(e) => set({ type: e.target.value as typeof f.type })}>
-              <option value="">Any</option>
-              {Object.entries(TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-            </select>
-          </label>
-          <label className="fld">Min rating
-            <input type="number" inputMode="decimal" step={0.5} min={0} max={10} placeholder="any" value={f.minRating ?? ''} onChange={(e) => set({ minRating: num(e.target.value) })} />
-          </label>
-          <label className="fld">Max flying h per way
-            <input type="number" inputMode="numeric" step={1} min={0} placeholder="any" value={f.maxHours ?? ''} onChange={(e) => set({ maxHours: num(e.target.value) })} />
-          </label>
-        </>
-      )}
-      <span className="spacer" />
-      <div className="filters-act">
-        <button type="button" className="btn link small" onClick={() => setMore((m) => !m)} aria-expanded={more}>{more ? 'Fewer filters' : 'More filters'}</button>
-        {active && <button type="button" className="btn small" onClick={reset}>Clear</button>}
-      </div>
-    </div>
-  )
+/** The rows of a Fly in or Fly home pill: any city, then each city by region with its best price. */
+function cityOptions(inout: InOut, home: string, f: PairFilters, side: 'in' | 'home'): PillOption[] {
+  const key = side === 'in' ? 'arrival' : 'departure'
+  const choices = cityChoices(pairRows(inout, home, { ...f, [key]: '' }, 'cheapest'), side, inout.airports)
+  const row = (code: string): PillOption => ({ value: code, label: cityName(inout, code), sub: code, flag: inout.airports[code]?.country })
+  const any: PillOption = {
+    value: '', label: 'Any city', short: side === 'in' ? 'Fly in' : 'Fly home',
+    price: choices.length ? Math.min(...choices.map((c) => c.best)) : null, off: choices.length === 0,
+  }
+  const cur = f[key]
+  // a city picked before the other pills took all its pairs away stays on top, off, so the pill can still name it
+  const lost: PillOption[] = cur && !choices.some((c) => c.code === cur) ? [{ ...row(cur), off: true }] : []
+  return [any, ...lost, ...choices.map((c) => ({ ...row(c.code), price: c.best, group: REGION_NAME[c.region] ?? 'Other' }))]
 }
 
-/** Rows fly in to, columns fly home from. Each cell is the best option of its pair, and only the
- *  pairs near the top by the active sort light up. A pair with no option leaves a gap. */
-function Matrix({ inout, all, rows, pair, onPick, sort }: { inout: InOut; all: Row[]; rows: Row[]; pair: Pair | null; onPick: (p: Pair | null) => void; sort: SortKey }) {
-  const ap = inout.airports
-  const byPrice = sort === 'price'
-  const [hover, setHover] = useState<Pair | null>(null)
-  const [focusKey, setFocusKey] = useState<string | null>(null)
-  const tableRef = useRef<HTMLTableElement>(null)
-  const { entries, exits, best, tier } = useMemo(() => {
-    const best = new Map<string, Row>()
-    const better = (a: Row, b: Row) => (byPrice ? a.o.price_dkk < b.o.price_dkk : a.o.rating.total > b.o.rating.total)
-    for (const r of rows) {
-      const k = `${r.o.entry}|${r.o.exit}`
-      const cur = best.get(k)
-      if (!cur || better(r, cur)) best.set(k, r)
-    }
-    const group = (codes: string[]) => {
-      const byRegion = new Map<string, string[]>()
-      for (const c of codes) {
-        const g = ap[c]?.region ?? 'other'
-        byRegion.set(g, [...(byRegion.get(g) ?? []), c])
-      }
-      return [...REGION_ORDER, ...[...byRegion.keys()].filter((k) => !REGION_ORDER.includes(k))]
-        .filter((g) => byRegion.has(g))
-        .map((g) => ({ g, codes: byRegion.get(g)!.sort((a, b) => (ap[a]?.name ?? a).localeCompare(ap[b]?.name ?? b)) }))
-    }
-    const entries = group([...new Set(all.map((r) => r.o.entry))])
-    const exits = group([...new Set(all.map((r) => r.o.exit))])
-    const keys = [...best.keys()]
-    const tiers = topTiers(keys.map((k) => (byPrice ? best.get(k)!.o.price_dkk : best.get(k)!.o.rating.total)), byPrice ? 'asc' : 'desc')
-    const tier = new Map(keys.map((k, i) => [k, tiers[i]]))
-    return { entries, exits, best, tier }
-  }, [all, rows, ap, byPrice])
+const HUB: { value: string; label: string; short: string; max: number | null }[] = [
+  { value: '', label: 'Any', short: 'Hub nights', max: null },
+  { value: '0', label: 'None', short: 'No hub nights', max: 0 },
+  { value: '1', label: '1 at most', short: '1 hub night at most', max: 1 },
+  { value: '2', label: '2 at most', short: '2 hub nights at most', max: 2 },
+]
 
-  const hl = hover ?? pair
-  const allEntries = entries.flatMap((g) => g.codes)
-  const allExits = exits.flatMap((g) => g.codes)
-  const any = best.size > 0
-  const name = (c: string) => ap[c]?.name ?? c
-
-  // One tab stop for the whole grid: the cell focused last, else the picked pair, else the first pair.
-  const pickedKey = pair ? `${pair.in}|${pair.home}` : null
-  const tabKey = focusKey && best.has(focusKey)
-    ? focusKey
-    : pickedKey && best.has(pickedKey)
-      ? pickedKey
-      : allEntries.flatMap((en) => allExits.map((ex) => `${en}|${ex}`)).find((k) => best.has(k))
-
-  const cellOf = (el: EventTarget | null) => {
-    const k = el instanceof Element ? el.closest<HTMLElement>('[data-cell]')?.dataset.cell : undefined
-    if (!k) return null
-    const [en, ex] = k.split('|')
-    return { k, en, ex }
-  }
-  /** Arrow keys walk to the next pair that exists that way, Home and End to the ends of the row. */
-  const onKeyDown = (e: KeyboardEvent<HTMLTableElement>) => {
-    const at = cellOf(e.target)
-    if (!at) return
-    const r = allEntries.indexOf(at.en)
-    const c = allExits.indexOf(at.ex)
-    const walk = (dr: number, dc: number, i = r + dr, j = c + dc): string | null => {
-      for (; i >= 0 && i < allEntries.length && j >= 0 && j < allExits.length; i += dr, j += dc) {
-        const k = `${allEntries[i]}|${allExits[j]}`
-        if (best.has(k)) return k
-      }
-      return null
-    }
-    const moves: Record<string, () => string | null> = {
-      ArrowRight: () => walk(0, 1),
-      ArrowLeft: () => walk(0, -1),
-      ArrowDown: () => walk(1, 0),
-      ArrowUp: () => walk(-1, 0),
-      Home: () => walk(0, 1, r, 0),
-      End: () => walk(0, -1, r, allExits.length - 1),
-    }
-    if (!(e.key in moves)) return
-    e.preventDefault()
-    const next = moves[e.key]()
-    if (next) tableRef.current?.querySelector<HTMLElement>(`[data-cell="${next}"]`)?.focus()
-  }
-  const onFocus = (e: FocusEvent<HTMLTableElement>) => {
-    const at = cellOf(e.target)
-    if (!at) return
-    setFocusKey(at.k)
-    setHover({ in: at.en, home: at.ex })
-  }
-  const onPointerOver = (e: PointerEvent<HTMLTableElement>) => {
-    const at = cellOf(e.target)
-    if (at && e.pointerType === 'mouse') setHover({ in: at.en, home: at.ex })
-  }
-
+/** One wrapping row: where from, where in, where home, the order, and the two filters. */
+function Controls({ inout }: { inout: InOut }) {
+  const home = useStore((s) => s.home)
+  const setHome = useStore((s) => s.setHome)
+  const filters = useStore((s) => s.filters)
+  const setFilters = useStore((s) => s.setFilters)
+  const sort = useStore((s) => s.pairSort)
+  const setSort = useStore((s) => s.setPairSort)
+  const { arrival, departure, noUS, maxHubNights } = filters
+  const f = useMemo<PairFilters>(() => ({ arrival, departure, noUS, maxHubNights }), [arrival, departure, noUS, maxHubNights])
+  const homeBest = useMemo(() => Object.fromEntries(homeChoices(inout, HOMES.map((h) => h.code)).map((c) => [c.code, c.best])), [inout])
+  const ins = useMemo(() => cityOptions(inout, home, f, 'in'), [inout, home, f])
+  const homes = useMemo(() => cityOptions(inout, home, f, 'home'), [inout, home, f])
+  const hubs = useMemo<PillOption[]>(() => [
+    ...HUB,
+    // a limit stored by the old picker still shows as itself
+    ...(maxHubNights != null && maxHubNights > 2 ? [{ value: String(maxHubNights), label: `${maxHubNights} at most`, short: `${maxHubNights} hub nights at most`, max: maxHubNights }] : []),
+  ].map((h) => {
+    const rows = pairRows(inout, home, { ...f, maxHubNights: h.max }, 'cheapest')
+    const price = rows.length ? Math.min(...rows.map((r) => allIn(r.cheapest))) : null
+    return { value: h.value, label: h.label, short: h.short, price, off: price == null && h.max !== maxHubNights }
+  }), [inout, home, f, maxHubNights])
+  const on = !!arrival || !!departure || noUS || maxHubNights != null
   return (
-    <section className="mx" aria-labelledby="mx-title">
-      <div className="sec-head">
-        <h3 className="sec-title" id="mx-title">Pairs</h3>
-        <span className="count">{best.size} {best.size === 1 ? 'pair' : 'pairs'}</span>
-        <span className="sec-note">Pick a pair to see its flights.</span>
-        <span className="spacer" />
-        {any && (
-          <span className="mx-key" role="img" aria-label={`Amber cells are the ${byPrice ? 'cheapest' : 'best rated'} 10 pairs, amber numbers the next 20`}>
-            <span className="k1"><i aria-hidden="true" />Best 10</span>
-            <span className="k2">Next 20</span>
-          </span>
-        )}
+    <div className="pk-controls" role="group" aria-label="Pairs to show">
+      <HomePill value={home} onChange={setHome} best={homeBest} />
+      <PillSelect name="Fly in" value={arrival} options={ins} onChange={(v) => setFilters({ arrival: v })} icon={<Land s={14} />} set={!!arrival} />
+      <PillSelect name="Fly home" value={departure} options={homes} onChange={(v) => setFilters({ departure: v })} icon={<Plane s={14} />} set={!!departure} />
+      <div className="seg pk-sort" role="group" aria-label="Order">
+        <button type="button" aria-pressed={sort === 'best'} onClick={() => setSort('best')}>Best</button>
+        <button type="button" aria-pressed={sort === 'cheapest'} onClick={() => setSort('cheapest')}>Cheapest</button>
       </div>
-      <div className="mx-box">
-        <table
-          ref={tableRef}
-          className="matrix"
-          role="grid"
-          aria-labelledby="mx-title"
-          onKeyDown={onKeyDown}
-          onFocus={onFocus}
-          onBlur={() => setHover(null)}
-          onPointerOver={onPointerOver}
-          onPointerLeave={() => setHover(null)}
-        >
-          <thead>
-            <tr>
-              <th className="corner" rowSpan={2} scope="col"><span className="in">Fly in to</span><span className="out">Fly home from</span></th>
-              {exits.map((g) => <th key={g.g} className="grp" colSpan={g.codes.length} scope="colgroup"><span>{REGION_NAME[g.g] ?? g.g}</span></th>)}
-            </tr>
-            <tr>
-              {allExits.map((c) => (
-                <th key={c} scope="col" className={`col${hl?.home === c ? ' hl' : ''}`} title={name(c)}>{c}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map((g) => (
-              <Fragment key={g.g}>
-                <tr className="grp"><th colSpan={allExits.length + 1} scope="rowgroup"><span>{REGION_NAME[g.g] ?? g.g}</span></th></tr>
-                {g.codes.map((en) => (
-                  <tr key={en} className={hl?.in === en ? 'hl' : ''}>
-                    <th className="rowh" scope="row">
-                      <span className="rowh-in"><Flag code={ap[en]?.country ?? ''} />{name(en)}</span>
-                    </th>
-                    {allExits.map((ex) => {
-                      const k = `${en}|${ex}`
-                      const r = best.get(k)
-                      if (!r) return <td key={ex} className="none" />
-                      const on = pair?.in === en && pair?.home === ex
-                      const rating = dec1(r.o.rating.total)
-                      const price = kr(r.o.price_dkk)
-                      const label = `${name(en)} in, ${name(ex)} home: ${byPrice ? `${price}, rated ${rating}` : `rated ${rating}, ${price}`}`
-                      return (
-                        <td key={ex} className={`t t${tier.get(k) ?? 0}${on ? ' on' : ''}`}>
-                          <button
-                            type="button"
-                            data-cell={k}
-                            tabIndex={k === tabKey ? 0 : -1}
-                            onClick={() => onPick(on ? null : { in: en, home: ex })}
-                            aria-pressed={on}
-                            aria-label={label}
-                            title={label}
-                          >
-                            {byPrice ? `${Math.round(r.o.price_dkk / 1000)}k` : rating}
-                          </button>
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </Fragment>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {!any && <div className="empty">No pair matches the filters.</div>}
-    </section>
+      <button type="button" className="ps-pill pk-chip" aria-pressed={noUS} data-set={noUS || undefined} title="Leave out ways through the United States" onClick={() => setFilters({ noUS: !noUS })}>
+        No US
+      </button>
+      <PillSelect
+        name="Hub nights" value={maxHubNights == null ? '' : String(maxHubNights)} options={hubs}
+        onChange={(v) => setFilters({ maxHubNights: v === '' ? null : Number(v) })} icon={<Moon />} set={maxHubNights != null}
+      />
+      {on && <button type="button" className="btn link small pk-clear" onClick={() => setFilters(NO_FILTERS)}>Clear</button>}
+    </div>
   )
 }
 
@@ -369,8 +242,6 @@ function OptionsView({ data }: { data: AppData }) {
 
   return (
     <>
-      <FiltersBar sort={sort} onSort={setSort} />
-      <Matrix inout={inout} all={all} rows={rows} pair={pair} onPick={setPair} sort={sort} />
       <section className="opt-sec" id="pick-list" aria-labelledby="opt-title">
         <div className="sec-head">
           {pair ? (
@@ -471,75 +342,5 @@ function Expanded({ data, option, wi, wh }: { data: AppData; option: Option; wi:
         </p>
       </div>
     </div>
-  )
-}
-
-function MixView({ data }: { data: AppData }) {
-  const { inout } = data
-  const mixIn = useStore((s) => s.mixIn)
-  const mixHome = useStore((s) => s.mixHome)
-  const setMix = useStore((s) => s.setMix)
-  const pickWays = useStore((s) => s.pickWays)
-  const home = useStore((s) => s.home)
-  const label = useBuildLabel()
-  const ins = useMemo(() => oneWayWays(inout, 'in').filter((w) => w.from === home), [inout, home])
-  const homes = useMemo(() => oneWayWays(inout, 'home').filter((w) => w.to === home), [inout, home])
-  const wi = mixIn ? inout.ways[mixIn] : null
-  const wh = mixHome ? inout.ways[mixHome] : null
-  const mixed = wi && wh ? mixWays(inout, wi, wh) : null
-  const ap = (c: string) => inout.airports[c]?.name ?? c
-
-  const list = (dir: 'in' | 'home', ways: Way[], sel: string | null) => (
-    <section className="mix-col" aria-labelledby={`mix-${dir}`}>
-      <div className="sec-head">
-        <h3 className="sec-title" id={`mix-${dir}`}>{dir === 'in' ? 'One-way in' : 'One-way home'}</h3>
-        <span className="count">{ways.length} ways</span>
-        <span className="sec-note">Separate one-way ways, best first. One ticket and Madrid ways always come with their pair.</span>
-      </div>
-      <div className="waylist">
-        <div className="wayrow head" aria-hidden="true"><span>{dir === 'in' ? 'Lands in' : 'Leaves from'}</span><span>{dir === 'in' ? `Leaves ${home}` : 'Departs'}</span><span>Price</span><span>Flying</span><span>Score</span></div>
-        {ways.map((w) => (
-          <button type="button" key={w.id} className={'wayrow' + (sel === w.id ? ' on' : '')} onClick={() => setMix(dir, sel === w.id ? null : w.id)} aria-pressed={sel === w.id}>
-            <span className="wr-name"><b>{ap(dir === 'in' ? w.to : w.from)}</b> <span className="faint small">via {w.airports.slice(1, -1).join(', ') || 'nonstop'}{w.hub_nights ? ` · ${w.hub_nights} hub night${w.hub_nights > 1 ? 's' : ''}` : ''}{w.us_transit ? ' · US' : ''}</span></span>
-            <span><Stamp s={w.depart} /></span>
-            <span className="n">{kr(w.price_dkk)}</span>
-            <span className="n">{hours(w.flying_hours)}</span>
-            <span className="n">{w.score}/5</span>
-          </button>
-        ))}
-      </div>
-    </section>
-  )
-
-  return (
-    <>
-      <div className="mix">
-        {list('in', ins, mixIn)}
-        {list('home', homes, mixHome)}
-      </div>
-      {mixed && wi && wh ? (
-        <section className="mix-pair" aria-label="The mixed pair">
-          <div className="mixbar">
-            <div className="mb-sum">
-              <div className="small muted">{ap(wi.to)} in, {ap(wh.from)} home · separate tickets</div>
-              <div className="big">{kr(mixed.price_dkk)}</div>
-            </div>
-            <div className="mb-facts small">Cabin bags <Num v={mixed.extras.cabin_bag_fees_dkk} what="Cabin-bag fee" /> · checked <Num v={mixed.extras.checked_bag_fees_dkk} what="Checked-bag fee" /> · {mixed.extras.hub_nights} hub nights</div>
-            <Rate v={mixed.rating.total} />
-            <span className="spacer" />
-            <button type="button" className="btn primary" onClick={() => pickWays(wi, wh, null)}><Pin />{label}</button>
-          </div>
-          <div className="expand-in">
-            <div className="ways">
-              <WayCard way={wi} inout={inout} dir="in" />
-              <WayCard way={wh} inout={inout} dir="home" />
-            </div>
-            <div className="side"><MiniMap data={inout} ways={[wi, wh]} onOpen={() => pickWays(wi, wh, null)} /></div>
-          </div>
-        </section>
-      ) : (
-        <div className="mix-empty">Pick one way in and one way home to see the pair.</div>
-      )}
-    </>
   )
 }

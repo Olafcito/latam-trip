@@ -1,14 +1,26 @@
-/* Pick in and home: the filters, the matrix of pairs, the options table and the one-way mix.
-   Night timetable: everything sits on the ground with hairlines, the expanded option steps up to
-   the surface, and amber carries the ratings. */
+/* Pick in and home: the pair as the title, one row of pills, the ranked pairs and the open pair.
+   Night timetable: everything sits on the ground with hairlines, the open pair steps up to the
+   surface, and amber marks only the best. */
 @scope (:root) to (.rmap) {
 .pick { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 
-/* ---- head ----------------------------------------------------------------------------------- */
-.pick-head { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
-.pick-back { margin-left: -4px; }
-.pick-title { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; width: 100%; }
-.pick-title .h2 { flex: 1 1 20ch; font-size: var(--fs-display); line-height: 1.15; letter-spacing: -0.02em; }
+/* ---- head: back, the trip small, the pair as the title ------------------------------------- */
+.pk-head { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.pk-back { margin-left: -4px; }
+.pk-eyebrow { margin: 6px 0 0; max-width: 100%; font-size: var(--fs-small); font-weight: 500; color: var(--muted); overflow-wrap: anywhere; }
+.pk-title {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px;
+  max-width: 100%; margin: 0;
+  font-size: var(--fs-display); font-weight: 650; line-height: 1.15; letter-spacing: -0.02em; color: var(--text);
+}
+.pk-title .flag { display: block; flex: none; border-radius: 2px; }
+.pk-city { min-width: 0; overflow-wrap: anywhere; }
+.pk-arrow { display: inline-grid; place-items: center; flex: none; color: var(--faint); }
+
+/* ---- controls: one wrapping row of pills ---------------------------------------------------- */
+.pk-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pk-sort { margin-inline: 2px; }
+.pk-chip { padding-inline: 12px; }
 
 /* ---- section heads: a word title, a mono count, a short note -------------------------------- */
 .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 10px; }
@@ -16,66 +28,6 @@
 .count { font-family: var(--font-num); font-size: var(--fs-num); font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sec-note { font-size: var(--fs-small); color: var(--muted); }
 .sec-head .btn { align-self: center; }
-
-/* ---- filters: one hairline strip of the shared fields --------------------------------------- */
-.filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 18px; padding: 12px 0 14px; border-block: 1px solid var(--line); }
-.filters-act { display: flex; align-items: center; gap: 10px; min-height: var(--hit); }
-.filters .fld input::placeholder { color: var(--faint); }
-
-/* ---- the key: amber fill for the best 10, amber numbers for the next 20 --------------------- */
-.mx-key { display: inline-flex; align-items: center; gap: 14px; font-size: var(--fs-label); font-weight: 500; white-space: nowrap; }
-.mx-key .k1 { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
-.mx-key .k1 i { width: 12px; height: 12px; border-radius: 3px; background: var(--flight); }
-.mx-key .k2 { color: var(--flight); }
-
-/* ---- the matrix: quiet cells, amber only where it matters, gaps where no pair exists ---------- */
-/* the section is as wide as the grid, so the key sits at the grid's right edge, not the page's */
-.mx { width: fit-content; min-width: 0; max-width: 100%; }
-.mx-box { overflow-x: auto; overscroll-behavior-x: contain; }
-table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-size: var(--fs-small); }
-.matrix th { background: var(--ground); font-weight: 500; color: var(--muted); white-space: nowrap; transition: background-color var(--t-fast) ease, color var(--t-fast) ease; }
-.matrix thead th { position: sticky; top: 0; z-index: 3; }
-.matrix thead tr:first-child th { height: 24px; }
-.matrix thead tr + tr th { top: 24px; }
-.matrix th.corner { left: 0; z-index: 4; width: 164px; min-width: 164px; }
-.matrix th.corner span { position: absolute; font-size: var(--fs-label); font-weight: 500; color: var(--faint); }
-.matrix th.corner .in { left: 4px; bottom: 5px; }
-.matrix th.corner .out { right: 8px; top: 5px; }
-.matrix th.grp { padding: 0 4px; text-align: left; vertical-align: bottom; font-size: var(--fs-label); color: var(--faint); box-shadow: inset 0 -1px 0 var(--line); }
-.matrix th.col { min-width: calc(var(--cell) + 2px); padding: 6px 0 5px; text-align: center; font-size: var(--fs-label); font-variant-numeric: tabular-nums; border-radius: 5px; }
-.matrix th.col.hl { background: var(--surface-2); color: var(--text); }
-.matrix tr.grp th { padding: 12px 4px 4px; text-align: left; font-size: var(--fs-label); color: var(--faint); }
-.matrix tr.grp th span { position: sticky; left: 4px; }
-.matrix th.rowh { position: sticky; left: 0; z-index: 2; padding: 0 12px 0 4px; text-align: left; border-radius: 5px; }
-.matrix .rowh-in { display: flex; align-items: center; gap: 8px; font-size: var(--fs-small); font-weight: 600; color: var(--text); }
-.matrix .rowh-in .flag { display: block; flex: none; }
-.matrix tr.hl th.rowh { background: var(--surface-2); }
-
-/* cells: 1px of padding on each side makes the 2px gutter, the colour sits on the button */
-.matrix td { padding: 1px; }
-.matrix td.none { height: calc(var(--cell) + 2px); }
-.matrix td.t button {
-  position: relative;
-  display: grid; place-items: center;
-  width: var(--cell); height: var(--cell);
-  padding: 0;
-  border: 0; border-radius: 5px;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-size: var(--fs-num); font-weight: 600; line-height: 1;
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease, background-color var(--t-med) ease, color var(--t-med) ease;
-}
-.matrix td.t1 button { background: var(--flight); color: var(--flight-ink); }
-.matrix td.t2 button { color: var(--flight); }
-.matrix td.t button:active { transform: scale(0.97); }
-@media (hover: hover) and (pointer: fine) {
-  .matrix td.t button:hover { box-shadow: inset 0 0 0 1px var(--text); }
-}
-.matrix td.t.on button { box-shadow: inset 0 0 0 1px var(--text); }
-/* keyboard focus sits inside the cell, so it never hides behind the neighbours */
-.matrix td.t button:focus-visible { z-index: 1; outline: 2px solid var(--text); outline-offset: -4px; }
 
 /* ---- options table: the shared hairline grid ------------------------------------------------ */
 .opts-wrap { container-type: inline-size; }
@@ -132,75 +84,24 @@ table.grid.opts { font-size: var(--fs-small); }
 .prov { margin: 0; overflow-wrap: anywhere; }
 @media (max-width: 1100px) { .expand-in { grid-template-columns: minmax(0, 1fr); } }
 
-/* ---- mix one-ways: two hairline lists, then the pair ---------------------------------------- */
-.mix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 28px; }
-.mix-col { min-width: 0; }
-.waylist { max-height: min(62dvh, 640px); overflow-y: auto; border-top: 1px solid var(--line-2); }
-.wayrow {
-  display: grid; grid-template-columns: minmax(0, 1fr) 7.5em 6.5em 4.5em 3em; gap: 2px 12px; align-items: center;
-  width: 100%; min-height: var(--hit);
-  padding: 8px;
-  border: 0; border-bottom: 1px solid var(--line);
-  background: none; color: var(--text);
-  font-size: var(--fs-small); text-align: left;
-  cursor: pointer;
-  transition: background-color var(--t-fast) ease;
-}
-.wayrow.head { position: sticky; top: 0; z-index: 1; min-height: 0; background: var(--ground); border-bottom-color: var(--line-2); font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--faint); cursor: default; }
-.wayrow.head > :nth-child(n + 3), .wayrow .n { text-align: right; }
-.wayrow .n { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
-.wayrow .wr-name { min-width: 0; }
-.wayrow .wr-name b { font-weight: 600; transition: color var(--t-fast) ease; }
-button.wayrow:active { background: var(--surface-2); }
-.wayrow.on { background: var(--surface-3); }
-.wayrow.on .wr-name b { color: var(--flight); }
-@media (hover: hover) and (pointer: fine) {
-  button.wayrow:not(.on):hover { background: var(--surface-2); }
-}
-.wayrow:focus-visible { outline-offset: -2px; }
-.mix-pair { border-radius: var(--radius); background: var(--surface); animation: fade var(--t-med) var(--ease-out); }
-.mixbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; padding: 16px; border-bottom: 1px solid var(--line); }
-.mixbar .big { font-family: var(--font-num); font-size: var(--fs-num-lg); font-weight: 500; line-height: 1.2; }
-.mb-facts { color: var(--muted); }
-.mix-pair .expand-in { position: static; width: auto; animation: none; }
-.mix-empty { padding: 18px 0; border-top: 1px solid var(--line); color: var(--muted); }
-@media (max-width: 900px) { .mix { grid-template-columns: minmax(0, 1fr); } }
-
 /* ---- a keyboard press changes state at once ------------------------------------------------- */
-:root[data-input='key'] :is(.matrix th, .matrix td.t button, .opts tr.orow, .wayrow, .wayrow b) { transition: none; }
-:root[data-input='key'] :is(.expand-in, .mix-pair) { animation: none; }
+:root[data-input='key'] .opts tr.orow { transition: none; }
+:root[data-input='key'] .expand-in { animation: none; }
 
 /* ---- touch: every target 44px --------------------------------------------------------------- */
 @media (pointer: coarse), (max-width: 640px) {
-  table.matrix { --cell: 40px; }
   .opts tbody tr.orow td { height: 44px; }
-  .wayrow { min-height: 44px; }
 }
 
-/* ---- phone: the matrix scrolls in its own box, heads stay put, the page never goes sideways -- */
+/* ---- phone ---------------------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .pick { gap: 18px; }
-  .pick-title .h2 { font-size: var(--fs-num-lg); }
-  .filters { gap: 10px 14px; }
-  .filters .fld input[type='number'] { width: 96px; min-width: 96px; }
-  .mx-box {
-    max-height: min(70dvh, 620px);
-    overflow: auto;
-    border: 1px solid var(--line); border-radius: var(--radius);
-  }
-  .matrix th.corner { width: 116px; min-width: 116px; }
-  .matrix th.rowh { width: 116px; min-width: 116px; max-width: 116px; padding: 2px 8px 2px 6px; white-space: normal; line-height: 1.2; }
-  .matrix .rowh-in { gap: 6px; overflow-wrap: anywhere; }
-  .wayrow { grid-template-columns: minmax(0, 1fr) auto auto auto; }
-  .wayrow > :first-child { grid-column: 1 / -1; }
-  .mixbar .btn.primary { width: 100%; }
+  .pk-title { font-size: var(--fs-num-lg); }
   .expand-in { padding: 14px 12px; }
   .opts td .code { margin-left: 4px; }
 }
 
 /* ---- the pill select: a round pill, a short list under it, a sheet on a phone --------------- */
-.pick-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
-.pick-sub .lbl { font-size: var(--fs-small); color: var(--muted); }
 .ps { position: relative; }
 .ps-pill {
   position: relative;
