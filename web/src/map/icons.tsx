@@ -98,6 +98,20 @@ export const Bookmark = ({ s = 16, filled = false }: { s?: number; filled?: bool
   </svg>
 )
 
+export const Lock = ({ s = 14 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="5" y="11" width="14" height="10" rx="2.5" />
+    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+  </svg>
+)
+
+export const Info = ({ s = 14 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5M12 8h.01" />
+  </svg>
+)
+
 export function ModeChip({ family, lg }: { family: Family; lg?: boolean }) {
   const s = lg ? 15 : 12
   return (

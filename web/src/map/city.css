@@ -1,0 +1,148 @@
+/* One city, in the planner's trip sheet and in the map's place panel. Not scoped to the map, so every rule
+   starts with cy- and reads the tokens both apps share, with the map's names as fallbacks. A frame sets
+   --cy-pad for the side gutter and --cy-hero-h for the photo. */
+
+.cy {
+  --cy-line-2: var(--line-2, var(--chrome-line, #24404D));
+  --cy-ease: var(--ease-out, cubic-bezier(.23, 1, .32, 1));
+  position: relative; display: flex; flex-direction: column; min-width: 0;
+  padding-bottom: var(--cy-pad, 16px); color: var(--text, #EAF0F2);
+}
+.cy > :not(.cy-hero, .cy-actions, .cy-extra) { margin-inline: var(--cy-pad, 16px); }
+.cy p { margin: 0; }
+
+/* the photo, edge to edge, with its credit behind a mark in the corner */
+.cy-hero {
+  position: relative; margin: 0; height: var(--cy-hero-h, 180px); overflow: hidden; background: var(--surface-3, #1A2E39);
+}
+.cy-hero img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cy-credit {
+  position: absolute; right: 8px; bottom: 8px; display: grid; place-items: center; width: 28px; height: 28px; padding: 0;
+  border: 0; border-radius: 50%; background: rgb(11 23 32 / .62); color: #EAF0F2; cursor: pointer;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  transition: background-color .16s var(--cy-ease), transform .12s var(--cy-ease);
+}
+.cy-credit::before { content: ''; position: absolute; inset: -6px; }
+.cy-credit[aria-expanded="true"] { background: rgb(11 23 32 / .86); }
+.cy-credit-t {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 24px 44px 10px 12px; font-size: .75rem; line-height: 1.35;
+  background: linear-gradient(to top, rgb(11 23 32 / .9), rgb(11 23 32 / 0));
+}
+.cy-credit-t a { color: #EAF0F2; text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
+
+/* buttons in the top corner, over the photo when there is one */
+.cy-actions { position: absolute; top: 8px; right: 8px; z-index: 1; display: flex; gap: 4px; }
+.cy[data-hero] .cy-actions button {
+  background: rgb(11 23 32 / .62); color: #EAF0F2; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.cy:has(> .cy-actions):not([data-hero]) .cy-head { padding-right: 84px; }
+
+/* the name with its country beside it, the line that sells it, and the nights large beside the dates */
+.cy-head { display: flex; flex-direction: column; gap: 6px; padding-top: 16px; }
+.cy-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.cy-name {
+  margin: 0; min-width: 0; font-size: 1.625rem; line-height: 1.1; font-weight: 700; letter-spacing: -.02em; overflow-wrap: anywhere;
+}
+.cy-country {
+  display: inline-flex; align-items: center; gap: 6px; font-size: .8125rem; font-weight: 500; color: var(--muted, #93A7B2);
+}
+.cy-country .flag { flex: none; }
+.cy-tag { font-size: .875rem; font-weight: 500; line-height: 1.4; text-wrap: pretty; overflow-wrap: anywhere; }
+.cy-stop { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 6px; margin-top: 4px !important; }
+.cy-n { font-size: 2rem; line-height: 1; font-weight: 700; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.cy-nw { font-size: .875rem; font-weight: 600; color: var(--muted, #93A7B2); }
+.cy-range { margin-left: 8px; font-size: .875rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.cy-lock {
+  position: relative; align-self: center; display: inline-grid; place-items: center; width: 26px; height: 26px; margin-left: 2px;
+  border-radius: 50%; background: var(--surface-2, #14252E); color: var(--muted, #93A7B2); outline: none;
+}
+.cy-lock:focus-visible { box-shadow: 0 0 0 2px var(--flight, #F2B544); }
+
+/* a mark's words, on hover with a mouse and on focus from the keyboard */
+.cy-tip[data-tip]::after {
+  content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); right: 0; z-index: 2; width: max-content; max-width: 240px;
+  padding: 6px 9px; border-radius: 8px; background: var(--surface-3, #1A2E39); box-shadow: 0 8px 24px -10px #000, inset 0 0 0 1px var(--cy-line-2);
+  color: var(--text, #EAF0F2); font-size: .75rem; font-weight: 500; line-height: 1.35; text-align: left; white-space: normal;
+  opacity: 0; pointer-events: none; transition: opacity .14s var(--cy-ease);
+}
+.cy-lock[data-tip]::after { right: auto; left: 50%; translate: -50% 0; }
+.cy-tip:focus-visible::after { opacity: 1; }
+
+/* experiences and training: rows that open their card in place */
+.cy-sec { margin-top: 22px; }
+.cy-h { margin: 0 0 4px; font-size: .9375rem; font-weight: 650; letter-spacing: -.005em; }
+.cy-rows { list-style: none; margin: 0; padding: 0; }
+.cy-rows li + li { border-top: 1px solid var(--line, #1C3340); }
+.cy-row {
+  display: flex; align-items: center; gap: 10px; width: calc(100% + 16px); min-height: 48px; margin: 0 -8px; padding: 8px;
+  border: 0; border-radius: 10px; background: none; color: inherit; font: inherit; text-align: left;
+}
+button.cy-row {
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: background-color .16s var(--cy-ease), transform .12s var(--cy-ease);
+}
+button.cy-row:active { background: var(--surface-3, #1A2E39); transform: scale(.985); }
+button.cy-row:focus-visible { outline: 2px solid var(--flight, #F2B544); outline-offset: -2px; }
+.cy-row-t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.cy-row-t b { font-size: .875rem; font-weight: 550; line-height: 1.3; overflow-wrap: anywhere; }
+.cy-sub, .cy-saved { font-size: .78125rem; line-height: 1.35; color: var(--muted, #93A7B2); overflow-wrap: anywhere; }
+.cy-saved { display: inline-flex; align-items: baseline; gap: 5px; }
+.cy-saved svg { flex: none; align-self: center; color: var(--text, #EAF0F2); }
+.cy-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 1px; }
+.cy-chip {
+  padding: 1px 7px; border-radius: 6px; background: var(--surface-2, #14252E); color: var(--muted, #93A7B2);
+  font-size: .71875rem; font-weight: 600; line-height: 1.5;
+}
+.cy-chip[data-bjj] { background: var(--surface-3, #1A2E39); color: var(--text, #EAF0F2); box-shadow: inset 0 0 0 1px var(--cy-line-2); }
+.cy-drop { font-size: .75rem; font-weight: 500; color: var(--muted, #93A7B2); font-variant-numeric: tabular-nums; }
+.cy-score {
+  flex: none; min-width: 34px; padding: 2px 6px; border-radius: 6px; background: var(--surface-2, #14252E); text-align: center;
+  font-size: .8125rem; font-weight: 650; font-variant-numeric: tabular-nums;
+}
+.cy-arr { flex: none; display: inline-flex; color: var(--muted, #93A7B2); transition: transform .16s var(--cy-ease); }
+.cy-more {
+  min-height: 36px; margin: 2px 0 0 -8px; padding: 0 8px; border: 0; border-radius: 8px; background: none; color: var(--text, #EAF0F2);
+  font: inherit; font-size: .8125rem; font-weight: 600; cursor: pointer; touch-action: manipulation;
+  transition: background-color .16s var(--cy-ease), transform .12s var(--cy-ease);
+}
+.cy-more:active { transform: scale(.97); }
+.cy-more:focus-visible { outline: 2px solid var(--flight, #F2B544); outline-offset: 1px; }
+
+/* the guide text, folded */
+.cy-about { margin-top: 18px; border-top: 1px solid var(--line, #1C3340); }
+.cy-about summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; list-style: none; cursor: pointer;
+  font-size: .9375rem; font-weight: 650; border-radius: 8px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.cy-about summary::-webkit-details-marker { display: none; }
+.cy-about summary:focus-visible { outline: 2px solid var(--flight, #F2B544); outline-offset: 2px; }
+.cy-about summary > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.cy-caret {
+  flex: none; width: 8px; height: 8px; margin-right: 4px; border: solid var(--muted, #93A7B2); border-width: 0 2px 2px 0;
+  rotate: 45deg; translate: 0 -2px; transition: rotate .18s var(--cy-ease), translate .18s var(--cy-ease);
+}
+.cy-about[open] .cy-caret { rotate: -135deg; translate: 0 2px; }
+.cy-about-b { display: flex; flex-direction: column; gap: 12px; padding-bottom: 4px; }
+.cy-about-b > p { max-width: 65ch; font-size: .875rem; line-height: 1.55; color: var(--text, #EAF0F2); text-wrap: pretty; }
+.cy-facts { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; }
+.cy-facts > div { display: flex; align-items: center; gap: 10px; }
+.cy-facts dt { font-size: .78125rem; color: var(--muted, #93A7B2); }
+.cy-facts dd { margin: 0; font-size: .8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cy-meter { display: inline-flex; gap: 3px; }
+.cy-meter i { width: 14px; height: 6px; border-radius: 3px; background: var(--surface-3, #1A2E39); }
+.cy-meter i[data-on] { background: var(--muted, #93A7B2); }
+
+.cy-extra { margin-top: 12px; }
+
+@media (hover: hover) and (pointer: fine) {
+  button.cy-row:hover { background: var(--surface-2, #14252E); }
+  button.cy-row:hover .cy-arr { transform: translateX(2px); color: var(--text, #EAF0F2); }
+  .cy-more:hover { background: var(--surface-2, #14252E); }
+  .cy-credit:hover { background: rgb(11 23 32 / .86); }
+  .cy-tip:hover::after { opacity: 1; }
+  .cy-about summary:hover .cy-caret { border-color: var(--text, #EAF0F2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  button.cy-row:active, .cy-more:active { transform: none; }
+  .cy-caret { transition: none; }
+}
