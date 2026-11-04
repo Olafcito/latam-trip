@@ -148,6 +148,25 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   const pane = side
   const paneMini = sideMini || !!mm.mode
 
+  // the folded card's height and the controls' width, which the phone layout reads to stack the controls under
+  // the card and to end the trip bar before the controls
+  const hasPane = !!pane
+  useEffect(() => {
+    const el = root.current
+    if (!el || !map) return
+    const set = () => {
+      const card = el.querySelector<HTMLElement>('.panel.plan')
+      el.style.setProperty('--side-h', `${card?.offsetHeight ?? 0}px`)
+      el.style.setProperty('--ctl-w', `${controlsRef.current?.offsetWidth ?? 0}px`)
+    }
+    set()
+    const ro = new ResizeObserver(set)
+    const card = el.querySelector<HTMLElement>('.panel.plan')
+    if (card) ro.observe(card)
+    if (controlsRef.current) ro.observe(controlsRef.current)
+    return () => ro.disconnect()
+  }, [map, hasPane, paneMini, mm.mode])
+
   useEffect(() => onFamilies?.(families), [families, onFamilies])
   useEffect(() => onMode?.(!!mm.mode), [mm.mode, onMode])
   const panelOpen = !!view.panel
@@ -448,8 +467,9 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     return { offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2] as [number, number], duration: reducedMotion() ? 0 : 600, easing: EASE }
   }
 
+  /** Fits a mode's markers. Scoped along an open trip it takes the trip's stops in too, so the whole route stays in sight. */
   const fitMode = (m: MapMode) => {
-    const points = mm.points(m)
+    const points = [...mm.points(m), ...(mm.scoped && scope ? scope.line : [])]
     if (points.length) fit(boundsOf(points), 'mode', 6, narrow ? 16 : 30)
   }
 
