@@ -399,8 +399,8 @@ function PairPane({ data, row, trip }: { data: AppData; row: PairRow; trip: Jour
 
       {mix && (mix.ins.length > 1 || mix.homes.length > 1) && (
         <div className="pk-mix">
-          <MixList label="Way in" ways={mix.ins} at={picked.wi.id} price={(w) => allIn(mixOption(inout, w, picked.wh))} onPick={(id) => setMix('in', id === picked.base.way_in ? null : id)} />
-          <MixList label="Way home" ways={mix.homes} at={picked.wh.id} price={(w) => allIn(mixOption(inout, picked.wi, w))} onPick={(id) => setMix('home', id === picked.base.way_home ? null : id)} />
+          <MixList label="Way in" ways={mix.ins} at={picked.wi.id} price={(w) => allIn(mixOption(inout, w, picked.wh))} onPick={(id) => setMix('in', id)} />
+          <MixList label="Way home" ways={mix.homes} at={picked.wh.id} price={(w) => allIn(mixOption(inout, picked.wi, w))} onPick={(id) => setMix('home', id)} />
         </div>
       )}
 

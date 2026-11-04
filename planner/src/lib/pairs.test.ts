@@ -217,6 +217,10 @@ describe('what the pair shows as picked', () => {
     const p = pickedOf(inout, rowOf(), { ...none, tripIn: 'I_o2', tripHome: 'H_o' })
     expect([p.wi.id, p.wh.id]).toEqual(['I_o2', 'H_o'])
   })
+  it('swaps a trip on mixed one ways back to the way of the option', () => {
+    const p = pickedOf(inout, rowOf(), { ...none, tripIn: 'I_o2', tripHome: 'H_o', mixIn: 'I_o' })
+    expect([p.wi.id, p.wh.id, p.option.id]).toEqual(['I_o', 'H_o', 'CTG-GUA-oneways'])
+  })
 })
 
 describe('the flags of a ticket', () => {
