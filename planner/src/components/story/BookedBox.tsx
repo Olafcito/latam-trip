@@ -8,10 +8,13 @@ import { Arrow, Bag, Boat, Bus, Check, Clock, Copy, Doc, External, Hash, Link, P
 
 // The booking at the top of its sheet, read like a boarding pass: a small green mark that says Booked, the two
 // codes large with the cities and the local times under them and the flight time on the line between, the
-// flights inside with the time in each airport between, the reference on one row with a copy button, then the
-// facts as one list of icon rows and Simon's own notes apart. It reads the booking row alone, so it is whole
-// even when the leg has no picked flight. Change booking opens the days and the flights under it to look at.
-// Remove asks once, here in the box, and sets the booking to cancelled.
+// flights inside with the time in each airport between, then the details: the reference on one row with a copy
+// button and the facts as one list of icon rows, with the pencil that edits them on their heading. The seller's
+// page opens from a mark on the seller row. Simon's own notes sit apart. It reads the booking row alone, so it is
+// whole even when the leg has no picked flight. One action row ends the box: Change booking is its only button
+// and opens the days and the flights under it to look at, Remove booking is a quiet word at the far end that asks
+// once, here in the box, and sets the booking to cancelled. A bus or a boat has no Change booking, so its row
+// holds the quiet Remove alone.
 
 export interface BoxData {
   inout: Pick<InOut, 'airports'>
@@ -114,11 +117,30 @@ const ROW_ICON: Record<BoxRow['key'], (p: { s?: number }) => ReactNode> = {
   seller: Shop, paid: Ticket, ticket: Link, fare: Star, cabin: Bag, checked: Suitcase, refundable: Refund, changeable: Rebook, travellers: Person,
 }
 
-/** The facts as one grouped list of icon rows: the label at the left, the value at the right with what it covers under it. */
-export function BoxRows({ rows, onCopied }: { rows: BoxRow[]; onCopied?: (what: string, ok: boolean) => void }) {
-  if (!rows.length) return null
+/** The seller's own page, opened in a new tab: a mark on the seller row. */
+function OutLink({ href, seller }: { href: string; seller: string }) {
+  return (
+    <a className="bk-icon bk-out" href={href} target="_blank" rel="noopener noreferrer" aria-label={`Open the booking at ${seller}, in a new tab`} title="Open booking">
+      <External s={14} />
+    </a>
+  )
+}
+
+/**
+ * The facts as one grouped list of icon rows: the label at the left, the value at the right with what it covers
+ * under it. The seller's page, when there is one, is a mark on the seller row, or its own quiet row without a seller.
+ */
+export function BoxRows({ rows, link, onCopied }: { rows: BoxRow[]; link?: string | null; onCopied?: (what: string, ok: boolean) => void }) {
+  const seller = rows.find((r) => r.key === 'seller')
+  if (!rows.length && !link) return null
   return (
     <ul className="bk-rows">
+      {link && !seller && (
+        <li data-k="url">
+          <span className="bk-row-i" aria-hidden="true"><External s={16} /></span>
+          <a className="bk-open" href={link} target="_blank" rel="noopener noreferrer">Open booking<span className="vh">, in a new tab</span></a>
+        </li>
+      )}
       {rows.map((r, i) => {
         const Icon = ROW_ICON[r.key]
         return (
@@ -126,7 +148,9 @@ export function BoxRows({ rows, onCopied }: { rows: BoxRow[]; onCopied?: (what: 
             <span className="bk-row-i" aria-hidden="true"><Icon s={16} /></span>
             <span className="bk-row-l">{r.label}</span>
             <span className="bk-row-v">
-              <span>{r.value}</span>
+              {link && r === seller
+                ? <span className="bk-row-line"><span>{r.value}</span><OutLink href={link} seller={r.value} /></span>
+                : <span>{r.value}</span>}
               {r.more?.map((m) => <small key={m}>{m}</small>)}
               {r.mono && (
                 <span className="bk-row-code">
@@ -283,7 +307,6 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
         <span className="bk-tick" aria-hidden="true"><Check s={13} /></span>
         <h4 id={`${id}-h`}>Booked</h4>
         {head.day && <span>{head.day}</span>}
-        {onEdit && <button type="button" className="bk-icon bk-edit" onClick={onEdit} aria-label="Edit the booking" title="Edit"><Pencil s={16} /></button>}
       </header>
 
       <BoxRoute head={head} kind={b.kind} took={took} />
@@ -291,16 +314,21 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
       <div className="bk-body">
         <BoxSegs segs={segs} label={b.kind === 'flight' ? 'Flights' : 'Legs'} />
 
-        {b.reference && (
-          <div className="bk-refrow">
-            <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
-            <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
-            <code className="bk-code" aria-labelledby={`${id}-ref`}>{b.reference}</code>
-            <CopyButton text={b.reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
+        <section className="bk-part bk-facts" aria-labelledby={`${id}-facts`}>
+          <div className="bk-part-h">
+            <h5 id={`${id}-facts`}>Details</h5>
+            {onEdit && <button type="button" className="bk-icon bk-edit" onClick={onEdit} aria-label="Edit the booking details" title="Edit the booking details"><Pencil s={16} /></button>}
           </div>
-        )}
-
-        <BoxRows rows={rows} onCopied={copied} />
+          {b.reference && (
+            <div className="bk-refrow">
+              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
+              <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
+              <code className="bk-code" aria-labelledby={`${id}-ref`}>{b.reference}</code>
+              <CopyButton text={b.reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
+            </div>
+          )}
+          <BoxRows rows={rows} link={link} onCopied={copied} />
+        </section>
 
         <section className="bk-part" aria-labelledby={`${id}-files`}>
           <h5 id={`${id}-files`}>Files</h5>
@@ -336,9 +364,8 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
           </div>
         ) : (
           <div className="bk-acts">
-            {link && <a className="btn small" href={link} target="_blank" rel="noopener noreferrer">Open booking<External /></a>}
             {onChange && <button type="button" className="btn small" data-on={changing || undefined} onClick={() => onChange(!changing)}>{changing ? 'Done' : 'Change booking'}</button>}
-            <button ref={remove} type="button" className="btn small danger bk-remove" onClick={() => setAsking(true)}>Remove booking</button>
+            <button ref={remove} type="button" className="btn link small bk-remove" onClick={() => setAsking(true)}>Remove booking</button>
           </div>
         )}
       </div>

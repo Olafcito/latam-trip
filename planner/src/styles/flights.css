@@ -226,11 +226,10 @@
      the flights inside, the reference row, the facts as icon rows, the files and Simon's notes. Green stays a mark. */
   .bk { --bk-bg: var(--surface-2); --bk-ring: color-mix(in srgb, var(--booked) 30%, var(--line)); flex: none; display: flex; flex-direction: column; border-radius: 14px; background: var(--bk-bg); box-shadow: inset 0 0 0 1px var(--bk-ring); overflow: hidden; outline: none; scroll-margin-top: 16px; }
   .bk:focus-visible { box-shadow: inset 0 0 0 2px var(--booked); }
-  .bk-mark { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px 0 16px; }
+  .bk-mark { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 16px 0; }
   .bk-tick { flex: none; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: var(--booked); color: var(--ground); }
   .bk-mark h4 { margin: 0; font-size: var(--fs-body); font-weight: 600; color: var(--booked); }
   .bk-mark > span:not(.bk-tick) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
-  .bk-mark .bk-edit { margin-left: auto; background: transparent; color: var(--muted); }
 
   .bk-route { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; gap: 12px; padding: 6px 16px 18px; }
   .bk-end { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
@@ -250,6 +249,11 @@
 
   .bk-body { display: flex; flex-direction: column; gap: 16px; padding: 14px 16px 16px; border-top: 1px solid var(--line); }
 
+  /* the details: their heading carries the pencil that edits them, then the reference and the facts */
+  .bk-facts { display: grid; gap: 8px; }
+  .bk-part-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; }
+  .bk-part-h h5 { margin: 0; }
+  .bk-part-h .bk-edit { margin-right: 6px; background: transparent; color: var(--muted); }
   /* the reference on one row, the code at the right with its copy button, read at a desk */
   .bk-refrow { display: grid; grid-template-columns: 24px auto minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 48px; padding: 4px 6px 4px 12px; border-radius: 10px; background: var(--surface-3); }
   .bk-refrow .bk-code { justify-self: end; text-align: right; }
@@ -265,6 +269,11 @@
   .bk-row-v small { font-size: var(--fs-small); font-weight: 400; color: var(--muted); }
   .bk-row-code { display: inline-flex; align-items: center; gap: 4px; margin-right: -6px; }
   .bk-row-code .bk-icon { background: transparent; }
+  /* the seller's page: a mark after the seller's name, or a quiet row of its own without a seller */
+  .bk-row-line { max-width: 100%; display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; margin-right: -6px; }
+  .bk-row-line > span { min-width: 0; }
+  .bk-out { background: transparent; color: var(--muted); }
+  .bk-open { grid-column: 2 / -1; align-self: stretch; display: flex; align-items: center; font-size: var(--fs-small); font-weight: 600; color: var(--muted); text-decoration: none; text-underline-offset: 3px; touch-action: manipulation; }
   .bk-rows li[data-k='paid'] .bk-row-v > span { color: var(--booked); }
 
   /* copy turns into a check for a moment: the two icons crossfade with a touch of blur */
@@ -304,14 +313,16 @@
   .bk-said:empty { margin-top: -16px; }
   .bk-said[data-bad] { color: var(--err); }
   .bk-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-  .bk-acts .btn svg { margin-left: 4px; }
   .bk-acts .btn[data-on] { border-color: var(--booked); background: var(--booked); color: var(--ground); }
-  .bk-remove { margin-left: auto; }
+  /* Remove booking is a quiet word at the far end, red only once chosen, in the question that follows */
+  .bk-acts .bk-remove { margin-left: auto; }
   .bk-ask { display: grid; gap: 10px; padding: 12px; border-radius: 10px; background: color-mix(in srgb, var(--err) 10%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--err) 40%, transparent); }
   .bk-ask p { margin: 0; font-size: var(--fs-small); }
   .bk-ask .bk-confirm { border-color: var(--err); background: var(--err); color: var(--ground); }
   @media (hover: hover) and (pointer: fine) {
-    .bk .btn:not(.danger, .bk-confirm, [data-on]):hover:not(:disabled) { background: var(--surface-3); }
+    .bk .btn:not(.link, .danger, .bk-confirm, [data-on]):hover:not(:disabled) { background: var(--surface-3); }
+    .bk-out:hover { color: var(--text); }
+    .bk-open:hover { color: var(--text); text-decoration: underline; }
     .bk-tile:hover { border-color: var(--faint); background: color-mix(in srgb, var(--surface-3) 70%, var(--line-2)); }
     .bk-add:hover { border-color: var(--booked); background: transparent; }
     .bk-acts .btn[data-on]:hover { border-color: var(--booked); background: color-mix(in srgb, var(--booked) 88%, white); }
@@ -330,7 +341,7 @@
   .bk-chip[data-tone='no'] { background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); }
   .bk-chip[data-tone] svg, .bk-chip[data-tone] small { color: currentColor; }
 
-  /* a round icon button, Copy on the stub and Edit on the band, with the full hit area around it */
+  /* a round icon button, Copy on the reference, Edit on the details and the seller's page mark, with the full hit area around it */
   .bk-icon { position: relative; flex: none; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: var(--surface-3); color: var(--text); cursor: pointer; touch-action: manipulation; transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease; }
   .bk-icon::after { content: ''; position: absolute; inset: calc((32px - max(32px, var(--hit))) / 2); }
   .bk-icon:active { transform: scale(0.94); }
