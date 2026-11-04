@@ -5,7 +5,7 @@ import { legOption, tripPieces, type Piece, type SeedWay, type Trip, type TripLe
 import { familyOf, type AirportFlight, type Connection, type DatedFare, type Family, type FlownLeg, type Mode, type Place, type RoundTrip, type RouteOption } from '../data/types'
 import { altitude, duration, fromPrice, kr, modeLabel, observed, shortDate } from '../lib/format'
 import { Flag as CountryFlag } from './Flag'
-import { Arrow, Back, Chevron, Close, Fare, Flag, ModeChip, Moon, Plus } from './icons'
+import { Arrow, Back, Chevron, Close, Fare, Flag, ModeChip, Moon, Plus, Quick } from './icons'
 import { PlaceSections } from './PlaceSections'
 import { Unknown } from './Unknown'
 import type { CardRef, MapModeApi } from './useMapMode'
@@ -722,18 +722,34 @@ function RoundTrips({ model, rows }: { model: Model; rows: RoundTrip[] }) {
 function FlightFacts({ model, o, from }: { model: Model; o: RouteOption; from: string }) {
   const f = o.flight
   if (!f) return null
-  const itin = (q: NonNullable<typeof f.cheapest>) =>
-    `${kr(q.dkk)} · ${duration(q.duration_min)} · ${q.vias.length ? 'via ' + q.vias.join(', ') : 'nonstop'} · ${q.carriers.join(', ')} · ${shortDate(q.date)}`
+  /** One line led by an icon, the time and the price. The route, carriers and day wait one tap deeper. */
+  const quote = (q: NonNullable<typeof f.cheapest>, kind: 'Cheapest' | 'Fastest') => (
+    <details className="fq">
+      <summary>
+        <span className="fq-ic" role="img" aria-label={kind} title={kind}>{kind === 'Cheapest' ? <Fare /> : <Quick />}</span>
+        <b className="mono">{duration(q.duration_min)}</b>
+        <span className="mono">{kr(q.dkk)}</span>
+        {q.vias.length > 0 && <span className="fq-via mono" title={`Via ${q.vias.join(', ')}`}>{q.vias.length} {q.vias.length === 1 ? 'stop' : 'stops'}</span>}
+        <span className="fq-more"><Chevron up={false} /></span>
+      </summary>
+      <p className="fq-body">
+        {[q.vias.length ? 'via ' + q.vias.join(', ') : 'nonstop', q.carriers.join(', '), shortDate(q.date), q.self_transfer ? 'self transfer' : null].filter(Boolean).join(' · ')}
+      </p>
+    </details>
+  )
   return (
     <div className="ffacts">
       <div className="facts">
         <div className="fact"><span className="mono">One-way</span><span className="mono">{fromPrice(f.oneway_dkk.min)}</span></div>
         <div className="fact"><span className="mono">Return</span><span className="mono">{f.return_dkk?.min != null ? fromPrice(f.return_dkk.min) : 'not searched'}</span></div>
-        <div className="fact"><span className="mono">Routing</span><span>{f.nonstop ? 'Nonstop' + (f.vias.length ? ' or via ' + f.vias.join(', ') : '') : f.vias.length ? 'via ' + f.vias.join(', ') : 'not listed'}</span></div>
+        {/* the card and its Stops line already say nonstop, so the routing only names what else flies */}
+        {(!f.nonstop || f.vias.length > 0) && (
+          <div className="fact"><span className="mono">Routing</span><span>{f.nonstop ? 'Also via ' + f.vias.join(', ') : f.vias.length ? 'via ' + f.vias.join(', ') : 'not listed'}</span></div>
+        )}
         <div className="fact"><span className="mono">Carriers</span><span>{f.carriers.join(', ') || 'not listed'}</span></div>
       </div>
-      {f.cheapest && <p className="ops"><b>Cheapest</b> · <span className="mono">{itin(f.cheapest)}</span>{f.cheapest.self_transfer ? ' · self transfer' : ''}</p>}
-      {f.fastest && f.fastest.dkk !== f.cheapest?.dkk && <p className="ops"><b>Fastest</b> · <span className="mono">{itin(f.fastest)}</span></p>}
+      {f.cheapest && quote(f.cheapest, 'Cheapest')}
+      {f.fastest && f.fastest.dkk !== f.cheapest?.dkk && quote(f.fastest, 'Fastest')}
       {f.by_date?.length ? <ByDate model={model} rows={f.by_date} from={from} /> : null}
       {f.round_trips?.length ? <RoundTrips model={model} rows={f.round_trips} /> : null}
       {f.by_date?.length || f.round_trips?.length ? null : o.source !== 'crawl' ? (
@@ -814,8 +830,12 @@ function RouteView(p: PanelProps & { conn: Connection }) {
         )}
         {cur && (
           <div className="detail">
-            <p className="sec-k mono">{modeLabel(cur.mode)} · stops on the way</p>
-            <Stops model={model} conn={conn} o={cur} from={from} />
+            {(stopsFrom(conn, cur, from).length > 0 || !(cur.mode === 'flight' && cur.flight?.nonstop)) && (
+              <>
+                <p className="sec-k mono">{modeLabel(cur.mode)} · stops on the way</p>
+                <Stops model={model} conn={conn} o={cur} from={from} />
+              </>
+            )}
             {cur.mode === 'flight' ? <FlightFacts model={model} o={cur} from={from} /> : (
               <div className="facts">
                 <div className="fact"><span className="mono">Frequency</span><span>{cur.frequency || 'not listed'}</span></div>
@@ -840,9 +860,8 @@ function RouteView(p: PanelProps & { conn: Connection }) {
               <button className="pbtn ghost done" onClick={() => p.onRemoveLeg(added)}>In {p.trip.name} · remove</button>
             ) : (
               <>
-                <button className="pbtn add" onClick={() => p.onAddLeg!(conn, cur, from, true)}>
+                <button className="pbtn add" title={`Then show what leaves ${b.short_name}`} onClick={() => p.onAddLeg!(conn, cur, from, true)}>
                   Add leg and continue
-                  <span>then show what leaves {b.short_name}</span>
                 </button>
                 <button className="pbtn ghost" onClick={() => p.onAddLeg!(conn, cur, from, false)}>Add leg, stay here</button>
               </>
