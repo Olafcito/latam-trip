@@ -30,6 +30,17 @@ The roaster's instructions live in `plugin/agents/design-roaster.md` and nowhere
 5. Decide what happens next: implement the agreed direction, explore alternatives with `prototype`, run an audit for the questions the roast could not settle, or leave it.
 6. Record only what was accepted. An accepted rule becomes a DES entry. A problem seen before on other screens becomes or updates a REC entry. An unsettled question becomes a Q entry. Add a short "Outcome" section at the end of the roast file saying what was accepted and what was left. The roast stays in the git ignored shots folder, so it may quote whatever the shot showed. It moves to `docs/design/reviews/roast-<screen>-<date>.md` only if Simon asks and only after a check that it quotes nothing private.
 
+## The roast loop after a build
+
+A screen built or rebuilt from a spec goes through one roast loop before Simon sees it. The loop count is n, and n=1 unless Simon sets another number. One loop is:
+
+1. Shoot the built screen to `docs/design/shots/<screen>/<date>/after.png` in the main checkout, at 1440 by 900 unless the spec is about the phone. When a before shot exists it is `before.png` with its roast in `roast-before.md`, taken and roasted the same way before the build started.
+2. Roast it once, as in "Running a roast", and write it to `roast-after.md`. The roaster is told the screen name and what the screen is for, nothing about what was just built or what changed.
+3. Send one fix round to a fresh implementer. The coordinator picks from the roast what fits the spec's journey: things the spec asked for and the build missed, and usability problems the spec did not foresee. A concept change the roast proposes, or anything the spec rejected in its roast rulings, is left for Simon and named in the reply. The fix round gets the roast's own words for the points chosen, the spec and the files, nothing else.
+4. Shoot the fixed screen to `final.png`. No second roast at n=1. The reply opens with the links to every shot and roast file, then the fix round's points and the points left for Simon.
+
+Rulings on the roast, DES, REC and Q entries, still happen only after Simon has read it.
+
 ## Design Audit
 
 The audit keeps the detailed format the log already uses. It investigates rather than reacts: several screens, the user journey end to end, responsive behaviour, cross screen consistency, information architecture, component patterns, interaction patterns, the design system, missing or duplicated information, and whether earlier decisions still hold.

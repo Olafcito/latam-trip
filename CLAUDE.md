@@ -2,10 +2,12 @@
 
 Simon's planner for a two-month solo trip through Central America, Colombia and Bolivia (December 2026 to February 2027). Supabase holds shared trip and research data. The repo holds the Claude plugin, worker and two React apps. "Simon" in this file and the skills means Simon or the agent coordinating the work.
 
-## One checkout, one branch
+## Checkouts and branches
 
-- There is exactly one working copy of this repo on this machine: `C:\Users\Simon\Documents\github\latam-trip`. Never create a git worktree or a second clone. If you need to set work aside, such as edits left by stopped agents, commit them with explicit paths on `wip/YYYY-MM-DD-<topic>`, push it and switch back to a clean `main`. Never leave unfinished edits in `main`.
-- `main` is the only long-lived branch and the one you work on. Commit in small steps and push to `origin/main` without asking.
+- The main checkout is `C:\Users\Simon\Documents\github\latam-trip`. Simon's desktop icon serves its `main` on port 5198, and the hosted planner is built from `origin/main`, so nothing is visible to him until it is on `main`.
+- A feature that runs while other work runs gets its own worktree. Use `EnterWorktree` with the feature's name, which creates `.claude/worktrees/<name>` on its own branch from `origin/main` and moves the session there. Then `cd planner && npm install` and start its dev server on a free port with `npm run dev -- --port <port>`, never 5198. The `VITE_` variables are set in the user environment, so no `.env` needs copying. Shots always go to the main checkout's `docs/design/shots/` by absolute path, whichever worktree they were taken from, so every review finds them in one place. When the feature is done, rebase on `origin/main`, fast forward `main`, push, and remove the worktree with `ExitWorktree`. A worktree lives for one feature and is removed the day it merges. Only one feature at a time per worktree, and no two worktrees on the same screen.
+- If you need to set work aside, such as edits left by stopped agents, commit them with explicit paths on `wip/YYYY-MM-DD-<topic>`, push it and switch back to a clean `main`. Never leave unfinished edits in `main`.
+- `main` is the only long-lived branch. Commit in small steps and push to `origin/main` without asking.
 - Short-lived branches are fine for a feature or an experiment, but they are merged into `main` and deleted as soon as the work is in. Before deleting a branch, confirm `git log main..<branch>` is empty.
 - No git identity is configured on this machine. Commit with `git -c user.name=Claude -c user.email=noreply@anthropic.com`, matching the existing history.
 
@@ -66,7 +68,7 @@ A design issue is not automatically a code finding and a code finding is not a d
 - **Deliver every review as links.** A roast, an audit, a retro or a report that Simon is meant to read gets a first line in the reply like "Roast done, see here: [desktop.png](docs/design/shots/<screen>/<date>/desktop.png) and [roast.md](docs/design/shots/<screen>/<date>/roast.md)", markdown links to workspace relative paths, one per file and shot. The session that dispatched the review writes that line. No Artifact page and no `SendUserFile`, they cost tokens for nothing. A bare path is not a link.
 - **Explore** when the direction is unclear or there are real alternatives. `prototype` builds several distinct versions behind a switcher in the actual stack, 21st.dev gives components and inspiration. No Figma dependency. Compare, pick, then implement the winner. Not for minor changes.
 - **Implement** with the frontend skills below.
-- **Evaluate** the built thing against the journey, starting with a roast of the built screen.
+- **Evaluate** the built thing against the journey, starting with a roast of the built screen. A build from a spec runs one roast loop by default, n=1: shoot the built screen, roast it once, send one fix round to an implementer with what the roast found that fits the spec's journey, shoot again, stop. Concept changes the roast proposes go to Simon, not into the fix round. `ui-roast` says how.
 - **Consolidate** validated patterns into `design-principles.md`, the tokens in `planner/src/styles` and the shared components, through a retrospective when the evidence has built up, not on a schedule.
 
 ### Agents and models
@@ -77,7 +79,7 @@ Do the work yourself when that is simplest. Dispatch an agent when the work need
 - Sonnet for ordinary implementation and recording.
 - Opus for complex reasoning, design judgement, high impact decisions, and complex frontend work such as motion, animation and component design.
 
-Agents in `plugin/agents/`: `design-roaster` (Opus, the roast, knows the product but not the design record), `senior-designer` (Opus, audits and retrospectives, knows the whole record), `doc-keeper` (Sonnet, doc audit on demand). A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first. Related small tasks go to one implementer, each task its own commit. Disjoint work runs in parallel in this one checkout, each agent staging only its own paths and never stashing, resetting or checking out over another agent's work. Decide an ambiguity, write it down and keep going. Ask Simon only before something irreversible he has not already approved.
+Agents in `plugin/agents/`: `design-roaster` (Opus, the roast, knows the product but not the design record), `senior-designer` (Opus, audits and retrospectives, knows the whole record), `doc-keeper` (Sonnet, doc audit on demand). A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first. Related small tasks go to one implementer, each task its own commit. Disjoint work inside one feature runs in parallel in that feature's checkout, each agent staging only its own paths and never stashing, resetting or checking out over another agent's work. Separate features run in separate worktrees. Decide an ambiguity, write it down and keep going. Ask Simon only before something irreversible he has not already approved.
 
 ### Code review
 

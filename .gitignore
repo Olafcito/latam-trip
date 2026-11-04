@@ -14,3 +14,6 @@ data/crawl.db
 
 # Roast shots show private trip data
 docs/design/shots/
+
+# Feature worktrees made by EnterWorktree
+.claude/worktrees/
