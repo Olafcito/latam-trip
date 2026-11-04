@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ComponentType, type ReactNode, type RefObject } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ComponentType, type FocusEvent, type KeyboardEvent, type PointerEvent, type ReactNode, type RefObject } from 'react'
 import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, Option, Ticket, Way, WayType } from '../data/types'
 import { changing, useStore, type Pair } from '../store'
@@ -6,8 +6,8 @@ import type { Journey } from '../lib/journey'
 import { clock, dec1, hours, kr, observed, shortPlace, timeUncertain, weekdayDay } from '../lib/format'
 import type { FlightLink } from '../lib/links'
 import {
-  allIn, cheapestKey, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles,
-  type PairFilters, type PairRow,
+  allIn, cheapestKey, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles,
+  type PairFilters, type PairRow, type PairSort,
 } from '../lib/pairs'
 import { heldWayNotice } from '../lib/booked'
 import { bagWords, carriersOf, flightNumbersOf, legEnds, lossLabel, pairMarks, stopsLabel, type PairMark } from '../lib/pickMarks'
@@ -89,6 +89,11 @@ export function PickScreen({ data }: { data: AppData }) {
     () => pairRows(inout, home, { arrival, departure, noUS, maxHubNights }, sort),
     [inout, home, arrival, departure, noUS, maxHubNights, sort],
   )
+  // the cities of the grid: every pair the city pills leave, so the other filters empty cells and keep the grid
+  const frame = useMemo(
+    () => pairRows(inout, home, { ...NO_FILTERS, arrival, departure }, sort),
+    [inout, home, arrival, departure, sort],
+  )
   const setPair = useStore((s) => s.setPair)
   const inline = useInline()
   const own = ownPair(inout, trip)
@@ -120,11 +125,14 @@ export function PickScreen({ data }: { data: AppData }) {
       <Head inout={inout} trip={trip} shown={pair ?? ownPair(inout, trip)} />
       <Controls inout={inout} />
       <div className="pk-body">
+        <div className="pk-main">
+        {rows.length > 0 && <Matrix inout={inout} frame={frame} rows={rows} sort={sort} ownKey={ownKey} openKey={openKey} onPick={toggle} />}
         <PairList
           inout={inout} rows={rows} ownKey={ownKey} openKey={openKey} onToggle={toggle}
           inline={inline ? (r) => pane(r.key === openRow?.key ? openRow : r) : null}
           filtered={!!arrival || !!departure || noUS || maxHubNights != null}
         />
+        </div>
         {openRow && (!inline || orphan) && <div className="pk-side" id="pk-pair" key={openRow.key} ref={side}>{pane(openRow)}</div>}
       </div>
     </div>
@@ -223,6 +231,140 @@ function Controls({ inout }: { inout: InOut }) {
       />
       {on && <button type="button" className="btn link small pk-clear" onClick={() => setFilters(NO_FILTERS)}>Clear</button>}
     </div>
+  )
+}
+
+/** What a cell says: the score, or the all in price in thousands with one decimal, 7.428 kr as 7,4. */
+const cellFigure = (v: number, sort: PairSort) => (sort === 'best' ? dec1(v) : dec1(v / 1000))
+
+/**
+ * Every pair at once: the cities flown in to as rows, the cities flown home from as columns, both by region.
+ * A cell says the figure the sort is on, the top 10 filled in amber and the next 20 in amber figures, and a
+ * pair with no fare leaves a gap. The trip's own pair wears a green ring, the open pair a white one.
+ */
+function Matrix({ inout, frame, rows, sort, ownKey, openKey, onPick }: {
+  inout: InOut; frame: PairRow[]; rows: PairRow[]; sort: PairSort
+  ownKey: string | null; openKey: string | null; onPick: (r: PairRow) => void
+}) {
+  const ap = inout.airports
+  const { ins, homes, cells } = useMemo(() => pairMatrix(frame, rows, ap, sort), [frame, rows, ap, sort])
+  const [hover, setHover] = useState<string | null>(null)
+  const [focusKey, setFocusKey] = useState<string | null>(null)
+  const table = useRef<HTMLTableElement>(null)
+  const allIns = ins.flatMap((g) => g.codes)
+  const allHomes = homes.flatMap((g) => g.codes)
+  const [hlIn, hlHome] = (hover ?? openKey ?? '').split('|')
+
+  // one tab stop for the whole grid: the cell focused last, else the open pair, else the trip's, else the first
+  const tabKey = [focusKey, openKey, ownKey].find((k) => k && cells.has(k))
+    ?? allIns.flatMap((en) => allHomes.map((ex) => `${en}|${ex}`)).find((k) => cells.has(k))
+
+  const cellOf = (el: EventTarget | null) => (el instanceof Element ? el.closest<HTMLElement>('[data-cell]')?.dataset.cell ?? null : null)
+  /** Arrow keys walk to the next pair that exists that way, Home and End to the ends of the row. */
+  const onKeyDown = (e: KeyboardEvent<HTMLTableElement>) => {
+    const at = cellOf(e.target)
+    if (!at) return
+    const [en, ex] = at.split('|')
+    const r = allIns.indexOf(en)
+    const c = allHomes.indexOf(ex)
+    const walk = (dr: number, dc: number, i = r + dr, j = c + dc): string | null => {
+      for (; i >= 0 && i < allIns.length && j >= 0 && j < allHomes.length; i += dr, j += dc) {
+        const k = `${allIns[i]}|${allHomes[j]}`
+        if (cells.has(k)) return k
+      }
+      return null
+    }
+    const moves: Record<string, () => string | null> = {
+      ArrowRight: () => walk(0, 1),
+      ArrowLeft: () => walk(0, -1),
+      ArrowDown: () => walk(1, 0),
+      ArrowUp: () => walk(-1, 0),
+      Home: () => walk(0, 1, r, 0),
+      End: () => walk(0, -1, r, allHomes.length - 1),
+    }
+    if (!(e.key in moves)) return
+    e.preventDefault()
+    const next = moves[e.key]()
+    if (next) table.current?.querySelector<HTMLElement>(`[data-cell="${CSS.escape(next)}"]`)?.focus()
+  }
+  const onFocus = (e: FocusEvent<HTMLTableElement>) => {
+    const at = cellOf(e.target)
+    if (!at) return
+    setFocusKey(at)
+    setHover(at)
+  }
+  const onPointerOver = (e: PointerEvent<HTMLTableElement>) => {
+    const at = cellOf(e.target)
+    if (at && e.pointerType === 'mouse') setHover(at)
+  }
+
+  return (
+    <section className="mx" aria-label="Pairs">
+      <div className="mx-box">
+        <table
+          ref={table} className="matrix" role="grid" aria-label="Pairs"
+          onKeyDown={onKeyDown} onFocus={onFocus} onBlur={() => setHover(null)}
+          onPointerOver={onPointerOver} onPointerLeave={() => setHover(null)}
+        >
+          <thead>
+            <tr>
+              <th className="corner" rowSpan={2} scope="col">
+                <Said label="Fly in to" className="mx-in"><Land s={14} /></Said>
+                <Said label="Fly home from" className="mx-out"><Plane s={14} /></Said>
+              </th>
+              {homes.map((g) => <th key={g.region} className="grp" colSpan={g.codes.length} scope="colgroup"><span>{REGION_NAME[g.region] ?? 'Other'}</span></th>)}
+            </tr>
+            <tr>
+              {allHomes.map((c) => (
+                <th key={c} scope="col" className="col" data-hl={hlHome === c || undefined} title={cityName(inout, c)}>
+                  <span aria-hidden="true">{c}</span><span className="vh">{cityName(inout, c)}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {ins.map((g) => (
+              <Fragment key={g.region}>
+                <tr className="grp"><th colSpan={allHomes.length + 1} scope="rowgroup"><span>{REGION_NAME[g.region] ?? 'Other'}</span></th></tr>
+                {g.codes.map((en) => (
+                  <tr key={en} data-hl={hlIn === en || undefined}>
+                    <th className="rowh" scope="row">
+                      <span className="rowh-in"><Flag code={ap[en]?.country ?? ''} size={12} />{cityName(inout, en)}</span>
+                    </th>
+                    {allHomes.map((ex) => {
+                      const k = `${en}|${ex}`
+                      const c = cells.get(k)
+                      if (!c) return <td key={ex} className="none" />
+                      const fig = cellFigure(c.value, sort)
+                      const own = k === ownKey
+                      const open = k === openKey
+                      const label = `${cityName(inout, en)} in, ${cityName(inout, ex)} home, ${sort === 'best' ? fig : kr(c.value)}${own ? ', in the trip' : ''}`
+                      return (
+                        <td key={ex} className="t" data-tier={c.tier} data-own={own || undefined}>
+                          <button
+                            type="button" data-cell={k} tabIndex={k === tabKey ? 0 : -1}
+                            aria-pressed={open} aria-controls={open ? 'pk-pair' : undefined} aria-label={label}
+                            title={`${kr(allIn(c.row.best))} all in, score ${dec1(scoreParts(c.row.best.rating).total)}`}
+                            onClick={() => onPick(c.row)}
+                          >
+                            {fig}
+                          </button>
+                        </td>
+                      )
+                    })}
+                  </tr>
+                ))}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mx-key" role="img" aria-label={`Amber cells are the top 10 pairs by the order, amber figures the next 20${ownKey && cells.has(ownKey) ? ', the green ring is the trip' : ''}`}>
+        <span className="mx-k1"><i />Top 10</span>
+        <span className="mx-k2">Next 20</span>
+        {ownKey && cells.has(ownKey) && <span className="mx-k3"><i />In the trip</span>}
+      </p>
+    </section>
   )
 }
 

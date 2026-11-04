@@ -22,8 +22,71 @@
 .pk-sort { margin-inline: 2px; }
 .pk-chip { padding-inline: 12px; }
 
-/* ---- the list: one row a pair, ranked, the price large on the right ------------------------- */
+/* ---- the grid: every pair, quiet cells, amber only for the top, gaps where no pair exists ---- */
 .pk-body { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.pk-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.mx { display: flex; flex-direction: column; gap: 10px; width: fit-content; min-width: 0; max-width: 100%; }
+table.matrix { --cell: 38px; border-collapse: separate; border-spacing: 0; font-size: var(--fs-small); }
+.matrix th { background: var(--ground); font-weight: 500; color: var(--muted); white-space: nowrap; transition: background-color var(--t-fast) ease, color var(--t-fast) ease; }
+.matrix thead th { position: sticky; top: 0; z-index: 3; }
+.matrix thead tr:first-child th { height: 24px; }
+.matrix thead tr + tr th { top: 24px; }
+.matrix th.corner { position: sticky; left: 0; z-index: 4; width: 164px; min-width: 164px; }
+.matrix th.corner > span { position: absolute; display: inline-grid; place-items: center; color: var(--faint); }
+.matrix th.corner .mx-in { left: 4px; bottom: 6px; }
+.matrix th.corner .mx-out { right: 10px; top: 6px; }
+.matrix th.grp { padding: 0 4px; text-align: left; vertical-align: bottom; font-size: var(--fs-label); color: var(--faint); box-shadow: inset 0 -1px 0 var(--line); }
+.matrix th.col { min-width: calc(var(--cell) + 2px); padding: 6px 0 5px; text-align: center; font-family: var(--font-num); font-size: var(--fs-label); font-variant-numeric: tabular-nums; border-radius: 5px; }
+.matrix th.col[data-hl] { background: var(--surface-2); color: var(--text); }
+.matrix tr.grp th { padding: 12px 4px 4px; text-align: left; font-size: var(--fs-label); color: var(--faint); }
+.matrix tr.grp th span { position: sticky; left: 4px; }
+.matrix th.rowh { position: sticky; left: 0; z-index: 2; padding: 0 12px 0 4px; text-align: left; border-radius: 5px; }
+.matrix .rowh-in { display: flex; align-items: center; gap: 8px; font-size: var(--fs-small); font-weight: 600; color: var(--text); }
+.matrix .rowh-in .flag { display: block; flex: none; border-radius: 2px; }
+.matrix tr[data-hl] th.rowh { background: var(--surface-2); }
+
+/* cells: 1px of padding on each side makes the 2px gutter, the colour sits on the button */
+.matrix td { padding: 1px; }
+.matrix td.none { height: calc(var(--cell) + 2px); }
+.matrix td.t button {
+  position: relative;
+  display: grid; place-items: center;
+  width: var(--cell); height: var(--cell); padding: 0;
+  border: 0; border-radius: 5px;
+  background: var(--surface-2); color: var(--muted);
+  font: inherit; font-family: var(--font-num); font-size: var(--fs-num); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums;
+  cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) ease, background-color var(--t-med) ease, color var(--t-med) ease;
+}
+.matrix td[data-tier='1'] button { background: var(--flight); color: var(--flight-ink); }
+.matrix td[data-tier='2'] button { color: var(--flight); }
+.matrix td.t button:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .matrix td.t button:hover { box-shadow: inset 0 0 0 1px var(--text); }
+}
+/* the open pair ringed in white, the trip's own pair in green, both when the trip's pair is open */
+.matrix td.t button[aria-pressed='true'] { box-shadow: inset 0 0 0 2px var(--text); }
+.matrix td[data-own] button, .matrix td[data-own] button:hover { box-shadow: inset 0 0 0 2px var(--booked); }
+.matrix td[data-own] button[aria-pressed='true'] { box-shadow: inset 0 0 0 2px var(--booked), inset 0 0 0 4px var(--text); }
+/* keyboard focus sits inside the cell, so it never hides behind the neighbours */
+.matrix td.t button:focus-visible { z-index: 1; outline: 2px solid var(--text); outline-offset: -5px; }
+
+/* the key: amber fill for the top 10, amber figures for the next 20, the green ring for the trip */
+.mx-key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 0; padding-left: 4px; font-size: var(--fs-label); font-weight: 500; color: var(--muted); }
+.mx-key > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.mx-key i { width: 12px; height: 12px; border-radius: 3px; }
+.mx-k1 i { background: var(--flight); }
+.mx-k2 { color: var(--flight); }
+.mx-k3 i { box-shadow: inset 0 0 0 2px var(--booked); }
+:root[data-input='key'] :is(.matrix th, .matrix td.t button) { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .matrix td.t button:active { transform: none; }
+}
+@media (pointer: coarse), (max-width: 640px) {
+  table.matrix { --cell: 40px; }
+}
+
+/* ---- the list: one row a pair, ranked, the price large on the right ------------------------- */
 .pk-list { min-width: 0; }
 .pk-rows { list-style: none; margin: 0; padding: 0; }
 .pk-rows > li + li { border-top: 1px solid var(--line); }
