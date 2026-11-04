@@ -14,11 +14,14 @@ const NONE: ExpressionSpecification = ['boolean', false]
 
 const fs = (key: string): ExpressionSpecification => ['boolean', ['feature-state', key], false]
 const HL = fs('hl')
+/** A trip leg into or out of the selected stop, drawn in full amber at full weight. */
+export const LEG_LIT: ExpressionSpecification = ['==', ['get', 'state'], 'lit']
+const TRIP_WIDTH: ExpressionSpecification = ['interpolate', ['linear'], ['zoom'], 3, ['case', LEG_LIT, 4.5, 3], 8, ['case', LEG_LIT, 5.5, 4]]
 
 export const ROUTE_LAYERS: Record<Family, string> = { ground: 'route-ground', boat: 'route-boat', flight: 'route-flight' }
 export const HIT_ROUTES = 'route-hit'
 export const HIT_PLACES = 'place-hit'
-export const LABEL_LAYERS = { focus: 'label-focus', dest: 'label-dest', town: 'label-town' }
+export const LABEL_LAYERS = { focus: 'label-focus', dest: 'label-dest', town: 'label-town', off: 'label-off' }
 export const TRIP_LINE_LAYERS = ['trip-casing', 'trip-line', 'trip-flight']
 /** The chevrons riding the trip line in travel order. */
 export const TRIP_ARROW = 'trip-arrow'
@@ -74,13 +77,30 @@ const DIM = 0.45
 const QUIET = 0.12
 /** A saved place stays findable when a trip quiets the map around it. */
 const SAVED_DIM = 0.8
-/** Towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection; the rest dims beside one. */
+/** With a trip open, a destination off it is a small dim dot until the map zooms in. */
+const OFF = 0.35
+const off = fs('off')
+const dest: ExpressionSpecification = ['==', ['get', 'tier'], 'destination']
+/**
+ * Towns and stop-only places fade in from zoom 5.5 to 6.5 unless they belong to the selection; the rest dims beside one.
+ * With a trip open, the places off it fade in the same way, the destinations from a dim dot.
+ */
 const placeFade = (dim: number): ExpressionSpecification => [
   'interpolate', ['linear'], ['zoom'],
-  5.5, ['case', lit, 1, ['==', ['get', 'tier'], 'destination'], ['case', fs('dim'), dim, 1], 0],
+  5.5, ['case', lit, 1, off, ['case', dest, Math.min(OFF, dim), 0], dest, ['case', fs('dim'), dim, 1], 0],
   6.5, ['case', lit, 1, fs('dim'), dim, 1],
 ]
-const airFade = (dim: number): ExpressionSpecification => ['case', lit, 1, fs('dim'), dim, 1]
+/** The dot layer draws airports too: off the open trip an airport is a dim dot that hands over to its diamond as the map zooms in. */
+const dotFade = (dim: number): ExpressionSpecification => [
+  'interpolate', ['linear'], ['zoom'],
+  5.5, ['case', ['get', 'airport'], ['case', ['all', off, ['!', lit]], Math.min(OFF, dim), 0], lit, 1, off, ['case', dest, Math.min(OFF, dim), 0], dest, ['case', fs('dim'), dim, 1], 0],
+  6.5, ['case', ['get', 'airport'], 0, lit, 1, fs('dim'), dim, 1],
+]
+const airFade = (dim: number): ExpressionSpecification => [
+  'interpolate', ['linear'], ['zoom'],
+  5.5, ['case', lit, 1, off, 0, fs('dim'), dim, 1],
+  6.5, ['case', lit, 1, fs('dim'), dim, 1],
+]
 const tier = (dest: number, town: number, stop: number): ExpressionSpecification =>
   ['match', ['get', 'tier'], 'destination', dest, 'town', town, stop]
 
@@ -205,7 +225,7 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     source: 'trip',
     filter: ['!=', ['get', 'family'], 'overland'],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': C.ground, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 6.5, 8, 8.5], 'line-opacity': 0.85 },
+    paint: { 'line-color': C.ground, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, ['case', LEG_LIT, 8.5, 6.5], 8, ['case', LEG_LIT, 10, 8.5]], 'line-opacity': 0.85 },
   })
   map.addLayer({
     id: 'trip-line',
@@ -213,7 +233,7 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     source: 'trip',
     filter: ['!', ['in', ['get', 'family'], ['literal', ['flight', 'overland']]]],
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': ['match', ['get', 'family'], 'boat', C.boat, C.bus], 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4] },
+    paint: { 'line-color': ['case', LEG_LIT, C.flight, ['match', ['get', 'family'], 'boat', C.boat, C.bus]], 'line-width': TRIP_WIDTH },
   })
   map.addLayer({
     id: 'trip-flight',
@@ -221,7 +241,7 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     source: 'trip',
     filter: ['==', ['get', 'family'], 'flight'],
     layout: { 'line-join': 'round' },
-    paint: { 'line-color': C.flight, 'line-width': ['interpolate', ['linear'], ['zoom'], 3, 3, 8, 4] },
+    paint: { 'line-color': C.flight, 'line-width': TRIP_WIDTH },
   })
   // small chevrons along the trip in travel order, dark on the line so they read as cut into it
   map.addLayer({
@@ -246,7 +266,7 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     type: 'line',
     source: 'trip',
     filter: ['==', ['get', 'family'], 'overland'],
-    paint: { 'line-color': C.text, 'line-opacity': 0.55, 'line-width': 1.6, 'line-dasharray': [2, 2.4] },
+    paint: { 'line-color': ['case', LEG_LIT, C.flight, C.text], 'line-opacity': 0.55, 'line-width': ['case', LEG_LIT, 2.6, 1.6], 'line-dasharray': [2, 2.4] },
   })
   map.addLayer({
     id: HIT_OVERLAND,
@@ -269,17 +289,16 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
     paint: { 'circle-radius': 3, 'circle-color': ['get', 'core'] },
   })
 
-  const fadeIn = placeFade(DIM)
-  // Places without an airport are small dots, so the airport diamonds stand out.
+  const fadeIn = dotFade(DIM)
+  // Places without an airport are small dots, so the airport diamonds stand out. An airport off the open trip is a dot too until the map zooms in.
   const dot: CircleLayerSpecification = {
     id: 'place-dot',
     type: 'circle',
     source: 'places',
-    filter: ['!', ['get', 'airport']],
     paint: {
       'circle-radius': [
         'interpolate', ['linear'], ['zoom'],
-        3, ['*', tier(3.2, 2.2, 1.9), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
+        3, ['*', tier(3.2, 2.2, 1.9), ['case', hot, 1.6, sel, 1.5, near, 1.25, off, 0.7, 1]],
         8, ['*', tier(5, 3.8, 3.2), ['case', hot, 1.6, sel, 1.5, near, 1.25, 1]],
       ],
       'circle-color': ['case', ['any', sel, hot], C.flight, near, '#FFFFFF', ['==', ['get', 'tier'], 'destination'], C.dot, C.muted],
@@ -429,6 +448,8 @@ export function addRouteLayers(map: MLMap, model: Model, saved: string[] = []) {
 
   map.addLayer(label(LABEL_LAYERS.town, FONT, 11, { minzoom: 7, filter: ['!=', ['get', 'tier'], 'destination'] }))
   map.addLayer(label(LABEL_LAYERS.dest, FONT_BOLD, 12.5, { filter: ['==', ['get', 'tier'], 'destination'] }))
+  // with a trip open, the destinations off it are named only once the map is zoomed in
+  map.addLayer(label(LABEL_LAYERS.off, FONT_BOLD, 12.5, { minzoom: 6, filter: NONE }))
   map.addLayer({
     id: 'stop-label',
     type: 'symbol',
@@ -513,13 +534,25 @@ const inIds = (ids: string[]): ExpressionSpecification => ['in', ['get', 'id'], 
 /**
  * Point the label layers at a new focus set (the selected city and its neighbours). The selected
  * label is placed first, then `first` (the open trip's stops), so they win every collision. With
- * `only`, every other label goes: the map shows just the focus set.
+ * `only`, every other label goes: the map shows just the focus set. With `trip` (the open trip's
+ * stops), the stops are always named and the destinations off the trip only from zoom 6.
  */
-export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = null, only = false, first: string[] = []) {
+export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = null, only = false, first: string[] = [], trip: string[] | null = null) {
   map.setFilter(LABEL_LAYERS.focus, ids.length ? inIds(ids) : NONE)
   map.setLayoutProperty(LABEL_LAYERS.focus, 'symbol-sort-key', ['case', ['==', ['get', 'id'], sel ?? ''], -2, inIds(first), -1, ['get', 'popularity']])
-  map.setFilter(LABEL_LAYERS.dest, only ? NONE : ['all', ['==', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
-  map.setFilter(LABEL_LAYERS.town, only ? NONE : ['all', ['!=', ['get', 'tier'], 'destination'], ['!', inIds(ids)]])
+  const free: ExpressionSpecification = ['!', inIds(ids)]
+  const town: ExpressionSpecification = ['!=', ['get', 'tier'], 'destination']
+  if (only) {
+    for (const id of [LABEL_LAYERS.dest, LABEL_LAYERS.town, LABEL_LAYERS.off]) map.setFilter(id, NONE)
+  } else if (trip) {
+    map.setFilter(LABEL_LAYERS.dest, ['all', inIds(trip), free])
+    map.setFilter(LABEL_LAYERS.off, ['all', dest, ['!', inIds(trip)], free])
+    map.setFilter(LABEL_LAYERS.town, ['all', town, ['!', inIds(trip)], free])
+  } else {
+    map.setFilter(LABEL_LAYERS.dest, ['all', dest, free])
+    map.setFilter(LABEL_LAYERS.off, NONE)
+    map.setFilter(LABEL_LAYERS.town, ['all', town, free])
+  }
 }
 
 /**
@@ -528,8 +561,8 @@ export function setLabelFocus(map: MLMap, ids: string[], sel: string | null = nu
  */
 export function setQuiet(map: MLMap, quiet: boolean) {
   const dim = quiet ? QUIET : DIM
-  map.setPaintProperty('place-dot', 'circle-opacity', placeFade(dim))
-  map.setPaintProperty('place-dot', 'circle-stroke-opacity', placeFade(dim))
+  map.setPaintProperty('place-dot', 'circle-opacity', dotFade(dim))
+  map.setPaintProperty('place-dot', 'circle-stroke-opacity', dotFade(dim))
   map.setPaintProperty('place-air', 'icon-opacity', airFade(dim))
   for (const id of Object.values(ROUTE_LAYERS)) map.setPaintProperty(id, 'line-width', routeWidth(quiet))
 }

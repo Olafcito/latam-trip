@@ -541,6 +541,8 @@
 
   :scope.has-side .ctl-tr { right: calc(var(--side) + 28px); }
   :scope.has-side .ctl-bottom { right: calc(var(--side) + 28px); }
+  /* with a trip open the trip is the figure: no hint and no travel key, on every screen */
+  :scope.trip-on :is(.hint, .legend:not(.scorekey, .io-legend)) { display: none; }
   .panel.plan {
     left: auto; right: 14px; width: var(--side); animation-name: viewIn; font-variant-numeric: tabular-nums;
   }

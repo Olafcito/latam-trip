@@ -29,3 +29,35 @@ export function stopPoints(order: string[], at: (id: string) => LonLat | null): 
     return [{ type: 'Feature' as const, properties: { n: n.join(','), first: n[0], last: n[n.length - 1], end: id === order.at(-1) }, geometry: { type: 'Point' as const, coordinates: ll } }]
   })
 }
+
+/** How a trip leg draws: with one of the trip's stops selected, its legs in and out are lit and the rest step back. */
+export type LegState = 'lit' | 'dim' | 'plain'
+
+export function legState(leg: { from: string; to: string }, sel: string | null, stops: string[]): LegState {
+  if (!sel || !stops.includes(sel)) return 'plain'
+  return leg.from === sel || leg.to === sel ? 'lit' : 'dim'
+}
+
+/** The stops at the far end of a stop's legs in and out, the places its own connections reach. */
+export function legEnds(legs: { from: string; to: string }[], sel: string): string[] {
+  const out = new Set<string>()
+  for (const l of legs) {
+    if (l.from === sel && l.to !== sel) out.add(l.to)
+    if (l.to === sel && l.from !== sel) out.add(l.from)
+  }
+  return [...out]
+}
+
+/** A place off the open trip draws quiet, a small dim dot with no label until the map is zoomed in. Nothing is off with no trip open. */
+export function offTrip(id: string, stops: ReadonlySet<string> | null): boolean {
+  return !!stops && !stops.has(id)
+}
+
+/**
+ * Whether a place's fan of connections draws. With no trip open it always does, that is the atlas. With a trip open a
+ * stop of the trip keeps its fan off until the alternatives are asked for, and any other place shows its own.
+ */
+export function showFan(sel: string | null, stops: ReadonlySet<string> | null, asked: boolean): boolean {
+  if (!sel) return false
+  return !stops || !stops.has(sel) || asked
+}

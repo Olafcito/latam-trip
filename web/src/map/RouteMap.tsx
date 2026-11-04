@@ -11,8 +11,8 @@ import type { Rect } from '../lib/tooltip'
 import { initialBounds, legBounds } from './camera'
 import { Controls } from './Controls'
 import { createStore, hoverKey, type Hover } from './hover'
-import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, ROUTE_LAYERS, TRIP_ARROW, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
-import { orientLine, stopPoints } from './tripDraw'
+import { DASH_HI, HIT_OVERLAND, HIT_PLACES, HIT_ROUTES, LABEL_LAYERS, LEG_LIT, ROUTE_LAYERS, TRIP_ARROW, TRIP_LINE_LAYERS, TRIP_OVERLAND, addRouteLayers, routeOpacity, setLabelFocus, setQuiet, setRouteHit } from './layers'
+import { legEnds, legState, offTrip, orientLine, showFan, stopPoints } from './tripDraw'
 import { addMarkerImages, addModeLayers, modeHit, type ModeHit } from './modeLayers'
 import { CardWindow } from './CardWindow'
 import { ModePanelSlot } from './ModeSlots'
@@ -158,10 +158,17 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   }, [view.panel])
 
   // latest values for the map's event handlers, which are bound once
-  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!pane, sideMini: paneMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false, trip })
+  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, litFocus: null as string | null, near: [] as string[], fan: true, side: !!pane, sideMini: paneMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false, trip })
   // which way the selected city's routes read: out of it (the default for every city) or into it
   const [dir, setDir] = useState<FlightDir>('out')
   useEffect(() => setDir('out'), [view.sel, view.panel])
+  // a selected stop of the open trip draws its fan of connections only once asked for, through In, Out or adding a leg
+  const [fanAsked, setFanAsked] = useState(false)
+  useEffect(() => setFanAsked(false), [view.sel])
+  const onDir = useCallback((d: FlightDir) => {
+    setDir(d)
+    setFanAsked(true)
+  }, [])
   live.current.view = view
   live.current.families = families
   live.current.side = !!pane
@@ -343,15 +350,26 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   const focusId = focus && trip && !view.sel && focusAt !== false ? focusAt ?? tripEnd(trip) : null
   live.current.focusId = focusId
   live.current.stops = trip ? tripStops(trip) : []
+  const stopSet = useMemo(() => (trip ? new Set(tripStops(trip)) : null), [trip])
+
+  // what the cursor reaches draws only once the cursor has moved in this trip, so an opened trip shows itself alone
+  const [cursorAsked, setCursorAsked] = useState(false)
+  const litFocus = cursorAsked ? focusId : null
+  live.current.litFocus = litFocus
 
   // moving the cursor brings that stop into view, at the zoom the map is at
-  const lastFocus = useRef<string | null | undefined>(undefined)
+  const lastFocus = useRef<{ id: string | null; trip: string | null } | undefined>(undefined)
+  const tripId = trip?.id ?? null
   useEffect(() => {
     if (!map || !focus) return
     const prev = lastFocus.current
-    lastFocus.current = focusId
-    if (focusId && prev !== undefined && prev !== focusId) showCity(focusId, null)
-  }, [map, focus, focusId, showCity])
+    lastFocus.current = { id: focusId, trip: tripId }
+    if (prev?.trip !== tripId) return setCursorAsked(false)
+    if (focusId && prev.id !== focusId) {
+      setCursorAsked(true)
+      showCity(focusId, null)
+    }
+  }, [map, focus, focusId, tripId, showCity])
 
   const showTrips = useCallback(() => {
     dropCards()
@@ -714,18 +732,22 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   // selection and mode toggles: which places and routes are lit
   useEffect(() => {
     if (!map) return
-    const sel = view.sel ?? focusId
+    const sel = view.sel ?? litFocus
     // a clicked city or the trip cursor lights every mode that is switched on, flights too
     const lit = families
-    const near = new Set(sel ? neighbours(model, sel, lit).map((n) => n.other.id) : [])
+    // a selected stop of the open trip shows its own legs, and its fan of alternatives only once asked for
+    const fan = view.sel ? showFan(view.sel, stopSet, fanAsked) : !!litFocus
+    const near = new Set(!sel ? [] : fan ? neighbours(model, sel, lit).map((n) => n.other.id) : legEnds(trip ? tripPieces(trip) : [], sel))
+    live.current.near = [...near]
+    live.current.fan = fan
     for (const p of model.places) {
-      map.setFeatureState({ source: 'places', id: p.id }, { sel: p.id === sel, near: near.has(p.id), dim: !!sel && p.id !== sel && !near.has(p.id) })
+      map.setFeatureState({ source: 'places', id: p.id }, { sel: p.id === sel, near: near.has(p.id), dim: !!sel && p.id !== sel && !near.has(p.id), off: offTrip(p.id, stopSet) })
     }
     const shown: string[] = []
     const cids = new Set<string>()
     for (const f of model.routes.features) {
       const { fid, cid, family, a, b } = f.properties
-      const show = !!sel && (a === sel || b === sel) && lit.has(family)
+      const show = fan && !!sel && (a === sel || b === sel) && lit.has(family)
       if (show) {
         shown.push(fid)
         cids.add(cid)
@@ -745,26 +767,33 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     setRouteHit(map, [...cids], [...lit])
     // build mode shows the trip's own stops and what the cursor reaches, and nothing else
     const quiet = focus && !!sel
-    const stops = quiet && trip ? tripStops(trip) : []
-    setLabelFocus(map, sel ? [...new Set([sel, ...near, ...stops])] : [], sel, quiet, stops)
+    const stops = trip ? tripStops(trip) : null
+    const first = quiet && stops ? stops : []
+    setLabelFocus(map, sel ? [...new Set([sel, ...near, ...first])] : [], sel, quiet, first, stops)
     setQuiet(map, quiet)
-    // the open trip steps back while a city's own routes are shown, and stays drawn under a mode at about 55%
-    const tripOpacity = view.sel ? 0.2 : mm.mode ? 0.55 : 1
-    for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', tripOpacity * (id === 'trip-casing' ? 0.85 : 1))
-    map.setPaintProperty(TRIP_ARROW, 'icon-opacity', tripOpacity * 0.9)
-    map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', view.sel ? 0.12 : 0.55)
-  }, [map, model, view.sel, focusId, families, focus, trip, mm.mode])
+    // the open trip steps back while a city's own routes are shown, and stays drawn under a mode at about 55%.
+    // A selected stop's legs in and out stay at full strength while the rest of the trip steps back.
+    const rest = view.sel ? (stopSet?.has(view.sel) && !fan ? 0.3 : 0.2) : mm.mode ? 0.55 : 1
+    for (const id of TRIP_LINE_LAYERS) {
+      const k = id === 'trip-casing' ? 0.85 : 1
+      map.setPaintProperty(id, 'line-opacity', ['case', LEG_LIT, k, rest * k])
+    }
+    map.setPaintProperty(TRIP_ARROW, 'icon-opacity', ['case', LEG_LIT, 0.9, rest * 0.9])
+    map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', ['case', LEG_LIT, 0.9, view.sel ? 0.12 : 0.55])
+  }, [map, model, view.sel, litFocus, families, focus, trip, stopSet, fanAsked, mm.mode])
 
   // the open trip: one line per leg or overland block, in travel order, and a numbered dot per stop
   useEffect(() => {
     if (!map) return
     const lines: GeoJSON.Feature[] = []
+    const order = trip ? tripStops(trip) : []
     for (const piece of trip ? tripPieces(trip) : []) {
       const a = model.byId.get(piece.from)
       const b = model.byId.get(piece.to)
       const straight = a && b && a !== b ? [[a.lon, a.lat], [b.lon, b.lat]] : null
+      const state = legState(piece, view.sel, order)
       if (piece.kind === 'overland') {
-        const props = { family: 'overland', from: piece.from, to: piece.to, note: piece.note }
+        const props = { family: 'overland', from: piece.from, to: piece.to, note: piece.note, state }
         if (straight) lines.push({ type: 'Feature', properties: props, geometry: { type: 'LineString', coordinates: straight } })
         continue
       }
@@ -772,16 +801,15 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       // a leg with no route in the data (the planner's "own way" hops) gets a straight line
       const line = model.routeLines.get(`${piece.leg.cid}|${family}`) ?? straight
       // drawn from where the leg leaves, so its chevrons point the way it goes
-      if (line && a) lines.push({ type: 'Feature', properties: { family }, geometry: { type: 'LineString', coordinates: orientLine(line as LonLat[], [a.lon, a.lat]) } })
+      if (line && a) lines.push({ type: 'Feature', properties: { family, state }, geometry: { type: 'LineString', coordinates: orientLine(line as LonLat[], [a.lon, a.lat]) } })
     }
-    const order = trip ? tripStops(trip) : []
     const points = stopPoints(order, (id) => {
       const p = model.byId.get(id)
       return p ? [p.lon, p.lat] : null
     })
     map.getSource<GeoJSONSource>('trip')?.setData({ type: 'FeatureCollection', features: lines })
     map.getSource<GeoJSONSource>('trip-stops')?.setData({ type: 'FeatureCollection', features: points })
-  }, [map, model, trip])
+  }, [map, model, trip, view.sel])
 
   // where the open trip flies in and flies home from: a ring per airport, both colours when it is one
   useEffect(() => {
@@ -817,8 +845,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     type Hit = { kind: 'place'; id: string } | { kind: 'route'; cid: string } | { kind: 'overland'; from: string; to: string; note: string }
     const hitAt = (pt: Point2): Hit | null => {
       const z = map.getZoom()
-      const sel = live.current.view.sel ?? live.current.focusId
-      const lit = new Set(sel ? [sel, ...neighbours(model, sel, live.current.families).map((n) => n.other.id)] : [])
+      const sel = live.current.view.sel ?? live.current.litFocus
+      const lit = new Set(sel ? [sel, ...live.current.near] : [])
       // hit circles of close cities overlap, so take the dot nearest the pointer
       const near = (id: string) => {
         const p = model.byId.get(id)!
@@ -845,7 +873,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const hoverFor = (hit: ReturnType<typeof hitAt>): Hover => {
       if (!hit) return null
       if (hit.kind === 'overland') return hit
-      const sel = live.current.view.sel ?? live.current.focusId
+      const sel = live.current.view.sel ?? live.current.litFocus
       if (hit.kind === 'route') {
         const conn = model.conns.get(hit.cid)
         if (!conn) return null
@@ -854,7 +882,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
         const from = sel && live.current.dir === 'in' ? otherEnd(conn, out) : out
         return { kind: 'route', cid: conn.id, from, to: otherEnd(conn, from) }
       }
-      if (sel && hit.id !== sel) {
+      // a city on a drawn fan previews its route, and with the fan hidden it is just a city
+      if (sel && hit.id !== sel && live.current.fan) {
         const conn = connBetween(model, sel, hit.id)
         if (conn && enabledOptions(conn, live.current.families).length) {
           return live.current.dir === 'in' ? { kind: 'route', cid: conn.id, from: hit.id, to: sel } : { kind: 'route', cid: conn.id, from: sel, to: hit.id }
@@ -1012,7 +1041,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   return (
     <div
       ref={root}
-      className={`rmap${space ? ' grab' : ''}${pane ? ' has-side' : ''}${pane && paneMini ? ' side-mini' : ''}${(view.panel || mm.mode) && !collapsed ? ' has-panel' : ''}${mm.mode ? ` mode-on mode-${mm.mode}` : ''}${sheeted && !mm.mode ? ' sheet-on' : ''}`}
+      className={`rmap${space ? ' grab' : ''}${pane ? ' has-side' : ''}${trip ? ' trip-on' : ''}${pane && paneMini ? ' side-mini' : ''}${(view.panel || mm.mode) && !collapsed ? ' has-panel' : ''}${mm.mode ? ` mode-on mode-${mm.mode}` : ''}${sheeted && !mm.mode ? ' sheet-on' : ''}`}
       style={{ '--mode-sheet': `${MODE_SHEET * 100}%`, ...(pane && { '--side': `${sideWidth}px` }) } as CSSProperties}
       tabIndex={0}
       role="region"
@@ -1104,7 +1133,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
               model,
               view,
               dir,
-              onDir: setDir,
+              onDir,
               families,
               collapsed,
               trip,

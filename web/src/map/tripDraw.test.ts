@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { orientLine, stackLabel, stopPoints } from './tripDraw'
+import { legEnds, legState, offTrip, orientLine, showFan, stackLabel, stopPoints } from './tripDraw'
 
 describe('orientLine', () => {
   const line: [number, number][] = [[0, 0], [1, 1], [2, 2]]
@@ -35,5 +35,39 @@ describe('stopPoints', () => {
   })
   it('skips a stop the map has no place for', () => {
     expect(stopPoints(['a', 'x'], at)).toHaveLength(1)
+  })
+})
+
+describe('the trip as the figure', () => {
+  const stops = ['a', 'b', 'c', 'd']
+  const legs = [{ from: 'a', to: 'b' }, { from: 'b', to: 'c' }, { from: 'c', to: 'd' }]
+  it('lights the legs in and out of a selected stop and dims the rest', () => {
+    expect(legs.map((l) => legState(l, 'b', stops))).toEqual(['lit', 'lit', 'dim'])
+  })
+  it('lights only the leg in of the last stop', () => {
+    expect(legs.map((l) => legState(l, 'd', stops))).toEqual(['dim', 'dim', 'lit'])
+  })
+  it('draws every leg plain with no selection or a selection off the trip', () => {
+    expect(legs.map((l) => legState(l, null, stops))).toEqual(['plain', 'plain', 'plain'])
+    expect(legs.map((l) => legState(l, 'x', stops))).toEqual(['plain', 'plain', 'plain'])
+  })
+  it('names the stops a selected stop connects to along the trip', () => {
+    expect(legEnds(legs, 'b').sort()).toEqual(['a', 'c'])
+    expect(legEnds(legs, 'a')).toEqual(['b'])
+    expect(legEnds(legs, 'x')).toEqual([])
+  })
+  it('quiets places off the open trip only', () => {
+    const on = new Set(stops)
+    expect(offTrip('x', on)).toBe(true)
+    expect(offTrip('a', on)).toBe(false)
+    expect(offTrip('x', null)).toBe(false)
+  })
+  it('keeps the fan of a stop off until it is asked for', () => {
+    const on = new Set(stops)
+    expect(showFan('b', on, false)).toBe(false)
+    expect(showFan('b', on, true)).toBe(true)
+    expect(showFan('x', on, false)).toBe(true)
+    expect(showFan('b', null, false)).toBe(true)
+    expect(showFan(null, on, true)).toBe(false)
   })
 })
