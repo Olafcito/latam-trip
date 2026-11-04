@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ComponentType, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ComponentType, type ReactNode, type RefObject } from 'react'
 import { Flag } from '@map/map/Flag'
 import type { AppData, InOut, Option, Ticket, Way, WayType } from '../data/types'
 import { changing, useStore, type Pair } from '../store'
@@ -46,6 +46,36 @@ const watchInline = (fn: () => void) => {
 const isInline = () => matchMedia(INLINE).matches
 const useInline = () => useSyncExternalStore(watchInline, isInline, () => false)
 
+// the gap the pair column keeps from the top and the foot of the window
+const SIDE_GAP = 16
+/**
+ * Beside the list, the pair column ends at the foot of the window wherever its top sits,
+ * so the pick pinned to its foot is always in view and the rest of the pair scrolls above it.
+ */
+function useFitToWindow(ref: RefObject<HTMLElement | null>, at: string | null) {
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!at || !el) return
+    // scroll, resize and the observer all fire once a frame at most, so the column is sized on each
+    const fit = () => {
+      const top = Math.max(SIDE_GAP, el.getBoundingClientRect().top)
+      el.style.maxHeight = `${Math.max(160, window.innerHeight - top - SIDE_GAP)}px`
+    }
+    fit()
+    // the head and the filters above the column can grow and push its top down
+    const seen = new ResizeObserver(fit)
+    for (const above of el.closest('.pick')?.children ?? []) if (!above.contains(el)) seen.observe(above)
+    window.addEventListener('scroll', fit, { passive: true })
+    window.addEventListener('resize', fit)
+    return () => {
+      seen.disconnect()
+      window.removeEventListener('scroll', fit)
+      window.removeEventListener('resize', fit)
+      el.style.maxHeight = ''
+    }
+  }, [ref, at])
+}
+
 export function PickScreen({ data }: { data: AppData }) {
   const { inout } = data
   const pickFor = useStore((s) => s.pickFor)
@@ -78,6 +108,8 @@ export function PickScreen({ data }: { data: AppData }) {
   const pane = (row: PairRow) => <PairPane key={row.key} data={data} row={row} trip={trip} />
   // in place, a pair the pills hide has no row to open under, so it opens under the list
   const orphan = inline && openRow && !rows.some((r) => r.key === openRow.key)
+  const side = useRef<HTMLDivElement>(null)
+  useFitToWindow(side, !inline && openRow ? openRow.key : null)
   // the picker opens at its top when a trip's sheet sends you here
   useEffect(() => {
     if (pickFor) window.scrollTo({ top: 0 })
@@ -92,7 +124,7 @@ export function PickScreen({ data }: { data: AppData }) {
           inline={inline ? (r) => pane(r.key === openRow?.key ? openRow : r) : null}
           filtered={!!arrival || !!departure || noUS || maxHubNights != null}
         />
-        {openRow && (!inline || orphan) && <div className="pk-side" id="pk-pair" key={openRow.key}>{pane(openRow)}</div>}
+        {openRow && (!inline || orphan) && <div className="pk-side" id="pk-pair" key={openRow.key} ref={side}>{pane(openRow)}</div>}
       </div>
     </div>
   )

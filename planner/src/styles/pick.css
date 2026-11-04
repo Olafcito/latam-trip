@@ -226,6 +226,7 @@
 @media (min-width: 960px) {
   .pk-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 440px); align-items: start; gap: 24px; }
   .pk-side {
+    /* PickScreen trims the height to end at the foot of the window, so the pick stays in view */
     position: sticky; top: 16px; max-height: calc(100dvh - 32px);
     overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
     border-radius: var(--radius);
