@@ -100,13 +100,6 @@ export function pairRows(inout: InOut, home: string, f: PairFilters, sort: PairS
   return rows.sort((a, b) => order(a.best, b.best) || a.key.localeCompare(b.key))
 }
 
-/** The row with the lowest all in price, wherever it ranks. */
-export function cheapestKey(rows: PairRow[]): string | null {
-  let at: PairRow | null = null
-  for (const r of rows) if (!at || allIn(r.cheapest) < allIn(at.cheapest)) at = r
-  return at?.key ?? null
-}
-
 export interface TypeTile { type: WayType; option: FullOption; price: number; delta: number }
 
 /** The cheapest option of each ticket type, and how much more it is than the cheapest of them. */

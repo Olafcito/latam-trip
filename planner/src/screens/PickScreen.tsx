@@ -6,20 +6,21 @@ import type { Journey } from '../lib/journey'
 import { clock, dec1, hours, kr, observed, shortPlace, timeUncertain, weekdayDay } from '../lib/format'
 import type { FlightLink } from '../lib/links'
 import {
-  allIn, cheapestKey, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles,
+  allIn, cityChoices, flagChip, heldSides, homeChoices, mixOption, oneWaysFor, pairMatrix, pairRows, pickedOf, pickOptionId, pointsLost, scoreParts, ticketsOf, typeTiles,
   type PairFilters, type PairRow, type PairSort,
 } from '../lib/pairs'
 import { heldWayNotice } from '../lib/booked'
-import { bagWords, carriersOf, flightNumbersOf, legEnds, lossLabel, pairMarks, stopsLabel, type PairMark } from '../lib/pickMarks'
+import { bagWords, carriersOf, flightNumbersOf, legEnds, lossLabel, stopsLabel } from '../lib/pickMarks'
 import { HOMES } from '../lib/homes'
 import { WayTrack } from '../components/WayCard'
 import { HomePill } from '../components/HomePill'
 import { PillSelect, type PillOption } from '../components/PillSelect'
 import { Chevron, DisclosurePanel, useDisclosure } from '../components/Disclosure'
-import { Arrow, Bag, Caret, Check, Clock, External, Land, Lock, Moon, Pin, Plane, Suitcase, Ticket as TicketIcon, TicketHop, Transfer, TwoTickets } from '../components/icons'
+import { Arrow, Bag, Caret, Check, Clock, External, Land, Lock, Moon, Pin, Plane, Suitcase, Ticket as TicketIcon, TicketHop, TwoTickets } from '../components/icons'
 
 // Picking the way in and the way home: the pair as the title, one row of pills that narrow the pairs,
-// the pairs ranked by the score or the price, and the open pair with its options, ways, cost, score and tickets.
+// every pair as a grid of cities in against cities home, and the open pair with its options, ways, cost,
+// score and tickets.
 
 const REGION_NAME: Record<string, string> = { CA: 'Central America', CO: 'Colombia', MX: 'Mexico', BO: 'Bolivia' }
 const NO_FILTERS: PairFilters = { arrival: '', departure: '', noUS: false, maxHubNights: null }
@@ -36,7 +37,7 @@ function ownPair(inout: InOut, j: Journey | null): Pair | null {
   return wi && wh ? { in: wi.to, home: wh.from } : null
 }
 
-// Below this width the open pair opens in place under its row. Above it the pair is a column beside the list.
+// Below this width the open pair opens under the grid. Above it the pair is a column beside the grid.
 const INLINE = '(max-width: 959px)'
 const watchInline = (fn: () => void) => {
   const m = matchMedia(INLINE)
@@ -49,7 +50,7 @@ const useInline = () => useSyncExternalStore(watchInline, isInline, () => false)
 // the gap the pair column keeps from the top and the foot of the window
 const SIDE_GAP = 16
 /**
- * Beside the list, the pair column ends at the foot of the window wherever its top sits,
+ * Beside the grid, the pair column ends at the foot of the window wherever its top sits,
  * so the pick pinned to its foot is always in view and the rest of the pair scrolls above it.
  */
 function useFitToWindow(ref: RefObject<HTMLElement | null>, at: string | null) {
@@ -120,18 +121,14 @@ export function PickScreen({ data }: { data: AppData }) {
   }, [pickFor])
   return (
     <div className="pick">
-      <Head inout={inout} trip={trip} shown={pair ?? ownPair(inout, trip)} />
+      <Head inout={inout} trip={trip} shown={openRow ?? own} />
       <Controls inout={inout} />
       <div className="pk-body">
         <div className="pk-main">
-        {rows.length > 0 && <Matrix inout={inout} frame={frame} rows={rows} sort={sort} ownKey={ownKey} openKey={openKey} onPick={toggle} />}
-        {/* on a narrow window the open pair opens under the grid */}
-        {openRow && inline && <div className="pk-under" id="pk-pair" key={openRow.key}>{pane(openRow)}</div>}
-        <PairList
-          inout={inout} rows={rows} ownKey={ownKey} openKey={openKey} onToggle={toggle}
-          inline={null}
-          filtered={!!arrival || !!departure || noUS || maxHubNights != null}
-        />
+          {rows.length > 0 && <Matrix inout={inout} frame={frame} rows={rows} sort={sort} ownKey={ownKey} openKey={openKey} onPick={toggle} />}
+          {rows.length === 0 && <Empty inout={inout} filtered={!!arrival || !!departure || noUS || maxHubNights != null} />}
+          {/* on a narrow window the open pair opens under the grid */}
+          {openRow && inline && <div className="pk-under" id="pk-pair" key={openRow.key}>{pane(openRow)}</div>}
         </div>
         {openRow && !inline && <div className="pk-side" id="pk-pair" key={openRow.key} ref={side}>{pane(openRow)}</div>}
       </div>
@@ -368,8 +365,6 @@ function Matrix({ inout, frame, rows, sort, ownKey, openKey, onPick }: {
   )
 }
 
-const TOP = 10
-
 const TYPE_ICON: Record<WayType, { label: string; Icon: ComponentType<{ s?: number }> }> = {
   ticket: { label: 'One ticket', Icon: TicketIcon },
   madrid: { label: 'Madrid ticket', Icon: TicketHop },
@@ -381,107 +376,15 @@ function Said({ label, className, children }: { label: string; className?: strin
   return <span className={className} role="img" aria-label={label} title={label}>{children}</span>
 }
 
-function MarkIcon({ m }: { m: PairMark }) {
-  switch (m.kind) {
-    case 'night': return <Said label={m.label} className="pk-mark"><Moon /><span aria-hidden="true">{m.text}</span></Said>
-    case 'us': return <Said label={m.label} className="pk-mark pk-us"><span aria-hidden="true">US</span></Said>
-    case 'change': return <Said label={m.label} className="pk-mark"><Transfer s={13} /></Said>
-    case 'long': return <Said label={m.label} className="pk-mark"><Clock s={13} /></Said>
-  }
-}
-
-/** The ranked pairs: the top ten by the sort, then all of them on request. The open pair stays in view past the top ten. */
-function PairList({ inout, rows, ownKey, openKey, onToggle, inline, filtered }: {
-  inout: InOut; rows: PairRow[]; ownKey: string | null; openKey: string | null; onToggle: (r: PairRow) => void
-  /** on a narrow screen: the open pair, drawn in place under its row */
-  inline: ((r: PairRow) => ReactNode) | null
-  filtered: boolean
-}) {
+/** No pair to show: none from this home, or none the pills leave, with the way back. */
+function Empty({ inout, filtered }: { inout: InOut; filtered: boolean }) {
   const setFilters = useStore((s) => s.setFilters)
   const home = useStore((s) => s.home)
-  const [all, setAll] = useState(false)
-  const cheap = useMemo(() => cheapestKey(rows), [rows])
-  // one pair drawn in place: the open one, or the one closing while its height runs down
-  const [drawn, setDrawn] = useState<string | null>(null)
-  if (openKey && openKey !== drawn) setDrawn(openKey)
-  // in place, the row tapped stays under the finger while the pair above it closes
-  const list = useRef<HTMLOListElement>(null)
-  const anchor = useRef<{ key: string; top: number } | null>(null)
-  useLayoutEffect(() => {
-    const a = anchor.current
-    anchor.current = null
-    const el = a && list.current?.querySelector(`[data-key="${CSS.escape(a.key)}"]`)
-    if (a && el) window.scrollBy(0, el.getBoundingClientRect().top - a.top)
-  }, [openKey])
-
-  if (!rows.length) {
-    const city = HOMES.find((h) => h.code === home)?.city ?? cityName(inout, home)
-    return (
-      <section className="pk-list pk-empty" aria-label="Pairs">
-        <p className="pk-empty-title">{filtered ? 'No pairs' : `No fares from ${city}`}</p>
-        {filtered && <button type="button" className="btn small" onClick={() => setFilters(NO_FILTERS)}>Clear</button>}
-      </section>
-    )
-  }
-
-  const at = openKey ? rows.findIndex((r) => r.key === openKey) : -1
-  const shown = rows.map((r, i) => ({ r, i })).filter(({ i }) => all || i < TOP || i === at)
+  const city = HOMES.find((h) => h.code === home)?.city ?? cityName(inout, home)
   return (
-    <section className="pk-list" aria-label="Pairs">
-      <ol className="pk-rows" ref={list}>
-        {shown.map(({ r, i }) => {
-          const wi = inout.ways[r.best.way_in]
-          const wh = inout.ways[r.best.way_home]
-          const open = r.key === openKey
-          const panelId = `pk-pair-${r.in}-${r.home}`
-          return (
-            <li key={r.key} data-gap={i >= TOP && !all ? '' : undefined}>
-              <button
-                type="button" className="pk-row" data-key={r.key} aria-expanded={open}
-                aria-controls={inline ? panelId : open ? 'pk-pair' : undefined}
-                onClick={(e) => {
-                  if (inline) anchor.current = { key: r.key, top: e.currentTarget.getBoundingClientRect().top }
-                  onToggle(r)
-                }}
-              >
-                <span className="pk-rank" data-first={i === 0 || undefined}><span className="vh">Rank </span>{i + 1}</span>
-                <span className="pk-cities">
-                  <span className="pk-c"><Flag code={inout.airports[r.in]?.country ?? ''} size={12} />{cityName(inout, r.in)}</span>
-                  <span className="pk-to" aria-hidden="true"><Arrow s={13} /></span>
-                  <span className="vh"> to </span>
-                  <span className="pk-c"><Flag code={inout.airports[r.home]?.country ?? ''} size={12} />{cityName(inout, r.home)}</span>
-                </span>
-                <span className="pk-meta">
-                  <span className="pk-types">
-                    {r.types.map((t) => {
-                      const { label, Icon } = TYPE_ICON[t]
-                      return <Said key={t} label={label} className="pk-type"><Icon s={14} /></Said>
-                    })}
-                  </span>
-                  {wi && wh && pairMarks(wi, wh).map((m) => <MarkIcon key={m.kind} m={m} />)}
-                  {r.options.length > 1 && <span className="pk-count">{r.options.length} options</span>}
-                  {r.key === cheap && <span className="tag pk-cheap">Cheapest</span>}
-                  {r.key === ownKey && <Said label="In the trip" className="pk-own"><Check s={14} /></Said>}
-                </span>
-                <span className="pk-price">
-                  <b>{kr(allIn(r.best))}</b>
-                  <OutOf10 v={scoreParts(r.best.rating).total} />
-                </span>
-              </button>
-              {inline && (
-                <DisclosurePanel id={panelId} open={open} className="pk-inline">
-                  {drawn === r.key && inline(r)}
-                </DisclosurePanel>
-              )}
-            </li>
-          )
-        })}
-      </ol>
-      {rows.length > TOP && (
-        <button type="button" className="btn link small pk-more" aria-expanded={all} onClick={() => setAll((a) => !a)}>
-          {all ? `Show the top ${TOP}` : `Show all ${rows.length} pairs`}
-        </button>
-      )}
+    <section className="pk-empty" aria-label="Pairs">
+      <p className="pk-empty-title">{filtered ? 'No pairs' : `No fares from ${city}`}</p>
+      {filtered && <button type="button" className="btn small" onClick={() => setFilters(NO_FILTERS)}>Clear</button>}
     </section>
   )
 }
@@ -699,15 +602,6 @@ function Cost({ option }: { option: Option }) {
       </dd>
       <dt className="pk-extra">Checked bags</dt><dd className="pk-extra"><Fee v={x.checked_bag_fees_dkk} /></dd>
     </dl>
-  )
-}
-
-/** A row's score, small under its price, read as so many out of 10. */
-function OutOf10({ v }: { v: number }) {
-  return (
-    <small className="pk-rate" title="Score out of 10">
-      <span className="vh">Score </span><span className="pk-rate-v">{dec1(v)}</span><span className="pk-of" aria-hidden="true">/10</span><span className="vh"> of 10</span>
-    </small>
   )
 }
 
