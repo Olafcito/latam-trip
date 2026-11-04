@@ -139,6 +139,7 @@ function TicketLegs({ legs }: { legs: TicketLeg[] }) {
   return (
     <span className="bk-legs">
       <span className="bk-legs-i" role="img" aria-label={all} title={all}><Link s={14} /></span>
+      <span className="bk-legs-n" aria-hidden="true">for {legs.length} flights</span>
       <span className="bk-legchips" role="list">
         {legs.map((l, i) => {
           const name = [`${l.from} to ${l.to}`, l.day, l.here && 'this leg'].filter(Boolean).join(', ')
