@@ -19,7 +19,6 @@ import {
   type Sort,
 } from '../data/dash'
 import type { DashData } from '../data/load'
-import { thousands } from '../lib/format'
 import { DataTable } from './DataTable'
 import './options.css'
 
@@ -95,20 +94,12 @@ function TripsTab({ rows, picked, onPick }: { rows: DashTrip[] | null; picked: s
   const ins = useMemo(() => cityOptions(all, 'in'), [all])
   const outs = useMemo(() => cityOptions(all, 'out'), [all])
   const shown = useMemo(() => sortRows(filterTrips(all, { scenario, in: inCity, out: outCity, q }), sort), [all, scenario, inCity, outCity, q, sort])
-  const best = useMemo(() => sortRows(all, { key: 'rating', dir: 'desc' })[0], [all])
 
   return (
     <section className="opt-tab" aria-labelledby="opt-h-trips">
       <h2 id="opt-h-trips">Whole trips: long-haul ticket plus the regional flights between regions</h2>
       {rows ? (
         <>
-          {best && (
-            <p className="opt-lead">
-              Best rated whole trip right now: <b>{best.in}</b> in, <b>{best.out}</b> home, <b>{best.route}</b>,{' '}
-              <b className="mono">{thousands(best.total_kr)}</b> kr and <b className="mono">{best.travel_hours.toFixed(1)}</b> travel hours.
-              Every row is one journey, sorted by rating. Click a column to sort, click a row to see its airports on the map.
-            </p>
-          )}
           <p className="opt-note">
             Scenario A visits Bolivia and ends there or flies back to Central America. Scenario B skips Bolivia.
             Total is flights, cabin bag fees and hub stays (450 kr per night). Checked bags are not included.

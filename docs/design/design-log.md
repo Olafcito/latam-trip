@@ -29,7 +29,7 @@ Each is a design system issue seen on two or more screens. Flagged means a candi
 
 | Id | Problem | Screens | Related decisions | Status |
 | --- | --- | --- | --- | --- |
-| REC-001 | Developer chrome in the top bar: a build line and a cryptic freshness chip that says nothing to a traveller | trip-page, trips-list, way-picker, map-tab | DES-022 | Validated |
+| REC-001 | Developer chrome in the top bar: a build line and a cryptic freshness chip that says nothing to a traveller | trip-page, trips-list, way-picker, map-tab | DES-022 | Resolved. The build line is gone and the freshness corner now renders nothing unless something is stale, with plain words when it does. One shared header, so all four screens are fixed at once. |
 | REC-002 | Prose and instruction lines doing the job of form: hints, recap sentences, usage manuals, explanation paragraphs | trip-map, trip-page, city, way-picker, flight-sheets, map-tab, web-map | DES-001, DES-003, DES-004 | Validated |
 | REC-003 | Unknown shown as zero, as the words "unknown" or "not known", or as an empty chip, so estimates read as facts | trip-page, trips-list, flight-sheets, map-tab, web-map | DES-013 | Validated |
 | REC-004 | Booked versus open is weak or missing, and booked things still look editable | trip-map, trip-page, trips-list, flight-sheets | DES-014, DES-023 | Validated |

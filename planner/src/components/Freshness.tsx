@@ -1,17 +1,17 @@
 import { useEffect, useId, useRef, useState, type FocusEvent, type MouseEvent, type PointerEvent } from 'react'
 import type { Meta } from '../data/types'
-import { STALE_DAYS, ageLabel, ageWords, checkedLabel, freshness, leadOf, type Fresh } from '../lib/freshness'
+import { STALE_DAYS, ageLabel, ageWords, checkedLabel, freshness } from '../lib/freshness'
+import { Warn } from './icons'
 
 // A hover opens after a beat, so passing the mouse over the header does not flash it open,
 // and closes after a beat, so the pointer can travel from the button into the popover.
 const OPEN_DELAY = 120
 const CLOSE_DELAY = 160
 
-type State = 'fresh' | 'stale' | 'unknown'
-const stateOf = (f: Fresh | null): State => (f == null || f.ageDays == null ? 'unknown' : f.stale ? 'stale' : 'fresh')
-
-/** The freshness corner: a dot and the age of the flights, amber when any data is stale.
- *  Hover, focus or a tap opens a popover with every type and its last check. */
+/** The freshness warning. Nothing renders when every tracked type was checked within
+ *  STALE_DAYS: this is only for when something needs attention. When it shows, it is an icon
+ *  and the stalest type in plain words. Hover, focus or a tap opens a popover with every
+ *  type and its last check. */
 export function Freshness({ meta }: { meta: Meta | null }) {
   const [open, setOpen] = useState(false)
   // a keyboard open shows at once, a pointer open scales in
@@ -24,9 +24,7 @@ export function Freshness({ meta }: { meta: Meta | null }) {
   const id = useId()
 
   const list = freshness(meta, now)
-  const lead = leadOf(list)
-  const anyStale = list.some((f) => f.stale)
-  const state: State = anyStale ? 'stale' : stateOf(lead)
+  const stale = list.filter((f) => f.stale)
 
   const show = (how: 'key' | 'pointer') => {
     window.clearTimeout(timer.current)
@@ -57,6 +55,11 @@ export function Freshness({ meta }: { meta: Meta | null }) {
     }
   }, [open])
   useEffect(() => () => window.clearTimeout(timer.current), [])
+
+  if (!stale.length) return null
+
+  const worst = stale.reduce((a, b) => ((b.ageDays ?? 0) > (a.ageDays ?? 0) ? b : a))
+  const label = `${worst.type} checked ${ageWords(worst.ageDays)}`
 
   const onEnter = (e: PointerEvent) => {
     if (e.pointerType !== 'mouse') return
@@ -89,17 +92,12 @@ export function Freshness({ meta }: { meta: Meta | null }) {
     if (!wrap.current?.contains(e.relatedTarget as Node | null)) hide()
   }
 
-  const type = lead?.type ?? 'data'
-  const name = lead
-    ? `Data freshness, ${lead.type} checked ${ageWords(lead.ageDays)}${anyStale ? `, some data is older than ${STALE_DAYS} days` : ''}`
-    : 'Data freshness unknown'
-
   return (
-    <div className="fresh" ref={wrap} data-state={state} onPointerEnter={onEnter} onPointerLeave={onLeave}>
+    <div className="fresh" ref={wrap} data-state="stale" onPointerEnter={onEnter} onPointerLeave={onLeave}>
       <button
         type="button"
         className="fresh-btn"
-        aria-label={name}
+        aria-label={label}
         aria-expanded={open}
         aria-controls={id}
         onPointerDown={(e) => { pointer.current = e.pointerType }}
@@ -107,33 +105,28 @@ export function Freshness({ meta }: { meta: Meta | null }) {
         onFocus={onFocus}
         onBlur={onBlur}
       >
-        <span className="fresh-dot" aria-hidden="true" />
-        <span className="fresh-type">{type}</span>
-        <span className="fresh-age">{ageLabel(lead?.ageDays ?? null)}</span>
+        <Warn s={14} />
+        <span className="fresh-age">{label}</span>
       </button>
       <div id={id} className="fresh-pop" role="group" aria-label="When the data was last checked" data-open={open || undefined} data-via={via}>
-        {list.length ? (
-          <table className="fresh-list">
-            <thead>
-              <tr>
-                <th scope="col">data</th>
-                <th scope="col" className="fresh-when">checked</th>
-                <th scope="col" className="fresh-ago">age</th>
+        <table className="fresh-list">
+          <thead>
+            <tr>
+              <th scope="col">data</th>
+              <th scope="col" className="fresh-when">checked</th>
+              <th scope="col" className="fresh-ago">age</th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((f) => (
+              <tr key={f.type} data-state={f.stale ? 'stale' : f.ageDays == null ? 'unknown' : 'fresh'}>
+                <th scope="row"><span className="fresh-dot" aria-hidden="true" />{f.type}</th>
+                <td className="fresh-when">{checkedLabel(f.at)}</td>
+                <td className="fresh-ago">{ageLabel(f.ageDays)}</td>
               </tr>
-            </thead>
-            <tbody>
-              {list.map((f) => (
-                <tr key={f.type} data-state={stateOf(f)}>
-                  <th scope="row"><span className="fresh-dot" aria-hidden="true" />{f.type}</th>
-                  <td className="fresh-when">{checkedLabel(f.at)}</td>
-                  <td className="fresh-ago">{ageLabel(f.ageDays)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="fresh-none">No record of when the data was checked.</p>
-        )}
+            ))}
+          </tbody>
+        </table>
         <p className="fresh-note">Amber after {STALE_DAYS} days without a check.</p>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { dataBase } from '@map/data/remoteFiles'
-import { factLine, loadData } from './data/load'
+import { loadData } from './data/load'
 import { loadRepoTrips } from './data/routeMap'
 import { pickedLeg, readPick, withoutPick, type Pick } from './lib/pickLink'
 import { resolveDeepLink, rowToJourney, withTripWays } from './lib/repoTrips'
@@ -341,16 +341,14 @@ export function App() {
     )
   }
 
-  const fact = factLine(data.source, data.inout, data.meta)
   return (
     <div className={'app' + (screen === 'map' ? ' wide' : '')}>
       <a className="skip" href="#main">Skip to content</a>
       <header className="top">
         <div className="top-in">
-          <div className="brand" title={fact}>
+          <div className="brand">
             <h1 className="brand-mark" translate="no">LatAm</h1>
             <span className="brand-dates">Dec 2026 to Feb 2027</span>
-            <span className="brand-src">{fact}</span>
           </div>
           <Tabs screen={screen} go={go} />
           <div className="fresh-slot"><Freshness meta={data.meta} /></div>

@@ -22,7 +22,6 @@
 .brand { display: flex; align-items: baseline; align-self: center; gap: 10px; min-width: 0; }
 .brand-mark { margin: 0; font-size: var(--fs-lead); font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
 .brand-dates { font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; color: var(--muted); white-space: nowrap; }
-.brand-src { font-family: var(--font-num); font-size: var(--fs-label); color: var(--faint); white-space: nowrap; }
 .tabs { position: relative; display: flex; align-items: stretch; gap: 4px; }
 .tab {
   padding: 0 12px; border: 0; background: none;
@@ -47,9 +46,6 @@
   transition: transform var(--t-med) var(--ease-out);
 }
 .fresh-slot { margin-left: auto; display: flex; align-items: center; }
-@media (max-width: 900px) {
-  .brand-src { display: none; }
-}
 @media (max-width: 560px) {
   .top-in { gap: 16px; }
   .brand { flex-direction: column; align-items: flex-start; gap: 3px; }
@@ -92,8 +88,9 @@
 .dots i.f { background: var(--flight); }
 }
 
-/* The freshness corner (workstream F): a dot and the age of the flights in mono, amber when any
-   tracked data is older than three days. A popover lists every type with its last check. */
+/* The freshness warning: nothing renders unless some tracked data is older than three days, and
+   when it does it is an icon and the stalest type in words. A popover lists every type with its
+   last check. */
 @scope (:root) to (.rmap) {
 .fresh-slot { flex-shrink: 0; }
 .fresh { position: relative; display: flex; align-items: center; }
@@ -105,22 +102,21 @@
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   border: 0; border-radius: 8px; background: none;
   font-family: var(--font-num); font-size: var(--fs-small); font-weight: 500; line-height: 1;
-  color: var(--muted);
+  color: var(--flight);
   cursor: pointer; white-space: nowrap;
   transition: color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .fresh-btn:active { transform: scale(0.97); }
-.fresh-age { color: var(--text); }
-.fresh[data-state='unknown'] .fresh-age { color: var(--faint); }
-.fresh[data-state='stale'] .fresh-btn, .fresh[data-state='stale'] .fresh-age { color: var(--flight); }
+.fresh-age { color: var(--flight); }
 @media (hover: hover) and (pointer: fine) {
-  .fresh:not([data-state='stale']) .fresh-btn:hover { color: var(--text); }
+  .fresh-btn:hover { color: var(--text); }
 }
 
-/* the dot: a quiet ring while the data is fresh, filled amber when it is stale, faint when unknown */
+/* the dot in the popover rows: a quiet ring while that type is fresh, filled amber when it is
+   stale, faint when unknown. The header itself shows an icon instead of a dot. */
 .fresh-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--muted); }
-[data-state='stale'] > .fresh-btn > .fresh-dot, tr[data-state='stale'] .fresh-dot { background: var(--flight); box-shadow: none; }
-[data-state='unknown'] > .fresh-btn > .fresh-dot, tr[data-state='unknown'] .fresh-dot { box-shadow: inset 0 0 0 1.5px var(--faint); }
+tr[data-state='stale'] .fresh-dot { background: var(--flight); box-shadow: none; }
+tr[data-state='unknown'] .fresh-dot { box-shadow: inset 0 0 0 1.5px var(--faint); }
 
 /* the popover floats, so it may cast a shadow. It scales in from the corner it hangs from,
    leaves faster than it came, and a keyboard opens or closes it at once. */
@@ -157,12 +153,10 @@
 .fresh-ago { text-align: right; color: var(--text); }
 tr[data-state='stale'] .fresh-ago { color: var(--flight); }
 tr[data-state='unknown'] :is(.fresh-when, .fresh-ago) { color: var(--faint); }
-.fresh-none { margin: 4px 0; font-size: var(--fs-small); color: var(--muted); }
 .fresh-note { margin: 6px 0 0; padding-top: 8px; border-top: 1px solid var(--line); font-size: var(--fs-small); color: var(--muted); }
 
-/* the phone: the dot and the age only, so the tabs keep their room */
+/* the phone: a little less padding, so the tabs keep their room */
 @media (max-width: 560px) {
-  .fresh-type { display: none; }
   .fresh-btn { margin-right: -6px; padding: 0 6px; gap: 6px; }
 }
 }

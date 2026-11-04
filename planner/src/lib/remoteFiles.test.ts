@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { createFiles, type FileCache, type Keep } from '@map/data/remoteFiles'
-import { factLine } from '../data/load'
-import type { InOut, Meta } from '../data/types'
 
 const BASE = 'https://x.test/storage/web/'
 const META = (files: Record<string, string>, built_at = '2026-11-01T10:00:00Z') => ({ built_at, last_checked: {}, files })
@@ -99,15 +97,5 @@ describe('remote files', () => {
     expect(await files.refresh()).toEqual([])
     expect(await files.getFile('a.json')).toEqual({ n: 1 })
     expect(files.meta()?.files?.['a.json']).toBe('h1')
-  })
-})
-
-describe('fact line', () => {
-  const inout = { generated_at: '2026-10-01T00:00:00Z' } as unknown as InOut
-  it('takes its time from meta.json and names no GitHub', () => {
-    const meta = { built_at: '2026-11-01T10:00:00Z', last_checked: {} } as Meta
-    const line = factLine('project', inout, meta)
-    expect(line).toBe('Data from the project, built 1 Nov')
-    expect(line).not.toMatch(/GitHub/)
   })
 })

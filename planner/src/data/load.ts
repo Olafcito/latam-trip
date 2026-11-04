@@ -1,5 +1,4 @@
 import { dataBase } from '@map/data/remoteFiles'
-import { observed } from '../lib/format'
 import { getFile } from '../lib/remoteFiles'
 import type { AppData, BagRule, InOut, MapData, Meta, TripParams } from './types'
 
@@ -33,9 +32,4 @@ export function readQuoteLink(search: string): { pair: string; date: string } | 
   const v = new URLSearchParams(search).get('quote')
   const m = v ? /^([A-Z]{3}-[A-Z]{3})@(\d{4}-\d{2}-\d{2})$/.exec(v) : null
   return m ? { pair: m[1], date: m[2] } : null
-}
-
-/** The fact line of the header. With the project's files the built time is the one in meta.json. */
-export function factLine(_source: AppData['source'], inout: InOut, meta: Meta | null): string {
-  return `Data from the project, built ${observed(meta?.built_at ?? inout.generated_at)}`
 }

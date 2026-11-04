@@ -12,3 +12,4 @@ Accepted principles only. They are what the accepted decisions in `design-decisi
 | P-006 | When text grows, rethink the component. Subtext under a row usually wants to be a mark on the row. | DES-006 |
 | P-007 | Local and honest numbers. Prices in Danish kroner, times as local clock times. | DES-011 |
 | P-008 | Apple design leads. Wallet, Maps and Flighty are the references for the booking views. | DES-001 |
+| P-009 | A warning shows only when something needs attention. No build line, log text or chip appears while everything is fine. | DES-022 |
