@@ -5,7 +5,7 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 ## Checkouts and branches
 
 - The main checkout is `C:\Users\Simon\Documents\github\latam-trip`. Simon's desktop icon serves its `main` on port 5198, and the hosted planner is built from `origin/main`, so nothing is visible to him until it is on `main`.
-- A feature that runs while other work runs gets its own worktree. Use `EnterWorktree` with the feature's name, which creates `.claude/worktrees/<name>` on its own branch from `origin/main` and moves the session there. Then `cd planner && npm install` and start its dev server on a free port with `npm run dev -- --port <port>`, never 5198. The `VITE_` variables are set in the user environment, so no `.env` needs copying. Shots always go to the main checkout's `docs/design/shots/` by absolute path, whichever worktree they were taken from, so every review finds them in one place. When the feature is done, rebase on `origin/main`, fast forward `main`, push, and remove the worktree with `ExitWorktree`. A worktree lives for one feature and is removed the day it merges. Only one feature at a time per worktree, and no two worktrees on the same screen.
+- A feature that runs while other work runs gets its own worktree. Use `EnterWorktree` with the feature's name, which creates `.claude/worktrees/<name>` on its own branch from `origin/main` and moves the session there. Then `cd planner && npm install` and start its dev server on a free port with `npm run dev -- --port <port>`, never 5198. The `VITE_` variables are set in the user environment, so no `.env` needs copying. Shots always go to the main checkout's `docs/design/shots/` by absolute path, whichever worktree they were taken from, so every review finds them in one place. When the feature is done, merge it alone and in turn. Features build in parallel but never merge at the same time. Fetch, rebase on the latest `origin/main`, rerun typecheck and tests, fast forward `main` and push. If the push is rejected or `main` moved, fetch, rebase and rerun again. Then remove the worktree with `ExitWorktree`. A worktree lives for one feature and is removed the day it merges. Only one feature at a time per worktree, and no two worktrees on the same screen.
 - If you need to set work aside, such as edits left by stopped agents, commit them with explicit paths on `wip/YYYY-MM-DD-<topic>`, push it and switch back to a clean `main`. Never leave unfinished edits in `main`.
 - `main` is the only long-lived branch. Commit in small steps and push to `origin/main` without asking.
 - Short-lived branches are fine for a feature or an experiment, but they are merged into `main` and deleted as soon as the work is in. Before deleting a branch, confirm `git log main..<branch>` is empty.
@@ -51,7 +51,7 @@ Not every task goes through every box. Most work is the short path: understand i
 
 | Review | Question | Lives in |
 |---|---|---|
-| Design Roast | What is fundamentally wrong with this screen | `design-roaster` on Opus, an outside creative director given the screenshot and the screen's purpose, nothing else |
+| Design Roast | What is fundamentally wrong with this screen | `design-roaster` on Opus, an outside creative director given the screenshot and the user story, looking through `visual-design-foundations`, nothing else |
 | Design Audit | Why is it wrong, and what should change systematically | `senior-designer` on Opus through `ui-roast`, the detailed review format, written to `docs/design/reviews/` |
 | Code Review | Is the implementation correct and maintainable | Implementation, on the diff, with `/code-review` or `feature-dev:code-reviewer` |
 
@@ -63,7 +63,7 @@ A design issue is not automatically a code finding and a code finding is not a d
 
 ### Design work
 
-- **Roast** is the first line of review for UI work. A built or changed screen is roasted before Simon looks at it, and any ongoing task can be picked up with a shot. "Roast this screenshot: <path>" goes to `design-roaster`, with the screen name and one line on what the screen is for. No prep agent, no brief, no mandatory Playwright run, no design decisions or earlier reviews handed over. The roast comes back short, opinionated and scored. It is written next to its shot, and the reply opens with clickable links to both so Simon can open them on his phone or PC. Then it is discussed as a conversation, no ruling sheet, and only what Simon accepts is recorded. `ui-roast` says how.
+- **Roast** is the first line of review for UI work. A built or changed screen is roasted before Simon looks at it, and any ongoing task can be picked up with a shot. "Roast this screenshot: <path>" goes to `design-roaster`, with the screen name and the user story in one or two lines: who comes to this screen, in which moment, to do what. The roaster looks through the `visual-design-foundations` skill, which is how to look and not the project's design decisions. No prep agent, no brief, no mandatory Playwright run, no design decisions or earlier reviews handed over. The roast comes back short, opinionated and scored. It is written next to its shot, and the reply opens with clickable links to both so Simon can open them on his phone or PC. Then it is discussed as a conversation, no ruling sheet, and only what Simon accepts is recorded. `ui-roast` says how.
 - **Audit** when a roast or a discussion leaves a cross screen, structural or design system question. `senior-designer` runs it: scoped, multi screen, evidence based, built on the principles and decisions, with `apple-design`, `impeccable` and `emil-design-eng` loaded when they help. Writes a review file, which is sent to Simon with its shots the same way.
 - **Deliver every review as links.** A roast, an audit, a retro or a report that Simon is meant to read gets a first line in the reply like "Roast done, see here: [desktop.png](docs/design/shots/<screen>/<date>/desktop.png) and [roast.md](docs/design/shots/<screen>/<date>/roast.md)", markdown links to workspace relative paths, one per file and shot. The session that dispatched the review writes that line. No Artifact page and no `SendUserFile`, they cost tokens for nothing. A bare path is not a link.
 - **Explore** when the direction is unclear or there are real alternatives. `prototype` builds several distinct versions behind a switcher in the actual stack, 21st.dev gives components and inspiration. No Figma dependency. Compare, pick, then implement the winner. Not for minor changes.
@@ -71,13 +71,29 @@ A design issue is not automatically a code finding and a code finding is not a d
 - **Evaluate** the built thing against the journey, starting with a roast of the built screen. A build from a spec runs one roast loop by default, n=1: shoot the built screen, roast it once, send one fix round to an implementer with what the roast found that fits the spec's journey, shoot again, stop. Concept changes the roast proposes go to Simon, not into the fix round. `ui-roast` says how.
 - **Consolidate** validated patterns into `design-principles.md`, the tokens in `planner/src/styles` and the shared components, through a retrospective when the evidence has built up, not on a schedule.
 
+### Running a build
+
+This is the default for every feature or fix that builds or changes a screen, whether it comes from a spec, a fix order or a plain request. Simon does not repeat it in each prompt, and a prompt only needs to name the spec, the worktree and the port. Anything the prompt leaves out is covered here.
+
+1. **Isolate.** Enter the feature's own worktree and start its dev server on its own port, as in Checkouts and branches. Three features running at once means three worktrees.
+2. **Shoot and roast before.** Skip it only when the roast already exists or the work has no screen. The shot goes to the main checkout's `docs/design/shots/` by absolute path.
+3. **Plan.** A fix order or a short spec that is already a task list needs no plan. A spec that spans many files or screens gets a task list written first, with `superpowers:writing-plans` as the optional tool for it. Nothing else here depends on superpowers. A spec that changes a screen's concept, such as a list becoming a grid, is shown to Simon as a shot of a prototype or mock before the batches are built. A roast ruling is a sentence, and a sentence is not a picture.
+4. **Build.** The session splits the work into batches of related tasks and dispatches agents as described in Agents and models:
+   - One implementer per batch, each task its own commit, model named on every dispatch. Disjoint batches in the same feature run in parallel. No review per task and no re-review agent.
+   - Load the frontend skills the task needs from the Skills list below before design and component work.
+5. **Review the code.** One reviewer walks the batch commit by commit with `/code-review` or `feature-dev:code-reviewer`, before anything merges. The main session checks the fix round against the diff. Typecheck and tests pass first.
+6. **Roast loop, n=1.** Shoot the built screen, run an independent roast through `design-roaster` with the before shot beside it and the user story, send one fix round to a fresh implementer with what fits the journey, shoot again, write the Outcome section, stop. Concept changes go to Simon.
+7. **Record.** Only accepted outcomes go to the design log and decisions, and update the docs the change touches in the same commit.
+8. **Merge.** Follow the merge rule in Checkouts and branches, then remove the worktree.
+9. **Reply** with links to every shot and roast file.
+
 ### Agents and models
 
 Do the work yourself when that is simplest. Dispatch an agent when the work needs independent judgement (a roast), runs in parallel on disjoint files, needs a specialist perspective, or is too large for one context. Hand agents file paths, ask for a few lines back, and name the model on every dispatch.
 
 - Haiku for mechanical work: copying, sweeps, transcription.
 - Sonnet for ordinary implementation and recording.
-- Opus for complex reasoning, design judgement, high impact decisions, and complex frontend work such as motion, animation and component design.
+- Opus for complex reasoning, design judgement, high impact decisions, and complex frontend work such as motion, animation and component design. In a build, that is the one batch that builds the screen. Data helpers, wiring, fix rounds and recording go to Sonnet.
 
 Agents in `plugin/agents/`: `design-roaster` (Opus, the roast, knows the product but not the design record), `senior-designer` (Opus, audits and retrospectives, knows the whole record), `doc-keeper` (Sonnet, doc audit on demand). A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first. Related small tasks go to one implementer, each task its own commit. Disjoint work inside one feature runs in parallel in that feature's checkout, each agent staging only its own paths and never stashing, resetting or checking out over another agent's work. Separate features run in separate worktrees. Decide an ambiguity, write it down and keep going. Ask Simon only before something irreversible he has not already approved.
 
@@ -155,7 +171,7 @@ Recommendations for which skill serves which job, not a mandatory sequence. Load
 - **Motion:** `animate` to build, `review-animations` to critique one, `improve-animations` to audit the app, `find-animation-opportunities` for where motion is missing, `remove-animations` when it is over-animated, `animation-performance` when it drops frames, `animation-vocabulary` to name an effect.
 - **Phone:** `mobile-native`, because Simon uses the app on his phone while travelling.
 - **Before a frontend commit:** `web-design-guidelines` for alignment, spacing, accessibility and interaction details, and `break-ui` for worst-case data.
-- **Design reviews:** `ui-roast` for a roast or an audit.
+- **Design reviews:** `ui-roast` for a roast or an audit. `visual-design-foundations` is how a trained eye looks at a screen, read by `design-roaster` on every roast and open to any agent that reviews or builds a screen. It holds no project decisions.
 
 `prototype`, `review-animations` and `pick-ui-library` ship upstream with `disable-model-invocation: true`. The installed copies in `.claude/skills/` are set to `false` so agents can load them. `npx skills update -p` reverts that, so set it to `false` again after an update. Ideas from Claude Design (the Claude app) are welcome, but its look is not the reference. `hyperframes` and its siblings make videos, not the app.
 
