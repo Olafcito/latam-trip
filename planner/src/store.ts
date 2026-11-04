@@ -153,9 +153,9 @@ interface State {
   /** open the picker to change the start and end of a trip */
   changeEndsOf: (tripId: string) => void
   /** the trip being changed takes these ways, its new end cities come in as stops, and it opens as a click in the list opens it */
-  changeEnds: (wayIn: Way, wayHome: Way) => void
+  changeEnds: (wayIn: Way, wayHome: Way) => boolean
   /** a pick in the picker: the trip being changed takes the ways, or without one a new trip starts on them */
-  pickWays: (wayIn: Way, wayHome: Way, optionId: string | null) => void
+  pickWays: (wayIn: Way, wayHome: Way, optionId: string | null) => boolean
 
   /** every trip in the list: the browser's own trips and the table trips it has no copy of */
   saved: Journey[]
@@ -484,16 +484,20 @@ export const useStore = create<State>((set, get) => ({
   changeEnds: (wayIn, wayHome) => {
     const s = get()
     const j = changing(s) ?? (s.pickFor ? null : s.journey)
-    if (!j || !s.data) return
+    if (!j || !s.data) return false
     const ways = keptWays(j, wayIn, wayHome, s)
+    // a pick goes on whole or not at all, as in setWays
+    if (ways.kept) return false
     // an older version on screen, or a notice about the trip open before, does not stay with the changed trip
     s.openTrip(withEnds(j, s.data.inout, s.data.map, ways.wayIn, ways.wayHome))
     relock(j, ways, get, set)
+    return true
   },
   pickWays: (wayIn, wayHome, optionId) => {
     const s = get()
-    if (changing(s)) s.changeEnds(wayIn, wayHome)
-    else s.startOnMap(wayIn, wayHome, optionId)
+    if (changing(s)) return s.changeEnds(wayIn, wayHome)
+    s.startOnMap(wayIn, wayHome, optionId)
+    return true
   },
 
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),

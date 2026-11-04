@@ -254,7 +254,7 @@ describe('changing the ways and the ends of a trip', () => {
   it('changing the ends opens the picker for the trip and comes back to it', () => {
     s().changeEndsOf('t1')
     expect([s().screen, s().view, s().pickFor]).toEqual(['trips', 'pick', 't1'])
-    s().changeEnds(bogIn, oneHome)
+    expect(s().changeEnds(bogIn, oneHome)).toBe(true)
     expect([s().screen, s().view, s().pickFor]).toEqual(['trips', 'trip', null])
     expect(open().places.map((p) => p.node)).toEqual(['BOG', 'CTG', 'SMR', 'GUA'])
     expect([open().id, open().wayIn]).toEqual(['t1', 'I_one_BOG'])
@@ -506,12 +506,20 @@ describe('a booked leg holds its day', () => {
       expect([s().journey!.wayIn, s().journey!.wayHome, s().unlocked]).toEqual(['T_in', 'T_home', null])
     })
 
-    it('a new start and end keep the booked way', () => {
-      s().changeEnds(laterIn, laterHome)
-      expect([s().journey!.wayIn, s().journey!.wayHome]).toEqual(['W_in', 'W_home2'])
+    it('a new start and end that would replace the booked way change nothing', () => {
+      const before = s().journey
+      expect(s().changeEnds(laterIn, laterHome)).toBe(false)
+      expect(s().journey).toBe(before)
+      expect([s().journey!.wayIn, s().journey!.wayHome]).toEqual(['W_in', 'W_home'])
       s().setUnlocked('in')
-      s().changeEnds(laterIn, laterHome)
-      expect([s().journey!.wayIn, s().unlocked]).toEqual(['W_in2', null])
+      expect(s().changeEnds(laterIn, laterHome)).toBe(true)
+      expect([s().journey!.wayIn, s().journey!.wayHome, s().unlocked]).toEqual(['W_in2', 'W_home2', null])
+    })
+
+    it('a pick in change mode returns whether it went on', () => {
+      s().changeEndsOf(s().journey!.id)
+      expect(s().pickWays(laterIn, laterHome, null)).toBe(false)
+      expect(s().journey!.wayIn).toBe('W_in')
     })
   })
 
