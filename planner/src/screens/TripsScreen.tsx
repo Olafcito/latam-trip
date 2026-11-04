@@ -156,6 +156,7 @@ function Timetable({ data }: { data: AppData }) {
               key={r.j.id}
               row={r}
               selected={compare.includes(r.j.id)}
+              open={r.j.id === journey?.id}
               onOpen={() => openTrip(r.j)}
               onMap={() => openSaved(r.j)}
               onCompare={() => toggleCompare(r.j.id)}
@@ -211,13 +212,15 @@ function SortSeg({ value, onChange }: { value: SortKey; onChange: (k: SortKey) =
 interface RowProps {
   row: Row
   selected: boolean
+  /** the trip last opened, which the store keeps as the current journey after going back to the list */
+  open: boolean
   onOpen: () => void
   onMap: () => void
   onCompare: () => void
   onDelete: () => void
 }
 
-function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps) {
+function TripRow({ row, selected, open, onOpen, onMap, onCompare, onDelete }: RowProps) {
   const { j, s, route, draft } = row
   const mark = bookedMark(row.booked)
   const name = j.name
@@ -231,7 +234,7 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
   }
 
   return (
-    <li className="tt-row" data-selected={selected || undefined} data-off={!s || undefined} onClick={onRowClick}>
+    <li className="tt-row" data-selected={selected || undefined} data-open={open || undefined} data-off={!s || undefined} onClick={onRowClick}>
       <div className="tt-name">
         <button type="button" className="tt-open" onClick={onOpen} disabled={!s} title={s ? name : 'Its flights are no longer in the data'}>
           {name}
@@ -242,6 +245,7 @@ function TripRow({ row, selected, onOpen, onMap, onCompare, onDelete }: RowProps
               : j.version != null ? (versioned ? null : <span className="tag" title="Version in the trips table">version {j.version}</span>)
                 : <span className="tag mine">mine</span>}
           {!draft && versioned && <VersionMenu id={j.id} version={j.version!} />}
+          {open && <span className="tag tt-tag-open" title="The trip you opened last">open</span>}
           {mark && <span className="tt-booked" title="Legs, ways and stays booked"><Ticket />{mark}</span>}
         </span>
       </div>

@@ -27,6 +27,7 @@
   background: var(--ground);
   border-bottom: 1px solid var(--line-2);
 }
+.tt-head, .tt-row { padding-left: 12px; }
 .tt-h { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 500; text-transform: none; color: var(--faint); padding-bottom: 6px; align-self: end; }
 .tt-h.num { text-align: right; }
 
@@ -40,6 +41,10 @@
   transition: background-color var(--t-fast) ease;
 }
 .tt-row[data-off] { cursor: default; }
+/* the trip last opened: an accent bar on the left edge, the same place on every row */
+.tt-row::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 2px; background: var(--flight); opacity: 0; }
+.tt-row[data-open]::before { opacity: 1; }
+.tt-tag-open { color: var(--flight); font-weight: 600; }
 .tt-row[data-selected] { background: color-mix(in srgb, var(--flight) 6%, transparent); }
 
 /* name and the tag line under it */
@@ -189,7 +194,7 @@
       'route route'
       'act act';
     row-gap: 10px;
-    padding: 12px 0 2px;
+    padding: 12px 0 2px 12px;
   }
   .tt-name { grid-area: name; }
   .tt-total { grid-area: total; }
