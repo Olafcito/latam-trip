@@ -143,7 +143,7 @@ Privacy. Lodgings and bookings are owner only tables per PROD-005. The signed ou
 - Story 5's layer overlay and default scope criteria get a test alongside modeLayers.test.ts.
 - Story 6's safe area, detent and no zoom buttons criteria get a screenshot at phone width across peek, half and full, plus a test alongside sheet.test.ts.
 - Story 7's signed out structure and privacy criteria get a screenshot of the signed out web map, plus a test that the render omits add, edit and lodgings or bookings content.
-- The roast (DES-012) judges all seven journey steps against the built screen before this spec moves to Built.
+- A design review of the built screen judges all seven journey steps before this spec moves to Reviewed by design. This spec asks for it because the screen is the central dashboard, not because of a standing rule (DES-012 is Reconsidered).
 
 ## 12. Open questions
 

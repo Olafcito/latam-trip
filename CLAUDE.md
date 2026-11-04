@@ -1,6 +1,6 @@
 # latam-trip
 
-Simon's planner for a two-month solo trip through Central America, Colombia and Bolivia (December 2026 to February 2027). Supabase holds shared trip and research data. The repo holds the Claude plugin, worker and two React apps.
+Simon's planner for a two-month solo trip through Central America, Colombia and Bolivia (December 2026 to February 2027). Supabase holds shared trip and research data. The repo holds the Claude plugin, worker and two React apps. "Simon" in this file and the skills means Simon or the agent coordinating the work.
 
 ## One checkout, one branch
 
@@ -9,47 +9,91 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 - Short-lived branches are fine for a feature or an experiment, but they are merged into `main` and deleted as soon as the work is in. Before deleting a branch, confirm `git log main..<branch>` is empty.
 - No git identity is configured on this machine. Commit with `git -c user.name=Claude -c user.email=noreply@anthropic.com`, matching the existing history.
 
-## How plan work runs
+## Workflow
 
-Multi step work runs on superpowers. No feature goes from an idea to code without a problem, a journey, a scope and acceptance criteria. The `feature-spec` skill writes them to `docs/product/features/FEAT-NNN-<slug>.md`: discovery with Simon, a Sonnet `product-analyst` drafts, an Opus `product-lead` reviews. Then `writing-plans` turns the approved spec into a plan, `subagent-driven-development` runs it and `ui-roast` judges the result against the same journey. Speed beats ceremony, and tokens are a budget.
+```mermaid
+flowchart TD
+    A["Idea / Problem / Task"] --> B{"Does this need product discovery?"}
+    B -->|Yes| C["Product Discovery<br/>Problem · Journey · User Stories"]
+    B -->|No| D["Small, well-understood task"]
+    C --> E["Feature Definition<br/>Scope · Acceptance Criteria"]
+    D --> K
+    E --> G{"What kind of work is needed?"}
+    A -->|Screenshot of a screen| H
 
-- **Cheap models first.** Subagents run on Sonnet (model `sonnet`), Haiku for mechanical work such as copying, sweeps and transcription. Opus only for a hard design or architecture call that Sonnet got wrong. A few agents at a time, stopped as soon as they are not needed. Name the model on every dispatch, because an omitted model inherits the session's Opus. Hand inputs over as file paths and ask for a few lines back, because everything an agent returns stays in the main session's context.
-- **Two tiers.** The cheap agent prepares and records, the heavy agent judges, and Simon rules.
+    G -->|Creative critique| H["Design Roast<br/>Independent Opus reviewer, one screenshot"]
+    G -->|Systematic investigation| I["Design Audit<br/>Relevant design skills"]
+    G -->|Design exploration| J["Prototype / 21st.dev<br/>Compare alternatives"]
+    G -->|Implementation| K["Implementation<br/>Relevant technical skills"]
 
-  | Agent | Model | Does |
-  |---|---|---|
-  | `design-analyst` | Sonnet | Roast shots, briefs, recording rulings in `docs/design/`, fixes files |
-  | `senior-designer` | Opus | The roast itself, retrospectives every 5th review, audits every 15th |
-  | `product-analyst` | Sonnet | Fills a FEAT spec from its problem and journey |
-  | `product-lead` | Opus | Reviews a drafted FEAT spec for scope, data and privacy |
-  | `doc-keeper` | Sonnet | The doc audit after every 5 built features, with the `claude-md-improver` rubric on this file |
+    H --> L["Discussion and direction"]
+    I --> L
+    J --> L
+    L -->|Deeper question| I
+    L -->|Alternatives| J
+    L --> K
 
-  A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first.
-- **Journey first.** A spec opens with the user journey it serves, the moments Simon goes through and what he needs to see or do at each. The spec is written from the journey, and the same journey is what the work is judged against at the end.
-- **Fresh context for every task.** Each task is a new agent handed file paths, never a long running agent resumed for the next job. Files are the record, not conversation history, and a new screen or plan starts in a new main session.
-- **Roast every finished page.** The `ui-roast` skill runs it. The `design-analyst` agent on Sonnet takes the before shots at 375 and 1440 with Playwright and writes a brief from the design log. The `senior-designer` agent on Opus roasts the shots against the user journey, knowing nothing of what was built or why. Simon rules on each finding, the analyst records it in `docs/design/` and writes the fixes, and the next roast of that screen checks them. Simon gets the screenshots too.
+    K --> M["Code Review<br/>Part of implementation"]
+    M --> N{"Meets requirements<br/>and design intent?"}
+    N -->|No| K
+    N -->|Yes| O["Done"]
 
-- **The main session coordinates.** It dispatches, keeps the ledger and rules on findings. It does not do the work itself, and controller steps such as applying migrations, data scripts, deploys and history rewrites go to subagents too.
-- **Batch small work.** Related small tasks go to one implementer. Each task stays its own commit, so one reviewer walks the batch commit by commit and gives each task a spec verdict and a quality verdict.
-- **Run disjoint work in parallel, in this checkout.** Plans or batches whose files do not overlap run at the same time in the one working copy, never in a worktree. Each agent stages only its own paths and never stashes, resets or checks out over another agent's work.
-- **Check fixes against the diff.** The main session checks a fix round itself. A separate re-review is only for fixes that touch owner only data, the private bucket or what goes into built files.
-- **Ship together.** The ship steps of several plans go out together, under one final review of the whole branch, which is the safety net.
-- **Rule, do not ask.** Decide an ambiguity, write the ruling in the ledger and keep going. Ask Simon only before something irreversible he has not already approved, such as rewriting pushed history.
+    O --> P{"Meaningful decision,<br/>learning or failure?"}
+    P -->|Yes| Q["Design log or harness log<br/>Decisions and failures only"]
+    P -->|No| R["No documentation needed"]
 
-## Documentation
+    Q -->|When evidence has built up| S["Periodic synthesis<br/>Validated patterns into the design system"]
+```
 
-Docs are part of the work and describe the app as it is. `docs/README.md` is the map: every doc with its place, owner and triggers, the status words, and the doc audit counters. The rules there apply to every task and every skill, installed ones included.
+Not every task goes through every box. Most work is the short path: understand it, implement it, review the code, ship. The three reviews are different questions:
 
-- Before a task, read the docs that cover it and check the work against their decisions. During it, update those docs in the same commit or branch as the code. Never show planned work as built, and write down uncertainty instead of guessing.
-- Every task that changes code or docs ends its report with docs read, docs updated, decisions recorded, known gaps and open discrepancies.
+| Review | Question | Lives in |
+|---|---|---|
+| Design Roast | What is fundamentally wrong with this screen | `ui-roast`, run by `senior-designer` on Opus from the screenshot alone |
+| Design Audit | Why is it wrong, and what should change systematically | `ui-roast`, the detailed review format, written to `docs/design/reviews/` |
+| Code Review | Is the implementation correct and maintainable | Implementation, on the diff, with `/code-review` or `feature-dev:code-reviewer` |
+
+A design issue is not automatically a code finding and a code finding is not a design issue. Each review reports in its own place.
+
+### Product work
+
+`feature-spec` decides how much specification a change needs. Lightweight work gets a few lines and goes to implementation. A comprehensive feature gets a `FEAT` spec in `docs/product/features/`, discovery with `superpowers:brainstorming`, a plan with `superpowers:writing-plans`, and a separate review only when it touches owner only data, the bucket, the schema or a product decision. Every spec opens with the journey, and the work is judged against that journey.
+
+### Design work
+
+- **Roast** when someone wants an honest look at a screen. The shot goes to `senior-designer` directly, no prep agent, no brief, no mandatory Playwright run. The roast comes back short and opinionated, it is discussed, and only what Simon accepts is recorded. It is independent on purpose: the reviewer is not told what was built or why, and existing decisions inform its view but do not dictate it.
+- **Audit** when a roast or a discussion leaves a cross screen, structural or design system question. Scoped, multi screen, evidence based, `apple-design`, `impeccable` and `emil-design-eng` loaded when they help. Writes a review file.
+- **Explore** when the direction is unclear or there are real alternatives. `prototype` builds several distinct versions behind a switcher in the actual stack, 21st.dev gives components and inspiration. No Figma dependency. Compare, pick, then implement the winner. Not for minor changes.
+- **Implement** with the frontend skills below.
+- **Evaluate** the built thing against the journey, with a roast when it warrants one.
+- **Consolidate** validated patterns into `design-principles.md`, the tokens in `planner/src/styles` and the shared components, through a retrospective when the evidence has built up, not on a schedule.
+
+### Agents and models
+
+Do the work yourself when that is simplest. Dispatch an agent when the work needs independent judgement (a roast), runs in parallel on disjoint files, needs a specialist perspective, or is too large for one context. Hand agents file paths, ask for a few lines back, and name the model on every dispatch.
+
+- Haiku for mechanical work: copying, sweeps, transcription.
+- Sonnet for ordinary implementation and recording.
+- Opus for complex reasoning, design judgement, high impact decisions, and complex frontend work such as motion, animation and component design.
+
+Agents in `plugin/agents/`: `senior-designer` (Opus, roast and audit), `doc-keeper` (Sonnet, doc audit on demand). A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first. Related small tasks go to one implementer, each task its own commit. Disjoint work runs in parallel in this one checkout, each agent staging only its own paths and never stashing, resetting or checking out over another agent's work. Decide an ambiguity, write it down and keep going. Ask Simon only before something irreversible he has not already approved.
+
+### Code review
+
+Every implementation that is more than a trivial fix gets a review of the diff: architecture and separation of concerns, component structure and reuse, state and data flow, API and backend correctness, responsive implementation, accessibility, performance, error handling and edge cases, type safety, tests and coverage, maintainability, regressions. `/code-review` or `feature-dev:code-reviewer` does it, with the project's technical skills, without duplicating them. One reviewer walks a batch commit by commit. The main session checks a fix round against the diff itself. Fixes touching owner only data, the private bucket or what goes into built files get a second look.
+
+### Records
+
 - Decisions carry ids that never change: PROD in `docs/product/`, DES in `docs/design/`, TECH in `docs/technical/`.
+- `docs/harness-log.md` holds meaningful decisions outside those logs and meaningful harness failures: wrong agent behaviour, poor reviews, missed requirements, redundant handovers, skill conflicts, excessive context use, recurring failure modes. Each entry has the decision or failure, the reasoning or cause, the corrective action and the outcome. Not every minor interaction.
+- `docs/README.md` maps every doc with its owner and triggers. Read the docs that cover a task before it, update them in the same commit, never show planned work as built.
 
 ## Privacy
 
 The repo and the `web` bucket are public. Booking references, prices paid, names and attachments live only in owner only tables and a private bucket, never in a built file, a commit, a doc or a test fixture. Fixtures use `TEST01`.
 
 - `.env` holds the Supabase keys. Never print or commit it.
-- Roast shots go in `docs/design/shots/`, which is git ignored because the shots show private trip data. The reviews and the design and product logs describe what a shot shows, never what a ticket says.
+- Design shots go in `docs/design/shots/`, which is git ignored because the shots show private trip data. The reviews and the design and product logs describe what a shot shows, never what a ticket says.
 - No AWS account id or profile name in any file.
 - Leave the untracked `Microsoft/`, `_to_delete/` and `.playwright-mcp/` alone, and stage explicit paths only.
 
@@ -72,16 +116,16 @@ Planned trips live in the trips table. `tripdb save-trip FILE` saves a trip as i
 - `web/`: the route map (React, Vite, MapLibre) with the Options pane for whole trips, long-haul tickets and regional flights. `cd web && npm run dev`.
 - `planner/`: the two-tab trip app, Map and Trips. The Map tab imports `web/` through the `@map` alias, so a change in `web/src/map` shows in both apps. `cd planner && npm run dev`. Simon's desktop icon serves `main` at `http://localhost:5198`, so branch work does not show there until it is merged.
 - `plugin/`: the flight crawler plugin, its agents, skills and scripts, `tripdb.py` among them.
-- `infra/`: deploy scripts for the build worker (`deploy.sh`, `worker/`), the trip MCP (`mcp/`) and the planner site (`site_setup.sh`, `site_upload.sh`, `preview.sh`). The repo is public, so no AWS account id or profile name goes in any file.
+- `infra/`: deploy scripts for the build worker (`deploy.sh`, `worker/`), the trip MCP (`mcp/`) and the planner site (`site_setup.sh`, `site_upload.sh`, `preview.sh`).
 - `data/`: `README.md` only. Shared tables and documents live in Supabase.
-- `docs/`: `README.md` maps every doc and its owner. Also the Claude task hand-over (`docs/claude-tasks.md`), `docs/learnings/` with the notes each crawl round left about the sites, `docs/technical/` with TECH decisions and `docs/audits/` with the doc audits.
+- `docs/`: `README.md` maps every doc and its owner. Also `harness-log.md`, the Claude task hand-over (`docs/claude-tasks.md`), `docs/learnings/` with the notes each crawl round left about the sites, `docs/technical/` with TECH decisions and `docs/audits/` with the doc audits.
   - `docs/product/`: the product overview, product decisions (PROD ids) and feature specs (`features/FEAT-NNN-<slug>.md`), kept by `feature-spec`.
-  - `docs/design/`: the living design log kept by `ui-roast`. `design-log.md` is the index of reviews, recurring problems (REC), open questions (Q) and counters, `design-principles.md` holds accepted principles, `design-decisions.md` holds DES ids, and `reviews/` holds each review, brief, fixes file, retro and audit. Files here are the record, not conversation history.
+  - `docs/design/`: the living design log kept by `ui-roast`. `design-log.md` is the index of reviews, recurring problems (REC) and open questions (Q), `design-principles.md` holds accepted principles, `design-decisions.md` holds DES ids, and `reviews/` holds each audit, kept roast, fixes file and retro. Files here are the record, not conversation history.
   - `docs/superpowers/specs/` and `plans/`: the older specs and the implementation plans.
 
 ## Frontend design
 
-Any work that changes how `web/` or `planner/` looks or moves goes through the project skills in `.claude/skills/` listed below. The aim is an app that feels crafted, not vibe coded.
+Any work that changes how `web/` or `planner/` looks or moves goes through the project skills in `.claude/skills/`. The aim is an app that feels crafted, not vibe coded.
 
 ### Let the interface carry the information
 
@@ -97,20 +141,20 @@ Text growing inside a component is a design problem, not a copy problem. When a 
 
 An icon that carries meaning gets an accessible name and a tooltip. New icons go in the apps' own sets (`planner/src/components/icons.tsx`, `web/src/map/icons.tsx`) and keep their style.
 
-### Skills, in order
+### Skills
 
-1. **Lead with `apple-design`** for every frontend task, not only phone work. It sets the hierarchy, restraint, materials, typography and motion, and Wallet, Maps and Flighty are the references for the booking views.
-2. **`emil-design-eng`** for component design, polish and the small details that make it feel finished.
-3. **Find components with the 21st.dev MCP** (`search`, `get_component`, `get_inspiration`, `get_theme`) before hand building a common component such as a picker, chip, segmented control, sheet or ticket card. Adapt what it returns to the app's tokens in `planner/src/styles`, never paste it in as is.
-4. **Shape and critique with `impeccable`**, use its `distill` pass when a screen grows crowded, and run its anti-pattern and polish passes before calling the UI done.
-5. **Motion:** `animate` to build an animation, `review-animations` to critique one, `improve-animations` to audit the app, `find-animation-opportunities` for where motion is missing, `remove-animations` when it feels over-animated, `animation-performance` when it drops frames, `animation-vocabulary` to name an effect.
-6. **Phone:** `mobile-native` for the fixes that make the web app feel installed. Simon uses it on his phone while travelling.
-7. **Before a frontend commit:** `web-design-guidelines` as the checklist for alignment, spacing, accessibility and interaction details, and `break-ui` to try the screen with worst-case data.
-8. On request only: `prototype` for several versions behind a picker, `pick-ui-library` to choose a library.
+Recommendations for which skill serves which job, not a mandatory sequence. Load the ones the task needs.
 
-Ideas from Claude Design (the Claude app) are welcome, but its look is not the reference. Build from 21st.dev components and the app's own tokens.
+- **Frontend implementation:** `apple-design` leads (hierarchy, restraint, materials, typography, motion, with Wallet, Maps and Flighty as the references for the booking views), `emil-design-eng` for component design and polish, `impeccable` to shape and critique, its `distill` pass when a screen grows crowded.
+- **Components:** the 21st.dev MCP (`search`, `get_component`, `get_inspiration`, `get_theme`) before hand building a picker, chip, segmented control, sheet or ticket card. Adapt what it returns to the app's tokens in `planner/src/styles`, never paste it in as is.
+- **Choosing a UI library:** `pick-ui-library`, not 21st.dev.
+- **Exploration:** `prototype` for several distinct versions behind a switcher, with 21st.dev for parts and inspiration.
+- **Motion:** `animate` to build, `review-animations` to critique one, `improve-animations` to audit the app, `find-animation-opportunities` for where motion is missing, `remove-animations` when it is over-animated, `animation-performance` when it drops frames, `animation-vocabulary` to name an effect.
+- **Phone:** `mobile-native`, because Simon uses the app on his phone while travelling.
+- **Before a frontend commit:** `web-design-guidelines` for alignment, spacing, accessibility and interaction details, and `break-ui` for worst-case data.
+- **Design reviews:** `ui-roast` for a roast or an audit.
 
-`hyperframes` and its siblings are for making videos, slideshows and motion pieces from HTML. They are not used for the app.
+`prototype`, `review-animations` and `pick-ui-library` are installed with model invocation disabled, so Simon invokes them by name. Ideas from Claude Design (the Claude app) are welcome, but its look is not the reference. `hyperframes` and its siblings make videos, not the app.
 
 ### Skills in .claude/
 

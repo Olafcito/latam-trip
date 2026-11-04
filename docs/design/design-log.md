@@ -1,10 +1,10 @@
 # Design log
 
-Index of the living design log of the planner and the web map. The `ui-roast` skill adds a review file after every roast and updates this index. Observations, hypotheses and decisions are kept apart. A roast finding is an observation. It becomes a rule only through a decision.
+Index of the living design log of the planner and the web map, kept by the `ui-roast` skill. A Design Audit adds a review file and a row here. A Design Roast is discussed first, and only what Simon accepts from it reaches this log, as a DES, REC or Q entry. Observations, hypotheses and decisions are kept apart. A roast finding is an observation. It becomes a rule only through a decision.
 
-Seeded on 2026-11-03 from nine existing roasts covering eight screens. Before shots live in `docs/design/shots/<screen>/<review>/` and are git ignored because they show private data. The full roast reports are in `.superpowers/sdd/2026-11-03-ui-roast/`.
+Seeded on 2026-11-03 from nine existing roasts covering eight screens, under the earlier process where every roast produced a review file. Before shots live in `docs/design/shots/<screen>/<review>/` and are git ignored because they show private data. The full roast reports are in `.superpowers/sdd/2026-11-03-ui-roast/`.
 
-Files: `design-principles.md` (accepted principles), `design-decisions.md` (DES ids), `reviews/review-NNN.md` (one per roast), `reviews/retro-001.md` (retrospective and the cross screen fix order).
+Files: `design-principles.md` (accepted principles), `design-decisions.md` (DES ids), `reviews/review-NNN.md` (one per audit, and one per roast before 2026-11-04), `reviews/retro-001.md` (retrospective and the cross screen fix order).
 
 Priority scale: critical means the screen fails its core job, high means a journey step fails, medium and low are polish. The roasts said "load bearing" and "polish", so the mapping is mine.
 
@@ -66,7 +66,6 @@ Each is a design system issue seen on two or more screens. Flagged means a candi
 | Q-010 | Ground leg detail. The bus card is thin and uses airport codes. Whether the data for departure times, frequency and pickup exists is unknown, so the fix may need data work first. |
 | Q-011 | Answered 2026-11-04. Simon ruled C, both, a geographic interface that doubles as the central management dashboard. Recorded as PROD-006 and FEAT-001 (`docs/product/features/FEAT-001-map-dashboard.md`), unblocking the sidebar architecture findings of review-010 (F1 and F3). |
 
-## Counters
+## Synthesis
 
-- Reviews since last retrospective: 2
-- Reviews since last audit: 11
+The last retrospective is `reviews/retro-001.md`, written after review-009. The next one is written when the evidence warrants it, not on a count: several reviews since the last, the same problem resurfacing, decisions that contradict each other, or Simon asking. Since retro-001: review-010 and review-011.
