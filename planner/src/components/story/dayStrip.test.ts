@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { kr, shortKr } from '../../lib/format'
 import { tripDay, type DayInput } from '../../lib/tripDay'
-import { Days, DayView } from './FlightSheet'
+import { Days, DayView, Stay, type LegStay } from './FlightSheet'
 
 const input: DayInput = {
   legs: [
@@ -31,7 +31,7 @@ describe('the day strip', () => {
     const out = strip({ booked: '2026-12-05' })
     expect(out).not.toContain(kr(520))
     expect(out).not.toContain(shortKr(520))
-    expect(out).toContain('booked')
+    expect(out).toContain(', booked"')
     expect(out).toContain(kr(380))
     expect(out.match(/data-booked="true"/g)).toHaveLength(1)
   })
@@ -55,5 +55,15 @@ describe('the day view', () => {
     const out = renderToStaticMarkup(createElement(DayView, { day: '2026-12-20', trip }))
     expect(out).toContain('Nothing planned')
     expect(out).not.toContain('?')
+  })
+})
+
+describe('the stay row of a held booking', () => {
+  const stay: LegStay = { fromName: 'Lima', fromIn: '2026-12-01', toName: 'Cusco', onward: false, nextDay: '2026-12-10', nextLabel: 'Bus to Puno', nextFamily: 'ground' }
+  const nights = (p: { at: string; lands?: string }) => renderToStaticMarkup(createElement(Stay, { stay, ...p }))
+
+  it('counts the nights where it lands from the arrive day', () => {
+    expect(nights({ at: '2026-12-05', lands: '2026-12-06' })).toContain('4 nights')
+    expect(nights({ at: '2026-12-05' })).toContain('5 nights')
   })
 })

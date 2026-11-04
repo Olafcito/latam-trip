@@ -2,8 +2,8 @@ import type { Family } from '@map/data/types'
 import { clock, nextDayMark } from './format'
 
 // One day of the trip across every leg and stop: what leaves and lands, where you check out and in, the
-// booked activities and where you sleep. The day view under a sheet's strip shows it, and the strip of a held
-// leg marks its other days from it. Pure, so the sheet and the tests read the same list.
+// booked activities and where you sleep. The day view under a sheet's strip shows it, and a held leg hides the
+// strip and the day view alike. Pure, so the sheet and the tests read the same list.
 
 /** A leg of the trip, in place names, with its local times. A date alone has no time. */
 export interface DayLeg {

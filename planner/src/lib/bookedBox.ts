@@ -1,4 +1,5 @@
 import type { Booking, BookingFile } from '../data/types'
+import { firstOf } from './booked'
 import { fileProblem } from './bookings'
 import { clock, dec1, hours, kr, nextDayMark, thousands, weekdayDay } from './format'
 
@@ -209,13 +210,14 @@ export function boxRows(b: Booking, list: readonly Booking[]): BoxRow[] {
   const text = (v: string | null | undefined) => (v && v.trim() ? v.trim() : null)
   const ticket = b.ticket ? list.filter((x) => x.status === 'booked' && x.ticket === b.ticket && x.id !== b.id) : []
   const group = [b, ...ticket]
+  // whether r flies before p: the earliest depart, then the lowest id
   const order = (p: Booking, r: Booking) => {
     const dp = p.depart ?? LAST
     const dr = r.depart ?? LAST
     return dr < dp || (dr === dp && r.id < p.id)
   }
-  // the first row of a ticket holds its price, the others 0: the earliest depart, then the lowest id, as paidPrice reads it
-  const payer = group.reduce((p, r) => (order(p, r) ? r : p))
+  // the first row of a ticket holds its price, the others 0: the same payer paidPrice reads
+  const payer = firstOf(group)
   const out: BoxRow[] = []
   const add = (key: BoxRow['key'], label: string, value: string | null, extra: Partial<BoxRow> = {}) => {
     if (value == null && !extra.legs) return

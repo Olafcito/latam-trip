@@ -3,6 +3,7 @@ import type { Booking, CrawledFlight } from '../../data/types'
 import type { Family } from '@map/data/types'
 import { Unknown } from '@map/map/Unknown'
 import { bookedDay, bookedGate, isBookedFlight, parkedRow, priceColumn } from '../../lib/booked'
+import { addDays } from '../../lib/time'
 import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../../lib/format'
 import { fareMarks, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
 import type { FlightLink } from '../../lib/links'
@@ -25,9 +26,9 @@ import type { Mark } from '../../lib/marks'
 // you still see how long the trip is and where it goes through. The flight you picked sits on top with
 // its state under its price, where Pick sits on the others. One set aside when the leg moved to another
 // day stays on top too, with the button that puts the leg back on its day. A booked leg opens on its
-// booking: the box sits on top, the booked day shows what was paid, the other days show no fare, only
-// marks of what else happens then, and the flights are folded away until Change booking opens them to
-// look at. A press on any day shows the whole trip on that day under the strip, for a booked leg too.
+// booking: the box sits on top and holds the leg, so the strip and the day view are hidden and the flights
+// are folded away until Change booking opens them to look at. Opened so, the booked day carries a check and a
+// ring on the strip, never its price, and a press on any day shows the whole trip on that day under the strip.
 
 /** the flights shown before Show all */
 const SHOWN = 6
@@ -94,7 +95,7 @@ export function Stay({ at, lands = at, stay }: { at: string; lands?: string; sta
   )
 }
 
-/** The trip on any day, and which leg is this sheet's own, so the strip marks the days and the day view lists them. */
+/** The trip on any day, and which leg is this sheet's own, so the day view lists them and the strip rings the leg's own day. */
 export interface TripDays {
   items: (day: string) => DayItem[]
   /** the key of the sheet's own leg in the items */
@@ -364,7 +365,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
   book?: BookTarget<CrawledFlight>
   /** puts the leg on a day. A booked leg keeps its day, so the sheet never calls it there */
   onUseDay?: (day: string) => void
-  /** the whole trip on any day, for the day view under the strip and the marks of a booked leg */
+  /** the whole trip on any day, for the day view under the strip */
   trip?: TripDays
   close: () => void
 }) {
@@ -433,7 +434,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
         {booking && <BookedBox ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} onRemoved={() => setRemoved(true)}
           onEdit={book ? () => form.open({ start: 'manual', edit: true, booking }) : undefined} />}
         <p ref={said} className="ws-said" role="status" tabIndex={-1}>{removed && !booking ? 'The booking is removed. The leg can change again.' : ''}</p>
-        <Stay at={hold ? date : at} stay={stay} />
+        <Stay at={hold ? date : at} lands={hold && booking?.arrive ? booking.arrive.slice(0, 10) : picked ? addDays(at, dayDiff(picked.depart.slice(0, 10), picked.arrive.slice(0, 10))) : at} stay={stay} />
         {!hold && <Days days={days} fares={fares} at={at} leg={date} onChange={setAt} booked={bookedDay(booking, date)} />}
         {!hold && <div className="fl-bar">
           <b>{weekdayDay(at)}</b>

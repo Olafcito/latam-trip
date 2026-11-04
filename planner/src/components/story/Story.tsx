@@ -357,7 +357,7 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   }
   // the booked rows of the way in and the way home, on the day each leaves
   const wayBooked = { in: wayBooking(bookings, data, wayIn), home: wayBooking(bookings, data, wayHome) }
-  // the whole trip day by day, for the day view of a sheet and the marks of a booked leg's other days: the legs
+  // the whole trip day by day, for the day view of a sheet: the legs
   // with their local times, the stops with the stay booked there, and the booked activities
   const tripInput = useMemo((): DayInput => {
     const name = (id: string) => nodeName(map, inout, id)

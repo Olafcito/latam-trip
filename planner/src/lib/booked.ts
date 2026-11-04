@@ -77,7 +77,7 @@ export function paidPrice(list: Booking[], b: Booking): number | null {
 }
 
 /** The row of a ticket that pays for it: the earliest depart, then the lowest id. */
-function firstOf(group: Booking[]): Booking {
+export function firstOf(group: Booking[]): Booking {
   return group.reduce((a, r) => {
     const da = a.depart ?? LAST
     const dr = r.depart ?? LAST
