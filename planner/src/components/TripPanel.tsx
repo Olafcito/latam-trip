@@ -369,12 +369,12 @@ export function TripPanel({ data, journey, mini, onExpand, reach = null }: { dat
 }
 
 /** What sits beside the map: the open trip. With none open the map is left to look around in. */
-export function MapSide({ reach = null }: { reach?: Reach | null }) {
+export function MapSide({ reach = null, folded = false }: { reach?: Reach | null; folded?: boolean }) {
   const data = useStore((s) => s.data)
   const journey = useStore((s) => s.journey)
   const mapOpen = useStore((s) => s.mapOpen)
   const paneMini = useStore((s) => s.paneMini)
   const setPaneMini = useStore((s) => s.setPaneMini)
   if (!data || !journey || !mapOpen) return null
-  return <TripPanel data={data} journey={journey} mini={paneMini} onExpand={() => setPaneMini(false)} reach={reach} />
+  return <TripPanel data={data} journey={journey} mini={paneMini || folded} onExpand={() => setPaneMini(false)} reach={reach} />
 }

@@ -6,6 +6,7 @@ import { NO_EXPERIENCE_FILTER, experienceWorld, filterExperiences, filterSaved, 
 import { NO_FILTER, cityName, filterCities, filterGyms, gymWorld, rankCities, rankGyms, spreadGyms, type GymFilter } from '../data/gyms'
 import type { CityRow, GymRow, MapData } from '../data/types'
 import type { LonLat } from '../lib/geo'
+import { scopeRows, type RouteScope } from './routeScope'
 import { CITY_SOURCE, EXP_SOURCE, GYM_SOURCE, cityFeatures, experienceFeatures, gymFeatures, setMapMode, setModeData, setModeSelection, type MapMode } from './modeLayers'
 
 export type { MapMode }
@@ -14,16 +15,20 @@ export type GymTab = 'gyms' | 'cities'
 
 export const MODE_TITLE: Record<MapMode, string> = { gyms: 'Gyms', experiences: 'Experiences' }
 
+const cityAt = (c: CityRow): LonLat | undefined => (c.lat != null && c.lon != null ? [c.lon, c.lat] : undefined)
+
 export type MapModeApi = ReturnType<typeof useMapMode>
 
 /** With no map it still runs the cards. `first` is the card a window opens on, so it has its size from the first frame. */
-export function useMapMode(map: MLMap | null, data: MapData, first?: CardRef) {
+export function useMapMode(map: MLMap | null, data: MapData, first?: CardRef, scope: RouteScope | null = null) {
   const gyms = useMemo(() => gymWorld(data.experiences, data.places), [data.experiences, data.places])
   const exps = useMemo(() => experienceWorld(data.experiences, data.places, data.lists), [data.experiences, data.places, data.lists])
   const gymSpots = useMemo(() => spreadGyms(gyms.gyms), [gyms])
   const expSpots = useMemo(() => spreadGyms(exps.all), [exps])
 
   const [mode, setModeState] = useState<MapMode | null>(null)
+  // with a trip open the layers show what lies along it, until the whole map is asked for
+  const [wide, setWide] = useState(false)
   const [stack, setStack] = useState<CardRef[]>(first ? [first] : [])
   const [tab, setTab] = useState<GymTab>('gyms')
   // filters outlive a mode: coming back finds the map as it was left
@@ -39,10 +44,21 @@ export function useMapMode(map: MLMap | null, data: MapData, first?: CardRef) {
     return on
   }, [gyms, exps])
 
-  const shownGyms = useMemo(() => rankGyms(filterGyms(gyms, gymFilter)), [gyms, gymFilter])
-  const shownCities = useMemo(() => rankCities(filterCities(gyms, gymFilter)), [gyms, gymFilter])
-  const shownExps = useMemo(() => filterExperiences(exps, expFilter), [exps, expFilter])
-  const shownSaved = useMemo(() => filterSaved(exps, expFilter), [exps, expFilter])
+  // closing the trip puts the scope back to the trip's own, the next one starts along its route
+  const tripOpen = !!scope
+  useEffect(() => {
+    if (!tripOpen) setWide(false)
+  }, [tripOpen])
+
+  const placeAt = useMemo(() => new Map(data.places.map((p): [string, LonLat] => [p.id, [p.lon, p.lat]])), [data.places])
+
+  const shownGyms = useMemo(() => scopeRows(rankGyms(filterGyms(gyms, gymFilter)), (g) => gymSpots.get(g.id), scope, wide), [gyms, gymFilter, gymSpots, scope, wide])
+  const shownCities = useMemo(() => scopeRows(rankCities(filterCities(gyms, gymFilter)), cityAt, scope, wide), [gyms, gymFilter, scope, wide])
+  const shownExps = useMemo(() => scopeRows(filterExperiences(exps, expFilter), (e) => expSpots.get(e.id), scope, wide), [exps, expFilter, expSpots, scope, wide])
+  const shownSaved = useMemo(
+    () => scopeRows(filterSaved(exps, expFilter), (s) => (s.type === 'place' ? placeAt.get(s.id) : expSpots.get(s.id)), scope, wide),
+    [exps, expFilter, expSpots, placeAt, scope, wide],
+  )
 
   const gymMarks = useMemo(() => gymFeatures(shownGyms, gymSpots), [shownGyms, gymSpots])
   const cityMarks = useMemo(() => cityFeatures(shownCities), [shownCities])
@@ -146,6 +162,9 @@ export function useMapMode(map: MLMap | null, data: MapData, first?: CardRef) {
     shownCities,
     shownExps,
     shownSaved,
+    wide,
+    setWide,
+    scoped: !!scope && !wide,
     pointOf,
     gymPoints,
     points,

@@ -31,6 +31,9 @@
   .mtoggle { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 90px; min-height: 40px; padding: 0 12px; border: 0; border-radius: 12px; background: var(--surface-2); color: var(--text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--tint), var(--press); }
   .mtoggle-n { min-width: 18px; padding: 0 5px; border-radius: 9px; background: var(--flight); color: var(--flight-ink); font-size: 11.5px; line-height: 18px; text-align: center; font-variant-numeric: tabular-nums; }
 
+  /* the head's widen control: a chip with no check beside the close button */
+  .scope-toggle { align-self: center; margin-right: 6px; padding: 0 11px; white-space: nowrap; }
+
   /* chips: every chip keeps the room for its check, so picking one moves nothing around it */
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { flex: none; display: inline-flex; align-items: center; gap: 3px; min-height: 32px; padding: 0 9px 0 6px; border: 0; border-radius: 999px; background: var(--surface-2); color: var(--text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--tint), var(--press); }

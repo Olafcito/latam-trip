@@ -19,6 +19,7 @@ import { ModePanelSlot } from './ModeSlots'
 import { ModeSheet } from './ModeSheet'
 import { MODE_SHEET, SHEET_PEEK, reducedMotion, type Detent } from './sheet'
 import { Panel, sheetHead, type FlightDir, type PanelProps, type PanelView, type View } from './Panel'
+import type { RouteScope } from './routeScope'
 import { TripBar } from './TripBar'
 import { TripsPanel } from './TripsPanel'
 import { IoLegend, WayPanel } from './WayPanel'
@@ -130,9 +131,19 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   const [dock, setDock] = useState(false)
   const store = useMemo(() => createStore<Hover>(null), [])
   const trip = activeTrip(trips)
-  const mm = useMapMode(map, data)
-  // a map mode has the map to itself, so the host's pane waits
-  const pane = mm.mode ? null : side
+  // with a trip open the layers show what lies along it: its stops in travel order
+  const scope = useMemo<RouteScope | null>(() => {
+    if (!trip) return null
+    const line = tripStops(trip).flatMap((id) => {
+      const p = model.byId.get(id)
+      return p ? [[p.lon, p.lat] as LonLat] : []
+    })
+    return line.length ? { line } : null
+  }, [trip, model])
+  const mm = useMapMode(map, data, undefined, scope)
+  // the host's pane stays under a mode, folded to its small card, so the trip is still in sight
+  const pane = side
+  const paneMini = sideMini || !!mm.mode
 
   useEffect(() => onFamilies?.(families), [families, onFamilies])
   useEffect(() => onMode?.(!!mm.mode), [mm.mode, onMode])
@@ -147,7 +158,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   }, [view.panel])
 
   // latest values for the map's event handlers, which are bound once
-  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!pane, sideMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false, trip })
+  const live = useRef({ view, families, collapsed, space: false, homeZoom: 4, shown: [] as string[], focusId: null as string | null, side: !!pane, sideMini: paneMini, focus, stops: [] as string[], dir: 'out' as FlightDir, mode: mm.mode, cardOpen: false, trip })
   // which way the selected city's routes read: out of it (the default for every city) or into it
   const [dir, setDir] = useState<FlightDir>('out')
   useEffect(() => setDir('out'), [view.sel, view.panel])
@@ -157,7 +168,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   live.current.mode = mm.mode
   live.current.trip = trip
   live.current.cardOpen = !!mm.card
-  live.current.sideMini = sideMini
+  live.current.sideMini = paneMini
   live.current.dir = dir
   live.current.focus = focus
   live.current.collapsed = collapsed
@@ -418,7 +429,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
 
   const setMode = (next: MapMode | null) => {
     live.current.mode = next
-    live.current.side = !!side && !next
+    live.current.side = !!side
     live.current.cardOpen = false
     mm.setMode(next)
   }
@@ -737,8 +748,8 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const stops = quiet && trip ? tripStops(trip) : []
     setLabelFocus(map, sel ? [...new Set([sel, ...near, ...stops])] : [], sel, quiet, stops)
     setQuiet(map, quiet)
-    // the open trip steps back while a city's own routes are shown, and stays drawn under a mode at about 40%
-    const tripOpacity = view.sel ? 0.2 : mm.mode ? 0.4 : 1
+    // the open trip steps back while a city's own routes are shown, and stays drawn under a mode at about 55%
+    const tripOpacity = view.sel ? 0.2 : mm.mode ? 0.55 : 1
     for (const id of TRIP_LINE_LAYERS) map.setPaintProperty(id, 'line-opacity', tripOpacity * (id === 'trip-casing' ? 0.85 : 1))
     map.setPaintProperty(TRIP_ARROW, 'icon-opacity', tripOpacity * 0.9)
     map.setPaintProperty(TRIP_OVERLAND, 'line-opacity', view.sel ? 0.12 : 0.55)
@@ -1001,7 +1012,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
   return (
     <div
       ref={root}
-      className={`rmap${space ? ' grab' : ''}${pane ? ' has-side' : ''}${pane && sideMini ? ' side-mini' : ''}${(view.panel || mm.mode) && !collapsed ? ' has-panel' : ''}${mm.mode ? ` mode-on mode-${mm.mode}` : ''}${sheeted && !mm.mode ? ' sheet-on' : ''}`}
+      className={`rmap${space ? ' grab' : ''}${pane ? ' has-side' : ''}${pane && paneMini ? ' side-mini' : ''}${(view.panel || mm.mode) && !collapsed ? ' has-panel' : ''}${mm.mode ? ` mode-on mode-${mm.mode}` : ''}${sheeted && !mm.mode ? ' sheet-on' : ''}`}
       style={{ '--mode-sheet': `${MODE_SHEET * 100}%`, ...(pane && { '--side': `${sideWidth}px` }) } as CSSProperties}
       tabIndex={0}
       role="region"
@@ -1042,12 +1053,12 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
             onMode={toggleMode}
           />
           <Tooltip map={map} model={model} store={store} families={families} getBlocked={getBlocked} />
-          {!focus && !mm.mode && (
+          {!focus && (
             <TripBar
               model={model}
               trip={trip}
               count={trips.trips.length}
-              left={view.panel && !narrow ? PANEL_W[view.panel] + 28 : null}
+              left={(mm.mode || view.panel) && !narrow ? PANEL_W[mm.mode ? 'mode' : view.panel!] + 28 : null}
               barRef={tripBarRef}
               onList={showTrips}
               onUndo={() => trip && onTrips((s) => removeLeg(s, trip.id, trip.legs.length - 1))}

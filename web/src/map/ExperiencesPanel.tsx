@@ -5,7 +5,7 @@ import { countText, experienceFiltersActive, keepCategories, placeGroups, toggle
 import { countryName, type Model } from '../data/model'
 import { CardRow, SavedLine } from './CardParts'
 import { Flag } from './Flag'
-import { ChipGroup, type Chip } from './ModeControls'
+import { ChipGroup, ScopeToggle, type Chip } from './ModeControls'
 import { ModeSheet, type ModeShell } from './ModeSheet'
 import { MODE_TITLE, type CardRef, type MapModeApi } from './useMapMode'
 
@@ -90,7 +90,7 @@ export function ExperiencesPanel({ api, model, shell, onPick, onPlace }: Experie
   const clear = () => setExpFilter(NO_EXPERIENCE_FILTER)
 
   return (
-    <ModeSheet {...shell} title={MODE_TITLE.experiences} count={count} scrollKey="experiences">
+    <ModeSheet {...shell} title={MODE_TITLE.experiences} count={count} tools={<ScopeToggle api={api} />} scrollKey="experiences">
       <div className="mfilters">
         <ChipGroup label="Country" line chips={countries} picked={f.countries.length ? f.countries : [ALL]} pinned={[{ id: ALL, label: 'All' }]} cap={4} onToggle={toggleCountry} />
         <ChipGroup label="Category" line chips={categoryChips} picked={f.saved ? [SAVED, ...f.categories] : f.categories} pinned={[{ id: SAVED, label: 'Saved', count: shownSaved.length }]} cap={5} onToggle={toggleCategory} />
@@ -100,7 +100,11 @@ export function ExperiencesPanel({ api, model, shell, onPick, onPlace }: Experie
           <button type="button" className="mclear" onClick={clear}>Clear filters</button>
         </div>
       )}
-      {empty ? (
+      {empty && api.scoped && active === 0 ? (
+        <div className="mempty">
+          <p>No experiences along this route</p>
+        </div>
+      ) : empty ? (
         <div className="mempty">
           <p>No experiences match these filters</p>
           <button type="button" className="mclear" onClick={clear}>Clear filters</button>

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { SavedEntry } from '../data/experiences'
 import type { CityRow, Experience, GymRow, Place } from '../data/types'
 import type { LonLat } from '../lib/geo'
-import { cityFeatures, experienceFeatures, gymFeatures, nearestHit, type HitFeature } from './modeLayers'
+import { cityFeatures, experienceFeatures, gymFeatures, nearestHit, tripLayersStay, type HitFeature } from './modeLayers'
 
 const gym = (id: string, total: number | null) => ({ id, name: id.toUpperCase(), details: { score: { total } } }) as unknown as GymRow
 const city = (id: string, over: Partial<CityRow>, total: number | null = null) =>
@@ -85,5 +85,20 @@ describe('nearestHit', () => {
   })
   it('finds nothing in nothing', () => {
     expect(nearestHit([], tap, project)).toBeNull()
+  })
+})
+
+describe('tripLayersStay', () => {
+  it('keeps the trip stops and their labels under a mode', () => {
+    for (const mode of ['gyms', 'experiences'] as const) {
+      expect(tripLayersStay(mode)).toEqual(expect.arrayContaining(['trip-stop', 'stop-label', 'stop-dot', 'trip-overland']))
+    }
+  })
+  it('does not keep the place layers under a mode', () => {
+    expect(tripLayersStay('gyms')).not.toContain('place-dot')
+    expect(tripLayersStay('gyms')).not.toContain('place-air')
+  })
+  it('names nothing on the normal map, where nothing is hidden', () => {
+    expect(tripLayersStay(null)).toEqual([])
   })
 })

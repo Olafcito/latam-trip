@@ -27,6 +27,8 @@ interface ModeSheetProps extends ModeShell {
   count?: string
   /** Sits before the title in the head, so the sheet at its lowest still shows what it holds. */
   peek?: ReactNode
+  /** Sits in the head beside the close button. */
+  tools?: ReactNode
   /** Stands between the title and the list, and never scrolls away. */
   bar?: ReactNode
   /** The list's name in scrollMemo. */
@@ -47,7 +49,7 @@ interface Drag {
 
 const HANDLE_LABEL: Record<Detent, string> = { peek: 'Open the list', half: 'Expand the list', full: 'Shrink the list' }
 
-export function ModeSheet({ title, label, count, peek, narrow, collapsed, cardOpen, panelRef, onCollapse, onClose, detentMemo, scrollMemo, scrollKey, bar, children }: ModeSheetProps) {
+export function ModeSheet({ title, label, count, peek, tools, narrow, collapsed, cardOpen, panelRef, onCollapse, onClose, detentMemo, scrollMemo, scrollKey, bar, children }: ModeSheetProps) {
   const body = useRef<HTMLDivElement>(null)
   const [detent, setDetent] = useState<Detent>(() => (collapsed ? 'peek' : detentMemo.current === 'full' ? 'full' : 'half'))
   const rest = useRef(detent)
@@ -253,6 +255,7 @@ export function ModeSheet({ title, label, count, peek, narrow, collapsed, cardOp
                 {count != null && <p className="mcount" aria-live="polite">{count}</p>}
               </div>
               <div className="hbtns">
+                {tools}
                 {!narrow && <button className="x" aria-label="Collapse panel" onClick={() => onCollapse(true)}><Chevron up /></button>}
                 <button className="x" aria-label="Close" onClick={onClose}><Close /></button>
               </div>

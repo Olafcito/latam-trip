@@ -217,11 +217,18 @@ const MARKS: Record<MapMode, string[]> = {
 }
 const LABELS: Record<MapMode, string[]> = { gyms: [CITY_LABEL, 'gyms-label'], experiences: ['exps-label'] }
 
-/** What a mode hides. The route families and the trip line stay out of this: the selection effect owns them, and the trip stays drawn under a mode. */
-const NORMAL_LAYERS = [
-  VIA_LAYER, HIT_ROUTES, TRIP_OVERLAND, HIT_OVERLAND, 'mover-glow', 'mover', 'place-ring', 'place-dot', DASH_HI, 'place-air',
-  HIT_PLACES, SAVED_LAYER, 'stop-dot', ...TRIP_STOP_LAYERS, LABEL_LAYERS.town, LABEL_LAYERS.dest, 'stop-label', LABEL_LAYERS.focus,
+/** What a mode hides: the network of routes, places and their labels. */
+const NETWORK_LAYERS = [
+  VIA_LAYER, HIT_ROUTES, HIT_OVERLAND, 'mover-glow', 'mover', 'place-ring', 'place-dot', DASH_HI, 'place-air',
+  HIT_PLACES, SAVED_LAYER, LABEL_LAYERS.town, LABEL_LAYERS.dest, LABEL_LAYERS.focus,
 ]
+/** What a mode leaves drawn: the open trip, its stops and their labels. The route families stay out of both, the selection effect owns them. */
+const TRIP_LAYERS = [TRIP_OVERLAND, 'stop-dot', ...TRIP_STOP_LAYERS, 'stop-label']
+
+/** The layer ids that stay visible under a mode, none for the normal map where nothing is hidden. */
+export function tripLayersStay(mode: MapMode | null): string[] {
+  return mode ? TRIP_LAYERS : []
+}
 
 function paintImage(draw: (g: CanvasRenderingContext2D) => void) {
   const canvas = document.createElement('canvas')
@@ -315,7 +322,8 @@ const show = (on: boolean) => (on ? 'visible' : 'none')
 
 /** Switch a mode on, or back to the normal map with null. */
 export function setMapMode(map: MLMap, mode: MapMode | null) {
-  for (const id of NORMAL_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', show(!mode))
+  for (const id of NETWORK_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', show(!mode))
+  for (const id of TRIP_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'visible')
   for (const m of ['gyms', 'experiences'] as const) for (const id of MODE_LAYERS[m]) map.setLayoutProperty(id, 'visibility', show(mode === m))
 }
 

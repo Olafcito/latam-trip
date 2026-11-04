@@ -12,6 +12,16 @@ function keyTarget(key: string, at: number, n: number) {
   return -1
 }
 
+/** With a trip open the layers show what lies along it. This widens them to the whole map and back. Nothing without a trip. */
+export function ScopeToggle({ api }: { api: { wide: boolean; scoped: boolean; setWide(on: boolean): void } }) {
+  if (!api.wide && !api.scoped) return null
+  return (
+    <button type="button" className="chip scope-toggle" aria-pressed={api.wide} onClick={() => api.setWide(!api.wide)}>
+      Whole map
+    </button>
+  )
+}
+
 export interface SegmentedProps<T extends string> {
   label: string
   value: T

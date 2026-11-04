@@ -156,9 +156,9 @@ export function PlannerMap() {
         card={mapCard}
         onCardOpen={clearMapCard}
         cardFrom={mapCardFrom && { card: mapCardFrom, label: 'Trips', onBack: () => go('trips') }}
-        side={hasPane ? <MapSide reach={model && families ? { model, families } : null} /> : null}
-        sideWidth={hasPane && paneMini ? 236 : 360}
-        sideMini={hasPane && paneMini}
+        side={hasPane ? <MapSide reach={model && families ? { model, families } : null} folded={modeOn} /> : null}
+        sideWidth={hasPane && (paneMini || modeOn) ? 236 : 360}
+        sideMini={hasPane && (paneMini || modeOn)}
         stays={cityStays}
         stopDays={stopDays}
       />

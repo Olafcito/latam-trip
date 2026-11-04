@@ -7,7 +7,7 @@ import { countryName, type Model } from '../data/model'
 import type { CityRow, GymRow } from '../data/types'
 import { kr } from '../lib/format'
 import { Flag } from './Flag'
-import { ChipGroup, RangeSlider, Segmented, type Chip } from './ModeControls'
+import { ChipGroup, RangeSlider, ScopeToggle, Segmented, type Chip } from './ModeControls'
 import { ModeSheet, type ModeShell } from './ModeSheet'
 import { MODE_TITLE, type CardRef, type GymTab, type MapModeApi } from './useMapMode'
 
@@ -115,7 +115,7 @@ export function GymsPanel({ api, model, shell, onPick }: GymsPanelProps) {
   )
 
   return (
-    <ModeSheet {...shell} title={MODE_TITLE.gyms} count={count} bar={bar} scrollKey={tab}>
+    <ModeSheet {...shell} title={MODE_TITLE.gyms} count={count} tools={<ScopeToggle api={api} />} bar={bar} scrollKey={tab}>
       {filtersOpen && (
         <div className="mfilters">
           <div className="mf">
@@ -149,7 +149,11 @@ export function GymsPanel({ api, model, shell, onPick }: GymsPanelProps) {
           <button type="button" className="mclear" onClick={() => setGymFilter(NO_FILTER)}>Clear filters</button>
         </div>
       )}
-      {shown === 0 ? (
+      {shown === 0 && api.scoped && active === 0 ? (
+        <div className="mempty">
+          <p>{onGyms ? 'No gyms along this route' : 'No cities along this route'}</p>
+        </div>
+      ) : shown === 0 ? (
         <div className="mempty">
           <p>{onGyms ? 'No gyms match these filters' : 'No cities match these filters'}</p>
           {note && <p className="mnote">{note}</p>}
