@@ -173,6 +173,8 @@ select option { background: var(--surface-2); color: var(--text); }
 .nd { font-family: var(--font-num); font-size: var(--fs-label); font-weight: 600; color: var(--flight); margin-left: 3px; vertical-align: super; }
 .q { color: var(--faint); cursor: help; border-bottom: 1px dotted var(--faint); }
 .warnmark { color: var(--flight); cursor: help; }
+/* DES-013: the hollow mark for an unknown value, never the words "unknown" or zero. */
+.unk { color: var(--faint); cursor: help; font-size: .9em; }
 
 /* the empty case, loading and the load error */
 .empty { padding: 30px; text-align: center; color: var(--muted); }

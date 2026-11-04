@@ -3,6 +3,7 @@ import { IO_COLORS, IO_LABEL, wayFacts, wayRows, type Dir, type IoMarker, type W
 import type { Model } from '../data/model'
 import type { Trip } from '../data/trips'
 import { Chevron, Close } from './icons'
+import { Unknown } from './Unknown'
 
 interface Props {
   model: Model
@@ -62,7 +63,7 @@ export function WayPanel(p: Props) {
                     {wayFacts(p.trip, d).map((f) => (
                       <div key={f.label} className="fact">
                         <dt>{f.label}</dt>
-                        <dd>{f.value}</dd>
+                        <dd>{f.value ?? <Unknown title={`${f.label} not known`} />}</dd>
                       </div>
                     ))}
                   </dl>

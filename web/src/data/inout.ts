@@ -1,4 +1,4 @@
-import { thousands } from '../lib/format'
+import { duration, thousands } from '../lib/format'
 import type { SeedWay, Trip, WayFlight, WayStop } from './trips'
 
 // The open trip's way in and way home: where the markers go and what their pane lists.
@@ -28,10 +28,10 @@ export function ioMarkers(trip: Trip | null, place: (code: string) => string | n
   return [a && { place: a, dirs: ['in'] as Dir[] }, b && { place: b, dirs: ['home'] as Dir[] }].filter((m): m is IoMarker => !!m)
 }
 
-/** 18.68 -> "18,7 h". */
+/** Hours as the one shared duration format: 18.68 -> "18h41m", never a decimal. DES-025. */
 export function hours(h: number | null | undefined): string {
   if (h == null || !Number.isFinite(h)) return 'time unknown'
-  return `${String(Math.round(h * 10) / 10).replace('.', ',')} h`
+  return duration(Math.round(h * 60))
 }
 
 /** A local ISO time as "Wed 2 Dec 09:55". */
@@ -96,11 +96,12 @@ export function wayRows(way: SeedWay): WayRow[] {
 
 export interface Fact {
   label: string
-  value: string
+  /** null when the value is not known. DES-013: never the word "unknown" and never a zero. */
+  value: string | null
 }
 
-const money = (dkk: number | null | undefined) => (dkk == null ? 'unknown' : `${thousands(dkk)} kr`)
-const fee = (dkk: number | null | undefined) => (dkk == null ? 'unknown' : dkk === 0 ? 'included' : `${thousands(dkk)} kr`)
+const money = (dkk: number | null | undefined) => (dkk == null ? null : `${thousands(dkk)} kr`)
+const fee = (dkk: number | null | undefined) => (dkk == null ? null : dkk === 0 ? 'included' : `${thousands(dkk)} kr`)
 
 /**
  * The facts under a direction's rows: ticket price, cabin-bag fee, US transit and the time at
