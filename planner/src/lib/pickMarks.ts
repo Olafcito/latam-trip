@@ -17,9 +17,9 @@ export interface PairMark {
 export function lossLabel(l: Loss): string {
   switch (l.kind) {
     case 'night': return l.points === 1 ? '1 hub night' : `${l.points} hub nights`
-    case 'change': return 'A change between separate tickets'
-    case 'us': return 'Through the United States'
-    case 'long': return l.points > 1 ? 'Over 23 hours flying' : 'Over 20 hours flying'
+    case 'change': return 'Change of tickets'
+    case 'us': return 'US transit'
+    case 'long': return l.points > 1 ? 'Long flight, over 23 hours' : 'Long flight, over 20 hours'
   }
 }
 

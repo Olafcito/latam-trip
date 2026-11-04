@@ -14,8 +14,8 @@ describe('lossLabel', () => {
   it('says each loss in words', () => {
     expect(lossLabel({ kind: 'night', points: 1 })).toBe('1 hub night')
     expect(lossLabel({ kind: 'night', points: 3 })).toBe('3 hub nights')
-    expect(lossLabel({ kind: 'long', points: 1 })).toBe('Over 20 hours flying')
-    expect(lossLabel({ kind: 'long', points: 2 })).toBe('Over 23 hours flying')
+    expect(lossLabel({ kind: 'long', points: 1 })).toBe('Long flight, over 20 hours')
+    expect(lossLabel({ kind: 'long', points: 2 })).toBe('Long flight, over 23 hours')
   })
 })
 
@@ -31,9 +31,9 @@ describe('pairMarks', () => {
   it('names the way a mark sits on, or both', () => {
     const marks = pairMarks(way({ us_transit: true, changes: 1 }), way({ changes: 2, flying_hours: 24 }))
     expect(marks).toEqual([
-      { kind: 'change', label: 'A change between separate tickets, both ways' },
-      { kind: 'us', label: 'Through the United States, way in' },
-      { kind: 'long', label: 'Over 23 hours flying, way home' },
+      { kind: 'change', label: 'Change of tickets, both ways' },
+      { kind: 'us', label: 'US transit, way in' },
+      { kind: 'long', label: 'Long flight, over 23 hours, way home' },
     ])
   })
 })

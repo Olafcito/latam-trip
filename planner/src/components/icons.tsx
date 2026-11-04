@@ -273,11 +273,11 @@ export const TicketHop = ({ s = 13 }: { s?: number }) => (
   </svg>
 )
 
-/** Two one ways: a ticket torn in two halves. */
+/** Two one ways: a ticket torn in two, the halves pulled apart along a jagged tear. */
 export const TwoTickets = ({ s = 13 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
-    <path d="M3 8a2 2 0 0 0 2-2h5v12H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z" />
-    <path d="M14 6h5a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2h-5z" />
+    <path d="M3 6.5a2 2 0 0 0 2-2h5.5l-2 3 2 3-2 3 2 3H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z" />
+    <path d="M13.5 7.5H19a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2h-5.5l2-3-2-3 2-3z" />
   </svg>
 )
 
