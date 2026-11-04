@@ -59,7 +59,8 @@ function useFitToWindow(ref: RefObject<HTMLElement | null>, at: string | null) {
     // scroll, resize and the observer all fire once a frame at most, so the column is sized on each
     const fit = () => {
       const top = Math.max(SIDE_GAP, el.getBoundingClientRect().top)
-      el.style.maxHeight = `${Math.max(160, window.innerHeight - top - SIDE_GAP)}px`
+      // never less than the pick and a sliver of the pair, on a window too short for more
+      el.style.maxHeight = `${Math.max(96, window.innerHeight - top - SIDE_GAP)}px`
     }
     fit()
     // the head and the filters above the column can grow and push its top down
