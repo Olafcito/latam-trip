@@ -22,6 +22,7 @@ Priority scale: critical means the screen fails its core job, high means a journ
 | review-008 | 2026-11-03 | Planner Map tab | 1 | 4 | open | [reviews/review-008.md](reviews/review-008.md) |
 | review-009 | 2026-11-03 | Public web map | 1 | 4 | open | [reviews/review-009.md](reviews/review-009.md) |
 | review-010 | 2026-11-04 | Planner Map tab, external roast by Simon, also applies to the web map | 1 | 2 | open | [reviews/review-010.md](reviews/review-010.md) |
+| review-011 | 2026-11-04 | Booked flight sheet, a cost test of the two tier pipeline, not a clean before and after since the screen was rebuilt after review-007 | 0 | 1 | open | [reviews/review-011.md](reviews/review-011.md) |
 
 ## Recurring problems
 
@@ -43,7 +44,7 @@ Each is a design system issue seen on two or more screens. Flagged means a candi
 | REC-012 | Nights and dates missing or half shown, and length not drawn to scale | trip-map, trip-page, trips-list, city, flight-sheets | DES-021 | Validated |
 | REC-013 | Mode vocabulary is incomplete or inconsistent: glyphs dropped on the phone, ground legs without a booked mark, two chip sizes for one thing | trip-map, trip-page, flight-sheets, web-map, map-tab | DES-015 | Validated |
 | REC-014 | Raw data leaks into the interface: structured fields pasted into notes, mixed case carrier lists, photo credits at reading size, garbled titles and trip names | trip-page, city, trips-list, way-picker, flight-sheets, web-map | DES-026 | Validated |
-| REC-015 | The same object has two designs: the city on the trip sheet and on the map panel, the date picker as a strip and as a calendar, the trips and options naming on the web map | city, flight-sheets, web-map | DES-020 | Flagged |
+| REC-015 | The same object has two designs: the city on the trip sheet and on the map panel, the date picker as a strip and as a calendar, the trips and options naming on the web map, and within the booked flight sheet itself the slot under the card and the action row, each shaped by which leg opened it | city, flight-sheets, web-map | DES-020 | Validated |
 | REC-016 | Inconsistent formats for money and durations: decimal hours next to hours and minutes, kroner written four ways | way-picker, flight-sheets, map-tab, web-map | DES-025 | Flagged |
 | REC-017 | A table or grid where ranked cards would let the traveller decide: a 17 by 16 score grid, a 342 row table, a whole trip options table, a compare tray full of equal rows | trips-list, way-picker, web-map | DES-018, DES-021 | Validated |
 | REC-018 | No semantic colour rules for the map: selected, saved, potential, rating and warning share the one orange. Candidate rule from review-010: selected is the strong accent, other saved places are muted, rating has its own treatment, warnings keep a reserved colour | map-tab, web-map | DES-015, Q-001 | Flagged |
@@ -63,9 +64,9 @@ Each is a design system issue seen on two or more screens. Flagged means a candi
 | Q-008 | Free nights as a stop. The trip page roast wants free nights drawn as their own timeline row. The planner rule says earliest stop wins and spare days are never silent. The rendering of the remainder is open. |
 | Q-009 | Compare cap. Compare caps at three. It is not decided whether a side panel, a sheet or the tray is the lasting form on desktop. |
 | Q-010 | Ground leg detail. The bus card is thin and uses airport codes. Whether the data for departure times, frequency and pickup exists is unknown, so the fix may need data work first. |
-| Q-011 | What is the map for. A is a geographic overview of the whole trip where you explore destinations and connections. B is an operational planner where you manage places, experiences, training, stays and transport. C is both, a geographic interface that doubles as the central management dashboard. The reviewer's instinct is C. This is a product decision for Simon and it blocks the sidebar architecture findings of review-010 (F1 and F3). Raised by review-010. |
+| Q-011 | Answered 2026-11-04. Simon ruled C, both, a geographic interface that doubles as the central management dashboard. Recorded as PROD-006 and FEAT-001 (`docs/product/features/FEAT-001-map-dashboard.md`), unblocking the sidebar architecture findings of review-010 (F1 and F3). |
 
 ## Counters
 
-- Reviews since last retrospective: 1
-- Reviews since last audit: 10
+- Reviews since last retrospective: 2
+- Reviews since last audit: 11

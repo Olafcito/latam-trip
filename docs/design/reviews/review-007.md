@@ -20,3 +20,5 @@
 **Idea left open.** Clicking a date could show everything that day (flights, check ins, activities, transport). See Q-005 in the index.
 
 Further findings: none beyond the five above.
+
+**Update 2026-11-04, from review-011.** The booked flight sheet was rebuilt in commit `4501c87`, after this review and before any of these findings were ruled on. Review-011 found the shapes behind F1, F2 and F3 gone from the rebuilt sheet. They are recorded as resolved, not superseded, because the rebuild happened to fix them without anyone ruling on this review's suggested tasks. F4's structural half (a visible flight line with duration) is resolved the same way, but F4's colour complaint stays open, folded into Q-001. F5 is superseded, not resolved: the rebuilt sheet replaces the crammed strip with a day picker whose own new problems are recorded fresh in review-011, so review-011 carries F5's thread forward rather than this review.
