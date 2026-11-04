@@ -4,7 +4,7 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 
 ## One checkout, one branch
 
-- There is exactly one working copy of this repo on this machine: `C:\Users\Simon\Documents\github\latam-trip`. Never create a git worktree or a second clone. If you need to set work aside, make a WIP commit on a branch.
+- There is exactly one working copy of this repo on this machine: `C:\Users\Simon\Documents\github\latam-trip`. Never create a git worktree or a second clone. If you need to set work aside, such as edits left by stopped agents, commit them with explicit paths on `wip/YYYY-MM-DD-<topic>`, push it and switch back to a clean `main`. Never leave unfinished edits in `main`.
 - `main` is the only long-lived branch and the one you work on. Commit in small steps and push to `origin/main` without asking.
 - Short-lived branches are fine for a feature or an experiment, but they are merged into `main` and deleted as soon as the work is in. Before deleting a branch, confirm `git log main..<branch>` is empty.
 - No git identity is configured on this machine. Commit with `git -c user.name=Claude -c user.email=noreply@anthropic.com`, matching the existing history.
@@ -13,7 +13,17 @@ Simon's planner for a two-month solo trip through Central America, Colombia and 
 
 Multi step work runs on superpowers. No feature goes from an idea to code without a problem, a journey, a scope and acceptance criteria. The `feature-spec` skill writes them to `docs/product/features/FEAT-NNN-<slug>.md`: discovery with Simon, a Sonnet `product-analyst` drafts, an Opus `product-lead` reviews. Then `writing-plans` turns the approved spec into a plan, `subagent-driven-development` runs it and `ui-roast` judges the result against the same journey. Speed beats ceremony, and tokens are a budget.
 
-- **Cheap models first.** Subagents run on Sonnet (model `sonnet`), Haiku for mechanical work such as copying, sweeps and transcription. Opus only for a hard design or architecture call that Sonnet got wrong. A few agents at a time, stopped as soon as they are not needed.
+- **Cheap models first.** Subagents run on Sonnet (model `sonnet`), Haiku for mechanical work such as copying, sweeps and transcription. Opus only for a hard design or architecture call that Sonnet got wrong. A few agents at a time, stopped as soon as they are not needed. Name the model on every dispatch, because an omitted model inherits the session's Opus. Hand inputs over as file paths and ask for a few lines back, because everything an agent returns stays in the main session's context.
+- **Two tiers.** The cheap agent prepares and records, the heavy agent judges, and Simon rules.
+
+  | Agent | Model | Does |
+  |---|---|---|
+  | `design-analyst` | Sonnet | Roast shots, briefs, recording rulings in `docs/design/`, fixes files |
+  | `senior-designer` | Opus | The roast itself, retrospectives every 5th review, audits every 15th |
+  | `product-analyst` | Sonnet | Fills a FEAT spec from its problem and journey |
+  | `product-lead` | Opus | Reviews a drafted FEAT spec for scope, data and privacy |
+
+  A new or changed agent file loads only when a session starts. Until then, dispatch `general-purpose` with the model named and tell it to read `plugin/agents/<name>.md` first.
 - **Journey first.** A spec opens with the user journey it serves, the moments Simon goes through and what he needs to see or do at each. The spec is written from the journey, and the same journey is what the work is judged against at the end.
 - **Fresh context for every task.** Each task is a new agent handed file paths, never a long running agent resumed for the next job. Files are the record, not conversation history, and a new screen or plan starts in a new main session.
 - **Roast every finished page.** The `ui-roast` skill runs it. The `design-analyst` agent on Sonnet takes the before shots at 375 and 1440 with Playwright and writes a brief from the design log. The `senior-designer` agent on Opus roasts the shots against the user journey, knowing nothing of what was built or why. Simon rules on each finding, the analyst records it in `docs/design/` and writes the fixes, and the next roast of that screen checks them. Simon gets the screenshots too.
@@ -24,6 +34,15 @@ Multi step work runs on superpowers. No feature goes from an idea to code withou
 - **Check fixes against the diff.** The main session checks a fix round itself. A separate re-review is only for fixes that touch owner only data, the private bucket or what goes into built files.
 - **Ship together.** The ship steps of several plans go out together, under one final review of the whole branch, which is the safety net.
 - **Rule, do not ask.** Decide an ambiguity, write the ruling in the ledger and keep going. Ask Simon only before something irreversible he has not already approved, such as rewriting pushed history.
+
+## Privacy
+
+The repo and the `web` bucket are public. Booking references, prices paid, names and attachments live only in owner only tables and a private bucket, never in a built file, a commit, a doc or a test fixture. Fixtures use `TEST01`.
+
+- `.env` holds the Supabase keys. Never print or commit it.
+- Roast shots go in `docs/design/shots/`, which is git ignored because the shots show private trip data. The reviews and the design and product logs describe what a shot shows, never what a ticket says.
+- No AWS account id or profile name in any file.
+- Leave the untracked `Microsoft/`, `_to_delete/` and `.playwright-mcp/` alone, and stage explicit paths only.
 
 ## Supabase data
 
@@ -42,11 +61,14 @@ Planned trips live in the trips table. `tripdb save-trip FILE` saves a trip as i
 ## Layout
 
 - `web/`: the route map (React, Vite, MapLibre) with the Options pane for whole trips, long-haul tickets and regional flights. `cd web && npm run dev`.
-- `planner/`: the two-tab trip app, Map and Trips. The Map tab imports `web/` through the `@map` alias. `cd planner && npm run dev`.
+- `planner/`: the two-tab trip app, Map and Trips. The Map tab imports `web/` through the `@map` alias, so a change in `web/src/map` shows in both apps. `cd planner && npm run dev`. Simon's desktop icon serves `main` at `http://localhost:5198`, so branch work does not show there until it is merged.
 - `plugin/`: the flight crawler plugin, its agents, skills and scripts, `tripdb.py` among them.
 - `infra/`: deploy scripts for the build worker (`deploy.sh`, `worker/`), the trip MCP (`mcp/`) and the planner site (`site_setup.sh`, `site_upload.sh`, `preview.sh`). The repo is public, so no AWS account id or profile name goes in any file.
 - `data/`: `README.md` only. Shared tables and documents live in Supabase.
-- `docs/`: design briefs, the Claude task hand-over (`docs/claude-tasks.md`) and `docs/learnings/`, the notes each crawl round left about the sites.
+- `docs/`: the Claude task hand-over (`docs/claude-tasks.md`) and `docs/learnings/`, the notes each crawl round left about the sites.
+  - `docs/product/`: the product overview, product decisions (PROD ids) and feature specs (`features/FEAT-NNN-<slug>.md`), kept by `feature-spec`.
+  - `docs/design/`: the living design log kept by `ui-roast`. `design-log.md` is the index of reviews, recurring problems (REC), open questions (Q) and counters, `design-principles.md` holds accepted principles, `design-decisions.md` holds DES ids, and `reviews/` holds each review, brief, fixes file, retro and audit. Files here are the record, not conversation history.
+  - `docs/superpowers/specs/` and `plans/`: the older specs and the implementation plans.
 
 ## Frontend design
 
@@ -83,7 +105,7 @@ Ideas from Claude Design (the Claude app) are welcome, but its look is not the r
 
 ### Skills in .claude/
 
-- `.claude/skills` holds two kinds of skills. Skills from `plugin/skills` are generated copies: edit them in `plugin/` and run `python -I plugin/scripts/sync_claude_dir.py --root .`, never by hand in `.claude/`. Skills installed with `npx skills add` are listed in `skills-lock.json`. The sync leaves them alone, and `npx skills update -p` updates them.
+- `.claude/skills` holds two kinds of skills. Skills from `plugin/skills` and every agent in `.claude/agents` are generated copies: edit them in `plugin/` and run `python -I -X utf8 plugin/scripts/sync_claude_dir.py --root .`, never by hand in `.claude/`. The sync deletes and recopies them, so a hand edit in `.claude/` is lost. Skills installed with `npx skills add` are listed in `skills-lock.json`. The sync leaves them alone, and `npx skills update -p` updates them.
 - The 21st.dev MCP lives in Simon's user config (`claude mcp add --scope user`), not in the repo, because it carries his API key. Never commit a key.
 
 ## Checks before a commit that touches an app
@@ -93,4 +115,6 @@ Ideas from Claude Design (the Claude app) are welcome, but its look is not the r
 
 ## Writing
 
-Plain sentences. No semicolons as separators and no em or en dashes anywhere, in docs, commit messages or UI text. Prices are in Danish kroner, times are local clock times.
+Plain sentences. No semicolons as separators and no em or en dashes anywhere, in docs, commit messages or UI text. Prices are in Danish kroner, times are local clock times. The UI never shows a question mark or a prose summary line.
+
+Run Python with `-I -X utf8`.
