@@ -17,7 +17,23 @@ export function alongRoute<T>(rows: T[], at: (row: T) => LonLat | undefined, lin
 
 /** The open trip as the layers see it: its stops in travel order, as points. */
 export interface RouteScope {
+  /** The open trip's id, so another trip starts along its own route */
+  id?: string
   line: LonLat[]
+}
+
+/** Which trip the whole map toggle belongs to: a trip id, '' for a scope without one, null with no trip open. */
+export const scopeKey = (scope: RouteScope | null): string | null => (scope ? scope.id ?? '' : null)
+
+/** The whole map toggle and the trip it was set for. */
+export interface WideState {
+  trip: string | null
+  wide: boolean
+}
+
+/** The toggle as it stands for `trip`: kept while the same trip is open, off again when another opens or it closes. */
+export function wideForTrip(s: WideState, trip: string | null): WideState {
+  return s.trip === trip ? s : { trip, wide: false }
 }
 
 /** The distance from a point to the nearest vertex of the line, in km. */

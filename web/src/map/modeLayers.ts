@@ -316,6 +316,8 @@ export function addModeLayers(map: MLMap) {
     source: SEL_SOURCE,
     paint: { 'circle-radius': 19, 'circle-color': 'rgba(0,0,0,0)', 'circle-stroke-color': C.text, 'circle-stroke-width': 2 },
   })
+  // the trip's numbered stops draw over the clusters, so the route still reads under a mode
+  for (const id of TRIP_STOP_LAYERS) if (map.getLayer(id)) map.moveLayer(id)
 }
 
 const show = (on: boolean) => (on ? 'visible' : 'none')

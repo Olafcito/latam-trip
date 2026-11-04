@@ -141,7 +141,7 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
       const p = model.byId.get(id)
       return p ? [[p.lon, p.lat] as LonLat] : []
     })
-    return line.length ? { line } : null
+    return line.length ? { id: trip.id, line } : null
   }, [trip, model])
   const mm = useMapMode(map, data, undefined, scope)
   // the host's pane stays under a mode, folded to its small card, so the trip is still in sight
@@ -472,6 +472,15 @@ export function RouteMap({ data, trips, onTrips, maxFitZoom = 3.2, highlight, fi
     const points = [...mm.points(m), ...(mm.scoped && scope ? scope.line : [])]
     if (points.length) fit(boundsOf(points), 'mode', 6, narrow ? 16 : 30)
   }
+
+  // the whole map toggle changes which markers a mode shows, so the camera fits them again. A reset by another trip
+  // opening is left to the trip's own camera
+  const wideWas = useRef({ wide: mm.wide, trip: scope?.id })
+  useEffect(() => {
+    const was = wideWas.current
+    wideWas.current = { wide: mm.wide, trip: scope?.id }
+    if (was.wide !== mm.wide && was.trip === scope?.id && mm.mode) fitMode(mm.mode)
+  }, [mm.wide, scope?.id])
 
   const setMode = (next: MapMode | null) => {
     live.current.mode = next

@@ -6,7 +6,7 @@ import { NO_EXPERIENCE_FILTER, experienceWorld, filterExperiences, filterSaved, 
 import { NO_FILTER, cityName, filterCities, filterGyms, gymWorld, rankCities, rankGyms, spreadGyms, type GymFilter } from '../data/gyms'
 import type { CityRow, GymRow, MapData } from '../data/types'
 import type { LonLat } from '../lib/geo'
-import { scopeRows, type RouteScope } from './routeScope'
+import { scopeKey, scopeRows, wideForTrip, type RouteScope, type WideState } from './routeScope'
 import { CITY_SOURCE, EXP_SOURCE, GYM_SOURCE, cityFeatures, experienceFeatures, gymFeatures, setMapMode, setModeData, setModeSelection, type MapMode } from './modeLayers'
 
 export type { MapMode }
@@ -28,7 +28,7 @@ export function useMapMode(map: MLMap | null, data: MapData, first?: CardRef, sc
 
   const [mode, setModeState] = useState<MapMode | null>(null)
   // with a trip open the layers show what lies along it, until the whole map is asked for
-  const [wide, setWide] = useState(false)
+  const [wideState, setWideState] = useState<WideState>(() => ({ trip: scopeKey(scope), wide: false }))
   const [stack, setStack] = useState<CardRef[]>(first ? [first] : [])
   const [tab, setTab] = useState<GymTab>('gyms')
   // filters outlive a mode: coming back finds the map as it was left
@@ -44,11 +44,13 @@ export function useMapMode(map: MLMap | null, data: MapData, first?: CardRef, sc
     return on
   }, [gyms, exps])
 
-  // closing the trip puts the scope back to the trip's own, the next one starts along its route
-  const tripOpen = !!scope
-  useEffect(() => {
-    if (!tripOpen) setWide(false)
-  }, [tripOpen])
+  // closing the trip or opening another puts the scope back, the next trip starts along its own route.
+  // Set during render, so no frame shows the old trip's whole map on the new one
+  const tripKey = scopeKey(scope)
+  const synced = wideForTrip(wideState, tripKey)
+  if (synced !== wideState) setWideState(synced)
+  const wide = synced.wide
+  const setWide = useCallback((on: boolean) => setWideState((s) => ({ ...s, wide: on })), [])
 
   const placeAt = useMemo(() => new Map(data.places.map((p): [string, LonLat] => [p.id, [p.lon, p.lat]])), [data.places])
 
