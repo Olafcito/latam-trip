@@ -13,6 +13,7 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   update-experience ID [--set FIELD=VALUE ...] [--json FILE]  change fields of one experience
   add-experience-image FILE [--replace]         experience images into experience_images.jsonl
   add-stays FILE                       closed, prices go to lodging_prices with the connector's add_lodging_price
+  lodging-details FILE [--dry]         every room, room photo, price and place photo of a Booking.com place read from its page
   list-add LIST TYPE ID [--note TEXT] [--name NAME]  save a place or experience in a list (lists.json)
   list-remove LIST TYPE ID             take it out again
   save-trip FILE [--by plan-trip|migration|planner]  save a trip's next version (prints id and version)
@@ -533,6 +534,117 @@ def cmd_add_stays(paths, *_):
     connector's add_lodging_price, so this refuses and writes nothing."""
     print(STAYS_CLOSED)
     return 1
+
+
+ROOM_PATCH = ("name", "beds", "private", "bathroom", "notes", "photo")  # a read fills these, a null never wipes a value
+
+
+def _lodging_details_plan(doc):
+    """The rooms and photos of a lodging-details file as rows, and every reason the file is refused."""
+    errs = []
+    if not isinstance(doc, dict):
+        return None, None, None, ["the file is not a JSON object"]
+    lid = doc.get("lodging_id")
+    if not isinstance(lid, str) or not lid:
+        errs.append("missing lodging_id")
+    photos, rooms = doc.get("photos") or [], doc.get("rooms") or []
+    if not isinstance(photos, list) or not isinstance(rooms, list):
+        return None, None, None, ["photos and rooms must be lists"]
+    for i, ph in enumerate(photos):
+        errs += [f"photos[{i}] {e}" for e in check_fields(ph, LODGING_PHOTO)]
+    plan, seen = [], set()
+    for i, r in enumerate(rooms):
+        if not isinstance(r, dict):
+            errs.append(f"rooms[{i}] is not a JSON object"); continue
+        row = {k: v for k, v in r.items() if k != "prices"}
+        row.update(lodging_id=lid, site="booking")
+        re_ = [f"rooms[{i}] {e}" for e in check_fields(row, LODGING_ROOM)]
+        if row.get("beds") is not None and not (isinstance(row["beds"], int) and row["beds"] >= 1):
+            re_.append(f"rooms[{i}] beds is {row['beds']!r}, expected 1 or more")
+        sid = row.get("site_id")
+        if sid in seen:
+            re_.append(f"rooms[{i}] site_id {sid!r} is in the file twice")
+        seen.add(sid)
+        prices = r.get("prices") or []
+        if not isinstance(prices, list):
+            re_.append(f"rooms[{i}].prices is not a list"); prices = []
+        pr = []
+        for j, p in enumerate(prices):
+            prow = dict(p) if isinstance(p, dict) else p
+            if isinstance(prow, dict):
+                prow.update(room_id="x", site="booking")
+            pe = [f"rooms[{i}].prices[{j}] {e}" for e in check_fields(prow, LODGING_PRICE)]
+            if not pe:
+                if prow["check_out"] <= prow["check_in"]:
+                    pe.append(f"rooms[{i}].prices[{j}] check_out is not after check_in")
+                if prow.get("total_dkk") is None and prow.get("per_night_dkk") is None:
+                    pe.append(f"rooms[{i}].prices[{j}] has no total_dkk and no per_night_dkk")
+                for k in ("total_dkk", "per_night_dkk", "available"):
+                    if prow.get(k) is not None and prow[k] < 0:
+                        pe.append(f"rooms[{i}].prices[{j}] {k} is negative")
+            re_ += pe
+            pr.append({k: v for k, v in prow.items() if k != "room_id"} if isinstance(prow, dict) else prow)
+        errs += re_
+        plan.append((row, pr))
+    return lid, [{"url": p["url"], "caption": p.get("caption")} for p in photos if isinstance(p, dict) and "url" in p], plan, errs
+
+
+def cmd_lodging_details(paths, file, dry=False, rest=None):
+    """Store what a read of a Booking.com page found: the rooms with their photos and prices, and the place photos.
+    A room is matched to a stored one by its Booking.com room id, else by name among the rooms without an id (the one
+    cheapest room the task runner stored), and patched. Any other room is added. Prices are added, a price already
+    stored for the room and dates is skipped. Photos replace the stored ones only when the file has some. No room is
+    deleted. The whole file is refused, with nothing written, when any row fails its schema."""
+    try:
+        with open(file, encoding="utf-8") if file != "-" else sys.stdin as fh:
+            doc = json.load(fh)
+    except (OSError, json.JSONDecodeError) as e:
+        raise Refused(f"{file}: {e}")
+    lid, photos, plan, errs = _lodging_details_plan(doc)
+    if errs:
+        for e in errs:
+            print(f"refused: {e}")
+        raise Refused(f"lodging-details refused, {len(errs)} problem{'s' if len(errs) != 1 else ''}, nothing written")
+    rest = rest or get_store(paths).rest
+    if not rest.get_all("lodgings", {"select": "id", "id": "eq." + lid}):
+        raise Refused(f"no lodging {lid!r}")
+    stored = rest.get_all("lodging_rooms", {"select": "id,name,site,site_id", "lodging_id": "eq." + lid})
+    taken, added_r, updated_r, new_prices, todo = set(), 0, 0, 0, []
+    by_sid = {r["site_id"]: r for r in stored if r.get("site") == "booking" and r.get("site_id")}
+    for row, prices in plan:
+        hit = by_sid.get(row.get("site_id"))
+        if hit is None or hit["id"] in taken:
+            hit = next((r for r in stored if not r.get("site_id") and r["id"] not in taken
+                        and str(r["name"]).casefold() == row["name"].casefold()), None)
+        if hit is not None:
+            taken.add(hit["id"])
+        todo.append((row, prices, hit))
+    have = set()
+    if taken:
+        ids = ",".join(sorted(taken))
+        for p in rest.get_all("lodging_prices", {"select": "room_id,check_in,check_out,total_dkk,per_night_dkk", "room_id": f"in.({ids})"}):
+            have.add((p["room_id"], p["check_in"], p["check_out"], p.get("total_dkk"), p.get("per_night_dkk")))
+    for row, prices, hit in todo:
+        rid = None
+        if hit is not None:
+            updated_r += 1
+            rid = hit["id"]
+            patch = {k: row[k] for k in ("site", "site_id") + ROOM_PATCH if row.get(k) is not None}
+            if not dry:
+                rest.patch("lodging_rooms", {"id": "eq." + rid}, patch)
+        else:
+            added_r += 1
+            if not dry:
+                rid = rest.insert("lodging_rooms", [{k: v for k, v in row.items() if v is not None}], returning="id")[0]["id"]
+        fresh = [p for p in prices if (rid, p["check_in"], p["check_out"], p.get("total_dkk"), p.get("per_night_dkk")) not in have]
+        new_prices += len(fresh)
+        if fresh and not dry:
+            rest.insert("lodging_prices", [dict({k: v for k, v in p.items() if v is not None}, room_id=rid, site="booking") for p in fresh])
+    if photos and not dry:
+        rest.patch("lodgings", {"id": "eq." + lid}, {"photos": photos})
+    print(f"lodging-details{' (dry, nothing written)' if dry else ''}: rooms added {added_r}, rooms updated {updated_r}, "
+          f"prices added {new_prices}, photos {len(photos)}")
+    return 0
 
 
 # ---- lists, task log, usage ---------------------------------------------------------------------
@@ -1490,6 +1602,9 @@ def main(argv=None):
             return cmd_add_experience_image(paths, a[0], replace)
         if cmd == "add-stays":
             return cmd_add_stays(paths)
+        if cmd == "lodging-details":
+            dry = _flag(a, "--dry")
+            return cmd_lodging_details(paths, a[0], dry)
         if cmd == "list-add":
             note, name = _opt(a, "--note"), _opt(a, "--name")
             return cmd_list_add(paths, a[0], a[1], a[2], note, name)
