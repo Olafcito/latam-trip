@@ -21,6 +21,7 @@ import { CityFold } from '../stays/CityFold'
 import { PropertyView } from '../stays/PropertyView'
 import { StayList, type StayRowData } from '../stays/StayList'
 import { useSaved } from '../stays/useSaved'
+import { useStayFind } from '../stays/useStayFind'
 import { FindPopup } from './FindPopup'
 import { Finds } from './TripHead'
 
@@ -30,6 +31,13 @@ import { Finds } from './TripHead'
 // the place and delete it, still open the city card from About.
 
 const firstPhoto = (l: Lodging | undefined) => l?.photos.find((p) => /^https:\/\//i.test(p.url))?.url ?? null
+
+/** The search asks for the nights no stay has yet, else the whole stop, and one night for a stop passed through. */
+function searchWindow(stays: Parameters<typeof freeNights>[0], sp: Parameters<typeof freeNights>[1]) {
+  const free = freeNights(stays, sp)
+  const checkIn = free.nights > 0 ? free.first : sp.inDay
+  return { free, checkIn, checkOut: addDays(checkIn, Math.max(1, free.nights > 0 ? free.nights : sp.days)) }
+}
 
 export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   data: AppData
@@ -57,10 +65,19 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
 
   const p = journey.places[i]
   const sp = sched.places[i]
-  if (!p || !sp) return null
+  const name = p ? shortPlace(nodeName(map, inout, p.node)) : ''
+  const win = p && sp ? searchWindow(p.stays ?? [], sp) : null
+  // Find accommodations, for a stop with nights
+  const finder = useStayFind(
+    sp && sp.days > 0 ? { id: sp.node, name } : null,
+    win?.checkIn ?? '',
+    win?.checkOut ?? '',
+    { id: journey.id, version: journey.version ?? null },
+    adding !== false,
+  )
+  if (!p || !sp || !win) return null
   const node = map.nodes.find((n) => n.id === p.node)
   const prof = node?.profile
-  const name = shortPlace(nodeName(map, inout, p.node))
   const stays = p.stays ?? []
   const parts = stayParts(stays, sp)
   const byId = new Map(lodgings.map((l) => [l.id, l]))
@@ -113,10 +130,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
     }),
   ]
 
-  // the search asks for the nights no stay has yet, else the whole stop, and one night for a stop passed through
-  const free = freeNights(stays, sp)
-  const searchIn = free.nights > 0 ? free.first : sp.inDay
-  const searchOut = addDays(searchIn, Math.max(1, free.nights > 0 ? free.nights : sp.days))
+  const { free, checkIn: searchIn, checkOut: searchOut } = win
   const planned = new Set(stays.map((s) => s.lodging_id))
   const ranked = [...here].sort((a, b) => Number(!!bookedAt(b)) - Number(!!bookedAt(a)) || Number(planned.has(b.id)) - Number(planned.has(a.id)))
   const finds = read && node ? read(node.id) : null
@@ -173,6 +187,9 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
               startId={adding}
               saved={saved}
               onSave={(l) => toggleSaved(l.id)}
+              searching={finder.searching}
+              onFind={sp.days > 0 ? finder.find : undefined}
+              findError={finder.error}
               onLink={async (url) => {
                 const r = await addFromLink(url, sp.node, searchIn, searchOut)
                 // the place shows in the list before the search opens it. A failed read is let go: the live channel brings it
