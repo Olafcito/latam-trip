@@ -190,7 +190,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
                 const nights = sp.days > 0 ? Math.max(1, at.nights) : 1
                 const link = shareLink(l)
                 return (
-                  <PropertyView
+                  <PropertyView key={l.id}
                     lodging={l}
                     place={[name, node && countryName(node.country)].filter(Boolean).join(', ')}
                     checkIn={first}

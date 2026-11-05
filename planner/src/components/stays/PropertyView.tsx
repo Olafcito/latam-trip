@@ -78,7 +78,7 @@ function Gallery({ l, onBack, onShare, onSave, saved }: Pick<PropertyViewProps, 
         {onBack && <button type="button" className="pv-round" aria-label="Back to the places" onClick={onBack}><Caret dir="l" s={18} /></button>}
         <span className="pv-gap" />
         {onShare && <button type="button" className="pv-round" aria-label={copied ? 'Link copied' : `Share ${l.name}`} title={copied ? 'Link copied' : 'Share'} onClick={share}>{copied ? <Check s={16} /> : <Share s={16} />}</button>}
-        {onSave && <button type="button" className="pv-round" aria-pressed={!!saved} aria-label={saved ? `Saved, keep ${l.name} no more` : `Save ${l.name}`} title={saved ? 'Saved' : 'Save'} onClick={onSave}><Heart s={16} on={saved} /></button>}
+        {onSave && <button type="button" className="pv-round" aria-pressed={!!saved} aria-label={`Save ${l.name}`} title={saved ? 'Saved' : 'Save'} onClick={onSave}><Heart s={16} on={saved} /></button>}
       </div>
       {shown.length > 1 && <span className="pv-count" aria-hidden="true"><Photos s={12} />{at + 1} / {shown.length}</span>}
     </div>

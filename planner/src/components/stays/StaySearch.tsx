@@ -74,7 +74,8 @@ function Card({ l, checkIn, checkOut, saved, badge, open, onOpen, onSave }: {
       <div className="as-body">
         <button type="button" className="as-name" aria-current={open || undefined} onClick={onOpen}>{l.name}</button>
         <span className="as-meta">
-          {[kind, l.area].filter(Boolean).map((w, k) => <span key={k}>{w}</span>)}
+          {kind && <span>{kind}</span>}
+          {l.area && <span className="as-area">{l.area}</span>}
           <Rating l={l} />
         </span>
         <span className="as-price">
@@ -88,7 +89,7 @@ function Card({ l, checkIn, checkOut, saved, badge, open, onOpen, onSave }: {
         )}
       </div>
       {onSave && (
-        <button type="button" className="as-keep" aria-pressed={saved} aria-label={saved ? `Saved, keep ${l.name} no more` : `Save ${l.name}`} onClick={onSave}>
+        <button type="button" className="as-keep" aria-pressed={saved} aria-label={`Save ${l.name}`} onClick={onSave}>
           <Bookmark s={18} on={saved} />
         </button>
       )}

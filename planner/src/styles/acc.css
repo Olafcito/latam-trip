@@ -244,6 +244,7 @@
 .as-name::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
 .as-meta { grid-area: meta; display: flex; align-items: center; min-width: 0; white-space: nowrap; overflow: hidden; font-size: .75rem; color: var(--muted); }
 .as-meta > * { flex: none; }
+.as-meta > .as-area { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .as-meta > * + *::before { content: '·'; margin: 0 5px; color: var(--faint); }
 .as-price { grid-area: price; align-self: start; display: grid; justify-items: end; line-height: 1.2; }
 .as-kr { font-size: var(--fs-title); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); white-space: nowrap; }

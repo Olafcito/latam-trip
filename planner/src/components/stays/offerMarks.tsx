@@ -32,7 +32,7 @@ export function Rating({ l, full }: { l: Pick<Lodging, 'rating' | 'reviews' | 'r
   const count = l.reviews ? ` (${thousands(l.reviews)}${full ? ' reviews' : ''})` : ''
   const label = [`Rated ${dec1(l.rating)} of 10`, l.reviews ? `from ${thousands(l.reviews)} reviews` : '', l.rating_source ? `on ${l.rating_source}` : ''].filter(Boolean).join(' ')
   return (
-    <span className="ao-rate" aria-label={label} title={l.rating_source ? `On ${l.rating_source}` : undefined}>
+    <span className="ao-rate" role="img" aria-label={label} title={l.rating_source ? `On ${l.rating_source}` : undefined}>
       <Star s={full ? 15 : 12} />
       <b aria-hidden="true">{dec1(l.rating)}</b>
       {count && <span aria-hidden="true">{count}</span>}
