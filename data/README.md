@@ -28,3 +28,10 @@ The `read-booking` edge function (`supabase/functions/read-booking`) reads a boo
 ## Places to stay and live rates
 
 `lodgings`, `lodging_rooms` and `lodging_prices` are owner only and never in a built file. A room keeps `site` and `site_id`, where it was read from and its id there, and a `photo`. A price keeps `available`, the beds (a dorm) or rooms (a private) left when it was seen. The `stay-rates` edge function (`supabase/functions/stay-rates`) reads a place's rooms and prices from Hostelworld for a date range and writes them to these tables, when the planner opens a place with a Hostelworld link, when a Hostelworld link is pasted to add a place, and each morning from the worker's `rates` action for every place and dates with a Hostelworld price ahead. Its README has the deploy commands and the worker key. The connector's `add_lodging_price` and `tripdb` check `available` against 0 and `site` against the known sites.
+
+## Hostelworld gate and cities
+
+`site_calls` and `hostelworld_cities` are read and written only by the `stay-rates` edge function with the service role. Row level security is on with no policies, so no signed in client sees them (`supabase/migrations/0020_hostelworld_search.sql`, TECH-004).
+
+- `site_calls` holds one row per Hostelworld request in the last minute. The function `take_site_call(site, per_minute)` takes a turn: it returns 0 and counts the call when there is room, else the seconds to wait. Every Hostelworld request of the function passes it, 30 a minute across the planner, the worker and the search. Rows older than a minute are deleted on the next turn.
+- `hostelworld_cities` remembers the Hostelworld city of a map place, `place_id` to `city_id` and `city`, with `checked_at`. A null `city_id` means Hostelworld has no city by that name, and the lookup is tried again after 30 days.
