@@ -1,15 +1,16 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import type { Lodging, LodgingKind } from '../../data/types'
 import { day } from '../../lib/format'
 import { KIND } from '../../lib/lodgingWords'
 import { amenities, cheapestRoom, sortPlaces, type StaySort } from '../../lib/stayOffer'
-import { Bed, Bookmark, Calendar, Caret, Check, Close, Pencil, Person, Pin, Search, Star } from '../icons'
+import { hostelworldId, type RatesResult } from '../../lib/stayRates'
+import { Bed, Bookmark, Calendar, Caret, Check, Close, Link, Pencil, Person, Pin, Search, Star, Warn } from '../icons'
 import { AmenityIcon, KindIcon, kindWord, NightPrice, Rating } from './offerMarks'
 
 // Add accommodation: find a place among the ones stored for the stop, or add one by hand. The stop, the dates and
 // the guests on top, the kinds of place as chips, then the places as cards led by their photo. A card opens the
 // place. A search under way brings more places in over time: the cards found so far stay and the ones still
-// coming show as shapes under them.
+// coming show as shapes under them. A pasted Hostelworld link adds a place that is not stored yet and opens it.
 
 export interface StayBadge {
   label: string
@@ -38,6 +39,8 @@ export interface StaySearchProps {
   openId?: string | null
   /** the form that adds a place by hand */
   manual?: ReactNode
+  /** adds the place a Hostelworld link is for, with its rooms and prices, and has it in places when it resolves */
+  onLink?: (url: string) => Promise<RatesResult>
 }
 
 const KINDS: LodgingKind[] = ['hostel', 'hotel', 'guesthouse', 'apartment']
@@ -102,6 +105,53 @@ function Field({ label, icon, face, children, wide }: { label: string; icon: Rea
   )
 }
 
+/** A Hostelworld link pasted in: Go adds the place and opens it once it is among the places. */
+function LinkRow({ places, onLink, onOpen }: { places: Lodging[]; onLink: (url: string) => Promise<RatesResult>; onOpen: (l: Lodging) => void }) {
+  const [url, setUrl] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  // the place added, until the store has it
+  const [want, setWant] = useState<string | null>(null)
+  useEffect(() => {
+    const l = want ? places.find((x) => x.id === want) : null
+    if (!l) return
+    setWant(null)
+    onOpen(l)
+  }, [want, places, onOpen])
+  const ok = hostelworldId(url) != null
+  const go = async (e: FormEvent) => {
+    e.preventDefault()
+    if (!ok || busy) return
+    setBusy(true)
+    setError(null)
+    let r: RatesResult
+    try {
+      r = await onLink(url)
+    } catch {
+      r = { ok: false, message: 'Hostelworld could not be asked right now.' }
+    }
+    setBusy(false)
+    if (!r.ok) return setError(r.message)
+    setUrl('')
+    setWant(r.lodging_id)
+  }
+  return (
+    <form className="as-link" onSubmit={go} aria-busy={busy || undefined} data-busy={busy || undefined}>
+      <label className="as-lf">
+        {busy ? <span className="as-live" aria-hidden="true" /> : <Link s={16} />}
+        <input
+          type="url" inputMode="url" autoComplete="off" spellCheck={false} placeholder="Paste a Hostelworld link" aria-label="Hostelworld link"
+          value={url} disabled={busy} aria-invalid={error ? true : undefined}
+          onChange={(e) => { setUrl(e.target.value); setError(null) }}
+        />
+        {error && <span className="pv-mk" data-tone="warn" role="img" aria-label={error} title={error}><Warn s={13} /></span>}
+      </label>
+      <button type="submit" className="as-go" disabled={!ok || busy}>{busy && <span className="pv-vh">Adding from Hostelworld</span>}Go</button>
+      <span className="pv-vh" role="status">{error ?? ''}</span>
+    </form>
+  )
+}
+
 export function StaySearch(p: StaySearchProps) {
   const [tab, setTab] = useState<'find' | 'manual'>('find')
   const [kind, setKind] = useState<LodgingKind | 'all'>('all')
@@ -144,6 +194,8 @@ export function StaySearch(p: StaySearchProps) {
               <button key={k} type="button" role="radio" aria-checked={kind === k} className="as-chip" onClick={() => setKind(k)}><KindIcon kind={k} s={15} />{KIND[k]}</button>
             ))}
           </div>
+
+          {p.onLink && <LinkRow places={p.places} onLink={p.onLink} onOpen={p.onOpen} />}
 
           <div className="as-count">
             <span aria-live="polite">{busy && <span className="as-live" aria-hidden="true" />}{count}</span>

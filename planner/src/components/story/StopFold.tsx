@@ -10,6 +10,8 @@ import { placeFinds, type FindRow } from '../../lib/placeFinds'
 import { shortPlace } from '../../lib/format'
 import { choiceNights, chooseRoom, freeNights, removePart } from '../../lib/stayEdit'
 import { partBooking, stayClashes, stayParts, tripStays } from '../../lib/stays'
+import { loadLodgings } from '../../lib/lodgings'
+import { addFromLink } from '../../lib/stayRates'
 import { addDays } from '../../lib/time'
 import { Modal } from '../Modal'
 import { AddPlace } from '../stays/AddPlace'
@@ -40,6 +42,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   const lodgings = useStore((s) => s.lodgings)
   const bookings = useStore((s) => s.bookings)
   const setStays = useStore((s) => s.setStays)
+  const setLodgings = useStore((s) => s.setLodgings)
   const [adding, setAdding] = useState<string | null | false>(false)
   const [route, setRoute] = useState<RouteData | null>(null)
   const [find, setFind] = useState<FindRow | null>(null)
@@ -166,6 +169,12 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
               places={ranked}
               startId={adding}
               saved={new Set()}
+              onLink={async (url) => {
+                const r = await addFromLink(url, sp.node, searchIn, searchOut)
+                // the place shows in the list before the search opens it. A failed read is let go: the live channel brings it
+                if (r.ok) await loadLodgings().then(setLodgings, () => {})
+                return r
+              }}
               badge={(l) => (bookedAt(l) ? { label: 'Booked here', tone: 'booked' } : planned.has(l.id) ? { label: 'In your plan', tone: 'plan' } : null)}
               onClose={close}
               manual={<AddPlace place={sp.node} first={sp.days > 0 ? searchIn : null} nights={sp.days > 0 ? Math.max(1, free.nights || sp.days) : 0} close={close} onSaved={close} />}
