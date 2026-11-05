@@ -269,11 +269,18 @@ export function App() {
         if (n === latest) setLodgings(l)
       }, () => {})
     }
+    // one live fetch writes many rows, so a change reloads once 300 ms after the last one
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const soon = () => {
+      clearTimeout(timer)
+      timer = setTimeout(reload, 300)
+    }
     reload()
-    const stop = subscribeLodgings(reload)
+    const stop = subscribeLodgings(soon)
     window.addEventListener('online', reload)
     return () => {
       latest = -1
+      clearTimeout(timer)
       stop()
       window.removeEventListener('online', reload)
     }
