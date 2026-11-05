@@ -297,7 +297,9 @@
 .pv-top { position: relative; flex: none; aspect-ratio: 2 / 1; background: var(--surface-3); }
 .pv-strip { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
 .pv-strip::-webkit-scrollbar { display: none; }
-.pv-strip img { flex: none; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; }
+.pv-ph { flex: none; width: 100%; height: 100%; padding: 0; scroll-snap-align: start; cursor: zoom-in; }
+.pv-ph img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pv-strip .pv-ph:focus-visible { outline-offset: -4px; }
 .pv-noph { display: grid; place-items: center; height: 100%; color: var(--faint); }
 .pv-acts { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; gap: 8px; pointer-events: none; }
 .pv-gap { flex: 1; }
@@ -322,7 +324,36 @@
 .pv-arr[data-off] { visibility: hidden; }
 @media (hover: hover) and (pointer: fine) {
   .pv-arr { display: grid; opacity: 0; transition: opacity var(--t-fast) ease, background-color var(--t-fast) ease; }
-  .pv-top:hover .pv-arr, .pv-top:focus-within .pv-arr { opacity: 1; }
+  .pv-top:hover .pv-arr, .pv-top:focus-within .pv-arr, .phv .pv-arr { opacity: 1; }
+}
+
+/* a photo large, over the whole screen: the one window, made the size of the screen and dark behind the photo */
+.md.phv {
+  inset: 0; width: 100vw; height: 100dvh; max-height: none; margin: 0;
+  border: 0; border-radius: 0; background: var(--ground);
+  transition-duration: var(--t-med);
+}
+@starting-style {
+  .md.phv[open] { opacity: 0; transform: scale(0.96); }
+}
+.md.phv[data-closing='true'] { opacity: 0; transform: scale(0.97); transition-duration: var(--t-fast); }
+.phv .md-in { padding: 0; }
+.phv-in { position: relative; flex: 1; min-height: 0; display: flex; }
+.phv-strip { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; outline: none; }
+.phv-strip::-webkit-scrollbar { display: none; }
+.phv-slide {
+  flex: none; width: 100%; height: 100%; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center;
+  scroll-snap-align: start; scroll-snap-stop: always;
+  padding: calc(56px + env(safe-area-inset-top)) 16px calc(56px + env(safe-area-inset-bottom));
+}
+.phv-slide img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+.phv-none { color: var(--faint); }
+.phv-x { position: absolute; top: calc(10px + env(safe-area-inset-top)); right: 10px; }
+.phv-count { top: calc(17px + env(safe-area-inset-top)); left: 10px; right: auto; bottom: auto; }
+@media (hover: hover) and (pointer: fine) {
+  .phv-slide { padding-inline: 64px; }
+  .phv-strip { cursor: zoom-out; }
+  .phv-slide img { cursor: default; }
 }
 .pv-h { display: grid; gap: 3px; }
 .pv-h h3 { margin: 0; font-size: var(--fs-head); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; overflow-wrap: anywhere; }
@@ -364,7 +395,8 @@
   background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
 }
 .pv-room[data-on] { box-shadow: inset 0 0 0 1px var(--line-2); }
-.pv-rph { display: grid; place-items: center; width: 5rem; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; background: var(--surface-3); color: var(--faint); }
+.pv-rph { display: grid; place-items: center; width: 5rem; aspect-ratio: 3 / 2; padding: 0; border-radius: 8px; overflow: hidden; background: var(--surface-3); color: var(--faint); }
+button.pv-rph { cursor: zoom-in; }
 .pv-rph img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pv-rn { display: grid; gap: 2px; min-width: 0; }
 .pv-rn b { font-size: var(--fs-small); font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
@@ -441,6 +473,8 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .pv-more:hover { color: var(--text); }
   a.pv-seller:hover { background: var(--surface-3); }
   .pv-round:hover { background: rgb(8 18 24 / 0.82); }
+  button.pv-rph img { transition: opacity var(--t-fast) ease; }
+  button.pv-rph:hover img { opacity: 0.85; }
   .as-go:not(:disabled):hover { background: color-mix(in srgb, var(--surface-3) 80%, var(--text)); }
   .as-fd:not(:disabled):hover { background: var(--surface-2); color: var(--text); }
   .as-fb:hover { background: color-mix(in srgb, var(--flight) 92%, #fff); }
@@ -460,5 +494,10 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .stad-pane { opacity: 0; }
   .stad[data-open]:not([data-side]) .stad-pane { opacity: 1; }
   .as-live, .pv-nop[data-asking], .as-wait .as-ph, .as-wait i { animation: none; }
+  .md.phv { transition: opacity var(--t-med) ease, overlay var(--t-med) allow-discrete, display var(--t-med) allow-discrete; }
+  @starting-style {
+    .md.phv[open] { transform: none; }
+  }
+  .md.phv[data-closing='true'] { transform: none; }
   .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:not(:disabled):active, .as-fd:not(:disabled):active, .as-fb:active { transform: none; }
 }

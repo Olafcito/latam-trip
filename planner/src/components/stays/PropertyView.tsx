@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
 import type { Lodging } from '../../data/types'
 import { day, kr } from '../../lib/format'
 import { amenityRow, bookAt, cheapestRoom, nightly, nightsWord, stayDates, type Provider } from '../../lib/stayOffer'
@@ -9,13 +9,14 @@ import { roomMarks, type Mark } from '../../lib/roomMarks'
 import type { Shared } from '../../lib/sharePlace'
 import { Bed, Calendar, Caret, Check, External, Heart, Person, Photos, Share, Warn } from '../icons'
 import { DayInput } from './DayInput'
+import { PhotoViewer, type ViewPhoto } from './PhotoViewer'
 import { StripArrows } from './StripArrows'
 import { AmenityIcon, kindWord, NightPrice, Rating } from './offerMarks'
 import { useLiveRates, type LiveRates } from './useLiveRates'
 import { useStrip } from './useStrip'
 
 // A place to stay in full, pushed over the search on a phone and beside it on a wide screen: its photos edge to
-// edge with back, share and save on them, arrows on them for a mouse, its name, kind, place and
+// edge with back, share and save on them, arrows for a mouse and each one opening large, its name, kind, place and
 // rating, three lines of what it is like with More for the rest, five things it offers in one row, then its rooms
 // priced per night for the dates with Select on each, the two days themselves the control that changes the dates,
 // and last the sites to book it at. A booked room carries the Booked pill in place of Select. A place with a
@@ -47,7 +48,9 @@ export interface PropertyViewProps {
   logo?: (p: Provider) => string | null
 }
 
-function Gallery({ l, onBack, onShare, onSave, saved }: Pick<PropertyViewProps, 'onBack' | 'onShare' | 'onSave' | 'saved'> & { l: Lodging }) {
+type GalleryProps = Pick<PropertyViewProps, 'onBack' | 'onShare' | 'onSave' | 'saved'> & { l: Lodging; onOpen: (photos: ViewPhoto[], at: number) => void }
+
+function Gallery({ l, onBack, onShare, onSave, saved, onOpen }: GalleryProps) {
   const [broken, setBroken] = useState<ReadonlySet<string>>(() => new Set())
   const [copied, setCopied] = useState(false)
   useEffect(() => {
@@ -59,39 +62,48 @@ function Gallery({ l, onBack, onShare, onSave, saved }: Pick<PropertyViewProps, 
     if ((await onShare?.()) === 'copied') setCopied(true)
   }
   const shown = l.photos.filter((p) => safeUrl(p.url) && !broken.has(p.url))
-  const s = useStrip(shown.length)
-  const at = clampPhoto(s.at, shown.length)
+  const photos: ViewPhoto[] = shown.map((p, i) => ({ url: safeUrl(p.url)!, alt: p.caption || `${l.name}, photo ${i + 1} of ${shown.length}` }))
+  const s = useStrip(photos.length)
+  const at = clampPhoto(s.at, photos.length)
+  // the arrow keys move the focus with the photo, so the one in view is the one Enter opens
+  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    const to = s.onKeyDown(e)
+    if (to !== null) (e.currentTarget.children[to] as HTMLElement | undefined)?.focus({ preventScroll: true })
+  }
   return (
     <div className="pv-top">
-      {shown.length ? (
-        <div ref={s.ref} className="pv-strip" tabIndex={shown.length > 1 ? 0 : undefined} aria-label={`Photos of ${l.name}`} role="group" onScroll={s.onScroll} onScrollEnd={s.onScrollEnd} onKeyDown={s.onKeyDown}>
-          {shown.map((p, i) => (
-            <img
-              key={p.url} src={safeUrl(p.url)!} alt={p.caption || `${l.name}, photo ${i + 1} of ${shown.length}`} loading={i ? 'lazy' : undefined} decoding="async"
-              referrerPolicy="no-referrer" draggable={false} onError={() => setBroken((b) => new Set(b).add(p.url))}
-            />
+      {photos.length ? (
+        <div ref={s.ref} className="pv-strip" aria-label={`Photos of ${l.name}`} role="group" onScroll={s.onScroll} onScrollEnd={s.onScrollEnd} onKeyDown={onKey}>
+          {photos.map((p, i) => (
+            <button key={p.url} type="button" className="pv-ph" tabIndex={i === at ? 0 : -1} aria-label={`Open ${p.alt}`} onClick={() => onOpen(photos, i)}>
+              <img
+                src={p.url} alt="" loading={i ? 'lazy' : undefined} decoding="async"
+                referrerPolicy="no-referrer" draggable={false} onError={() => setBroken((b) => new Set(b).add(shown[i].url))}
+              />
+            </button>
           ))}
         </div>
       ) : <span className="pv-noph" aria-hidden="true"><Bed s={36} /></span>}
-      <StripArrows at={at} count={shown.length} step={s.step} />
+      <StripArrows at={at} count={photos.length} step={s.step} />
       <div className="pv-acts">
         {onBack && <button type="button" className="pv-round" aria-label="Back to the places" onClick={onBack}><Caret dir="l" s={18} /></button>}
         <span className="pv-gap" />
         {onShare && <button type="button" className="pv-round" aria-label={copied ? 'Link copied' : `Share ${l.name}`} title={copied ? 'Link copied' : 'Share'} onClick={share}>{copied ? <Check s={16} /> : <Share s={16} />}</button>}
         {onSave && <button type="button" className="pv-round" aria-pressed={!!saved} aria-label={`Save ${l.name}`} title={saved ? 'Saved' : 'Save'} onClick={onSave}><Heart s={16} on={saved} /></button>}
       </div>
-      {shown.length > 1 && <span className="pv-count" aria-hidden="true"><Photos s={12} />{at + 1} / {shown.length}</span>}
+      {photos.length > 1 && <span className="pv-count" aria-hidden="true"><Photos s={12} />{at + 1} / {photos.length}</span>}
     </div>
   )
 }
 
-function RoomPhoto({ src }: { src: string | null | undefined }) {
+function RoomPhoto({ src, name, onOpen }: { src: string | null | undefined; name: string; onOpen: (photo: ViewPhoto) => void }) {
   const [broken, setBroken] = useState(false)
   const ok = src ? safeUrl(src) : null
+  if (!ok || broken) return <span className="pv-rph" aria-hidden="true"><Bed s={20} /></span>
   return (
-    <span className="pv-rph" aria-hidden="true">
-      {ok && !broken ? <img src={ok} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" draggable={false} onError={() => setBroken(true)} /> : <Bed s={20} />}
-    </span>
+    <button type="button" className="pv-rph" aria-label={`Open the photo of ${name}`} onClick={() => onOpen({ url: ok, alt: name })}>
+      <img src={ok} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" draggable={false} onError={() => setBroken(true)} />
+    </button>
   )
 }
 
@@ -178,9 +190,11 @@ export function PropertyView(p: PropertyViewProps) {
   const live = useLiveRates(l, p.checkIn, p.checkOut)
   const asking = live.state === 'asking'
   const now = Date.now()
+  const [view, setView] = useState<{ photos: ViewPhoto[]; at: number; label: string } | null>(null)
   return (
     <article className="pv" aria-label={l.name}>
-      <Gallery l={l} onBack={p.onBack} onShare={p.onShare} onSave={p.onSave} saved={p.saved} />
+      <Gallery l={l} onBack={p.onBack} onShare={p.onShare} onSave={p.onSave} saved={p.saved} onOpen={(photos, at) => setView({ photos, at, label: `Photos of ${l.name}` })} />
+      {view && <PhotoViewer photos={view.photos} start={view.at} label={view.label} onClose={() => setView(null)} />}
       <div className="pv-body">
         <header className="pv-h">
           <h3>{l.name}</h3>
@@ -220,7 +234,7 @@ export function PropertyView(p: PropertyViewProps) {
                 const mk = roomMarks(r, p.checkIn, p.checkOut, now)
                 return (
                   <li key={r.id} className="pv-room" data-on={on || booked || undefined}>
-                    <RoomPhoto src={r.photo} />
+                    <RoomPhoto src={r.photo} name={r.name} onOpen={(ph) => setView({ photos: [ph], at: 0, label: `Photo of ${r.name}` })} />
                     <span className="pv-rn">
                       <b>{r.name}</b>
                       {pr ? (
