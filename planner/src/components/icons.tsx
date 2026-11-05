@@ -105,9 +105,9 @@ export const External = ({ s = 12 }: { s?: number }) => (
 )
 
 /** A month back or on, in the calendar, or down on a control that opens a choice. */
-export const Caret = ({ s = 14, dir }: { s?: number; dir: 'l' | 'r' | 'd' }) => (
+export const Caret = ({ s = 14, dir }: { s?: number; dir: 'l' | 'r' | 'd' | 'u' }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
-    <path d={dir === 'l' ? 'M15 5l-7 7 7 7' : dir === 'r' ? 'M9 5l7 7-7 7' : 'M5 9l7 7 7-7'} />
+    <path d={dir === 'l' ? 'M15 5l-7 7 7 7' : dir === 'r' ? 'M9 5l7 7-7 7' : dir === 'u' ? 'M5 15l7-7 7 7' : 'M5 9l7 7 7-7'} />
   </svg>
 )
 
@@ -293,5 +293,148 @@ export const Lock = ({ s = 13 }: { s?: number }) => (
 export const ArrowUpRight = ({ s = 14 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
     <path d="M8 6h10v10M18 6L6 18" />
+  </svg>
+)
+
+// ---- accommodation: the city tabs, the search and a place's offer
+
+/** Things to do: a list. */
+export const List = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
+    <path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" strokeWidth={2.2} />
+  </svg>
+)
+
+/** About a place: an i in a ring. */
+export const Info = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5.5M12 7.8v.2" strokeWidth={2.4} />
+  </svg>
+)
+
+/** Find: a magnifying glass. */
+export const Search = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="M16 16l4.5 4.5" />
+  </svg>
+)
+
+/** Keep for later: a bookmark, filled when kept. */
+export const Bookmark = ({ s = 13, on }: { s?: number; on?: boolean }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base} fill={on ? 'currentColor' : 'none'}>
+    <path d="M6.5 3.5h11v17L12 16.5l-5.5 4z" />
+  </svg>
+)
+
+/** Save a place: a heart, filled when saved. */
+export const Heart = ({ s = 13, on }: { s?: number; on?: boolean }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base} fill={on ? 'currentColor' : 'none'}>
+    <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" />
+  </svg>
+)
+
+/** Share: an arrow up out of a tray. */
+export const Share = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M12 3.5v11M8 7.5l4-4 4 4M7 11H5.5v9.5h13V11H17" />
+  </svg>
+)
+
+/** More: three dots in a row. */
+export const More = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={3.2} {...base}>
+    <path d="M5 12h.01M12 12h.01M19 12h.01" />
+  </svg>
+)
+
+/** Not done yet: an open ring. */
+export const Ring = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.4} {...base}>
+    <circle cx="12" cy="12" r="7.5" />
+  </svg>
+)
+
+/** A hostel: a bunk bed. */
+export const Bunk = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
+    <path d="M4 3.5v17M20 3.5v17M4 9h16M4 16h16M4 6.5h6M4 13.5h6" />
+  </svg>
+)
+
+/** A guesthouse: a house with a sign. */
+export const House = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
+    <rect x="4" y="6" width="16" height="13" rx="2" />
+    <path d="M8 11h8M8 14.5h5M12 3v3" />
+  </svg>
+)
+
+/** An apartment: a block with windows. */
+export const Building = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2} {...base}>
+    <path d="M5 20.5V7l7-3.5L19 7v13.5M3 20.5h18M9 10h.01M15 10h.01M9 14h.01M15 14h.01M10.5 20.5v-3h3v3" strokeWidth={2.2} />
+  </svg>
+)
+
+/** Photos: a picture frame. */
+export const Photos = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="3.5" y="5" width="17" height="14" rx="2.5" />
+    <circle cx="9" cy="10" r="1.6" />
+    <path d="M20.5 15.5 15.5 11 7 19" />
+  </svg>
+)
+
+/** Social: two people. */
+export const People = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <circle cx="9" cy="8.5" r="3.2" />
+    <path d="M3 19.5a6 6 0 0 1 12 0M15.5 5.5a3.2 3.2 0 0 1 0 6.2M17.5 14a6 6 0 0 1 3.5 5.5" />
+  </svg>
+)
+
+/** A kitchen: a pot on the boil. */
+export const Pot = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M5 10h14v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4zM2.5 11.5H5M19 11.5h2.5M9 6.5c0-1.5 1-1.5 1-3M13.5 6.5c0-1.5 1-1.5 1-3" />
+  </svg>
+)
+
+/** Breakfast: a cup. */
+export const Cup = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M4.5 9h12v5.5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5zM16.5 10.5h1.5a2.5 2.5 0 0 1 0 5h-1.8M8 3.5v2.5M12 3.5v2.5" />
+  </svg>
+)
+
+/** Air con: a unit blowing cool air. */
+export const AirCon = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="3" y="4.5" width="18" height="8" rx="2" />
+    <path d="M7 9.5h10M8 16c0 1.5-1 1.5-1 3M12 16v3.5M16 16c0 1.5 1 1.5 1 3" />
+  </svg>
+)
+
+/** A workspace: a laptop. */
+export const Laptop = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="5" y="5" width="14" height="10" rx="1.5" />
+    <path d="M2.5 19h19" />
+  </svg>
+)
+
+/** By the beach: a sun umbrella. */
+export const Umbrella = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M3 12a9 9 0 0 1 18 0zM12 12v8M8.5 20.5h7" />
+  </svg>
+)
+
+/** Quiet: a crescent and a small star. */
+export const Quiet = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M18.5 14.5A7.5 7.5 0 0 1 9.5 5.5a7.5 7.5 0 1 0 9 9z" />
   </svg>
 )
