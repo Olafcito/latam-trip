@@ -173,7 +173,7 @@ export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
                 nights={nights ? at.nights : 0}
                 booking={bookedAt(l)}
                 chosen={chosen}
-                onChoose={nights ? (roomId) => change(toggleRoom(stays, sp, l.id, roomId)) : undefined}
+                onChoose={nights ? (roomId) => { if (bookedAt(l)?.room_id !== roomId) change(toggleRoom(stays, sp, l.id, roomId)) } : undefined}
               />
             )
           })}
