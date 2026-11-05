@@ -259,8 +259,16 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
     })
   }
   if (fresh.length) {
-    const { data, error: e } = await db.from('lodging_rooms').insert(fresh).select('id, name, site_id')
-    if (e || !data) throw new Refused(500, 'The rooms could not be saved.')
+    // A unique index on (lodging_id, site, site_id) lets two overlapping first calls meet here without doubling the rooms.
+    const { error: e } = await db.from('lodging_rooms').upsert(fresh, { onConflict: 'lodging_id,site,site_id', ignoreDuplicates: true })
+    if (e) throw new Refused(500, 'The rooms could not be saved.')
+    const { data, error: e2 } = await db
+      .from('lodging_rooms')
+      .select('id, name, site_id')
+      .eq('lodging_id', t.lodgingId)
+      .eq('site', 'hostelworld')
+      .in('site_id', fresh.map((f) => f.site_id as string))
+    if (e2 || !data) throw new Refused(500, 'The rooms could not be saved.')
     for (const r of data as Room[]) if (r.site_id) matched.set(r.site_id, r)
   }
 

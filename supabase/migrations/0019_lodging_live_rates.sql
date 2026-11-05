@@ -11,4 +11,6 @@ alter table public.lodging_rooms
 alter table public.lodging_prices
   add column if not exists available integer check (available >= 0);
 
-create index if not exists lodging_rooms_site on public.lodging_rooms (lodging_id, site, site_id);
+-- Unique, so two overlapping first calls cannot double a room. Rooms without a site id never clash, because nulls
+-- are distinct. Not partial, since an upsert on conflict cannot infer a partial index through the API.
+create unique index if not exists lodging_rooms_site on public.lodging_rooms (lodging_id, site, site_id);
