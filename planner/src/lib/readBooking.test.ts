@@ -44,7 +44,7 @@ describe('draftOf', () => {
     expect(d.rows).toHaveLength(1)
     expect(d.rows[0]).toMatchObject({ kind: 'flight', from_code: 'CPH', to_code: 'BOG', depart: '2026-12-03T10:20', currency: 'DKK', source: 'claude', trip_id: 't1', ticket: null })
     expect(d.rows[0].segments).toHaveLength(2)
-    expect(d.fields).toMatchObject({ reference: 'TEST01', price: '2450.5', refundable: 'no', changeable: 'fee', checked_bag: 'None', mail_url: 'https://mail.google.com/x' })
+    expect(d.fields).toMatchObject({ reference: 'TEST01', price: '2450,5', refundable: 'no', changeable: 'fee', checked_bag: 'None', mail_url: 'https://mail.google.com/x' })
     expect(d.missing).toEqual(['cancel_until'])
   })
 
