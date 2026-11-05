@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking } from '../data/types'
-import { airlineLogo, codeOfName, codeOfNumber, codesOf, flightLabel, flightsOf, mailLink, photoOf, placeOf, relationOf, sellerLogo, ticketRows, waitHours, type PlaceData } from './journey'
+import { airlineLogo, codeOfName, codeOfNumber, codesOf, flightLabel, flightsOf, mailLink, photoOf, placeOf, relationOf, sellerLogo, ticketRows, waitHours, type PlaceData } from './purchase'
 
 const row = (over: Partial<Booking>): Booking => ({
   id: 'r1', kind: 'flight', status: 'booked', from_code: 'AAA', to_code: 'CCC', depart: '2026-12-08T14:53', arrive: '2026-12-08T21:29',

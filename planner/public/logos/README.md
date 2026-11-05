@@ -6,4 +6,4 @@ The marks of airlines and booking services that the booked pane shows. The logos
 - `airline-JA.png`: JetSMART, from [airline-logos](https://github.com/Jxck-S/airline-logos) (`radarbox_banners/JAT.png`).
 - `gmail.svg`, `booking.svg`, `expedia.svg`: from [Simple Icons](https://simpleicons.org) (CC0), in each brand's colour.
 
-`planner/src/lib/journey.ts` lists the files it knows. A new logo is a file here plus a line there.
+`planner/src/lib/purchase.ts` lists the files it knows. A new logo is a file here plus a line there.
