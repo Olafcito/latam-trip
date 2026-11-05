@@ -54,6 +54,10 @@ class BookingSchema(unittest.TestCase):
         errs = self.check(dict(FLIGHT, seller_reference=12345))
         self.assertTrue(any(e.startswith("seller_reference") for e in errs), errs)
 
+    def test_a_mail_url_must_be_text(self):
+        errs = self.check(dict(FLIGHT, mail_url=12345))
+        self.assertTrue(any(e.startswith("mail_url") for e in errs), errs)
+
     def test_bookings_stay_out_of_the_built_tables(self):
         self.assertNotIn("bookings", tripdb.TABLES)
 
@@ -103,6 +107,15 @@ class DetailsMigration(unittest.TestCase):
     def test_it_grants_and_triggers_nothing(self):
         for word in ("grant", "policy", "trigger", "anon", "disable"):
             self.assertNotIn(word, self.sql)
+
+
+class MailMigration(unittest.TestCase):
+    def test_it_adds_the_mail_url_column(self):
+        with open(os.path.join(os.path.dirname(DETAILS), "0016_booking_mail.sql"), encoding="utf-8") as f:
+            sql = re.sub(r"--[^\n]*", "", f.read()).lower()
+        self.assertIn("add column mail_url text", sql)
+        for word in ("grant", "policy", "trigger", "anon"):
+            self.assertNotIn(word, sql)
 
 
 if __name__ == "__main__":

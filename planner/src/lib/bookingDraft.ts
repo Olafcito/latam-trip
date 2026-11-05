@@ -142,13 +142,15 @@ export interface BookingFields {
   cabin_bag?: string
   checked_bag?: string
   url?: string
+  /** the link to the confirmation mail, shared by the rows of one ticket */
+  mail_url?: string
   notes?: string
   /** "2026-12-20", the day the leg leaves */
   day?: string
 }
 
 /** The fields one ticket shares, written to every row of it. The price and the day belong to the first row. */
-const SHARED = ['seller', 'seller_reference', 'refundable', 'cancel_until', 'changeable', 'change_until', 'cabin_bag', 'checked_bag', 'url', 'notes'] as const
+const SHARED = ['seller', 'seller_reference', 'refundable', 'cancel_until', 'changeable', 'change_until', 'cabin_bag', 'checked_bag', 'url', 'mail_url', 'notes'] as const
 /** The fields each flight of a ticket may hold on its own: an airline gives each flight its reference. */
 const OWN = ['reference', 'fare'] as const
 
@@ -181,7 +183,11 @@ export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { 
   }
   return rows.map((row, k) => {
     const r: Partial<Booking> = { ...row }
-    for (const key of SHARED) put(r, key, form[key], form[key]?.trim())
+    for (const key of SHARED) {
+      // mail_url is left off the row unless it has a value or clears one the row had, so saving works before 0016 is applied
+      if (key === 'mail_url' && !form.mail_url?.trim() && !(opts.edit && row.mail_url)) continue
+      put(r, key, form[key], form[key]?.trim())
+    }
     if (mine == null || row.id === mine) for (const key of OWN) put(r, key, form[key], form[key]?.trim())
     if (k > 0) return r
     const price = readKr(form.price)
@@ -202,7 +208,7 @@ export function fromRow(b: Partial<Booking>): BookingFields {
   return {
     reference: s(b.reference), seller: s(b.seller), seller_reference: s(b.seller_reference), fare: s(b.fare), price: b.price_dkk == null ? '' : String(b.price_dkk).replace('.', ','),
     refundable: b.refundable ?? '', cancel_until: s(b.cancel_until), changeable: b.changeable ?? '', change_until: s(b.change_until),
-    cabin_bag: s(b.cabin_bag), checked_bag: s(b.checked_bag), url: s(b.url), notes: s(b.notes), day: s(b.depart?.slice(0, 10)),
+    cabin_bag: s(b.cabin_bag), checked_bag: s(b.checked_bag), url: s(b.url), mail_url: s(b.mail_url), notes: s(b.notes), day: s(b.depart?.slice(0, 10)),
   }
 }
 
@@ -211,7 +217,7 @@ export function savedRow(r: Partial<Booking>, id: string): Booking {
   const at = new Date().toISOString()
   return {
     kind: 'other', status: 'booked', from_code: null, to_code: null, depart: null, arrive: null, place_id: null, check_in: null, check_out: null,
-    lodging_id: null, room_id: null, reference: null, seller: null, seller_reference: null, fare: null, url: null, price_dkk: null, price: null, currency: null, refundable: null,
+    lodging_id: null, room_id: null, reference: null, seller: null, seller_reference: null, fare: null, url: null, mail_url: null, price_dkk: null, price: null, currency: null, refundable: null,
     changeable: null, change_until: null, cancel_until: null, cabin_bag: null, checked_bag: null, segments: null, travellers: 1, trip_id: null,
     ticket: null, source: null, notes: null, attachments: [], created_at: at, updated_at: at,
     ...r, id,

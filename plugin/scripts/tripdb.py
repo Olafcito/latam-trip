@@ -179,7 +179,7 @@ BOOKING = {"id": "str", "kind": "!enum:flight,bus,boat,stay,other", "status": "!
            "from_code": "str|null", "to_code": "str|null", "depart": "date|time|null", "arrive": "date|time|null",
            "place_id": "str|null", "check_in": "date|null", "check_out": "date|null", "lodging_id": "str|null",
            "room_id": "str|null", "reference": "str|null", "seller": "str|null", "seller_reference": "str|null",
-           "fare": "str|null", "url": "str|null",
+           "fare": "str|null", "url": "str|null", "mail_url": "str|null",
            "price_dkk": "num|null", "price": "num|null", "currency": "str|null",
            "refundable": "enum:yes,no,partly|null", "changeable": "enum:yes,no,fee|null",
            "change_until": "date|null", "cancel_until": "date|null", "cabin_bag": "str|null",

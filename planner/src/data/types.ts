@@ -283,6 +283,8 @@ export interface Booking {
   seller_reference?: string | null
   /** the fare name, "Light" or "Classic" (0015) */
   fare?: string | null
+  /** the link to the confirmation mail, optional because rows read before 0016 lack it */
+  mail_url?: string | null
   url: string | null
   price_dkk: number | null
   price: number | null

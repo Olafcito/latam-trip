@@ -377,6 +377,9 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
               <Row icon={<Link s={16} />} label="Link" htmlFor={`${id}-url`}>
                 <input id={`${id}-url`} name="url" className="bf-in" type="url" inputMode="url" value={form.url ?? ''} onChange={typed('url')} autoComplete="off" autoCapitalize="none" spellCheck={false} placeholder="https://" />
               </Row>
+              <Row icon={<Link s={16} />} label="Confirmation mail" htmlFor={`${id}-mail`}>
+                <input id={`${id}-mail`} name="mail_url" className="bf-in" type="url" inputMode="url" value={form.mail_url ?? ''} onChange={typed('mail_url')} autoComplete="off" autoCapitalize="none" spellCheck={false} placeholder="https://mail.google.com/..." />
+              </Row>
               <li className="bf-row bf-notes">
                 <span className="bf-i" aria-hidden="true"><Note s={16} /></span>
                 <label className="bf-k" htmlFor={`${id}-notes`}>Notes</label>

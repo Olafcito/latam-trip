@@ -178,6 +178,31 @@ describe('the form rows', () => {
     expect(rows.map((r) => r.reference)).toEqual(['TEST01', 'TEST01'])
   })
 
+  it('shares the confirmation mail link across the rows of a ticket', () => {
+    const rows = formRows([{ id: 'b1' }, { id: 'b2' }], { mail_url: ' https://mail.google.com/mail/u/0/#all/TEST01 ' })
+    expect(rows.map((r) => r.mail_url)).toEqual(['https://mail.google.com/mail/u/0/#all/TEST01', 'https://mail.google.com/mail/u/0/#all/TEST01'])
+  })
+
+  it('leaves mail_url off a new booking when the field is empty', () => {
+    const rows = formRows([{ id: 'b1' }], { mail_url: '', fare: 'Light' })
+    expect('mail_url' in rows[0]).toBe(false)
+  })
+
+  it('leaves mail_url off an edit of a row that had none', () => {
+    const rows = formRows([{ id: 'b1' }, { id: 'b2' }], { mail_url: '' }, { edit: true })
+    expect(rows.some((r) => 'mail_url' in r)).toBe(false)
+  })
+
+  it('clears mail_url on an edit of a row that had one', () => {
+    const rows = formRows([{ id: 'b1', mail_url: 'https://mail.google.com/mail/u/0/#all/TEST01' }], { mail_url: '' }, { edit: true })
+    expect(rows[0].mail_url).toBeNull()
+  })
+
+  it('reads the mail link back for Edit', () => {
+    expect(fromRow({ mail_url: 'https://mail.google.com/x' })).toMatchObject({ mail_url: 'https://mail.google.com/x' })
+    expect(fromRow({})).toMatchObject({ mail_url: '' })
+  })
+
   it('reads the seller number and the fare back for Edit', () => {
     expect(fromRow({ seller_reference: 'TEST02', fare: 'Light' })).toMatchObject({ seller_reference: 'TEST02', fare: 'Light' })
     expect(fromRow({})).toMatchObject({ seller_reference: '', fare: '' })
