@@ -60,7 +60,7 @@ TYPES = {
                       "clock times. A booked leg holds its day, set_leg_date, shift_leg and update_trip never move it, "
                       "and update_trip never drops it or changes its ends."),
     "lodging": T("lodging", "lodgings", tripdb.LODGING, auto=("id", "created_at", "updated_at"), keys=("id",),
-                 note="A lodging is a place to stay, kept in the project database only. Add only places Simon asked for, a stay_search task counting as him asking, "
+                 note="A lodging is a place to stay, kept in the project database only. Add only places Simon asked for, a task that asks to find places to stay counting as him asking, "
                       "with photos, rating, distances and rooms, and fill in prices for the trip's dates when you know them. "
                       "Call list_lodging with place first, so a place is not added twice. place_id is a place in the places, "
                       "and tags come from " + ", ".join(tripdb.LODGING_TAGS.split(",")) + ". "
