@@ -44,11 +44,11 @@ export function AddStay({ property, startId, ...search }: Omit<StaySearchProps, 
   const here = now(open) ?? (side ? search.places[0] ?? null : null)
   const drawn = side ? here : now(shown)
   return (
-    <div className="ad" data-open={here ? true : undefined} data-side={side || undefined}>
-      <div className="ad-list" inert={open && !side ? true : undefined}>
+    <div className="stad" data-open={here ? true : undefined} data-side={side || undefined}>
+      <div className="stad-list" inert={open && !side ? true : undefined}>
         <StaySearch {...search} onOpen={go} openId={here?.id ?? null} />
       </div>
-      <div className="ad-place" onTransitionEnd={(e) => { if (e.target === e.currentTarget && !open) setShown(null) }}>
+      <div className="stad-pane" onTransitionEnd={(e) => { if (e.target === e.currentTarget && !open) setShown(null) }}>
         {drawn && property(drawn, side ? null : () => setOpen(null))}
       </div>
     </div>

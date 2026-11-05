@@ -181,7 +181,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
         }
       />
       {adding !== false && (
-        <Modal label={`Add accommodation in ${name}`} className="ad-md" bare onClose={() => { setAdding(false); setPick(null) }}>
+        <Modal label={`Add accommodation in ${name}`} className="stad-md" bare onClose={() => { setAdding(false); setPick(null) }}>
           {(close) => (
             <AddStay
               key={adding ?? 'list'}
