@@ -187,7 +187,9 @@
 .as-sort { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: var(--hit); color: var(--text); font-weight: 500; }
 .as-sort > svg { color: var(--muted); }
 .as-sort select { position: absolute; inset: 0; opacity: 0; font-size: 16px; cursor: pointer; }
-.as-asking { margin: -4px 0 8px; font-size: var(--fs-small); color: var(--faint); }
+/* one mark per site still asked: its short name and the pulse */
+.as-site { display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 7px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-2); font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.02em; color: var(--muted); }
+.as-site > .as-live { width: 6px; height: 6px; }
 /* find accommodations: small and round by the count, in the grey of the sheet, a wider hit than it draws */
 .as-cg { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
 .as-cg > span { display: inline-flex; align-items: center; gap: 8px; }

@@ -53,6 +53,9 @@ export interface StaySearchProps {
 const KINDS: LodgingKind[] = ['hostel', 'hotel', 'guesthouse', 'apartment']
 const SORTS: [StaySort, string][] = [['recommended', 'Recommended'], ['price', 'Lowest price'], ['rating', 'Best rated']]
 
+/** the short face of a site on its mark */
+const SITE_FACE: Record<string, string> = { Hostelworld: 'HW', 'Booking.com': 'B.' }
+
 function Photo({ l }: { l: Lodging }) {
   const [broken, setBroken] = useState(false)
   const src = l.photos.find((p) => /^https:\/\//i.test(p.url))?.url
@@ -185,6 +188,7 @@ export function StaySearch(p: StaySearchProps) {
   const [sort, setSort] = useState<StaySort>('recommended')
   const list = sortPlaces(p.places, kind, sort, p.checkIn, p.checkOut)
   const busy = !!p.searching
+  const sites = p.searching?.sites ?? []
   // with nothing stored the find is the list's one control, with places it sits small by the count
   const findFirst = !!p.onFind && p.places.length === 0
   const count = busy ? `${list.length} ${list.length === 1 ? 'place' : 'places'} so far` : `${list.length} ${list.length === 1 ? 'place' : 'places'} found`
@@ -228,7 +232,13 @@ export function StaySearch(p: StaySearchProps) {
 
           <div className="as-count">
             <div className="as-cg">
-              <span aria-live="polite">{busy && <span className="as-live" aria-hidden="true" />}{count}</span>
+              <span aria-live="polite">{busy && sites.length === 0 && <span className="as-live" aria-hidden="true" />}{count}</span>
+              {sites.map((site) => (
+                <span key={site} className="as-site" role="img" aria-label={`Asking ${site}`} title={`Asking ${site}`}>
+                  <span className="as-live" aria-hidden="true" />{SITE_FACE[site] ?? site.slice(0, 2)}
+                </span>
+              ))}
+              {sites.length > 0 && <span className="pv-vh" role="status">{`Asking ${sites.join(' and ')}`}</span>}
               {p.onFind && !findFirst && (
                 <button type="button" className="as-fd" disabled={busy} aria-label="Find accommodations" title="Find accommodations" onClick={p.onFind}>
                   <Search s={14} />
@@ -243,7 +253,6 @@ export function StaySearch(p: StaySearchProps) {
               </select>
             </label>
           </div>
-          {busy && p.searching!.sites.length > 0 && <p className="as-asking">Asking {p.searching!.sites.join(', ')}</p>}
 
           <ul className="as-list">
             {list.map((l) => (
