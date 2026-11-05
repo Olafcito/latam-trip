@@ -74,7 +74,7 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
   ].filter((x): x is string => !!x)
   const marks = [h.border ? BORDER : null, bagMark('cabin', f?.cabin_bag), bagMark('checked', f?.checked_bag)]
   const seen = f?.observed_at ?? h.observed_at
-  // a removed booking hands the focus to Mark as booked once it is back, so the keyboard is not left on nothing
+  // a removed booking hands the focus to Add booking once it is back, so the keyboard is not left on nothing
   const refocus = useRef(false)
   const bookBtn = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -128,7 +128,7 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
       {(link || onBook) && (
         <footer className="lc-act">
           {link && <a className="btn small" href={link.href} target="_blank" rel="noopener noreferrer">{link.saved ? `Open on ${link.site}` : 'Search Momondo'}<External /></a>}
-          {onBook && <button ref={bookBtn} type="button" className="btn small mark-booked" onClick={onBook}><Check s={14} />Mark as booked</button>}
+          {onBook && <button ref={bookBtn} type="button" className="btn small mark-booked" onClick={onBook}><Check s={14} />Add booking</button>}
         </footer>
       )}
     </div>

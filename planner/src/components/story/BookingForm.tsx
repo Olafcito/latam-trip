@@ -14,7 +14,7 @@ import { BoxChips, BoxRoute, BoxSegs, cityOf, type BoxData } from './BookedBox'
 // one field for the reference, so adding it takes two taps. Fill in yourself is a grouped list of the
 // fields, each with its icon, none required and no day, since the leg has its day. A booking read from
 // its confirmation opens Fill in yourself filled in, with its files ready to attach and the fields the
-// confirmation did not hold tinted amber. Edit opens Fill in yourself filled from the booked rows, and a
+// confirmation did not hold tinted amber, and the chips under the ticket are left off there, since the fields say the same. Edit opens Fill in yourself filled from the booked rows, and a
 // flight picked after Change booking opens Picked flight on the booking it changes.
 
 export type SaveResult = { ok: true; ids: string[] } | { ok: false; message: string }
@@ -127,7 +127,7 @@ function namedHead(leg: FormLeg, row: Partial<Booking>, city: (code: string) => 
 }
 
 /** The rows as they would be booked, read like the booked box. Two rows of one ticket show both ways. */
-function Pass({ leg, rows, data }: { leg: FormLeg; rows: Partial<Booking>[]; data: BoxData }) {
+function Pass({ leg, rows, data, chips = true }: { leg: FormLeg; rows: Partial<Booking>[]; data: BoxData; chips?: boolean }) {
   const city = cityOf(data)
   const first = savedRow(rows[0], 'draft')
   return (
@@ -143,7 +143,7 @@ function Pass({ leg, rows, data }: { leg: FormLeg; rows: Partial<Booking>[]; dat
           </div>
         )
       })}
-      <BoxChips chips={boxChips(first)} />
+      {chips && <BoxChips chips={boxChips(first)} />}
     </div>
   )
 }
@@ -301,7 +301,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
       </div>
 
       <div className="bf-body">
-        {pass.length > 0 && (tab === 'picked' || !edit) && <Pass leg={leg} rows={pass} data={data} />}
+        {pass.length > 0 && (tab === 'picked' || !edit) && <Pass leg={leg} rows={pass} data={data} chips={tab === 'picked'} />}
 
         {tab === 'picked' && (
           <ul className="bf-list">

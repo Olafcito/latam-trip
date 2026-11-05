@@ -185,7 +185,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
   }
   const box = useRef<HTMLElement>(null)
   const pill = useRef<HTMLButtonElement>(null)
-  // back from the form, the focus goes to the booking it saved, or to Mark as booked when it was left
+  // back from the form, the focus goes to the booking it saved, or to Add booking when it was left
   const form = useBookingForm(book, () => (box.current ? showBox() : pill.current?.focus({ preventScroll: true })))
   // a booked way is held: the box shows the booking and nothing under it changes the way. Opened with Change
   // booking, a way picked there opens the form on the booking, so the save changes its rows
@@ -262,7 +262,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
           <FlightLinks links={links} />
           {book && !booking && remoteEnabled() && (
             <button ref={pill} type="button" className="btn small mark-booked" onClick={() => form.open({ start: 'picked', picked: way })}>
-              <Check s={14} />Mark as booked
+              <Check s={14} />Add booking
             </button>
           )}
         </footer>

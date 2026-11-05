@@ -50,7 +50,7 @@
   .ab-go { padding: 0 18px; border-color: var(--flight); background: var(--flight); color: var(--flight-ink); font-weight: 700; }
   .ab-go:disabled { opacity: 0.4; }
   .ab-acts .ab-cancel { padding: 0 12px; }
-  .ab-self { min-height: 40px; margin-top: 10px; padding: 0; font-size: var(--fs-num); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .ab-self { min-height: 40px; margin-top: 10px; }
 
   @media (hover: hover) and (pointer: fine) {
     button.ab-row:hover { background: var(--surface); }
