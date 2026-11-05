@@ -17,3 +17,6 @@ docs/design/shots/
 
 # Feature worktrees made by EnterWorktree
 .claude/worktrees/
+
+# The Supabase CLI's link file, which holds the project ref
+supabase/.temp/
