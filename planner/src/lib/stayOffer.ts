@@ -1,6 +1,6 @@
 import type { Lodging, LodgingKind, LodgingPrice, LodgingRoom, LodgingTag } from '../data/types'
 import { dayDiff, day } from './format'
-import { SITE, TAG } from './lodgingWords'
+import { SITE } from './lodgingWords'
 import { sellerLogo } from './purchase'
 
 // What the accommodation panes show of a place to stay for the dates searched: a price per night for each room,
@@ -137,12 +137,27 @@ export function roomMix(rooms: readonly LodgingRoom[]): string | null {
   return null
 }
 
-/** What a place offers, the rooms first and then its tags in the order the form offers them. */
+/** Each tag in one word, as it stands under its icon. Social reads as the bar and a workspace as the Wi-Fi it needs. */
+export const AMENITY_WORD: Record<LodgingTag, string> = {
+  pool: 'Pool', social: 'Bar', workspace: 'Wi-Fi', aircon: 'AC', breakfast: 'Breakfast', kitchen: 'Kitchen', beach: 'Beach', quiet: 'Quiet',
+}
+
+/** What a place offers, the rooms first and then its tags, each tag in one word. */
 export function amenities(l: Pick<Lodging, 'rooms' | 'tags'>): Amenity[] {
   const mix = roomMix(l.rooms)
-  const order = Object.keys(TAG) as LodgingTag[]
-  const tags = order.filter((t) => l.tags.includes(t)).map((t) => ({ key: t, label: TAG[t] }))
+  const tags = tagWords(l.tags)
   return mix ? [{ key: 'rooms', label: mix }, ...tags] : tags
+}
+
+const tagWords = (have: readonly LodgingTag[]): Amenity[] =>
+  (Object.keys(AMENITY_WORD) as LodgingTag[]).filter((t) => have.includes(t)).map((t) => ({ key: t, label: AMENITY_WORD[t] }))
+
+/** What a place offers as one row of icons with one word each: the tags, then Dorms or Private for the rooms. */
+export function amenityRow(l: Pick<Lodging, 'rooms' | 'tags'>): Amenity[] {
+  const shared = l.rooms.some((r) => r.private === false)
+  const own = l.rooms.some((r) => r.private === true)
+  const rooms: Amenity[] = shared ? [{ key: 'rooms', label: 'Dorms' }] : own ? [{ key: 'rooms', label: 'Private' }] : []
+  return [...tagWords(l.tags), ...rooms]
 }
 
 // ---- the search list

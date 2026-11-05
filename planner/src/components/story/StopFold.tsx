@@ -19,6 +19,7 @@ import { AddStay } from '../stays/AddStay'
 import { CityFold } from '../stays/CityFold'
 import { PropertyView } from '../stays/PropertyView'
 import { StayList, type StayRowData } from '../stays/StayList'
+import { useSaved } from '../stays/useSaved'
 import { FindPopup } from './FindPopup'
 import { Finds } from './TripHead'
 
@@ -46,6 +47,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   const [adding, setAdding] = useState<string | null | false>(false)
   const [route, setRoute] = useState<RouteData | null>(null)
   const [find, setFind] = useState<FindRow | null>(null)
+  const [saved, toggleSaved] = useSaved()
   const rev = useDataRev()
   useEffect(() => {
     loadRouteData().then(setRoute, () => {})
@@ -168,7 +170,8 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
               rooms={1}
               places={ranked}
               startId={adding}
-              saved={new Set()}
+              saved={saved}
+              onSave={(l) => toggleSaved(l.id)}
               onLink={async (url) => {
                 const r = await addFromLink(url, sp.node, searchIn, searchOut)
                 // the place shows in the list before the search opens it. A failed read is let go: the live channel brings it

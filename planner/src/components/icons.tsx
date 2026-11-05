@@ -439,6 +439,21 @@ export const Laptop = ({ s = 13 }: { s?: number }) => (
   </svg>
 )
 
+/** Wi-Fi: three arcs over a dot. */
+export const Wifi = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 16a5 5 0 0 1 6.8 0" />
+    <circle cx="12" cy="19.5" r="0.6" />
+  </svg>
+)
+
+/** A bar: a cocktail glass on its stem. */
+export const Glass = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M4.5 4.5h15L12 13zM12 13v7M8 20h8M7 7.5h10" />
+  </svg>
+)
+
 /** By the beach: a sun umbrella. */
 export const Umbrella = ({ s = 13 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>

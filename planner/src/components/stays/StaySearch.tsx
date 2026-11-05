@@ -11,6 +11,7 @@ import { AmenityIcon, KindIcon, kindWord, NightPrice, Rating } from './offerMark
 // the guests on top, the kinds of place as chips, then the places as cards led by their photo. A card opens the
 // place. A search under way brings more places in over time: the cards found so far stay and the ones still
 // coming show as shapes under them. A pasted Hostelworld link adds a place that is not stored yet and opens it.
+// What a place offers is one row that never wraps: the first three and a count of the rest.
 
 export interface StayBadge {
   label: string
@@ -81,7 +82,7 @@ function Card({ l, checkIn, checkOut, saved, badge, open, onOpen, onSave }: {
         </span>
         {shown.length > 0 && (
           <ul className="as-am" aria-label="What it offers">
-            {shown.map((a) => <li key={a.key}><AmenityIcon k={a.key} />{a.label}</li>)}
+            {shown.map((a) => <li key={a.key}><AmenityIcon k={a.key} /><span>{a.label}</span></li>)}
             {all.length > shown.length && <li className="as-more" aria-label={all.slice(3).map((a) => a.label).join(', ')}>+{all.length - shown.length}</li>}
           </ul>
         )}
@@ -175,8 +176,8 @@ export function StaySearch(p: StaySearchProps) {
         {p.onClose && <button type="button" className="as-x" aria-label="Close" onClick={p.onClose}><Close /></button>}
       </header>
       <div className="as-tabs" role="tablist" aria-label="How to add">
-        <button type="button" role="tab" aria-selected={tab === 'find'} className="as-tab" onClick={() => setTab('find')}><Search s={17} />Find & add</button>
-        <button type="button" role="tab" aria-selected={tab === 'manual'} className="as-tab" onClick={() => setTab('manual')}><Pencil s={17} />Add manually</button>
+        <button type="button" role="tab" aria-selected={tab === 'find'} className="as-tab" onClick={() => setTab('find')}><Search s={16} />Find & add</button>
+        <button type="button" role="tab" aria-selected={tab === 'manual'} className="as-tab" onClick={() => setTab('manual')}><Pencil s={16} />Add manually</button>
       </div>
 
       {tab === 'manual' ? <div className="as-manual">{p.manual}</div> : (
@@ -200,7 +201,7 @@ export function StaySearch(p: StaySearchProps) {
           <div className="as-chips" role="radiogroup" aria-label="Kind of place">
             <button type="button" role="radio" aria-checked={kind === 'all'} className="as-chip" onClick={() => setKind('all')}>All</button>
             {KINDS.map((k) => (
-              <button key={k} type="button" role="radio" aria-checked={kind === k} className="as-chip" onClick={() => setKind(k)}><KindIcon kind={k} s={15} />{KIND[k]}</button>
+              <button key={k} type="button" role="radio" aria-checked={kind === k} className="as-chip" onClick={() => setKind(k)}><KindIcon kind={k} s={14} />{KIND[k]}</button>
             ))}
           </div>
 

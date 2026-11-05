@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Lodging, LodgingPrice, LodgingRoom } from '../data/types'
-import { amenities, cheapestRoom, nightly, providers, roomMix, siteKey, sortPlaces, stayDates } from './stayOffer'
+import { amenities, amenityRow, cheapestRoom, nightly, providers, roomMix, siteKey, sortPlaces, stayDates } from './stayOffer'
 
 const price = (over: Partial<LodgingPrice>): LodgingPrice => ({
   id: 'p', room_id: 'r', check_in: '2026-12-08', check_out: '2026-12-09', total_dkk: null, per_night_dkk: null, site: null, url: null,
@@ -61,9 +61,10 @@ describe('providers', () => {
 })
 
 describe('amenities', () => {
-  it('puts the rooms first, then the tags in the form order', () => {
+  it('puts the rooms first, then the tags in one word each', () => {
     const l = lodging({ tags: ['social', 'pool'], rooms: [room('a', [], { private: false }), room('b', [], { private: true })] })
-    expect(amenities(l).map((a) => a.label)).toEqual(['Dorms & private rooms', 'Pool', 'Social'])
+    expect(amenities(l).map((a) => a.label)).toEqual(['Dorms & private rooms', 'Pool', 'Bar'])
+    expect(amenityRow(l).map((a) => a.label)).toEqual(['Pool', 'Bar', 'Dorms'])
     expect(roomMix([room('a', [])])).toBeNull()
   })
 })

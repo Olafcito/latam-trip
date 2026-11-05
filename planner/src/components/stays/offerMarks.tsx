@@ -3,13 +3,13 @@ import type { Lodging, LodgingKind } from '../../data/types'
 import { dec1, kr, thousands } from '../../lib/format'
 import { KIND } from '../../lib/lodgingWords'
 import { otherDates, type Amenity, type Nightly } from '../../lib/stayOffer'
-import { AirCon, Bed, Building, Bunk, Cup, House, Laptop, People, Pot, Quiet, Star, Umbrella, Wave } from '../icons'
+import { AirCon, Bed, Building, Bunk, Cup, Glass, House, Pot, Quiet, Star, Umbrella, Wave, Wifi } from '../icons'
 
 // The small pieces the accommodation panes share: the icon of a kind of place and of what it offers, its
 // rating as a star and a figure, and a price per night that is muted when it is for other dates.
 
 const AMENITY: Record<Amenity['key'], (p: { s?: number }) => ReactElement> = {
-  rooms: Bed, beach: Umbrella, pool: Wave, social: People, quiet: Quiet, kitchen: Pot, breakfast: Cup, aircon: AirCon, workspace: Laptop,
+  rooms: Bed, beach: Umbrella, pool: Wave, social: Glass, quiet: Quiet, kitchen: Pot, breakfast: Cup, aircon: AirCon, workspace: Wifi,
 }
 
 export function AmenityIcon({ k, s = 14 }: { k: Amenity['key']; s?: number }) {
