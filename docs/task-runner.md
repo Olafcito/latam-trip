@@ -33,16 +33,11 @@ Limits of the fire endpoint: 30 fires per hour per routine, 100 per account, no 
 ## Setting it up, once
 
 1. At <https://claude.ai/code/routines> create a routine named "Trip checklist on new tasks" on the `latam-trip` repo with the latam-trip and Booking.com connectors and the prompt below. No schedule.
-2. In the routine, Add another trigger, API, Generate token. Copy the URL and the token. The token shows once.
-3. In the Supabase SQL editor, store both in Vault:
+2. In the routine, Add another trigger, API, Generate token. The token shows once. Put the routine URL in `.env` as `TASK_RUNNER_URL` and the token as `TASK_RUNNER_KEY`.
+3. Claude stores both in Vault as `task_runner_url` and `task_runner_token` over the database connection in `supabase/migrate.py`, reading them from `.env` without printing them. The URL stored is the fire endpoint `https://api.anthropic.com/v1/claude_code/routines/<trig id>/fire`, built from the `trig_` id in the routine URL. Simon does not open the SQL editor.
+4. Claude fires one test run with `select public.fire_task_runner('sweep')` and checks that `net._http_response` holds a 200 with a session id.
 
-       select vault.create_secret('<the URL>', 'task_runner_url');
-       select vault.create_secret('<the token>', 'task_runner_token');
-
-4. Run the migrations from the repo root: `uv run --quiet --no-project --with "psycopg[binary]" python -X utf8 supabase/migrate.py`.
-5. Test: ask a question from the app. A session should appear under the routine within a minute.
-
-Without the two Vault secrets the trigger does nothing, so the migration is safe to run first.
+Without the two Vault secrets the trigger does nothing. Done on 2026-11-05.
 
 ## The routine's prompt
 
@@ -53,3 +48,4 @@ Use the task-runner skill (plugin/skills/task-runner/SKILL.md) and nothing else.
 Call claim_task on the latam-trip connector, do the task exactly as its contract says, close it with finish_task or fail_task, and repeat until claim_task returns no task.
 Do not read other files in the repo, do not edit code and do not commit.
 ```
+
