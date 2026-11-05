@@ -76,7 +76,7 @@ export function Itinerary({ place, finds, onClose, onFind, children }: Itinerary
 }
 
 /** A row names the thing and opens its window, the detail stays there. */
-function Finds({ title, rows, onFind }: { title: string; rows: FindRow[]; onFind: (r: FindRow) => void }) {
+export function Finds({ title, rows, onFind }: { title: string; rows: FindRow[]; onFind: (r: FindRow) => void }) {
   const [open, setOpen] = useState(false)
   const { shown, folded } = capped(rows, open)
   return (

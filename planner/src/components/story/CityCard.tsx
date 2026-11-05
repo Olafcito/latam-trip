@@ -20,7 +20,8 @@ import { Itinerary } from './TripHead'
 // and Delete takes it out. All of it happens in this window, so you stay where you are on the route.
 // The first stop is where the flight lands, so it can be looked at and built on but not swapped or deleted.
 
-type View = 'card' | 'change' | 'delete'
+export type CityView = 'card' | 'change' | 'delete'
+type View = CityView
 
 /** what is left of the place's name when a search looks at it */
 const plain = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase()
@@ -76,8 +77,10 @@ function ChangeList({ map, here, skip, name, onPick, onBack }: {
   )
 }
 
-export function CityCard({ data, journey, sched, i, close, onDelete }: {
+export function CityCard({ data, journey, sched, i, close, onDelete, start = 'card' }: {
   data: AppData
+  /** the view it opens at */
+  start?: CityView
   journey: Journey
   sched: Schedule
   i: number
@@ -88,7 +91,7 @@ export function CityCard({ data, journey, sched, i, close, onDelete }: {
   const openSaved = useStore((s) => s.openSaved)
   const setCursor = useStore((s) => s.setCursor)
   const replaceStop = useStore((s) => s.replaceStop)
-  const [view, setView] = useState<View>('card')
+  const [view, setView] = useState<View>(start)
   // the view you came back from, so the focus lands on the button that opened it
   const [from, setFrom] = useState<View | null>(null)
   const [route, setRoute] = useState<RouteData | null>(null)
