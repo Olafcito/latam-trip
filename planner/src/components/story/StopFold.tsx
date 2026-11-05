@@ -222,7 +222,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
                     checkIn={shown.checkIn}
                     checkOut={shown.checkOut}
                     nights={nights}
-                    onDates={repick(shown)}
+                    onDates={back ? repick(shown) : undefined}
                     guests={1}
                     chosen={stays.filter((s) => s.lodging_id === l.id && s.room_id).map((s) => s.room_id!)}
                     booked={b?.room_id ?? null}
