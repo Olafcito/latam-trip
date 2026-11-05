@@ -11,13 +11,19 @@ const CORS: Record<string, string> = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const HW = 'https://prod.apigee.hostelworld.com/legacy-hwapi-service/2.2/properties'
+const HW_BASE = 'https://prod.apigee.hostelworld.com/legacy-hwapi-service/2.2'
+const HW = `${HW_BASE}/properties`
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36'
 const FRESH_MINUTES = 10
 const MAX_NIGHTS = 30
 const MAX_PHOTOS = 8
 const SUMMARY_CHARS = 600
 const FETCH_MS = 15_000
+// The shared gate of migration 0020: 30 Hostelworld requests a minute across every caller, and a request gives up
+// once it would have waited longer than this in all.
+const GATE_SITE = 'hostelworld'
+const GATE_PER_MINUTE = 30
+const GATE_MAX_WAIT_S = 45
 
 interface Body { lodging_id?: string; url?: string; place_id?: string; check_in?: string; check_out?: string; fresh_minutes?: number }
 interface Money { value?: string | number; currency?: string }
@@ -45,8 +51,9 @@ const reply = (status: number, body: unknown): Response =>
 const fail = (status: number, error: string): Response => reply(status, { error })
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
+/** A refusal with its status, and fields that go into the reply beside the error, such as retry_after. */
 class Refused extends Error {
-  constructor(public status: number, message: string) {
+  constructor(public status: number, message: string, public extra: Record<string, unknown> = {}) {
     super(message)
   }
 }
@@ -74,17 +81,37 @@ const image = (i: { prefix?: string; suffix?: string } | undefined): string | nu
   i?.prefix ? `https://${i.prefix}${i.suffix ?? ''}` : null
 const sameName = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 
-async function hostelworld<T>(path: string): Promise<T> {
+const sleep = (ms: number): Promise<void> => new Promise((done) => setTimeout(done, ms))
+
+/** Takes a turn at the shared Hostelworld gate, waiting while the minute is full. Fails closed when the gate cannot be asked. */
+async function takeTurn(db: SupabaseClient): Promise<void> {
+  let waited = 0
+  for (;;) {
+    const { data, error } = await db.rpc('take_site_call', { p_site: GATE_SITE, p_per_minute: GATE_PER_MINUTE })
+    const wait = typeof data === 'number' ? data : Number.NaN
+    if (error || !Number.isFinite(wait)) throw new Refused(503, 'The Hostelworld gate could not be asked.')
+    if (wait <= 0) return
+    if (waited + wait > GATE_MAX_WAIT_S) {
+      throw new Refused(429, 'Hostelworld is busy, try again in a minute.', { retry_after: Math.max(1, Math.ceil(wait)) })
+    }
+    await sleep(wait * 1000)
+    waited += wait
+  }
+}
+
+/** One GET to Hostelworld through the gate. The headers default to the browser user agent and JSON. */
+async function hwGet<T>(db: SupabaseClient, url: string, headers: Record<string, string> = {}, notFound = 'Hostelworld knows no place with that id.'): Promise<T> {
+  await takeTurn(db)
   const ctl = new AbortController()
   const timer = setTimeout(() => ctl.abort(), FETCH_MS)
   try {
     let res: Response
     try {
-      res = await fetch(`${HW}/${path}`, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: ctl.signal })
+      res = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json', ...headers }, signal: ctl.signal })
     } catch {
       throw new Refused(502, 'Hostelworld could not be reached.')
     }
-    if (res.status === 404) throw new Refused(404, 'Hostelworld knows no place with that id.')
+    if (res.status === 404) throw new Refused(404, notFound)
     if (!res.ok) throw new Refused(502, 'Hostelworld did not answer.')
     try {
       return (await res.json()) as T
@@ -95,6 +122,9 @@ async function hostelworld<T>(path: string): Promise<T> {
     clearTimeout(timer)
   }
 }
+
+/** A property path under Hostelworld's properties endpoint, through the gate. */
+const hostelworld = <T>(db: SupabaseClient, path: string): Promise<T> => hwGet<T>(db, `${HW}/${path}`)
 
 const KINDS: Record<string, string> = { HOSTEL: 'hostel', HOTEL: 'hotel', GUESTHOUSE: 'guesthouse', APARTMENT: 'apartment' }
 const TAGS: [RegExp, string][] = [[/kitchen/i, 'kitchen'], [/breakfast/i, 'breakfast'], [/air ?con/i, 'aircon'], [/pool/i, 'pool']]
@@ -189,7 +219,7 @@ async function target(db: SupabaseClient, body: Body): Promise<Target> {
       return { lodgingId: had.id, propertyId, link: body.url.trim(), created: false }
     }
     if (typeof body.place_id !== 'string' || !body.place_id.trim()) throw new Refused(400, 'Say which place on the map the link belongs to.')
-    const prop = await hostelworld<HwProperty>(`${propertyId}/`)
+    const prop = await hostelworld<HwProperty>(db, `${propertyId}/`)
     const { data, error } = await db.from('lodgings').insert(lodgingOf(prop, body.url.trim(), body.place_id.trim())).select('id').single()
     if (error || !data) throw new Refused(500, 'The place could not be saved.')
     return { lodgingId: data.id, propertyId, link: body.url.trim(), created: true }
@@ -228,7 +258,7 @@ const defaultTotal = (r: HwRoom): number | null => {
 }
 
 async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: string, nights: number): Promise<{ rooms: number; prices: number }> {
-  const avail = await hostelworld<HwAvailability>(`${t.propertyId}/availability/?date-start=${checkIn}&num-nights=${nights}&guests=1&currency=DKK`)
+  const avail = await hostelworld<HwAvailability>(db, `${t.propertyId}/availability/?date-start=${checkIn}&num-nights=${nights}&guests=1&currency=DKK`)
   const seen: (HwRoom & { dorm: boolean })[] = [
     ...(avail.rooms?.dorms ?? []).map((r) => ({ ...r, dorm: true })),
     ...(avail.rooms?.privates ?? []).map((r) => ({ ...r, dorm: false })),
@@ -345,7 +375,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const counts = await price(db, t, checkIn, checkOut, nights)
     return reply(200, { lodging_id: t.lodgingId, created: t.created, fetched: true, ...counts })
   } catch (e) {
-    if (e instanceof Refused) return fail(e.status, e.message)
+    if (e instanceof Refused) return reply(e.status, { error: e.message, ...e.extra })
     return fail(500, 'Live rates failed.')
   }
 })

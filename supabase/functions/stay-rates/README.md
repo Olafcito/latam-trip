@@ -21,6 +21,8 @@ What it writes:
 
 A room Hostelworld does not list for the dates gets no row, so its last price stays as it was. The age mark in the planner says when that was.
 
+The gate: every request to Hostelworld first takes a turn from `public.take_site_call('hostelworld', 30)` (migration 0020), one gate in the database for the planner, the worker and the search together, 30 requests a minute. When the minute is full the request waits its turn. A request that would wait more than about 45 seconds in all gives up with `429 { error: 'Hostelworld is busy, try again in a minute.', retry_after }`, `retry_after` in whole seconds. What is stored already stays. When the gate itself cannot be asked, the function makes no Hostelworld call and answers `503`.
+
 Secrets: `STAY_RATES_WORKER_KEY` (the project's secret key, which the worker already holds in SSM). `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are set by Supabase.
 
 From the repo root, with the project ref from the Supabase dashboard (the subdomain of `SUPABASE_URL`), and without printing the key:
