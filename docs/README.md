@@ -25,7 +25,7 @@ Documentation is part of the work, not a step after it. Every doc in this repo d
 | Decision and harness log | `docs/harness-log.md` | Main session | A meaningful decision outside the PROD, DES and TECH logs, or a meaningful harness failure |
 | Connector | `docs/connector.md` | The agent changing `infra/mcp` | A tool is added, renamed or removed, or sign in changes |
 | Claude tasks | `docs/claude-tasks.md` | The agent changing task kinds or `tasks.py` | A task kind or its fields change |
-| Task runner | `docs/task-runner.md` | The agent changing `0017_task_runner.sql` or the routine's prompt | The cloud task types, the trigger or the routine change |
+| Task runner | `docs/task-runner.md` | The agent changing the task runner migrations, `latam_trip_mcp/runner.py`, the `task-runner` skill or the routine's prompt | The cloud task types, a contract, the trigger or the routine change |
 | Momondo save | `docs/momondo-save.md` | The agent changing the save script | The script or its install steps change |
 | Crawl learnings | `docs/learnings/` | `flight-crawl-orchestrator` | After each crawl round, one file per round |
 | Doc audits | `docs/audits/doc-audit-NNN.md` | `doc-keeper` | Each doc audit, on demand |

@@ -5,11 +5,27 @@ A task the app saves used to wait until Simon told Claude "check the checklist".
 ## How it runs
 
 1. The app inserts a row into `tasks`.
-2. The trigger of `supabase/migrations/0017_task_runner.sql` checks the type. A cloud type (`question`, `lists_update`, `experience_research`, `place_research`, `stay_prices`, `stay_search`, `refresh`) makes one POST with pg_net to the routine's fire endpoint, with the text `task <id> <type>` and nothing of the task's data. A second task within two minutes makes no new call, since the run already started reads the whole table.
-3. The routine "Trip checklist on new tasks" starts a cloud session on the repo with the latam-trip and Booking.com connectors. It claims each cloud task by setting it to working, does it as `trip-checklist` says, and leaves the rest open. When it has done them it lists the open tasks again and repeats until no cloud task is left, so a task saved during a run is handled in that run.
+2. The trigger checks the type (`supabase/migrations/0017_task_runner.sql`, with the list from `0018_task_runner_contract.sql`). A cloud task makes one POST with pg_net to the routine's fire endpoint, with the text `task <id> <type>` and nothing of the task's data. A second task within two minutes makes no new call, since the run already started takes every open cloud task.
+3. The routine "Trip checklist on new tasks" starts a cloud session on the repo with the latam-trip and Booking.com connectors. It follows the `task-runner` skill: `claim_task`, do the task by its contract, `finish_task` or `fail_task`, and again until `claim_task` gives no task. A task saved during a run is handled in that run.
 4. Every half hour pg_cron fires the routine again when a cloud task has been open for ten minutes, which catches a lost call and a task saved after a run has checked for the last time.
 
-Flight prices (Momondo and Google Flights in the built-in browser), Hostelworld prices, `booking`, `import_quotes` and `fix_parser` still wait for Simon's own checklist run, since they need his browser, his mailbox or a push.
+## The cloud tasks and their contract
+
+The connector, not the prompt, decides what a run may do (`latam_trip_mcp/runner.py`). The cloud types are:
+
+| Type | Does | Writes |
+| --- | --- | --- |
+| `question` | Answers the question in the result | Nothing but the result |
+| `lists_update` | Adds to or takes off a saved list | The lists, through `list_add` and `list_remove` |
+| `experience_research` | Researches one experience | One experience row |
+| `stay_prices` | Prices the named rooms on Booking.com | `lodging_prices` rows for those rooms |
+| `refresh` | Checks old experience rows again, scope `experiences` only | Experience rows |
+
+`claim_task` takes the oldest open task of those types, checks its fields against its type, sets it to working with a conditional update so two runs never take the same task, and gives it back with its contract: `does`, `steps`, the only `tools` to use, what it `writes`, what it must `never` do and how to write the `result`. A task with wrong fields is closed as failed with the reason and the run moves on. `finish_task` and `fail_task` close only a task that is working, and `finish_task` refuses a result over 8000 characters or with an em or en dash. The list of types lives in `CLOUD` in `runner.py` and in migration 0018, and a test keeps the two equal.
+
+What the server cannot enforce is which other connector tools a run calls. The contract's `tools` and the skill limit that, and every write tool still checks its own rows.
+
+Flight prices (Momondo and Google Flights in the built-in browser), Hostelworld prices, `place_research`, `refresh` of flights or stays, `booking`, `import_quotes` and `fix_parser` wait for Simon's own checklist run, since they need his browser, his mailbox, the workers or a push.
 
 Limits of the fire endpoint: 30 fires per hour per routine, 100 per account, no idempotency key. The runs count against the Claude subscription like any session. Docs: <https://platform.claude.com/docs/en/api/claude-code/routines-fire>.
 
@@ -29,14 +45,10 @@ Without the two Vault secrets the trigger does nothing, so the migration is safe
 
 ## The routine's prompt
 
-```
-This run was started because Simon's latam-trip planner added a task to the Supabase tasks table. The text passed with the run names the task id and type, or says sweep, but always work from the table itself, since several tasks may be open.
+Paste this as the routine's prompt. Everything else lives in the skill and the connector, so the prompt does not change when a task type does.
 
-1. In the latam-trip repo, read CLAUDE.md and plugin/skills/trip-checklist/SKILL.md and follow them, with these differences for an unattended cloud run:
-   - This environment has no Supabase key and no .env. Read and update tasks, and write results, through the latam-trip connector (its task, lodging, lodging price and other tools). If the connector is not available in this run, stop and say so in one line.
-   - Work only on task types that need no browser and no mailbox: question, lists_update, experience_research, place_research, refresh with scope experiences, and the Booking.com part of stay_prices and stay_search through the Booking.com connector (1 adult, DKK, user_country_code dk). Leave every other open task untouched for Simon's own checklist run: flight_prices, fix_parser, booking, import_quotes, refresh of flights or stays, and Hostelworld prices.
-   - Before working on a task, set it to working. Skip any task that is already working, since two runs can overlap. When it is done, write the result and set it to done as the skill says.
-   - Never book, pay, sign in, tick consent boxes or solve captchas. Never write a price that was not seen on the site.
-2. When every claimed task is done, list the open tasks again and repeat step 1 for any new task of those types, so a task saved during this run is handled in this run. Keep repeating until no open task of those types is left. If none was open at the start, stop at once without doing anything else.
-3. End with a summary of at most five lines naming the tasks handled and the ones left for Simon, with no booking references, names or prices paid.
+```
+Use the task-runner skill (plugin/skills/task-runner/SKILL.md) and nothing else.
+Call claim_task on the latam-trip connector, do the task exactly as its contract says, close it with finish_task or fail_task, and repeat until claim_task returns no task.
+Do not read other files in the repo, do not edit code and do not commit.
 ```
