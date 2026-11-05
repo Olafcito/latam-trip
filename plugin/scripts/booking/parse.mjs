@@ -200,7 +200,10 @@ export function parseRooms(html, opts = {}) {
     if (left && r.available === null) r.available = Number(/(\d+)/.exec(textOf(left[1]))?.[1]) || null
 
     const priceCell = /hprt-table-cell-price[\s\S]*?<\/td>/.exec(row)?.[0]
-    const total = priceCell ? parseDkk(textOf(priceCell)) : null
+    // The price to pay sits in bui-price-display__value. A discounted rate shows its old price struck through
+    // before it, so the whole cell is only read when that element is missing.
+    const shown = priceCell && /bui-price-display__value[^>]*>([\s\S]*?)<\/(?:span|div)>/.exec(priceCell)?.[1]
+    const total = priceCell ? (parseDkk(textOf(shown ?? '')) ?? parseDkk(textOf(priceCell))) : null
     if (total === null) continue
     const cancel =
       /data-testid="cancellation-subtitle"[\s\S]*?<\/li>/.exec(row)?.[0] ??

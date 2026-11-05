@@ -51,6 +51,15 @@ test('dorm bed: not private, shared bathroom, cheapest rate is the non refundabl
   assert.equal(p.available, null)
 })
 
+test('a discounted rate gives the price shown, not the old one struck through before it', () => {
+  const html = read('hotel.html')
+  const at = html.indexOf('<div class="bui-price-display__value')
+  const struck = html.slice(0, at) + '<div class="bui-price-display__original"><s>DKK&nbsp;9999</s></div>' + html.slice(at)
+  const totals = (h) => parsePage(h, opts).rooms.flatMap((r) => r.prices.map((p) => p.total_dkk))
+  assert.deepEqual(totals(struck), totals(html))
+  assert.ok(!totals(struck).includes(9999))
+})
+
 test('free cancellation rate gives the cancel date and a price per night', () => {
   const r = room('Triple Room')
   assert.equal(r.private, true)
