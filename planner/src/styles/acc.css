@@ -1,12 +1,13 @@
 /* Accommodation: a stop folded open on the route (af), its stays (al), the search that adds one (as), a place in
    full (pv) and the window that holds the search and the place (ad). Unscoped like stays.css, so every control
-   sets its own chrome. The green of a chosen tab and of Select is the booked green: picked and bought read alike. */
+   sets its own chrome. Green is for two things only, the Booked pill and Select on a room. Everything else is in the
+   text colour, the muted grey and the surface fills, and the focus ring is the muted grey too. */
 
 :where(.af, .al, .as, .pv, .ad) button {
   margin: 0; border: 0; font: inherit; color: inherit; cursor: pointer; background: none;
   -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; -webkit-user-select: none;
 }
-:is(.af, .al, .as, .pv, .ad) :is(button, a, select, input, [tabindex]):focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+:is(.af, .al, .as, .pv, .ad) :is(button, a, select, input, [tabindex]):focus-visible { outline: 2px solid var(--muted); outline-offset: 2px; }
 .pv-vh {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
 }

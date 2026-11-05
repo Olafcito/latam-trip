@@ -154,7 +154,7 @@ function LinkRow({ places, onLink, onOpen }: { places: Lodging[]; onLink: (url: 
           value={url} disabled={busy} aria-invalid={error ? true : undefined}
           onChange={(e) => { setUrl(e.target.value); setError(null) }}
         />
-        {error && <span className="pv-mk" data-tone="warn" role="img" aria-label={error} title={error}><Warn s={13} /></span>}
+        {error && <span className="pv-fail" role="img" aria-label={error} title={error}><Warn s={13} /></span>}
       </label>
       <button type="submit" className="as-go" disabled={!ok || busy} aria-label={busy ? 'Adding from Hostelworld' : 'Go'}>Go</button>
       <span className="pv-vh" role="status">{error ?? ''}</span>
