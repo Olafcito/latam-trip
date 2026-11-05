@@ -256,7 +256,7 @@ export function PropertyView(p: PropertyViewProps) {
                     {booked ? (
                       <span className="pv-booked"><Check s={12} />Booked</span>
                     ) : p.onSelect ? (
-                      <button type="button" className="pv-sel" aria-pressed={on} aria-label={on ? `${r.name} is picked` : `Select ${r.name}${pr ? `, ${kr(pr.dkk)} per night` : ''}`} onClick={() => p.onSelect!(r.id)}>
+                      <button type="button" className="pv-sel" aria-pressed={on} aria-label={`Select ${r.name}${pr ? `, ${kr(pr.dkk)} per night` : ''}`} title={on ? 'Take off' : undefined} onClick={() => p.onSelect!(r.id)}>
                         {on && <Check s={13} />}{on ? 'Selected' : 'Select'}
                       </button>
                     ) : null}

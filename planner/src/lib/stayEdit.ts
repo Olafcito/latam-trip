@@ -41,6 +41,12 @@ export function chooseRoom(stays: PlannedStay[], sp: ScheduledPlace, lodgingId: 
   return stays.map((s, i) => (i === k ? { ...s, lodging_id: lodgingId, room_id: roomId } : s))
 }
 
+/** A room pressed again: a room that is picked is taken off the stop, any other room is picked as chooseRoom picks it. */
+export function toggleRoom(stays: PlannedStay[], sp: ScheduledPlace, lodgingId: string, roomId: string): PlannedStay[] {
+  const picked = stays.some((s) => s.lodging_id === lodgingId && s.room_id === roomId)
+  return picked ? stays.filter((s) => !(s.lodging_id === lodgingId && s.room_id === roomId)) : chooseRoom(stays, sp, lodgingId, roomId)
+}
+
 /**
  * One night more or less on part k. A night more comes from the free nights, or else from the part after it.
  * A night less goes to the part after it when that part follows the stop, else it becomes a free night.

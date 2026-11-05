@@ -8,7 +8,7 @@ import { countryName } from '../../lib/colors'
 import { nodeName, type Journey, type Schedule } from '../../lib/journey'
 import { placeFinds, type FindRow } from '../../lib/placeFinds'
 import { shortPlace } from '../../lib/format'
-import { choiceNights, chooseRoom, freeNights, nightsFrom, pickDates, removePart } from '../../lib/stayEdit'
+import { choiceNights, freeNights, nightsFrom, pickDates, removePart, toggleRoom } from '../../lib/stayEdit'
 import { partBooking, stayClashes, stayParts, tripStays } from '../../lib/stays'
 import { loadLodgings } from '../../lib/lodgings'
 import { addFromLink, remember } from '../../lib/stayRates'
@@ -230,7 +230,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
                     saved={saved.has(l.id)}
                     onSave={() => toggleSaved(l.id)}
                     onShare={link ? () => sharePlace(l.name, link) : undefined}
-                    onSelect={sp.days > 0 ? (roomId) => change(chooseRoom(stays, sp, l.id, roomId)) : undefined}
+                    onSelect={sp.days > 0 ? (roomId) => change(toggleRoom(stays, sp, l.id, roomId)) : undefined}
                   />
                 )
               }}

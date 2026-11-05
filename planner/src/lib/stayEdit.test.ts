@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ScheduledPlace } from './journey'
-import { canStep, choiceNights, chooseRoom, freeNights, nightsFrom, pickDates, removePart, stepNights } from './stayEdit'
+import { canStep, choiceNights, chooseRoom, freeNights, nightsFrom, pickDates, removePart, stepNights, toggleRoom } from './stayEdit'
 import type { PlannedStay } from './stays'
 
 // Made up places and rooms only.
@@ -34,6 +34,13 @@ describe('choosing a room', () => {
     expect(choiceNights([a(4)], sp, 'TEST02')).toEqual({ first: '2026-12-14', nights: 2 })
     expect(choiceNights([a(4), b()], sp, 'TEST02')).toEqual({ first: '2026-12-14', nights: 2 })
     expect(choiceNights([a(4), b()], sp, 'TEST03')).toEqual({ first: '2026-12-14', nights: 2 })
+  })
+
+  it('a picked room pressed again comes off the stop, any other room is picked', () => {
+    expect(toggleRoom([a()], sp, 'TEST01', 'dorm')).toEqual([])
+    expect(toggleRoom([a(4), b()], sp, 'TEST02', 'double')).toEqual([a(4)])
+    expect(toggleRoom([a(4)], sp, 'TEST02', 'double')).toEqual([a(4), b()])
+    expect(toggleRoom([a()], sp, 'TEST01', 'private')).toEqual([{ lodging_id: 'TEST01', room_id: 'private' }])
   })
 })
 

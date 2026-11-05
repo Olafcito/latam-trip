@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Booking, Lodging } from '../../data/types'
 import { dayRange } from '../../lib/format'
 import type { Schedule } from '../../lib/journey'
-import { canStep, choiceNights, chooseRoom, freeNights, removePart, stepNights } from '../../lib/stayEdit'
+import { canStep, choiceNights, freeNights, removePart, stepNights, toggleRoom } from '../../lib/stayEdit'
 import { partBooking, stayClashes, stayParts, tripStays, type StayPart } from '../../lib/stays'
 import { partPrice, partPriceWords } from '../../lib/stayView'
 import { addDays } from '../../lib/time'
@@ -173,7 +173,7 @@ export function WhereToStay({ i, sched }: { i: number; sched: Schedule }) {
                 nights={nights ? at.nights : 0}
                 booking={bookedAt(l)}
                 chosen={chosen}
-                onChoose={nights ? (roomId) => change(chooseRoom(stays, sp, l.id, roomId)) : undefined}
+                onChoose={nights ? (roomId) => change(toggleRoom(stays, sp, l.id, roomId)) : undefined}
               />
             )
           })}
