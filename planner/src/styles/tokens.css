@@ -27,6 +27,9 @@
   --err: #FF6B5E;
   /* bought: a booked leg, way, stay or trip. At least 8:1 on every night surface and 5.8:1 on its own tint, so it reads in sunlight */
   --booked: #4ADE80;
+  /* paper: the price of the flight in the trip reads as the ticket in hand, light on the night with the flight ink */
+  --paper: #F3EDE0;
+  --paper-muted: #5C5446;
 
   /* motion */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);

@@ -295,3 +295,17 @@ export const ArrowUpRight = ({ s = 14 }: { s?: number }) => (
     <path d="M8 6h10v10M18 6L6 18" />
   </svg>
 )
+
+/** Fresh prices: a circle arrow coming round. */
+export const Refresh = ({ s = 14 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" />
+  </svg>
+)
+
+/** Add a file: an arrow up out of a tray. */
+export const Upload = ({ s = 20 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
+  </svg>
+)

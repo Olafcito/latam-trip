@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { askLabel, insertTask, loadTasks, press, STATUS_WORD, subscribeTasks, type AskState, type TaskDraft, type TaskRow } from '../lib/tasks'
 import { remoteEnabled } from '../lib/supabase'
 
@@ -8,7 +8,7 @@ import { remoteEnabled } from '../lib/supabase'
  * holds the button, so the same question is not put twice, after a reload either. Another draft is another
  * question, so the button is pressed afresh for it.
  */
-export function AskClaude({ draft, tripId, version, title, className = 'btn small link', idle, same = false }: {
+export function AskClaude({ draft, tripId, version, title, className = 'btn small link', idle, icon, same = false }: {
   draft: TaskDraft
   tripId: string
   version: number | null
@@ -16,6 +16,8 @@ export function AskClaude({ draft, tripId, version, title, className = 'btn smal
   className?: string
   /** what the button says before it is pressed */
   idle?: string
+  /** an icon before the words, for a button that sits among quiet links */
+  icon?: ReactNode
   same?: boolean
 }) {
   const [state, setState] = useState<AskState>('idle')
@@ -56,7 +58,7 @@ export function AskClaude({ draft, tripId, version, title, className = 'btn smal
   const label = waiting && state !== 'sending' ? STATUS_WORD[waiting.status] : state === 'idle' && idle ? idle : askLabel(state)
   return (
     <>
-      <button type="button" className={className} onClick={onPress} disabled={held} title={title} data-state={waiting ? 'sent' : state}>{label}</button>
+      <button type="button" className={className} onClick={onPress} disabled={held} title={title} data-state={waiting ? 'sent' : state}>{icon}{label}</button>
       {error && <span className="ask-error" role="status">{error}</span>}
       {shown.length > 0 && (
         <ul className="ask-list" aria-label="Tasks for Claude">

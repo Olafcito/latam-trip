@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactElement } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactElement, type ReactNode } from 'react'
 import type { Booking, CrawledFlight } from '../../data/types'
 import type { Family } from '@map/data/types'
 import { Unknown } from '@map/map/Unknown'
@@ -8,11 +8,11 @@ import { clock, dayDiff, hours, kr, nextDayMark, shortKr, weekdayDay } from '../
 import { fareMarks, fareRows, sameFlight, seller, sortFares, stopsOf, timed, type FareRow, type FareSort } from '../../lib/fares'
 import type { FlightLink } from '../../lib/links'
 import { checkedAgo, momondoUrl, nearestDay, newestSeen, pricesOn, type PairDates } from '../../lib/prices'
-import { remoteEnabled } from '../../lib/supabase'
+import { airlineLogo } from '../../lib/purchase'
 import { flightPricesTask } from '../../lib/tasks'
 import { AskClaude } from '../AskClaude'
 import { dayValue, type DayItem, type DayKind, type DayValue } from '../../lib/tripDay'
-import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Home, Land, Plane, Sun } from '../icons'
+import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Home, Land, Plane, Refresh, Sun } from '../icons'
 import { BookedBox, type BoxData } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
 import { stopsText } from './LegCard'
@@ -20,12 +20,13 @@ import { MarkIcon, Marks, Tip } from './Marks'
 import type { Mark } from '../../lib/marks'
 
 // The window behind a flight on the route: the days around it, each with its cheapest fare, and the
-// flights of the day you are looking at. Each flight reads the way a ticket does, airline, then when it
-// leaves and lands with the airports in between, then the price and Pick. Looking at a day changes
-// nothing, only Pick does. A day with no fares shows the flights of the closest day that has some, so
-// you still see how long the trip is and where it goes through. The flight you picked sits on top with
-// its state under its price, where Pick sits on the others. One set aside when the leg moved to another
-// day stays on top too, with the button that puts the leg back on its day. A booked leg opens on its
+// flights of the day you are looking at. Each flight is a card read the way a ticket does, the airline's
+// logo, then when it leaves and lands with the airports in between, and its price, which is the link that
+// books it. A press on the card picks the flight. Looking at a day changes nothing, only a pick does. A day
+// with no fares shows the flights of the closest day that has some, so you still see how long the trip is
+// and where it goes through. The flight you picked sits on top in a gold ring with its check. One set aside
+// when the leg moved to another day stays on top too, with the button that puts the leg back on its day.
+// Once it is booked somewhere, Add booking at the end reads the confirmation into the booking form. A booked leg opens on its
 // booking: the box sits on top and holds the leg, so the strip and the day view are hidden and the flights
 // are folded away until Change booking opens them to look at. Opened so, the booked day carries a check and a
 // ring on the strip, never its price, and a press on any day shows the whole trip on that day under the strip.
@@ -241,7 +242,7 @@ function Stops({ f, name, marks }: { f: CrawledFlight; name: (code: string) => s
         const at = name(code)
         const wait = f.layover_h[i]
         const m = marks[i]
-        return <span key={i} data-tone={m?.tone}>{m && <MarkIcon m={m} bare />}<b>{code}</b>{at !== code && ` ${at}`}{wait != null && ` ${hours(wait)}`}</span>
+        return <span key={i} data-tone={m?.tone}>{m && <MarkIcon m={m} bare />}<b>{code}</b>{at !== code && <span className="fl-via-at"> {at}</span>}{wait != null && ` ${hours(wait)}`}</span>
       })}
       {more > 0 && <span>and {more} more {more === 1 ? 'stop' : 'stops'}</span>}
     </>
@@ -268,7 +269,34 @@ export function Chip({ text, onOpen }: { text: 'Picked' | 'Booked'; onOpen?: () 
   return <span className="fl-chip" data-booked={booked}><Check /> {text}</span>
 }
 
-function Flight({ row, name, nextDay, now, onPick, state = {} }: { row: FareRow; name: (code: string) => string; nextDay: string | null; now: number; onPick?: () => void; state?: RowState }) {
+/** The airline as its logo on the dark, or its two letters and its name when there is no logo. A compact mark keeps the name beside it. */
+function Brand({ carriers }: { carriers: string[] }) {
+  const air = carriers.join(', ')
+  const logo = carriers.length === 1 ? airlineLogo(null, carriers[0], { on: 'dark' }) : null
+  if (logo) {
+    const mark = /-icon/.test(logo)
+    return (
+      <span className="fl-brand" title={air}>
+        <img src={logo} alt={mark ? '' : air} data-mark={mark || undefined} draggable={false} />
+        {mark && <b>{air}</b>}
+      </span>
+    )
+  }
+  return (
+    <span className="fl-brand">
+      <span className="fl-logo" aria-hidden="true">{air ? air.slice(0, 2).toUpperCase() : <Plane s={14} />}</span>
+      <b title={air || undefined}>{air || 'Airline not listed'}</b>
+    </span>
+  )
+}
+
+/** Where a price opens: the search for that flight's day, so the fare is there to book. */
+type Buy = (f: CrawledFlight) => string
+
+/** The two airports of the leg and the day you look at. Under a time goes its airport, or its day when it is another day. */
+interface Ends { from: string; to: string; day: string }
+
+function Flight({ row, name, nextDay, now, onPick, buy, ends, state = {} }: { row: FareRow; name: (code: string) => string; nextDay: string | null; now: number; onPick?: () => void; buy: Buy; ends: Ends; state?: RowState }) {
   const { flight: f, others } = row
   const known = timed(f)
   const col = priceColumn({ picked: !!state.picked, booked: !!state.booked, locked: !!state.locked, canPick: !!onPick && known, canRemove: !!state.onRemove })
@@ -276,23 +304,26 @@ function Flight({ row, name, nextDay, now, onPick, state = {} }: { row: FareRow;
   const site = seller(f)
   const { stops, leaves, lands, badges } = fareMarks(f, name, nextDay)
   const dots = Array.from({ length: stopsOf(f) }, (_, i) => <i key={i} />)
+  const price = kr(f.price_dkk)
+  const mine = col.chip === 'Picked'
+  const home = (iso: string) => iso.slice(0, 10) === ends.day
   return (
-    <div className="fl-row">
+    <div className="fl-row fl-card" data-picked={mine || undefined} data-booked={col.chip === 'Booked' || undefined}>
+      {/* the card is the pick: a button under the content, so the marks on it stay buttons of their own */}
+      {col.pick && <button type="button" className="fl-hit" aria-label={`Pick ${air || 'this flight'}, ${clock(f.depart)} to ${clock(f.arrive)}, ${price}`} onClick={onPick} />}
       <div className="fl-air">
-        <span className="fl-logo" aria-hidden="true">{air ? air.slice(0, 2).toUpperCase() : <Plane s={16} />}</span>
-        <div className="fl-who">
-          <b title={air || undefined}>{air || 'Airline not listed'}</b>
-          <small className="fl-site">
-            <span title={site}>{site}</span>
-            {others.length > 0 && <Tip className="fl-more" label={`Also on ${others.join(', ')}`}><span aria-hidden="true">+{others.length}</span></Tip>}
-          </small>
-        </div>
+        <Brand carriers={f.carriers} />
+        <small className="fl-site">
+          <span title={site}>{site}</span>
+          {others.length > 0 && <Tip className="fl-more" label={`Also on ${others.join(', ')}`}><span aria-hidden="true">+{others.length}</span></Tip>}
+        </small>
+        {mine && <Tip className="fl-in" label="In the trip"><Check s={11} /></Tip>}
       </div>
       {known ? (
         <div className="fl-line">
           <div className="fl-end">
             <b>{clock(f.depart)}</b>
-            <small>{weekdayDay(f.depart)}{leaves && <MarkIcon m={leaves} bare />}</small>
+            <small data-code={home(f.depart) || undefined}>{home(f.depart) ? ends.from : weekdayDay(f.depart)}{leaves && <MarkIcon m={leaves} bare />}</small>
           </div>
           <div className="fl-mid">
             <span className="fl-dur">{hours(f.hours)}</span>
@@ -301,16 +332,15 @@ function Flight({ row, name, nextDay, now, onPick, state = {} }: { row: FareRow;
           </div>
           <div className="fl-end to">
             <b>{clock(f.arrive)}<sup>{nextDayMark(f.depart, f.arrive)}</sup></b>
-            <small data-other={f.arrive.slice(0, 10) !== f.depart.slice(0, 10)} data-tone={lands?.tone}>{lands && <MarkIcon m={lands} bare />}{weekdayDay(f.arrive)}</small>
+            <small data-other={f.arrive.slice(0, 10) !== f.depart.slice(0, 10)} data-code={home(f.arrive) || undefined} data-tone={lands?.tone}>{lands && <MarkIcon m={lands} bare />}{home(f.arrive) ? ends.to : weekdayDay(f.arrive)}</small>
           </div>
         </div>
       ) : <p className="fl-notime"><Unknown title="Flight times not known" /></p>}
       <div className="fl-price">
-        <b title={f.observed_at ? checkedAgo(f.observed_at, now) : undefined}>{kr(f.price_dkk)}</b>
-        {col.chip && <Chip text={col.chip} onOpen={state.onOpenBooking} />}
-        {col.pick && (
-          <button type="button" className="btn small" aria-label={`Pick ${air || 'this flight'}, ${clock(f.depart)} to ${clock(f.arrive)}, ${kr(f.price_dkk)}`} onClick={onPick}>Pick</button>
-        )}
+        <a className="fl-buy" href={buy(f)} target="_blank" rel="noopener noreferrer" aria-label={`${price}, book on Momondo`} title={f.observed_at ? checkedAgo(f.observed_at, now) : undefined}>
+          <b>{price}</b><External s={13} />
+        </a>
+        {col.chip === 'Booked' && <Chip text="Booked" onOpen={state.onOpenBooking} />}
         {col.remove && <button type="button" className="btn link small fl-remove" aria-label={`Remove the picked flight, ${air || 'this flight'} ${clock(f.depart)}`} onClick={state.onRemove}>Remove</button>}
         {state.onUseDay && <button type="button" className="btn small primary" aria-label={`Use this day, ${weekdayDay(f.depart)}, the flight comes back`} onClick={state.onUseDay}>Use this day</button>}
       </div>
@@ -320,15 +350,24 @@ function Flight({ row, name, nextDay, now, onPick, state = {} }: { row: FareRow;
 }
 
 /** The flights of one day. Its own part, so Show all starts over with each day. */
-function DayList({ rows, name, nextDay, now, onPick }: { rows: FareRow[]; name: (code: string) => string; nextDay: string | null; now: number; onPick?: (f: CrawledFlight) => void }) {
+function DayList({ rows, name, nextDay, now, onPick, buy, ends, tail }: {
+  rows: FareRow[]; name: (code: string) => string; nextDay: string | null; now: number; onPick?: (f: CrawledFlight) => void; buy: Buy; ends: Ends
+  /** what sits beside Show all under the list */
+  tail?: ReactNode
+}) {
   const [all, setAll] = useState(false)
   const shown = all ? rows : rows.slice(0, SHOWN)
   return (
     <>
-      <ol className="fl-rows">
-        {shown.map((r) => <li key={r.flight.quote_id}><Flight row={r} name={name} nextDay={nextDay} now={now} onPick={onPick ? () => onPick(r.flight) : undefined} /></li>)}
+      <ol className="fl-rows fl-cards">
+        {shown.map((r) => <li key={r.flight.quote_id}><Flight row={r} name={name} nextDay={nextDay} now={now} buy={buy} ends={ends} onPick={onPick ? () => onPick(r.flight) : undefined} /></li>)}
       </ol>
-      {rows.length > SHOWN && <button type="button" className="btn small fl-all" onClick={() => setAll((x) => !x)}>{all ? 'Show fewer' : `Show all ${rows.length}`}</button>}
+      {(rows.length > SHOWN || tail) && (
+        <div className="fl-tail">
+          {rows.length > SHOWN && <button type="button" className="btn link small fl-all" onClick={() => setAll((x) => !x)}>{all ? 'Show fewer' : `Show all ${rows.length}`}</button>}
+          {tail}
+        </div>
+      )}
     </>
   )
 }
@@ -390,16 +429,24 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
   useEffect(() => { if (used && picked) held.current?.focus({ preventScroll: true }) }, [used, picked])
   const now = Date.now()
   const seen = newestSeen(quotes)
-  const open = link?.saved && at === date ? { href: link.href, label: `Open on ${link.site}` } : { href: momondoUrl(from.code, to.code, at, tripId), label: 'Search Momondo' }
+  const buy: Buy = (f) => momondoUrl(from.code, to.code, f.depart.slice(0, 10), tripId)
+  const ends: Ends = { from: from.code, to: to.code, day: at }
   const task = flightPricesTask({ from: from.code, to: to.code, date: at, fromName: from.name, toName: to.name })
+  // under the list: the saved page of the leg, and Claude's check of the prices
+  const tail = (
+    <>
+      {link?.saved && at === date && <a className="btn link small fl-site-link" href={link.href} target="_blank" rel="noopener noreferrer">Open on {link.site}<External /></a>}
+      <AskClaude draft={task} tripId={tripId} version={tripVersion ?? null} idle="Fresh prices" icon={<Refresh />} className="btn link small fl-fresh" title="Claude checks every flight this day and 3 days either side" />
+    </>
+  )
   const pick = (f: CrawledFlight) => {
     onPick(f)
     close()
   }
   const box = useRef<HTMLElement>(null)
-  const pill = useRef<HTMLButtonElement>(null)
-  // back from the form, the focus goes to the booking it saved, or to Mark as booked when it was left
-  const form = useBookingForm(book, () => (box.current ? showBox() : pill.current?.focus({ preventScroll: true })))
+  const adder = useRef<HTMLElement>(null)
+  // back from the form, the focus goes to the booking it saved, or to Add booking when it was left
+  const form = useBookingForm(book, () => (box.current ? showBox() : adder.current?.focus({ preventScroll: true })))
   // a booked leg is held: the box shows the booking and nothing under it changes the leg. Opened with Change
   // booking, a flight picked there opens the form on the booking, so the save changes that row
   const { hold, choose } = bookedGate<CrawledFlight>({
@@ -424,9 +471,9 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
   return (
     <div className="fl" data-booked={booking ? true : undefined}>
       <div className="fl-top">
-        <header className="fl-h">
-          <h3>{from.name} to {to.name}</h3>
-          {!picked && !booking && typical != null && (
+        <header className="fl-h fl-head">
+          <h3><span>{from.name} to</span> {to.name}</h3>
+          {!booking && typical != null && (
             <small className="ws-sub">
               <Tip className="mk" label={`Typical ${kr(typical)}, what the route usually costs`}><span aria-hidden="true">Typical {kr(typical)}</span></Tip>
             </small>
@@ -451,7 +498,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
         {picked && (
           <section ref={held} className="fl-picked" aria-label={isBookedFlight(booking, picked) ? 'The flight you booked' : 'The flight you picked'} tabIndex={-1}>
             <Flight
-              row={{ flight: picked, others: [] }} name={airportName} nextDay={stay.nextDay} now={now}
+              row={{ flight: picked, others: [] }} name={airportName} nextDay={stay.nextDay} now={now} buy={buy} ends={ends}
               state={{ picked: true, booked: isBookedFlight(booking, picked), locked: !!booking, onRemove: () => onPick(null), onOpenBooking: booking ? showBox : undefined }}
             />
           </section>
@@ -460,7 +507,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
           <section className="fl-picked fl-parked" aria-labelledby={parkedH}>
             <h4 id={parkedH}>{away.title}</h4>
             <Flight
-              row={{ flight: parked, others: [] }} name={airportName} nextDay={stay.nextDay} now={now}
+              row={{ flight: parked, others: [] }} name={airportName} nextDay={stay.nextDay} now={now} buy={buy} ends={ends}
               state={{ onUseDay: !booking && onUseDay ? () => { onUseDay(away.day); setAt(away.day); setUsed(true) } : undefined }}
             />
           </section>
@@ -474,23 +521,13 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
             {near && near.rows.length > 0 && (
               <section className="fl-near" aria-label="Nearest flights">
                 <h4>Nearest flights, {weekdayDay(near.day)}<span>{Math.abs(near.away)} {Math.abs(near.away) === 1 ? 'day' : 'days'} {near.away > 0 ? 'later' : 'earlier'}</span></h4>
-                <DayList key={near.day} rows={near.rows} name={airportName} nextDay={stay.nextDay} now={now} onPick={days.includes(near.day) ? choose : undefined} />
+                <DayList key={near.day} rows={near.rows} name={airportName} nextDay={stay.nextDay} now={now} buy={buy} ends={{ ...ends, day: near.day }} onPick={days.includes(near.day) ? choose : undefined} />
               </section>
             )}
+            <div className="fl-tail">{tail}</div>
           </>
-        ) : <DayList key={at} rows={list} name={airportName} nextDay={stay.nextDay} now={now} onPick={choose} />}
+        ) : <DayList key={at} rows={list} name={airportName} nextDay={stay.nextDay} now={now} buy={buy} ends={ends} onPick={choose} tail={tail} />}
       </div>}
-      {!hold && (
-        <footer className="fl-foot">
-          {rows.length > 0 && <a className="btn small" href={open.href} target="_blank" rel="noopener noreferrer">{open.label}<External /></a>}
-          <AskClaude draft={task} tripId={tripId} version={tripVersion ?? null} title="Claude checks every flight this day and 3 days either side" />
-          {book && !booking && remoteEnabled() && (
-            <button ref={pill} type="button" className="btn small mark-booked" onClick={() => form.open({ start: picked ? 'picked' : 'manual', picked, pin: picked ?? undefined })}>
-              <Check s={14} />Mark as booked
-            </button>
-          )}
-        </footer>
-      )}
     </div>
   )
 }
