@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ScheduledPlace } from './journey'
-import { canStep, choiceNights, chooseRoom, freeNights, removePart, stepNights } from './stayEdit'
+import { canStep, choiceNights, chooseRoom, freeNights, nightsFrom, pickDates, removePart, stepNights } from './stayEdit'
 import type { PlannedStay } from './stays'
 
 // Made up places and rooms only.
@@ -72,5 +72,24 @@ describe('nights of a part', () => {
     expect(removePart([a(2), b()], 0)).toEqual([b()])
     expect(removePart([a(2), b()], 1)).toEqual([a(2)])
     expect(freeNights(removePart([a(2), b()], 1), sp).nights).toBe(4)
+  })
+})
+
+describe('pickDates', () => {
+  const was = { checkIn: '2026-12-03', checkOut: '2026-12-06' }
+  it('takes dates in order as they are', () => {
+    expect(pickDates(was, '2026-12-04', '2026-12-06')).toEqual({ checkIn: '2026-12-04', checkOut: '2026-12-06' })
+    expect(pickDates(was, '2026-12-03', '2026-12-09')).toEqual({ checkIn: '2026-12-03', checkOut: '2026-12-09' })
+  })
+  it('moves the check-out along with a check-in onto or past it and keeps the nights', () => {
+    expect(pickDates(was, '2026-12-08', '2026-12-06')).toEqual({ checkIn: '2026-12-08', checkOut: '2026-12-11' })
+    expect(pickDates(was, '2026-12-06', '2026-12-06')).toEqual({ checkIn: '2026-12-06', checkOut: '2026-12-09' })
+  })
+  it('makes a check-out on or before the check-in the day after it', () => {
+    expect(pickDates(was, '2026-12-03', '2026-12-02')).toEqual({ checkIn: '2026-12-03', checkOut: '2026-12-04' })
+  })
+  it('counts the nights between two days, at least 1', () => {
+    expect(nightsFrom('2026-12-03', '2026-12-06')).toBe(3)
+    expect(nightsFrom('2026-12-03', '2026-12-03')).toBe(1)
   })
 })

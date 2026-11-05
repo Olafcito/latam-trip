@@ -77,3 +77,16 @@ export function canStep(stays: PlannedStay[], sp: ScheduledPlace, k: number): { 
 export function removePart(stays: PlannedStay[], k: number): PlannedStay[] {
   return stays.filter((_, i) => i !== k)
 }
+
+/** The nights from one day to another, at least 1. */
+export const nightsFrom = (checkIn: string, checkOut: string) => Math.max(1, Math.round((Date.parse(checkOut) - Date.parse(checkIn)) / 864e5))
+
+/**
+ * New dates to look at prices for. A check-in moved onto or past the check-out takes the check-out along and keeps
+ * the nights, and a check-out moved onto or before the check-in becomes the day after it.
+ */
+export function pickDates(was: { checkIn: string; checkOut: string }, checkIn: string, checkOut: string): { checkIn: string; checkOut: string } {
+  if (checkOut > checkIn) return { checkIn, checkOut }
+  if (checkIn !== was.checkIn) return { checkIn, checkOut: addDays(checkIn, nightsFrom(was.checkIn, was.checkOut)) }
+  return { checkIn, checkOut: addDays(checkIn, 1) }
+}

@@ -8,7 +8,7 @@ import { countryName } from '../../lib/colors'
 import { nodeName, type Journey, type Schedule } from '../../lib/journey'
 import { placeFinds, type FindRow } from '../../lib/placeFinds'
 import { shortPlace } from '../../lib/format'
-import { choiceNights, chooseRoom, freeNights, removePart } from '../../lib/stayEdit'
+import { choiceNights, chooseRoom, freeNights, nightsFrom, pickDates, removePart } from '../../lib/stayEdit'
 import { partBooking, stayClashes, stayParts, tripStays } from '../../lib/stays'
 import { loadLodgings } from '../../lib/lodgings'
 import { addFromLink, remember } from '../../lib/stayRates'
@@ -27,7 +27,8 @@ import { Finds } from './TripHead'
 
 // A stop of the route folded open in place: the wiring of the fold to the trip. Its stays are the stop's planned
 // parts with their dates and the booked stays at it that no part stands for. Add accommodation opens the search
-// over the places stored for the stop, and Select on a room plans it. The rest of the city card's acts, change
+// over the places stored for the stop, and Select on a room plans it. Dates picked in the window, in the search or
+// on a place, price the places for those dates until the window closes. A room selected still takes the stop's nights. The rest of the city card's acts, change
 // the place and delete it, still open the city card from About.
 
 const firstPhoto = (l: Lodging | undefined) => l?.photos.find((p) => /^https:\/\//i.test(p.url))?.url ?? null
@@ -56,6 +57,8 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   const [adding, setAdding] = useState<string | null | false>(false)
   const [route, setRoute] = useState<RouteData | null>(null)
   const [find, setFind] = useState<FindRow | null>(null)
+  // dates picked in the window, which hold until it closes
+  const [pick, setPick] = useState<{ checkIn: string; checkOut: string } | null>(null)
   const [saved, toggleSaved] = useSaved()
   const rev = useDataRev()
   useEffect(() => {
@@ -67,15 +70,16 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   const sp = sched.places[i]
   const name = p ? shortPlace(nodeName(map, inout, p.node)) : ''
   const win = p && sp ? searchWindow(p.stays ?? [], sp) : null
+  const dates = pick ?? win
   // Find accommodations, for a stop with nights
   const finder = useStayFind(
     sp && sp.days > 0 ? { id: sp.node, name } : null,
-    win?.checkIn ?? '',
-    win?.checkOut ?? '',
+    dates?.checkIn ?? '',
+    dates?.checkOut ?? '',
     { id: journey.id, version: journey.version ?? null },
     adding !== false,
   )
-  if (!p || !sp || !win) return null
+  if (!p || !sp || !win || !dates) return null
   const node = map.nodes.find((n) => n.id === p.node)
   const prof = node?.profile
   const stays = p.stays ?? []
@@ -130,7 +134,10 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
     }),
   ]
 
-  const { free, checkIn: searchIn, checkOut: searchOut } = win
+  const { free } = win
+  const { checkIn: searchIn, checkOut: searchOut } = dates
+  /** new dates picked from the ones shown */
+  const repick = (was: { checkIn: string; checkOut: string }) => (checkIn: string, checkOut: string) => setPick(pickDates(was, checkIn, checkOut))
   const planned = new Set(stays.map((s) => s.lodging_id))
   const ranked = [...here].sort((a, b) => Number(!!bookedAt(b)) - Number(!!bookedAt(a)) || Number(planned.has(b.id)) - Number(planned.has(a.id)))
   const finds = read && node ? read(node.id) : null
@@ -174,13 +181,14 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
         }
       />
       {adding !== false && (
-        <Modal label={`Add accommodation in ${name}`} className="ad-md" bare onClose={() => setAdding(false)}>
+        <Modal label={`Add accommodation in ${name}`} className="ad-md" bare onClose={() => { setAdding(false); setPick(null) }}>
           {(close) => (
             <AddStay
               key={adding ?? 'list'}
               destination={name}
               checkIn={searchIn}
               checkOut={searchOut}
+              onDates={repick(dates)}
               guests={1}
               rooms={1}
               places={ranked}
@@ -199,20 +207,22 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
               }}
               badge={(l) => (bookedAt(l) ? { label: 'Booked here', tone: 'booked' } : planned.has(l.id) ? { label: 'In your plan', tone: 'plan' } : null)}
               onClose={close}
-              manual={<AddPlace place={sp.node} first={sp.days > 0 ? searchIn : null} nights={sp.days > 0 ? Math.max(1, free.nights || sp.days) : 0} close={close} onSaved={close} />}
+              manual={<AddPlace place={sp.node} first={sp.days > 0 ? win.checkIn : null} nights={sp.days > 0 ? Math.max(1, free.nights || sp.days) : 0} close={close} onSaved={close} />}
               property={(l, back) => {
                 const at = choiceNights(stays, sp, l.id)
                 const b = bookedAt(l)
-                const first = sp.days > 0 ? at.first : searchIn
-                const nights = sp.days > 0 ? Math.max(1, at.nights) : 1
+                const first = pick?.checkIn ?? (sp.days > 0 ? at.first : searchIn)
+                const nights = pick ? nightsFrom(pick.checkIn, pick.checkOut) : sp.days > 0 ? Math.max(1, at.nights) : 1
+                const shown = { checkIn: first, checkOut: addDays(first, nights) }
                 const link = shareLink(l)
                 return (
                   <PropertyView key={l.id}
                     lodging={l}
                     place={[name, node && countryName(node.country)].filter(Boolean).join(', ')}
-                    checkIn={first}
-                    checkOut={addDays(first, nights)}
+                    checkIn={shown.checkIn}
+                    checkOut={shown.checkOut}
                     nights={nights}
+                    onDates={repick(shown)}
                     guests={1}
                     chosen={stays.filter((s) => s.lodging_id === l.id && s.room_id).map((s) => s.room_id!)}
                     booked={b?.room_id ?? null}

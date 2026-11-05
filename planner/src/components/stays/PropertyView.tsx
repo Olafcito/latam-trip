@@ -1,17 +1,20 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Lodging } from '../../data/types'
-import { kr } from '../../lib/format'
+import { day, kr } from '../../lib/format'
 import { amenityRow, bookAt, cheapestRoom, nightly, nightsWord, stayDates, type Provider } from '../../lib/stayOffer'
+import { addDays } from '../../lib/time'
 import { safeUrl } from '../../lib/lodgingLinks'
 import { roomMarks, type Mark } from '../../lib/roomMarks'
 import type { Shared } from '../../lib/sharePlace'
 import { Bed, Calendar, Caret, Check, External, Heart, Person, Photos, Share, Warn } from '../icons'
+import { DayInput } from './DayInput'
 import { AmenityIcon, kindWord, NightPrice, Rating } from './offerMarks'
 import { useLiveRates, type LiveRates } from './useLiveRates'
 
 // A place to stay in full, pushed over the search on a phone and beside it on a wide screen: its photos edge to
 // edge with back, share and save on them, its name, kind, place and rating, three lines of what it is like with More
 // for the rest, five things it offers in one row, then its rooms priced per night for the dates with Select on each,
+// the two days themselves the control that changes the dates,
 // and last the sites to book it at. A booked room carries the Booked pill in place of Select. A place with a
 // Hostelworld link asks for its live prices on open: a pulsing dot on the rooms heading and on each room still
 // without a price for the dates while it asks, one warn mark on the heading when it could not. Green is for Select
@@ -35,6 +38,8 @@ export interface PropertyViewProps {
   /** shares the place, and says how, so a copied link shows a check on the button for a moment */
   onShare?: () => Promise<Shared> | void
   onSelect?: (roomId: string) => void
+  /** new dates picked on the dates bar. Without it the dates are only shown */
+  onDates?: (checkIn: string, checkOut: string) => void
   /** a logo for a site the app has no file for */
   logo?: (p: Provider) => string | null
 }
@@ -201,7 +206,15 @@ export function PropertyView(p: PropertyViewProps) {
               <LiveMark live={live} />
             </div>
             <div className="pv-bar">
-              <span><Calendar s={15} />{stayDates(p.checkIn, p.checkOut)}<i aria-hidden="true">·</i>{nightsWord(p.nights)}</span>
+              {p.onDates ? (
+                <span>
+                  <Calendar s={15} />
+                  <span className="pv-day">{day(p.checkIn)}<DayInput label="Check-in" value={p.checkIn} onPick={(d) => p.onDates!(d, p.checkOut)} /></span>
+                  <i aria-hidden="true">to</i>
+                  <span className="pv-day">{day(p.checkOut)}<DayInput label="Check-out" value={p.checkOut} min={addDays(p.checkIn, 1)} onPick={(d) => p.onDates!(p.checkIn, d)} /></span>
+                  <i aria-hidden="true">·</i>{nightsWord(p.nights)}
+                </span>
+              ) : <span><Calendar s={15} />{stayDates(p.checkIn, p.checkOut)}<i aria-hidden="true">·</i>{nightsWord(p.nights)}</span>}
               <span><Person s={15} />{p.guests} {p.guests === 1 ? 'guest' : 'guests'}</span>
             </div>
             <ul className="pv-rooms">
