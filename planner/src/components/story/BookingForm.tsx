@@ -229,7 +229,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
       return
     }
     const fields = full ? cleaned(form) : { reference: form.reference ?? '' }
-    let rows = formRows(base(), fields, { edit: edit || rebook || !!savedIds, own: edit ? open.booking!.id : undefined })
+    let rows = formRows(base(), fields, { edit: edit || rebook || !!savedIds, own: edit ? open.booking!.id : undefined, hadMail: existing.some((r) => !!r.mail_url?.trim()) })
     if (savedIds) rows = withIds(rows, savedIds)
     setBusy(true)
     setSaid(null)

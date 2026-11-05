@@ -174,7 +174,7 @@ function onDay(stamp: string, from: string, to: string): string {
  * With own, the id of the row the form was opened on, the reference and the fare go to that row alone, so the
  * other flights of the ticket keep theirs. Without it, or when no row has that id, every row takes them.
  */
-export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { edit?: boolean; own?: string } = {}): Partial<Booking>[] {
+export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { edit?: boolean; own?: string; hadMail?: boolean } = {}): Partial<Booking>[] {
   const mine = opts.own != null && rows.some((r) => r.id === opts.own) ? opts.own : null
   const put = (r: Partial<Booking>, key: keyof Booking, raw: string | undefined, value: unknown) => {
     if (raw === undefined) return
@@ -185,7 +185,7 @@ export function formRows(rows: Partial<Booking>[], form: BookingFields, opts: { 
     const r: Partial<Booking> = { ...row }
     for (const key of SHARED) {
       // mail_url is left off the row unless it has a value or clears one the row had, so saving works before 0016 is applied
-      if (key === 'mail_url' && !form.mail_url?.trim() && !(opts.edit && row.mail_url)) continue
+      if (key === 'mail_url' && !form.mail_url?.trim() && !(opts.edit && (row.mail_url || opts.hadMail))) continue
       put(r, key, form[key], form[key]?.trim())
     }
     if (mine == null || row.id === mine) for (const key of OWN) put(r, key, form[key], form[key]?.trim())

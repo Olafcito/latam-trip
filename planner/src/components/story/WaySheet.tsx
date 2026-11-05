@@ -232,7 +232,7 @@ export function WaySheet({ dir, way, other, byDay, data, tripId, booking, pair, 
         </header>
         {booking && (
           <BookedBox
-            ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} ways={pair} stay={stay}
+            key={booking.id} ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} ways={pair} stay={stay}
             onEdit={book ? () => form.open({ start: 'manual', edit: true, booking }) : undefined}
             onRemoved={() => say(`The booking is removed. The ${dir === 'in' ? 'way in' : 'way home'} can change again.`)}
           />

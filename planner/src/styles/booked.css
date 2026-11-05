@@ -73,7 +73,7 @@
   .jb-inc-i { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; }
   .jb-inc[data-has='yes'] .jb-inc-i { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked); }
   .jb-inc[data-has='no'] .jb-inc-i { box-shadow: inset 0 0 0 1.5px var(--line-2); color: #4D6676; }
-  .jb-inc[data-has='unknown'] .jb-inc-i { box-shadow: inset 0 0 0 1.5px var(--line-2); color: #4D6676; outline: 1.5px dashed var(--line-2); outline-offset: -1.5px; }
+  .jb-inc[data-has='unknown'] .jb-inc-i { color: #4D6676; outline: 1.5px dashed var(--line-2); outline-offset: -1.5px; }
   .jb-inc-l { font-size: var(--fs-small); font-weight: 600; line-height: 1.2; }
   .jb-inc:not([data-has='yes']) .jb-inc-l { color: var(--faint); }
 
@@ -82,6 +82,11 @@
   .jb-seller { display: flex; align-items: center; gap: 12px; min-height: 40px; }
   .jb-seller-id { min-width: 0; display: inline-flex; align-items: center; gap: 12px; }
   .jb-seller-id b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.0625rem; }
+  .jb-seller-txt { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .jb-seller-txt a { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; color: var(--text); text-decoration: none; }
+  .jb-seller-txt a svg { flex: none; color: var(--muted); }
+  .jb-seller-txt a:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; border-radius: 4px; }
+  .jb-seller-txt small { font-size: var(--fs-small); color: var(--muted); }
   .jb-paid { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
   .jb-paid b { font-family: var(--font-ticket); font-size: 1.1875rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .jb-paid small { font-size: var(--fs-label); color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -120,13 +125,13 @@
   .jb-go::after { content: ''; position: absolute; inset: calc((40px - max(40px, var(--hit))) / 2); }
   .jb-go:active { transform: scale(0.94); }
   .jb-go:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
-  .jb-other:has(.jb-go) { grid-column: auto; }
   .jb-other:not(:has(.jb-go)) { grid-template-columns: 18px minmax(0, 1fr) auto; }
 
   .jb-files { margin: 0; }
   .jb .bk-tile { background: var(--surface-2); }
   .jb-notes { margin: 0; font-size: var(--fs-small); color: var(--muted); white-space: pre-line; }
-  .jb .bk-said:empty { display: none; }
+  /* an empty status line takes no room but stays a live region, so the first message is heard */
+  .jb .bk-said:empty { height: 0; margin: -14px 0 0; overflow: hidden; }
   .jb-act { width: 36px; height: 36px; background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted); }
   .jb-file { cursor: pointer; }
   .jb-file:has(input:focus-visible) { outline: 2px solid var(--flight); outline-offset: 2px; }
@@ -143,6 +148,7 @@
 
   /* in a sheet the pane runs to the edges and takes the top, and the sheet's own title is left to a screen reader */
   .fl-top { --jb-bleed: 20px; }
+  @media (max-width: 560px) { .fl-top { --jb-bleed: 16px; } }
   .fl[data-booked] > .fl-top { padding-top: 0; }
   .fl[data-booked] > .fl-top > .fl-h { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .lc .jb { border-radius: 14px; overflow: hidden; }

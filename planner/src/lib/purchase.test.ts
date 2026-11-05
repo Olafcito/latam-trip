@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { Booking } from '../data/types'
-import { airlineLogo, codeOfName, codeOfNumber, codesOf, flightLabel, flightsOf, mailLink, photoOf, placeOf, relationOf, sellerLogo, ticketRows, waitHours, type PlaceData } from './purchase'
+import { airlineLogo, codeOfName, codeOfNumber, codesOf, flightLabel, flightsOf, mailLink, photoOf, relationOf, sellerLogo, ticketRows, waitHours, type PlaceData } from './purchase'
 
 const row = (over: Partial<Booking>): Booking => ({
-  id: 'r1', kind: 'flight', status: 'booked', from_code: 'AAA', to_code: 'CCC', depart: '2026-12-08T14:53', arrive: '2026-12-08T21:29',
+  id: 'r1', kind: 'flight', status: 'booked', from_code: 'AAA', to_code: 'CCC', depart: '2026-12-08T10:00', arrive: '2026-12-08T18:00',
   place_id: null, check_in: null, check_out: null, lodging_id: null, room_id: null, reference: 'TEST01', seller: null, seller_reference: null,
   fare: null, url: null, price_dkk: null, price: null, currency: null, refundable: null, changeable: null, change_until: null, cancel_until: null,
   cabin_bag: null, checked_bag: null, segments: null, travellers: 1, trip_id: null, ticket: null, source: 'manual', notes: null, attachments: [],
@@ -13,11 +13,11 @@ const row = (over: Partial<Booking>): Booking => ({
 describe('flightsOf', () => {
   it('reads each segment with its airline code from the number', () => {
     const f = flightsOf(row({ segments: [
-      { from: 'AAA', to: 'BBB', depart: '2026-12-08T14:53', arrive: '2026-12-08T16:44', carrier: 'JetSMART', number: 'JA5451' },
-      { origin: 'BBB', destination: 'CCC', depart: '2026-12-08T20:10', arrive: '2026-12-08T21:29', airline: 'LATAM', flight: '4392', operated_by: 'Aires' },
+      { from: 'AAA', to: 'BBB', depart: '2026-12-08T10:00', arrive: '2026-12-08T12:00', carrier: 'JetSMART', number: 'JA1234' },
+      { origin: 'BBB', destination: 'CCC', depart: '2026-12-08T15:00', arrive: '2026-12-08T18:00', airline: 'LATAM', flight: '4321', operated_by: 'Partner Air' },
     ] }))
-    expect(f.map((x) => [x.from, x.to, x.code, x.operatedBy])).toEqual([['AAA', 'BBB', 'JA', null], ['BBB', 'CCC', 'LA', 'Aires']])
-    expect(flightLabel(f[1])).toBe('LA4392')
+    expect(f.map((x) => [x.from, x.to, x.code, x.operatedBy])).toEqual([['AAA', 'BBB', 'JA', null], ['BBB', 'CCC', 'LA', 'Partner Air']])
+    expect(flightLabel(f[1])).toBe('LA4321')
   })
   it('makes one flight of a row without segments, and none of a row without ends', () => {
     expect(flightsOf(row({})).map((x) => `${x.from}-${x.to}`)).toEqual(['AAA-CCC'])
@@ -55,8 +55,8 @@ describe('codes and logos', () => {
 })
 
 describe('the purchase', () => {
-  const a = row({ id: 'a', ticket: 't', depart: '2026-12-03T11:37' })
-  const b = row({ id: 'b', ticket: 't', depart: '2026-12-08T14:53' })
+  const a = row({ id: 'a', ticket: 't', depart: '2026-12-03T09:00' })
+  const b = row({ id: 'b', ticket: 't', depart: '2026-12-08T10:00' })
   const gone = row({ id: 'c', ticket: 't', status: 'cancelled' })
   const other = row({ id: 'd', ticket: 'u' })
   it('lists the other booked rows of the ticket in the order they fly', () => {
@@ -79,11 +79,6 @@ describe('places', () => {
       { id: 'smr', iata: 'SMR', name: 'Santa Marta', lat: 11.1, lon: -74.2, profile: { image: { url: 'javascript:alert(1)' } } },
     ] },
   }
-  it('finds an airport on either list, with the city it serves', () => {
-    expect(placeOf('CPH', data)).toEqual({ code: 'CPH', name: 'Copenhagen', lat: 55.6, lon: 12.6 })
-    expect(placeOf('SMR', data)?.name).toBe('Santa Marta')
-    expect(placeOf('XXX', data)).toBeNull()
-  })
   it('takes a photo only from an https address', () => {
     expect(photoOf('CTG', data)?.url).toBe('https://upload.example/ctg.jpg')
     expect(photoOf('SMR', data)).toBeNull()
@@ -98,7 +93,7 @@ describe('links and waits', () => {
     expect(mailLink({})).toBeNull()
   })
   it('measures the wait at an airport from two local times', () => {
-    expect(waitHours('2026-12-08T16:44', '2026-12-08T20:10')).toBeCloseTo(3.433, 2)
-    expect(waitHours('2026-12-08', '2026-12-08T20:10')).toBeNull()
+    expect(waitHours('2026-12-08T12:00', '2026-12-08T15:30')).toBe(3.5)
+    expect(waitHours('2026-12-08', '2026-12-08T15:00')).toBeNull()
   })
 })

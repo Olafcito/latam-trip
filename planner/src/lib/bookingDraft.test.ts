@@ -183,6 +183,13 @@ describe('the form rows', () => {
     expect(rows.map((r) => r.mail_url)).toEqual(['https://mail.google.com/mail/u/0/#all/TEST01', 'https://mail.google.com/mail/u/0/#all/TEST01'])
   })
 
+  it('clears mail_url on an edit of rows passed by id alone when the purchase had one', () => {
+    // the form hands an edit its rows as ids, so whether a mail was there comes from hadMail
+    const rows = formRows([{ id: 'b1' }, { id: 'b2' }], { mail_url: '' }, { edit: true, hadMail: true })
+    expect(rows.map((r) => r.mail_url)).toEqual([null, null])
+    expect('mail_url' in formRows([{ id: 'b1' }], { mail_url: '' }, { edit: true, hadMail: false })[0]).toBe(false)
+  })
+
   it('leaves mail_url off a new booking when the field is empty', () => {
     const rows = formRows([{ id: 'b1' }], { mail_url: '', fare: 'Light' })
     expect('mail_url' in rows[0]).toBe(false)

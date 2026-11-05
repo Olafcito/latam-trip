@@ -211,17 +211,22 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   useEffect(() => {
     if (!focus) return
     if (booking?.id !== focus) {
-      setSheetOpen(false)
+      // an open sheet closes the way its own close does, so a leg left in Change booking locks again
+      if (sheetOpen) {
+        setSheetOpen(false)
+        setUnlocked(null)
+      }
       pop.close()
       return
     }
-    useStore.getState().setFocusBooking(null)
     row.current?.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+    // the window grows from this leg and gives the focus back to it
+    row.current?.querySelector<HTMLButtonElement>('.st-hop')?.focus({ preventScroll: true })
     if (sheet) setSheetOpen(true)
     else pop.show()
-    // the leg of the focused booking is the only one that acts on it
+    // only a new request acts, so a booking saved later never closes a sheet
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focus, booking?.id])
+  }, [focus])
   const label = `${aria}${booking ? ', booked' : ''}. Details`
   const mode = <>{travel}{booking && <span className="st-booked" aria-hidden="true"><Check s={12} /></span>}</>
   return (

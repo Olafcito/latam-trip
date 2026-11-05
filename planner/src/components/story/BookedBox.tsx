@@ -5,7 +5,7 @@ import { fileMessage, fileTile, flightHours, type BoxChip, type BoxHead, type Bo
 import { attachFile, cancelBooking, fileUrl, saveBookings } from '../../lib/bookings'
 import { clock, dayDiff, hours, kr, nextDayMark, shortPlace, thousands, weekdayDay } from '../../lib/format'
 import {
-  airlineLogo, cityName, codesOf, flightLabel, flightsOf, gmailLogo, mailLink, photoOf, relationOf, sellerLogo, ticketRows, waitHours,
+  airlineLogo, cityName, codesOf, flightLabel, flightsOf, gmailLogo, mailLink, photoOf, relationOf, safeLink, sellerLogo, ticketRows, waitHours,
   type JourneyFlight, type WayPair,
 } from '../../lib/purchase'
 import { useStore } from '../../store'
@@ -168,7 +168,7 @@ function Tile({ f, onOpen }: { f: BookingFile; onOpen: (f: BookingFile) => void 
 const Tick = ({ s = 10 }: { s?: number }) => <span className="jb-tick" aria-hidden="true"><Check s={s} /></span>
 
 /** A logo on a light plate, or the name set in type when there is no logo or it does not load. */
-function Brand({ src, name, size }: { src: string | null; name: string; size?: 'seller' }) {
+function Brand({ src, name, size, fare, page }: { src: string | null; name: string; size?: 'seller'; fare?: string | null; page?: string | null }) {
   const [broken, setBroken] = useState(false)
   useEffect(() => setBroken(false), [src])
   if (size === 'seller') {
@@ -176,7 +176,12 @@ function Brand({ src, name, size }: { src: string | null; name: string; size?: '
     return (
       <span className="jb-seller-id">
         {src && !broken && <span className="jb-brand" data-size="seller"><img src={src} alt="" onError={() => setBroken(true)} /></span>}
-        <b>{name}</b>
+        <span className="jb-seller-txt">
+          {page
+            ? <a href={page} target="_blank" rel="noopener noreferrer"><b>{name}</b><ArrowUpRight s={12} /><span className="vh">, open the booking in a new tab</span></a>
+            : <b>{name}</b>}
+          {fare && <small>{fare}</small>}
+        </span>
       </span>
     )
   }
@@ -222,7 +227,8 @@ function FlightCard({ f, took, kind }: { f: JourneyFlight; took: number | null; 
   const Way = kind === 'bus' ? Bus : kind === 'boat' ? Boat : Plane
   const aria = [who, label, `${f.from}${dep ? ` ${dep}` : ''} to ${f.to}${arr ? ` ${arr}` : ''}${mark ? `, ${mark} day` : ''}`, took != null ? hours(took) : null].filter(Boolean).join(', ')
   return (
-    <li className="jb-card" aria-label={aria}>
+    <li className="jb-card">
+      <span className="vh">{aria}</span>
       <div className="jb-card-air" aria-hidden="true">
         {logo ? <Brand src={logo} name={who ?? 'Airline'} /> : who && <span className="jb-brand-name">{who}</span>}
         {label && <small>{label}</small>}
@@ -305,6 +311,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
   const cur = payer.currency?.toUpperCase()
   const paidAs = paid && payer.price != null && cur && cur !== 'DKK' ? `${amount(payer.price)} ${cur}` : null
   const mail = mailLink(b)
+  const page = safeLink(b.url)
   const files = useMemo(() => {
     const seen = new Set<string>()
     return group.flatMap((r) => r.attachments).filter((a) => (seen.has(a.path) ? false : (seen.add(a.path), true)))
@@ -332,6 +339,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
   const remove = useRef<HTMLButtonElement>(null)
   const mailInput = useRef<HTMLInputElement>(null)
   const mailBtn = useRef<HTMLButtonElement>(null)
+  const mailLinkRef = useRef<HTMLAnchorElement>(null)
   // the question takes the focus to its safe answer, and Keep booking gives it back to Remove booking
   const asked = useRef(false)
   useEffect(() => {
@@ -367,7 +375,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
       return
     }
     setAdding(file.name)
-    setSaid(null)
+    setSaid({ text: `Adding ${file.name}` })
     const r = await attachFile(b.id, file)
     setAdding(null)
     if (!r.ok) return setSaid({ text: r.message, bad: true })
@@ -383,11 +391,15 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
     // the whole purchase shares its mail
     const r = await saveBookings(group.map((row) => ({ id: row.id, mail_url: url })))
     setMailBusy(false)
-    if (!r.ok) return setSaid({ text: r.message, bad: true })
+    if (!r.ok) {
+      const missing = /mail_url|PGRST204|schema cache/i.test(r.message)
+      return setSaid({ text: missing ? 'The mail link cannot be saved yet. The database needs migration 0016.' : r.message, bad: true })
+    }
     for (const row of group) patch(row.id, { mail_url: url })
     setMailing(false)
     setMailText('')
     setSaid({ text: 'Confirmation mail added.' })
+    requestAnimationFrame(() => mailLinkRef.current?.focus())
   }
   const stopMail = () => {
     setMailing(false)
@@ -457,12 +469,12 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
       <section className="jb-buy" aria-labelledby={`${id}-buy`}>
         <h5 id={`${id}-buy`} className="vh">The purchase</h5>
         <div className="jb-seller">
-          {seller && <Brand src={sellerLogo(seller)} name={seller} size="seller" />}
+          {seller && <Brand src={sellerLogo(seller)} name={seller} size="seller" fare={b.fare?.trim() || null} page={page} />}
           {paid && <span className="jb-paid"><b>{paid}</b>{paidAs && <small>{paidAs}</small>}</span>}
         </div>
 
         {mail ? (
-          <a className="jb-mail" href={mail} target="_blank" rel="noopener noreferrer">
+          <a ref={mailLinkRef} className="jb-mail" href={mail} target="_blank" rel="noopener noreferrer">
             <img src={gmailLogo()} alt="" />
             <span><b>Confirmation mail</b><small>Opens in Gmail</small></span>
             <ArrowUpRight />
@@ -471,7 +483,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
         ) : mailing ? (
           <form className="jb-mail-add" onSubmit={saveMail}>
             <label htmlFor={`${id}-mail`}>Link to the confirmation mail</label>
-            <input ref={mailInput} id={`${id}-mail`} type="url" inputMode="url" placeholder="https://mail.google.com/..." value={mailText} onChange={(e) => setMailText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); stopMail() } }} />
+            <input ref={mailInput} id={`${id}-mail`} type="url" inputMode="url" placeholder="https://mail.google.com/..." value={mailText} onChange={(e) => setMailText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); stopMail() } }} />
             <div className="bk-acts">
               <button type="submit" className="btn small jb-save" disabled={mailBusy}>{mailBusy ? 'Saving' : 'Save'}</button>
               <button type="button" className="btn link small" onClick={stopMail} disabled={mailBusy}>Cancel</button>
@@ -508,17 +520,19 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
               const a = c[0] ?? r.from_code
               const z = c[c.length - 1] ?? r.to_code
               const what = relationText(b, r, ways)
-              const route = `${a ? cityName(a, data) : 'From'} → ${z ? cityName(z, data) : 'To'}`
+              const fromCity = a ? cityName(a, data) : 'From'
+              const toCity = z ? cityName(z, data) : 'To'
+              const route = `${fromCity} to ${toCity}`
               const day = dayOf(r.depart)
               // the trip shows a journey of its own trip only, so the way to it is there when both are in one
               const reach = r.trip_id != null && r.trip_id === b.trip_id
               return (
                 <li key={r.id} className="jb-other">
                   <span className="jb-other-tick" role="img" aria-label="Booked"><Tick /></span>
-                  <span className="jb-other-txt"><small>{what}</small><b>{route}</b></span>
+                  <span className="jb-other-txt"><small>{what}</small><b>{fromCity}<span aria-hidden="true"> → </span><span className="vh"> to </span>{toCity}</b></span>
                   {day && <span className="jb-other-day">{day}</span>}
                   {reach && (
-                    <button type="button" className="jb-go" onClick={() => show(r.id)} aria-label={`Show ${route.replace(' → ', ' to ')}${day ? `, ${day}` : ''} in the trip`} title="Show in the trip">
+                    <button type="button" className="jb-go" onClick={() => show(r.id)} aria-label={`Show ${route}${day ? `, ${day}` : ''} in the trip`} title="Show in the trip">
                       <ArrowUpRight />
                     </button>
                   )}
@@ -528,7 +542,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
           </ul>
         )}
 
-        {(files.length > 0 || adding !== null) && (
+        {files.length > 0 && (
           <ul className="bk-files jb-files" aria-label="Files">
             {files.map((x) => <Tile key={x.path} f={x} onOpen={open} />)}
           </ul>

@@ -14,13 +14,13 @@ export interface JourneyFlight {
   /** local "YYYY-MM-DDTHH:MM", or a day, or null */
   depart: string | null
   arrive: string | null
-  /** the airline as the row names it, "JetSMART" */
+  /** the airline as the row names it */
   carrier: string | null
-  /** the flight number as written, "JA5451" or "5451" */
+  /** the flight number as written, "XX1234" or "1234" */
   number: string | null
   /** the two letter airline code, from the number or the airline's name */
   code: string | null
-  /** who flies it when that is another airline, "Aires" */
+  /** who flies it when that is another airline */
   operatedBy: string | null
 }
 
@@ -51,7 +51,7 @@ export function codeOfName(name: string | null | undefined): string | null {
   return name ? NAME_CODE[key(name)] ?? null : null
 }
 
-/** The airline code a flight number starts with, "JA5451" to "JA". */
+/** The airline code a flight number starts with, "XX1234" to "XX". */
 export function codeOfNumber(number: string | null | undefined): string | null {
   const m = number?.trim().toUpperCase().match(/^([A-Z0-9]{2})\s?\d{1,4}[A-Z]?$/)
   return m && /[A-Z]/.test(m[1]) ? m[1] : null
@@ -113,12 +113,12 @@ export function flightsOf(b: Pick<Booking, 'from_code' | 'to_code' | 'depart' | 
   return [{ from: b.from_code, to: b.to_code, depart: b.depart, arrive: b.arrive, carrier: null, number: null, code: null, operatedBy: null }]
 }
 
-/** The airport codes a journey passes, in order: "ADZ", "MDE", "SMR". */
+/** The airport codes a journey passes, in order. */
 export function codesOf(flights: readonly JourneyFlight[]): string[] {
   return flights.length ? [flights[0].from, ...flights.map((f) => f.to)] : []
 }
 
-/** The flight number as it reads on a ticket: the airline code and the number together, "JA5451". */
+/** The flight number as it reads on a ticket: the airline code and the number together, "XX1234". */
 export function flightLabel(f: Pick<JourneyFlight, 'number' | 'code'>): string | null {
   if (!f.number) return null
   const n = f.number.replace(/\s+/g, '').toUpperCase()
@@ -154,14 +154,6 @@ export function relationOf(here: Booking, other: Booking, ways?: WayPair | null)
   return 'also'
 }
 
-export const RELATION_TEXT: Record<Relation, string> = {
-  return: 'Return flight included',
-  outbound: 'Outbound flight included',
-  also: 'Also on this purchase',
-}
-
-export interface Place { code: string; name: string; lat: number; lon: number }
-
 export interface PlaceData {
   inout: { airports: Record<string, Pick<Airport, 'name' | 'lat' | 'lon' | 'map_node'> & Partial<Pick<Airport, 'country' | 'utc_offset'>>> }
   map: { nodes: readonly Pick<MapNode, 'id' | 'iata' | 'name' | 'lat' | 'lon' | 'profile'>[] }
@@ -174,17 +166,6 @@ function nodeOf(code: string, data: PlaceData) {
   if (own) return own
   const id = data.inout.airports[code]?.map_node
   return id ? data.map.nodes.find((n) => n.id === id) : undefined
-}
-
-/** Where an airport is and the city it serves, or null when neither list knows it. */
-export function placeOf(code: string, data: PlaceData): Place | null {
-  const a = data.inout.airports[code]
-  const n = nodeOf(code, data)
-  const lat = a?.lat ?? n?.lat
-  const lon = a?.lon ?? n?.lon
-  if (typeof lat !== 'number' || typeof lon !== 'number') return null
-  const name = n?.name ?? a?.name ?? code
-  return { code, name: shortPlace(name), lat, lon }
 }
 
 /** The city an airport serves, or its code. */

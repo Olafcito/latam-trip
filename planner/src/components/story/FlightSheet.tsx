@@ -432,7 +432,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
             </small>
           )}
         </header>
-        {booking && <BookedBox ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} onRemoved={() => setRemoved(true)} stay={stay}
+        {booking && <BookedBox key={booking.id} ref={box} booking={booking} data={data} changing={!!unlocked} onChange={change} onRemoved={() => setRemoved(true)} stay={stay}
           onEdit={book ? () => form.open({ start: 'manual', edit: true, booking }) : undefined} />}
         <p ref={said} className="ws-said" role="status" tabIndex={-1}>{removed && !booking ? 'The booking is removed. The leg can change again.' : ''}</p>
         <Stay at={hold ? date : at} lands={hold && booking?.arrive ? booking.arrive.slice(0, 10) : picked ? addDays(at, dayDiff(picked.depart.slice(0, 10), picked.arrive.slice(0, 10))) : at} stay={stay} />

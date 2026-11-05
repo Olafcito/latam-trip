@@ -300,7 +300,11 @@ export const useStore = create<State>((set, get) => ({
   unlocked: null,
   setUnlocked: (unlocked) => set({ unlocked }),
   focusBooking: null,
-  setFocusBooking: (focusBooking) => set({ focusBooking }),
+  // the request is read by every leg in the commit it lands in, then cleared, so one no leg matches never lingers
+  setFocusBooking: (focusBooking) => {
+    set({ focusBooking })
+    if (focusBooking) window.setTimeout(() => { if (get().focusBooking === focusBooking) set({ focusBooking: null }) }, 0)
+  },
   data: null,
   setData: (data) => {
     const { viewing } = get()
