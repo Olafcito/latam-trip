@@ -4,17 +4,20 @@ import { day, kr } from '../../lib/format'
 import { amenityRow, bookAt, cheapestRoom, nightly, nightsWord, stayDates, type Provider } from '../../lib/stayOffer'
 import { addDays } from '../../lib/time'
 import { safeUrl } from '../../lib/lodgingLinks'
+import { clampPhoto } from '../../lib/photoStrip'
 import { roomMarks, type Mark } from '../../lib/roomMarks'
 import type { Shared } from '../../lib/sharePlace'
 import { Bed, Calendar, Caret, Check, External, Heart, Person, Photos, Share, Warn } from '../icons'
 import { DayInput } from './DayInput'
+import { StripArrows } from './StripArrows'
 import { AmenityIcon, kindWord, NightPrice, Rating } from './offerMarks'
 import { useLiveRates, type LiveRates } from './useLiveRates'
+import { useStrip } from './useStrip'
 
 // A place to stay in full, pushed over the search on a phone and beside it on a wide screen: its photos edge to
-// edge with back, share and save on them, its name, kind, place and rating, three lines of what it is like with More
-// for the rest, five things it offers in one row, then its rooms priced per night for the dates with Select on each,
-// the two days themselves the control that changes the dates,
+// edge with back, share and save on them, arrows on them for a mouse, its name, kind, place and
+// rating, three lines of what it is like with More for the rest, five things it offers in one row, then its rooms
+// priced per night for the dates with Select on each, the two days themselves the control that changes the dates,
 // and last the sites to book it at. A booked room carries the Booked pill in place of Select. A place with a
 // Hostelworld link asks for its live prices on open: a pulsing dot on the rooms heading and on each room still
 // without a price for the dates while it asks, one warn mark on the heading when it could not. Green is for Select
@@ -46,11 +49,7 @@ export interface PropertyViewProps {
 
 function Gallery({ l, onBack, onShare, onSave, saved }: Pick<PropertyViewProps, 'onBack' | 'onShare' | 'onSave' | 'saved'> & { l: Lodging }) {
   const [broken, setBroken] = useState<ReadonlySet<string>>(() => new Set())
-  const [at, setAt] = useState(0)
   const [copied, setCopied] = useState(false)
-  const strip = useRef<HTMLDivElement>(null)
-  const frame = useRef(0)
-  useEffect(() => () => cancelAnimationFrame(frame.current), [])
   useEffect(() => {
     if (!copied) return
     const t = window.setTimeout(() => setCopied(false), 1500)
@@ -60,17 +59,12 @@ function Gallery({ l, onBack, onShare, onSave, saved }: Pick<PropertyViewProps, 
     if ((await onShare?.()) === 'copied') setCopied(true)
   }
   const shown = l.photos.filter((p) => safeUrl(p.url) && !broken.has(p.url))
-  const onScroll = () => {
-    cancelAnimationFrame(frame.current)
-    frame.current = requestAnimationFrame(() => {
-      const el = strip.current
-      if (el) setAt(Math.round(el.scrollLeft / Math.max(1, el.clientWidth)))
-    })
-  }
+  const s = useStrip(shown.length)
+  const at = clampPhoto(s.at, shown.length)
   return (
     <div className="pv-top">
       {shown.length ? (
-        <div ref={strip} className="pv-strip" tabIndex={shown.length > 1 ? 0 : undefined} aria-label={`Photos of ${l.name}`} role="group" onScroll={onScroll}>
+        <div ref={s.ref} className="pv-strip" tabIndex={shown.length > 1 ? 0 : undefined} aria-label={`Photos of ${l.name}`} role="group" onScroll={s.onScroll} onScrollEnd={s.onScrollEnd} onKeyDown={s.onKeyDown}>
           {shown.map((p, i) => (
             <img
               key={p.url} src={safeUrl(p.url)!} alt={p.caption || `${l.name}, photo ${i + 1} of ${shown.length}`} loading={i ? 'lazy' : undefined} decoding="async"
@@ -79,6 +73,7 @@ function Gallery({ l, onBack, onShare, onSave, saved }: Pick<PropertyViewProps, 
           ))}
         </div>
       ) : <span className="pv-noph" aria-hidden="true"><Bed s={36} /></span>}
+      <StripArrows at={at} count={shown.length} step={s.step} />
       <div className="pv-acts">
         {onBack && <button type="button" className="pv-round" aria-label="Back to the places" onClick={onBack}><Caret dir="l" s={18} /></button>}
         <span className="pv-gap" />

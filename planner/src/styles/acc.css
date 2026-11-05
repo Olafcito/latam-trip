@@ -314,6 +314,16 @@
   font-size: var(--fs-label); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums;
 }
 .pv-body { display: grid; gap: 14px; padding: 14px 16px 24px; }
+/* back and on over the photos, for a mouse only: a finger swipes. On the place's strip they show while the pointer or
+   the focus is on it, and each one goes at its end */
+.pv-arr { display: none; position: absolute; top: 50%; translate: 0 -50%; }
+.pv-arr[data-dir='l'] { left: 10px; }
+.pv-arr[data-dir='r'] { right: 10px; }
+.pv-arr[data-off] { visibility: hidden; }
+@media (hover: hover) and (pointer: fine) {
+  .pv-arr { display: grid; opacity: 0; transition: opacity var(--t-fast) ease, background-color var(--t-fast) ease; }
+  .pv-top:hover .pv-arr, .pv-top:focus-within .pv-arr { opacity: 1; }
+}
 .pv-h { display: grid; gap: 3px; }
 .pv-h h3 { margin: 0; font-size: var(--fs-head); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; overflow-wrap: anywhere; }
 .pv-where { display: flex; flex-wrap: wrap; margin: 0; font-size: var(--fs-small); color: var(--muted); }
