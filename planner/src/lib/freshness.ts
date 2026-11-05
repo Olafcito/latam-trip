@@ -33,6 +33,9 @@ function ageOf(at: string | null, now: number): number | null {
   return Math.max(0, Math.round((today - then) / DAY))
 }
 
+/** Whole calendar days since a check, in the viewer's time zone. null when unknown or it does not parse. */
+export const daysSince = (at: string | null, now: number): number | null => ageOf(at, now)
+
 /** null (or a value that does not parse) is not stale, it is unknown. */
 export function isStale(at: string | null, now: number, days: number = STALE_DAYS): boolean {
   const age = ageOf(at, now)

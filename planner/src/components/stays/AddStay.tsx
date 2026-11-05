@@ -32,9 +32,11 @@ export function AddStay({ property, startId, ...search }: Omit<StaySearchProps, 
     setShown(l)
     setOpen(l)
   }
+  // the place as the store has it now, so live rooms and prices that came in while it was open show at once
+  const now = (l: Lodging | null) => (l ? search.places.find((x) => x.id === l.id) ?? l : null)
   // beside the list a place is always open, the first one until another is picked, as a mail app shows its first mail
-  const here = open ?? (side ? search.places[0] ?? null : null)
-  const drawn = side ? here : shown
+  const here = now(open) ?? (side ? search.places[0] ?? null : null)
+  const drawn = side ? here : now(shown)
   return (
     <div ref={box} className="ad" data-open={here ? true : undefined} data-side={side || undefined}>
       <div className="ad-list" inert={open && !side ? true : undefined}>

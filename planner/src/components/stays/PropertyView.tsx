@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Lodging } from '../../data/types'
 import { kr } from '../../lib/format'
 import { amenities, cheapestRoom, nightly, nightsWord, providers, stayDates, type Provider } from '../../lib/stayOffer'
 import { safeUrl } from '../../lib/lodgingLinks'
-import { Bed, Calendar, Caret, Check, External, Heart, Person, Photos, Share, Warn } from '../icons'
+import { roomMarks, type Mark } from '../../lib/roomMarks'
+import { Bed, Calendar, Caret, Check, Clock, External, Heart, Person, Photos, Share, Warn } from '../icons'
 import { AmenityIcon, kindWord, NightPrice, Rating } from './offerMarks'
 import { useLiveRates, type LiveRates } from './useLiveRates'
 
@@ -82,6 +83,15 @@ function RoomPhoto({ src }: { src: string | null | undefined }) {
   )
 }
 
+/** A chip on a room: its short words in view, the full ones for a tooltip and a screen reader. */
+function RoomMark({ m, tone, icon }: { m: Mark; tone?: 'stale' | 'good' | 'warn' | 'low'; icon?: ReactNode }) {
+  return (
+    <li className="pv-mk" data-tone={tone} title={m.label}>
+      {icon}<span aria-hidden="true">{m.text}</span><span className="pv-vh">{m.label}</span>
+    </li>
+  )
+}
+
 /** The asking for live prices on the rooms heading: a pulsing dot while it runs, a warn mark when it failed. */
 function LiveMark({ live }: { live: LiveRates }) {
   return (
@@ -122,6 +132,7 @@ export function PropertyView(p: PropertyViewProps) {
   const kind = kindWord(l.kind)
   const live = useLiveRates(l, p.checkIn, p.checkOut)
   const asking = live.state === 'asking'
+  const now = Date.now()
   return (
     <article className="pv" aria-label={l.name}>
       <Gallery l={l} onBack={p.onBack} onShare={p.onShare} onSave={p.onSave} saved={p.saved} />
@@ -153,6 +164,7 @@ export function PropertyView(p: PropertyViewProps) {
                 const pr = nightly(r.prices, p.checkIn, p.checkOut)
                 const on = chosen.includes(r.id)
                 const booked = p.booked === r.id
+                const mk = roomMarks(r, p.checkIn, p.checkOut, now)
                 return (
                   <li key={r.id} className="pv-room" data-on={on || booked || undefined}>
                     <RoomPhoto src={r.photo} />
@@ -166,6 +178,13 @@ export function PropertyView(p: PropertyViewProps) {
                       ) : asking ? (
                         <span className="pv-rp" title="Asking Hostelworld"><span className="as-live" aria-hidden="true" /><span className="pv-vh">Asking Hostelworld for a price</span></span>
                       ) : <small className="pv-nokr">No price yet</small>}
+                      {(mk.seen || mk.left || mk.free) && (
+                        <ul className="pv-mks" aria-label={`About the price of ${r.name}`}>
+                          {mk.free && <RoomMark m={mk.free} tone="good" icon={<Check s={12} />} />}
+                          {mk.left && <RoomMark m={mk.left} tone={mk.left.none ? 'warn' : 'low'} />}
+                          {mk.seen && <RoomMark m={mk.seen} tone={mk.seen.stale ? 'stale' : undefined} icon={<Clock s={12} />} />}
+                        </ul>
+                      )}
                     </span>
                     {booked ? (
                       <span className="pv-sel" data-booked><Check s={14} />Booked</span>
