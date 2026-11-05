@@ -1,0 +1,68 @@
+/* Add booking, at the end of an open flight: a band on the night ground under the fares, running to the sheet's
+   edges. Closed it is one row, open a panel with the files, the pasted mail and the yellow Add booking. */
+@scope (:root) to (.rmap) {
+  .ab { --ab-bleed: 20px; margin: 22px calc(-1 * var(--ab-bleed)) 0; padding: 20px var(--ab-bleed) calc(24px + env(safe-area-inset-bottom, 0px)); background: var(--ground); transition: background-color var(--t-fast) ease; }
+  .ab h4 { margin: 0 0 12px; font-size: var(--fs-num); font-weight: 600; color: var(--muted); }
+  .ab[data-over] { background: color-mix(in srgb, var(--flight) 6%, var(--ground)); }
+
+  /* the closed row and the reading row share one shape, so reading takes the row's place without a jump */
+  .ab-row { width: 100%; min-height: 64px; display: grid; grid-template-columns: 40px minmax(0, 1fr); align-items: center; gap: 12px; margin: 0; padding: 0 14px; border: 0; border-radius: 14px; background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); font: inherit; text-align: left; }
+  button.ab-row { cursor: pointer; user-select: none; -webkit-user-select: none; transition: transform var(--t-fast) var(--ease-out), background-color var(--t-fast) ease; }
+  button.ab-row:active { transform: scale(0.985); }
+  button.ab-row:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+  .ab-tile { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--surface-3); color: var(--text); }
+  .ab-words { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .ab-words b { font-size: var(--fs-title); font-weight: 600; }
+  .ab-words small { font-size: var(--fs-small); color: var(--muted); }
+
+  .ab-reading { grid-template-columns: 22px minmax(0, 1fr); min-height: 56px; }
+  .ab-reading svg { color: var(--flight); }
+  .ab-reading b { font-size: var(--fs-title); font-weight: 600; }
+  .ab-spin { animation: ab-spin 0.9s linear infinite; }
+  @keyframes ab-spin { to { transform: rotate(360deg); } }
+
+  .ab-panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 14px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line-2); }
+  .ab-drop { position: relative; min-height: 76px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1.5px dashed var(--line-2); border-radius: 12px; color: var(--muted); font-size: var(--fs-body); font-weight: 600; cursor: pointer; user-select: none; -webkit-user-select: none; transition: border-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out); }
+  .ab-drop input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; font-size: 16px; }
+  .ab-drop:has(input:focus-visible) { outline: 2px solid var(--flight); outline-offset: 2px; }
+  .ab-drop:active { transform: scale(0.99); }
+  .ab-drop[data-over] { border-color: var(--flight); color: var(--text); }
+
+  .ab-files { min-width: 0; list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; margin: 0; padding: 0; }
+  .ab-file { min-height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 4px 0 10px; border-radius: 10px; background: var(--surface); }
+  .ab-kind { flex: none; width: 26px; height: 32px; display: grid; place-items: center; border-radius: 5px; background: var(--paper); color: #9A2B2B; font-family: var(--font-ticket); font-size: 0.5rem; font-weight: 800; letter-spacing: 0.02em; }
+  .ab-kind:not([data-kind='PDF']) { color: var(--flight-ink); }
+  .ab-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-body); }
+  .ab-x { position: relative; flex: none; width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; }
+  .ab-x::after { content: ''; position: absolute; inset: calc((36px - max(36px, var(--hit))) / 2); }
+  .ab-x:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+
+  /* the pasted mail: the Gmail mark, then a field that grows a few lines with the text, at 16px so a phone never zooms */
+  .ab-paste { display: flex; align-items: flex-start; gap: 10px; min-height: 46px; padding: 0 12px; border-radius: 10px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-2); cursor: text; }
+  .ab-paste img { flex: none; width: 20px; height: 15px; margin-top: 15px; object-fit: contain; }
+  .ab-paste textarea { flex: 1; min-width: 0; min-height: 44px; max-height: 128px; margin: 0; padding: 12px 0; border: 0; background: none; color: var(--text); font: inherit; font-size: 16px; line-height: 1.25; resize: none; field-sizing: content; outline: none; overflow-wrap: anywhere; }
+  .ab-paste textarea::placeholder { color: var(--faint); opacity: 1; }
+  .ab-paste:has(textarea:focus-visible) { box-shadow: inset 0 0 0 2px var(--flight); }
+
+  .ab-said { margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--err); }
+  .ab-acts { display: flex; align-items: center; gap: 8px; }
+  .ab-acts .btn { min-height: 44px; border-radius: 10px; font-size: var(--fs-body); }
+  .ab-go { padding: 0 18px; border-color: var(--flight); background: var(--flight); color: var(--flight-ink); font-weight: 700; }
+  .ab-go:disabled { opacity: 0.4; }
+  .ab-acts .ab-cancel { padding: 0 12px; }
+  .ab-self { min-height: 40px; margin-top: 10px; padding: 0; font-size: var(--fs-num); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (hover: hover) and (pointer: fine) {
+    button.ab-row:hover { background: var(--surface); }
+    .ab-drop:hover { border-color: var(--faint); color: var(--text); }
+    .ab-x:hover { background: var(--surface-3); color: var(--text); }
+    .ab-go:hover:not(:disabled) { border-color: var(--flight); background: color-mix(in srgb, var(--flight) 88%, var(--text)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ab-spin { animation: none; }
+    button.ab-row:active, .ab-drop:active { transform: none; }
+  }
+  @media (max-width: 560px) {
+    .ab { --ab-bleed: 16px; }
+  }
+}

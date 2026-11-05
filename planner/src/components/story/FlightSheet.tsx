@@ -9,10 +9,12 @@ import { fareMarks, fareRows, sameFlight, seller, sortFares, stopsOf, timed, typ
 import type { FlightLink } from '../../lib/links'
 import { checkedAgo, momondoUrl, nearestDay, newestSeen, pricesOn, type PairDates } from '../../lib/prices'
 import { airlineLogo } from '../../lib/purchase'
+import { remoteEnabled } from '../../lib/supabase'
 import { flightPricesTask } from '../../lib/tasks'
 import { AskClaude } from '../AskClaude'
 import { dayValue, type DayItem, type DayKind, type DayValue } from '../../lib/tripDay'
 import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Home, Land, Plane, Refresh, Sun } from '../icons'
+import { AddBooking } from './AddBooking'
 import { BookedBox, type BoxData } from './BookedBox'
 import { useBookingForm, type BookTarget } from './BookingForm'
 import { stopsText } from './LegCard'
@@ -444,7 +446,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
     close()
   }
   const box = useRef<HTMLElement>(null)
-  const adder = useRef<HTMLElement>(null)
+  const adder = useRef<HTMLButtonElement>(null)
   // back from the form, the focus goes to the booking it saved, or to Add booking when it was left
   const form = useBookingForm(book, () => (box.current ? showBox() : adder.current?.focus({ preventScroll: true })))
   // a booked leg is held: the box shows the booking and nothing under it changes the leg. Opened with Change
@@ -527,6 +529,13 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
             <div className="fl-tail">{tail}</div>
           </>
         ) : <DayList key={at} rows={list} name={airportName} nextDay={stay.nextDay} now={now} buy={buy} ends={ends} onPick={choose} tail={tail} />}
+        {book && !booking && remoteEnabled() && (
+          <AddBooking
+            ref={adder} leg={book.leg}
+            onRead={(read) => form.open({ start: 'manual', read })}
+            onManual={() => form.open({ start: picked ? 'picked' : 'manual', picked, pin: picked ?? undefined })}
+          />
+        )}
       </div>}
     </div>
   )
