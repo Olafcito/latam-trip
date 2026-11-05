@@ -50,7 +50,7 @@
 
 ## Map data (28 Oct)
 - Web-only research workers (WebSearch/WebFetch) built the network fast: about 25 nodes and 50 to 73 edges per region in 9 to 11 minutes, 180k tokens each.
-- The workspace proxy blocks Wikimedia Commons, upload.wikimedia.org, the Wikipedia API, Hostelworld and Rome2rio. Images and hostel prices therefore come from a browser worker (Commons API called from a commons.wikimedia.org tab: one JS loop for all nodes; Hostelworld city pages for dorm/private "from" prices).
+- The workspace proxy blocks Wikimedia Commons, upload.wikimedia.org, the Wikipedia API, Hostelworld and Rome2rio. Images and hostel prices therefore came from a browser worker (Commons API called from a commons.wikimedia.org tab: one JS loop for all nodes; Hostelworld city pages for dorm/private "from" prices). Since FEAT-002 the Hostelworld prices of stored places come from the `stay-rates` edge function, not from a browser.
 - Profilers fill text well from Wikivoyage/guides but leave prices null when sources disagree (correct behaviour). Hostelz "from" prices can be implausible (US$0.77 dorm): do not use them.
 - The browser pane caps tabs at about 9. Workers leave tabs behind when they stop early, so the orchestrator lists tabs (tabs_context) between rounds and closes those no running worker owns.
 - Momondo cards whose only offers are ads (site "Sponsoreret"/"Annonce") are now skipped by the crawler; segment lines followed by an authority notice ("Service mellem ... godkendelse") now read the airline from the next line. Workers had been cleaning these by hand.
