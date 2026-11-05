@@ -24,3 +24,7 @@ The app's built map and research files live in the public Supabase `web` bucket.
 The scheduled worker stores private backups in `latam-trip-backups`. Use `tripdb dump` and `tripdb restore` only for an explicitly reviewed recovery. A restore can replace project tables, so verify the target and archive before running `--wipe`. Never use test reset helpers against the live project.
 
 The `read-booking` edge function (`supabase/functions/read-booking`) reads a booking confirmation for Add booking. It is owner only and touches no table. Its README has the deploy commands.
+
+## Places to stay and live rates
+
+`lodgings`, `lodging_rooms` and `lodging_prices` are owner only and never in a built file. A room keeps `site` and `site_id`, where it was read from and its id there, and a `photo`. A price keeps `available`, the beds (a dorm) or rooms (a private) left when it was seen. The `stay-rates` edge function (`supabase/functions/stay-rates`) reads a place's rooms and prices from Hostelworld for a date range and writes them to these tables, when the planner opens a place with a Hostelworld link, when a Hostelworld link is pasted to add a place, and each morning from the worker's `rates` action for every place and dates with a Hostelworld price ahead. Its README has the deploy commands and the worker key. The connector's `add_lodging_price` and `tripdb` check `available` against 0 and `site` against the known sites.
