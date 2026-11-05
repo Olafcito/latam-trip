@@ -7,7 +7,7 @@ Who may call it: the signed in owner (`public.is_owner()`), or the worker with t
 Request, one of:
 
 - `{ lodging_id, check_in, check_out }` prices a stored place by its Hostelworld link.
-- `{ url, place_id, check_in, check_out }` adds the place behind a pasted Hostelworld link at that map place, then prices it. A link to a place that is stored already prices that one.
+- `{ url, place_id, check_in, check_out }` adds the place behind a pasted Hostelworld link at that map place, then prices it. A link to a place that is stored already prices that one. A link to a place more than 60 km from the map place is refused with `409` and the town the place is in, and nothing is stored. A place or map place without coordinates is not checked.
 - `{ search: true, place_id, check_in, check_out, top? }` finds the most popular Hostelworld hostels of a map place for the dates, adds the new ones and prices them. `top` is 3 by default, 1 to 5.
 
 Both take an optional `fresh_minutes` (default 10). A Hostelworld price for the same place and dates observed within that window means no fetch and `fetched: false`. 0 forces a fetch. Dates are `YYYY-MM-DD`, at most 30 nights.

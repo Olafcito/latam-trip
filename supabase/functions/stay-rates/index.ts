@@ -5,7 +5,7 @@
 // and prices the most popular hostels of a map place's Hostelworld city (FEAT-003, TECH-004).
 // Owner only, or the worker with the worker key. Nothing of the content is logged.
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.118.0'
-import { countryName, pickCity, rankHostels, type Ranked } from './rank.ts'
+import { countryName, km, pickCity, rankHostels, type Ranked } from './rank.ts'
 
 const CORS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -30,6 +30,8 @@ const GATE_MAX_WAIT_S = 45
 const TOP_DEFAULT = 3
 const TOP_MAX = 5
 const SEARCH_KM = 40
+// A pasted link to a property further than this from its map place is refused.
+const LINK_KM = 60
 const CITY_DAYS = 30
 
 interface Body {
@@ -218,6 +220,23 @@ async function findByProperty(db: SupabaseClient, propertyId: string): Promise<S
 
 interface Target { lodgingId: string; propertyId: string; link: string; created: boolean }
 
+/**
+ * Refuses a pasted link to a property more than LINK_KM from the map place it is added at, naming the town it is
+ * in. A place or property without coordinates passes.
+ */
+async function nearStop(db: SupabaseClient, prop: HwProperty, placeId: string): Promise<void> {
+  const lat = num(prop.latitude)
+  const lon = num(prop.longitude)
+  if (lat === null || lon === null) return
+  const { data, error } = await db.from('places').select('lat, lon').eq('id', placeId).maybeSingle()
+  if (error) throw new Refused(500, 'The map place could not be read.')
+  const pLat = num(data?.lat)
+  const pLon = num(data?.lon)
+  if (pLat === null || pLon === null || km(pLat, pLon, lat, lon) <= LINK_KM) return
+  const town = (prop.city?.name ?? '').trim()
+  throw new Refused(409, town ? `That place is in ${town}, not at this stop.` : 'That place is not at this stop.')
+}
+
 /** The place's own Hostelworld link with the dates on it, the link a price row keeps. */
 function datedLink(link: string, checkIn: string, checkOut: string): string {
   try {
@@ -247,6 +266,7 @@ async function target(db: SupabaseClient, body: Body): Promise<Target> {
     }
     if (typeof body.place_id !== 'string' || !body.place_id.trim()) throw new Refused(400, 'Say which place on the map the link belongs to.')
     const prop = await hostelworld<HwProperty>(db, `${propertyId}/`)
+    await nearStop(db, prop, body.place_id.trim())
     const { data, error } = await db.from('lodgings').insert(lodgingOf(prop, body.url.trim(), body.place_id.trim(), 'simon')).select('id').single()
     if (error || !data) throw new Refused(500, 'The place could not be saved.')
     return { lodgingId: data.id, propertyId, link: body.url.trim(), created: true }
