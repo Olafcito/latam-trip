@@ -77,20 +77,22 @@ const sameName = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]+/g, '
 async function hostelworld<T>(path: string): Promise<T> {
   const ctl = new AbortController()
   const timer = setTimeout(() => ctl.abort(), FETCH_MS)
-  let res: Response
   try {
-    res = await fetch(`${HW}/${path}`, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: ctl.signal })
-  } catch {
-    throw new Refused(502, 'Hostelworld could not be reached.')
+    let res: Response
+    try {
+      res = await fetch(`${HW}/${path}`, { headers: { 'User-Agent': UA, Accept: 'application/json' }, signal: ctl.signal })
+    } catch {
+      throw new Refused(502, 'Hostelworld could not be reached.')
+    }
+    if (res.status === 404) throw new Refused(404, 'Hostelworld knows no place with that id.')
+    if (!res.ok) throw new Refused(502, 'Hostelworld did not answer.')
+    try {
+      return (await res.json()) as T
+    } catch {
+      throw new Refused(502, 'Hostelworld gave an unreadable answer.')
+    }
   } finally {
     clearTimeout(timer)
-  }
-  if (res.status === 404) throw new Refused(404, 'Hostelworld knows no place with that id.')
-  if (!res.ok) throw new Refused(502, 'Hostelworld did not answer.')
-  try {
-    return (await res.json()) as T
-  } catch {
-    throw new Refused(502, 'Hostelworld gave an unreadable answer.')
   }
 }
 
@@ -315,23 +317,23 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
 
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
-  if (req.method !== 'POST') return fail(405, 'Use POST.')
+  if (req.method !== 'POST') return fail(405, 'Ask with POST.')
   if (!isWorker(req) && !(await isOwner(req))) return fail(403, 'Only the owner can ask for live rates.')
 
   let parsed: unknown
   try {
     parsed = await req.json()
   } catch {
-    return fail(400, 'The request was not valid JSON.')
+    return fail(400, 'The request could not be read.')
   }
-  if (!isObject(parsed)) return fail(400, 'The request was not valid JSON.')
+  if (!isObject(parsed)) return fail(400, 'The request could not be read.')
   const body = parsed as Body
   const checkIn = typeof body.check_in === 'string' ? body.check_in : ''
   const checkOut = typeof body.check_out === 'string' ? body.check_out : ''
-  if (!DAY.test(checkIn) || !DAY.test(checkOut)) return fail(400, 'Give check_in and check_out as YYYY-MM-DD.')
+  if (!DAY.test(checkIn) || !DAY.test(checkOut)) return fail(400, 'The dates are not dates.')
   const nights = nightsOf(checkIn, checkOut)
-  if (!Number.isFinite(nights) || nights < 1) return fail(400, 'check_out must be after check_in.')
-  if (nights > MAX_NIGHTS) return fail(400, `At most ${MAX_NIGHTS} nights at a time.`)
+  if (!Number.isFinite(nights) || nights < 1) return fail(400, 'The check out must be after the check in.')
+  if (nights > MAX_NIGHTS) return fail(400, 'The stay is too long to price.')
   const freshMinutes = typeof body.fresh_minutes === 'number' && body.fresh_minutes >= 0 ? body.fresh_minutes : FRESH_MINUTES
 
   try {
