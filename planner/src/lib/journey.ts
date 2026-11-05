@@ -1,508 +1,196 @@
-import type { AppData, Booking, CrawledFlight, InOut, Lodging, MapData, Mode, StopItem, Way } from '../data/types'
-import { bookedElsewhere, bookingOn, paidPrice, wayBooking, type BookData } from './booked'
-import { day, dayDiff, dayTime, kr } from './format'
-import { edgeHours, edgePrice, groundPath, type Arc } from './graph'
-import { priceOfWays } from './options'
-import { stayClashes, stayTotals, type PlannedStay } from './stays'
-import { addDays } from './time'
+import type { Airport, Booking, MapNode } from '../data/types'
+import { shortPlace } from './format'
 
-export interface Hop {
+// The booked pane reads a purchase as journeys. One booking row is one journey: the way of one leg of the trip,
+// with the flights inside it when it changes plane on the way. The rows of one purchase share their ticket. A
+// return is only ever called a return when the trip itself says so, through its way in and way home, never
+// because two rows share a ticket. Everything here reads the rows alone, so any seller, airline or number of
+// flights works.
+
+/** One flight of a journey, read leniently from the row's segments, or the row itself when it has none. */
+export interface JourneyFlight {
   from: string
   to: string
-  mode: Mode
-  operator: string | null
-  hours: number | null
-  price_dkk: number | null
-  overnight: boolean
-  border: boolean
-  /** a picked crawled flight; its price was seen for its own date */
-  flight: CrawledFlight | null
-  /** the flight picked for this leg while the leg is on another day. It comes back when the leg does */
-  parked?: CrawledFlight
-  /** an overland block of a planned trip: your own route, drawn as one dashed line; the note says how */
-  overland?: string
-  /** the countries an overland block passes through, in order, ends included */
-  countries?: string[]
-  /** when the hop's price was seen (a trip from the trips table) */
-  observed_at?: string | null
-  /** the day you set out on this leg, "2026-12-13", when you have set one */
-  date?: string
-}
-
-export interface Place {
-  node: string
-  /** how we got here from the previous place; null for the first place */
-  hop: Hop | null
-  /** why the stop is in the trip (a trip from the trips table) */
-  why?: string
-  /** where you plan to sleep here, in order from the first night */
-  stays?: PlannedStay[]
-}
-
-export interface Journey {
-  id: string
-  name: string
-  wayIn: string
-  wayHome: string
-  optionId: string | null
-  places: Place[]
-  savedAt?: string
-  /** A ranked trip from the shared trips table. */
-  rank?: number
-  /** the version of the table trip this journey is, or was edited from */
-  version?: number
-  /** why the trip looks the way it does (a trip from the trips table) */
-  why?: string
-  /** the nights planned at the last stop. The rest up to the flight home is free, and without it the last stop has them all */
-  lastNights?: number
-}
-
-export function nodeForAirport(inout: InOut, code: string): string {
-  return inout.airports[code]?.map_node ?? code
-}
-
-/** The name a new trip gets from its ends, "Cartagena in, Guatemala City home". */
-export function tripName(inout: InOut, wayIn: Way, wayHome: Way): string {
-  return `${inout.airports[wayIn.to]?.name ?? wayIn.to} in, ${inout.airports[wayHome.from]?.name ?? wayHome.from} home`
-}
-
-export function newJourney(inout: InOut, wayIn: Way, wayHome: Way, optionId: string | null): Journey {
-  return {
-    id: `j${Date.now().toString(36)}`,
-    name: tripName(inout, wayIn, wayHome),
-    wayIn: wayIn.id,
-    wayHome: wayHome.id,
-    optionId,
-    places: [{ node: nodeForAirport(inout, wayIn.to), hop: null }],
-  }
-}
-
-export function hopFromArc(from: string, arc: Arc, flight: CrawledFlight | null): Hop {
-  const e = arc.edge
-  return {
-    from,
-    to: arc.to,
-    mode: e.mode,
-    operator: e.operator ?? (e.carriers?.join(', ') || null),
-    hours: flight ? flight.hours : edgeHours(e),
-    price_dkk: flight ? flight.price_dkk : edgePrice(e),
-    overnight: !!e.overnight,
-    border: !!e.border,
-    flight,
-  }
-}
-
-// ---- dates
-
-export interface ScheduledPlace {
-  node: string
-  /** when you get here, known only where a dated leg (or the landing) brings you */
-  arrive: string | null
-  /** when you leave, known only where a dated leg takes you on */
+  /** local "YYYY-MM-DDTHH:MM", or a day, or null */
   depart: string | null
-  /** the days between the dated moments around this place, shared evenly with its neighbours */
-  days: number
-  /** the day you get here and the day you leave, "2026-12-13", estimated when not exact */
-  inDay: string
-  outDay: string
-  /** true when both ends are dated, so the days are not a share */
-  exact: boolean
+  arrive: string | null
+  /** the airline as the row names it, "JetSMART" */
+  carrier: string | null
+  /** the flight number as written, "JA5451" or "5451" */
+  number: string | null
+  /** the two letter airline code, from the number or the airline's name */
+  code: string | null
+  /** who flies it when that is another airline, "Aires" */
+  operatedBy: string | null
 }
 
-export interface Warning {
-  level: 'error' | 'warn'
-  text: string
-  /** the place index of the leg at fault, when one leg is */
-  leg?: number
-  /** the first day that leg can leave instead */
-  fix?: string
-  /** the place index of the stop at fault, when one stop is */
-  stop?: number
+const str = (v: unknown) => (typeof v === 'string' && v.trim() ? v.trim() : null)
+
+/** Airline names as rows and sellers write them, to their two letter code. Lower case, letters and digits only. */
+const NAME_CODE: Record<string, string> = {
+  klm: 'KL', klmroyaldutchairlines: 'KL', airfrance: 'AF', latam: 'LA', latamairlines: 'LA', copa: 'CM', copaairlines: 'CM',
+  avianca: 'AV', aeromexico: 'AM', aireuropa: 'UX', iberia: 'IB', americanairlines: 'AA', american: 'AA', unitedairlines: 'UA', united: 'UA',
+  delta: 'DL', deltaairlines: 'DL', tap: 'TP', tapairportugal: 'TP', lufthansa: 'LH', britishairways: 'BA', viva: 'VB', vivaaerobus: 'VB',
+  volaris: 'Y4', qatar: 'QR', qatarairways: 'QR', norwegian: 'DY', swiss: 'LX', turkishairlines: 'TK', aerolineasargentinas: 'AR',
+  gol: 'G3', azul: 'AD', spirit: 'NK', spiritairlines: 'NK', frontier: 'F9', jetblue: 'B6', emirates: 'EK', jetsmart: 'JA',
 }
 
-export interface Schedule {
-  places: ScheduledPlace[]
-  firstDay: string
-  homeDepart: string
-  /** calendar days from the landing to the flight home */
-  totalDays: number
-  /** the nights before the flight home that no stop has */
-  free: number
-  warnings: Warning[]
+/** The airlines with a logo file in public/logos, by code. JetSMART's is a picture, the others are drawings. */
+const AIRLINE_LOGO: Record<string, string> = Object.fromEntries([
+  ...['KL', 'AF', 'LA', 'CM', 'AV', 'AM', 'UX', 'IB', 'AA', 'UA', 'DL', 'TP', 'LH', 'BA', 'VB', 'Y4', 'QR', 'DY', 'LX', 'TK', 'AR', 'G3', 'AD', 'NK', 'F9', 'B6', 'EK'].map((c) => [c, `airline-${c}.svg`]),
+  ['JA', 'airline-JA.png'],
+])
+
+/** Sellers that are not airlines, with a logo file. Travellink has none yet and is set as its name. */
+const SELLER_LOGO: Record<string, string> = { bookingcom: 'booking.svg', booking: 'booking.svg', expedia: 'expedia.svg' }
+
+const key = (name: string) => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '')
+
+/** The two letter code an airline name stands for, or null. */
+export function codeOfName(name: string | null | undefined): string | null {
+  return name ? NAME_CODE[key(name)] ?? null : null
 }
 
-/** a before b. A date alone ("2026-12-13") is only before a later day, never before a time on its own day. */
-const before = (a: string, b: string) => (a.length === 10 || b.length === 10 ? a.slice(0, 10) < b.slice(0, 10) : a < b)
-
-/** When a hop leaves and arrives, if it is dated: a date set on it, else its picked flight. */
-function dated(h: Hop): { depart: string; arrive: string } | null {
-  const f = h.flight
-  if (h.date) {
-    if (f && f.depart.slice(0, 10) === h.date) return { depart: f.depart, arrive: f.arrive }
-    // the same flight on another day still lands as many days after it leaves
-    const span = f ? dayDiff(f.depart, f.arrive) : h.overnight ? 1 : 0
-    return { depart: h.date, arrive: addDays(h.date, span) }
-  }
-  return f ? { depart: f.depart, arrive: f.arrive } : null
+/** The airline code a flight number starts with, "JA5451" to "JA". */
+export function codeOfNumber(number: string | null | undefined): string | null {
+  const m = number?.trim().toUpperCase().match(/^([A-Z0-9]{2})\s?\d{1,4}[A-Z]?$/)
+  return m && /[A-Z]/.test(m[1]) ? m[1] : null
 }
 
-/** The day a hop leaves: the day set on it, else its picked flight's, else the estimate passed in. */
-export function legDay(h: Hop, estimate: string): string {
-  return h.date ?? h.flight?.depart.slice(0, 10) ?? estimate
+/** A logo file under public/logos, with the base the app is served from. */
+const logoUrl = (file: string) => `${import.meta.env?.BASE_URL ?? '/'}logos/${file}`
+
+/** The logo of an airline, by its code or its name, or null when there is no file for it. */
+export function airlineLogo(code: string | null | undefined, name?: string | null): string | null {
+  const c = code ?? codeOfName(name)
+  const file = c ? AIRLINE_LOGO[c.toUpperCase()] : undefined
+  return file ? logoUrl(file) : null
 }
 
-/** The day a leg's picked flight really leaves, when the leg has been moved off that day. */
-export function flightOffDay(h: Hop): string | null {
-  const flown = h.flight?.depart.slice(0, 10)
-  return flown && h.date && flown !== h.date ? flown : null
+/** The logo of whoever sold the ticket: an airline's own, a seller's, or null to set the name instead. */
+export function sellerLogo(seller: string | null | undefined): string | null {
+  if (!seller) return null
+  const own = SELLER_LOGO[key(seller)]
+  return own ? logoUrl(own) : airlineLogo(null, seller)
 }
 
-/** How long a leg takes. A bus or boat leg with no hours of its own is added up from the map's ground legs, so it is an estimate. */
-export interface LegTime {
-  hours: number | null
-  about: boolean
-  /** the places the way goes through, when it was added up */
-  via: string[]
-}
+export const gmailLogo = () => logoUrl('gmail.svg')
 
-export function legTime(map: MapData, h: Hop): LegTime {
-  const own = h.flight?.hours ?? h.hours
-  if (own != null || h.mode === 'flight') return { hours: own, about: false, via: [] }
-  const path = groundPath(map, h.from, h.to, h.countries)
-  return path ? { hours: path.cost, about: true, via: path.nodes.slice(1, -1) } : { hours: null, about: false, via: [] }
-}
-
-/**
- * The dated moments of a trip are its landing, the legs with a date set or a picked flight, and
- * its flight home. The days between two dated moments are shared evenly by the places in between.
- * Given the data to match them by, the bookings add a warning to a leg booked on another day.
- * A booked stay of the trip the stops no longer cover gets a warning on the stop at its place, or in the general list when
- * the trip no longer stops there, naming the place to stay and its last free cancel day.
- */
-export function schedule(j: Journey, wayIn: Way, wayHome: Way, exitNode: string, names: (n: string) => string, bookings: Booking[] = [], data?: BookData, lodgings: Lodging[] = []): Schedule {
-  const warnings: Warning[] = []
-  const first = wayIn.arrive.slice(0, 10)
-  const places: ScheduledPlace[] = j.places.map((p) => ({ node: p.node, arrive: null, depart: null, days: 0, inDay: first, outDay: first, exact: false }))
-  if (places[0]) places[0].arrive = wayIn.arrive
-  let since = wayIn.arrive
-  let start = 0
-  /** the days from since to until over places start to end. leg is the one leaving at until, null for the way home */
-  const share = (end: number, until: string, leg: number | null) => {
-    const n = end - start + 1
-    const days = dayDiff(since, until)
-    if (before(until, since)) {
-      const where = start === end ? 'there' : `to ${names(places[start].node)}`
-      const w: Warning = { level: 'error', text: `The leg on from ${names(places[end].node)} leaves ${until.length === 10 ? day(until) : dayTime(until)}, before you get ${where} ${dayTime(since)}` }
-      if (leg != null) {
-        // a day alone can leave the day you get there, unless the flight picked for that day is the early one
-        const landed = since.slice(0, 10)
-        const f = j.places[leg].hop?.flight
-        w.leg = leg
-        w.fix = f && f.depart.slice(0, 10) === landed ? addDays(landed, 1) : landed
-      }
-      warnings.push(w)
-    }
-    let at = since.slice(0, 10)
-    for (let k = start; k <= end; k++) {
-      places[k].days = Math.max(0, Math.floor(days / n) + (k === start ? days % n : 0))
-      places[k].inDay = at
-      at = addDays(at, places[k].days)
-      places[k].outDay = at
-      places[k].exact = n === 1
-    }
-  }
-  j.places.forEach((p, i) => {
-    const t = i > 0 && p.hop ? dated(p.hop) : null
-    if (!t || !p.hop) return
-    const f = p.hop.flight
-    places[i - 1].depart = t.depart
-    places[i].arrive = t.arrive
-    share(i - 1, t.depart, i)
-    if (before(wayHome.depart, t.arrive)) {
-      const by = f && t.depart === f.depart ? `The flight to ${names(p.node)} lands` : `The leg to ${names(p.node)} gets there`
-      warnings.push({ level: 'error', text: `${by} after the flight home leaves` })
-    }
-    since = t.arrive
-    start = i
+/** The flights of a row: its segments, or the row as one flight when it lists none. */
+export function flightsOf(b: Pick<Booking, 'from_code' | 'to_code' | 'depart' | 'arrive' | 'segments'>): JourneyFlight[] {
+  const segs = (b.segments ?? []).flatMap((v): JourneyFlight[] => {
+    if (!v || typeof v !== 'object') return []
+    const o = v as Record<string, unknown>
+    const from = str(o.from) ?? str(o.origin)
+    const to = str(o.to) ?? str(o.destination)
+    if (!from || !to) return []
+    const carrier = str(o.carrier) ?? str(o.airline)
+    const number = str(o.number) ?? str(o.flight) ?? str(o.flight_number)
+    const code = str(o.carrier_code) ?? codeOfNumber(number) ?? codeOfName(carrier)
+    const operatedBy = str(o.operated_by) ?? str(o.operator)
+    return [{ from, to, depart: str(o.depart), arrive: str(o.arrive), carrier, number, code, operatedBy: operatedBy && operatedBy !== carrier ? operatedBy : null }]
   })
-  if (places.length) {
-    places[places.length - 1].depart = wayHome.depart
-    share(places.length - 1, wayHome.depart, null)
+  if (segs.length) return segs
+  if (!b.from_code || !b.to_code) return []
+  return [{ from: b.from_code, to: b.to_code, depart: b.depart, arrive: b.arrive, carrier: null, number: null, code: null, operatedBy: null }]
+}
+
+/** The airport codes a journey passes, in order: "ADZ", "MDE", "SMR". */
+export function codesOf(flights: readonly JourneyFlight[]): string[] {
+  return flights.length ? [flights[0].from, ...flights.map((f) => f.to)] : []
+}
+
+/** The flight number as it reads on a ticket: the airline code and the number together, "JA5451". */
+export function flightLabel(f: Pick<JourneyFlight, 'number' | 'code'>): string | null {
+  if (!f.number) return null
+  const n = f.number.replace(/\s+/g, '').toUpperCase()
+  return /^\d/.test(n) && f.code ? `${f.code}${n}` : n
+}
+
+/** Hours between two local stamps at the same airport, or null when one has no clock time. */
+export function waitHours(a: string | null, b: string | null): number | null {
+  if (!a || !b || a.length < 16 || b.length < 16) return null
+  const h = (Date.parse(b.slice(0, 16) + 'Z') - Date.parse(a.slice(0, 16) + 'Z')) / 3.6e6
+  return Number.isFinite(h) && h >= 0 ? h : null
+}
+
+/** The other booked rows of the purchase, in the order they fly. Empty for a row without a ticket. */
+export function ticketRows(b: Booking, list: readonly Booking[]): Booking[] {
+  if (!b.ticket) return []
+  return list
+    .filter((r) => r.status === 'booked' && r.ticket === b.ticket && r.id !== b.id)
+    .sort((x, y) => (x.depart ?? '￿').localeCompare(y.depart ?? '￿') || x.id.localeCompare(y.id))
+}
+
+/** How another journey of the purchase relates to the one on screen. */
+export type Relation = 'return' | 'outbound' | 'also'
+
+/** The trip's way in and way home, when the pane is one of them. The only thing that makes a return. */
+export interface WayPair { in: Booking | null; home: Booking | null }
+
+export function relationOf(here: Booking, other: Booking, ways?: WayPair | null): Relation {
+  if (ways?.in && ways.home) {
+    if (here.id === ways.in.id && other.id === ways.home.id) return 'return'
+    if (here.id === ways.home.id && other.id === ways.in.id) return 'outbound'
   }
-  const last = places[places.length - 1]
-  const free = last && j.lastNights != null ? Math.max(0, last.days - j.lastNights) : 0
-  if (last) last.days -= free
-  if (last && last.node !== exitNode) warnings.push({ level: 'warn', text: `The journey has to end in ${names(exitNode)}, where the way home leaves` })
-  if (data) j.places.forEach((p, k) => {
-    if (k === 0 || !p.hop) return
-    const b = bookedElsewhere(bookings, data, { from: j.places[k - 1].node, to: p.node, day: legDay(p.hop, places[k - 1].outDay) })
-    if (b) warnings.push({ level: 'warn', text: `Booked on ${day(b.depart!)}`, leg: k })
-  })
-  const sched = { places, firstDay: first, homeDepart: wayHome.depart, totalDays: dayDiff(wayIn.arrive, wayHome.depart), free, warnings }
-  for (const { booking: b, stop, meets } of stayClashes(j, sched, bookings)) {
-    const name = lodgings.find((l) => l.id === b.lodging_id)?.name ?? b.seller
-    const cancel = b.cancel_until ? `, free to cancel until ${day(b.cancel_until)}` : ''
-    const text =
-      stop == null ? `${name ? `Your booking at ${name}` : 'A booked stay'} is in ${names(b.place_id!)}, where the trip no longer stops`
-      : meets ? (name ? `Cuts into your booking at ${name}` : 'Cuts into a booked stay')
-      : name ? `Misses your booking at ${name}` : 'Misses a booked stay'
-    warnings.push({ level: 'warn', text: text + cancel, ...(stop == null ? {} : { stop }) })
-  }
-  return sched
+  return 'also'
 }
 
-/** What a press on a night stepper changes: the leg days to set, and the nights kept at the last stop. */
-export interface NightMove {
-  legs: { hop: number; date: string }[]
-  lastNights: number
+export const RELATION_TEXT: Record<Relation, string> = {
+  return: 'Return flight included',
+  outbound: 'Outbound flight included',
+  also: 'Also on this purchase',
 }
 
-/** The legs from stop i to stop end, a day later or earlier. Returns null when one of them does not exist. */
-function shiftLegs(j: Journey, s: Schedule, i: number, end: number, by: number): NightMove['legs'] | null {
-  const n = j.places.length
-  const hop = (k: number) => (k >= 1 && k < n ? j.places[k].hop : null)
-  const dayOf = (k: number) => legDay(hop(k)!, s.places[k - 1].outDay)
-  // a leg with no day and no flight floats on the even share, so it is pinned where it is
-  const floats = (k: number) => { const h = hop(k); return !!h && !h.date && !h.flight }
-  const legs: NightMove['legs'] = []
-  for (let k = i + 1; k <= end; k++) {
-    if (!hop(k)) return null
-    legs.push({ hop: k, date: addDays(dayOf(k), by) })
-  }
-  // pinning a leg splits the share around it, so every floating leg back to a dated one is pinned
-  for (let m = i; floats(m); m--) legs.push({ hop: m, date: dayOf(m) })
-  if (floats(end + 1)) legs.push({ hop: end + 1, date: dayOf(end + 1) })
-  return legs
+export interface Place { code: string; name: string; lat: number; lon: number }
+
+export interface PlaceData {
+  inout: { airports: Record<string, Pick<Airport, 'name' | 'lat' | 'lon' | 'map_node'> & Partial<Pick<Airport, 'country' | 'utc_offset'>>> }
+  map: { nodes: readonly Pick<MapNode, 'id' | 'iata' | 'name' | 'lat' | 'lon' | 'profile'>[] }
 }
 
-/** The first booked leg after stop i, or Infinity when there is none. Booked legs are anchors that keep their days. */
-const anchorAfter = (locked: Set<number>, i: number) => Math.min(Infinity, ...[...locked].filter((k) => k > i))
-
-/**
- * The stop whose nights a night more or a night less at stop i really changes when a booked leg lies ahead:
- * the stop just before that leg. Null when no booked leg is ahead, so the free nights take part as always,
- * and null at the stop the booked leg leaves from, where neither move can be made.
- */
-export function nightStop(locked: Set<number>, i: number): number | null {
-  const anchor = anchorAfter(locked, i)
-  return anchor === Infinity || anchor - 1 <= i ? null : anchor - 1
+/** The map place an airport serves: the one its code names, or the one the long-haul airport points at. */
+function nodeOf(code: string, data: PlaceData) {
+  const own = data.map.nodes.find((n) => n.iata === code)
+  if (own) return own
+  const id = data.inout.airports[code]?.map_node
+  return id ? data.map.nodes.find((n) => n.id === id) : undefined
 }
 
-/**
- * The earliest stop decides. A night more at stop i comes from the free nights, and from a later stop
- * you choose once there are none. The legs up to that stop leave a day later, the stops between keep
- * their nights, and nothing before stop i changes. Returns null when there is no such night to take.
- * A booked leg after stop i and every leg after it keep their days, so the stop just before it gives
- * the night and the free nights stay as they are. Pressed on past its last night that stop shows a clash.
- * A stop past the booked leg cannot give a night, and the stop the booked leg leaves from cannot take one.
- */
-export function takeNight(j: Journey, s: Schedule, i: number, from: number | 'free', locked = new Set<number>()): NightMove | null {
-  const last = j.places.length - 1
-  const fromFree = from === 'free'
-  if (fromFree ? !(s.free > 0) : !(from > i && s.places[from]?.days > 0)) return null
-  const anchor = anchorAfter(locked, i)
-  if (anchor === i + 1 || (!fromFree && from >= anchor)) return null
-  const legs = shiftLegs(j, s, i, Math.min(fromFree ? last : from, anchor - 1), 1)
-  if (!legs) return null
-  return { legs, lastNights: s.places[last].days + (i === last ? 1 : 0) - (from === last ? 1 : 0) }
+/** Where an airport is and the city it serves, or null when neither list knows it. */
+export function placeOf(code: string, data: PlaceData): Place | null {
+  const a = data.inout.airports[code]
+  const n = nodeOf(code, data)
+  const lat = a?.lat ?? n?.lat
+  const lon = a?.lon ?? n?.lon
+  if (typeof lat !== 'number' || typeof lon !== 'number') return null
+  const name = n?.name ?? a?.name ?? code
+  return { code, name: shortPlace(name), lat, lon }
 }
 
-/**
- * A night less at stop i is a free night. It goes to no other stop: every later stop leaves a day earlier with its nights.
- * A booked leg after stop i and every leg after it keep their days, so the stop just before it takes the night instead.
- */
-export function giveNight(j: Journey, s: Schedule, i: number, locked = new Set<number>()): NightMove | null {
-  const last = j.places.length - 1
-  if (!(s.places[i]?.days > 0)) return null
-  const anchor = anchorAfter(locked, i)
-  if (anchor === i + 1) return null
-  const legs = shiftLegs(j, s, i, Math.min(last, anchor - 1), -1)
-  if (!legs) return null
-  return { legs, lastNights: s.places[last].days - (i === last ? 1 : 0) }
+/** The city an airport serves, or its code. */
+export function cityName(code: string, data: PlaceData): string {
+  const n = nodeOf(code, data)
+  return shortPlace(n?.name ?? data.inout.airports[code]?.name ?? code)
 }
 
-/**
- * A stop taken out of the trip. The stops before it keep their nights, the stops after it keep theirs
- * and move earlier, and its nights become free nights. The hop numbers are those of the trip without it.
- * A booked leg after it and every leg after that keep their days, so the stop just before the booked
- * leg takes the nights instead. locked holds place indexes of the trip with the stop still in it.
- */
-export function stopGoes(j: Journey, s: Schedule, i: number, locked = new Set<number>()): NightMove | null {
-  const last = j.places.length - 1
-  if (i <= 0 || i > last) return null
-  const hop = (k: number) => j.places[k].hop
-  for (let k = i; k <= last; k++) if (!hop(k)) return null
-  const dayOf = (k: number) => legDay(hop(k)!, s.places[k - 1].outDay)
-  const leaves = dayOf(i)
-  const by = i < last ? dayDiff(leaves, dayOf(i + 1)) : 0
-  const anchor = anchorAfter(locked, i)
-  const legs: NightMove['legs'] = []
-  for (let k = i + 1; k <= last; k++) legs.push({ hop: k - 1, date: k >= anchor ? dayOf(k) : k === i + 1 ? leaves : addDays(dayOf(k), -by) })
-  for (let m = i - 1; m >= 1 && !hop(m)!.date && !hop(m)!.flight; m--) legs.push({ hop: m, date: dayOf(m) })
-  return { legs, lastNights: s.places[i === last ? i - 1 : last].days }
+export interface Photo { url: string; credit: string | null }
+
+/** The photo of the place an airport serves, or null. Only an https address is taken. */
+export function photoOf(code: string, data: PlaceData): Photo | null {
+  const img = nodeOf(code, data)?.profile?.image
+  const url = img?.url?.trim()
+  return url && /^https:\/\//i.test(url) ? { url, credit: img?.credit ?? null } : null
 }
 
-/** The trip with a move on it: the legs on their new days and the nights of the last stop. */
-export function applyMove(j: Journey, m: NightMove): Journey {
-  const places = j.places.map((q, k) => {
-    const leg = m.legs.find((l) => l.hop === k)
-    return leg && q.hop ? { ...q, hop: { ...q.hop, date: leg.date } } : q
-  })
-  return { ...j, places, lastNights: m.lastNights }
+/** A link the pane may open: http or https only. Anything else gives no link. */
+export function safeLink(u: string | null | undefined): string | null {
+  const t = u?.trim()
+  return t && /^https?:\/\//i.test(t) ? t : null
 }
 
-/** Every leg with no day and no flight on the day it shows, so a day set by hand on one leg moves no other. With only, just those legs. */
-export function pinLegs(j: Journey, s: Schedule, only?: Set<number>): Journey {
-  const pin = (k: number, h: Hop | null): h is Hop => k > 0 && !!h && !h.date && !h.flight && (!only || only.has(k))
-  return { ...j, places: j.places.map((p, k) => (pin(k, p.hop) ? { ...p, hop: { ...p.hop, date: s.places[k - 1].outDay } } : p)) }
-}
-
-// ---- totals
-
-export interface Totals {
-  tickets_dkk: number
-  regional_flights_dkk: number
-  /** the regional flights with no price, not in regional_flights_dkk */
-  regional_unknown: number
-  cabin_bag_dkk: number | null
-  checked_bag_dkk: number | null
-  hub_nights: number
-  hub_stay_dkk: number | null
-  ground_dkk: number
-  ground_unknown: number
-  /** what the booked stays of the trip cost. Not in the travel total */
-  stays_booked_dkk: number
-  /** what the planned stays not booked cost, from the places to stay. Not in the travel total */
-  stays_planned_dkk: number
-  /** the stays with no price known: planned parts with none found, and booked stays with none filled in and no plan for them */
-  stays_unknown: number
-  flights: number
-  air_hours: number
-  days_per_country: Record<string, number>
-  hub_stops: StopItem[]
-}
-
-export function hubStops(w: Way): StopItem[] {
-  return w.timeline.filter((x): x is StopItem => x.kind !== 'flight')
-}
-
-/**
- * Totals for a journey. A ticket shared by both ways is counted once. Bags, hub stays and ground are kept apart.
- * A flight or ground leg with no price is counted as not priced, never as 0.
- * A booked way or leg counts what was paid for it in place of its quote, and the booked stays are kept apart.
- * Given the places to stay, the planned stays are kept apart too. Without them nothing planned is counted.
- */
-export function totals(data: AppData, j: Journey, sched: Schedule | null, bookings: Booking[] = [], lodgings?: Lodging[]): Totals {
-  const { inout, map } = data
-  const wi = inout.ways[j.wayIn]
-  const wh = inout.ways[j.wayHome]
-  /** what was paid for the leg, or null when it is not booked or its price is not filled in, so its quote counts */
-  const paid = (leg: { from: string; to: string; day: string }) => {
-    const b = bookingOn(bookings, data, leg)
-    return b ? paidPrice(bookings, b) : null
-  }
-  const anyBooked = bookings.length > 0
-  const paidWays = anyBooked ? [wi, wh].map((w) => { const b = wayBooking(bookings, data, w); return b ? paidPrice(bookings, b) : null }) : [null, null]
-  const quoted = [wi, wh].filter((_, k) => paidWays[k] == null)
-  const p = priceOfWays(inout, [wi, wh])
-  let regional = 0
-  let regionalUnknown = 0
-  let ground = 0
-  let groundUnknown = 0
-  let flights = wi.flights + wh.flights
-  let air = wi.flying_hours + wh.flying_hours
-  j.places.forEach((pl, k) => {
-    const h = pl.hop
-    if (!h) return
-    const booked = anyBooked && k > 0 ? paid({ from: j.places[k - 1].node, to: pl.node, day: legDay(h, sched?.places[k - 1]?.outDay ?? '') }) : null
-    const price = booked ?? h.price_dkk
-    if (h.mode === 'flight') {
-      flights += 1 + (h.flight?.stops ?? h.flight?.via.length ?? 0)
-      if (price == null) regionalUnknown++
-      else regional += price
-      air += h.hours ?? 0
-    } else if (price == null) groundUnknown++
-    else ground += price
-  })
-  const stays = sched ? stayTotals(j, sched, bookings, lodgings) : { booked: 0, planned: 0, unknown: 0 }
-  const stops = [...hubStops(wi), ...hubStops(wh)].filter((s) => s.kind === 'night' || s.kind === 'day_stop' || s.kind === 'self_transfer')
-  let hubStay: number | null = 0
-  let hubNights = 0
-  for (const s of stops) {
-    hubNights += s.nights || 0
-    if (s.nights) hubStay = hubStay == null || s.stay_estimate_dkk == null ? null : hubStay + s.stay_estimate_dkk
-  }
-  const days: Record<string, number> = {}
-  const countryOf = (node: string) => map.nodes.find((n) => n.id === node)?.country ?? inout.airports[node]?.country ?? '?'
-  if (sched) sched.places.forEach((sp) => { days[countryOf(sp.node)] = (days[countryOf(sp.node)] ?? 0) + sp.days })
-  // free nights are spent where the flight home leaves
-  const end = sched?.places[sched.places.length - 1]
-  if (end) days[countryOf(end.node)] += sched!.free
-  for (const s of stops) if (s.nights) {
-    const c = inout.airports[s.airport]?.country ?? '?'
-    days[c] = (days[c] ?? 0) + s.nights
-  }
-  return {
-    tickets_dkk: (paidWays[0] ?? 0) + (paidWays[1] ?? 0) + (quoted.length ? priceOfWays(inout, quoted).price_dkk : 0),
-    regional_flights_dkk: regional,
-    regional_unknown: regionalUnknown,
-    cabin_bag_dkk: p.cabin,
-    checked_bag_dkk: p.checked,
-    hub_nights: hubNights,
-    hub_stay_dkk: hubStay,
-    ground_dkk: ground,
-    ground_unknown: groundUnknown,
-    stays_booked_dkk: stays.booked,
-    stays_planned_dkk: stays.planned,
-    stays_unknown: stays.unknown,
-    flights,
-    air_hours: Math.round(air * 10) / 10,
-    days_per_country: days,
-    hub_stops: stops,
-  }
-}
-
-/**
- * The trip's travel: tickets, regional flights, ground, the nights at the hubs and the cabin bags, of what is priced.
- * A checked bag is optional, so its fees are shown but not added. Stays at the stops are not in it.
- */
-export const travelTotal = (t: Totals) =>
-  t.tickets_dkk + t.regional_flights_dkk + t.ground_dkk + (t.hub_stay_dkk ?? 0) + (t.cabin_bag_dkk ?? 0)
-
-/** How many parts of the travel total have no price: the flights and ground legs, the hub stays and the cabin bags. */
-export const travelUnknown = (t: Totals) =>
-  t.regional_unknown + t.ground_unknown + (t.hub_stay_dkk == null ? 1 : 0) + (t.cabin_bag_dkk == null ? 1 : 0)
-
-/** A cost in words: what is priced, and how many parts are not. */
-const priced = (dkk: number, unknown: number) => {
-  if (!unknown) return kr(dkk)
-  return dkk ? `${kr(dkk)}, ${unknown} not priced` : 'Not priced'
-}
-
-/** The travel total in words, with how many of its parts are not priced. */
-export const travelCost = (t: Totals) => priced(travelTotal(t), travelUnknown(t))
-
-/** Regional flights in words: what is priced, and how many flights are not. */
-export const regionalCost = (t: Totals) => priced(t.regional_flights_dkk, t.regional_unknown)
-
-/** Ground transport in words: what is priced, and how many hops are not. */
-export const groundCost = (t: Totals) => priced(t.ground_dkk, t.ground_unknown)
-
-/** The Stays line: what is booked and what is planned, apart, and the stays with no price known. null with no stays at all. */
-export const staysCost = (t: Totals): string | null => {
-  const parts = [
-    t.stays_booked_dkk > 0 ? `${kr(t.stays_booked_dkk)} booked` : null,
-    t.stays_planned_dkk > 0 ? `${kr(t.stays_planned_dkk)} planned` : null,
-    t.stays_unknown > 0 ? `${t.stays_unknown} not priced` : null,
-  ].filter((x): x is string => x != null)
-  return parts.length ? parts.join(', ') : null
-}
-
-export function journeyIsValid(j: unknown): j is Journey {
-  const x = j as Journey
-  return !!x && typeof x.id === 'string' && typeof x.wayIn === 'string' && typeof x.wayHome === 'string' && Array.isArray(x.places)
-}
-
-export function nodeName(map: MapData, inout: InOut, id: string): string {
-  return map.nodes.find((n) => n.id === id)?.name ?? inout.airports[id]?.name ?? id
+/** The confirmation mail of a row, as a link to open, or null. */
+export function mailLink(b: Pick<Booking, 'mail_url'>): string | null {
+  const t = b.mail_url?.trim()
+  return t && /^https:\/\//i.test(t) ? t : null
 }
