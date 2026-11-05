@@ -108,11 +108,11 @@ export function addFromLink(url: string, placeId: string, checkIn: string, check
 
 /** What a search of the city of a stop gives back: the places at the stop it found, how many were new and priced. */
 export type SearchResult =
-  | { ok: true; place_id: string; city: string; lodging_ids: string[]; created: number; priced: number; rooms: number; prices: number }
+  | { ok: true; place_id: string; city: string; lodging_ids: string[]; priced_ids: string[]; created: number; priced: number; rooms: number; prices: number }
   | { ok: false; message: string }
 
 interface SearchReply {
-  place_id?: string; city_id?: number | string; city?: string; lodging_ids?: string[]
+  place_id?: string; city_id?: number | string; city?: string; lodging_ids?: string[]; priced_ids?: string[]
   created?: number; priced?: number; rooms?: number; prices?: number; error?: string
 }
 
@@ -123,7 +123,7 @@ export async function searchCity(placeId: string, checkIn: string, checkOut: str
   const d = r.data
   if (!d || !Array.isArray(d.lodging_ids)) return { ok: false, message: d?.error || 'Hostelworld gave no answer.' }
   return {
-    ok: true, place_id: d.place_id ?? placeId, city: d.city ?? '', lodging_ids: d.lodging_ids,
+    ok: true, place_id: d.place_id ?? placeId, city: d.city ?? '', lodging_ids: d.lodging_ids, priced_ids: Array.isArray(d.priced_ids) ? d.priced_ids : [],
     created: d.created ?? 0, priced: d.priced ?? 0, rooms: d.rooms ?? 0, prices: d.prices ?? 0,
   }
 }

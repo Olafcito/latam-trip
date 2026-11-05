@@ -75,7 +75,7 @@ export function useStayFind(
       setHw((h) => (h === k ? null : h))
       if (!r.ok) return fail(r.message)
       // the places were priced for these dates just now, so opening one asks Hostelworld nothing more
-      for (const id of r.lodging_ids) remember(id, checkIn, checkOut, { ok: true, lodging_id: id, fetched: true, rooms: 0, prices: 0 })
+      for (const id of r.priced_ids) remember(id, checkIn, checkOut, { ok: true, lodging_id: id, fetched: true, rooms: 0, prices: 0 })
       reload()
     })
     insertTask(stayFindTask(place, checkIn, checkOut), trip.id, trip.version).then((t) => {

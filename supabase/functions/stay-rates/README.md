@@ -21,7 +21,7 @@ The search:
 3. Only hostels within 40 km of the map place count, when the place has coordinates. Those rated 8.0 or more come first by number of ratings, then the rest by number of ratings. Hostelworld's own order mixes in promoted places and is not used.
 4. Down that ranking until `top` are taken: a hostel stored at this place counts and is priced unless its price is fresh. A hostel stored hidden or at another place is passed over and does not count, and a hidden one stays hidden. A new one is added as a pasted link would add it, with `added_by` claude, and priced.
 
-Response: `200 { place_id, city_id, city, lodging_ids, created, priced, rooms, prices }`. `lodging_ids` are the hostels taken, in order, `created` and `priced` count the places added and priced, `rooms` and `prices` are summed over them. When enough visible places at the stop with a Hostelworld link, whoever added them, have a fresh price for the dates, Hostelworld is not asked at all and those are returned with zero counts. A second search in the fresh window asks Hostelworld for the city list at most.
+Response: `200 { place_id, city_id, city, lodging_ids, priced_ids, created, priced, rooms, prices }`. `lodging_ids` are the hostels taken, in order, `priced_ids` are those of them priced now or found with a fresh price, the others had no price asked or it failed, `created` and `priced` count the places added and priced, `rooms` and `prices` are summed over them. When enough visible places at the stop with a Hostelworld link, whoever added them, have a fresh price for the dates, Hostelworld is not asked at all and those are returned with zero counts. A second search in the fresh window asks Hostelworld for the city list at most.
 
 What it writes:
 

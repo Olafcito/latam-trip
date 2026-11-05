@@ -395,7 +395,7 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
 interface Place { id: string; name: string | null; country: string | null; lat: number | null; lon: number | null }
 interface City { id: string | null; name: string | null }
 interface SearchResult {
-  place_id: string; city_id: string | null; city: string | null; lodging_ids: string[]
+  place_id: string; city_id: string | null; city: string | null; lodging_ids: string[]; priced_ids: string[]
   created: number; priced: number; rooms: number; prices: number
 }
 
@@ -438,7 +438,7 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
   if (error) throw new Refused(500, 'The map place could not be read.')
   if (!row) throw new Refused(404, 'There is no such map place.')
   const place: Place = { id: row.id, name: row.name ?? null, country: row.country ?? null, lat: num(row.lat), lon: num(row.lon) }
-  const result: SearchResult = { place_id: place.id, city_id: null, city: null, lodging_ids: [], created: 0, priced: 0, rooms: 0, prices: 0 }
+  const result: SearchResult = { place_id: place.id, city_id: null, city: null, lodging_ids: [], priced_ids: [], created: 0, priced: 0, rooms: 0, prices: 0 }
   const stored = await storedByProperty(db)
   const { data: atStop, error: eStop } = await db.from('lodgings').select('id, name, hidden, links').eq('place_id', place.id)
   if (eStop) throw new Refused(500, 'The places could not be read.')
@@ -454,7 +454,7 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
     }
     if (fresh.length >= top) {
       const { data: c } = await db.from('hostelworld_cities').select('city_id, city').eq('place_id', place.id).maybeSingle()
-      return { ...result, city_id: c?.city_id ?? null, city: c?.city ?? null, lodging_ids: fresh }
+      return { ...result, city_id: c?.city_id ?? null, city: c?.city ?? null, lodging_ids: fresh, priced_ids: fresh }
     }
   }
 
@@ -498,9 +498,13 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
       result.created++
     }
     result.lodging_ids.push(t.lodgingId)
-    if (!t.created && (await isFresh(db, t.lodgingId, checkIn, checkOut, freshMinutes))) continue
+    if (!t.created && (await isFresh(db, t.lodgingId, checkIn, checkOut, freshMinutes))) {
+      result.priced_ids.push(t.lodgingId)
+      continue
+    }
     try {
       const counts = await price(db, t, checkIn, checkOut, nights)
+      result.priced_ids.push(t.lodgingId)
       result.priced++
       result.rooms += counts.rooms
       result.prices += counts.prices

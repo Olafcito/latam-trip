@@ -87,9 +87,9 @@ describe('remember', () => {
 
 describe('searchCity', () => {
   it('asks for the top places of the stop for the dates and gives the counts back', async () => {
-    invoke.mockResolvedValue({ data: { place_id: 'ADZ', city_id: 1, city: 'San Andres', lodging_ids: ['a', 'b', 'c'], created: 3, priced: 3, rooms: 9, prices: 9 }, error: null })
+    invoke.mockResolvedValue({ data: { place_id: 'ADZ', city_id: 1, city: 'San Andres', lodging_ids: ['a', 'b', 'c'], priced_ids: ['a', 'c'], created: 3, priced: 2, rooms: 9, prices: 9 }, error: null })
     const r = await searchCity('ADZ', '2026-12-08', '2026-12-13')
-    expect(r).toEqual({ ok: true, place_id: 'ADZ', city: 'San Andres', lodging_ids: ['a', 'b', 'c'], created: 3, priced: 3, rooms: 9, prices: 9 })
+    expect(r).toEqual({ ok: true, place_id: 'ADZ', city: 'San Andres', lodging_ids: ['a', 'b', 'c'], priced_ids: ['a', 'c'], created: 3, priced: 2, rooms: 9, prices: 9 })
     expect(invoke).toHaveBeenCalledWith('stay-rates', { body: { search: true, place_id: 'ADZ', check_in: '2026-12-08', check_out: '2026-12-13', top: 3 } })
   })
 
