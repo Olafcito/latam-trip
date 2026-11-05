@@ -3,13 +3,16 @@ import type { Lodging } from '../../data/types'
 import { kr } from '../../lib/format'
 import { amenities, cheapestRoom, nightly, nightsWord, providers, stayDates, type Provider } from '../../lib/stayOffer'
 import { safeUrl } from '../../lib/lodgingLinks'
-import { Bed, Calendar, Caret, Check, External, Heart, Person, Photos, Share } from '../icons'
+import { Bed, Calendar, Caret, Check, External, Heart, Person, Photos, Share, Warn } from '../icons'
 import { AmenityIcon, kindWord, NightPrice, Rating } from './offerMarks'
+import { useLiveRates, type LiveRates } from './useLiveRates'
 
 // A place to stay in full, pushed over the search on a phone and beside it on a wide screen: its photos edge to
 // edge with back, share and save on them, its name, kind, place and rating, what it is like and what it offers,
 // then its rooms priced per night for the dates with Select on each, and the sites that sell it. The cheapest
-// site's price is in green. A site with no price for the room shows none.
+// site's price is in green. A site with no price for the room shows none. A place with a Hostelworld link asks
+// for its live prices on open: a pulsing dot on the rooms heading and on each room still without a price for the
+// dates while it asks, one warn mark on the heading when it could not.
 
 export interface PropertyViewProps {
   lodging: Lodging
@@ -79,6 +82,16 @@ function RoomPhoto({ src }: { src: string | null | undefined }) {
   )
 }
 
+/** The asking for live prices on the rooms heading: a pulsing dot while it runs, a warn mark when it failed. */
+function LiveMark({ live }: { live: LiveRates }) {
+  return (
+    <span className="pv-live" role="status">
+      {live.state === 'asking' && <><span className="as-live" aria-hidden="true" /><span className="pv-vh">Asking Hostelworld</span></>}
+      {live.state === 'failed' && <span className="pv-mk" data-tone="warn" role="img" aria-label={live.message} title={live.message}><Warn s={13} /></span>}
+    </span>
+  )
+}
+
 function Seller({ p, logo }: { p: Provider; logo: string | null }) {
   const inner = (
     <>
@@ -107,6 +120,8 @@ export function PropertyView(p: PropertyViewProps) {
   const focus = l.rooms.find((r) => chosen.includes(r.id)) ?? l.rooms.find((r) => r.id === p.booked) ?? cheapestRoom(l, p.checkIn, p.checkOut)?.room ?? l.rooms[0] ?? null
   const sellers = providers(l, focus, p.checkIn, p.checkOut)
   const kind = kindWord(l.kind)
+  const live = useLiveRates(l, p.checkIn, p.checkOut)
+  const asking = live.state === 'asking'
   return (
     <article className="pv" aria-label={l.name}>
       <Gallery l={l} onBack={p.onBack} onShare={p.onShare} onSave={p.onSave} saved={p.saved} />
@@ -123,9 +138,12 @@ export function PropertyView(p: PropertyViewProps) {
           </ul>
         )}
 
-        {l.rooms.length > 0 && (
+        {(l.rooms.length > 0 || asking || live.state === 'failed') && (
           <section className="pv-sec" aria-labelledby="pv-rooms">
-            <h4 id="pv-rooms">Rooms & prices</h4>
+            <div className="pv-sh">
+              <h4 id="pv-rooms">Rooms & prices</h4>
+              <LiveMark live={live} />
+            </div>
             <div className="pv-bar">
               <span><Calendar s={16} />{stayDates(p.checkIn, p.checkOut)}<i aria-hidden="true">·</i>{nightsWord(p.nights)}</span>
               <span><Person s={16} />{p.guests} {p.guests === 1 ? 'guest' : 'guests'}</span>
@@ -140,7 +158,14 @@ export function PropertyView(p: PropertyViewProps) {
                     <RoomPhoto src={r.photo} />
                     <span className="pv-rn">
                       <b>{r.name}</b>
-                      {pr ? <span className="pv-rp"><NightPrice p={pr} className="pv-rkr" /><small>/ night</small></span> : <small className="pv-nokr">No price yet</small>}
+                      {pr ? (
+                        <span className="pv-rp">
+                          <NightPrice p={pr} className="pv-rkr" /><small>/ night</small>
+                          {asking && !pr.exact && <span className="as-live" title="Asking Hostelworld" aria-hidden="true" />}
+                        </span>
+                      ) : asking ? (
+                        <span className="pv-rp" title="Asking Hostelworld"><span className="as-live" aria-hidden="true" /><span className="pv-vh">Asking Hostelworld for a price</span></span>
+                      ) : <small className="pv-nokr">No price yet</small>}
                     </span>
                     {booked ? (
                       <span className="pv-sel" data-booked><Check s={14} />Booked</span>
