@@ -340,6 +340,7 @@
 .phv .md-in { padding: 0; }
 .phv-in { position: relative; flex: 1; min-height: 0; display: flex; }
 .phv-strip { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; outline: none; }
+.phv-strip:focus-visible { outline: 2px solid var(--muted); outline-offset: -2px; }
 .phv-strip::-webkit-scrollbar { display: none; }
 .phv-slide {
   flex: none; width: 100%; height: 100%; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center;

@@ -44,7 +44,7 @@ export function PhotoViewer({ photos, start, label, onClose }: { photos: ViewPho
                 </div>
               ))}
             </div>
-            {many && <span className="pv-count phv-count"><Photos s={12} />{s.at + 1} / {photos.length}</span>}
+            {many && <span className="pv-count phv-count" aria-hidden="true"><Photos s={12} />{s.at + 1} / {photos.length}</span>}
             <button type="button" className="pv-round phv-x" aria-label="Close" title="Close" onClick={close}><Close /></button>
             <StripArrows at={s.at} count={photos.length} step={s.step} />
           </div>

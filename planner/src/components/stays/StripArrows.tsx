@@ -1,15 +1,24 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Caret } from '../icons'
 
-/** Back and on over a strip, for a mouse. Each hides at its end, and hands its focus to the other one as it goes. */
+/** Back and on over a strip, for a mouse. Each hides at its end, and hands its focus to the other one as it goes.
+ * The hand over waits until the strip is at its end, since the other arrow is still hidden until then. */
 export function StripArrows({ at, count, step }: { at: number; count: number; step: (dir: -1 | 1) => number }) {
   const prev = useRef<HTMLButtonElement>(null)
   const next = useRef<HTMLButtonElement>(null)
+  const hand = useRef<{ to: number; el: 'prev' | 'next' } | null>(null)
+  useEffect(() => {
+    const h = hand.current
+    if (!h || h.to !== at) return
+    hand.current = null
+    ;(h.el === 'prev' ? prev : next).current?.focus({ preventScroll: true })
+  }, [at])
   if (count < 2) return null
   const press = (dir: -1 | 1) => {
     const to = step(dir)
-    if (dir < 0 && to === 0) next.current?.focus({ preventScroll: true })
-    if (dir > 0 && to === count - 1) prev.current?.focus({ preventScroll: true })
+    if (dir < 0 && to === 0) hand.current = { to, el: 'next' }
+    else if (dir > 0 && to === count - 1) hand.current = { to, el: 'prev' }
+    else hand.current = null
   }
   return (
     <>
