@@ -1,7 +1,7 @@
 # FEAT-003: Find accommodations at a stop
 
 - Date: 2026-11-05
-- Status: Building in the `hostel-search` worktree.
+- Status: Built 2026-11-05. The Hostelworld half was checked live at San Andrés, Cali and Cochabamba.
 
 ## 1. Problem
 
