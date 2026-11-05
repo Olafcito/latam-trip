@@ -444,13 +444,13 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
   if (eStop) throw new Refused(500, 'The places could not be read.')
   const named: { name?: string | null }[] = atStop ?? []
 
-  // A search already made for these dates: enough hostels it added here have fresh prices, so Hostelworld is not asked.
-  const ours = [...stored.values()].filter((l) => l.place_id === place.id && !l.hidden && l.added_by === 'claude')
+  // Enough visible places with a Hostelworld link here, whoever added them, have fresh prices for the dates: Hostelworld is not asked.
+  const ours = [...new Set([...stored.values()].filter((l) => l.place_id === place.id && !l.hidden).map((l) => l.id))]
   if (ours.length >= top) {
     const fresh: string[] = []
-    for (const l of ours) {
+    for (const id of ours) {
       if (fresh.length >= top) break
-      if (await isFresh(db, l.id, checkIn, checkOut, freshMinutes)) fresh.push(l.id)
+      if (await isFresh(db, id, checkIn, checkOut, freshMinutes)) fresh.push(id)
     }
     if (fresh.length >= top) {
       const { data: c } = await db.from('hostelworld_cities').select('city_id, city').eq('place_id', place.id).maybeSingle()
