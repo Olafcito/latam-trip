@@ -1,0 +1,182 @@
+/* The booked pane: one journey in front, cinematic on top and precise under it. The destination fills the top as
+   a photo with the city set large in a serif, the map of the purchase runs out of it on the same midnight, and the
+   flight reads like a boarding pass: codes wide and heavy, times in tabular figures. What the purchase shares sits
+   last on a raised surface. In a sheet the pane runs to the window's edges through --jb-bleed. */
+@scope (:root) to (.rmap) {
+  .jb {
+    --jb-gold: #F2C46B;
+    --jb-paper: #F3EDE0;
+    --jb-ink: #13202A;
+    --jb-plate: #EEF2F3;
+    --jb-soft: #B9C6CD;
+    --jb-pad: var(--jb-bleed, 0px);
+    container: jb / inline-size;
+    flex: none;
+    margin-inline: calc(-1 * var(--jb-bleed, 0px));
+    margin-top: calc(-1 * var(--jb-bleed-top, 0px));
+    background: var(--ground);
+    color: var(--text);
+    outline: none;
+    scroll-margin-top: 0;
+  }
+  .jb:focus-visible { box-shadow: inset 0 0 0 2px var(--flight); }
+  .jb-in { display: flex; flex-direction: column; }
+  .jb-vis { position: relative; display: flex; flex-direction: column; scroll-margin-top: 0; }
+
+  /* the hero: the photo, a scrim that is dark only where type sits, the city large at its foot */
+  .jb-hero { position: relative; height: clamp(300px, 92cqi, 430px); overflow: hidden; isolation: isolate; background: radial-gradient(120% 90% at 80% 10%, #16303D 0%, var(--ground) 70%); }
+  .jb-hero-img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+  .jb-hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(11 23 32 / 0.62) 0%, rgb(11 23 32 / 0) 24%, rgb(11 23 32 / 0) 40%, rgb(11 23 32 / 0.8) 78%, var(--ground) 100%); }
+  .jb-hero:not([data-photo])::after { background: linear-gradient(180deg, transparent 55%, var(--ground) 100%); }
+  /* without a photo the destination's code is the picture: set huge and faint behind the city */
+  .jb-hero-code { position: absolute; right: -0.04em; top: 18%; z-index: -1; font-family: var(--font-ticket); font-stretch: 125%; font-size: clamp(120px, 46cqi, 220px); font-weight: 800; line-height: 1; letter-spacing: -0.04em; color: rgb(234 240 242 / 0.06); }
+  .jb-hero-top { position: absolute; top: 18px; left: 20px; right: 64px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .jb-booked { display: inline-flex; align-items: center; gap: 7px; font-size: var(--fs-small); font-weight: 600; color: var(--booked); text-shadow: 0 1px 8px rgb(0 0 0 / 0.5); }
+  .jb-booked > span { width: 16px; height: 16px; display: grid; place-items: center; border-radius: 50%; background: var(--booked); color: var(--ground); }
+  .jb-hero-day { font-family: var(--font-ticket); font-size: var(--fs-body); font-weight: 600; font-variant-numeric: tabular-nums; text-shadow: 0 1px 10px rgb(0 0 0 / 0.55); }
+  .jb-hero-txt { position: absolute; left: 20px; right: 20px; bottom: 18px; }
+  .jb-from { margin: 0; font-family: var(--font-display); font-style: italic; font-size: 1.375rem; line-height: 1.1; color: var(--jb-gold); }
+  .jb-to { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(3rem, 17cqi, 5.25rem); line-height: 0.88; letter-spacing: -0.015em; text-wrap: balance; overflow-wrap: anywhere; text-shadow: 0 2px 24px rgb(0 0 0 / 0.35); }
+  .jb-codes { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: 12px 0 0; font-family: var(--font-ticket); font-variant-numeric: tabular-nums; }
+  .jb-chain { display: inline-flex; flex-wrap: wrap; font-stretch: 120%; font-size: 0.9375rem; font-weight: 700; letter-spacing: 0.06em; }
+  .jb-chain > span + span::before, .jb-row-txt b > span + span::before { content: '›'; margin: 0 0.45em; font-weight: 400; color: var(--jb-gold); }
+  .jb-span { font-size: var(--fs-small); color: var(--jb-soft); }
+
+  /* the map runs straight out of the hero on the same ground */
+  .jb-map { margin: 0; height: clamp(220px, 66cqi, 300px); }
+  .jm { position: relative; width: 100%; height: 100%; overflow: hidden; }
+  .jm svg { position: absolute; inset: 0; display: block; }
+  .jm-land { fill: #142630; }
+  .jm-arc { fill: none; stroke-linecap: round; }
+  .jm-arc[data-s='other'] { stroke: rgb(234 240 242 / 0.32); stroke-width: 1.2; stroke-dasharray: 2 5; }
+  .jm-arc[data-s='mine'] { stroke: rgb(234 240 242 / 0.82); stroke-width: 1.5; }
+  .jm-arc[data-s='on'] { stroke: var(--flight); stroke-width: 2.6; }
+  .jm-plane circle { fill: var(--ground); }
+  .jm-plane path { fill: var(--flight); }
+  .jm-pin { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--text); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .jm-pin i { width: 9px; height: 9px; border-radius: 50%; background: var(--text); box-shadow: 0 0 0 3px var(--ground); transition: transform var(--t-fast) var(--ease-out); }
+  .jm-pin[data-s='end'] i { width: 12px; height: 12px; background: var(--flight); }
+  .jm-pin[data-s='other'] i { background: var(--ground); box-shadow: 0 0 0 3px var(--ground), inset 0 0 0 1.5px rgb(234 240 242 / 0.6); }
+  .jm-pin span { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); font-family: var(--font-ticket); font-stretch: 115%; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap; text-shadow: 0 0 6px var(--ground), 0 0 2px var(--ground); }
+  .jm-pin[data-left] span { left: auto; right: 30px; }
+  .jm-pin[data-s='end'] span { color: var(--jb-gold); }
+  .jm-pin:focus-visible { outline: 2px solid var(--flight); outline-offset: -6px; border-radius: 50%; }
+  .jm-pin:active i { transform: scale(0.9); }
+  @media (hover: hover) and (pointer: fine) {
+    .jm-pin:hover i { transform: scale(1.3); }
+  }
+
+  .jb-info { display: flex; flex-direction: column; padding-inline: max(var(--jb-pad), 16px); }
+
+  /* the flights of the journey as pictures of where each lands, the wait between them in gold */
+  .jb-strip ol { list-style: none; display: flex; margin: 6px 0 0; padding: 2px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .jb-strip ol::-webkit-scrollbar { display: none; }
+  .jb-strip li { flex: 1 0 140px; display: flex; align-items: center; }
+  .jb-strip li:last-child { flex-basis: 0; min-width: 140px; }
+  .jb-thumb { position: relative; flex: 1; min-width: 0; height: 112px; padding: 0; border: 0; border-radius: 14px; overflow: hidden; background: var(--surface-2); color: var(--text); font: inherit; text-align: left; cursor: pointer; opacity: 0.66; touch-action: manipulation; transition: opacity var(--t-med) var(--ease-out), transform var(--t-fast) var(--ease-out); }
+  .jb-thumb[aria-pressed='true'] { opacity: 1; outline: 2px solid var(--flight); outline-offset: 2px; }
+  .jb-thumb:active { transform: scale(0.97); }
+  .jb-thumb:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
+  .jb-thumb-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .jb-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(11 23 32 / 0.1) 0%, rgb(11 23 32 / 0.86) 100%); }
+  .jb-thumb-code { position: absolute; right: 8px; top: 2px; font-family: var(--font-ticket); font-stretch: 125%; font-size: 2.75rem; font-weight: 800; color: rgb(234 240 242 / 0.1); }
+  .jb-thumb-n { position: absolute; z-index: 1; left: 10px; top: 4px; font-family: var(--font-display); font-size: 1.875rem; line-height: 1; color: var(--jb-gold); }
+  .jb-thumb-txt { position: absolute; z-index: 1; left: 10px; right: 8px; bottom: 9px; display: flex; flex-direction: column; gap: 1px; }
+  .jb-thumb-txt b { font-family: var(--font-ticket); font-stretch: 115%; font-size: var(--fs-body); letter-spacing: 0.04em; white-space: nowrap; }
+  .jb-thumb-txt b i { margin: 0 0.4em; font-style: normal; font-weight: 400; color: var(--jb-gold); }
+  .jb-thumb-txt small { font-size: var(--fs-small); color: #C9D3D8; font-variant-numeric: tabular-nums; }
+  .jb-wait { flex: none; width: 58px; display: flex; flex-direction: column; align-items: center; gap: 1px; font-family: var(--font-ticket); font-size: var(--fs-label); font-weight: 700; line-height: 1.15; color: var(--jb-gold); text-align: center; font-variant-numeric: tabular-nums; }
+  .jb-wait::before { content: ''; width: 30px; margin-bottom: 4px; border-top: 1.5px dotted var(--jb-gold); }
+  .jb-wait small { font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.06em; color: var(--muted); }
+
+  /* the flight: who flies it, the two codes large with the way between, the times, then its own facts */
+  .jb-flight { margin-top: 26px; }
+  .jb-air { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .jb-plate { flex: none; display: inline-flex; align-items: center; height: 32px; padding: 0 10px; border-radius: 8px; background: var(--jb-plate); }
+  .jb-plate img { display: block; height: 15px; max-width: 120px; object-fit: contain; }
+  .jb-name { font-family: var(--font-ticket); font-size: var(--fs-title); font-weight: 800; letter-spacing: -0.01em; }
+  .jb-num { font-family: var(--font-ticket); font-size: var(--fs-title); font-weight: 700; letter-spacing: 0.02em; }
+  .jb-op { font-size: var(--fs-small); color: var(--muted); }
+  .jb-codes-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; margin-top: 18px; }
+  .jb-code { font-family: var(--font-ticket); font-stretch: 125%; font-size: clamp(2.75rem, 14cqi, 4rem); font-weight: 800; line-height: 0.85; letter-spacing: -0.02em; }
+  .jb-line { min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .jb-line small { font-family: var(--font-ticket); font-size: var(--fs-label); font-weight: 600; color: var(--jb-gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .jb-line > span { width: 100%; display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .jb-line > span i { flex: 1; border-top: 1.5px dotted var(--flight); }
+  .jb[data-kind='flight'] .jb-line svg { transform: rotate(45deg); color: var(--text); }
+  .jb-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+  .jb-times .to { text-align: right; }
+  .jb-times b { display: block; font-family: var(--font-ticket); font-size: 1.875rem; font-weight: 400; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .jb-times sup { margin-left: 2px; font-size: var(--fs-label); font-weight: 700; color: var(--jb-gold); }
+  .jb-times small { display: block; margin-top: 2px; font-size: var(--fs-small); color: var(--muted); overflow-wrap: anywhere; }
+  .jb-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 112px), 1fr)); gap: 16px 12px; margin: 22px 0 0; }
+  .jb-facts dt, .jb-terms dt { font-size: var(--fs-small); color: var(--muted); }
+  .jb-facts dd, .jb-terms dd { margin: 3px 0 0; font-family: var(--font-ticket); font-size: var(--fs-title); font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .jb-facts dd[data-mono] { letter-spacing: 0.06em; user-select: all; -webkit-user-select: all; }
+
+  /* another journey of the purchase: one quiet row, booked, that brings it to the front */
+  .jb-also { display: flex; flex-direction: column; gap: 2px; margin: 26px -8px 0; }
+  .jb-row { width: 100%; min-height: 60px; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto 10px; align-items: center; gap: 12px; padding: 8px; border: 0; border-radius: 12px; background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer; touch-action: manipulation; transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out); }
+  .jb-row:active { transform: scale(0.99); background: var(--surface-2); }
+  .jb-row:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+  .jb-row-tick { width: 18px; height: 18px; display: grid; place-items: center; border-radius: 50%; background: var(--booked); color: var(--ground); }
+  .jb-row-txt { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .jb-row-txt small { font-size: var(--fs-small); color: var(--muted); }
+  .jb-row-txt b { display: flex; flex-wrap: wrap; font-family: var(--font-ticket); font-stretch: 115%; font-size: 0.9375rem; letter-spacing: 0.04em; }
+  .jb-row-day { font-family: var(--font-ticket); font-size: var(--fs-num); font-weight: 600; color: var(--jb-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .jb-row-go { color: var(--muted); }
+  @media (hover: hover) and (pointer: fine) {
+    .jb-row:hover { background: var(--surface-2); }
+    .jb-mail:hover { background: #FFF8EA; }
+    .jb-mail[data-empty]:hover { background: var(--surface-2); }
+  }
+
+  /* the purchase, once, on a raised surface: who sold it and what was paid, the mail first, then the terms */
+  .jb-buy { display: flex; flex-direction: column; gap: 18px; margin: 28px calc(-1 * max(var(--jb-pad), 16px)) 0; padding: 24px max(var(--jb-pad), 16px) calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--surface); }
+  .jb-buy-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .jb-seller.jb-name { font-size: 1.3125rem; }
+  .jb-seller.jb-plate { height: 36px; }
+  .jb-seller.jb-plate img { height: 17px; }
+  .jb-paid { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+  .jb-paid b { font-family: var(--font-ticket); font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .jb-paid small { font-size: var(--fs-small); color: var(--muted); }
+  .jb-mail { width: 100%; min-height: 60px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 16px; align-items: center; gap: 14px; padding: 0 18px; border: 0; border-radius: 14px; background: var(--jb-paper); color: var(--jb-ink); font: inherit; text-align: left; text-decoration: none; cursor: pointer; touch-action: manipulation; transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out); }
+  .jb-mail:active { transform: scale(0.98); }
+  .jb-mail:focus-visible { outline: 2px solid var(--flight); outline-offset: 3px; }
+  .jb-mail img { width: 26px; height: 20px; }
+  .jb-mail b { display: block; font-size: var(--fs-title); }
+  .jb-mail small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-small); color: #5C5446; }
+  .jb-mail[data-empty] { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .jb-mail[data-empty] small { color: var(--muted); }
+  .jb-terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; }
+  .jb-terms .jb-num-row { grid-column: 1 / -1; }
+  .jb-num-row dd { display: flex; align-items: center; gap: 4px; }
+  .jb-num-row .bk-code { font-family: var(--font-ticket); font-size: 1.125rem; letter-spacing: 0.06em; }
+  .jb-num-row .bk-icon { background: transparent; color: var(--muted); }
+  .jb-page { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: var(--fs-small); font-weight: 600; color: var(--muted); text-decoration: none; }
+  .jb-page:hover { color: var(--text); }
+  .jb-notes { margin: 0; font-size: var(--fs-small); color: var(--muted); white-space: pre-line; }
+  .jb .bk-said:empty { display: none; }
+  .jb .bk-tile { background: var(--surface-2); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jb-thumb, .jb-row, .jb-mail, .jm-pin i { transition: none; }
+  }
+
+  /* wide: the pictures hold the left as one column that stays while the details scroll on the right */
+  @container jb (min-width: 600px) {
+    .jb-in { flex-direction: row; align-items: flex-start; }
+    .jb-vis { flex: 0 0 44%; position: sticky; top: 0; }
+    .jb-hero { height: 380px; }
+    .jb-map { height: 300px; }
+    .jb-info { flex: 1; min-width: 0; padding: 22px max(var(--jb-pad), 16px) 0 26px; }
+    .jb-strip ol { margin-top: 0; }
+    .jb-buy { margin-left: -26px; padding-left: 26px; }
+  }
+
+  /* in a sheet the pane runs to the edges and takes the top, and the sheet's own title is left to a screen reader */
+  .fl-top { --jb-bleed: 20px; }
+  .fl[data-booked] > .fl-top { padding-top: 0; --jb-bleed-top: 0px; }
+  .fl[data-booked] > .fl-top > .fl-h { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .lc .jb { border-radius: 14px; overflow: hidden; }
+}

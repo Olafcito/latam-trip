@@ -1,29 +1,33 @@
-import { useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode, type Ref } from 'react'
+import { lazy, Suspense, useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type ReactNode, type Ref } from 'react'
 import type { Booking, BookingFile, InOut, MapNode } from '../../data/types'
-import { boxHead, boxRows, boxSegments, fileMessage, fileTile, flightHours, type BoxChip, type BoxHead, type BoxRow, type BoxSegment, type TicketLeg } from '../../lib/bookedBox'
+import { firstOf } from '../../lib/booked'
+import { fileMessage, fileTile, flightHours, type BoxChip, type BoxHead, type BoxSegment } from '../../lib/bookedBox'
 import { attachFile, cancelBooking, fileUrl } from '../../lib/bookings'
-import { hours, shortPlace } from '../../lib/format'
+import { clock, hours, kr, nextDayMark, shortPlace, thousands, weekdayDay } from '../../lib/format'
+import {
+  airlineLogo, cityName, codesOf, flightLabel, flightsOf, gmailLogo, mailLink, photoOf, placeOf, RELATION_TEXT, relationOf, safeLink, sellerLogo,
+  ticketRows, waitHours, type JourneyFlight, type Place, type WayPair,
+} from '../../lib/purchase'
 import { useStore } from '../../store'
-import { Unknown } from '@map/map/Unknown'
-import { Arrow, Bag, Boat, Bus, Check, Clock, Copy, Doc, External, Hash, Link, Pencil, Person, Plane, Plus, Rebook, Refund, Shop, Star, Suitcase, Ticket } from '../icons'
+import { Arrow, Bag, Boat, Bus, Check, Clock, Copy, Doc, External, Person, Plane, Plus, Rebook, Refund, Shop, Suitcase, Ticket } from '../icons'
 
-// The booking at the top of its sheet, read like a boarding pass: a small green mark that says Booked, the two
-// codes large with the cities and the local times under them and the flight time on the line between, the
-// flights inside with the time in each airport between, then the details: the reference on one row with a copy
-// button, dimmed with the hollow mark and a plus to add it when none was saved, and the facts as one list of icon
-// rows, with the pencil that edits them on their heading. A ticket for more than one leg is one row: its amount
-// once, then a chip per leg with this leg first and filled. The seller's page opens from a mark on the seller row.
-// Simon's own notes sit apart. It reads the booking row alone, so it is whole even when the leg has no picked
-// flight. One action row ends the box: Change booking is its only button and opens the days and the flights
-// under it to look at, Remove booking is a quiet word at the far end that asks once, here in the box, and sets
-// the booking to cancelled. A bus or a boat has no Change booking, so its row holds the quiet Remove alone.
+const JourneyMap = lazy(() => import('./JourneyMap'))
+
+// The booked pane: one journey in front, read like a travel magazine with a boarding pass's precision. The
+// journey the pane was opened on fills it: its destination as a full photo with the city set large over it, then
+// the map of every airport the purchase touches, the flights of the journey as pictures when it changes plane,
+// and the flight you look at with its codes large, its times and what it carries. Any other journey on the same
+// purchase is one quiet row, a return named a return only when it is the trip's way home, and a press on it brings
+// that journey to the front. What the purchase shares comes last and once: who sold it, the confirmation mail
+// first of all, the booking number, what was paid, the terms and the files. Change booking and Remove booking
+// act on the journey the pane was opened on, so they show only while it is in front.
 
 export interface BoxData {
   inout: Pick<InOut, 'airports'>
-  map: { nodes: readonly Pick<MapNode, 'iata' | 'name' | 'country'>[] }
+  map: { nodes: readonly Pick<MapNode, 'id' | 'iata' | 'name' | 'country' | 'lat' | 'lon' | 'profile'>[] }
 }
 
-/** Puts a change into the store's bookings at once, so the box agrees with what was saved before the live reload lands. */
+/** Puts a change into the store's bookings at once, so the pane agrees with what was saved before the live reload lands. */
 const patch = (id: string, change: Partial<Booking>) => useStore.getState().patchBooking(id, change)
 
 /** The city of an airport code, from the long-haul airports or the places on the map. */
@@ -42,15 +46,12 @@ export function offsetOf(data: BoxData) {
   return (code: string): number | null => {
     const own = data.inout.airports[code]?.utc_offset
     if (typeof own === 'number') return own
-    const country = data.map.nodes.find((n) => n.iata === code)?.country
+    const country = data.map.nodes.find((n) => n.iata === code || n.id === code)?.country
     if (!country) return null
     const near = Object.values(data.inout.airports).find((a) => a.country === country && typeof a.utc_offset === 'number')
     return near ? near.utc_offset : null
   }
 }
-
-/** A web address the box may link to. Anything else, a javascript: one too, gives no link. */
-const safeUrl = (u: string | null) => (u && /^https?:\/\//i.test(u.trim()) ? u.trim() : null)
 
 /** The mark of a later day: seen as a small +1, heard as words. */
 function DayMark({ mark }: { mark: string }) {
@@ -64,8 +65,8 @@ function Local({ time, mark }: { time: string; mark?: string }) {
 }
 
 /**
- * The two codes large with the cities under them and the local times, as on a boarding pass. The line between is
- * the way it goes, with the time it takes over it when both ends know their clock.
+ * The two codes large with the cities under them and the local times, as on a boarding pass. The booking form
+ * shows a booking this way before it is saved.
  */
 export function BoxRoute({ head, kind, took }: { head: BoxHead; kind?: string | null; took?: number | null }) {
   const Way = kind === 'bus' ? Bus : kind === 'boat' ? Boat : Plane
@@ -115,94 +116,11 @@ function CopyButton({ text, label, onDone }: { text: string; label: string; onDo
   )
 }
 
-const ROW_ICON: Record<BoxRow['key'], (p: { s?: number }) => ReactNode> = {
-  seller: Shop, paid: Ticket, fare: Star, cabin: Bag, checked: Suitcase, refundable: Refund, changeable: Rebook, travellers: Person,
-}
-
-/** The seller's own page, opened in a new tab: a mark on the seller row. */
-function OutLink({ href, seller }: { href: string; seller: string }) {
-  return (
-    <a className="bk-icon bk-out" href={href} target="_blank" rel="noopener noreferrer" aria-label={`Open the booking at ${seller}, in a new tab`} title="Open booking">
-      <External s={14} />
-    </a>
-  )
-}
-
-/** A value that was never saved, as the hollow mark with its reason for the tooltip and a screen reader. */
-function Unsaved({ what }: { what: string }) {
-  return <span className="bk-unk" role="img" aria-label={what}><Unknown title={what} /></span>
-}
-
-/** The legs one ticket covers, under its amount: a link mark, then a chip per leg with this leg first and filled. */
-function TicketLegs({ legs }: { legs: TicketLeg[] }) {
-  const all = `One ticket for ${legs.length} legs`
-  return (
-    <span className="bk-legs">
-      <span className="bk-legs-i" role="img" aria-label={all} title={all}><Link s={14} /></span>
-      <span className="bk-legs-n" aria-hidden="true">for {legs.length} flights</span>
-      <span className="bk-legchips" role="list">
-        {legs.map((l, i) => {
-          const name = [`${l.from} to ${l.to}`, l.day, l.here && 'this leg'].filter(Boolean).join(', ')
-          return (
-            <span key={i} className="bk-leg" role="listitem" data-here={l.here || undefined} title={name}>
-              <span aria-hidden="true">{l.from}<Arrow s={10} />{l.to}</span>
-              <span className="vh">{name}</span>
-            </span>
-          )
-        })}
-      </span>
-    </span>
-  )
-}
-
-/**
- * The facts as one grouped list of icon rows: the label at the left, the value at the right with what it covers
- * under it. The seller's page, when there is one, is a mark on the seller row, or its own quiet row without a seller.
- */
-export function BoxRows({ rows, link, onCopied }: { rows: BoxRow[]; link?: string | null; onCopied?: (what: string, ok: boolean) => void }) {
-  const seller = rows.find((r) => r.key === 'seller')
-  if (!rows.length && !link) return null
-  return (
-    <ul className="bk-rows">
-      {link && !seller && (
-        <li data-k="url">
-          <span className="bk-row-i" aria-hidden="true"><External s={16} /></span>
-          <a className="bk-open" href={link} target="_blank" rel="noopener noreferrer">Open booking<span className="vh">, in a new tab</span></a>
-        </li>
-      )}
-      {rows.map((r, i) => {
-        const Icon = ROW_ICON[r.key]
-        return (
-          <li key={`${r.key}-${i}`} data-k={r.key}>
-            <span className="bk-row-i" aria-hidden="true"><Icon s={16} /></span>
-            <span className="bk-row-l">{r.label}</span>
-            <span className="bk-row-v">
-              {r.value == null
-                ? <Unsaved what="No price saved" />
-                : link && r === seller
-                  ? <span className="bk-row-line"><span>{r.value}</span><OutLink href={link} seller={r.value} /></span>
-                  : <span>{r.value}</span>}
-              {r.more?.map((m) => <small key={m}>{m}</small>)}
-              {r.legs && <TicketLegs legs={r.legs} />}
-              {r.mono && (
-                <span className="bk-row-code">
-                  <code className="bk-code">{r.mono}</code>
-                  {onCopied && <CopyButton text={r.mono} label={`Copy the number from ${r.value ?? 'the seller'}`} onDone={(ok) => onCopied('Number', ok)} />}
-                </span>
-              )}
-            </span>
-          </li>
-        )
-      })}
-    </ul>
-  )
-}
-
 const CHIP_ICON: Record<BoxChip['key'], (p: { s?: number }) => ReactNode> = {
   seller: Shop, paid: Ticket, cabin: Bag, checked: Suitcase, refundable: Refund, changeable: Rebook, travellers: Person,
 }
 
-/** The facts as icon chips. Each holds its whole fact in its tooltip and for a screen reader. */
+/** The facts as icon chips, for the booking form. Each holds its whole fact in its tooltip and for a screen reader. */
 export function BoxChips({ chips }: { chips: BoxChip[] }) {
   if (!chips.length) return null
   return (
@@ -222,7 +140,7 @@ export function BoxChips({ chips }: { chips: BoxChip[] }) {
   )
 }
 
-/** The flights inside a booking with the time in each airport between. */
+/** The flights inside a booking with the time in each airport between, for the booking form. */
 export function BoxSegs({ segs, label }: { segs: BoxSegment[]; label: string }) {
   if (!segs.length) return null
   return (
@@ -252,27 +170,239 @@ function Tile({ f, onOpen }: { f: BookingFile; onOpen: (f: BookingFile) => void 
   )
 }
 
-export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemoved, ref }: {
+/** The booked mark: the green tick and the word. */
+function Booked() {
+  return <span className="jb-booked"><span aria-hidden="true"><Check s={11} /></span>Booked</span>
+}
+
+/** An airline or a seller as its logo on a light plate, or its name set in type when there is no logo. */
+function Brand({ src, name, className }: { src: string | null; name: string; className?: string }) {
+  const [broken, setBroken] = useState(false)
+  if (src && !broken) return <span className={`jb-plate ${className ?? ''}`}><img src={src} alt={name} onError={() => setBroken(true)} /></span>
+  return <span className={`jb-name ${className ?? ''}`}>{name}</span>
+}
+
+/** A photo that hides itself when it cannot load, so a dead link leaves the dark ground and not a broken image. */
+function Photo({ url, className }: { url: string; className: string }) {
+  const [ok, setOk] = useState(true)
+  useEffect(() => setOk(true), [url])
+  if (!ok) return null
+  return <img className={className} src={url} alt="" decoding="async" onError={() => setOk(false)} />
+}
+
+/** "3 Dec" from a stamp, or null. */
+const dayOf = (t: string | null) => (t && t.length >= 10 ? weekdayDay(t) : null)
+
+/** How the journey goes: its hours and its changes, "6h 36m, one change". */
+function spanText(flights: JourneyFlight[], took: number | null, word: string): string {
+  const changes = flights.length - 1
+  const how = changes === 0 ? 'direct' : changes === 1 ? 'one change' : `${changes} changes`
+  const h = hours(took)
+  return word === 'flight' ? [h, how].filter(Boolean).join(', ') : h
+}
+
+/** The journey in front: its destination as a full photo, or its code set large on the dark ground without one. */
+function Hero({ from, to, codes, day, span, photo, id }: {
+  from: string; to: string; codes: string[]; day: string | null; span: string; photo: string | null; id: string
+}) {
+  return (
+    <header className="jb-hero" data-photo={photo ? true : undefined}>
+      {photo ? <Photo className="jb-hero-img" url={photo} /> : <span className="jb-hero-code" aria-hidden="true">{codes[codes.length - 1]}</span>}
+      <div className="jb-hero-top">
+        <Booked />
+        {day && <span className="jb-hero-day">{day}</span>}
+      </div>
+      <div className="jb-hero-txt">
+        <p className="jb-from">{from} to</p>
+        <h4 id={id} className="jb-to">{to}</h4>
+        <p className="jb-codes">
+          <span className="jb-chain" role="img" aria-label={codes.join(', ')}>{codes.map((c, i) => <span key={i}>{c}</span>)}</span>
+          {span && <span className="jb-span">{span}</span>}
+        </p>
+      </div>
+    </header>
+  )
+}
+
+/** The flights of a journey that changes plane, as pictures of where each lands, with the wait between. */
+function FlightStrip({ flights, at, onPick, photo, word, name }: {
+  flights: JourneyFlight[]; at: number; onPick: (i: number) => void; photo: (code: string) => string | null; word: string; name: (code: string) => string
+}) {
+  return (
+    <nav className="jb-strip" aria-label={`The ${word}s of this journey`}>
+      <ol>
+        {flights.map((f, i) => {
+          const next = flights[i + 1]
+          const wait = next ? waitHours(f.arrive, next.depart) : null
+          const img = photo(f.to)
+          const when = [f.depart && f.depart.length >= 16 ? clock(f.depart) : null, f.arrive && f.arrive.length >= 16 ? clock(f.arrive) : null].filter(Boolean).join(' to ')
+          return (
+            <li key={i}>
+              <button
+                type="button" className="jb-thumb" aria-pressed={i === at} onClick={() => onPick(i)}
+                aria-label={`${word === 'flight' ? 'Flight' : 'Leg'} ${i + 1} of ${flights.length}, ${name(f.from)} to ${name(f.to)}${when ? `, ${when}` : ''}`}
+              >
+                {img ? <Photo className="jb-thumb-img" url={img} /> : <span className="jb-thumb-code" aria-hidden="true">{f.to}</span>}
+                <span className="jb-thumb-n" aria-hidden="true">{i + 1}</span>
+                <span className="jb-thumb-txt" aria-hidden="true"><b>{f.from}<i>›</i>{f.to}</b>{when && <small>{when}</small>}</span>
+              </button>
+              {next && (
+                <span className="jb-wait" role="img" aria-label={`${wait != null ? hours(wait) : 'A change'} in ${name(f.to)}`}>
+                  <span aria-hidden="true">{wait != null ? hours(wait) : 'Change'}</span>
+                  <small aria-hidden="true">{f.to}</small>
+                </span>
+              )}
+            </li>
+          )
+        })}
+      </ol>
+    </nav>
+  )
+}
+
+/** The flight looked at: the airline and the number, the codes large, the times, and what this journey carries. */
+function FlightRoute({ f, took, name, row, shown, kind }: {
+  f: JourneyFlight; took: number | null; name: (code: string) => string; row: Booking
+  /** the booking number the purchase shows, so the airline's own reference is not said twice */
+  shown: string | null
+  kind: string
+}) {
+  const label = flightLabel(f)
+  const carrier = f.carrier
+  const logo = kind === 'flight' ? airlineLogo(f.code, f.carrier) : null
+  const ref = row.reference?.trim() || null
+  const facts: [string, string, boolean?][] = []
+  if (ref && ref !== shown) facts.push([`${carrier ?? (kind === 'flight' ? 'Airline' : 'Operator')} reference`, ref, true])
+  if (row.fare?.trim()) facts.push(['Fare', row.fare.trim()])
+  if (row.cabin_bag?.trim()) facts.push(['Cabin bag', row.cabin_bag.trim()])
+  if (row.checked_bag?.trim()) facts.push(['Checked bag', row.checked_bag.trim()])
+  const dep = f.depart && f.depart.length >= 16 ? clock(f.depart) : null
+  const arr = f.arrive && f.arrive.length >= 16 ? clock(f.arrive) : null
+  const mark = f.depart && f.arrive ? nextDayMark(f.depart, f.arrive) : ''
+  const Way = kind === 'bus' ? Bus : kind === 'boat' ? Boat : Plane
+  return (
+    <section className="jb-flight" aria-label={`${label ?? 'The way'}, ${name(f.from)} to ${name(f.to)}`}>
+      {(logo || carrier || label || f.operatedBy) && (
+        <div className="jb-air">
+          {logo ? <Brand src={logo} name={carrier ?? f.code ?? 'Airline'} /> : carrier && <span className="jb-name">{carrier}</span>}
+          {label && <b className="jb-num">{label}</b>}
+          {f.operatedBy && <span className="jb-op">Operated by {f.operatedBy}</span>}
+        </div>
+      )}
+      <div className="jb-codes-row">
+        <b className="jb-code">{f.from}</b>
+        <span className="jb-line" aria-hidden="true">
+          {took != null && <small>{hours(took)}</small>}
+          <span><i /><Way s={14} /><i /></span>
+        </span>
+        <b className="jb-code to">{f.to}</b>
+      </div>
+      {took != null && <span className="vh">Takes {hours(took)}</span>}
+      <div className="jb-times">
+        <div>
+          {dep && <b>{dep}</b>}
+          <small>{name(f.from)}{f.depart ? `, ${weekdayDay(f.depart)}` : ''}</small>
+        </div>
+        <div className="to">
+          {arr && <b>{arr}<DayMark mark={mark} /></b>}
+          <small>{name(f.to)}{mark && f.arrive ? `, ${weekdayDay(f.arrive)}` : ''}</small>
+        </div>
+      </div>
+      {facts.length > 0 && (
+        <dl className="jb-facts">
+          {facts.map(([k, v, mono]) => <div key={k}><dt>{k}</dt><dd data-mono={mono || undefined}>{v}</dd></div>)}
+        </dl>
+      )}
+    </section>
+  )
+}
+
+const REFUND: Record<string, string> = { yes: 'Yes', no: 'No', partly: 'Partly' }
+const CHANGE: Record<string, string> = { yes: 'Yes', no: 'No', fee: 'For a fee' }
+const terms = (answer: string | null | undefined, until: string | null) => {
+  const last = until ? weekdayDay(until) : null
+  if (answer && last) return answer === 'No' ? answer : `${answer}, until ${last}`
+  return answer ?? (last ? `Until ${last}` : null)
+}
+
+/** An amount in its own currency, Danish style. */
+function amount(n: number): string {
+  const cents = Math.round(Math.abs(n) * 100) % 100
+  return cents ? `${thousands(Math.trunc(n))},${String(cents).padStart(2, '0')}` : thousands(n)
+}
+
+export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemoved, ways, ref }: {
   booking: Booking
   data: BoxData
-  /** the days and the flights under the box are open */
+  /** the days and the flights under the pane are open */
   changing: boolean
-  /** Change booking and Done. Left out where nothing under the box opens, a bus or a boat, and the button goes with it */
+  /** Change booking and Done. Left out where nothing under the pane opens, a bus or a boat, and the button goes with it */
   onChange?: (on: boolean) => void
   /** opens the booking form filled from the row */
   onEdit?: () => void
   /** after the booking is cancelled, so the sheet can say so */
   onRemoved?: () => void
+  /** the trip's way in and way home, when the pane is one of them: what makes another journey a return */
+  ways?: WayPair | null
   ref?: Ref<HTMLElement>
 }) {
   const id = useId()
-  const head = boxHead(b, cityOf(data))
   const bookings = useStore((st) => st.bookings)
-  const rows = boxRows(b, bookings)
-  const reference = b.reference?.trim() || null
-  const segs = boxSegments(b, { single: true })
-  const took = flightHours(b, offsetOf(data))
-  const link = safeUrl(b.url)
+  const others = useMemo(() => ticketRows(b, bookings), [b, bookings])
+  const [front, setFront] = useState(b.id)
+  const row = front === b.id ? b : others.find((r) => r.id === front) ?? b
+  const home = row.id === b.id
+  const [at, setAt] = useState(0)
+  useEffect(() => setAt(0), [row.id])
+  const top = useRef<HTMLDivElement>(null)
+
+  const offset = useMemo(() => offsetOf(data), [data])
+  const name = (code: string) => cityName(code, data)
+  const word = row.kind === 'flight' ? 'flight' : 'leg'
+  const flights = flightsOf(row)
+  const f = flights[Math.min(at, Math.max(0, flights.length - 1))] ?? null
+  const codes = codesOf(flights)
+  const took = flightHours(row, offset)
+  const photo = (code: string) => photoOf(code, data)?.url ?? null
+
+  // every journey of the purchase on the map, this one first
+  const group = useMemo(() => [b, ...others], [b, others])
+  const journeys = useMemo(() => group.map((r) => ({ id: r.id, flights: flightsOf(r).map((x) => ({ from: x.from, to: x.to })) })), [group])
+  const places = useMemo(() => {
+    const out: Record<string, Place> = {}
+    for (const j of journeys) for (const x of j.flights) for (const c of [x.from, x.to]) {
+      if (out[c]) continue
+      const p = placeOf(c, data)
+      if (p) out[c] = p
+    }
+    return out
+  }, [journeys, data])
+
+  const show = (rid: string) => {
+    setFront(rid)
+    top.current?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  }
+
+  // the purchase: whoever sold it, the number they gave it, what was paid by the row that holds the price
+  const payer = firstOf(group)
+  const seller = b.seller?.trim() || null
+  // the seller's own number, or the airline's reference when the airline sold it. The flight shows the airline's only when it differs
+  const number = b.seller_reference?.trim() || b.reference?.trim() || null
+  const paid = payer.price_dkk != null && Number.isFinite(payer.price_dkk) && payer.price_dkk > 0 ? kr(payer.price_dkk) : null
+  const cur = payer.currency?.toUpperCase()
+  const paidAs = paid && payer.price != null && cur && cur !== 'DKK' ? `Paid as ${amount(payer.price)} ${cur}` : null
+  const count = group.reduce((n, r) => n + Math.max(1, flightsOf(r).length), 0)
+  const returns = others.some((o) => relationOf(b, o, ways) !== 'also')
+  const covers = returns ? 'Both ways' : count > 1 ? `${count} ${b.kind === 'flight' ? 'flights' : 'legs'}` : null
+  const mail = mailLink(b)
+  const page = safeLink(b.url)
+  const refund = terms(b.refundable && REFUND[b.refundable], b.cancel_until)
+  const change = terms(b.changeable && CHANGE[b.changeable], b.change_until)
+  const files = useMemo(() => {
+    const seen = new Set<string>()
+    return group.flatMap((r) => r.attachments).filter((a) => (seen.has(a.path) ? false : (seen.add(a.path), true)))
+  }, [group])
+
   const [said, setSaid] = useState<{ text: string; bad?: boolean } | null>(null)
   const [adding, setAdding] = useState<string | null>(null)
   const [asking, setAsking] = useState(false)
@@ -290,17 +420,17 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
   const copied = (what: string, ok: boolean) =>
     setSaid(ok ? { text: `${what} copied.` } : { text: `Copying did not work. Select the ${what.toLowerCase()} and copy it by hand.`, bad: true })
 
-  const open = async (f: BookingFile) => {
+  const open = async (file: BookingFile) => {
     // the tab opens on the press, so no popup blocker stops it, and gets its address once the bucket gives one
     const tab = window.open('', '_blank')
     if (tab) tab.opener = null
-    const url = await fileUrl(f.path)
+    const url = await fileUrl(file.path)
     if (url && tab) {
       tab.location.href = url
       return
     }
     tab?.close()
-    setSaid({ text: url ? 'The browser kept the file from opening in a new tab.' : `${f.name} could not be opened. Try again.`, bad: true })
+    setSaid({ text: url ? 'The browser kept the file from opening in a new tab.' : `${file.name} could not be opened. Try again.`, bad: true })
   }
 
   const add = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -334,84 +464,127 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
     onRemoved?.()
   }
 
+  const from = codes.length ? name(codes[0]) : row.from_code ?? 'From'
+  const to = codes.length ? name(codes[codes.length - 1]) : row.to_code ?? 'To'
+  const hasMap = Object.keys(places).length > 1
+
   return (
-    <section ref={ref} className="bk" aria-labelledby={`${id}-h`} tabIndex={-1}>
-      <header className="bk-mark">
-        <span className="bk-tick" aria-hidden="true"><Check s={13} /></span>
-        <h4 id={`${id}-h`}>Booked</h4>
-        {head.day && <span>{head.day}</span>}
-      </header>
+    <section ref={ref} className="jb" data-kind={row.kind} aria-labelledby={`${id}-h`} tabIndex={-1}>
+      <div className="jb-in">
+      <div ref={top} className="jb-vis">
+        <Hero id={`${id}-h`} from={from} to={to} codes={codes} day={dayOf(row.depart)} span={spanText(flights, took, word)} photo={codes.length ? photo(codes[codes.length - 1]) : null} />
+        {hasMap && (
+          <figure className="jb-map" aria-label="Map of the journeys on this purchase">
+            <Suspense fallback={<div className="jm" aria-hidden="true" />}>
+              <JourneyMap journeys={journeys} active={row.id} flight={at} places={places} onFlight={setAt} onJourney={show} />
+            </Suspense>
+          </figure>
+        )}
+      </div>
 
-      <BoxRoute head={head} kind={b.kind} took={took} />
+      <div className="jb-info">
+        {flights.length > 1 && <FlightStrip flights={flights} at={at} onPick={setAt} photo={photo} word={word} name={name} />}
+        {f && <FlightRoute key={`${row.id}-${at}`} f={f} took={flightHours({ from_code: f.from, to_code: f.to, depart: f.depart, arrive: f.arrive }, offset)} name={name} row={row} shown={number} kind={row.kind} />}
 
-      <div className="bk-body">
-        <BoxSegs segs={segs} label={b.kind === 'flight' ? 'Flights' : 'Legs'} />
-
-        <section className="bk-part bk-facts" aria-labelledby={`${id}-facts`}>
-          <div className="bk-part-h">
-            <h5 id={`${id}-facts`}>Details</h5>
-            {onEdit && <button type="button" className="bk-icon bk-edit" onClick={onEdit} aria-label="Edit the booking details" title="Edit the booking details"><Pencil s={16} /></button>}
-          </div>
-          {reference ? (
-            <div className="bk-refrow">
-              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
-              <span className="bk-row-l" id={`${id}-ref`}>Reference</span>
-              <code className="bk-code" aria-labelledby={`${id}-ref`}>{reference}</code>
-              <CopyButton text={reference} label="Copy the booking reference" onDone={(ok) => copied('Reference', ok)} />
-            </div>
-          ) : onEdit ? (
-            <button type="button" className="bk-refrow" data-empty onClick={onEdit}>
-              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
-              <span className="bk-row-add">Add reference</span>
-            </button>
-          ) : (
-            <div className="bk-refrow" data-empty>
-              <span className="bk-row-i" aria-hidden="true"><Hash s={16} /></span>
-              <span className="bk-row-l">Reference</span>
-              <span className="bk-row-none">None saved</span>
-            </div>
-          )}
-          <BoxRows rows={rows} link={link} onCopied={copied} />
-        </section>
-
-        <section className="bk-part" aria-labelledby={`${id}-files`}>
-          <h5 id={`${id}-files`}>Files</h5>
-          <ul className="bk-files">
-            {b.attachments.map((f) => <Tile key={f.path} f={f} onOpen={open} />)}
-            <li>
-              <label className="bk-tile bk-add" data-busy={adding ? true : undefined}>
-                <input type="file" accept="application/pdf,image/*" onChange={add} disabled={!!adding} aria-describedby={`${id}-add`} />
-                <span className="bk-tile-i" aria-hidden="true"><Plus /></span>
-                <b>{adding ? `Adding ${adding}` : 'Add a file'}</b>
-                <small id={`${id}-add`}>PDF or photo, up to 10 MB</small>
-              </label>
-            </li>
-          </ul>
-        </section>
-
-        {b.notes && b.notes.trim() && (
-          <section className="bk-part" aria-labelledby={`${id}-notes`}>
-            <h5 id={`${id}-notes`}>Your notes</h5>
-            <p className="bk-notes">{b.notes.trim()}</p>
+        {(others.length > 0 || !home) && (
+          <section className="jb-also" aria-label="The other journeys on this purchase">
+            {[b, ...others].filter((r) => r.id !== row.id).map((r) => {
+              const rel = r.id === b.id ? 'this' : relationOf(b, r, ways)
+              const c = codesOf(flightsOf(r))
+              const day = dayOf(r.depart)
+              const head = rel === 'this' ? 'Where you opened it' : RELATION_TEXT[rel]
+              return (
+                <button key={r.id} type="button" className="jb-row" onClick={() => show(r.id)}
+                  aria-label={`${head}, booked, ${c.length ? `${name(c[0])} to ${name(c[c.length - 1])}` : 'a journey'}${day ? `, ${day}` : ''}. Show it`}>
+                  <span className="jb-row-tick" aria-hidden="true"><Check s={10} /></span>
+                  <span className="jb-row-txt" aria-hidden="true">
+                    <small>{head}</small>
+                    <b>{c.map((x, i) => <span key={i}>{x}</span>)}</b>
+                  </span>
+                  {day && <span className="jb-row-day" aria-hidden="true">{day}</span>}
+                  <svg className="jb-row-go" width="8" height="14" viewBox="0 0 8 14" aria-hidden="true"><path d="M1.5 1.5L6.5 7l-5 5.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+                </button>
+              )
+            })}
           </section>
         )}
 
-        <p className="bk-said" role="status" data-bad={said?.bad || undefined}>{said?.text}</p>
+        <section className="jb-buy" aria-labelledby={`${id}-buy`}>
+          <h5 id={`${id}-buy`} className="vh">The purchase</h5>
+          <div className="jb-buy-top">
+            {seller ? <Brand src={sellerLogo(seller)} name={seller} className="jb-seller" /> : <span className="jb-name jb-seller">Booked</span>}
+            {paid && (
+              <span className="jb-paid">
+                <b>{paid}</b>
+                {(covers || paidAs) && <small>{[covers, paidAs].filter(Boolean).join(', ')}</small>}
+              </span>
+            )}
+          </div>
 
-        {asking ? (
-          <div className="bk-ask" role="group" aria-labelledby={`${id}-ask`}>
-            <p id={`${id}-ask`}>Remove this booking. It is kept as cancelled and the leg can change again.</p>
-            <div className="bk-acts">
-              <button type="button" className="btn small bk-confirm" onClick={cancel} disabled={removing}>{removing ? 'Removing' : 'Remove booking'}</button>
-              <button ref={keep} type="button" className="btn small" onClick={() => setAsking(false)} disabled={removing}>Keep booking</button>
+          {mail ? (
+            <a className="jb-mail" href={mail} target="_blank" rel="noopener noreferrer">
+              <img src={gmailLogo()} alt="" />
+              <span><b>Confirmation mail</b><small>{seller ? `From ${seller}` : 'Opens in Gmail'}</small></span>
+              <External s={14} />
+              <span className="vh">, opens in a new tab</span>
+            </a>
+          ) : onEdit && (
+            <button type="button" className="jb-mail" data-empty onClick={onEdit}>
+              <img src={gmailLogo()} alt="" />
+              <span><b>Add the confirmation mail</b><small>Paste its link from Gmail</small></span>
+              <Plus />
+            </button>
+          )}
+
+          <dl className="jb-terms">
+            {number && (
+              <div className="jb-num-row">
+                <dt>Booking number</dt>
+                <dd><code className="bk-code">{number}</code><CopyButton text={number} label="Copy the booking number" onDone={(ok) => copied('Booking number', ok)} /></dd>
+              </div>
+            )}
+            {change && <div><dt>Changes</dt><dd>{change}</dd></div>}
+            {refund && <div><dt>Refund</dt><dd>{refund}</dd></div>}
+            {b.travellers > 1 && <div><dt>Travellers</dt><dd>{b.travellers}</dd></div>}
+          </dl>
+
+          {page && <a className="jb-page" href={page} target="_blank" rel="noopener noreferrer">{seller ? `Open at ${seller}` : 'Open the booking'}<External s={12} /><span className="vh">, in a new tab</span></a>}
+
+          <ul className="bk-files jb-files" aria-label="Files">
+            {files.map((x) => <Tile key={x.path} f={x} onOpen={open} />)}
+            {home && (
+              <li>
+                <label className="bk-tile bk-add" data-busy={adding ? true : undefined}>
+                  <input type="file" accept="application/pdf,image/*" onChange={add} disabled={!!adding} aria-describedby={`${id}-add`} />
+                  <span className="bk-tile-i" aria-hidden="true"><Plus /></span>
+                  <b>{adding ? `Adding ${adding}` : 'Add a file'}</b>
+                  <small id={`${id}-add`}>PDF or photo, up to 10 MB</small>
+                </label>
+              </li>
+            )}
+          </ul>
+
+          {b.notes && b.notes.trim() && <p className="jb-notes">{b.notes.trim()}</p>}
+
+          <p className="bk-said" role="status" data-bad={said?.bad || undefined}>{said?.text}</p>
+
+          {home && (asking ? (
+            <div className="bk-ask" role="group" aria-labelledby={`${id}-ask`}>
+              <p id={`${id}-ask`}>Remove this booking. It is kept as cancelled and the leg can change again.</p>
+              <div className="bk-acts">
+                <button type="button" className="btn small bk-confirm" onClick={cancel} disabled={removing}>{removing ? 'Removing' : 'Remove booking'}</button>
+                <button ref={keep} type="button" className="btn small" onClick={() => setAsking(false)} disabled={removing}>Keep booking</button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="bk-acts">
-            {onChange && <button type="button" className="btn small bk-change" data-on={changing || undefined} onClick={() => onChange(!changing)}>{changing ? 'Done' : 'Change booking'}</button>}
-            <button ref={remove} type="button" className="btn link small bk-remove" onClick={() => setAsking(true)}>Remove booking</button>
-          </div>
-        )}
+          ) : (
+            <div className="bk-acts">
+              {onChange && <button type="button" className="btn small bk-change" data-on={changing || undefined} onClick={() => onChange(!changing)}>{changing ? 'Done' : 'Change booking'}</button>}
+              {onEdit && <button type="button" className="btn small" onClick={onEdit}>Edit details</button>}
+              <button ref={remove} type="button" className="btn link small bk-remove" onClick={() => setAsking(true)}>Remove booking</button>
+            </div>
+          ))}
+        </section>
+      </div>
       </div>
     </section>
   )

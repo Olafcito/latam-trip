@@ -112,7 +112,7 @@ export function LegCard({ h, ends, family, date, time, points, link, booking, da
         </div>
       </div>}
 
-      {points && <Suspense fallback={<div className="lm" aria-hidden="true" />}><LegMap points={points} family={family} /></Suspense>}
+      {points && !(booking && data) && <Suspense fallback={<div className="lm" aria-hidden="true" />}><LegMap points={points} family={family} /></Suspense>}
       {h.overland && <p className="lc-note">{h.overland}</p>}
       {through.length > 0 && <p className="lc-note">Through {inWords(through)}. The time adds up those legs, with no waiting.</p>}
       {facts.length > 0 && <ul className="lc-facts">{facts.map((x) => <li key={x}>{x}</li>)}</ul>}
