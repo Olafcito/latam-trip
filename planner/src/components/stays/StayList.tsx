@@ -4,8 +4,8 @@ import { usePop } from '../story/usePop'
 import { Bed, Calendar, Check, Close, More, Plus, Ring, Warn } from '../icons'
 
 // The stays of a stop, in the Accommodation tab of its fold: one row each with its photo, the place, its own
-// dates and nights, the room, whether it is booked and a menu of what can be done to it. The row opens the
-// place. Under them the dashed button that adds one.
+// dates and nights, the room, whether it is booked and a menu of what can be done to it. A stay that no longer
+// fits the stop carries an amber mark on its dates. The row opens the place. Under them the dashed button that adds one.
 
 export interface StayAction {
   label: string
@@ -64,19 +64,19 @@ export function StayRow({ row }: { row: StayRowData }) {
       <Thumb src={row.photo} />
       <div className="al-what">
         {row.onOpen ? (
-          <button type="button" className="al-name al-open" onClick={row.onOpen} aria-label={`${row.name}, ${when}${row.room ? `, ${row.room}` : ''}, ${row.booked ? 'booked' : 'not booked'}. Open`}>{row.name}</button>
+          <button type="button" className="al-name al-open" onClick={row.onOpen} aria-label={`${row.name}, ${when}${row.warn ? `, ${row.warn}` : ''}${row.room ? `, ${row.room}` : ''}, ${row.booked ? 'booked' : 'not booked'}. Open`}>{row.name}</button>
         ) : <b className="al-name">{row.name}</b>}
         <span className="al-when" aria-hidden={row.onOpen ? true : undefined}>
-          <Calendar s={14} />
+          <Calendar s={13} />
           {row.checkIn && row.checkOut ? (
             <><span>{stayDates(row.checkIn, row.checkOut)}</span><i aria-hidden="true">·</i><span>{nightsWord(row.nights)}</span></>
           ) : <span>No nights</span>}
-          {row.warn && <span className="al-warn" title={row.warn}><Warn s={13} /></span>}
+          {row.warn && <span className="al-warn" title={row.warn} role="img" aria-label={row.warn}><Warn s={13} /></span>}
         </span>
         {row.room && <span className="al-room" aria-hidden={row.onOpen ? true : undefined}>{row.room}</span>}
       </div>
       <span className="al-pill" data-on={row.booked || undefined} aria-hidden={row.onOpen ? true : undefined}>
-        {row.booked ? <Check s={14} /> : <Ring s={14} />}
+        {row.booked ? <Check s={12} /> : <Ring s={12} />}
         {row.booked ? 'Booked' : 'Not booked'}
       </span>
       <Menu name={row.name} actions={row.actions} />

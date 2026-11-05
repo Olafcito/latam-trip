@@ -171,7 +171,8 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
         )}
         {open && toggle && <button type="button" className="st-shut" aria-label={`Fold ${name} shut`} aria-controls={foldId} onClick={toggle}><Caret dir="u" s={20} /></button>}
       </div>
-      {cut?.map((w, k) => <p key={k} className="st-clash" role="status"><Warn /><span>{w.text}</span></p>)}
+      {/* folded open, the stays in the fold carry the mark on their own dates */}
+      {!open && cut?.map((w, k) => <p key={k} className="st-clash" role="status"><Warn /><span>{w.text}</span></p>)}
     </li>
   )
 }

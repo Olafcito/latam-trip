@@ -26,29 +26,18 @@
   transition: color var(--t-fast) ease;
 }
 .af-tab::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; border-radius: 3px 3px 0 0;
-  background: var(--booked); transform: scaleX(0); transition: transform var(--t-med) var(--ease-out);
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px 2px 0 0;
+  background: var(--text); transform: scaleX(0); transition: transform var(--t-med) var(--ease-out);
 }
 .af-tab[aria-selected='true'] { color: var(--text); font-weight: 600; }
 .af-tab[aria-selected='true']::after { transform: none; }
 .af-tab:active { transform: scale(0.97); }
-/* the count of stays: "(2)" after the word, a badge on the bed when the tabs stand as a bar */
-.af-n { margin-left: -4px; font-weight: inherit; font-variant-numeric: tabular-nums; }
-.af-n::before { content: '('; }
-.af-n::after { content: ')'; }
 /* narrow, the tabs stand as a bar, each icon over its word, so all four fit at a phone's width.
    The tabs and the stays reach in under the summary's edge, as the cards of the route do */
 @container af (max-width: 31rem) {
   .af-tabs, .af-panel { margin-left: calc(-1 * var(--inset, 12px)); }
   .af-tabs { gap: 0; }
   .af-tab { flex: 1 1 auto; display: grid; justify-items: center; align-content: center; row-gap: 3px; padding: 6px 2px 8px; font-size: var(--fs-label); }
-  .af-tab > svg { grid-area: 1 / 1; }
-  .af-tab > span { grid-area: 2 / 1; }
-  .af-n {
-    grid-area: 1 / 1; align-self: start; min-width: 16px; height: 16px; margin: 0; padding: 0 4px; border-radius: 999px; transform: translate(13px, -5px);
-    background: var(--booked); color: var(--ground); font-size: 10px; font-weight: 700; line-height: 16px; text-align: center;
-  }
-  .af-n::before, .af-n::after { content: none; }
 }
 .af-none { margin: 4px 0 8px; font-size: var(--fs-body); color: var(--muted); }
 .af-todo, .af-exp { display: grid; gap: 14px; padding: 2px 0 6px; }
@@ -60,34 +49,44 @@
 .af-acts .cc-sure { flex: 1 1 12rem; }
 
 /* ---------- the stays of a stop ---------- */
-.al { display: grid; gap: 10px; }
-.al-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.al { display: grid; gap: 8px; }
+.al-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .al-row {
-  position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 4px 14px;
-  padding: 10px 6px 10px 10px; border-radius: 12px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2);
+  position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 2px 12px;
+  padding: 8px 4px 8px 8px; border-radius: 12px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
   transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .al-row:has(.al-open:active) { transform: scale(0.99); background: var(--surface-3); }
-.al-ph { display: grid; place-items: center; width: 6rem; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: var(--surface-3); color: var(--faint); }
+.al-ph { display: grid; place-items: center; width: 72px; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; background: var(--surface-3); color: var(--faint); }
 .al-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.al-what { display: grid; gap: 3px; min-width: 0; }
-.al-name { justify-self: start; max-width: 100%; padding: 0; font-size: var(--fs-title); font-weight: 600; line-height: 1.25; color: var(--text); text-align: left; overflow-wrap: anywhere; }
+.al-what { display: grid; gap: 2px; min-width: 0; }
+.al-name {
+  justify-self: stretch; min-width: 0; padding: 0; font-size: .9375rem; font-weight: 600; line-height: 1.3; color: var(--text); text-align: left;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 /* the whole row opens the place, the menu sits over it */
 .al-open::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
-.al-when { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+.al-when { display: flex; align-items: center; gap: 5px; min-width: 0; font-size: .75rem; line-height: 1.35; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .al-when > svg { flex: none; color: var(--muted); }
 .al-when i { font-style: normal; color: var(--faint); }
-.al-warn { display: inline-flex; color: var(--flight); }
-.al-room { font-size: var(--fs-small); color: var(--muted); }
-/* booked or not as a pill: green with its check, or amber with an open ring */
+/* the stay no longer fits the stop: an amber mark at the end of its dates */
+.al-warn { display: inline-flex; flex: none; color: var(--flight); }
+.al-room { min-width: 0; font-size: .75rem; line-height: 1.35; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* booked or not as a small pill: green with its check, or amber outlined with a hollow ring */
 .al-pill {
-  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; white-space: nowrap;
-  font-size: var(--fs-small); font-weight: 600; color: var(--flight);
-  background: color-mix(in srgb, var(--flight) 16%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 40%, transparent);
+  display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 999px; white-space: nowrap;
+  font-size: var(--fs-label); font-weight: 600; color: var(--flight);
+  background: color-mix(in srgb, var(--flight) 10%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 55%, transparent);
 }
+.al-pill > svg { flex: none; }
 .al-pill[data-on] { color: var(--booked); background: color-mix(in srgb, var(--booked) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--booked) 30%, transparent); }
 .al-more { position: relative; z-index: 1; }
-.al-dots { display: grid; place-items: center; width: var(--hit); height: var(--hit); border-radius: 50%; color: var(--muted); transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out); }
+.al-dots {
+  position: relative; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--muted);
+  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+/* the dots keep a full finger's reach though they draw small */
+.al-dots::after { content: ''; position: absolute; left: 50%; top: 50%; width: var(--hit); height: var(--hit); transform: translate(-50%, -50%); }
 .al-dots:active, .al-dots[aria-expanded='true'] { background: var(--surface-3); color: var(--text); }
 .al-dots:active { transform: scale(0.94); }
 .pop.al-menu { left: auto; right: 0; width: min(232px, calc(100vw - 32px)); padding: 6px; transform-origin: top right; display: grid; }
@@ -98,25 +97,24 @@
 .al-item[data-danger] { color: var(--err); }
 .al-item:active { background: var(--surface-3); }
 .al-add {
-  display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 12px;
-  border: 1.5px dashed var(--line-2); font-size: var(--fs-title); font-weight: 600; color: var(--text);
+  display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border-radius: 12px;
+  border: 1.5px dashed var(--line-2); font-size: var(--fs-body); font-weight: 600; color: var(--text);
   transition: border-color var(--t-fast) ease, background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .al-add:active { transform: scale(0.99); background: var(--surface-2); }
-/* narrow: the pill keeps to the right, beside the room, so the name and the dates have the width to stay on one line */
+/* narrow: the name and the dates take the full width, the room shares its line with the pill and the dots sit in the corner */
 @container (max-width: 27rem) {
   .al-row {
-    grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: 'ph name name more' 'ph when when when' 'ph room pill pill';
-    column-gap: 8px; row-gap: 3px; padding: 8px 4px 8px 8px;
+    grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'ph name name' 'ph when when' 'ph room pill';
+    column-gap: 10px; row-gap: 2px;
   }
   .al-what { display: contents; }
-  .al-name { grid-area: name; align-self: center; }
-  .al-when { grid-area: when; column-gap: 4px; }
-  .al-room { grid-area: room; align-self: center; font-size: var(--fs-label); }
-  .al-ph { grid-area: ph; width: 3.75rem; align-self: center; }
-  .al-pill { grid-area: pill; justify-self: end; align-self: center; height: 26px; padding: 0 7px; gap: 4px; font-size: var(--fs-label); }
-  .al-dots { width: 36px; height: 36px; }
-  .al-more { grid-area: more; align-self: center; justify-self: end; }
+  .al-name { grid-area: name; align-self: center; padding-right: 28px; }
+  .al-when { grid-area: when; }
+  .al-room { grid-area: room; align-self: center; }
+  .al-ph { grid-area: ph; align-self: center; }
+  .al-pill { grid-area: pill; justify-self: end; align-self: center; margin-right: 4px; }
+  .al-row > .al-more { position: absolute; top: 2px; right: 2px; }
 }
 .af-panel { container-type: inline-size; }
 
