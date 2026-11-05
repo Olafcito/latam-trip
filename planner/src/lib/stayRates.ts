@@ -77,6 +77,11 @@ export function fetchRates(lodgingId: string, checkIn: string, checkOut: string,
   return done
 }
 
+/** Notes that a place was priced for the dates just now, so the next fetchRates within FRESH_MINUTES makes no call. */
+export function remember(lodgingId: string, checkIn: string, checkOut: string, result: RatesResult, now = Date.now()): void {
+  if (result.ok) recent.set(`${lodgingId}|${checkIn}|${checkOut}`, { at: now, done: Promise.resolve(result) })
+}
+
 /**
  * A place from a pasted Hostelworld link, at a place on the map, with its rooms and prices for the dates. A link
  * to a place that is stored already prices that one and gives its id back.

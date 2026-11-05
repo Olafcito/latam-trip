@@ -6,7 +6,7 @@ vi.mock('../../lib/stayRates', () => ({ fetchRates: (id: string, a: string, b: s
 
 const { askLive } = await import('./useLiveRates')
 
-const LINK = 'https://www.hostelworld.com/pwa/hosteldetails.php/A/B/315207'
+const LINK = 'https://www.hostelworld.com/pwa/hosteldetails.php/A/B/123456'
 const tick = () => new Promise((r) => setTimeout(r, 0))
 
 afterEach(() => fetchRates.mockReset())

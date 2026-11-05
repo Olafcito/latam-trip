@@ -11,7 +11,7 @@ import { shortPlace } from '../../lib/format'
 import { choiceNights, chooseRoom, freeNights, removePart } from '../../lib/stayEdit'
 import { partBooking, stayClashes, stayParts, tripStays } from '../../lib/stays'
 import { loadLodgings } from '../../lib/lodgings'
-import { addFromLink } from '../../lib/stayRates'
+import { addFromLink, remember } from '../../lib/stayRates'
 import { addDays } from '../../lib/time'
 import { Modal } from '../Modal'
 import { AddPlace } from '../stays/AddPlace'
@@ -172,6 +172,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
               onLink={async (url) => {
                 const r = await addFromLink(url, sp.node, searchIn, searchOut)
                 // the place shows in the list before the search opens it. A failed read is let go: the live channel brings it
+                if (r.ok) remember(r.lodging_id, searchIn, searchOut, r)
                 if (r.ok) await loadLodgings().then(setLodgings, () => {})
                 return r
               }}
