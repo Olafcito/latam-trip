@@ -430,6 +430,9 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
 /* a phone: the guests field drops its icon, its label over it says what it is, so the guests and rooms fit */
 @media (max-width: 420px) {
   .as-f:last-child .as-fv > svg:first-child { display: none; }
+  /* the dates get the room their day and month need, the guests take what is left */
+  .as-fields { grid-template-columns: 5.5rem 5.5rem minmax(0, 1fr); gap: 10px 6px; }
+  .as-fv { gap: 6px; padding: 0 8px; }
 }
 @media (max-width: 560px) {
   .ad-md { max-height: 94dvh; height: 94dvh; }
