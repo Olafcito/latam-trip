@@ -24,7 +24,7 @@ vi.mock('./supabase', () => ({
   },
 }))
 
-import { askLabel, flightPricesTask, insertTask, press, stayPricesTask, subscribeTasks } from './tasks'
+import { askLabel, flightPricesTask, insertTask, press, stayFindTask, stayPricesTask, subscribeTasks } from './tasks'
 
 const draft = flightPricesTask({ from: 'BOG', to: 'VVI', date: '2027-01-28', fromName: 'Bogota', toName: 'Santa Cruz' })
 
@@ -87,5 +87,14 @@ describe('tasks', () => {
     expect(d.title).toBe('[stay_prices] Casa Test 9 to 14 Dec')
     expect(d.line).toBe('Prices of 2 rooms at Casa Test for 9 to 14 Dec.')
     expect(stayPricesTask({ id: 'TEST01', name: 'Casa Test' }, [{ id: 'r1', name: 'Dorm' }], '2026-12-30', 3).line).toBe('Prices of Dorm at Casa Test for 30 Dec to 2 Jan.')
+  })
+  it('a stay search task names the stop and its dates, as tasks.py needs them', async () => {
+    const d = stayFindTask({ id: 'ADZ', name: 'San Andres' }, '2026-12-08', '2026-12-13')
+    expect(d.task).toEqual({ type: 'stay_search', place_id: 'ADZ', check_in: '2026-12-08', check_out: '2026-12-13', top: 3, from: 'app' })
+    expect(d.title).toBe('[stay_search] San Andres 8 to 13 Dec')
+    expect(d.line).toBe('The 3 most reviewed places on Booking.com in San Andres for 8 to 13 Dec.')
+    await insertTask(d, 'trip-a', 2)
+    expect(inserts[0]).toMatchObject({ type: 'stay_search', trip_id: 'trip-a', trip_version: 2, title: '[stay_search] San Andres 8 to 13 Dec' })
+    expect(inserts[0].data).toMatchObject({ place_id: 'ADZ', top: 3, note: d.line })
   })
 })

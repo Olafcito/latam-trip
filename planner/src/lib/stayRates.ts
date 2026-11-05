@@ -32,29 +32,44 @@ export function liveLink(l: Pick<Lodging, 'links'>): string | null {
   return l.links.find((x) => x.site === 'hostelworld' && hostelworldId(x.url))?.url ?? null
 }
 
-interface Reply { lodging_id?: string; fetched?: boolean; rooms?: number; prices?: number; error?: string }
+interface Reply { lodging_id?: string; fetched?: boolean; rooms?: number; prices?: number; error?: string; retry_after?: number }
 
-async function call(body: Record<string, unknown>): Promise<RatesResult> {
-  if (!supabase) return { ok: false, message: 'Not connected.' }
-  let data: Reply | null = null
+/** What a busy Hostelworld means for the caller, with the wait the function gave. */
+export function busyMessage(retryAfter: number | undefined): string {
+  const n = Math.max(1, Math.ceil(retryAfter ?? 60))
+  const wait = n === 1 ? 'a second' : n < 60 ? `${n} seconds` : n < 120 ? 'a minute' : `${Math.ceil(n / 60)} minutes`
+  return `Hostelworld is busy, try again in ${wait}.`
+}
+
+/** One call of the function: its reply, or the short message of why there is none. */
+async function ask<T extends { error?: string }>(body: Record<string, unknown>): Promise<{ data: T | null } | { message: string }> {
+  if (!supabase) return { message: 'Not connected.' }
+  let data: T | null = null
   let error: unknown = null
   try {
-    ;({ data, error } = await supabase.functions.invoke<Reply>('stay-rates', { body }))
+    ;({ data, error } = await supabase.functions.invoke<T>('stay-rates', { body }))
   } catch (e) {
     error = e
   }
-  if (error) {
-    const ctx = (error as { context?: unknown }).context
-    if (ctx instanceof Response) {
-      try {
-        const j = (await ctx.json()) as Reply
-        if (j?.error) return { ok: false, message: j.error }
-      } catch {
-        // the body was not JSON, the generic message below says enough
-      }
+  if (!error) return { data }
+  const ctx = (error as { context?: unknown }).context
+  if (ctx instanceof Response) {
+    let j: (T & { retry_after?: number }) | null = null
+    try {
+      j = (await ctx.json()) as T & { retry_after?: number }
+    } catch {
+      // the body was not JSON, the generic message below says enough
     }
-    return { ok: false, message: 'Hostelworld could not be asked right now.' }
+    if (ctx.status === 429) return { message: busyMessage(j?.retry_after) }
+    if (j?.error) return { message: j.error }
   }
+  return { message: 'Hostelworld could not be asked right now.' }
+}
+
+async function call(body: Record<string, unknown>): Promise<RatesResult> {
+  const r = await ask<Reply>(body)
+  if ('message' in r) return { ok: false, message: r.message }
+  const data = r.data
   if (!data?.lodging_id) return { ok: false, message: data?.error || 'Hostelworld gave no answer.' }
   return { ok: true, lodging_id: data.lodging_id, fetched: !!data.fetched, rooms: data.rooms ?? 0, prices: data.prices ?? 0 }
 }
@@ -89,6 +104,28 @@ export function remember(lodgingId: string, checkIn: string, checkOut: string, r
 export function addFromLink(url: string, placeId: string, checkIn: string, checkOut: string): Promise<RatesResult> {
   if (!hostelworldId(url)) return Promise.resolve({ ok: false, message: 'That is not a Hostelworld link to a place.' })
   return call({ url: url.trim(), place_id: placeId, check_in: checkIn, check_out: checkOut })
+}
+
+/** What a search of the city of a stop gives back: the places at the stop it found, how many were new and priced. */
+export type SearchResult =
+  | { ok: true; place_id: string; city: string; lodging_ids: string[]; created: number; priced: number; rooms: number; prices: number }
+  | { ok: false; message: string }
+
+interface SearchReply {
+  place_id?: string; city_id?: number | string; city?: string; lodging_ids?: string[]
+  created?: number; priced?: number; rooms?: number; prices?: number; error?: string
+}
+
+/** The most popular Hostelworld places of the city of a map place, stored at it with their rooms and prices for the dates (FEAT-003). */
+export async function searchCity(placeId: string, checkIn: string, checkOut: string, top = 3): Promise<SearchResult> {
+  const r = await ask<SearchReply>({ search: true, place_id: placeId, check_in: checkIn, check_out: checkOut, top })
+  if ('message' in r) return { ok: false, message: r.message }
+  const d = r.data
+  if (!d || !Array.isArray(d.lodging_ids)) return { ok: false, message: d?.error || 'Hostelworld gave no answer.' }
+  return {
+    ok: true, place_id: d.place_id ?? placeId, city: d.city ?? '', lodging_ids: d.lodging_ids,
+    created: d.created ?? 0, priced: d.priced ?? 0, rooms: d.rooms ?? 0, prices: d.prices ?? 0,
+  }
 }
 
 /** Forgets the calls made, for tests. */

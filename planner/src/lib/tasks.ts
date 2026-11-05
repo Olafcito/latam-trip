@@ -59,6 +59,16 @@ export function stayPricesTask(lodging: Pick<Lodging, 'id' | 'name'>, rooms: Pic
   return taskDraft(`${lodging.name} ${dayRange(first, check_out)}`, `Prices of ${what} at ${lodging.name} for ${dayRange(first, check_out)}.`, task)
 }
 
+/**
+ * A stay_search task for a stop and its dates (FEAT-003): the task runner looks on Booking.com for the most reviewed
+ * places rated 8.0 or more and adds the ones not stored yet at the stop. The shape is what tasks.py needs.
+ */
+export function stayFindTask(place: { id: string; name: string }, checkIn: string, checkOut: string, top = 3): TaskDraft {
+  const task: Task = { type: 'stay_search', place_id: place.id, check_in: checkIn, check_out: checkOut, top, from: 'app' }
+  const range = dayRange(checkIn, checkOut)
+  return taskDraft(`${place.name} ${range}`, `The ${top} most reviewed places on Booking.com in ${place.name} for ${range}.`, task)
+}
+
 const COLS = 'id,type,status,title,trip_id,trip_version,created_at,done_at,result'
 
 export type InsertResult = { ok: true; id: number } | { ok: false; message: string }
@@ -86,6 +96,23 @@ export async function loadTasks(tripId: string): Promise<TaskRow[]> {
   const { data, error } = await supabase.from('tasks').select(COLS).eq('trip_id', tripId).order('id', { ascending: false }).limit(20)
   if (error) throw new Error(error.message)
   return (data ?? []) as TaskRow[]
+}
+
+/** The stay_search task still open or under way for a stop and its dates, or null when there is none. */
+export async function openStaySearch(placeId: string, checkIn: string, checkOut: string): Promise<TaskRow | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('tasks')
+    .select(COLS)
+    .eq('type', 'stay_search')
+    .in('status', ['open', 'working'])
+    .eq('data->>place_id', placeId)
+    .eq('data->>check_in', checkIn)
+    .eq('data->>check_out', checkOut)
+    .order('id', { ascending: false })
+    .limit(1)
+  if (error) throw new Error(error.message)
+  return ((data ?? []) as TaskRow[])[0] ?? null
 }
 
 /** Calls cb on every change of tasks. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
