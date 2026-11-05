@@ -7,7 +7,9 @@ The planner sends at most 5 files, 10 MB together and 5 MB for an image, and doe
 Request: `{ leg: { kind, from, to, day }, text, files: [{ name, type, data }] }`.
 Response: `200 { booking: { legs, reference, seller, price, ..., not_found } }` or `4xx/5xx { error }`.
 
-Secrets: `ANTHROPIC_API_KEY` (required) and `READ_BOOKING_MODEL` (optional, default `claude-sonnet-5-5`). `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set by Supabase.
+It reads with `READ_BOOKING_MODEL` first. When that answer has no reference, no price, or a leg without a departure, it reads once more with `READ_BOOKING_FALLBACK` and returns that answer. If the second read fails, the first answer is returned.
+
+Secrets: `ANTHROPIC_API_KEY` (required), `READ_BOOKING_MODEL` (optional, default `claude-haiku-5-5`) and `READ_BOOKING_FALLBACK` (optional, default `claude-sonnet-5-5`). `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set by Supabase.
 
 From the repo root, with the project ref from the Supabase dashboard (the subdomain of `SUPABASE_URL`):
 

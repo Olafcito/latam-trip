@@ -83,6 +83,51 @@ function system(leg: Leg): string {
   ].join('\n')
 }
 
+type Read = { ok: true; booking: Record<string, unknown> } | { ok: false; status: number; error: string }
+
+const answer = (r: Read): Response => (r.ok ? reply(200, { booking: r.booking }) : fail(r.status, r.error))
+
+// The first read is complete when it has the reference, the price and a departure for every leg.
+// Anything less is read once more with the stronger model.
+function isComplete(b: Record<string, unknown>): boolean {
+  const legs = b.legs
+  if (!Array.isArray(legs) || !legs.length) return false
+  if (!legs.every((l) => isObject(l) && typeof l.depart === 'string' && l.depart.trim())) return false
+  if (typeof b.reference !== 'string' || !b.reference.trim()) return false
+  const price = b.price
+  return isObject(price) && typeof price.amount === 'number' && typeof price.currency === 'string'
+}
+
+async function read(key: string, model: string, leg: Leg, content: unknown[]): Promise<Read> {
+  let res: Response
+  try {
+    res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        max_tokens: 4096,
+        system: system(leg),
+        tools: [TOOL],
+        tool_choice: { type: 'tool', name: 'booking' },
+        messages: [{ role: 'user', content }],
+      }),
+    })
+  } catch {
+    return { ok: false, status: 502, error: 'Claude could not be reached.' }
+  }
+  if (!res.ok) return { ok: false, status: 502, error: res.status === 401 ? 'The read function API key was refused.' : 'Claude could not read this right now.' }
+  let out: { content?: { type: string; input?: unknown }[] }
+  try {
+    out = await res.json()
+  } catch {
+    return { ok: false, status: 502, error: 'Claude gave an unreadable answer.' }
+  }
+  const input = out.content?.find((c) => c.type === 'tool_use')?.input
+  if (!isObject(input)) return { ok: false, status: 502, error: 'Claude found no booking in this.' }
+  return { ok: true, booking: input }
+}
+
 async function isOwner(req: Request): Promise<boolean> {
   const url = Deno.env.get('SUPABASE_URL')
   const key = Deno.env.get('SUPABASE_ANON_KEY')
@@ -130,31 +175,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
       : { type: 'image', source: { type: 'base64', media_type: f.type, data: f.data } })
   content.push({ type: 'text', text: text.trim() ? `Booking confirmation text:\n\n${text}` : 'Read the attached confirmation.' })
 
-  let res: Response
-  try {
-    res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({
-        model: Deno.env.get('READ_BOOKING_MODEL') || 'claude-sonnet-5-5',
-        max_tokens: 4096,
-        system: system(leg),
-        tools: [TOOL],
-        tool_choice: { type: 'tool', name: 'booking' },
-        messages: [{ role: 'user', content }],
-      }),
-    })
-  } catch {
-    return fail(502, 'Claude could not be reached.')
-  }
-  if (!res.ok) return fail(502, res.status === 401 ? 'The read function API key was refused.' : 'Claude could not read this right now.')
-  let out: { content?: { type: string; input?: unknown }[] }
-  try {
-    out = await res.json()
-  } catch {
-    return fail(502, 'Claude gave an unreadable answer.')
-  }
-  const use = out.content?.find((c) => c.type === 'tool_use')
-  if (!use?.input) return fail(502, 'Claude found no booking in this.')
-  return reply(200, { booking: use.input })
+  const first = await read(key, Deno.env.get('READ_BOOKING_MODEL') || 'claude-haiku-5-5', leg, content)
+  if (!first.ok || isComplete(first.booking)) return answer(first)
+  const second = await read(key, Deno.env.get('READ_BOOKING_FALLBACK') || 'claude-sonnet-5-5', leg, content)
+  return answer(second.ok ? second : first)
 })
