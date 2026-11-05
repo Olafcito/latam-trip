@@ -31,7 +31,7 @@ All tasks may also carry `"note"` (free text from Simon) and `"from"` (`"app"`).
 
 ## When a task is done
 
-Claude writes the result with `tasks.py done`, which marks the row `done`, stores the markdown in `result` (a short table with prices, local clock times and sources), and logs it in `task_log` with `tripdb log-task` (`issue` holds the task id, `type`, `done_at`, `summary`, `outputs`). The worker publishes the next built data snapshot.
+Claude writes the result with `tasks.py done`, which marks the row `done`, stores the markdown in `result` (a short table with prices, local clock times and sources), and logs it in `task_log` with `tripdb log-task` (`issue` holds the task id, `type`, `done_at`, `summary`, `outputs`). The log is public, so a `booking` keeps only its type and leg and a `stay_prices` only its type and dates, each with a fixed summary and no outputs. The worker publishes the next built data snapshot.
 
 ## Last checked
 

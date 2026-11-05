@@ -585,14 +585,20 @@ def cmd_list_remove(paths, list_id, typ, item_id, st=None):
     return _lists_change(paths, change, st)
 
 
+PUBLIC_LOG = {"booking": (("type", "leg"), "Booked"), "stay_prices": (("type", "check_in", "check_out"), "Priced")}
+
+
 def public_log_row(row):
     """A task_log row as the public trip.db may hold it. A booking task's text can carry a reference, a price or names,
-    so only its type and leg are kept. Its summary and outputs are free text written at close time, so the summary is
-    the word Booked and the outputs are empty. Any other row is kept as it is."""
+    and a stay price task's note and result name a place to stay and its prices, which live only in owner only tables.
+    So those keep only the fields in PUBLIC_LOG, a fixed summary and no outputs, since the summary and outputs are free
+    text written at close time. Any other row is kept as it is."""
     t = row.get("task")
-    if row.get("type") == "booking" or (isinstance(t, dict) and t.get("type") == "booking"):
-        return {**row, "task": {k: t[k] for k in ("type", "leg") if k in t} if isinstance(t, dict) else None,
-                "summary": "Booked", "outputs": []}
+    typ = row.get("type") or (t.get("type") if isinstance(t, dict) else None)
+    if typ in PUBLIC_LOG:
+        keep, summary = PUBLIC_LOG[typ]
+        return {**row, "task": {k: t[k] for k in keep if k in t} if isinstance(t, dict) else None,
+                "summary": summary, "outputs": []}
     return row
 
 

@@ -5,7 +5,7 @@ A task the app saves used to wait until Simon told Claude "check the checklist".
 ## How it runs
 
 1. The app inserts a row into `tasks`.
-2. The trigger checks the type (`supabase/migrations/0017_task_runner.sql`, with the list from `0018_task_runner_contract.sql`). A cloud task makes one POST with pg_net to the routine's fire endpoint, with the text `task <id> <type>` and nothing of the task's data. A second task within two minutes makes no new call, since the run already started takes every open cloud task.
+2. The trigger checks the type (`supabase/migrations/0017_task_runner.sql`, redefined in `0018_task_runner_contract.sql`). A cloud task makes one POST with pg_net to the routine's fire endpoint, with the text `task <id> <type>` and nothing of the task's data. A second task within two minutes makes no new call, since the run already started takes every open cloud task.
 3. The routine "Trip checklist on new tasks" starts a cloud session on the repo with the latam-trip and Booking.com connectors. It follows the `task-runner` skill: `claim_task`, do the task by its contract, `finish_task` or `fail_task`, and again until `claim_task` gives no task. A task saved during a run is handled in that run.
 4. Every half hour pg_cron fires the routine again when a cloud task has been open for ten minutes, which catches a lost call and a task saved after a run has checked for the last time.
 
@@ -21,7 +21,7 @@ The connector, not the prompt, decides what a run may do (`latam_trip_mcp/runner
 | `stay_prices` | Prices the named rooms on Booking.com | `lodging_prices` rows for those rooms |
 | `refresh` | Checks old experience rows again, scope `experiences` only | Experience rows |
 
-`claim_task` takes the oldest open task of those types, checks its fields against its type, sets it to working with a conditional update so two runs never take the same task, and gives it back with its contract: `does`, `steps`, the only `tools` to use, what it `writes`, what it must `never` do and how to write the `result`. A task with wrong fields is closed as failed with the reason and the run moves on. `finish_task` and `fail_task` close only a task that is working, and `finish_task` refuses a result over 8000 characters or with an em or en dash. The list of types lives in `CLOUD` in `runner.py` and in migration 0018, and a test keeps the two equal.
+`claim_task` takes the oldest open task of those types, checks its fields against its type, sets it to working with a conditional update so two runs never take the same task, and gives it back with its contract: `does`, `steps`, the only `tools` to use, what it `writes`, what it must `never` do and how to write the `result`. A task with wrong fields is closed as failed with the reason and the run moves on. The claim stamps `claimed_at`, and a task a run claimed but never closed, because the run crashed or timed out, is opened again by the next claim after three hours. The sweep starts a run for it. `finish_task` and `fail_task` close only a task that is working, and `finish_task` refuses a result over 8000 characters or with an em or en dash. The list of types lives in `CLOUD` in `runner.py` and in migration 0018, and a test keeps the two equal.
 
 What the server cannot enforce is which other connector tools a run calls. The contract's `tools` and the skill limit that, and every write tool still checks its own rows.
 

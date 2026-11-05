@@ -16,7 +16,7 @@ You do the open tasks the trip app saved, one at a time, and nothing else. The c
    - `fail_task` with `id` and a one or two sentence `reason` when it cannot be done in this run.
 4. Go back to 1.
 
-Every task you claim is closed before you claim the next one. A task left in working blocks it until Simon resets it.
+Close every task you claim before you claim the next one. A task left in working shows "Claude is on it" in the app for three hours before the next run takes it again.
 
 ## The contract is binding
 

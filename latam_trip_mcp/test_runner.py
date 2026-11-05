@@ -56,7 +56,23 @@ class RunnerTest(Base):
         bad = self.task({"type": "stay_prices", "lodging_id": "x"})
         self.assertIsNone(self.core.call("claim_task")["task"])
         self.assertEqual(self.row(bad)["status"], "failed")
-        self.assertIn("missing room_ids", self.row(bad)["result"])
+        self.assertIn("room_ids", self.row(bad)["result"])
+        self.assertNotIn(";", self.row(bad)["result"])
+
+    def test_a_task_whose_fields_have_the_wrong_shape_does_not_block_the_next(self):
+        bad = self.task({"type": "lists_update", "list": "beach", "add": 5})
+        worse = self.task({"type": "stay_prices", "lodging_id": "x", "room_ids": 3, "check_in": "2026-12-10", "check_out": "2026-12-14"})
+        q = self.task({"type": "question", "text": "a"})
+        self.assertEqual(self.core.call("claim_task")["task"]["id"], q)
+        self.assertEqual((self.row(bad)["status"], self.row(worse)["status"]), ("failed", "failed"))
+
+    def test_a_task_a_run_left_in_working_is_opened_again_after_three_hours(self):
+        old = self.task({"type": "question", "text": "a"}, status="working")
+        self.row(old)["claimed_at"] = "2026-01-01T10:00:00+00:00"
+        mine = self.task({"type": "question", "text": "b"}, status="working")  # Simon's own run, never claimed
+        self.assertEqual(self.core.call("claim_task")["task"]["id"], old)
+        self.assertEqual(self.row(mine)["status"], "working")
+        self.assertEqual(self.core.call("claim_task"), {"task": None, "left_for_simon": 0})
 
     def test_a_stay_task_gets_its_lodging_and_refuses_rooms_of_another(self):
         self.core.add("lodging", [lodging()])

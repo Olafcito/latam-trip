@@ -1,10 +1,11 @@
 """The task runner's contract: which tasks a cloud run may take, what each one gives, and how it is closed.
 
-An unattended run (docs/task-runner.md) works only through three tools. claim_task picks the oldest open task a cloud
+An unattended run (docs/task-runner.md) takes and closes tasks only through three tools. claim_task picks the oldest open task a cloud
 run can do, checks its fields against its type, sets it to working and hands back the task with its contract: what to
 do, the exact tools to use, what to write and what never to do. finish_task closes a task the run holds with its
 result and logs it, fail_task closes it as failed with the reason. Everything else stays open for Simon's own
-checklist run, so a run can never take a flight search, a booking or a parser fix.
+checklist run, so a run can never take a flight search, a booking or a parser fix. A claimed task carries claimed_at,
+and one still working after STALE_HOURS, from a run that crashed or timed out, is opened again by the next claim.
 
 CLOUD lists the types. supabase/migrations/0018_task_runner_contract.sql holds the same list for the trigger that
 starts a run, and a test keeps the two equal.
@@ -15,6 +16,7 @@ import tripdb  # noqa: E402  (core.py puts plugin/scripts on the path first)
 from tripdb_store import Refused  # noqa: E402
 
 MAX_RESULT = 8000
+STALE_HOURS = 3
 DASHES = ("–", "—")
 COMMON = {"type": "str", "note": "str|null", "from": "str|null"}
 NEVER = ["book, reserve, pay, sign in or enter personal data",
@@ -135,7 +137,7 @@ def runs_in_cloud(row):
 
 def data_errors(typ, data):
     c = CONTRACTS[typ]
-    return tripdb.check_fields(data, {**COMMON, **c.needs}) + c.check(data)
+    return tripdb.check_fields(data, {**COMMON, **c.needs}) or c.check(data)  # a check may trust the fields' types
 
 
 def result_errors(result):
@@ -186,25 +188,36 @@ class Runner:
             return {"categories": sorted(tripdb.category_ids(self.core.store))}
         return {}
 
+    def release_stale(self):
+        """Open again a cloud task a run claimed more than STALE_HOURS ago and never closed."""
+        cutoff = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=STALE_HOURS)
+        for row in self.tasks("working"):
+            try:
+                at = dt.datetime.fromisoformat(str(row.get("claimed_at")).replace("Z", "+00:00"))
+            except ValueError:
+                continue  # never claimed by a run, so Simon's own checklist run holds it
+            if at < cutoff and runs_in_cloud(row):
+                self.take(row, "open", {"claimed_at": None})
+
     def claim_task(self):
+        self.release_stale()
         left = 0
         for row in self.tasks("open"):
             if not runs_in_cloud(row):
                 left += 1
                 continue
             typ, data = task_type(row)
-            errs = data_errors(typ, data)
-            extra = {}
-            if not errs:
-                try:
-                    extra = self.context(typ, data)
-                except Refused as e:
-                    errs = [str(e)]
+            try:
+                errs = data_errors(typ, data)
+                extra = {} if errs else self.context(typ, data)
+            except Exception as e:  # a task the app or a chat wrote badly must never block the tasks after it
+                errs = [str(e) or type(e).__name__]
             if errs:
-                self.take(row, "failed", {"result": "This task cannot be done as it is: " + "; ".join(errs) +
-                                          ". Ask again from the app.", "done_at": self.core_now()})
+                why = " ".join(e[:1].upper() + e[1:].rstrip(".") + "." for e in errs)
+                self.take(row, "failed", {"result": f"This task cannot be done as it is. {why} Ask again from the app.",
+                                          "done_at": self.core_now()})
                 continue
-            if not self.take(row, "working"):
+            if not self.take(row, "working", {"claimed_at": self.core_now()}):
                 continue  # another run took it first
             return {"task": {"id": row["id"], "type": typ, "title": row.get("title"), "data": data},
                     "contract": CONTRACTS[typ].shown(extra)}

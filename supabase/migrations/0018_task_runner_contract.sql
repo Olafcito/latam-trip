@@ -2,6 +2,10 @@
 -- (a test keeps the two equal). The connector's claim_task decides what a run takes. This only decides when a run
 -- starts. place_research and stay_search left the list: they need workers a cloud run does not have. refresh is
 -- a cloud task only for experiences, so it needs the task's data as well as its type.
+-- claim_task stamps claimed_at. A task a run claimed and never closed, because the run crashed or timed out, is opened
+-- again by the next claim after three hours, and the sweep starts a run for it.
+
+alter table public.tasks add column if not exists claimed_at timestamptz;
 
 create or replace function public.task_runs_in_cloud(t text, d jsonb) returns boolean
 language sql immutable as $$
@@ -27,10 +31,13 @@ revoke all on function public.ping_task_runner() from public, anon, authenticate
 create or replace function public.sweep_task_runner() returns void
 language plpgsql security definer set search_path = public as $$
 begin
-  if exists (select 1 from public.tasks where status = 'open'
-             and public.task_runs_in_cloud(coalesce(type, data->>'type'), data)
-             and created_at < now() - interval '10 minutes') then
+  if exists (select 1 from public.tasks
+             where public.task_runs_in_cloud(coalesce(type, data->>'type'), data)
+               and ((status = 'open' and created_at < now() - interval '10 minutes')
+                 or (status = 'working' and claimed_at < now() - interval '3 hours'))) then
     perform public.fire_task_runner('sweep');
   end if;
 end $$;
 revoke all on function public.sweep_task_runner() from public, anon, authenticated;
+
+notify pgrst, 'reload schema';

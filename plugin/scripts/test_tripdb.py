@@ -449,6 +449,15 @@ class SaveTripTest(Base):
         for word in ("TEST01", "1234"):
             self.assertNotIn(word, dump)
 
+    def test_a_stay_price_row_keeps_only_its_dates_in_the_task_log(self):
+        row = {"issue": 11, "type": "stay_prices", "done_at": "2026-11-01T10:00+00:00", "summary": "Dorm 1234 DKK at TEST01 Hostel",
+               "outputs": ["room-TEST01"], "task": {"type": "stay_prices", "lodging_id": "TEST01", "room_ids": ["room-TEST01"],
+                                                    "check_in": "2026-12-10", "check_out": "2026-12-14", "note": "Dorm at TEST01 Hostel"}}
+        out = tripdb.public_log_row(row)
+        self.assertEqual((out["summary"], out["outputs"], out["task"]),
+                         ("Priced", [], {"type": "stay_prices", "check_in": "2026-12-10", "check_out": "2026-12-14"}))
+        self.assertNotIn("TEST01", json.dumps(out))
+
     def test_delete_trip_removes_every_version_and_only_that_trip(self):
         self.save(trip(why="First idea"))
         self.save(trip(why="Second idea"))
