@@ -112,7 +112,12 @@ export function providers(l: Lodging, room: LodgingRoom | null, checkIn: string,
   }
   for (const link of l.links) take(link.site, link.url)
   for (const p of room?.prices ?? []) if (p.site) take(p.site, p.url).prices.push(p)
-  const out = [...rows.values()].map(({ prices, ...r }) => ({ ...r, price: nightly(prices, checkIn, checkOut), cheapest: false }))
+  return ranked([...rows.values()].map(({ prices, ...r }) => ({ ...r, price: nightly(prices, checkIn, checkOut), cheapest: false })))
+}
+
+/** The rows marked and ordered: the cheapest exact one of two or more marked, priced first, cheapest first. */
+function ranked(rows: Provider[]): Provider[] {
+  const out = rows.map((r) => ({ ...r, cheapest: false }))
   const exact = out.filter((r) => r.price?.exact)
   if (exact.length > 1) {
     const low = Math.min(...exact.map((r) => r.price!.dkk))
@@ -121,6 +126,15 @@ export function providers(l: Lodging, room: LodgingRoom | null, checkIn: string,
   }
   const rank = (r: Provider) => (r.price ? (r.price.exact ? 0 : 1) : 2)
   return out.sort((a, b) => rank(a) - rank(b) || (a.price?.dkk ?? 0) - (b.price?.dkk ?? 0))
+}
+
+/**
+ * The sites a place is booked at in the app: Hostelworld, and Booking.com only when the place has its own Booking.com
+ * link. The cheapest is marked among these two alone.
+ */
+export function bookAt(l: Lodging, room: LodgingRoom | null, checkIn: string, checkOut: string): Provider[] {
+  const linked = l.links.some((k) => k.site === 'booking')
+  return ranked(providers(l, room, checkIn, checkOut).filter((r) => r.key === 'hostelworld' || (r.key === 'booking' && linked)))
 }
 
 // ---- what a place offers

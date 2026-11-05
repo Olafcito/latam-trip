@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Lodging, LodgingPrice, LodgingRoom } from '../data/types'
-import { amenities, amenityRow, cheapestRoom, nightly, providers, roomMix, siteKey, sortPlaces, stayDates } from './stayOffer'
+import { amenities, amenityRow, bookAt, cheapestRoom, nightly, providers, roomMix, siteKey, sortPlaces, stayDates } from './stayOffer'
 
 const price = (over: Partial<LodgingPrice>): LodgingPrice => ({
   id: 'p', room_id: 'r', check_in: '2026-12-08', check_out: '2026-12-09', total_dkk: null, per_night_dkk: null, site: null, url: null,
@@ -49,6 +49,13 @@ describe('providers', () => {
       ['Booking.com', 210, true], ['Hostelworld', 215, false], ['Agoda', 218, false], ['Airbnb', null, false],
     ])
     expect(rows[0].url).toBe('https://booking.com/x')
+  })
+  it('books at Hostelworld, and at Booking.com only with its own link, the cheapest marked among them', () => {
+    expect(bookAt(l, dorm, '2026-12-08', '2026-12-09').map((r) => [r.name, r.price?.dkk ?? null, r.cheapest])).toEqual([
+      ['Booking.com', 210, true], ['Hostelworld', 215, false],
+    ])
+    const noLink = lodging({ links: [{ site: 'airbnb', url: 'https://airbnb.com/x' }], rooms: [dorm] })
+    expect(bookAt(noLink, dorm, '2026-12-08', '2026-12-09').map((r) => [r.name, r.cheapest])).toEqual([['Hostelworld', false]])
   })
   it('marks no site when there is only one price', () => {
     const one = room('one', [price({ site: 'booking', per_night_dkk: 210 })])

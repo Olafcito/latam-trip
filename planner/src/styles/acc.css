@@ -275,105 +275,115 @@
 .pv-strip::-webkit-scrollbar { display: none; }
 .pv-strip img { flex: none; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; }
 .pv-noph { display: grid; place-items: center; height: 100%; color: var(--faint); }
-.pv-acts { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 10px; pointer-events: none; }
+.pv-acts { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; gap: 8px; pointer-events: none; }
 .pv-gap { flex: 1; }
 .pv-round {
-  pointer-events: auto; position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  pointer-events: auto; position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
   background: rgb(8 18 24 / 0.62); backdrop-filter: blur(10px) saturate(140%); -webkit-backdrop-filter: blur(10px) saturate(140%);
   color: var(--text); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
 }
-.pv-round[aria-pressed='true'] { color: var(--err); }
-.pv-round::after { content: ''; position: absolute; inset: calc((40px - var(--hit)) / 2); }
+.pv-round::after { content: ''; position: absolute; inset: calc((36px - var(--hit)) / 2); }
 .pv-round:active { transform: scale(0.92); }
 .pv-count {
-  position: absolute; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 8px;
+  position: absolute; right: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 7px;
   background: rgb(8 18 24 / 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  font-size: var(--fs-small); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums;
+  font-size: var(--fs-label); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums;
 }
-.pv-body { display: grid; gap: 16px; padding: 16px 16px 24px; }
-.pv-h { display: grid; gap: 6px; }
-.pv-h h3 { margin: 0; font-size: var(--fs-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; overflow-wrap: anywhere; }
-.pv-where { display: flex; flex-wrap: wrap; margin: 0; font-size: var(--fs-body); color: var(--muted); }
-.pv-where > * + *::before { content: '·'; margin: 0 8px; color: var(--faint); }
-.pv-h .ao-rate { font-size: var(--fs-body); color: var(--muted); }
-.pv-h .ao-rate b { font-size: var(--fs-title); }
-.pv-sum { margin: 0; font-size: var(--fs-title); line-height: 1.5; color: var(--text); text-wrap: pretty; }
-.pv-am { list-style: none; margin: 0; padding: 4px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(4.25rem, 1fr)); gap: 12px 4px; }
-.pv-am li { display: grid; justify-items: center; align-content: start; gap: 6px; text-align: center; font-size: var(--fs-small); line-height: 1.25; color: var(--muted); }
+.pv-body { display: grid; gap: 14px; padding: 14px 16px 24px; }
+.pv-h { display: grid; gap: 3px; }
+.pv-h h3 { margin: 0; font-size: var(--fs-head); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; overflow-wrap: anywhere; }
+.pv-where { display: flex; flex-wrap: wrap; margin: 0; font-size: var(--fs-small); color: var(--muted); }
+.pv-where > * + *::before { content: '·'; margin: 0 6px; color: var(--faint); }
+.pv-h .ao-rate { margin-top: 3px; font-size: var(--fs-small); color: var(--muted); }
+.pv-h .ao-rate b { font-size: var(--fs-body); }
+/* three lines of what it is like, More for the rest */
+.pv-sum { display: grid; justify-items: start; gap: 2px; }
+.pv-sum p { margin: 0; font-size: var(--fs-body); line-height: 1.45; color: var(--text); text-wrap: pretty; }
+.pv-sum p:not([data-open]) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.pv-more { position: relative; padding: 2px 0; font-size: var(--fs-small); font-weight: 600; color: var(--muted); }
+.pv-more::after { content: ''; position: absolute; inset: -10px -12px; }
+/* five things it offers in one row, an icon over one word */
+.pv-am { list-style: none; margin: 0; padding: 2px 0 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; }
+.pv-am li { display: grid; justify-items: center; gap: 5px; min-width: 0; font-size: var(--fs-label); line-height: 1.2; color: var(--muted); }
+.pv-am li > span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pv-am li > svg { color: var(--text); }
-.pv-sec { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line); }
-.pv-sec h4 { margin: 0; font-size: var(--fs-lead); font-weight: 700; letter-spacing: -0.01em; }
+.pv-sec { display: grid; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.pv-sec h4 { margin: 0; font-size: var(--fs-title); font-weight: 700; letter-spacing: -0.01em; }
 .pv-bar {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 14px; border-radius: 10px;
-  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); font-size: var(--fs-body); font-weight: 500; font-variant-numeric: tabular-nums;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; padding: 0 12px; border-radius: 10px;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); font-size: var(--fs-small); font-weight: 500; font-variant-numeric: tabular-nums;
 }
-.pv-bar span { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.pv-bar span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .pv-bar svg { color: var(--muted); }
 .pv-bar i { font-style: normal; color: var(--faint); }
-.pv-rooms, .pv-sellers { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.pv-rooms, .pv-sellers { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .pv-room {
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px 12px 8px 8px; border-radius: 12px;
-  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2);
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 10px 6px 6px; border-radius: 12px;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
 }
-.pv-room[data-on] { box-shadow: inset 0 0 0 1.5px var(--booked); }
-.pv-rph { display: grid; place-items: center; width: 4.75rem; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; background: var(--surface-3); color: var(--faint); }
+.pv-room[data-on] { box-shadow: inset 0 0 0 1px var(--line-2); }
+.pv-rph { display: grid; place-items: center; width: 5rem; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; background: var(--surface-3); color: var(--faint); }
 .pv-rph img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pv-rn { display: grid; gap: 4px; min-width: 0; }
-.pv-rn b { font-size: var(--fs-title); font-weight: 600; overflow-wrap: anywhere; }
+.pv-rn { display: grid; gap: 2px; min-width: 0; }
+.pv-rn b { font-size: var(--fs-small); font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .pv-rp { display: inline-flex; align-items: baseline; gap: 4px; }
-.pv-rkr { font-size: var(--fs-title); font-weight: 700; font-variant-numeric: tabular-nums; }
+.pv-rkr { font-size: var(--fs-body); font-weight: 700; font-variant-numeric: tabular-nums; }
 .pv-rkr[data-other] { color: var(--muted); font-weight: 600; }
 .pv-rkr[data-stale] { color: var(--muted); }
-.pv-rp small { font-size: var(--fs-small); color: var(--muted); }
-/* asking is neutral, never the booked green, and it moves */
+.pv-rp small { font-size: var(--fs-label); color: var(--muted); }
+/* asking is neutral and it moves */
 .pv-rp > .as-live, .pv-live > .as-live { background: var(--muted); }
 .pv-rp > .as-live { align-self: center; margin-left: 2px; }
 /* a room with no price for the dates: a bar the size of a price figure, pulsing while Hostelworld is asked */
-.pv-nop { display: block; width: 3.5rem; height: 1.1rem; border-radius: 6px; background: var(--surface-3); }
+.pv-nop { display: block; width: 3.25rem; height: 1rem; border-radius: 5px; background: var(--surface-3); }
 .pv-nop[data-asking] { animation: as-pulse 1.2s ease-in-out infinite; }
 
 /* the rooms heading with the asking for live prices beside it: the pulsing dot, or one warn mark */
-.pv-sh { display: flex; align-items: center; gap: 10px; min-height: 24px; }
+.pv-sh { display: flex; align-items: center; gap: 10px; min-height: 22px; }
 .pv-live { display: inline-flex; align-items: center; }
+.pv-fail { display: inline-flex; color: var(--err); }
 
-/* the marks under a room's price, the look of the stay marks: age, few left, free cancellation. They wrap on a phone */
-.pv-mks { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
-.pv-mk {
-  display: inline-flex; align-items: center; gap: 4px; min-height: 22px; padding: 0 7px; border-radius: 999px;
-  background: var(--surface-3); color: var(--muted); font-size: var(--fs-label); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
-}
-.pv-mk:has(> svg:only-child) { width: 24px; min-height: 24px; padding: 0; justify-content: center; }
-.pv-mk > svg { flex: none; }
-.pv-mk[data-tone='stale'] { background: color-mix(in srgb, var(--flight) 14%, transparent); color: var(--flight); }
-.pv-mk[data-tone='good'] { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked); }
-.pv-mk[data-tone='low'] { color: var(--text); }
-.pv-mk[data-tone='warn'] { background: color-mix(in srgb, var(--err) 14%, transparent); color: var(--err); }
+/* the words under a room's price, small and muted: free cancellation, few left, an old price's age */
+.pv-mks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; font-size: var(--fs-label); line-height: 1.35; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* the dot ends the word before it, so a wrapped line never starts with one */
+.pv-mk { white-space: nowrap; }
+.pv-mk:not(:last-child)::after { content: '·'; margin: 0 5px; color: var(--faint); }
+.pv-mk[data-tone='stale'] { color: var(--flight); }
+.pv-mk[data-tone='warn'] { color: var(--err); }
+/* Select outlined in the booked green, Selected tinted with its check */
 .pv-sel {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 4.75rem; height: 38px; padding: 0 14px; border-radius: 10px;
-  box-shadow: inset 0 0 0 1.5px var(--booked); color: var(--booked); font-size: var(--fs-body); font-weight: 600; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 4rem; height: 32px; padding: 0 12px; border-radius: 9px;
+  box-shadow: inset 0 0 0 1.5px var(--booked); color: var(--booked); font-size: var(--fs-small); font-weight: 600; white-space: nowrap;
   transition: background-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .pv-sel:active { transform: scale(0.96); }
-.pv-sel[aria-pressed='true'], .pv-sel[data-booked] { background: var(--booked); color: var(--ground); }
+.pv-sel[aria-pressed='true'] { background: color-mix(in srgb, var(--booked) 14%, transparent); }
+/* the room bought here: the small Booked pill of the stays */
+.pv-booked {
+  display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 999px; white-space: nowrap;
+  font-size: var(--fs-label); font-weight: 600; color: var(--booked);
+  background: color-mix(in srgb, var(--booked) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--booked) 30%, transparent);
+}
+.pv-booked > svg { flex: none; }
 .pv-seller {
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; min-height: 52px; padding: 0 14px 0 10px;
-  border-radius: 12px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); color: var(--text); text-decoration: none;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px 0 8px;
+  border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); color: var(--text); text-decoration: none;
   transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
 .pv-seller > svg { color: var(--muted); }
 .pv-logo {
-  display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; overflow: hidden; background: #fff;
-  font-size: var(--fs-body); font-weight: 700; color: var(--ground);
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; overflow: hidden; background: #fff;
+  font-size: var(--fs-body); font-weight: 800; color: var(--ground);
 }
 .pv-logo img { width: 100%; height: 100%; object-fit: contain; }
 .pv-logo[data-none] { background: var(--surface-3); color: var(--muted); }
-.pv-sn { font-size: var(--fs-body); font-weight: 600; overflow-wrap: anywhere; }
+/* Hostelworld's own orange square with its H, its wordmark reads as nothing this small */
+.pv-logo[data-site='hostelworld'] { background: #F25B2A; color: #fff; font-size: 1rem; }
+.pv-sn { font-size: var(--fs-small); font-weight: 600; overflow-wrap: anywhere; }
 .pv-sp { justify-self: end; }
-.pv-skr { font-size: var(--fs-title); font-weight: 700; font-variant-numeric: tabular-nums; }
+.pv-skr { font-size: var(--fs-body); font-weight: 700; font-variant-numeric: tabular-nums; }
 .pv-skr[data-other] { color: var(--muted); font-weight: 600; }
-/* the cheapest site: its price in green, nothing louder */
-.pv-sp[data-low] .pv-skr { color: var(--booked); }
 
 @media (hover: hover) and (pointer: fine) {
   .af-tab:hover, .as-tab:hover { color: var(--text); }
@@ -385,7 +395,8 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .as-chip:not([aria-checked='true']):hover { background: var(--surface-2); }
   .as-card:has(.as-name:hover) { box-shadow: inset 0 0 0 1px var(--faint); }
   .as-card[data-open]:has(.as-name:hover) { box-shadow: inset 0 0 0 1.5px var(--text); }
-  .pv-sel:not([aria-pressed='true']):not([data-booked]):hover { background: color-mix(in srgb, var(--booked) 12%, transparent); }
+  .pv-sel:not([aria-pressed='true']):hover { background: color-mix(in srgb, var(--booked) 10%, transparent); }
+  .pv-more:hover { color: var(--text); }
   a.pv-seller:hover { background: var(--surface-3); }
   .pv-round:hover { background: rgb(8 18 24 / 0.82); }
   .as-go:not(:disabled):hover { background: color-mix(in srgb, var(--surface-3) 80%, var(--text)); }
@@ -396,7 +407,6 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
 }
 @media (max-width: 560px) {
   .ad-md { max-height: 94dvh; height: 94dvh; }
-  .pv-h h3 { font-size: var(--fs-num-lg); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ad-list, .ad-place, .ad[data-open]:not([data-side]) .ad-place { transition: opacity var(--t-med) ease, visibility 0s; transform: none; }

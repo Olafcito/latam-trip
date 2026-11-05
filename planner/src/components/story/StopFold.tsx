@@ -12,6 +12,7 @@ import { choiceNights, chooseRoom, freeNights, removePart } from '../../lib/stay
 import { partBooking, stayClashes, stayParts, tripStays } from '../../lib/stays'
 import { loadLodgings } from '../../lib/lodgings'
 import { addFromLink, remember } from '../../lib/stayRates'
+import { shareLink, sharePlace } from '../../lib/sharePlace'
 import { addDays } from '../../lib/time'
 import { Modal } from '../Modal'
 import { AddPlace } from '../stays/AddPlace'
@@ -187,6 +188,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
                 const b = bookedAt(l)
                 const first = sp.days > 0 ? at.first : searchIn
                 const nights = sp.days > 0 ? Math.max(1, at.nights) : 1
+                const link = shareLink(l)
                 return (
                   <PropertyView
                     lodging={l}
@@ -198,6 +200,9 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
                     chosen={stays.filter((s) => s.lodging_id === l.id && s.room_id).map((s) => s.room_id!)}
                     booked={b?.room_id ?? null}
                     onBack={back ?? undefined}
+                    saved={saved.has(l.id)}
+                    onSave={() => toggleSaved(l.id)}
+                    onShare={link ? () => sharePlace(l.name, link) : undefined}
                     onSelect={sp.days > 0 ? (roomId) => change(chooseRoom(stays, sp, l.id, roomId)) : undefined}
                   />
                 )
