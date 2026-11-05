@@ -123,4 +123,5 @@ EOF
 }
 schedule latam-trip-worker-build "rate(1 minute)" build
 schedule latam-trip-worker-backup "cron(0 3 * * ? *)" backup
+schedule latam-trip-worker-rates "cron(0 5 * * ? *)" rates
 echo "schedules $STATE, backups go to $BACKUP"

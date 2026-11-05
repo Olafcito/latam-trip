@@ -3,6 +3,7 @@
 hello: the phase 0 check. Runs the unchanged pipeline on the data bundled with --with-data, and tries the route to Supabase.
 build: one EventBridge start of the build (spec 7). It decides, takes the lease, builds and uploads.
 backup: a dump of every table, packed and written to the private backup bucket (spec 12).
+rates: the morning refresh of the Hostelworld prices through the stay-rates edge function (FEAT-002).
 """
 import datetime, os, shutil, sys, tarfile, tempfile, time, urllib.error, urllib.request
 
@@ -12,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tripdb  # noqa: E402
 import tripdb_store as store  # noqa: E402
 import steps  # noqa: E402
+import rates  # noqa: E402
 
 SECRET_PARAM = "/latam-trip/supabase-secret-key"
 
@@ -86,6 +88,14 @@ def backup():
     return {"key": key, "bytes": os.path.getsize(archive), "rows": counts}
 
 
+def refresh_rates():
+    """The function reads and writes. The worker calls it with the key it already holds, which the function knows
+    as STAY_RATES_WORKER_KEY."""
+    r = rest()
+    url = os.environ["SUPABASE_URL"].rstrip("/") + "/functions/v1/stay-rates"
+    return rates.refresh(r, lambda body: rates.post(url, os.environ["SUPABASE_SECRET_KEY"], body))
+
+
 def handler(event, context):
     action = (event or {}).get("action")
     if action == "hello":
@@ -94,4 +104,6 @@ def handler(event, context):
         return build(context)
     if action == "backup":
         return backup()
+    if action == "rates":
+        return refresh_rates()
     raise ValueError(f"unknown action {action!r}")
