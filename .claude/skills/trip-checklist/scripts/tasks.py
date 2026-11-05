@@ -15,9 +15,10 @@ sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "scripts"))
 import tripdb_store  # noqa: E402
 
 TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh",
-         "fix_parser", "import_quotes", "booking"}
+         "fix_parser", "import_quotes", "booking", "stay_search"}
 # The fields a task of a type must carry. A stay_prices task prices rooms of a lodging that exists, so it names them.
-NEEDS = {"stay_prices": ("lodging_id", "room_ids", "check_in", "check_out"), "booking": ("leg",)}
+NEEDS = {"stay_prices": ("lodging_id", "room_ids", "check_in", "check_out"), "booking": ("leg",),
+         "stay_search": ("place_id", "check_in", "check_out")}
 # The task log is public, in trip.db and the web data. A booking task's text says where the confirmation is and can
 # carry a reference, a price or names, so only these fields of it are logged.
 LOGGED = {"booking": ("type", "leg")}
