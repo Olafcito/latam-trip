@@ -17,7 +17,7 @@ Two reviews, two agents, two mindsets.
 | Record | Only what Simon accepts afterwards | Findings, evidence, proposed decisions, log updates |
 | When | Whenever someone wants an honest look at a screen | When a roast or discussion raises a cross screen, structural or design system question, or Simon asks |
 
-The roast is the first line of review for UI work. A screen that was built or changed gets roasted before Simon looks at it, and an ongoing task can be picked up with a shot at any time. The audit is not mandatory. A roast does not require an audit, and an audit does not require a roast first. Simon decides what follows, and "Simon" here means Simon or the agent coordinating the work.
+The roast is the first line of review for a new screen or a changed concept. A UI or component fix is never roasted, it gets a code review and a shot before and after. A new or reconceived screen gets roasted before Simon looks at it, and an ongoing task can be picked up with a shot at any time. The audit is not mandatory. A roast does not require an audit, and an audit does not require a roast first. Simon decides what follows, and "Simon" here means Simon or the agent coordinating the work.
 
 ## Running a roast
 
