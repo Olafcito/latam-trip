@@ -1,0 +1,12 @@
+{
+  "name": "booking-reader",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "playwright-core": "1.56.0"
+  }
+}
