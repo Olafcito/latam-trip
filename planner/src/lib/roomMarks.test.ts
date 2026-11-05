@@ -29,11 +29,12 @@ describe('roomMarks', () => {
     expect(roomMarks(room([price({ check_in: '2026-12-09' })]), IN, OUT, NOW)).toEqual({ seen: null, left: null, free: null })
   })
 
-  it('says when and where the price was seen, amber once it is stale', () => {
-    const today = roomMarks(room([price({})]), IN, OUT, NOW).seen
-    expect(today).toEqual({ text: 'today', label: 'Seen on Hostelworld 5 Nov 14:02', stale: false })
+  it('has no age mark on a price from today, and says the age in words once it is older, amber when stale', () => {
+    expect(roomMarks(room([price({})]), IN, OUT, NOW).seen).toBeNull()
+    const day = roomMarks(room([price({ observed_at: '2026-11-04T09:00' })]), IN, OUT, NOW).seen
+    expect(day).toEqual({ text: '1 day old', label: 'Seen on Hostelworld 4 Nov 09:00', stale: false })
     const old = roomMarks(room([price({ observed_at: '2026-10-31T08:15', site: null })]), IN, OUT, NOW).seen
-    expect(old).toEqual({ text: '5 d', label: 'Seen 31 Oct 08:15', stale: true })
+    expect(old).toEqual({ text: '5 days old', label: 'Seen 31 Oct 08:15', stale: true })
   })
 
   it('counts beds in a dorm and rooms in a private, only when few are left', () => {
@@ -57,6 +58,6 @@ describe('roomMarks', () => {
       price({ observed_at: '2026-11-01T10:00', refundable: 'yes', available: 1 }),
       price({ observed_at: '2026-11-05T14:02', refundable: 'no', available: 9 }),
     ])
-    expect(roomMarks(r, IN, OUT, NOW)).toMatchObject({ left: null, free: null, seen: { text: 'today' } })
+    expect(roomMarks(r, IN, OUT, NOW)).toMatchObject({ left: null, free: null, seen: null })
   })
 })

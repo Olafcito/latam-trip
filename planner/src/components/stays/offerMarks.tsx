@@ -44,10 +44,10 @@ export function Rating({ l, full }: { l: Pick<Lodging, 'rating' | 'reviews' | 'r
 export const kindWord = (k: LodgingKind) => (k === 'other' ? '' : KIND[k])
 
 /** A price per night: bold for these dates, muted for others with the dates in its title. Nothing when none is known. */
-export function NightPrice({ p, className }: { p: Nightly | null; className: string }) {
+export function NightPrice({ p, className, stale }: { p: Nightly | null; className: string; stale?: boolean }) {
   if (!p) return null
   return (
-    <b className={className} data-other={!p.exact || undefined} title={p.exact ? undefined : otherDates(p)} aria-label={p.exact ? undefined : `About ${kr(p.dkk)} per night, ${otherDates(p).toLowerCase()}`}>
+    <b className={className} data-other={!p.exact || undefined} data-stale={stale || undefined} title={p.exact ? undefined : otherDates(p)} aria-label={p.exact ? undefined : `About ${kr(p.dkk)} per night, ${otherDates(p).toLowerCase()}`}>
       {kr(p.dkk)}
     </b>
   )

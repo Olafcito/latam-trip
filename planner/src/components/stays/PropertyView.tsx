@@ -172,12 +172,12 @@ export function PropertyView(p: PropertyViewProps) {
                       <b>{r.name}</b>
                       {pr ? (
                         <span className="pv-rp">
-                          <NightPrice p={pr} className="pv-rkr" /><small>/ night</small>
+                          <NightPrice p={pr} className="pv-rkr" stale={mk.seen?.stale} /><small>/ night</small>
                           {asking && !pr.exact && <span className="as-live" title="Asking Hostelworld" aria-hidden="true" />}
                         </span>
                       ) : asking ? (
-                        <span className="pv-rp" title="Asking Hostelworld"><span className="as-live" aria-hidden="true" /><span className="pv-vh">Asking Hostelworld for a price</span></span>
-                      ) : <small className="pv-nokr">No price yet</small>}
+                        <span className="pv-nop" data-asking title="Asking Hostelworld"><span className="pv-vh">Asking Hostelworld for a price</span></span>
+                      ) : <span className="pv-nop"><span className="pv-vh">No price for these dates</span></span>}
                       {(mk.seen || mk.left || mk.free) && (
                         <ul className="pv-mks" aria-label={`About the price of ${r.name}`}>
                           {mk.free && <RoomMark m={mk.free} tone="good" icon={<Check s={12} />} />}

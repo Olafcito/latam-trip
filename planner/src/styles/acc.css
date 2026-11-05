@@ -320,8 +320,14 @@
 .pv-rp { display: inline-flex; align-items: baseline; gap: 4px; }
 .pv-rkr { font-size: var(--fs-title); font-weight: 700; font-variant-numeric: tabular-nums; }
 .pv-rkr[data-other] { color: var(--muted); font-weight: 600; }
-.pv-rp small, .pv-nokr { font-size: var(--fs-small); color: var(--muted); }
+.pv-rkr[data-stale] { color: var(--muted); }
+.pv-rp small { font-size: var(--fs-small); color: var(--muted); }
+/* asking is neutral, never the booked green, and it moves */
+.pv-rp > .as-live, .pv-live > .as-live { background: var(--muted); }
 .pv-rp > .as-live { align-self: center; margin-left: 2px; }
+/* a room with no price for the dates: a bar the size of a price figure, pulsing while Hostelworld is asked */
+.pv-nop { display: block; width: 3.5rem; height: 1.1rem; border-radius: 6px; background: var(--surface-3); }
+.pv-nop[data-asking] { animation: as-pulse 1.2s ease-in-out infinite; }
 
 /* the rooms heading with the asking for live prices beside it: the pulsing dot, or one warn mark */
 .pv-sh { display: flex; align-items: center; gap: 10px; min-height: 24px; }
@@ -393,6 +399,6 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .ad-list, .ad-place, .ad[data-open]:not([data-side]) .ad-place { transition: opacity var(--t-med) ease, visibility 0s; transform: none; }
   .ad-place { opacity: 0; }
   .ad[data-open]:not([data-side]) .ad-place { opacity: 1; }
-  .as-live, .as-wait .as-ph, .as-wait i { animation: none; }
+  .as-live, .pv-nop[data-asking], .as-wait .as-ph, .as-wait i { animation: none; }
   .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:not(:disabled):active { transform: none; }
 }

@@ -1,6 +1,6 @@
 import type { LodgingPrice, LodgingRoom } from '../data/types'
 import { day } from './format'
-import { ageLabel, checkedLabel, daysSince, isStale } from './freshness'
+import { checkedLabel, daysSince, isStale } from './freshness'
 import { SITE } from './lodgingWords'
 
 // The marks on a room of a place to stay, from its latest price for the very dates searched: how old that price
@@ -8,14 +8,14 @@ import { SITE } from './lodgingWords'
 // with its full words for a tooltip and a screen reader.
 
 export interface Mark {
-  /** what the chip shows, "1 d", "3 left", "Free until 8 Dec" */
+  /** what the chip shows, "5 days old", "3 left", "Free until 8 Dec" */
   text: string
   /** the words in full, "Seen on Hostelworld 5 Nov 14:02" */
   label: string
 }
 
 export interface RoomMarks {
-  /** when the price was seen, amber when stale */
+  /** how old the price is, null when it is from today, so a fresh price carries no mark. Amber when stale */
   seen: (Mark & { stale: boolean }) | null
   /** few left, at most LOW_LEFT, or none left */
   left: (Mark & { none: boolean }) | null
@@ -48,11 +48,14 @@ export function roomMarks(room: Pick<LodgingRoom, 'prices' | 'private'>, checkIn
   const p = latestExact(room, checkIn, checkOut)
   if (!p) return { seen: null, left: null, free: null }
 
-  const seen = {
-    text: ageLabel(daysSince(p.observed_at, now)),
-    label: `Seen${p.site ? ` on ${SITE[p.site]}` : ''} ${checkedLabel(p.observed_at)}`,
-    stale: isStale(p.observed_at, now),
-  }
+  const age = daysSince(p.observed_at, now)
+  const seen = age == null || age === 0
+    ? null
+    : {
+        text: age === 1 ? '1 day old' : `${age} days old`,
+        label: `Seen${p.site ? ` on ${SITE[p.site]}` : ''} ${checkedLabel(p.observed_at)}`,
+        stale: isStale(p.observed_at, now),
+      }
 
   let left: RoomMarks['left'] = null
   if (p.available != null && p.available <= LOW_LEFT) {
