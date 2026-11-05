@@ -40,7 +40,7 @@
 
   /* a card per flight: who flies it, then the two ends, with the time in the air over the line between */
   .jb-cards { list-style: none; display: flex; flex-direction: column; margin: 0; padding: 0; }
-  .jb-card { display: grid; grid-template-columns: 74px minmax(0, 1fr) minmax(64px, 96px) minmax(0, 1fr); align-items: center; column-gap: 12px; padding: 14px 14px 14px 12px; border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+  .jb-card { display: grid; grid-template-columns: 74px auto minmax(64px, 1fr) auto; align-items: center; column-gap: 12px; padding: 14px 14px 14px 12px; border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
   .jb-card-air { align-self: stretch; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding-right: 10px; border-right: 1px solid var(--line); min-width: 0; }
   .jb-card-air small { font-size: var(--fs-label); color: var(--muted); font-variant-numeric: tabular-nums; }
   .jb-card-end { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
