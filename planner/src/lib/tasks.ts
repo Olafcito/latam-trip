@@ -49,19 +49,6 @@ export function flightPricesTask(leg: { from: string; to: string; date: string; 
 }
 
 /**
- * A booking task: Simon says where the booking is, in his mail or on a site, and Claude fills the row for the leg
- * with add_booking and the attach tools. The leg carries its kind, the codes of its two ends and its day.
- */
-export function bookingTask(leg: { kind: string; from: string; to: string; day: string; fromName?: string; toName?: string }, text: string): TaskDraft {
-  const task: Task = { type: 'booking', leg: { kind: leg.kind, from: leg.from, to: leg.to, day: leg.day }, text, from: 'app' }
-  return taskDraft(
-    `${leg.from} to ${leg.to} ${day(leg.day)}`,
-    `Fill in the booking of ${leg.fromName ?? leg.from} to ${leg.toName ?? leg.to} on ${day(leg.day)}.`,
-    task,
-  )
-}
-
-/**
  * A stay_prices task for rooms of a place to stay that exists, for the nights from first. Claude writes one price
  * per room on the place's own links and never adds a place or a room from it. The shape is what tasks.py needs.
  */

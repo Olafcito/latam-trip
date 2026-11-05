@@ -4,23 +4,23 @@ import { boxChips, boxHead, boxSegments, fileMessage, type BoxHead } from '../..
 import { formRows, fromPicked, fromRow, manualRows, readKr, rowsOf, savedRow, withIds, type BookingFields, type DraftLeg } from '../../lib/bookingDraft'
 import { attachFile } from '../../lib/bookings'
 import { weekdayDay } from '../../lib/format'
-import { remoteEnabled } from '../../lib/supabase'
-import { askLabel, bookingTask, insertTask, press, type AskState } from '../../lib/tasks'
+import type { ReadDraft } from '../../lib/readBooking'
 import { useStore } from '../../store'
 import { Bag, Calendar, Check, Close, Doc, Hash, Link, Note, Plus, Rebook, Refund, Shop, Star, Suitcase, Ticket } from '../icons'
 import { BoxChips, BoxRoute, BoxSegs, cityOf, type BoxData } from './BookedBox'
 
-// The booking form, in place of the sheet it opens from. Three ways in, one segmented control: Picked
+// The booking form, in place of the sheet it opens from. Two ways in, one segmented control: Picked
 // flight shows the booking the picked flight or way would make, as the booked box would show it, with
-// one field for the reference, so marking it takes two taps. Fill in yourself is a grouped list of the
-// fields, each with its icon, none required and no day, since the leg has its day. Ask Claude sends
-// what you write as a booking task. Edit opens Fill in yourself filled from the booked rows, and a
+// one field for the reference, so adding it takes two taps. Fill in yourself is a grouped list of the
+// fields, each with its icon, none required and no day, since the leg has its day. A booking read from
+// its confirmation opens Fill in yourself filled in, with its files ready to attach and the fields the
+// confirmation did not hold tinted amber. Edit opens Fill in yourself filled from the booked rows, and a
 // flight picked after Change booking opens Picked flight on the booking it changes.
 
 export type SaveResult = { ok: true; ids: string[] } | { ok: false; message: string }
-export type Start = 'picked' | 'manual' | 'claude'
+export type Start = 'picked' | 'manual'
 
-/** The leg with the names of its two ends, for the task Claude gets. */
+/** The leg with the names of its two ends. */
 export interface FormLeg extends DraftLeg {
   fromName: string
   toName: string
@@ -49,6 +49,8 @@ export interface FormOpen<P> {
   /** the ids of the booked rows the picked rows write over, by place */
   ids?: (n: number) => (string | undefined)[]
   edit?: boolean
+  /** a booking read from its confirmation: its rows, its fields, what it did not hold, and the files it was read from */
+  read?: ReadDraft & { files: File[] }
 }
 
 /** The form for a sheet: open() puts it in place of the sheet, node is what the sheet shows then, and after runs once the sheet is back. */
@@ -65,7 +67,7 @@ export function useBookingForm<P>(target: BookTarget<P> | undefined, after?: (sa
   return { open: (x: FormOpen<P>) => setO(x), node }
 }
 
-const TABS: [Start, string][] = [['picked', 'Picked flight'], ['manual', 'Fill in yourself'], ['claude', 'Ask Claude']]
+const TABS: [Start, string][] = [['picked', 'Picked flight'], ['manual', 'Fill in yourself']]
 const REFUND: [NonNullable<BookingFields['refundable']>, string][] = [['yes', 'Yes'], ['partly', 'Partly'], ['no', 'No']]
 const CHANGE: [NonNullable<BookingFields['changeable']>, string][] = [['yes', 'Yes'], ['fee', 'For a fee'], ['no', 'No']]
 const FACTS = ['seller', 'url', 'price', 'cabin_bag', 'checked_bag'] as const
@@ -104,10 +106,17 @@ function Seg<T extends string>({ label, value, options, onChange, clear, classNa
   )
 }
 
-/** A row of the grouped list: the icon, the name of the field, and the field. */
-function Row({ icon, label, htmlFor, children, sub }: { icon: ReactNode; label: string; htmlFor?: string; children: ReactNode; sub?: boolean }) {
-  const name = htmlFor ? <label className="bf-k" htmlFor={htmlFor}>{label}</label> : <span className="bf-k">{label}</span>
-  return <li className="bf-row" data-sub={sub || undefined}><span className="bf-i" aria-hidden="true">{icon}</span>{name}<span className="bf-v">{children}</span></li>
+const NOT_READ = 'Not in the confirmation'
+
+/** A row of the grouped list: the icon, the name of the field, and the field. One the confirmation did not hold is tinted, and its name says so. */
+function Row({ icon, label, htmlFor, children, sub, missing }: { icon: ReactNode; label: string; htmlFor?: string; children: ReactNode; sub?: boolean; missing?: boolean }) {
+  const words = <>{label}{missing && <span className="vh">, {NOT_READ.toLowerCase()}</span>}</>
+  const name = htmlFor ? <label className="bf-k" htmlFor={htmlFor}>{words}</label> : <span className="bf-k">{words}</span>
+  return (
+    <li className="bf-row" data-sub={sub || undefined} data-missing={missing || undefined} title={missing ? NOT_READ : undefined}>
+      <span className="bf-i" aria-hidden="true">{icon}</span>{name}<span className="bf-v">{children}</span>
+    </li>
+  )
 }
 
 /** The head of a leg with no airport codes, a bus or a boat: the names large in place of the codes. */
@@ -170,7 +179,8 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
     return rebook ? withIds(rows, open.ids?.(rows.length) ?? [open.booking!.id]) : rows
   })
   const [existing] = useState(() => (open.booking ? rowsOf(bookings, open.booking) : []))
-  const tabs = TABS.filter(([k]) => (k !== 'picked' || picked) && (k !== 'claude' || remoteEnabled()))
+  const read = edit ? undefined : open.read
+  const tabs = TABS.filter(([k]) => k !== 'picked' || (picked && !read))
   const [tab, setTab] = useState<Start>(() => (edit ? 'manual' : tabs.some(([k]) => k === open.start) ? open.start : 'manual'))
   const [form, setForm] = useState<BookingFields>(() => {
     const was = existing[0] ?? open.booking
@@ -180,17 +190,15 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
       return { ...noDay(fromRow(was)), reference: own.reference, fare: own.fare }
     }
     if (rebook && was) return { ...noDay(fromRow(was)), ...factsOf(picked?.[0]) }
-    // Fill in yourself starts from the pick, so its seller, link, price and bags are there to edit
-    return { reference: '', ...factsOf(picked?.[0]) }
+    // a read fills what the confirmation held. Fill in yourself starts from the pick, so its seller, link, price and bags are there to edit
+    return { reference: '', ...factsOf(picked?.[0]), ...noDay(read?.fields ?? {}) }
   })
-  const [files, setFiles] = useState<File[]>([])
+  const [files, setFiles] = useState<File[]>(() => read?.files ?? [])
   const [busy, setBusy] = useState(false)
   const [said, setSaid] = useState<{ text: string; bad?: boolean } | null>(null)
   // a save that went but left a file behind: the rows are booked now, so a second save changes them
   const [savedIds, setSavedIds] = useState<string[] | null>(null)
-  const [text, setText] = useState('')
-  const [ask, setAsk] = useState<AskState>('idle')
-  const first = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null)
+  const first = useRef<HTMLInputElement | null>(null)
   const price = useRef<HTMLInputElement>(null)
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
 
@@ -206,6 +214,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
   const base = (): Partial<Booking>[] => {
     if (edit) return existing.map((b) => ({ id: b.id }))
     if ((tab === 'picked' || rebook) && picked) return picked
+    if (read) return read.rows
     return manualRows(leg, picked)
   }
 
@@ -221,7 +230,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
 
   const save = async (e?: FormEvent) => {
     e?.preventDefault()
-    if (busy || tab === 'claude') return
+    if (busy) return
     const full = tab === 'manual' || edit
     if (full && Number.isNaN(readKr(form.price))) {
       setSaid({ text: 'Write the price as a number of kroner.', bad: true })
@@ -260,15 +269,6 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
     setSaid({ text: `Booked. ${why}`, bad: true })
   }
 
-  const send = async () => {
-    if (ask === 'sending' || ask === 'sent') return
-    setAsk('sending')
-    setSaid(null)
-    const r = await press('idle', () => insertTask(bookingTask(leg, text.trim()), target.tripId, target.tripVersion))
-    setAsk(r.state)
-    if (r.error) setSaid({ text: r.error, bad: true })
-  }
-
   const onTabKey = (e: KeyboardEvent) => {
     const i = tabs.findIndex(([k]) => k === tab)
     const to = arrow(e, i, tabs.length)
@@ -282,13 +282,14 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
   const pass = tab === 'manual' ? (edit ? existing : formRows(base(), typedIn)) : picked ?? base()
   const refundUntil = form.refundable === 'yes' || form.refundable === 'partly'
   const changeUntil = form.changeable === 'yes' || form.changeable === 'fee'
-  const done = ask === 'sent'
+  // a field the read did not find stays tinted until something is written in it
+  const miss = (k: keyof BookingFields) => !!read?.missing.includes(k) && !form[k]
 
   return (
     <form className="fl bf" aria-labelledby={`${id}-h`} onSubmit={save} noValidate>
       <div className="fl-top bf-top">
         <header className="fl-h">
-          <h3 id={`${id}-h`}>{edit ? 'Edit' : 'Mark as booked'}</h3>
+          <h3 id={`${id}-h`}>{edit ? 'Edit' : 'Add booking'}</h3>
         </header>
         {!edit && tabs.length > 1 && (
           <div className="seg bf-tabs" role="radiogroup" aria-label="How to mark it" onKeyDown={onTabKey}>
@@ -300,7 +301,7 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
       </div>
 
       <div className="bf-body">
-        {tab !== 'claude' && pass.length > 0 && (tab === 'picked' || !edit) && <Pass leg={leg} rows={pass} data={data} />}
+        {pass.length > 0 && (tab === 'picked' || !edit) && <Pass leg={leg} rows={pass} data={data} />}
 
         {tab === 'picked' && (
           <ul className="bf-list">
@@ -316,25 +317,25 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
         {tab === 'manual' && (
           <>
             <ul className="bf-list">
-              <Row icon={<Hash s={16} />} label="Booking reference" htmlFor={`${id}-ref`}>
+              <Row icon={<Hash s={16} />} label="Booking reference" htmlFor={`${id}-ref`} missing={miss('reference')}>
                 <input
                   ref={(el) => { first.current = el }} id={`${id}-ref`} name="reference" className="bf-in bf-code" value={form.reference ?? ''} onChange={typed('reference')}
                   autoCapitalize="characters" autoCorrect="off" autoComplete="off" spellCheck={false} placeholder="ABC123"
                 />
               </Row>
-              <Row icon={<Shop s={16} />} label="Seller" htmlFor={`${id}-seller`}>
+              <Row icon={<Shop s={16} />} label="Seller" missing={miss('seller')} htmlFor={`${id}-seller`}>
                 <input id={`${id}-seller`} name="seller" className="bf-in" value={form.seller ?? ''} onChange={typed('seller')} autoComplete="off" placeholder="Airline or site…" />
               </Row>
-              <Row icon={<Hash s={16} />} label="Seller's number" htmlFor={`${id}-sref`} sub>
+              <Row icon={<Hash s={16} />} label="Seller's number" missing={miss('seller_reference')} htmlFor={`${id}-sref`} sub>
                 <input
                   id={`${id}-sref`} name="seller_reference" className="bf-in bf-code" value={form.seller_reference ?? ''} onChange={typed('seller_reference')}
                   autoCapitalize="characters" autoCorrect="off" autoComplete="off" spellCheck={false} placeholder="Order number"
                 />
               </Row>
-              <Row icon={<Star s={16} />} label="Fare" htmlFor={`${id}-fare`}>
+              <Row icon={<Star s={16} />} label="Fare" missing={miss('fare')} htmlFor={`${id}-fare`}>
                 <input id={`${id}-fare`} name="fare" className="bf-in" value={form.fare ?? ''} onChange={typed('fare')} autoComplete="off" placeholder="Light, Classic" />
               </Row>
-              <Row icon={<Ticket s={16} />} label="Price" htmlFor={`${id}-price`}>
+              <Row icon={<Ticket s={16} />} label="Price" missing={miss('price')} htmlFor={`${id}-price`}>
                 <span className="bf-kr">
                   <input
                     ref={price} id={`${id}-price`} name="price" className="bf-in" value={form.price ?? ''} onChange={typed('price')} inputMode="decimal" autoComplete="off"
@@ -346,38 +347,38 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
             </ul>
 
             <ul className="bf-list">
-              <Row icon={<Refund s={16} />} label="Refundable">
+              <Row icon={<Refund s={16} />} label="Refundable" missing={miss('refundable')}>
                 <Seg label="Refundable" value={form.refundable ?? ''} options={REFUND} onChange={set('refundable')} clear />
               </Row>
               {refundUntil && (
-                <Row icon={<Calendar s={16} />} label="Until" htmlFor={`${id}-cancel`} sub>
+                <Row icon={<Calendar s={16} />} label="Until" htmlFor={`${id}-cancel`} sub missing={miss('cancel_until')}>
                   <input id={`${id}-cancel`} name="cancel_until" className="bf-in" type="date" value={form.cancel_until ?? ''} onChange={typed('cancel_until')} max={leg.day} />
                 </Row>
               )}
-              <Row icon={<Rebook s={16} />} label="Changeable">
+              <Row icon={<Rebook s={16} />} label="Changeable" missing={miss('changeable')}>
                 <Seg label="Changeable" value={form.changeable ?? ''} options={CHANGE} onChange={set('changeable')} clear />
               </Row>
               {changeUntil && (
-                <Row icon={<Calendar s={16} />} label="Until" htmlFor={`${id}-change`} sub>
+                <Row icon={<Calendar s={16} />} label="Until" htmlFor={`${id}-change`} sub missing={miss('change_until')}>
                   <input id={`${id}-change`} name="change_until" className="bf-in" type="date" value={form.change_until ?? ''} onChange={typed('change_until')} max={leg.day} />
                 </Row>
               )}
             </ul>
 
             <ul className="bf-list">
-              <Row icon={<Bag s={16} />} label="Cabin bag" htmlFor={`${id}-cabin`}>
+              <Row icon={<Bag s={16} />} label="Cabin bag" missing={miss('cabin_bag')} htmlFor={`${id}-cabin`}>
                 <input id={`${id}-cabin`} name="cabin_bag" className="bf-in" value={form.cabin_bag ?? ''} onChange={typed('cabin_bag')} autoComplete="off" placeholder="Included" />
               </Row>
-              <Row icon={<Suitcase s={16} />} label="Checked bag" htmlFor={`${id}-checked`}>
+              <Row icon={<Suitcase s={16} />} label="Checked bag" missing={miss('checked_bag')} htmlFor={`${id}-checked`}>
                 <input id={`${id}-checked`} name="checked_bag" className="bf-in" value={form.checked_bag ?? ''} onChange={typed('checked_bag')} autoComplete="off" placeholder="1 x 23 kg" />
               </Row>
             </ul>
 
             <ul className="bf-list">
-              <Row icon={<Link s={16} />} label="Link" htmlFor={`${id}-url`}>
+              <Row icon={<Link s={16} />} label="Link" missing={miss('url')} htmlFor={`${id}-url`}>
                 <input id={`${id}-url`} name="url" className="bf-in" type="url" inputMode="url" value={form.url ?? ''} onChange={typed('url')} autoComplete="off" autoCapitalize="none" spellCheck={false} placeholder="https://" />
               </Row>
-              <Row icon={<Link s={16} />} label="Confirmation mail" htmlFor={`${id}-mail`}>
+              <Row icon={<Link s={16} />} label="Confirmation mail" missing={miss('mail_url')} htmlFor={`${id}-mail`}>
                 <input id={`${id}-mail`} name="mail_url" className="bf-in" type="url" inputMode="url" value={form.mail_url ?? ''} onChange={typed('mail_url')} autoComplete="off" autoCapitalize="none" spellCheck={false} placeholder="https://mail.google.com/..." />
               </Row>
               <li className="bf-row bf-notes">
@@ -406,28 +407,12 @@ export function BookingForm<P>({ target, open, onDone }: { target: BookTarget<P>
             </div>
           </>
         )}
-
-        {tab === 'claude' && (
-          <div className="bf-ask">
-            <label className="vh" htmlFor={`${id}-ask`}>What Claude should know</label>
-            <textarea
-              ref={(el) => { first.current = el }} id={`${id}-ask`} name="text" className="bf-in" rows={5} value={text} onChange={(e) => setText(e.currentTarget.value)} disabled={done}
-              placeholder={`The ${leg.fromName} to ${leg.toName} confirmation is in my mail…`}
-            />
-          </div>
-        )}
       </div>
 
       <footer className="fl-foot bf-foot">
         <p className="bf-said" role="status" data-bad={said?.bad || undefined}>{said?.text}</p>
-        <button type="button" className="btn small" onClick={() => onDone(false)} disabled={busy}>{done ? 'Done' : 'Cancel'}</button>
-        {tab === 'claude' ? (
-          <button type="button" className="btn small bf-go" onClick={send} disabled={!text.trim() || ask === 'sending' || done}>
-            {done && <Check s={14} />}{ask === 'idle' ? 'Send to Claude' : askLabel(ask)}
-          </button>
-        ) : (
-          <button type="submit" className="btn small bf-go" disabled={busy}><Check s={14} />{busy ? 'Saving' : edit ? 'Save' : 'Booked'}</button>
-        )}
+        <button type="button" className="btn small" onClick={() => onDone(false)} disabled={busy}>Cancel</button>
+        <button type="submit" className="btn small bf-go" disabled={busy}><Check s={14} />{busy ? 'Saving' : edit ? 'Save' : 'Add'}</button>
       </footer>
     </form>
   )

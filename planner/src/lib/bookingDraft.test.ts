@@ -3,7 +3,6 @@ import type { CrawledFlight, InOut, Ticket, Way } from '../data/types'
 import { blank, formRows, fromPicked, fromRow, manualRows, rowsOf, savedRow, wayRebookIds, withIds, withSaved, type DraftLeg } from './bookingDraft'
 import { keepPaid, paidPrice } from './booked'
 import type { Booking } from '../data/types'
-import { bookingTask } from './tasks'
 
 // Made up flights and tickets only. A real reference, price or name never goes in this file.
 
@@ -277,14 +276,5 @@ describe('changing a booking', () => {
     const kept = keepPaid(list, again)
     expect(kept).toEqual([again[0], { id: 'bhome', price_dkk: null }])
     expect(paid(withSaved(list, kept, ['bin', 'bhome']))).toEqual([6000, null])
-  })
-})
-
-describe('bookingTask', () => {
-  it('carries the leg and the text', () => {
-    const d = bookingTask({ kind: 'flight', from: 'MDE', to: 'VVI', day: '2026-12-20', fromName: 'Medellín', toName: 'Santa Cruz' }, 'It is in my mail from Test Air')
-    expect(d.task).toEqual({ type: 'booking', leg: { kind: 'flight', from: 'MDE', to: 'VVI', day: '2026-12-20' }, text: 'It is in my mail from Test Air', from: 'app' })
-    expect(d.title).toBe('[booking] MDE to VVI 20 Dec')
-    expect(d.line).toBe('Fill in the booking of Medellín to Santa Cruz on 20 Dec.')
   })
 })

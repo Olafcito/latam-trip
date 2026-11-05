@@ -408,8 +408,13 @@
   .bf-kr > span { font-size: var(--fs-small); color: var(--muted); }
   .bf-in[type='date'] { width: auto; margin-left: auto; font-variant-numeric: tabular-nums; }
   .bf-notes { grid-template-columns: 28px minmax(0, 1fr); padding-block: 10px 12px; }
-  .bf-notes .bf-in, .bf-ask .bf-in { grid-column: 1 / -1; min-height: 72px; margin-top: 8px; padding: 10px 12px; border-radius: 8px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); text-align: left; line-height: 1.45; resize: vertical; }
-  .bf-ask .bf-in { min-height: 132px; margin-top: 0; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); }
+  .bf-notes .bf-in { grid-column: 1 / -1; min-height: 72px; margin-top: 8px; padding: 10px 12px; border-radius: 8px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); text-align: left; line-height: 1.45; resize: vertical; }
+  /* a field the confirmation did not hold: an amber tint and an amber name until it is filled */
+  .bf-row[data-missing] { background: color-mix(in srgb, var(--flight) 12%, transparent); }
+  .bf-row[data-missing] .bf-k { color: var(--flight); }
+  .bf-row[data-missing] .bf-i { background: color-mix(in srgb, var(--flight) 18%, transparent); color: var(--flight); }
+  .bf-row[data-missing]:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
+  .bf-row[data-missing]:last-child { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
 
   .bf-chips { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 0; }
   .bf-chips .bk-chip { padding-right: 4px; }
