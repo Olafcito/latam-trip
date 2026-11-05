@@ -45,6 +45,9 @@ const AIRLINE_LOGO: Record<string, string> = Object.fromEntries([
 const SELLER_LOGO: Record<string, string> = { bookingcom: 'booking.svg', booking: 'booking.svg', expedia: 'expedia.svg', travellink: 'travellink.png', travellinkdk: 'travellink.png',
   airbnb: 'provider-airbnb.svg', hotelscom: 'provider-hotels-com.svg', tripadvisor: 'provider-tripadvisor.svg', tripcom: 'provider-trip-com.svg',
   trivago: 'provider-trivago.svg', googlehotels: 'provider-google.svg', google: 'provider-google.svg', hilton: 'provider-hilton.svg', marriott: 'provider-marriott.svg',
+  hostelworld: 'provider-hostelworld.svg', agoda: 'provider-agoda.svg', vrbo: 'provider-vrbo.svg', kayak: 'provider-kayak.svg',
+  despegar: 'provider-despegar.svg', despegarcom: 'provider-despegar.svg', priceline: 'provider-priceline.png', pricelinecom: 'provider-priceline.png',
+  hostelz: 'provider-hostelz.png', hostelzcom: 'provider-hostelz.png', selina: 'provider-selina.svg',
 }
 
 const key = (name: string) => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '')
