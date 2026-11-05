@@ -13,6 +13,7 @@ import { remoteEnabled } from '../../lib/supabase'
 import { flightPricesTask } from '../../lib/tasks'
 import { AskClaude } from '../AskClaude'
 import { dayValue, type DayItem, type DayKind, type DayValue } from '../../lib/tripDay'
+import { useStore } from '../../store'
 import { Arrow, Bed, Boat, Bus, Caret, Check, Clock, Door, External, Home, Land, Plane, Refresh, Sun } from '../icons'
 import { AddBooking } from './AddBooking'
 import { BookedBox, type BoxData } from './BookedBox'
@@ -447,6 +448,8 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
   }
   const box = useRef<HTMLElement>(null)
   const adder = useRef<HTMLButtonElement>(null)
+  const bookings = useStore((s) => s.bookings)
+  const known = useMemo(() => (book ? { bookings, data: { inout: { airports: book.data.inout.airports, ways: book.inout.ways }, map: book.data.map } } : undefined), [bookings, book])
   // back from the form, the focus goes to the booking it saved, or to Add booking when it was left
   const form = useBookingForm(book, () => (box.current ? showBox() : adder.current?.focus({ preventScroll: true })))
   // a booked leg is held: the box shows the booking and nothing under it changes the leg. Opened with Change
@@ -531,7 +534,7 @@ export function FlightSheet({ from, to, typical, picked, parked, booking, data, 
         ) : <DayList key={at} rows={list} name={airportName} nextDay={stay.nextDay} now={now} buy={buy} ends={ends} onPick={choose} tail={tail} />}
         {book && !booking && remoteEnabled() && (
           <AddBooking
-            ref={adder} leg={book.leg}
+            ref={adder} leg={book.leg} known={known}
             onRead={(read) => form.open({ start: 'manual', read })}
             onManual={() => form.open({ start: picked ? 'picked' : 'manual', picked, pin: picked ?? undefined })}
           />

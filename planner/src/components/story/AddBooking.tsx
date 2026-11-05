@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent, t
 import type { DraftLeg } from '../../lib/bookingDraft'
 import { fileProblem, MAX_FILE_BYTES } from '../../lib/bookings'
 import { gmailLogo } from '../../lib/purchase'
-import { readBooking, type ReadDraft } from '../../lib/readBooking'
+import { readBooking, type Known, type ReadDraft } from '../../lib/readBooking'
 import { Close, Upload } from '../icons'
 
 // Add booking, at the end of a leg that is not booked yet. Closed it is one row: the booking comes as a mail, a PDF
@@ -32,8 +32,10 @@ function kindOf(f: File): string {
   return (ext || 'IMG').slice(0, 4).toUpperCase()
 }
 
-export function AddBooking({ leg, onRead, onManual, ref }: {
+export function AddBooking({ leg, known, onRead, onManual, ref }: {
   leg: DraftLeg
+  /** the bookings made and the places, so a return leg that is booked already is not added again */
+  known?: Known
   /** opens the booking form on what was read */
   onRead: (read: Read) => void
   /** opens the booking form to fill in by hand */
@@ -52,19 +54,28 @@ export function AddBooking({ leg, onRead, onManual, ref }: {
   const failed = useRef(false)
   const opener = useRef<HTMLButtonElement>(null)
   const wasOpen = useRef(false)
+  const reading = useRef<HTMLDivElement>(null)
   const live = useRef(true)
-  useEffect(() => () => { live.current = false }, [])
+  // set again on each mount, since StrictMode runs the cleanup once before the page is used
+  useEffect(() => {
+    live.current = true
+    return () => { live.current = false }
+  }, [])
   // opening puts the focus on the files, closing back on the row, so the keyboard never lands on nothing
   useEffect(() => {
     if (step === 'open' && !wasOpen.current) drop.current?.focus({ preventScroll: true })
     if (step === 'closed' && wasOpen.current) opener.current?.focus({ preventScroll: true })
     // a read that failed hands the focus back to Add booking, with the reason read out beside it
+    // the row that says it is reading takes the focus, so the keyboard is not left on the button that went away
+    if (step === 'reading') reading.current?.focus({ preventScroll: true })
     if (step === 'open' && failed.current) goBtn.current?.focus({ preventScroll: true })
     failed.current = false
     wasOpen.current = step !== 'closed'
   }, [step])
 
   const add = (chosen: File[]) => {
+    // what comes in while a read runs is not part of it
+    if (step === 'reading') return
     const bad = chosen.map(problem).find(Boolean)
     const good = chosen.filter((f) => !problem(f))
     setFiles((now) => [...now, ...good.filter((f) => !now.some((x) => x.name === f.name && x.size === f.size))])
@@ -97,7 +108,7 @@ export function AddBooking({ leg, onRead, onManual, ref }: {
     setStep('reading')
     let r: Awaited<ReturnType<typeof readBooking>>
     try {
-      r = await readBooking(leg, files, text)
+      r = await readBooking(leg, files, text, known)
     } catch {
       r = { ok: false, message: 'The booking could not be read. Fill it in yourself.' }
     }
@@ -122,6 +133,7 @@ export function AddBooking({ leg, onRead, onManual, ref }: {
   return (
     <section className="ab" aria-labelledby={`${id}-h`} data-over={over || undefined} onDragOver={onDrag} onDragEnter={onDrag} onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOver(false) }} onDrop={onDrop}>
       <h4 id={`${id}-h`}>Add booking</h4>
+      <p className="vh" role="status" aria-live="polite">{step === 'reading' ? 'Reading the booking' : said}</p>
 
       {step === 'closed' && (
         <button
@@ -138,7 +150,7 @@ export function AddBooking({ leg, onRead, onManual, ref }: {
       )}
 
       {step === 'reading' && (
-        <div className="ab-row ab-reading" role="status">
+        <div ref={reading} className="ab-row ab-reading" tabIndex={-1}>
           <svg className="ab-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9" /></svg>
           <b>Reading the booking</b>
         </div>
@@ -170,13 +182,13 @@ export function AddBooking({ leg, onRead, onManual, ref }: {
                 autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="done"
               />
             </label>
-            {said && <p className="ab-said" role="alert">{said}</p>}
+            {said && <p className="ab-said" aria-hidden="true">{said}</p>}
             <div className="ab-acts">
               <button ref={goBtn} type="button" className="btn ab-go" onClick={go} disabled={!ready}>Add booking</button>
               <button type="button" className="btn link ab-cancel" onClick={cancel}>Cancel</button>
             </div>
           </div>
-          <button type="button" className="btn link ab-self" onClick={onManual}>Fill in yourself</button>
+          <button type="button" className="btn link small ab-self" onClick={onManual}>Fill in yourself</button>
         </>
       )}
     </section>
