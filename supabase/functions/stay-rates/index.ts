@@ -228,19 +228,23 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
   if (error) throw new Refused(500, 'The rooms could not be read.')
   const rooms = (stored ?? []) as Room[]
   const byId = new Map(rooms.filter((r) => r.site_id).map((r) => [r.site_id as string, r]))
-  const byName = new Map(rooms.map((r) => [sameName(r.name), r]))
+  const byName = new Map(rooms.filter((r) => !r.site_id).map((r) => [sameName(r.name), r]))
 
   const fresh: Record<string, unknown>[] = []
   const matched = new Map<string, Room>()
   for (const r of seen) {
     const siteId = String(r.id)
-    const had = byId.get(siteId) ?? byName.get(sameName(r.name as string))
+    const nameKey = sameName(r.name as string)
+    const had = byId.get(siteId) ?? byName.get(nameKey)
     if (had) {
-      matched.set(siteId, had)
       if (!had.site_id) {
+        byName.delete(nameKey)
         const photo = image(r.images?.[0])
-        await db.from('lodging_rooms').update({ site: 'hostelworld', site_id: siteId, ...(photo ? { photo } : {}) }).eq('id', had.id)
+        const { error: e } = await db.from('lodging_rooms').update({ site: 'hostelworld', site_id: siteId, ...(photo ? { photo } : {}) }).eq('id', had.id)
+        if (e) throw new Refused(500, 'A room could not be updated.')
+        had.site_id = siteId
       }
+      matched.set(siteId, had)
       continue
     }
     fresh.push({
