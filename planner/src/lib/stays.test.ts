@@ -29,10 +29,10 @@ const sched = (j: Journey) => schedule(j, wi, wh, 'C', (n) => n)
 
 const price = (over: Partial<LodgingPrice>): LodgingPrice => ({
   id: 'p', room_id: 'R1', check_in: '2026-12-05', check_out: '2026-12-09', total_dkk: null, per_night_dkk: null, site: null, url: null,
-  refundable: null, cancel_until: null, observed_at: '2026-11-03T10:00:00Z', ...over,
+  refundable: null, cancel_until: null, available: null, observed_at: '2026-11-03T10:00:00Z', ...over,
 })
 const room = (prices: LodgingPrice[], id = 'R1'): LodgingRoom => ({
-  id, lodging_id: 'L1', name: 'TEST01 dorm', beds: 6, private: false, bathroom: 'shared', notes: null,
+  id, lodging_id: 'L1', name: 'TEST01 dorm', beds: 6, private: false, bathroom: 'shared', notes: null, site: null, site_id: null, photo: null,
   created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z', prices: prices.map((p) => ({ ...p, room_id: id })),
 })
 const lodging = (rooms: LodgingRoom[], id = 'L1'): Lodging => ({

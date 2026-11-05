@@ -347,10 +347,10 @@ describe('planned stays and booked stays at the stops', () => {
     id, place_id: 'MDE', name, kind: 'hostel', photos: [], rating: null, reviews: null, rating_source: null, address: null,
     lat: null, lon: null, to_center_km: null, to_beach_km: null, tags: [], summary: null, notes: null, links: [], added_by: 'simon',
     hidden: false, created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z',
-    rooms: [{ id: 'R1', lodging_id: id, name: 'TEST01 dorm', beds: 6, private: false, bathroom: 'shared', notes: null,
+    rooms: [{ id: 'R1', lodging_id: id, name: 'TEST01 dorm', beds: 6, private: false, bathroom: 'shared', notes: null, site: null, site_id: null, photo: null,
       created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z',
       prices: [{ id: 'p-' + id, room_id: 'R1', check_in: '2026-12-10', check_out: '2026-12-20', total_dkk: total, per_night_dkk: null,
-        site: null, url: null, refundable: null, cancel_until: null, observed_at: '2026-11-03T10:00:00Z' }] }],
+        site: null, url: null, refundable: null, cancel_until: null, available: null, observed_at: '2026-11-03T10:00:00Z' }] }],
   })
   const T1 = ticket('T1', 6000, 0, 300)
   const wi = way({ id: 'I1', tickets: ['T1'], shared_ticket: 'T1', paired_with: 'H1', type: 'ticket' })

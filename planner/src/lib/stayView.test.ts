@@ -7,10 +7,10 @@ import { partPrice, partPriceWords, photosShown, quotedLabel } from './stayView'
 
 const price = (over: Partial<LodgingPrice>): LodgingPrice => ({
   id: 'p', room_id: 'R1', check_in: '2026-12-05', check_out: '2026-12-09', total_dkk: null, per_night_dkk: null, site: null, url: null,
-  refundable: null, cancel_until: null, observed_at: '2026-11-03T10:00:00Z', ...over,
+  refundable: null, cancel_until: null, available: null, observed_at: '2026-11-03T10:00:00Z', ...over,
 })
 const room = (prices: LodgingPrice[]): LodgingRoom => ({
-  id: 'R1', lodging_id: 'L1', name: 'TEST01 dorm', beds: 6, private: false, bathroom: 'shared', notes: null,
+  id: 'R1', lodging_id: 'L1', name: 'TEST01 dorm', beds: 6, private: false, bathroom: 'shared', notes: null, site: null, site_id: null, photo: null,
   created_at: '2026-11-03T10:00:00Z', updated_at: '2026-11-03T10:00:00Z', prices,
 })
 const part = (first: string, nights: number): StayPart => ({ stay: { lodging_id: 'L1', room_id: 'R1' }, first, last: first, nights, fits: true })

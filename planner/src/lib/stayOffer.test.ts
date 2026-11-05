@@ -4,10 +4,10 @@ import { amenities, cheapestRoom, nightly, providers, roomMix, siteKey, sortPlac
 
 const price = (over: Partial<LodgingPrice>): LodgingPrice => ({
   id: 'p', room_id: 'r', check_in: '2026-12-08', check_out: '2026-12-09', total_dkk: null, per_night_dkk: null, site: null, url: null,
-  refundable: null, cancel_until: null, observed_at: '2026-11-01T10:00', ...over,
+  refundable: null, cancel_until: null, available: null, observed_at: '2026-11-01T10:00', ...over,
 })
 const room = (id: string, prices: LodgingPrice[], over: Partial<LodgingRoom> = {}): LodgingRoom => ({
-  id, lodging_id: 'l', name: id, beds: null, private: null, bathroom: null, notes: null, created_at: '', updated_at: '', prices, ...over,
+  id, lodging_id: 'l', name: id, beds: null, private: null, bathroom: null, notes: null, site: null, site_id: null, photo: null, created_at: '', updated_at: '', prices, ...over,
 })
 const lodging = (over: Partial<Lodging>): Lodging => ({
   id: 'l', place_id: 'smr', name: 'TEST01', kind: 'hostel', photos: [], rating: null, reviews: null, rating_source: null, address: null,

@@ -24,13 +24,13 @@ describe('a place added by hand', () => {
 
   it('saves with a name and a room and nothing else, the price row with only the dates in it left out', () => {
     const d = ok(placeDraft('B', form({ rooms: [room()] })))
-    expect(d.rooms).toEqual([{ name: 'TEST01 dorm', beds: null, private: null, bathroom: null, notes: null, prices: [] }])
+    expect(d.rooms).toEqual([{ name: 'TEST01 dorm', beds: null, private: null, bathroom: null, notes: null, site: null, site_id: null, photo: null, prices: [] }])
   })
 
   it('takes a price with its total in kr, rounded', () => {
     const d = ok(placeDraft('B', form({ rooms: [room({ beds: '6', own: 'shared', bath: 'private', prices: [{ key: 'p', check_in: '2026-12-05', check_out: '2026-12-09', total: '1.240,50' }] })] })))
     expect(d.rooms[0]).toMatchObject({ beds: 6, private: false, bathroom: 'private' })
-    expect(d.rooms[0].prices).toEqual([{ check_in: '2026-12-05', check_out: '2026-12-09', total_dkk: 1241, per_night_dkk: null, site: null, url: null, refundable: null, cancel_until: null }])
+    expect(d.rooms[0].prices).toEqual([{ check_in: '2026-12-05', check_out: '2026-12-09', total_dkk: 1241, per_night_dkk: null, site: null, url: null, refundable: null, cancel_until: null, available: null }])
   })
 
   it('asks for the dates of a price with a total', () => {

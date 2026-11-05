@@ -325,6 +325,8 @@ export interface LodgingPrice {
   url: string | null
   refundable: 'yes' | 'no' | 'partly' | null
   cancel_until: string | null
+  /** beds (a dorm) or rooms (a private) still for sale when seen, from a site that says. null when unknown */
+  available: number | null
   observed_at: string
 }
 
@@ -337,8 +339,11 @@ export interface LodgingRoom {
   private: boolean | null
   bathroom: 'private' | 'shared' | null
   notes: string | null
-  /** a photo of the room. Not a column yet: only a later migration fills it, so a room without one shows a bed */
-  photo?: string | null
+  /** the site the room was read from and its id there, so a live read finds the same room again */
+  site: LodgingSite | null
+  site_id: string | null
+  /** a photo of the room. A room without one shows a bed */
+  photo: string | null
   created_at: string
   updated_at: string
   prices: LodgingPrice[]

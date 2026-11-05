@@ -34,9 +34,9 @@ export function placeDraft(place: string, f: PlaceForm): LodgingDraft | string {
       const total = readKr(p.total)
       if (total == null || Number.isNaN(total)) return 'A price needs what it costs in kr.'
       if (!p.check_in || !p.check_out) return 'A price needs the day you check in and the day you check out.'
-      prices.push({ check_in: p.check_in, check_out: p.check_out, total_dkk: Math.round(total), per_night_dkk: null, site: null, url: null, refundable: null, cancel_until: null })
+      prices.push({ check_in: p.check_in, check_out: p.check_out, total_dkk: Math.round(total), per_night_dkk: null, site: null, url: null, refundable: null, cancel_until: null, available: null })
     }
-    rooms.push({ name: r.name.trim(), beds, private: r.own === '' ? null : r.own === 'own', bathroom: r.bath || null, notes: null, prices })
+    rooms.push({ name: r.name.trim(), beds, private: r.own === '' ? null : r.own === 'own', bathroom: r.bath || null, notes: null, site: null, site_id: null, photo: null, prices })
   }
   const d: LodgingDraft = {
     place_id: place, name: f.name.trim(), kind: f.kind, tags: f.tags, notes: f.notes.trim() || null, summary: null,
