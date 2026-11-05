@@ -1,7 +1,7 @@
 # FEAT-002: Live rates from Hostelworld
 
 - Date: 2026-11-05
-- Status: Built 2026-11-05 from `docs/superpowers/plans/2026-11-05-hostelworld-rates.md`. The Outcome section at the end says what the roast found and what changed.
+- Status: Built and roasted 2026-11-05 from `docs/superpowers/plans/2026-11-05-hostelworld-rates.md`. The Outcome section at the end says what the roast found and what changed.
 
 ## 1. Problem
 
@@ -78,6 +78,6 @@ All
 - A room Hostelworld does not list for the dates keeps its last price. It should probably show as sold out for those dates. Left for Simon to see in use.
 - Hostelworld's endpoint is unofficial and can change or start refusing. The function fails soft, and the age mark then shows the price going stale.
 
-## 8. Outcome
+## 8. ## Outcome
 
-Filled in after the roast loop.
+Roast 2026-11-05, score 6.5. Accepted and built in the fix round (b46ad64): a price from today is a plain price with no mark, an older price dims and carries a clock chip that says "5 days old" in words, amber once stale, so the age is never read as beds left. The asking dot is neutral and pulses, and a room with no price for the dates shows a pulsing bar the size of a price instead of a green dot or the words "No price yet". The double focus ring on the link field could not be reproduced in the browser, and the orange top line was not found in the shots, both left. Not accepted here: the roast's point that the Select buttons and the Hostelworld seller row are two actions fighting over one moment is a concept question about the Accommodation pane, raised with Simon, not changed in this feature. After shots: phone-after.png, phone-asking-after.png, desktop-after.png.

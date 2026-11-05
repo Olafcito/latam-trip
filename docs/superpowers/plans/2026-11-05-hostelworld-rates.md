@@ -26,14 +26,18 @@
 
 ## Batch B, UI (Opus)
 
-- [ ] Task 4. `useLiveRates` hook, the live dot while asking, the failure mark on the rooms section.
-- [ ] Task 5. Room marks from `roomMarks`: age, left, free cancellation. `AddStay` resolves the open place by id so the realtime reload shows.
-- [ ] Task 6. The link row on Find & add, `onLink` through `StaySearch` to `StopFold`, the new place opens.
-- [ ] Task 7. Styles in `acc.css`, phone first.
+- [x] Task 4. `useLiveRates` hook, the live dot while asking, the failure mark on the rooms section.
+- [x] Task 5. Room marks from `roomMarks`: age, left, free cancellation. `AddStay` resolves the open place by id so the realtime reload shows.
+- [x] Task 6. The link row on Find & add, `onLink` through `StaySearch` to `StopFold`, the new place opens.
+- [x] Task 7. Styles in `acc.css`, phone first.
 
 ## Batch C, worker
 
 - [x] Task 8. `infra/worker/rates.py` with `wanted` and `refresh`, the `rates` action in `handler.py`, the 05:00 UTC schedule in `deploy.sh`, test `test_rates.py`.
+
+## Fix round
+
+The code review found one must fix (the planner read at most 1000 prices) and seven should fixes, all built in 468f513 to 24cc43e. The roast's accepted points are in b46ad64. The spec's Outcome section has the rest.
 
 ## Review Focus
 
