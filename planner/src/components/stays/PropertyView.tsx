@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Lodging } from '../../data/types'
 import { day, kr } from '../../lib/format'
-import { amenityRow, bookAt, cheapestRoom, nightly, nightsWord, stayDates, type Provider } from '../../lib/stayOffer'
+import { amenityRow, bookAt, cheapestRoom, nightly, nightsWord, stayDates, stayTotal, type Provider } from '../../lib/stayOffer'
 import { addDays } from '../../lib/time'
 import { safeUrl } from '../../lib/lodgingLinks'
 import { roomMarks, type Mark } from '../../lib/roomMarks'
@@ -152,6 +152,11 @@ function SiteLogo({ p, logo }: { p: Provider; logo: string | null }) {
   return <span className="pv-logo" data-none={!logo || undefined} aria-hidden="true">{logo ? <img src={logo} alt="" /> : p.name.slice(0, 1).toUpperCase()}</span>
 }
 
+/** The stay total of the room in focus, after the night count. */
+function TotalMark({ total, nights }: { total: number; nights: number }) {
+  return <><i aria-hidden="true">·</i><b className="pv-tot" aria-label={`${kr(total)} for ${nightsWord(nights)}`}>{kr(total)}</b></>
+}
+
 function Seller({ p, logo }: { p: Provider; logo: string | null }) {
   const inner = (
     <>
@@ -159,7 +164,7 @@ function Seller({ p, logo }: { p: Provider; logo: string | null }) {
       <span className="pv-sn">{p.name}</span>
       {p.price && (
         <span className="pv-sp">
-          <NightPrice p={p.price} className="pv-skr" />
+          <NightPrice p={p.price} className="pv-skr" /><small>/ night</small>
           {p.cheapest && <span className="pv-vh">, the lowest price</span>}
         </span>
       )}
@@ -178,6 +183,8 @@ export function PropertyView(p: PropertyViewProps) {
   const chosen = p.chosen ?? []
   const offers = amenityRow(l).slice(0, 5)
   const focus = l.rooms.find((r) => chosen.includes(r.id)) ?? l.rooms.find((r) => r.id === p.booked) ?? cheapestRoom(l, p.checkIn, p.checkOut)?.room ?? l.rooms[0] ?? null
+  const focusPrice = focus ? nightly(focus.prices, p.checkIn, p.checkOut) : null
+  const total = focusPrice ? stayTotal(focusPrice.dkk, p.nights) : null
   const sellers = bookAt(l, focus, p.checkIn, p.checkOut)
   const kind = kindWord(l.kind)
   const live = useLiveRates(l, p.checkIn, p.checkOut)
@@ -213,9 +220,10 @@ export function PropertyView(p: PropertyViewProps) {
                   <i aria-hidden="true">to</i>
                   <span className="pv-day">{day(p.checkOut)}<DayInput label="Check-out" value={p.checkOut} min={addDays(p.checkIn, 1)} onPick={(d) => p.onDates!(p.checkIn, d)} /></span>
                   <i aria-hidden="true">·</i>{nightsWord(p.nights)}
+                  {total != null && <TotalMark total={total} nights={p.nights} />}
                 </span>
-              ) : <span><Calendar s={15} />{stayDates(p.checkIn, p.checkOut)}<i aria-hidden="true">·</i>{nightsWord(p.nights)}</span>}
-              <span><Person s={15} />{p.guests} {p.guests === 1 ? 'guest' : 'guests'}</span>
+              ) : <span><Calendar s={15} />{stayDates(p.checkIn, p.checkOut)}<i aria-hidden="true">·</i>{nightsWord(p.nights)}{total != null && <TotalMark total={total} nights={p.nights} />}</span>}
+              <span className="pv-gst"><Person s={15} />{p.guests} {p.guests === 1 ? 'guest' : 'guests'}</span>
             </div>
             <ul className="pv-rooms">
               {l.rooms.map((r) => {

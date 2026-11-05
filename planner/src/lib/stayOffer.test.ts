@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Lodging, LodgingPrice, LodgingRoom } from '../data/types'
-import { amenities, amenityRow, bookAt, cheapestRoom, nightly, providers, roomMix, siteKey, sortPlaces, stayDates } from './stayOffer'
+import { amenities, amenityRow, bookAt, cheapestRoom, nightly, providers, roomMix, siteKey, sortPlaces, stayDates, stayTotal } from './stayOffer'
 
 const price = (over: Partial<LodgingPrice>): LodgingPrice => ({
   id: 'p', room_id: 'r', check_in: '2026-12-08', check_out: '2026-12-09', total_dkk: null, per_night_dkk: null, site: null, url: null,
@@ -84,5 +84,12 @@ describe('sortPlaces', () => {
     expect(sortPlaces([a, b, c], 'all', 'price', '2026-12-08', '2026-12-09').map((l) => l.id)).toEqual(['c', 'a', 'b'])
     expect(sortPlaces([a, b, c], 'hostel', 'rating', '2026-12-08', '2026-12-09').map((l) => l.id)).toEqual(['a', 'c'])
     expect(stayDates('2026-12-08', '2026-12-09')).toBe('8 Dec to 9 Dec')
+  })
+})
+
+describe('stayTotal', () => {
+  it('multiplies the night price by the nights and rounds', () => {
+    expect(stayTotal(882, 4)).toBe(3528)
+    expect(stayTotal(100.5, 3)).toBe(302)
   })
 })

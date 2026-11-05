@@ -190,5 +190,8 @@ export function sortPlaces(list: readonly Lodging[], kind: LodgingKind | 'all', 
 /** "1 night", "3 nights". */
 export const nightsWord = (n: number) => (n === 1 ? '1 night' : `${n} nights`)
 
+/** The stay total of a room: its per night price over the nights, in whole kroner. */
+export const stayTotal = (perNight: number, nights: number) => Math.round(perNight * nights)
+
 /** "8 Dec to 9 Dec": both days in full, as the stay rows write them. */
 export const stayDates = (checkIn: string, checkOut: string) => `${day(checkIn)} to ${day(checkOut)}`

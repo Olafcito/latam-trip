@@ -340,6 +340,8 @@
 .pv-bar span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .pv-bar svg { color: var(--muted); }
 .pv-bar i { font-style: normal; color: var(--faint); }
+.pv-bar .pv-tot { font-weight: 600; }
+@media (max-width: 399px) { .pv-bar .pv-gst { display: none; } }
 /* a day on the bar that changes the dates: a small face of its own with the native picker laid unseen over it */
 .pv-bar .pv-day {
   position: relative; gap: 0; padding: 3px 8px; margin: -3px 0; border-radius: 7px; background: var(--surface);
@@ -413,7 +415,8 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
 /* Hostelworld's own orange square with its H, its wordmark reads as nothing this small */
 .pv-logo[data-site='hostelworld'] { background: #F25B2A; color: #fff; font-size: 1rem; }
 .pv-sn { font-size: var(--fs-small); font-weight: 600; overflow-wrap: anywhere; }
-.pv-sp { justify-self: end; }
+.pv-sp { justify-self: end; display: inline-flex; align-items: baseline; gap: 4px; }
+.pv-sp small { font-size: var(--fs-label); color: var(--muted); }
 .pv-skr { font-size: var(--fs-body); font-weight: 700; font-variant-numeric: tabular-nums; }
 .pv-skr[data-other] { color: var(--muted); font-weight: 600; }
 
