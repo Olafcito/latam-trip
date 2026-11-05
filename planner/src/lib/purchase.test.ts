@@ -50,6 +50,7 @@ describe('codes and logos', () => {
     expect(sellerLogo('Booking.com')).toBeTruthy()
     expect(sellerLogo('Travellink.dk')).toBeTruthy()
     expect(sellerLogo('Travellink')).toBe(sellerLogo('Travellink.dk'))
+    for (const n of ['Airbnb', 'Hotels.com', 'Tripadvisor', 'Trip.com', 'Trivago', 'Google Hotels', 'Hilton', 'Marriott']) expect(sellerLogo(n)).toBeTruthy()
     expect(sellerLogo('Some Agent')).toBeNull()
   })
 })
