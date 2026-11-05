@@ -80,6 +80,13 @@ Two tools attach files to a booking. They go in the private `bookings` bucket, a
 
 `add_lodging_price` adds prices to rooms that exist, one row per room and date range in DKK. A row for a room that does not exist is refused. It never makes a lodging, so a stay price task only writes prices.
 
+Five tools are for the task runner (`docs/task-runner.md`), the cloud run that does tasks by itself:
+
+- `claim_task` takes the oldest open task a cloud run may do, checks its fields, sets it to working and gives it back with its contract: what to do, the steps, the only tools to use, what to write and what never to do. Other task types stay open for Simon.
+- `finish_task` stores the result of a claimed task, sets it done and logs it. A result with an em or en dash, or over 8000 characters, is refused.
+- `fail_task` closes a claimed task as failed with the reason.
+- `list_add` and `list_remove` put a place or an experience on one of the saved lists or take it off.
+
 Bookings, their references, prices and files live only in the owner only table and the private bucket, never in a built file. Places to stay, their rooms and prices live only in their owner only tables too.
 
 Each tool describes its fields to the assistant, so asking in plain words works, for example "add the 450 DKK flight from San Jose to Liberia on 12 December".

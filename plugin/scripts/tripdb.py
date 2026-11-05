@@ -547,10 +547,10 @@ def _lists_change(paths, fn, st=None):
     raise Refused("lists.json keeps changing under this run, try again")
 
 
-def cmd_list_add(paths, list_id, typ, item_id, note=None, name=None):
+def cmd_list_add(paths, list_id, typ, item_id, note=None, name=None, st=None):
     if typ not in ("place", "experience"):
         raise Refused(f"type must be place or experience, not {typ!r}")
-    st = get_store(paths)
+    st = st or get_store(paths)
     known = place_ids(st) if typ == "place" else experience_ids(st)
     if item_id not in known:
         raise Refused(f"no {typ} {item_id!r}")
@@ -572,7 +572,7 @@ def cmd_list_add(paths, list_id, typ, item_id, note=None, name=None):
     return _lists_change(paths, change, st)
 
 
-def cmd_list_remove(paths, list_id, typ, item_id):
+def cmd_list_remove(paths, list_id, typ, item_id, st=None):
     def change(doc):
         lst = next((l for l in doc["lists"] if l["id"] == list_id), None)
         if lst is None:
@@ -582,7 +582,7 @@ def cmd_list_remove(paths, list_id, typ, item_id):
         if len(lst["items"]) == before:
             raise Refused(f"{typ} {item_id} is not in {list_id}")
         return f"lists: removed {typ} {item_id} from {list_id}"
-    return _lists_change(paths, change)
+    return _lists_change(paths, change, st)
 
 
 def public_log_row(row):

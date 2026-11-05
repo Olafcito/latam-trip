@@ -23,7 +23,7 @@ $UV pip install --python-platform x86_64-manylinux2014 --python-version 3.12 \
 
 echo ">> assembling package"
 cp -r "$ROOT/latam_trip_mcp" "$DIST/latam_trip_mcp"
-rm -f "$DIST/latam_trip_mcp/test_core.py"
+rm -f "$DIST"/latam_trip_mcp/test_*.py
 mkdir -p "$DIST/plugin/scripts" "$DIST/plugin/skills/flight-crawl-orchestrator/scripts"
 cp "$ROOT"/plugin/scripts/*.py "$DIST/plugin/scripts/"
 rm -f "$DIST"/plugin/scripts/test_*.py

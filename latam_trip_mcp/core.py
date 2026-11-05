@@ -6,6 +6,8 @@ batch. add_lodging takes rooms nested under each lodging and prices under each r
 rooms that exist.
 set_leg_date and shift_leg write the dates of a trip's legs by the rules of planner/src/lib/journey.ts, and never move a
 booked leg. attach_booking_file and attach_booking_upload put a booking's files in the private bookings bucket.
+claim_task, finish_task, fail_task, list_add and list_remove are the task runner's tools, with each task type's
+contract in runner.py.
 
 CRUD only. A tool reads what is stored and writes it through the tripdb store, so every write passes the same checks as
 the plugin's own commands. Nothing here searches the web.
@@ -20,6 +22,7 @@ if SCRIPTS not in sys.path:
 import tripdb  # noqa: E402
 import tripdb_cols as cols  # noqa: E402
 from tripdb_store import Refused  # noqa: E402
+from latam_trip_mcp import runner  # noqa: E402
 
 TRASH = "mcp_trash.json"
 LIMIT = 50
@@ -320,7 +323,7 @@ class Core:
                         "required": ["rows"]},
              "fn": lambda rows: self.add_lodging_price(rows)},
         ]
-        return specs
+        return specs + runner.Runner(self).specs()
 
     def call(self, name, args=None):
         for s in self.tool_specs():
