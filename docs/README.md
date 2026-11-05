@@ -12,6 +12,7 @@ Documentation is part of the work, not a step after it. Every doc in this repo d
 | This map | `docs/README.md` | Main session, checked by `doc-keeper` | A doc is added, moved, retired or changes owner |
 | Product overview | `docs/product/product-overview.md` | `feature-spec` | A screen or a user moment is added or removed |
 | Product decisions | `docs/product/product-decisions.md` | `feature-spec` proposes, Simon accepts | A PROD decision is proposed, accepted or reconsidered |
+| Product backlog | `docs/product/backlog.md` | Main session | Simon asks for something that is not specified yet, or a request becomes a FEAT spec or is dropped |
 | Feature specs | `docs/product/features/FEAT-NNN-<slug>.md` | `feature-spec`, main session moves the status | A comprehensive feature is specified, its status changes, or scope changes during a build |
 | Edge functions | `supabase/functions/<name>/README.md` | The agent changing the function | The request, the response, the secrets or the deploy steps change |
 | Technical decisions | `docs/technical/technical-decisions.md` | The plan author proposes, Simon accepts | A plan picks or changes a library, schema, data flow, deploy shape or security boundary |
