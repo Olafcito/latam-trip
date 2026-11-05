@@ -44,7 +44,7 @@ Hostelworld is asked by the planner, the morning worker and now the search. Noth
 
 ## 5. Acceptance
 
-- Find at San Andrés (ADZ) for 8 to 13 Dec stores three Hostelworld hostels there with photos and priced rooms within seconds. A second press the same minute adds nothing and fetches nothing from Hostelworld.
+- Find at San Andrés (ADZ) for 3 to 8 Dec stores three Hostelworld hostels there with photos and priced rooms within seconds. A second press the same minute adds nothing and fetches nothing from Hostelworld.
 - The same press saves one `stay_search` task. Its run adds up to three Booking.com places at ADZ and closes the task.
 - The sheet shows the search under way until the Hostelworld call has returned and the task is closed, also after the sheet is closed and opened again.
 - The Dreamer Beach Club link pasted at Cartagena is refused with the town it is in.
