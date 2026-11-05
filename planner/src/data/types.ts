@@ -337,6 +337,8 @@ export interface LodgingRoom {
   private: boolean | null
   bathroom: 'private' | 'shared' | null
   notes: string | null
+  /** a photo of the room. Not a column yet: only a later migration fills it, so a room without one shows a bed */
+  photo?: string | null
   created_at: string
   updated_at: string
   prices: LodgingPrice[]
@@ -353,6 +355,8 @@ export interface Lodging {
   reviews: number | null
   rating_source: string | null
   address: string | null
+  /** the part of town, "Centro Histórico". Not a column yet: only a later migration fills it */
+  area?: string | null
   lat: number | null
   lon: number | null
   to_center_km: number | null
