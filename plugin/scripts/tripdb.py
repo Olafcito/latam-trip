@@ -197,12 +197,16 @@ LODGING = {"id": "str", "place_id": "!pid", "name": "!str", "kind": "!enum:hoste
            "added_by": "!enum:simon,claude", "hidden": "bool", "created_at": "time", "updated_at": "time"}
 LODGING_PHOTO = {"url": "!str", "caption": "str|null"}
 LODGING_LINK = {"site": "!enum:" + LODGING_SITES, "url": "!str"}
+# site and site_id say where a room was read from and its id there, so a live read (0019) finds it again. photo is
+# a picture of the room.
 LODGING_ROOM = {"id": "str", "lodging_id": "!str", "name": "!str", "beds": "int|null", "private": "bool|null",
-                "bathroom": "enum:private,shared|null", "notes": "str|null", "created_at": "time", "updated_at": "time"}
-# a price is for a date range, as the sites quote it
+                "bathroom": "enum:private,shared|null", "notes": "str|null", "site": f"enum:{LODGING_SITES}|null",
+                "site_id": "str|null", "photo": "str|null", "created_at": "time", "updated_at": "time"}
+# a price is for a date range, as the sites quote it. available is the beds or rooms left when it was seen
 LODGING_PRICE = {"id": "str", "room_id": "!str", "check_in": "!date", "check_out": "!date", "total_dkk": "num|null",
                  "per_night_dkk": "num|null", "site": f"enum:{LODGING_SITES}|null", "url": "str|null",
-                 "refundable": "enum:yes,no,partly|null", "cancel_until": "date|null", "observed_at": "time"}
+                 "refundable": "enum:yes,no,partly|null", "cancel_until": "date|null", "available": "int|null",
+                 "observed_at": "time"}
 
 # table: file, schema per kind, what makes a row the same row
 TABLES = {

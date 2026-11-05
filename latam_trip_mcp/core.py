@@ -610,7 +610,8 @@ class Core:
             errs.append("check_out is not after check_in")
         if row.get("total_dkk") is None and row.get("per_night_dkk") is None:
             errs.append("give total_dkk or per_night_dkk")
-        errs += [f"{k} is below 0" for k in ("total_dkk", "per_night_dkk") if row.get(k) is not None and row[k] < 0]
+        errs += [f"{k} is below 0" for k in ("total_dkk", "per_night_dkk", "available")
+                 if row.get(k) is not None and row[k] < 0]
         return errs
 
     def place_errors(self, row):

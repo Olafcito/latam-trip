@@ -19,10 +19,10 @@ LODGING = {
     "added_by": "claude", "hidden": False,
 }
 ROOM = {"id": "r1", "lodging_id": "l1", "name": "10 bed dorm", "beds": 10, "private": False, "bathroom": "shared",
-        "notes": None}
+        "notes": None, "site": "hostelworld", "site_id": "TEST01", "photo": "https://example.com/room.jpg"}
 PRICE = {"id": "p1", "room_id": "r1", "check_in": "2026-12-09", "check_out": "2026-12-14", "total_dkk": 1240,
          "per_night_dkk": 248, "site": "hostelworld", "url": "https://example.com/hostel/TEST01", "refundable": "partly",
-         "cancel_until": "2026-12-06", "observed_at": "2026-11-03T10:00:00Z"}
+         "cancel_until": "2026-12-06", "available": 3, "observed_at": "2026-11-03T10:00:00Z"}
 
 
 class LodgingSchema(unittest.TestCase):
@@ -53,6 +53,12 @@ class LodgingSchema(unittest.TestCase):
     def test_a_price_without_check_in_is_refused(self):
         row = {k: v for k, v in PRICE.items() if k != "check_in"}
         self.assertIn("missing check_in", tripdb.check_fields(row, tripdb.LODGING_PRICE))
+
+    def test_a_room_from_an_unknown_site_or_a_price_with_a_text_count_is_refused(self):
+        self.assertTrue(tripdb.check_fields(dict(ROOM, site="expedia"), tripdb.LODGING_ROOM))
+        self.assertEqual(tripdb.check_fields(dict(ROOM, site=None, site_id=None, photo=None), tripdb.LODGING_ROOM), [])
+        self.assertTrue(tripdb.check_fields(dict(PRICE, available="3"), tripdb.LODGING_PRICE))
+        self.assertEqual(tripdb.check_fields(dict(PRICE, available=None), tripdb.LODGING_PRICE), [])
 
     def test_a_trip_place_with_planned_stays_passes(self):
         p = {"node": "CTG", "hop": None, "stays": [{"lodging_id": "a", "room_id": "b"}]}
