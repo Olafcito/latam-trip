@@ -1,9 +1,11 @@
 // stay-rates: the live rooms and prices of a place to stay from Hostelworld (FEAT-002, TECH-003). The planner calls
 // it when a place with a Hostelworld link is opened, and the worker calls it each morning for the dates that have a
 // price already. It reads Hostelworld's own JSON, writes the rooms to lodging_rooms and one price per room to
-// lodging_prices, and the planner gets the rows through realtime. A pasted link adds the place first.
+// lodging_prices, and the planner gets the rows through realtime. A pasted link adds the place first. A search adds
+// and prices the most popular hostels of a map place's Hostelworld city (FEAT-003, TECH-004).
 // Owner only, or the worker with the worker key. Nothing of the content is logged.
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.118.0'
+import { countryName, pickCity, rankHostels, type Ranked } from './rank.ts'
 
 const CORS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -24,8 +26,16 @@ const FETCH_MS = 15_000
 const GATE_SITE = 'hostelworld'
 const GATE_PER_MINUTE = 30
 const GATE_MAX_WAIT_S = 45
+// The search: how many hostels by default and at most, how far from the map place, and how long a city is remembered.
+const TOP_DEFAULT = 3
+const TOP_MAX = 5
+const SEARCH_KM = 40
+const CITY_DAYS = 30
 
-interface Body { lodging_id?: string; url?: string; place_id?: string; check_in?: string; check_out?: string; fresh_minutes?: number }
+interface Body {
+  lodging_id?: string; url?: string; place_id?: string; check_in?: string; check_out?: string; fresh_minutes?: number
+  search?: boolean; top?: number
+}
 interface Money { value?: string | number; currency?: string }
 interface Priced { ratePlan?: number; price?: Money }
 interface HwRoom {
@@ -130,7 +140,7 @@ const KINDS: Record<string, string> = { HOSTEL: 'hostel', HOTEL: 'hotel', GUESTH
 const TAGS: [RegExp, string][] = [[/kitchen/i, 'kitchen'], [/breakfast/i, 'breakfast'], [/air ?con/i, 'aircon'], [/pool/i, 'pool']]
 
 /** The lodging row of a Hostelworld property, as the planner's Add place would fill it in. */
-function lodgingOf(p: HwProperty, url: string, placeId: string): Record<string, unknown> {
+function lodgingOf(p: HwProperty, url: string, placeId: string, addedBy: 'simon' | 'claude'): Record<string, unknown> {
   const names = (p.facilities ?? []).flatMap((g) => (g.facilities ?? []).map((f) => f.name ?? ''))
   const tags = TAGS.filter(([re]) => names.some((n) => re.test(n))).map(([, t]) => t)
   const address = [p.address1, p.city?.name].filter((s) => s && s.trim()).join(', ')
@@ -150,7 +160,7 @@ function lodgingOf(p: HwProperty, url: string, placeId: string): Record<string, 
     tags,
     summary: summary ? summary.slice(0, SUMMARY_CHARS) : null,
     links: [{ site: 'hostelworld', url }],
-    added_by: 'simon',
+    added_by: addedBy,
   }
 }
 
@@ -178,15 +188,32 @@ function service(): SupabaseClient {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
-/** The stored lodging with this Hostelworld property id, by its links, else null. */
-async function findByProperty(db: SupabaseClient, propertyId: string): Promise<{ id: string; place_id: string | null; hidden: boolean } | null> {
-  const { data, error } = await db.from('lodgings').select('id, links, place_id, hidden').filter('links', 'cs', JSON.stringify([{ site: 'hostelworld' }]))
+interface Stored { id: string; place_id: string | null; hidden: boolean; added_by: string; link: string }
+
+/** Every stored lodging with a Hostelworld link, by its Hostelworld property id. The first one stored wins a tie. */
+async function storedByProperty(db: SupabaseClient): Promise<Map<string, Stored>> {
+  const { data, error } = await db
+    .from('lodgings')
+    .select('id, links, place_id, hidden, added_by')
+    .filter('links', 'cs', JSON.stringify([{ site: 'hostelworld' }]))
+    .order('created_at')
   if (error) throw new Refused(500, 'The places could not be read.')
+  const out = new Map<string, Stored>()
   for (const row of data ?? []) {
     const links = Array.isArray(row.links) ? (row.links as { site?: string; url?: string }[]) : []
-    if (links.some((l) => l.site === 'hostelworld' && typeof l.url === 'string' && hostelworldId(l.url) === propertyId)) return { id: row.id, place_id: row.place_id ?? null, hidden: row.hidden === true }
+    for (const l of links) {
+      const id = l.site === 'hostelworld' && typeof l.url === 'string' ? hostelworldId(l.url) : null
+      if (id && !out.has(id)) {
+        out.set(id, { id: row.id, place_id: row.place_id ?? null, hidden: row.hidden === true, added_by: String(row.added_by ?? ''), link: l.url as string })
+      }
+    }
   }
-  return null
+  return out
+}
+
+/** The stored lodging with this Hostelworld property id, by its links, else null. */
+async function findByProperty(db: SupabaseClient, propertyId: string): Promise<Stored | null> {
+  return (await storedByProperty(db)).get(propertyId) ?? null
 }
 
 interface Target { lodgingId: string; propertyId: string; link: string; created: boolean }
@@ -220,7 +247,7 @@ async function target(db: SupabaseClient, body: Body): Promise<Target> {
     }
     if (typeof body.place_id !== 'string' || !body.place_id.trim()) throw new Refused(400, 'Say which place on the map the link belongs to.')
     const prop = await hostelworld<HwProperty>(db, `${propertyId}/`)
-    const { data, error } = await db.from('lodgings').insert(lodgingOf(prop, body.url.trim(), body.place_id.trim())).select('id').single()
+    const { data, error } = await db.from('lodgings').insert(lodgingOf(prop, body.url.trim(), body.place_id.trim(), 'simon')).select('id').single()
     if (error || !data) throw new Refused(500, 'The place could not be saved.')
     return { lodgingId: data.id, propertyId, link: body.url.trim(), created: true }
   }
@@ -345,6 +372,119 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
   return { rooms: seen.length, prices: prices.length }
 }
 
+interface Place { id: string; name: string | null; country: string | null; lat: number | null; lon: number | null }
+interface City { id: string | null; name: string | null }
+interface SearchResult {
+  place_id: string; city_id: string | null; city: string | null; lodging_ids: string[]
+  created: number; priced: number; rooms: number; prices: number
+}
+
+const DAY_MS = 86_400_000
+
+/** The Hostelworld city of a map place, remembered for CITY_DAYS, else looked up by the place's name and remembered, a miss included. */
+async function cityOf(db: SupabaseClient, place: Place): Promise<City> {
+  const { data, error } = await db.from('hostelworld_cities').select('city_id, city, checked_at').eq('place_id', place.id).maybeSingle()
+  if (error) throw new Refused(500, 'The Hostelworld city could not be read.')
+  if (data && Date.now() - Date.parse(data.checked_at) < CITY_DAYS * DAY_MS) return { id: data.city_id ?? null, name: data.city ?? null }
+  const name = (place.name ?? '').trim()
+  const hit = name
+    ? pickCity(await hwGet<unknown>(db, `${HW_BASE}/suggestions/?text=${encodeURIComponent(name)}`, {}, 'Hostelworld gave no suggestions.'), countryName(place.country))
+    : null
+  const city: City = { id: hit?.id ?? null, name: hit?.name ?? null }
+  const { error: e } = await db
+    .from('hostelworld_cities')
+    .upsert({ place_id: place.id, city_id: city.id, city: city.name, checked_at: new Date().toISOString() }, { onConflict: 'place_id' })
+  if (e) throw new Refused(500, 'The Hostelworld city could not be saved.')
+  return city
+}
+
+/** The public Hostelworld page of a property, a link hostelworldId reads back. */
+function propertyLink(r: Ranked): string {
+  const slug = r.name.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  return `https://www.hostelworld.com/hostels/p/${r.id}/${slug || 'hostel'}/`
+}
+
+/** A Hostelworld answer about one property that should not stop the search: it is gone or did not answer. */
+const skippable = (e: unknown): boolean => e instanceof Refused && (e.status === 404 || e.status === 502)
+
+/**
+ * Finds the top hostels of a map place on Hostelworld for the dates, adds the new ones and prices those not priced
+ * within the fresh window. A hostel stored hidden or at another stop is passed over and the next one takes its turn.
+ */
+async function search(db: SupabaseClient, placeId: string, checkIn: string, checkOut: string, nights: number, freshMinutes: number, top: number): Promise<SearchResult> {
+  const key = Deno.env.get('HOSTELWORLD_WEB_KEY')?.trim()
+  if (!key) throw new Refused(503, 'The Hostelworld web key is not set.')
+  const { data: row, error } = await db.from('places').select('id, name, country, lat, lon').eq('id', placeId).maybeSingle()
+  if (error) throw new Refused(500, 'The map place could not be read.')
+  if (!row) throw new Refused(404, 'There is no such map place.')
+  const place: Place = { id: row.id, name: row.name ?? null, country: row.country ?? null, lat: num(row.lat), lon: num(row.lon) }
+  const result: SearchResult = { place_id: place.id, city_id: null, city: null, lodging_ids: [], created: 0, priced: 0, rooms: 0, prices: 0 }
+  const stored = await storedByProperty(db)
+
+  // A search already made for these dates: enough hostels it added here have fresh prices, so Hostelworld is not asked.
+  const ours = [...stored.values()].filter((l) => l.place_id === place.id && !l.hidden && l.added_by === 'claude')
+  if (ours.length >= top) {
+    const fresh: string[] = []
+    for (const l of ours) {
+      if (fresh.length >= top) break
+      if (await isFresh(db, l.id, checkIn, checkOut, freshMinutes)) fresh.push(l.id)
+    }
+    if (fresh.length >= top) {
+      const { data: c } = await db.from('hostelworld_cities').select('city_id, city').eq('place_id', place.id).maybeSingle()
+      return { ...result, city_id: c?.city_id ?? null, city: c?.city ?? null, lodging_ids: fresh }
+    }
+  }
+
+  const city = await cityOf(db, place)
+  if (!city.id) return result
+  result.city_id = city.id
+  result.city = city.name
+  const list = await hwGet<{ properties?: unknown }>(
+    db,
+    `${HW_BASE}/cities/${encodeURIComponent(city.id)}/properties/?currency=DKK&application=web&date-start=${checkIn}&num-nights=${nights}` +
+      '&guests=1&per-page=1000&show-rooms=1&property-num-images=30',
+    { 'api-key': key, Origin: 'https://www.hostelworld.com', Referer: 'https://www.hostelworld.com/' },
+    'Hostelworld knows no such city.',
+  )
+  const ranked = rankHostels(list?.properties, place, SEARCH_KM)
+
+  for (const r of ranked) {
+    if (result.lodging_ids.length >= top) break
+    const had = stored.get(r.id)
+    let t: Target
+    if (had) {
+      if (had.hidden || had.place_id !== place.id) continue
+      t = { lodgingId: had.id, propertyId: r.id, link: had.link, created: false }
+    } else {
+      const link = propertyLink(r)
+      if (hostelworldId(link) !== r.id) continue
+      let prop: HwProperty
+      try {
+        prop = await hostelworld<HwProperty>(db, `${r.id}/`)
+      } catch (e) {
+        if (skippable(e)) continue
+        throw e
+      }
+      const { data, error: e } = await db.from('lodgings').insert(lodgingOf(prop, link, place.id, 'claude')).select('id').single()
+      if (e || !data) throw new Refused(500, 'The place could not be saved.')
+      t = { lodgingId: data.id, propertyId: r.id, link, created: true }
+      stored.set(r.id, { id: data.id, place_id: place.id, hidden: false, added_by: 'claude', link })
+      result.created++
+    }
+    result.lodging_ids.push(t.lodgingId)
+    if (!t.created && (await isFresh(db, t.lodgingId, checkIn, checkOut, freshMinutes))) continue
+    try {
+      const counts = await price(db, t, checkIn, checkOut, nights)
+      result.priced++
+      result.rooms += counts.rooms
+      result.prices += counts.prices
+    } catch (e) {
+      if (!skippable(e)) throw e
+    }
+  }
+  return result
+}
+
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST') return fail(405, 'Ask with POST.')
@@ -365,6 +505,19 @@ Deno.serve(async (req: Request): Promise<Response> => {
   if (!Number.isFinite(nights) || nights < 1) return fail(400, 'The check out must be after the check in.')
   if (nights > MAX_NIGHTS) return fail(400, 'The stay is too long to price.')
   const freshMinutes = typeof body.fresh_minutes === 'number' && body.fresh_minutes >= 0 ? body.fresh_minutes : FRESH_MINUTES
+
+  if (body.search === true) {
+    const placeId = typeof body.place_id === 'string' ? body.place_id.trim() : ''
+    if (!placeId) return fail(400, 'Say which place on the map to search.')
+    const top = body.top === undefined ? TOP_DEFAULT : body.top
+    if (typeof top !== 'number' || !Number.isInteger(top) || top < 1 || top > TOP_MAX) return fail(400, `Ask for 1 to ${TOP_MAX} places.`)
+    try {
+      return reply(200, await search(service(), placeId, checkIn, checkOut, nights, freshMinutes, top))
+    } catch (e) {
+      if (e instanceof Refused) return reply(e.status, { error: e.message, ...e.extra })
+      return fail(500, 'The search failed.')
+    }
+  }
 
   try {
     const db = service()
