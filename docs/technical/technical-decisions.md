@@ -43,3 +43,11 @@ Format of an entry:
 - **Applies to.** `supabase/functions/stay-rates/`, `supabase/migrations/0020_hostelworld_search.sql`, the `HOSTELWORLD_WEB_KEY` function secret.
 - **Source.** `docs/product/features/FEAT-003-hostelworld-city-search.md`.
 - **Date.** 2026-11-05. **Status.** Implemented.
+
+## TECH-005 Booking.com page details come from a headless read on Simon's PC through a queued stay_details task
+
+- **Decision.** The task runner adds a Booking.com place through the connector with one room, the cheapest shown, and no photos, because the connector gives nothing more. A trigger on `public.lodgings` (migration 0022) then queues one open `stay_details` task for each Booking.com place that is added and not hidden, unless one is already open or working for it. The type is not a cloud type, so no run starts for it. On Simon's PC the checklist run reads the hotel page with `plugin/scripts/booking/read.mjs` in a headless browser, and `tripdb lodging-details FILE` stores every room, the room photos, the price of each room for the dates and the place photos. A room is matched to a stored one by its Booking.com room id, else by name among the rooms without an id, so the cheapest room the runner stored is adopted and not doubled. No room is deleted, and photos are replaced only when the read found some. If the headless read is blocked, a Sonnet subagent reads the same page in Simon's Chrome through the Chrome plugin and writes the same JSON. The read is read only: it never clicks a consent, signs in or solves a bot check.
+- **Reasoning.** Booking.com gives a bot challenge to a plain fetch from a server and to datacenter browsers, as TECH-002 and TECH-003 found, so the page can only be read from Simon's own machine. A queued task keeps the work visible on the checklist and survives a PC that is off, where reading at add time could not. Keeping the type out of the cloud list leaves `task_runs_in_cloud` as 0021 left it.
+- **Applies to.** `supabase/migrations/0022_stay_details_task.sql`, `plugin/scripts/tripdb.py` (`lodging-details`), `plugin/scripts/booking/`, `plugin/skills/trip-checklist/`, `docs/claude-tasks.md`.
+- **Source.** Simon's request on 2026-11-05 that a place added from Booking.com gets its rooms found after it is added.
+- **Date.** 2026-11-05. **Status.** Accepted.
