@@ -1,5 +1,13 @@
 // Run from the repo root with: npx deno test supabase/functions/stay-rates/
-import { countryName, km, pickCity, rankHostels } from './rank.ts'
+import { countryName, km, nameStored, pickCity, rankHostels } from './rank.ts'
+
+Deno.test('nameStored finds a place of the stop by its name, however it was added or spelled', () => {
+  const at = [{ name: 'Hostel Los Andes' }, { name: null }]
+  equal(nameStored(at, 'hostel  LOS-andes'), true, 'same name')
+  equal(nameStored([{ name: 'Café Casa' }], 'Cafe Casa'), true, 'accents')
+  equal(nameStored(at, 'Hostel Los Andes II'), false, 'another place')
+  equal(nameStored(at, '  '), false, 'no name')
+})
 
 function equal(got: unknown, want: unknown, what: string): void {
   const a = JSON.stringify(got)

@@ -5,7 +5,7 @@
 // and prices the most popular hostels of a map place's Hostelworld city (FEAT-003, TECH-004).
 // Owner only, or the worker with the worker key. Nothing of the content is logged.
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.118.0'
-import { countryName, km, pickCity, rankHostels, type Ranked } from './rank.ts'
+import { countryName, km, nameStored, pickCity, rankHostels, type Ranked } from './rank.ts'
 
 const CORS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -440,6 +440,9 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
   const place: Place = { id: row.id, name: row.name ?? null, country: row.country ?? null, lat: num(row.lat), lon: num(row.lon) }
   const result: SearchResult = { place_id: place.id, city_id: null, city: null, lodging_ids: [], created: 0, priced: 0, rooms: 0, prices: 0 }
   const stored = await storedByProperty(db)
+  const { data: atStop, error: eStop } = await db.from('lodgings').select('id, name, hidden, links').eq('place_id', place.id)
+  if (eStop) throw new Refused(500, 'The places could not be read.')
+  const named: { name?: string | null }[] = atStop ?? []
 
   // A search already made for these dates: enough hostels it added here have fresh prices, so Hostelworld is not asked.
   const ours = [...stored.values()].filter((l) => l.place_id === place.id && !l.hidden && l.added_by === 'claude')
@@ -476,6 +479,8 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
       if (had.hidden || had.place_id !== place.id) continue
       t = { lodgingId: had.id, propertyId: r.id, link: had.link, created: false }
     } else {
+      // a place of this name is stored at the stop already, from another site or by hand: passed over, hidden or not
+      if (nameStored(named, r.name)) continue
       const link = propertyLink(r)
       if (hostelworldId(link) !== r.id) continue
       let prop: HwProperty
@@ -488,6 +493,7 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
       const { data, error: e } = await db.from('lodgings').insert(lodgingOf(prop, link, place.id, 'claude')).select('id').single()
       if (e || !data) throw new Refused(500, 'The place could not be saved.')
       t = { lodgingId: data.id, propertyId: r.id, link, created: true }
+      named.push({ name: r.name })
       stored.set(r.id, { id: data.id, place_id: place.id, hidden: false, added_by: 'claude', link })
       result.created++
     }

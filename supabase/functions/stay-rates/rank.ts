@@ -94,3 +94,12 @@ export function rankHostels(props: unknown, at: { lat: number | null; lon: numbe
     Number(well(b)) - Number(well(a)) || b.ratings - a.ratings || (b.overall ?? -1) - (a.overall ?? -1) || a.id.localeCompare(b.id)
   )
 }
+
+/** A name as the stop's own places spell it: accents and case folded, runs of other characters one space. */
+export const nameKey = (s: string): string => folded(s).replace(/[^a-z0-9]+/g, ' ').trim()
+
+/** Whether a place with this name is already stored at the stop, hidden or not, whoever added it. */
+export function nameStored(stored: { name?: string | null }[], name: string): boolean {
+  const key = nameKey(name)
+  return key !== '' && stored.some((l) => nameKey(l.name ?? '') === key)
+}
