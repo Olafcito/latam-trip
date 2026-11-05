@@ -1,10 +1,12 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import type { Lodging, LodgingKind } from '../../data/types'
 import { day } from '../../lib/format'
+import { addDays } from '../../lib/time'
 import { KIND } from '../../lib/lodgingWords'
 import { amenities, cheapestRoom, sortPlaces, type StaySort } from '../../lib/stayOffer'
 import { hostelworldId, type RatesResult } from '../../lib/stayRates'
 import { Bed, Bookmark, Calendar, Caret, Check, Close, Link, Pencil, Person, Pin, Search, Star, Warn } from '../icons'
+import { DayInput } from './DayInput'
 import { AmenityIcon, KindIcon, kindWord, NightPrice, Rating } from './offerMarks'
 
 // Add accommodation: find a place among the ones stored for the stop, or add one by hand. The stop, the dates and
@@ -33,6 +35,7 @@ export interface StaySearchProps {
   badge?: (l: Lodging) => StayBadge | null
   /** a search under way and the sites it asks */
   searching?: { sites: string[] } | null
+  /** new dates picked. A check-in on or after the check-out is for the caller to settle */
   onDates?: (checkIn: string, checkOut: string) => void
   onGuests?: (guests: number) => void
   onOpen: (l: Lodging) => void
@@ -208,10 +211,10 @@ export function StaySearch(p: StaySearchProps) {
           <div className="as-fields">
             <Field label="Destination" icon={<Pin s={16} />} face={p.destination} wide />
             <Field label="Check-in" icon={<Calendar s={16} />} face={day(p.checkIn)}>
-              <input type="date" aria-label="Check-in" value={p.checkIn} max={p.checkOut} readOnly={!p.onDates} onChange={(e) => e.target.value && p.onDates?.(e.target.value, p.checkOut)} />
+              <DayInput label="Check-in" value={p.checkIn} onPick={p.onDates && ((d) => p.onDates!(d, p.checkOut))} />
             </Field>
             <Field label="Check-out" icon={<Calendar s={16} />} face={day(p.checkOut)}>
-              <input type="date" aria-label="Check-out" value={p.checkOut} min={p.checkIn} readOnly={!p.onDates} onChange={(e) => e.target.value && p.onDates?.(p.checkIn, e.target.value)} />
+              <DayInput label="Check-out" value={p.checkOut} min={addDays(p.checkIn, 1)} onPick={p.onDates && ((d) => p.onDates!(p.checkIn, d))} />
             </Field>
             <Field label="Guests · Rooms" icon={<Person s={16} />} face={`${p.guests} ${p.guests === 1 ? 'guest' : 'guests'}, ${p.rooms} ${p.rooms === 1 ? 'room' : 'rooms'}`}>
               <Caret dir="d" s={16} />
