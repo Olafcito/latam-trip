@@ -20,7 +20,8 @@ export function DayInput({ label, value, min, onPick }: {
   return (
     <input
       type="date" aria-label={label} value={value} min={min} readOnly={!onPick} onClick={onPick ? open : undefined}
-      onChange={(e) => e.target.value && onPick?.(e.target.value)}
+      // a year typed digit by digit passes through years like 0002, which are let go
+      onChange={(e) => e.target.value >= '2000' && onPick?.(e.target.value)}
     />
   )
 }
