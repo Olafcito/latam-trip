@@ -20,6 +20,8 @@ interface Body { leg?: Leg; text?: string; files?: InFile[] }
 const reply = (status: number, body: unknown): Response =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } })
 
+const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+
 const fail = (status: number, error: string): Response => reply(status, { error })
 
 const str = { type: 'string' }
@@ -96,18 +98,21 @@ Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method !== 'POST') return fail(405, 'Use POST.')
   if (!(await isOwner(req))) return fail(403, 'Only the owner can read bookings.')
 
-  let body: Body
+  let parsed: unknown
   try {
-    body = (await req.json()) as Body
+    parsed = await req.json()
   } catch {
     return fail(400, 'The request was not valid JSON.')
   }
-  const leg = body.leg ?? {}
+  if (!isObject(parsed)) return fail(400, 'The request was not valid JSON.')
+  const body = parsed as Body
+  const leg = isObject(body.leg) ? (body.leg as Leg) : {}
   const text = typeof body.text === 'string' ? body.text.slice(0, MAX_TEXT) : ''
   const files = Array.isArray(body.files) ? body.files : []
   if (files.length > MAX_FILES) return fail(400, `Add at most ${MAX_FILES} files.`)
   let bytes = 0
   for (const f of files) {
+    if (!isObject(f)) return fail(400, 'A file was missing its data.')
     if (typeof f.data !== 'string' || typeof f.type !== 'string') return fail(400, 'A file was missing its data.')
     if (f.type === 'image/heic' || f.type === 'image/heif') return fail(400, 'HEIC photos cannot be read. Share a screenshot or a PDF instead.')
     if (!TYPES.includes(f.type)) return fail(400, 'Only PDF, JPEG, PNG, WebP and GIF files can be read.')
