@@ -86,6 +86,28 @@ class RunnerTest(Base):
         self.assertIsNone(self.core.call("claim_task")["task"])
         self.assertEqual(self.row(bad)["status"], "failed")
 
+    def stay_search(self, **extra):
+        return self.task({"type": "stay_search", "place_id": "TAM", "check_in": "2026-12-10", "check_out": "2026-12-14",
+                          "top": 3, **extra})
+
+    def test_a_stay_search_gets_the_place_and_the_lodgings_stored_there(self):
+        self.core.add("lodging", [lodging()])
+        self.rest.tables["lodgings"][0]["hidden"] = True
+        t = self.stay_search()
+        out = self.core.call("claim_task")
+        self.assertEqual(out["task"]["id"], t)
+        self.assertEqual(out["contract"]["place"]["id"], "TAM")
+        self.assertEqual(out["contract"]["place"]["name"], "Tamarindo")
+        self.assertEqual([(l["name"], l["hidden"]) for l in out["contract"]["stored"]], [("Test Hostel", True)])
+        self.assertIn("add_lodging", " ".join(out["contract"]["tools"]))
+
+    def test_a_stay_search_with_bad_dates_or_top_is_failed(self):
+        bad = [self.stay_search(check_out="2026-12-10"), self.stay_search(check_out="2027-02-10"),
+               self.stay_search(top=0), self.stay_search(top=6), self.stay_search(check_in="soon")]
+        ok = self.stay_search(top=None)
+        self.assertEqual(self.core.call("claim_task")["task"]["id"], ok)
+        self.assertEqual([self.row(i)["status"] for i in bad], ["failed"] * 5)
+
     def test_a_task_taken_by_another_run_is_skipped(self):
         a = self.task({"type": "question", "text": "a"})
         b = self.task({"type": "question", "text": "b"})
@@ -137,7 +159,10 @@ class RunnerTest(Base):
 
 class SameListTest(unittest.TestCase):
     def test_the_trigger_and_the_runner_name_the_same_cloud_types(self):
-        with open(os.path.join(REPO, "supabase", "migrations", "0018_task_runner_contract.sql"), encoding="utf-8") as fh:
+        mig = os.path.join(REPO, "supabase", "migrations")
+        marker = "task_runs_in_cloud(t text, d jsonb)"
+        newest = [f for f in sorted(os.listdir(mig)) if marker in open(os.path.join(mig, f), encoding="utf-8").read()][-1]
+        with open(os.path.join(mig, newest), encoding="utf-8") as fh:
             sql = fh.read()
         listed = re.search(r"in \(([^)]*)\)", sql.split("task_runs_in_cloud(t text, d jsonb)")[1]).group(1)
         self.assertEqual(sorted(re.findall(r"'(\w+)'", listed)), sorted(runner.CLOUD))
