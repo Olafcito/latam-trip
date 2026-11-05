@@ -11,7 +11,9 @@ import { AmenityIcon, KindIcon, kindWord, NightPrice, Rating } from './offerMark
 // the guests on top, the kinds of place as chips, then the places as cards led by their photo. A card opens the
 // place. A search under way brings more places in over time: the cards found so far stay and the ones still
 // coming show as shapes under them. A pasted Hostelworld link adds a place that is not stored yet and opens it.
-// What a place offers is one row that never wraps: the first three and a count of the rest.
+// What a place offers is one row that never wraps: the first three and a count of the rest. Find accommodations
+// asks the sites for the stop's most popular places: the one control of an empty list, and a small round one with
+// the count once places are stored. A failed find is the warning mark on it, its message the mark's name.
 
 export interface StayBadge {
   label: string
@@ -42,6 +44,10 @@ export interface StaySearchProps {
   manual?: ReactNode
   /** adds the place a Hostelworld link is for, with its rooms and prices, and has it in places when it resolves */
   onLink?: (url: string) => Promise<RatesResult>
+  /** finds the stop's most popular places on the sites. While they are asked, searching is set */
+  onFind?: () => void
+  /** why the last find failed */
+  findError?: string | null
 }
 
 const KINDS: LodgingKind[] = ['hostel', 'hotel', 'guesthouse', 'apartment']
@@ -163,12 +169,24 @@ function LinkRow({ places, onLink, onOpen }: { places: Lodging[]; onLink: (url: 
   )
 }
 
+/** The warning of a failed find, its message as its name, and said once by the screen reader. */
+function FindFail({ error }: { error: string }) {
+  return (
+    <>
+      <span className="pv-fail" role="img" aria-label={error} title={error}><Warn s={13} /></span>
+      <span className="pv-vh" role="status">{error}</span>
+    </>
+  )
+}
+
 export function StaySearch(p: StaySearchProps) {
   const [tab, setTab] = useState<'find' | 'manual'>('find')
   const [kind, setKind] = useState<LodgingKind | 'all'>('all')
   const [sort, setSort] = useState<StaySort>('recommended')
   const list = sortPlaces(p.places, kind, sort, p.checkIn, p.checkOut)
   const busy = !!p.searching
+  // with nothing stored the find is the list's one control, with places it sits small by the count
+  const findFirst = !!p.onFind && p.places.length === 0
   const count = busy ? `${list.length} ${list.length === 1 ? 'place' : 'places'} so far` : `${list.length} ${list.length === 1 ? 'place' : 'places'} found`
   return (
     <section className="as" aria-label="Add accommodation">
@@ -209,7 +227,15 @@ export function StaySearch(p: StaySearchProps) {
           {p.onLink && <LinkRow places={p.places} onLink={p.onLink} onOpen={p.onOpen} />}
 
           <div className="as-count">
-            <span aria-live="polite">{busy && <span className="as-live" aria-hidden="true" />}{count}</span>
+            <div className="as-cg">
+              <span aria-live="polite">{busy && <span className="as-live" aria-hidden="true" />}{count}</span>
+              {p.onFind && !findFirst && (
+                <button type="button" className="as-fd" disabled={busy} aria-label="Find accommodations" title="Find accommodations" onClick={p.onFind}>
+                  <Search s={14} />
+                </button>
+              )}
+              {p.onFind && !findFirst && p.findError && <FindFail error={p.findError} />}
+            </div>
             <label className="as-sort">
               <span>{SORTS.find(([s]) => s === sort)![1]}</span><Caret dir="d" s={14} />
               <select aria-label="Sort" value={sort} onChange={(e) => setSort(e.target.value as StaySort)}>
@@ -228,7 +254,13 @@ export function StaySearch(p: StaySearchProps) {
             ))}
             {busy && [0, 1].map((k) => <li key={`wait${k}`} className="as-card as-wait" aria-hidden="true"><span className="as-ph" /><div className="as-body"><i /><i /><i /></div></li>)}
           </ul>
-          {!busy && list.length === 0 && (
+          {findFirst && !busy && (
+            <div className="as-find1">
+              <button type="button" className="as-fb" onClick={p.onFind}><Search s={16} />Find accommodations</button>
+              {p.findError && <FindFail error={p.findError} />}
+            </div>
+          )}
+          {!findFirst && !busy && list.length === 0 && (
             <p className="as-empty">{kind === 'all' ? 'No places stored for this stop yet.' : `No ${KIND[kind as LodgingKind].toLowerCase()}s stored for this stop yet.`}</p>
           )}
         </div>

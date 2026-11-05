@@ -188,6 +188,26 @@
 .as-sort > svg { color: var(--muted); }
 .as-sort select { position: absolute; inset: 0; opacity: 0; font-size: 16px; cursor: pointer; }
 .as-asking { margin: -4px 0 8px; font-size: var(--fs-small); color: var(--faint); }
+/* find accommodations: small and round by the count, in the grey of the sheet, a wider hit than it draws */
+.as-cg { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.as-cg > span { display: inline-flex; align-items: center; gap: 8px; }
+.as-fd {
+  position: relative; flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted);
+  transition: background-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.as-fd::after { content: ''; position: absolute; inset: -8px; }
+.as-fd:not(:disabled):active { transform: scale(0.92); }
+.as-fd:disabled { color: var(--faint); box-shadow: inset 0 0 0 1px var(--line); cursor: default; }
+/* with nothing stored it is the list's one control, as wide as a card */
+.as-find1 { display: flex; align-items: center; gap: 10px; }
+.as-fb {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 12px;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); font-size: var(--fs-body); font-weight: 600; color: var(--text);
+  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.as-fb > svg { color: var(--muted); }
+.as-fb:active { transform: scale(0.98); }
 
 /* a pasted Hostelworld link: a quiet field under the chips, Go in the text colour once the link is one, the dot while it adds */
 .as-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; margin-top: 10px; }
@@ -402,6 +422,8 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   a.pv-seller:hover { background: var(--surface-3); }
   .pv-round:hover { background: rgb(8 18 24 / 0.82); }
   .as-go:not(:disabled):hover { background: color-mix(in srgb, var(--surface-3) 80%, var(--text)); }
+  .as-fd:not(:disabled):hover { background: var(--surface-2); color: var(--text); }
+  .as-fb:hover { background: var(--surface-3); }
 }
 /* a phone: the guests field drops its icon, its label over it says what it is, so the guests and rooms fit */
 @media (max-width: 420px) {
@@ -415,5 +437,5 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .ad-place { opacity: 0; }
   .ad[data-open]:not([data-side]) .ad-place { opacity: 1; }
   .as-live, .pv-nop[data-asking], .as-wait .as-ph, .as-wait i { animation: none; }
-  .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:not(:disabled):active { transform: none; }
+  .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:not(:disabled):active, .as-fd:not(:disabled):active, .as-fb:active { transform: none; }
 }
