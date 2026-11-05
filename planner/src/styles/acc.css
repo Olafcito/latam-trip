@@ -189,6 +189,31 @@
 .as-sort select { position: absolute; inset: 0; opacity: 0; font-size: 16px; cursor: pointer; }
 .as-asking { margin: -6px 0 10px; font-size: var(--fs-small); color: var(--faint); }
 
+/* a pasted Hostelworld link: the field as the search fields, Go green once the link is one, the dot while it adds */
+.as-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-top: 16px; }
+.as-lf {
+  display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 46px; padding: 0 8px 0 12px; border-radius: 10px;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); color: var(--muted);
+}
+.as-lf > svg { flex: none; }
+.as-lf > .as-live { flex: none; margin: 0 4.5px; }
+.as-lf input {
+  flex: 1; min-width: 0; height: 44px; padding: 0; border: 0; background: none; outline: none; color: var(--text);
+  font: inherit; font-size: 16px; font-weight: 500; text-overflow: ellipsis;
+}
+.as-lf input::placeholder { color: var(--faint); font-weight: 400; }
+.as-lf input:disabled { color: var(--muted); }
+.as-lf:focus-within { box-shadow: inset 0 0 0 2px var(--flight); }
+/* the field carries the ring, so the input inside it draws none of its own */
+.as-link .as-lf input:focus-visible { outline: none; }
+.as-lf:has([aria-invalid='true']) { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--err) 60%, transparent); }
+.as-go {
+  min-width: 4rem; height: 46px; padding: 0 18px; border-radius: 10px; background: var(--booked); color: var(--ground);
+  font-size: var(--fs-body); font-weight: 600; transition: background-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
+}
+.as-go:disabled { background: var(--surface-3); color: var(--faint); cursor: default; }
+.as-go:not(:disabled):active { transform: scale(0.96); }
+
 .as-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .as-card {
   position: relative; display: grid; border-radius: 14px; overflow: hidden; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2);
@@ -296,6 +321,24 @@
 .pv-rkr { font-size: var(--fs-title); font-weight: 700; font-variant-numeric: tabular-nums; }
 .pv-rkr[data-other] { color: var(--muted); font-weight: 600; }
 .pv-rp small, .pv-nokr { font-size: var(--fs-small); color: var(--muted); }
+.pv-rp > .as-live { align-self: center; margin-left: 2px; }
+
+/* the rooms heading with the asking for live prices beside it: the pulsing dot, or one warn mark */
+.pv-sh { display: flex; align-items: center; gap: 10px; min-height: 24px; }
+.pv-live { display: inline-flex; align-items: center; }
+
+/* the marks under a room's price, the look of the stay marks: age, few left, free cancellation. They wrap on a phone */
+.pv-mks { list-style: none; margin: 2px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.pv-mk {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 22px; padding: 0 7px; border-radius: 999px;
+  background: var(--surface-3); color: var(--muted); font-size: var(--fs-label); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.pv-mk:has(> svg:only-child) { width: 24px; min-height: 24px; padding: 0; justify-content: center; }
+.pv-mk > svg { flex: none; }
+.pv-mk[data-tone='stale'] { background: color-mix(in srgb, var(--flight) 14%, transparent); color: var(--flight); }
+.pv-mk[data-tone='good'] { background: color-mix(in srgb, var(--booked) 14%, transparent); color: var(--booked); }
+.pv-mk[data-tone='low'] { color: var(--text); }
+.pv-mk[data-tone='warn'] { background: color-mix(in srgb, var(--err) 14%, transparent); color: var(--err); }
 .pv-sel {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 4.75rem; height: 38px; padding: 0 14px; border-radius: 10px;
   box-shadow: inset 0 0 0 1.5px var(--booked); color: var(--booked); font-size: var(--fs-body); font-weight: 600; white-space: nowrap;
@@ -336,6 +379,7 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .pv-sel:not([aria-pressed='true']):not([data-booked]):hover { background: color-mix(in srgb, var(--booked) 12%, transparent); }
   a.pv-seller:hover { background: var(--surface-3); }
   .pv-round:hover { background: rgb(8 18 24 / 0.82); }
+  .as-go:not(:disabled):hover { background: color-mix(in srgb, var(--booked) 86%, var(--text)); }
 }
 /* a phone: the guests field drops its icon, its label over it says what it is, so the guests and rooms fit */
 @media (max-width: 420px) {
@@ -350,5 +394,5 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .ad-place { opacity: 0; }
   .ad[data-open]:not([data-side]) .ad-place { opacity: 1; }
   .as-live, .as-wait .as-ph, .as-wait i { animation: none; }
-  .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active { transform: none; }
+  .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:not(:disabled):active { transform: none; }
 }

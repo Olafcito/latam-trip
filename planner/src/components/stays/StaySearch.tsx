@@ -140,7 +140,7 @@ function LinkRow({ places, onLink, onOpen }: { places: Lodging[]; onLink: (url: 
       <label className="as-lf">
         {busy ? <span className="as-live" aria-hidden="true" /> : <Link s={16} />}
         <input
-          type="url" inputMode="url" autoComplete="off" spellCheck={false} placeholder="Paste a Hostelworld link" aria-label="Hostelworld link"
+          type="url" name="hostelworld" inputMode="url" autoComplete="off" spellCheck={false} placeholder="Paste a Hostelworld link" aria-label="Hostelworld link"
           value={url} disabled={busy} aria-invalid={error ? true : undefined}
           onChange={(e) => { setUrl(e.target.value); setError(null) }}
         />
