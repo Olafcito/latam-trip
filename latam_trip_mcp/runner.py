@@ -7,7 +7,7 @@ result and logs it, fail_task closes it as failed with the reason. Everything el
 checklist run, so a run can never take a flight search, a booking or a parser fix. A claimed task carries claimed_at,
 and one still working after STALE_HOURS, from a run that crashed or timed out, is opened again by the next claim.
 
-CLOUD lists the types. supabase/migrations/0018_task_runner_contract.sql holds the same list for the trigger that
+CLOUD lists the types. the newest supabase/migrations file that defines task_runs_in_cloud (0021 now) holds the same list for the trigger that
 starts a run, and a test keeps the two equal.
 """
 import datetime as dt
@@ -49,6 +49,23 @@ def _stay_check(d):
     errs = [] if all(isinstance(r, str) and r for r in d.get("room_ids") or []) and d.get("room_ids") else ["room_ids is not a list of room ids"]
     if str(d.get("check_in")) >= str(d.get("check_out")):
         errs.append("check_out is not after check_in")
+    return errs
+
+
+def _search_check(d):
+    errs = []
+    if str(d.get("check_in")) >= str(d.get("check_out")):
+        errs.append("check_out is not after check_in")
+    else:
+        try:
+            nights = (dt.date.fromisoformat(str(d["check_out"])) - dt.date.fromisoformat(str(d["check_in"]))).days
+            if nights > 30:
+                errs.append("the stay is more than 30 nights")
+        except ValueError:
+            errs.append("check_in and check_out are not dates")
+    top = d.get("top")
+    if top is not None and (isinstance(top, bool) or not isinstance(top, int) or not 1 <= top <= 5):
+        errs.append("top is a number from 1 to 5")
     return errs
 
 
@@ -109,6 +126,27 @@ CONTRACTS = {
         ["latam-trip get_lodging", "latam-trip add_lodging_price", BOOKING_COM],
         "lodging_prices rows for rooms in room_ids only, through add_lodging_price. Never a lodging or a room.",
         check=_stay_check),
+    "stay_search": Contract(
+        "Finds the best rated places to stay at one stored place on Booking.com for the dates and stores them. "
+        "Hostelworld is searched by the stay-rates edge function in the same press.",
+        {"place_id": "!str", "check_in": "!date", "check_out": "!date", "top": "int|null"},
+        ["context holds the place (id, name, country) and the lodgings already stored there (id, name, links, hidden).",
+         f"{BOOKING_COM} with the place's name and country, check_in, check_out, 1 adult, 1 room, currency DKK and "
+         "user_country_code dk.",
+         "Keep the properties rated 8.0 or more on Booking.com's 10 scale, the ones with the most reviews first, as many "
+         "as top says, 3 when it is not given. Leave out a property already stored at the place, matched by its "
+         "Booking.com link or its name, and any stored with hidden true. When fewer remain, fill from the rest by "
+         "reviews, still leaving out the stored and hidden ones.",
+         "For each, one add_lodging row: place_id, name, kind from the property type (hostel, hotel, guesthouse, "
+         "apartment or other), rating on the 10 scale, reviews as the number of reviews, links with one entry of site "
+         "booking and the Booking.com url, lat, lon and address when shown, added_by claude, and in rooms one room, the "
+         "cheapest shown, with its name as shown and in prices one row: check_in, check_out, total_dkk as shown for the "
+         "stay, site booking, url the property's Booking.com link, refundable yes, no or partly and cancel_until when shown.",
+         "Send photos only with URLs the connector returned. Without one, leave photos out.",
+         "In the result name the places added and the ones skipped with the reason, stored, hidden or too few reviews."],
+        ["latam-trip get_place, list_lodging, add_lodging", BOOKING_COM],
+        "Lodgings at place_id with their one room and its price, through add_lodging only.",
+        check=_search_check),
     "refresh": Contract(
         "Checks researched experiences again when they were last checked more than older_than_days days ago.",
         {"scope": "!enum:all,flights,stays,experiences", "item": "str|null", "older_than_days": "int|null"},
@@ -184,6 +222,12 @@ class Runner:
             return {"lodging": {"id": lodging["id"], "name": lodging.get("name"), "place_id": lodging.get("place_id"),
                                 "links": lodging.get("links"),
                                 "rooms": [{"id": r["id"], "name": r.get("name")} for r in rooms if r["id"] in data["room_ids"]]}}
+        if typ == "stay_search":
+            _, place = self.core.find("place", data["place_id"])
+            stored = self.rest.get_all("lodgings", {"select": "*", "place_id": "eq." + data["place_id"], "order": "name,id"})
+            return {"place": {"id": place.get("id", data["place_id"]), "name": place.get("name"), "country": place.get("country")},
+                    "stored": [{"id": r["id"], "name": r.get("name"), "links": r.get("links"), "hidden": bool(r.get("hidden"))}
+                               for r in stored]}
         if typ == "experience_research":
             return {"categories": sorted(tripdb.category_ids(self.core.store))}
         return {}
