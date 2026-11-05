@@ -88,12 +88,13 @@ def backup():
     return {"key": key, "bytes": os.path.getsize(archive), "rows": counts}
 
 
-def refresh_rates():
+def refresh_rates(context=None):
     """The function reads and writes. The worker calls it with the key it already holds, which the function knows
     as STAY_RATES_WORKER_KEY."""
     r = rest()
     url = os.environ["SUPABASE_URL"].rstrip("/") + "/functions/v1/stay-rates"
-    return rates.refresh(r, lambda body: rates.post(url, os.environ["SUPABASE_SECRET_KEY"], body))
+    left = getattr(context, "get_remaining_time_in_millis", None)
+    return rates.refresh(r, lambda body: rates.post(url, os.environ["SUPABASE_SECRET_KEY"], body), remaining_ms=left)
 
 
 def handler(event, context):
@@ -105,5 +106,5 @@ def handler(event, context):
     if action == "backup":
         return backup()
     if action == "rates":
-        return refresh_rates()
+        return refresh_rates(context)
     raise ValueError(f"unknown action {action!r}")

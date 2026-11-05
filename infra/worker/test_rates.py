@@ -60,6 +60,25 @@ class Refresh(unittest.TestCase):
         out = rates.refresh(FakeRest([]), lambda body: self.fail("called"), today="2026-11-05")
         self.assertEqual(out, {"asked": 0, "fetched": 0, "failed": []})
 
+    def test_it_stops_asking_when_the_lambda_is_nearly_out_of_time(self):
+        calls = []
+        left = iter([120000, 90000, 29000] + [10000] * 10)
+
+        def call(body):
+            calls.append(body)
+            return 200, {"fetched": True}
+
+        out = rates.refresh(FakeRest(PRICES), call, today="2026-11-05", remaining_ms=lambda: next(left), workers=1)
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(out["asked"], 2)
+        self.assertEqual(out["fetched"], 2)
+        self.assertTrue(out["stopped_early"])
+
+    def test_it_does_not_report_stopped_early_when_all_were_asked(self):
+        out = rates.refresh(FakeRest(PRICES), lambda body: (200, {"fetched": True}), today="2026-11-05", remaining_ms=lambda: 200000)
+        self.assertEqual(out["asked"], 3)
+        self.assertNotIn("stopped_early", out)
+
 
 if __name__ == "__main__":
     unittest.main()
