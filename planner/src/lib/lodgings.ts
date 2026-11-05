@@ -22,17 +22,39 @@ export type LodgingDraft = Omit<Lodging, 'id' | 'added_by' | 'hidden' | 'created
   rooms: RoomRow[]
 }
 
+const PAGE = 1000
+
+/** Every price, a page of 1000 at a time because a select stops at 1000 rows. */
+async function loadPrices(): Promise<LodgingPrice[]> {
+  if (!supabase) return []
+  const all: LodgingPrice[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from('lodging_prices')
+      .select('*')
+      .order('check_in')
+      .order('check_out')
+      .order('observed_at')
+      .order('id')
+      .range(from, from + PAGE - 1)
+    if (error) throw new Error(error.message)
+    const rows = (data ?? []) as LodgingPrice[]
+    all.push(...rows)
+    if (rows.length < PAGE) return all
+  }
+}
+
 /** Every place to stay with its rooms by name and their prices by date, hidden ones too. Empty without a client. */
 export async function loadLodgings(): Promise<Lodging[]> {
   if (!supabase) return []
   const [l, r, p] = await Promise.all([
     supabase.from('lodgings').select('*').order('created_at').order('id'),
     supabase.from('lodging_rooms').select('*').order('name').order('id'),
-    supabase.from('lodging_prices').select('*').order('check_in').order('check_out').order('observed_at').order('id'),
+    loadPrices(),
   ])
-  for (const x of [l, r, p]) if (x.error) throw new Error(x.error.message)
+  for (const x of [l, r]) if (x.error) throw new Error(x.error.message)
   const prices = new Map<string, LodgingPrice[]>()
-  for (const row of (p.data ?? []) as LodgingPrice[]) prices.set(row.room_id, [...(prices.get(row.room_id) ?? []), row])
+  for (const row of p) prices.set(row.room_id, [...(prices.get(row.room_id) ?? []), row])
   const rooms = new Map<string, LodgingRoom[]>()
   for (const row of (r.data ?? []) as Omit<LodgingRoom, 'prices'>[]) rooms.set(row.lodging_id, [...(rooms.get(row.lodging_id) ?? []), { ...row, prices: prices.get(row.id) ?? [] }])
   return ((l.data ?? []) as Omit<Lodging, 'rooms'>[]).map((row) => ({ ...row, rooms: rooms.get(row.id) ?? [] }))
