@@ -12,14 +12,12 @@
 }
 
 /* ---------- the fold ---------- */
-.af { min-width: 0; padding: 4px 0 0 var(--inset, 12px); }
+.af { container: af / inline-size; min-width: 0; padding: 4px 0 0 var(--inset, 12px); }
 .af-sum { margin: 0 0 14px; font-size: var(--fs-body); line-height: 1.5; color: var(--muted); text-wrap: pretty; }
-/* one row of tabs on a hairline, the open one underlined. Narrow, the row scrolls sideways with its edge faded */
+/* one row of all four tabs on a hairline, the open one underlined */
 .af-tabs {
   display: flex; gap: 4px; margin: 0 0 12px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
   box-shadow: inset 0 -1px 0 var(--line-2);
-  /* a tab cut by the edge fades out, so the row reads as one that scrolls */
-  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
 }
 .af-tabs::-webkit-scrollbar { display: none; }
 .af-tab {
@@ -34,6 +32,24 @@
 .af-tab[aria-selected='true'] { color: var(--text); font-weight: 600; }
 .af-tab[aria-selected='true']::after { transform: none; }
 .af-tab:active { transform: scale(0.97); }
+/* the count of stays: "(2)" after the word, a badge on the bed when the tabs stand as a bar */
+.af-n { margin-left: -4px; font-weight: inherit; font-variant-numeric: tabular-nums; }
+.af-n::before { content: '('; }
+.af-n::after { content: ')'; }
+/* narrow, the tabs stand as a bar, each icon over its word, so all four fit at a phone's width.
+   The tabs and the stays reach in under the summary's edge, as the cards of the route do */
+@container af (max-width: 31rem) {
+  .af-tabs, .af-panel { margin-left: calc(-1 * var(--inset, 12px)); }
+  .af-tabs { gap: 0; }
+  .af-tab { flex: 1 1 auto; display: grid; justify-items: center; align-content: center; row-gap: 3px; padding: 6px 2px 8px; font-size: var(--fs-label); }
+  .af-tab > svg { grid-area: 1 / 1; }
+  .af-tab > span { grid-area: 2 / 1; }
+  .af-n {
+    grid-area: 1 / 1; align-self: start; min-width: 16px; height: 16px; margin: 0; padding: 0 4px; border-radius: 999px; transform: translate(13px, -5px);
+    background: var(--booked); color: var(--ground); font-size: 10px; font-weight: 700; line-height: 16px; text-align: center;
+  }
+  .af-n::before, .af-n::after { content: none; }
+}
 .af-none { margin: 4px 0 8px; font-size: var(--fs-body); color: var(--muted); }
 .af-todo, .af-exp { display: grid; gap: 14px; padding: 2px 0 6px; }
 .af-exp h5 { margin: 0 0 4px; font-size: var(--fs-label); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--faint); }
@@ -87,15 +103,20 @@
   transition: border-color var(--t-fast) ease, background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .al-add:active { transform: scale(0.99); background: var(--surface-2); }
-/* narrow: the pill goes under the room, the photo and the text tighten so the dates keep to one line */
+/* narrow: the pill keeps to the right, beside the room, so the name and the dates have the width to stay on one line */
 @container (max-width: 27rem) {
-  .al-row { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'ph what more' 'ph pill more'; column-gap: 12px; padding: 10px 0 10px 10px; }
-  .al-ph { grid-area: ph; width: 4.25rem; align-self: start; margin-top: 2px; }
-  .al-when { column-gap: 4px; }
-  .al-dots { width: 36px; }
-  .al-what { grid-area: what; }
-  .al-pill { grid-area: pill; justify-self: start; height: 26px; padding: 0 10px; }
-  .al-more { grid-area: more; align-self: start; }
+  .al-row {
+    grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: 'ph name name more' 'ph when when when' 'ph room pill pill';
+    column-gap: 8px; row-gap: 3px; padding: 8px 4px 8px 8px;
+  }
+  .al-what { display: contents; }
+  .al-name { grid-area: name; align-self: center; }
+  .al-when { grid-area: when; column-gap: 4px; }
+  .al-room { grid-area: room; align-self: center; font-size: var(--fs-label); }
+  .al-ph { grid-area: ph; width: 3.75rem; align-self: center; }
+  .al-pill { grid-area: pill; justify-self: end; align-self: center; height: 26px; padding: 0 7px; gap: 4px; font-size: var(--fs-label); }
+  .al-dots { width: 36px; height: 36px; }
+  .al-more { grid-area: more; align-self: center; justify-self: end; }
 }
 .af-panel { container-type: inline-size; }
 
@@ -143,22 +164,14 @@
 .as-fv > :is(input, select) { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; cursor: pointer; }
 .as-fv > :is(input, select):is([readonly], :disabled) { pointer-events: none; }
 .as-f:has(:focus-visible) .as-fv { box-shadow: inset 0 0 0 2px var(--flight); }
-.as-go {
-  position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; height: 32px; margin-right: -6px; padding: 0 12px;
-  border-radius: 8px; background: var(--booked); color: var(--ground); font-size: var(--fs-small); font-weight: 600;
-}
-.as-go:disabled { background: var(--surface-3); color: var(--muted); }
-.as-go:active:not(:disabled) { transform: scale(0.97); }
-.as-spin { width: 12px; height: 12px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: as-spin 700ms linear infinite; }
-@keyframes as-spin { to { transform: rotate(1turn); } }
 
 .as-chips {
-  display: flex; gap: 8px; margin: 16px -16px 0; padding: 0 16px 2px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
-  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  display: flex; gap: 5px; margin: 16px -16px 0; padding: 0 16px 2px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+  mask-image: linear-gradient(to right, #000 calc(100% - 16px), transparent);
 }
 .as-chips::-webkit-scrollbar { display: none; }
 .as-chip {
-  flex: none; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 999px;
+  flex: none; display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 8px; border-radius: 999px;
   box-shadow: inset 0 0 0 1px var(--line-2); font-size: var(--fs-small); font-weight: 500; color: var(--text);
   transition: background-color var(--t-fast) ease, box-shadow var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
@@ -183,7 +196,7 @@
 }
 .as-card:has(.as-name:active) { transform: scale(0.99); }
 .as-card[data-open] { box-shadow: inset 0 0 0 1.5px var(--booked); }
-.as-ph { display: grid; place-items: center; aspect-ratio: 3.6 / 1; background: var(--surface-3); color: var(--faint); overflow: hidden; }
+.as-ph { display: grid; place-items: center; aspect-ratio: 4.8 / 1; background: var(--surface-3); color: var(--faint); overflow: hidden; }
 .as-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
 /* what the trip already says about a place, on its photo */
 .as-badge {
@@ -337,5 +350,5 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
   .ad-place { opacity: 0; }
   .ad[data-open]:not([data-side]) .ad-place { opacity: 1; }
   .as-live, .as-wait .as-ph, .as-wait i { animation: none; }
-  .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:active { transform: none; }
+  .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active { transform: none; }
 }

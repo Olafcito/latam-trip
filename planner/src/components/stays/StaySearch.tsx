@@ -8,7 +8,7 @@ import { AmenityIcon, KindIcon, kindWord, NightPrice, Rating } from './offerMark
 
 // Add accommodation: find a place among the ones stored for the stop, or add one by hand. The stop, the dates and
 // the guests on top, the kinds of place as chips, then the places as cards led by their photo. A card opens the
-// place. Search asks for more places, which come in over time: the cards found so far stay and the ones still
+// place. A search under way brings more places in over time: the cards found so far stay and the ones still
 // coming show as shapes under them.
 
 export interface StayBadge {
@@ -29,7 +29,6 @@ export interface StaySearchProps {
   badge?: (l: Lodging) => StayBadge | null
   /** a search under way and the sites it asks */
   searching?: { sites: string[] } | null
-  onSearch?: () => void
   onDates?: (checkIn: string, checkOut: string) => void
   onGuests?: (guests: number) => void
   onOpen: (l: Lodging) => void
@@ -124,14 +123,7 @@ export function StaySearch(p: StaySearchProps) {
       {tab === 'manual' ? <div className="as-manual">{p.manual}</div> : (
         <div className="as-find">
           <div className="as-fields">
-            <Field label="Destination" icon={<Pin s={16} />} face={p.destination} wide>
-              {p.onSearch && (
-                <button type="button" className="as-go" disabled={busy} onClick={(e) => { e.preventDefault(); p.onSearch!() }}>
-                  {busy ? <span className="as-spin" aria-hidden="true" /> : <Search s={15} />}
-                  {busy ? 'Searching' : 'Search'}
-                </button>
-              )}
-            </Field>
+            <Field label="Destination" icon={<Pin s={16} />} face={p.destination} wide />
             <Field label="Check-in" icon={<Calendar s={16} />} face={day(p.checkIn)}>
               <input type="date" aria-label="Check-in" value={p.checkIn} max={p.checkOut} readOnly={!p.onDates} onChange={(e) => e.target.value && p.onDates?.(e.target.value, p.checkOut)} />
             </Field>
@@ -149,7 +141,7 @@ export function StaySearch(p: StaySearchProps) {
           <div className="as-chips" role="radiogroup" aria-label="Kind of place">
             <button type="button" role="radio" aria-checked={kind === 'all'} className="as-chip" onClick={() => setKind('all')}>All</button>
             {KINDS.map((k) => (
-              <button key={k} type="button" role="radio" aria-checked={kind === k} className="as-chip" onClick={() => setKind(k)}><KindIcon kind={k} s={16} />{KIND[k]}</button>
+              <button key={k} type="button" role="radio" aria-checked={kind === k} className="as-chip" onClick={() => setKind(k)}><KindIcon kind={k} s={15} />{KIND[k]}</button>
             ))}
           </div>
 

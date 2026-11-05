@@ -3,7 +3,7 @@ import { Bed, Info, List, Star } from '../icons'
 
 // A stop folded open on the route: its summary, then tabs for where to sleep, what to do, the experiences
 // found there and the rest about it. Accommodation comes first and is open when the fold opens. The tabs
-// are one row that scrolls sideways when the screen is narrow, the open one underlined in green.
+// are one row, the open one underlined in green. When the fold is narrow each tab stacks its icon over its label.
 
 export type FoldTab = 'stay' | 'todo' | 'exp' | 'about'
 
@@ -51,7 +51,8 @@ export function CityFold({ summary, stays, todo, experiences, about, start = 'st
             className="af-tab" onClick={() => setTab(t)}
           >
             <Icon s={17} />
-            <span>{label}{t === 'stay' && stays.count > 0 && <> ({stays.count})</>}</span>
+            <span>{label}</span>
+            {t === 'stay' && stays.count > 0 && <b className="af-n">{stays.count}</b>}
           </button>
         ))}
       </div>
