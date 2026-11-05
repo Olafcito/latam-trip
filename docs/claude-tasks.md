@@ -4,7 +4,7 @@ The app never runs searches itself. It writes a task to Supabase, and Claude doe
 
 ## How a task is handed over
 
-The app inserts one row into the `tasks` table. Its `data` column holds the task JSON below, `title` is `[<type>] <short summary>`, and `trip_id` and `trip_version` say which trip it was asked from. Simon later tells Claude "check the checklist", and Claude runs the `trip-checklist` skill, which works through every open row.
+The app inserts one row into the `tasks` table. Its `data` column holds the task JSON below, `title` is `[<type>] <short summary>`, and `trip_id` and `trip_version` say which trip it was asked from. A task that needs no browser and no mailbox starts Claude by itself within about a minute (`docs/task-runner.md`). The rest wait until Simon tells Claude "check the checklist", and Claude runs the `trip-checklist` skill, which works through every open row.
 
 Claude uses `tasks.py`: `list` shows the open and working rows, `show N` prints the task JSON, `start N` sets `working`, and `done N SUMMARY_FILE` writes the result, sets `done` and logs it with `tripdb log-task`. The result is markdown and shows in the app next to the button within seconds.
 
