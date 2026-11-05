@@ -38,6 +38,8 @@
   /* type: Inter for words and numbers alike, numbers in tabular figures so columns line up */
   --font-word: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-num: var(--font-word);
+  /* the booked pane's times and codes: Archivo, wide and firm like a ticket */
+  --font-ticket: Archivo, var(--font-word);
   /* in rem, so the text follows the size set in the browser */
   --fs-hero: 2rem;
   --fs-display: 1.75rem;

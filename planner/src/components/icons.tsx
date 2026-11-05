@@ -288,3 +288,10 @@ export const Lock = ({ s = 13 }: { s?: number }) => (
     <path d="M8 11V8a4 4 0 0 1 8 0v3" />
   </svg>
 )
+
+/** Somewhere else: an arrow up and to the right, for a mail, a page or another journey. */
+export const ArrowUpRight = ({ s = 14 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M8 6h10v10M18 6L6 18" />
+  </svg>
+)

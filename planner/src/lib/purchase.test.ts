@@ -40,12 +40,17 @@ describe('codes and logos', () => {
     expect(codeOfName('Some Air')).toBeNull()
   })
   it('finds a logo file for a known airline or seller and none for an unknown one', () => {
-    expect(airlineLogo('KL')).toMatch(/logos\/airline-KL\.svg$/)
-    expect(airlineLogo(null, 'JetSMART')).toMatch(/airline-JA\.png$/)
+    // a small file is inlined, a bigger one is an address, so the tests ask that there is one and which
+    expect(airlineLogo('KL')).toBeTruthy()
+    expect(airlineLogo(null, 'JetSMART')).toBeTruthy()
     expect(airlineLogo('ZZ')).toBeNull()
-    expect(sellerLogo('LATAM')).toMatch(/airline-LA\.svg$/)
-    expect(sellerLogo('Booking.com')).toMatch(/booking\.svg$/)
-    expect(sellerLogo('Travellink')).toBeNull()
+    expect(sellerLogo('LATAM')).toBe(airlineLogo('LA', null, { mark: true }))
+    expect(airlineLogo('LA', null, { on: 'dark' })).not.toBe(airlineLogo('LA'))
+    expect(airlineLogo('JA', null, { on: 'dark' })).not.toBe(airlineLogo('JA'))
+    expect(sellerLogo('Booking.com')).toBeTruthy()
+    expect(sellerLogo('Travellink.dk')).toBeTruthy()
+    expect(sellerLogo('Travellink')).toBe(sellerLogo('Travellink.dk'))
+    expect(sellerLogo('Some Agent')).toBeNull()
   })
 })
 

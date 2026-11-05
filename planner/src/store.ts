@@ -232,6 +232,9 @@ interface State {
    */
   unlocked: number | 'in' | 'home' | null
   setUnlocked: (unlocked: number | 'in' | 'home' | null) => void
+  /** the booking whose leg should come to the front: its leg scrolls into view and opens, any other open leg closes */
+  focusBooking: string | null
+  setFocusBooking: (id: string | null) => void
 
   /** every place to stay with its rooms and prices, hidden ones too, read live. Empty when signed out */
   lodgings: Lodging[]
@@ -296,6 +299,8 @@ export const useStore = create<State>((set, get) => ({
   },
   unlocked: null,
   setUnlocked: (unlocked) => set({ unlocked }),
+  focusBooking: null,
+  setFocusBooking: (focusBooking) => set({ focusBooking }),
   data: null,
   setData: (data) => {
     const { viewing } = get()

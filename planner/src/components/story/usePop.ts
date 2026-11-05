@@ -51,6 +51,8 @@ export function usePop(hover = true) {
     pinned,
     close,
     dismiss,
+    /** opens it as if pressed, for a leg brought to the front from elsewhere */
+    show: () => { clear(); setPinned(true); setOpen(true) },
     wrap: {
       ref: wrap,
       // a press on nothing focusable blurs to null, and the click outside already handles that

@@ -41,8 +41,8 @@ const AIRLINE_LOGO: Record<string, string> = Object.fromEntries([
   ['JA', 'airline-JA.png'],
 ])
 
-/** Sellers that are not airlines, with a logo file. Travellink has none yet and is set as its name. */
-const SELLER_LOGO: Record<string, string> = { bookingcom: 'booking.svg', booking: 'booking.svg', expedia: 'expedia.svg' }
+/** Sellers that are not airlines, with a logo file. */
+const SELLER_LOGO: Record<string, string> = { bookingcom: 'booking.svg', booking: 'booking.svg', expedia: 'expedia.svg', travellink: 'travellink.png', travellinkdk: 'travellink.png' }
 
 const key = (name: string) => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '')
 
@@ -57,24 +57,42 @@ export function codeOfNumber(number: string | null | undefined): string | null {
   return m && /[A-Z]/.test(m[1]) ? m[1] : null
 }
 
-/** A logo file under public/logos, with the base the app is served from. */
-const logoUrl = (file: string) => `${import.meta.env?.BASE_URL ?? '/'}logos/${file}`
+/** The logo files, bundled with the app since it serves no public folder: file name to its address. */
+const LOGO_FILES: Record<string, string> = Object.fromEntries(
+  Object.entries(import.meta.glob('../assets/logos/*.{svg,png}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>)
+    .map(([path, url]) => [path.slice(path.lastIndexOf('/') + 1), url]),
+)
+const logoUrl = (file: string) => LOGO_FILES[file] ?? null
 
-/** The logo of an airline, by its code or its name, or null when there is no file for it. */
-export function airlineLogo(code: string | null | undefined, name?: string | null): string | null {
-  const c = code ?? codeOfName(name)
-  const file = c ? AIRLINE_LOGO[c.toUpperCase()] : undefined
-  return file ? logoUrl(file) : null
+/** Airlines whose full logo is too wide to read small. In a tight spot they show their mark instead. */
+const WIDE = new Set(['AR', 'AM', 'AF', 'AA', 'BA', 'CM', 'DL', 'F9', 'KL', 'LH', 'DY', 'TP', 'TK', 'UA'])
+
+/**
+ * The logo of an airline, by its code or its name, or null when there is no file for it. On a dark ground its dark
+ * parts are drawn light. With mark, or when the full logo is too wide, the airline's compact mark when it has one.
+ */
+export function airlineLogo(code: string | null | undefined, name?: string | null, opts: { on?: 'dark'; mark?: boolean } = {}): string | null {
+  const c = (code ?? codeOfName(name))?.toUpperCase()
+  const file = c ? AIRLINE_LOGO[c] : undefined
+  if (!c || !file) return null
+  const light = opts.on === 'dark' ? '-light' : ''
+  const full = file.replace(/\.(svg|png)$/, `${light}.$1`)
+  const tries = opts.mark || WIDE.has(c) ? [`airline-${c}-icon${light}.svg`, full, file] : [full, file]
+  for (const t of tries) {
+    const url = logoUrl(t)
+    if (url) return url
+  }
+  return null
 }
 
-/** The logo of whoever sold the ticket: an airline's own, a seller's, or null to set the name instead. */
+/** The logo of whoever sold the ticket: an airline's own mark, a seller's, or null to set the name instead. */
 export function sellerLogo(seller: string | null | undefined): string | null {
   if (!seller) return null
   const own = SELLER_LOGO[key(seller)]
-  return own ? logoUrl(own) : airlineLogo(null, seller)
+  return own ? logoUrl(own) : airlineLogo(null, seller, { mark: true })
 }
 
-export const gmailLogo = () => logoUrl('gmail.svg')
+export const gmailLogo = () => logoUrl('gmail.svg') ?? ''
 
 /** The flights of a row: its segments, or the row as one flight when it lists none. */
 export function flightsOf(b: Pick<Booking, 'from_code' | 'to_code' | 'depart' | 'arrive' | 'segments'>): JourneyFlight[] {

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Family } from '@map/data/types'
 import { Flag, hasFlag } from '@map/map/Flag'
 import type { AppData, Booking, CrawledFlight, MapNode, Way } from '../../data/types'
@@ -205,10 +205,27 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   const [sheetOpen, setSheetOpen] = useState(false)
   // a booking opened with Change booking locks again once its sheet is closed
   const setUnlocked = useStore((s) => s.setUnlocked)
+  // another journey of a purchase asked to come to the front: this leg opens when it is that one, and closes when it is not
+  const focus = useStore((s) => s.focusBooking)
+  const row = useRef<HTMLLIElement>(null)
+  useEffect(() => {
+    if (!focus) return
+    if (booking?.id !== focus) {
+      setSheetOpen(false)
+      pop.close()
+      return
+    }
+    useStore.getState().setFocusBooking(null)
+    row.current?.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+    if (sheet) setSheetOpen(true)
+    else pop.show()
+    // the leg of the focused booking is the only one that acts on it
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus, booking?.id])
   const label = `${aria}${booking ? ', booked' : ''}. Details`
   const mode = <>{travel}{booking && <span className="st-booked" aria-hidden="true"><Check s={12} /></span>}</>
   return (
-    <li className="st-leg" data-f={fam} data-tone={tone}>
+    <li ref={row} className="st-leg" data-f={fam} data-tone={tone}>
       <span className="st-rail" />
       <div className="st-line">
         {picker ? (
