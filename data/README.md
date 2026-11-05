@@ -22,3 +22,5 @@ The app's built map and research files live in the public Supabase `web` bucket.
 ## Backups and safety
 
 The scheduled worker stores private backups in `latam-trip-backups`. Use `tripdb dump` and `tripdb restore` only for an explicitly reviewed recovery. A restore can replace project tables, so verify the target and archive before running `--wipe`. Never use test reset helpers against the live project.
+
+The `read-booking` edge function (`supabase/functions/read-booking`) reads a booking confirmation for Add booking. It is owner only and touches no table. Its README has the deploy commands.

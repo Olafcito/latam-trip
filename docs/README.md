@@ -13,6 +13,7 @@ Documentation is part of the work, not a step after it. Every doc in this repo d
 | Product overview | `docs/product/product-overview.md` | `feature-spec` | A screen or a user moment is added or removed |
 | Product decisions | `docs/product/product-decisions.md` | `feature-spec` proposes, Simon accepts | A PROD decision is proposed, accepted or reconsidered |
 | Feature specs | `docs/product/features/FEAT-NNN-<slug>.md` | `feature-spec`, main session moves the status | A comprehensive feature is specified, its status changes, or scope changes during a build |
+| Edge functions | `supabase/functions/<name>/README.md` | The agent changing the function | The request, the response, the secrets or the deploy steps change |
 | Technical decisions | `docs/technical/technical-decisions.md` | The plan author proposes, Simon accepts | A plan picks or changes a library, schema, data flow, deploy shape or security boundary |
 | Implementation plans | `docs/superpowers/plans/` | The `writing-plans` author | Written before a build. Marked done or superseded when merged |
 | Older specs | `docs/superpowers/specs/` | Main session | Only to mark one superseded by a FEAT spec. New specs go in `docs/product/features/` |
