@@ -147,12 +147,12 @@ function service(): SupabaseClient {
 }
 
 /** The stored lodging with this Hostelworld property id, by its links, else null. */
-async function findByProperty(db: SupabaseClient, propertyId: string): Promise<{ id: string } | null> {
-  const { data, error } = await db.from('lodgings').select('id, links').filter('links', 'cs', JSON.stringify([{ site: 'hostelworld' }]))
+async function findByProperty(db: SupabaseClient, propertyId: string): Promise<{ id: string; place_id: string | null; hidden: boolean } | null> {
+  const { data, error } = await db.from('lodgings').select('id, links, place_id, hidden').filter('links', 'cs', JSON.stringify([{ site: 'hostelworld' }]))
   if (error) throw new Refused(500, 'The places could not be read.')
   for (const row of data ?? []) {
     const links = Array.isArray(row.links) ? (row.links as { site?: string; url?: string }[]) : []
-    if (links.some((l) => l.site === 'hostelworld' && typeof l.url === 'string' && hostelworldId(l.url) === propertyId)) return { id: row.id }
+    if (links.some((l) => l.site === 'hostelworld' && typeof l.url === 'string' && hostelworldId(l.url) === propertyId)) return { id: row.id, place_id: row.place_id ?? null, hidden: row.hidden === true }
   }
   return null
 }
@@ -177,7 +177,15 @@ async function target(db: SupabaseClient, body: Body): Promise<Target> {
     const propertyId = hostelworldId(body.url)
     if (!propertyId) throw new Refused(400, 'That is not a Hostelworld link to a place.')
     const had = await findByProperty(db, propertyId)
-    if (had) return { lodgingId: had.id, propertyId, link: body.url.trim(), created: false }
+    if (had) {
+      const wanted = typeof body.place_id === 'string' ? body.place_id.trim() : ''
+      if (wanted && had.place_id !== wanted) throw new Refused(409, 'That place is already at another stop.')
+      if (had.hidden) {
+        const { error } = await db.from('lodgings').update({ hidden: false }).eq('id', had.id)
+        if (error) throw new Refused(500, 'The place could not be shown again.')
+      }
+      return { lodgingId: had.id, propertyId, link: body.url.trim(), created: false }
+    }
     if (typeof body.place_id !== 'string' || !body.place_id.trim()) throw new Refused(400, 'Say which place on the map the link belongs to.')
     const prop = await hostelworld<HwProperty>(`${propertyId}/`)
     const { data, error } = await db.from('lodgings').insert(lodgingOf(prop, body.url.trim(), body.place_id.trim())).select('id').single()

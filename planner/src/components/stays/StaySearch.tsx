@@ -113,10 +113,19 @@ function LinkRow({ places, onLink, onOpen }: { places: Lodging[]; onLink: (url: 
   // the place added, until the store has it
   const [want, setWant] = useState<string | null>(null)
   useEffect(() => {
-    const l = want ? places.find((x) => x.id === want) : null
-    if (!l) return
-    setWant(null)
-    onOpen(l)
+    if (!want) return
+    const l = places.find((x) => x.id === want)
+    if (l) {
+      setWant(null)
+      onOpen(l)
+      return
+    }
+    // the store reloads right after the add, so a place still missing a moment later is not at this stop
+    const t = setTimeout(() => {
+      setWant(null)
+      setError('That place is not at this stop.')
+    }, 2500)
+    return () => clearTimeout(t)
   }, [want, places, onOpen])
   const ok = hostelworldId(url) != null
   const go = async (e: FormEvent) => {
@@ -146,7 +155,7 @@ function LinkRow({ places, onLink, onOpen }: { places: Lodging[]; onLink: (url: 
         />
         {error && <span className="pv-mk" data-tone="warn" role="img" aria-label={error} title={error}><Warn s={13} /></span>}
       </label>
-      <button type="submit" className="as-go" disabled={!ok || busy}>{busy && <span className="pv-vh">Adding from Hostelworld</span>}Go</button>
+      <button type="submit" className="as-go" disabled={!ok || busy} aria-label={busy ? 'Adding from Hostelworld' : 'Go'}>Go</button>
       <span className="pv-vh" role="status">{error ?? ''}</span>
     </form>
   )
