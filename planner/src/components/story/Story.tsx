@@ -21,11 +21,12 @@ import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
-import { Boat, Bus, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
+import { Boat, Bus, Caret, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
 import { BookingForm, type BookTarget, type FormLeg } from './BookingForm'
-import { CityCard } from './CityCard'
+import { CityCard, type CityView } from './CityCard'
 import { FlightSheet, type LegStay } from './FlightSheet'
 import { LegCard, type LegEnds } from './LegCard'
+import { StopFold } from './StopFold'
 import type { LegPoint } from './LegMap'
 import { WaySheet } from './WaySheet'
 import { WhenPicker } from './WhenPicker'
@@ -40,7 +41,9 @@ import { usePop } from './usePop'
 // is another day. A leg that leaves before you get there says so, with the day to move it to.
 // The earliest stop decides its nights: a night more comes from the free nights, and from a later
 // stop you choose once there are none. A night less is a free night, shown as a line of its own before
-// the flight home, and no stop gets it. A stop's name or flag opens its City card.
+// the flight home, and no stop gets it. A stop's name or flag folds it open in place: the stop and the leg out
+// of it become one card with the stop's summary and its tabs, accommodation first. The city card is still there
+// for changing or deleting the stop, from the fold's About.
 
 const MODE: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Bus' }
 
@@ -118,7 +121,7 @@ function NightChooser({ name, days, rows }: { name: string; days: number; rows: 
 }
 
 /** A stop: flag on the rail, the city, and at the right edge the nights there, which you can change. Copenhagen has no nights. */
-function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, onOpen, cut }: {
+function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, open, onToggle, cut }: {
   id?: string
   name: string; node: MapNode | undefined; country: string; days: number; exact: boolean
   /** a night less here, or null when it has none */
@@ -129,8 +132,10 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
   through?: string
   /** Copenhagen, where the trip starts and ends */
   home?: 'start' | 'end'
-  /** opens the City card */
-  onOpen?: () => void
+  /** folded open in place, with its fold right under it */
+  open?: boolean
+  /** folds the stop open or shut */
+  onToggle?: () => void
   /** the booked stays here that the nights cut into */
   cut?: Warning[]
 }) {
@@ -140,18 +145,19 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
   const direct = rows.find((r) => r.from === 'free')?.take
   const later = rows.filter((r) => r.from !== 'free')
   const more = !direct ? `One night more in ${name}, choose where from` : through ? `One night more in ${name}, from ${through}` : `One night more in ${name}, from the free nights`
-  const open = onOpen && (() => {
+  const toggle = onToggle && (() => {
     usePlaceHover.getState().hide()
-    onOpen()
+    onToggle()
   })
+  const foldId = id ? `${id}-fold` : undefined
   return (
-    <li id={id} className="st-stop" data-home={home}>
+    <li id={id} className="st-stop" data-home={home} data-open={open || undefined}>
       <span className="st-rail">
-        {open ? <button type="button" className="st-flag" tabIndex={-1} aria-hidden="true" onClick={open}><Disc country={country} /></button> : <Disc country={country} />}
+        {toggle ? <button type="button" className="st-flag" tabIndex={-1} aria-hidden="true" onClick={toggle}><Disc country={country} /></button> : <Disc country={country} />}
       </span>
       <div className="st-card">
-        {open
-          ? <button type="button" className="st-name st-open" aria-haspopup="dialog" aria-label={`${name}, open the city card`} {...hoverProps(node)} onClick={open}>{name}</button>
+        {toggle
+          ? <button type="button" className="st-name st-open" aria-expanded={!!open} aria-controls={open ? foldId : undefined} {...(open ? {} : hoverProps(node))} onClick={toggle}>{name}</button>
           : <b className="st-name">{name}</b>}
         {!home && (
           <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
@@ -163,6 +169,7 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
             </span>
           </span>
         )}
+        {open && toggle && <button type="button" className="st-shut" aria-label={`Fold ${name} shut`} aria-controls={foldId} onClick={toggle}><Caret dir="u" s={20} /></button>}
       </div>
       {cut?.map((w, k) => <p key={k} className="st-clash" role="status"><Warn /><span>{w.text}</span></p>)}
     </li>
@@ -174,7 +181,7 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
  * move, then its mode and length with its ticket behind them. The rail is the leg drawn. A booked leg's
  * mode button keeps a green ring and a check, the shape it has when pressed, so bought reads at a glance.
  */
-function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, booked, booking, fromName, onSet }: {
+function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, booked, booking, fromName, onSet, fold }: {
   fam: Family
   tone?: 'in' | 'home'
   route: string
@@ -199,6 +206,8 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   booking?: Booking | null
   fromName: string
   onSet?: (date: string) => void
+  /** the leg out of a stop that is folded open, drawn inside its card */
+  fold?: boolean
 }) {
   const when = usePop(false)
   const pop = usePop(false)
@@ -230,7 +239,7 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   const label = `${aria}${booking ? ', booked' : ''}. Details`
   const mode = <>{travel}{booking && <span className="st-booked" aria-hidden="true"><Check s={12} /></span>}</>
   return (
-    <li ref={row} className="st-leg" data-f={fam} data-tone={tone}>
+    <li ref={row} className="st-leg" data-f={fam} data-tone={tone} data-fold={fold || undefined}>
       <span className="st-rail" />
       <div className="st-line">
         {picker ? (
@@ -318,8 +327,22 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     const ends = { wayIn, wayHome }
     return { in: wayRowsByDay(inout, wayIn, ends, journey.id), home: wayRowsByDay(inout, wayHome, ends, journey.id) }
   }, [inout, wayIn, wayHome, journey.id])
-  // the stop whose City card is open. A stop deleted from the card goes once the card has closed
-  const [city, setCity] = useState<number | null>(null)
+  // the stop whose City card is open, and at which view. A stop deleted from the card goes once the card has closed
+  const [city, setCity] = useState<{ i: number; view: CityView } | null>(null)
+  // the stop folded open on the route, one at a time
+  const [fold, setFold] = useState<number | null>(null)
+  const openSaved = useStore((s) => s.openSaved)
+  const setCursor = useStore((s) => s.setCursor)
+  const foldBody = (i: number, fam: Family, tone?: 'home') => (
+    <li key={`f${i}`} id={`st-${i}-fold`} className="st-leg st-fold" data-f={fam} data-tone={tone}>
+      <span className="st-rail" />
+      <StopFold
+        data={data} journey={journey} sched={sched} i={i}
+        onCity={(view) => setCity({ i, view })}
+        onMap={() => { openSaved(journey); setCursor(i) }}
+      />
+    </li>
+  )
   // the bus or boat leg whose booking form is open, by its place index
   // the leg whose booking form is open, and whether it edits the booking the leg has
   const [bookFor, setBookFor] = useState<{ i: number; edit: boolean } | null>(null)
@@ -557,8 +580,10 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
               close={close}
             />
           ) : undefined}
+          fold={fold === i - 1}
         />,
       )
+      if (fold === i - 1) items.push(foldBody(i - 1, fam))
     }
     const sp = sched.places[i]
     if (!p.hop && i > 0) {
@@ -581,10 +606,13 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         onLess={press(giveNight(journey, sched, i, locked))}
         rows={nightRows(i)}
         through={(() => { const k = nightStop(locked, i); return k == null ? undefined : nm(sched.places[k].node) })()}
-        onOpen={() => setCity(i)}
+        open={fold === i}
+        onToggle={() => setFold((f) => (f === i ? null : i))}
         cut={sched.warnings.filter((w) => w.stop === i)}
       />,
     )
+    // the last stop has no leg of its own, its fold follows it straight away
+    if (fold === i && i === ps.length - 1) items.push(foldBody(i, 'flight', 'home'))
   })
   if (sched.free > 0) {
     items.push(
@@ -614,18 +642,21 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
     <>
       <ol className="st">{items}</ol>
       {bookForm}
-      {city != null && ps[city] && (
+      {city != null && ps[city.i] && (
         <Modal
-          label={nm(ps[city].node)}
+          label={nm(ps[city.i].node)}
           className="cc-md"
           bare
           onClose={() => {
             setCity(null)
-            if (goes.current) removeStop(city)
+            if (goes.current) {
+              removeStop(city.i)
+              setFold(null)
+            }
             goes.current = false
           }}
         >
-          {(shut) => <CityCard data={data} journey={journey} sched={sched} i={city} close={shut} onDelete={() => { goes.current = true; shut() }} />}
+          {(shut) => <CityCard data={data} journey={journey} sched={sched} i={city.i} start={city.view} close={shut} onDelete={() => { goes.current = true; shut() }} />}
         </Modal>
       )}
     </>
