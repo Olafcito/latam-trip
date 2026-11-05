@@ -84,6 +84,17 @@ class LodgingDetails(unittest.TestCase):
         self.assertEqual({p["site"] for p in rest.t["lodging_prices"]}, {"booking"})
         self.assertEqual(rest.t["lodgings"][0]["photos"], [{"url": "https://example.com/p.jpg", "caption": None}])
 
+    def test_the_cheapest_room_placeholder_goes_to_the_cheapest_room_read(self):
+        rest = FakeRest([{"id": "L1", "photos": []}],
+                        [{"id": "R1", "lodging_id": "L1", "name": "Cheapest room shown", "site": None, "site_id": None, "photo": None}])
+        dear = room("Suite", "TEST02", prices=[dict(PRICE, total_dkk=3000)])
+        cheap = room("Standard Double", "TEST01", prices=[dict(PRICE, total_dkk=900)])
+        out = self.run_cmd({"lodging_id": "L1", "photos": [], "rooms": [dear, cheap]}, rest)
+        self.assertIn("rooms added 1, rooms updated 1", out)
+        rooms = {r["id"]: r for r in rest.t["lodging_rooms"]}
+        self.assertEqual((rooms["R1"]["name"], rooms["R1"]["site_id"]), ("Standard Double", "TEST01"))
+        self.assertEqual(len(rest.t["lodging_rooms"]), 2)
+
     def test_empty_photos_keep_the_stored_ones_and_a_second_run_adds_no_price(self):
         rest = self.base()
         rest.t["lodgings"][0]["photos"] = [{"url": "https://example.com/old.jpg", "caption": None}]

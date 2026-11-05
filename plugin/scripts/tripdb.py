@@ -591,8 +591,9 @@ def _lodging_details_plan(doc):
 
 def cmd_lodging_details(paths, file, dry=False, rest=None):
     """Store what a read of a Booking.com page found: the rooms with their photos and prices, and the place photos.
-    A room is matched to a stored one by its Booking.com room id, else by name among the rooms without an id (the one
-    cheapest room the task runner stored), and patched. Any other room is added. Prices are added, a price already
+    A room is matched to a stored one by its Booking.com room id, else by name among the rooms without an id, and
+    patched. The one cheapest room the task runner stored without an id goes to the cheapest room read when its name
+    matches nothing. Any other room is added. Prices are added, a price already
     stored for the room and dates is skipped. Photos replace the stored ones only when the file has some. No room is
     deleted. The whole file is refused, with nothing written, when any row fails its schema."""
     try:
@@ -619,6 +620,15 @@ def cmd_lodging_details(paths, file, dry=False, rest=None):
         if hit is not None:
             taken.add(hit["id"])
         todo.append((row, prices, hit))
+    # The task runner may name its one room for what it is, such as "Cheapest room shown", so no name matches. Such a
+    # room without an id is the cheapest room for its dates, and the cheapest room of the read that matched nothing
+    # takes it over, keeping its price rows.
+    spare = [r for r in stored if not r.get("site_id") and r["id"] not in taken and "cheapest" in str(r["name"]).casefold()]
+    loose = [i for i, (_, prices, hit) in enumerate(todo) if hit is None and any(p.get("total_dkk") is not None for p in prices)]
+    if len(spare) == 1 and loose:
+        i = min(loose, key=lambda i: min(p["total_dkk"] for p in todo[i][1] if p.get("total_dkk") is not None))
+        taken.add(spare[0]["id"])
+        todo[i] = (todo[i][0], todo[i][1], spare[0])
     have = set()
     if taken:
         ids = ",".join(sorted(taken))
