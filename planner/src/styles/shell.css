@@ -101,7 +101,7 @@
 .signin-mark { margin-bottom: 12px; border-radius: 14px; box-shadow: 0 0 0 1px var(--line-2); }
 .signin-fields { display: flex; flex-direction: column; gap: 10px; }
 .signin-field { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); color: var(--faint); transition: box-shadow var(--t-fast) ease, color var(--t-fast) ease; }
-.signin-field:focus-within { box-shadow: inset 0 0 0 1.5px var(--flight); color: var(--text); }
+.signin-field:focus-within { box-shadow: inset 0 0 0 1.5px var(--muted); color: var(--text); }
 .signin-field.bad { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--err) 70%, transparent); }
 .signin-field > svg { flex: none; }
 .signin-field input { flex: 1; min-width: 0; height: 46px; padding: 0; border: 0; outline: 0; background: none; color: var(--text); font-size: var(--fs-title); }
@@ -110,7 +110,13 @@
 .signin-go { min-height: 48px; border-radius: 10px; font-size: var(--fs-body); }
 .signin-badge.sent { color: var(--flight); background: color-mix(in srgb, var(--flight) 12%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 35%, transparent); }
 .signin-badge.invite { color: var(--muted); }
-.signin-addr { font-size: var(--fs-lead); word-break: break-all; overflow-wrap: anywhere; }
+.signin-open { margin: 0; font-size: var(--fs-title); font-weight: 600; color: var(--text); text-wrap: balance; }
+.signin-addr { font-size: var(--fs-small); word-break: break-all; overflow-wrap: anywhere; }
+/* a phone: no card, the mark, field and button ride the upper third so the keyboard never covers the button */
+@media (max-width: 560px) {
+  .consent-main:has(.signin) { justify-content: flex-start; padding-top: max(10vh, 40px); }
+  .consent.signin { width: 100%; padding: 0; background: none; border: 0; box-shadow: none; }
+}
 @media (hover: hover) and (pointer: fine) {
   .signin-field:hover:not(:focus-within) { box-shadow: inset 0 0 0 1px var(--faint); }
 }
