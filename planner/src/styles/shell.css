@@ -66,10 +66,29 @@
 .load-err p { margin: 0; }
 .load-err-t { display: flex; align-items: center; gap: 8px; font-size: var(--fs-title); font-weight: 600; color: var(--err); }
 .load-err .mono { color: var(--muted); overflow-wrap: anywhere; }
-.connect { gap: 10px; }
-.connect > .btn { align-self: flex-start; margin-top: 6px; }
-.connect-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
-.connect-actions .btn { min-width: 96px; }
+
+/* the consent step: who asks and where the code goes lead, the two answers sit at the bottom */
+.consent-main { justify-content: center; padding: 24px 16px calc(24px + env(safe-area-inset-bottom)); }
+.consent { align-self: center; width: min(100%, 400px); padding: 28px 24px 24px; display: flex; flex-direction: column; gap: 24px; }
+.consent-head { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.consent-head p, .consent-rows { margin: 0; }
+.consent-avatar { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 12px; border-radius: 14px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line-2); font-size: var(--fs-head); font-weight: 600; color: var(--text); }
+.consent-avatar.warn { color: var(--err); background: color-mix(in srgb, var(--err) 12%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--err) 35%, transparent); }
+.consent-client { margin: 0; font-size: var(--fs-head); font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; overflow-wrap: anywhere; text-wrap: balance; }
+.consent-sub { font-size: var(--fs-body); color: var(--muted); text-wrap: balance; }
+.consent-rows { list-style: none; padding: 0; border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.consent-rows li { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 14px; }
+.consent-rows li + li { box-shadow: inset 0 1px 0 var(--line); }
+.consent-mark { display: inline-flex; flex: none; color: var(--faint); }
+.consent-host { font-weight: 600; color: var(--text); overflow-wrap: anywhere; }
+.consent-val { min-width: 0; color: var(--text); overflow-wrap: anywhere; }
+.consent-scopes { display: flex; flex-wrap: wrap; gap: 6px; }
+.consent-scope { padding: 2px 8px; border-radius: 999px; background: var(--surface-3); font-size: var(--fs-small); color: var(--muted); }
+.consent-actions { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 10px; }
+.consent-actions .btn { min-height: 44px; justify-content: center; }
+.consent-wait { height: 180px; border-radius: 10px; background: var(--surface-2); animation: consent-pulse 1.2s ease-in-out infinite alternate; }
+@keyframes consent-pulse { from { opacity: 0.5; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .consent-wait { animation: none; } }
 
 /* Map tab: the route map fills the window under the header */
 .app.wide { height: 100dvh; }

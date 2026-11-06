@@ -41,12 +41,12 @@ export function useSession(): SessionState {
   return state
 }
 
-/** The page's own address without query or hash, and no trailing slash when it is the root. A connector sign in
- *  (?connect=) is kept, so the link lands on the allow screen. */
+/** The page's own address without query or hash, and no trailing slash when it is the root. A consent request
+ *  (?authorization_id=) is kept, so the link lands on the consent step. */
 export function signInRedirect(loc: { origin: string; pathname: string; search?: string } = window.location): string {
-  const flow = new URLSearchParams(loc.search ?? '').get('connect')
+  const id = new URLSearchParams(loc.search ?? '').get('authorization_id')
   const base = loc.origin + (loc.pathname === '/' ? '' : loc.pathname)
-  return flow ? `${base}${loc.pathname === '/' ? '/' : ''}?connect=${encodeURIComponent(flow)}` : base
+  return id ? `${base}${loc.pathname === '/' ? '/' : ''}?authorization_id=${encodeURIComponent(id)}` : base
 }
 
 /** Sends the magic link. Public sign ups are off, so only the owner's address gets one. */

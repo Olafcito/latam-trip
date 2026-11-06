@@ -14,8 +14,8 @@ import { Freshness } from './components/Freshness'
 import { QuoteSheet } from './components/QuoteSheet'
 import { ProfileButton } from './components/ProfileSheet'
 import { SignIn } from './components/SignIn'
-import { Connect } from './components/Connect'
-import { connectFlow, withoutConnect } from './lib/connect'
+import { Consent } from './components/Consent'
+import { consentId, withoutConsent } from './lib/consent'
 import { remoteEnabled, useSession } from './lib/supabase'
 import { dataChanged } from './data/rev'
 import { clearRouteData } from './data/routeMap'
@@ -175,11 +175,11 @@ export function App() {
   const go = useStore((s) => s.go)
   const [error, setError] = useState<string | null>(null)
   const auth = useSession()
-  // a connector sign in from its email link, allowed here once signed in
-  const [connect, setConnect] = useState(() => connectFlow(window.location.search))
-  const closeConnect = () => {
-    window.history.replaceState(window.history.state, '', withoutConnect(window.location.href))
-    setConnect(null)
+  // Supabase's consent step for an assistant that connects, answered here once signed in
+  const [consent, setConsent] = useState(() => consentId(window.location.search))
+  const closeConsent = () => {
+    window.history.replaceState(window.history.state, '', withoutConsent(window.location.href))
+    setConsent(null)
   }
 
   const setRepoTrips = useStore((s) => s.setRepoTrips)
@@ -327,7 +327,7 @@ export function App() {
 
   if (remoteEnabled() && !auth.ready) return <div className="app"><main className="main" /></div>
   if (remoteEnabled() && !auth.session) return <SignIn />
-  if (connect && auth.session) return <Connect flow={connect} token={auth.session.access_token} onClose={closeConnect} />
+  if (consent && auth.session) return <Consent id={consent} token={auth.session.access_token} onClose={closeConsent} />
   if (error) {
     return (
       <div className="app">

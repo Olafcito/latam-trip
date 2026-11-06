@@ -45,9 +45,9 @@ describe('signInRedirect', () => {
     expect(m.signInRedirect({ origin, pathname })).toBe(want)
   })
 
-  it('keeps a connector sign in and nothing else', async () => {
+  it('keeps a consent request across the sign in and nothing else', async () => {
     const m = await load()
-    expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?trip=a&connect=lt_fl_abc' })).toBe('https://x.test/?connect=lt_fl_abc')
+    expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?trip=a&authorization_id=abc123def' })).toBe('https://x.test/?authorization_id=abc123def')
     expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?trip=a' })).toBe('https://x.test')
   })
 })
