@@ -275,6 +275,12 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 
 - [ ] A `stay_prices` task is done when every room in `room_ids` has a price for its dates. Same shape as 0025. Docs: `docs/claude-tasks.md`, `docs/task-runner.md`.
 
+### Task 4.3: Task, inbox and task_log ids per owner
+
+**Files:** `supabase/migrations/0032_task_ids_per_owner.sql`, the connector's task tools and undo in `latam_trip_mcp/core.py`, `supabase/tests/test_rls.py`.
+
+- [ ] `tasks`, `inbox` and `task_log` are keyed `(owner_id, id)`. Claim, finish, fail, undo and the stay_details functions follow a task by owner and id. Test: `test_taken_task_id_is_as_free_as_a_fresh_one`, B inserting an id A holds gets the same answer as a fresh id. Clears the second gate of phase 6.
+
 ---
 
 ## Phase 5: Profiles, Simon's rules out of the plugin (Sonnet)
@@ -301,7 +307,7 @@ Ask first: sign up rule, passphrase fallback.
 
 Gate before the first outside account: Supabase Postgres Changes does not apply row level security to DELETE events, so every subscriber gets the deleted row's primary key. The `trips` key carries `owner_id` and the trip name. Phase 2 measured what B sees in `test_realtime_is_owner_scoped`. Before sign up opens, the planner moves to private broadcast channels with row level security on `realtime.messages`, or the private tables leave the realtime publication, and the test asserts B sees no DELETE of A's rows.
 
-Second gate before the first outside account: `tasks`, `inbox` and `task_log` keep identity ids that accept an explicit id, so B inserting an id A holds gets a 409 that says the id exists. Nothing else is learnt, the row stays hidden. They are not keyed `(owner_id, id)` in phase 2 because the connector's undo of a task delete inserts the old row with its id, and claim, finish and the stay_details functions follow a task by its id alone. Phase 3 rewrites the task tools per owner, so it keys these three tables `(owner_id, id)` the way phase 2 keyed lodgings and bookings, and test_rls asserts that a taken id behaves like a fresh one.
+Second gate before the first outside account: `tasks`, `inbox` and `task_log` keep identity ids that accept an explicit id, so B inserting an id A holds gets a 409 that says the id exists. Nothing else is learnt, the row stays hidden. They are not keyed `(owner_id, id)` in phase 2 because the connector's undo of a task delete inserts the old row with its id, and claim, finish and the stay_details functions follow a task by its id alone. Phase 4 rewrites the task tools per owner, so its task 4.3 keys these three tables `(owner_id, id)` the way phase 2 keyed lodgings and bookings, and test_rls asserts that a taken id behaves like a fresh one.
 
 ### Task 6.1: Sign up by the rule
 
