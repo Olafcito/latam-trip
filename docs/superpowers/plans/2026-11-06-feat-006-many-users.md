@@ -229,6 +229,12 @@ Decided values:
 
 `data/README.md` (owner column, shared and private tables, `admins`, `user_documents`), `docs/technical/technical-decisions.md` (TECH-009 Ownership in the database, Proposed), CLAUDE.md Privacy. Commit with the last code commit of the phase.
 
+### After the merge of phase 2
+
+The release applies 0027 to 0029 and updates the connector. From the PC, at once and in this order: `npx supabase functions deploy stay-rates read-booking`, `bash infra/deploy.sh --enable-schedules`, then `python -I -X utf8 supabase/move_booking_files.py` to look and `--apply` to move the old booking files under the admin's folder. A later migration drops the temporary rule for one folder paths once nothing is left there. Until the functions are redeployed, a new Hostelworld room fails to store and reads have no cap. Until the worker is redeployed, builds fail and the old files stay live.
+
+Left for phase 3: `Core(owner=...)` sets the owner only for the connector's own queries, while tasks, trips, the trash document and quotes still go through the store as the admin. Phase 3 hands the same owner to the store. Nothing passes another owner before then. Batch A also moved the task runner's admin only wakeup into 0027, so 0030 keeps only what is left of task 4.
+
 ---
 
 ## Phase 3: OAuth 2.1 spike, then the connector acts as the user (Opus)

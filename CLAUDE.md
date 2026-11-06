@@ -112,7 +112,7 @@ Every implementation that is more than a trivial fix gets a review of the diff: 
 
 ## Privacy
 
-The repo and the `web` bucket are public. Booking references, prices paid, names and attachments live only in owner only tables and a private bucket, never in a built file, a commit, a doc or a test fixture. Fixtures use `TEST01`.
+The repo and the `web` bucket are public. Booking references, prices paid, names and attachments live only in owner only tables and a private bucket, never in a built file, a commit, a doc or a test fixture. Fixtures use `TEST01`. Every private row carries its `owner_id` and row level security keeps it to that person (TECH-009). The secret key bypasses it, so a script that uses the key names the admin's id from `admins` on every read and write, and the public bucket is built from the catalogue and the admin's rows only.
 
 - `.env` holds the Supabase keys. Never print or commit it.
 - Design shots go in `docs/design/shots/`, which is git ignored because the shots show private trip data. The reviews and the design and product logs describe what a shot shows, never what a ticket says.
