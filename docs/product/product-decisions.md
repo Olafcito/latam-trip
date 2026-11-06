@@ -46,7 +46,7 @@ Ids never change. Status is Proposed, Accepted or Reconsidered. Only Simon accep
 
 ## PROD-007 People use latam-trip through their own Claude
 
-- **Decision.** latam-trip is offered to other travellers as a connector and a plugin they add to their own Claude. latam-trip hosts the data, the connector and the skills. Each person brings their own Claude subscription and their own browser, signs in as themselves, and sees and changes only their own private data on top of one shared catalogue of places, connections and quotes. latam-trip runs no model and no server side browser workers.
+- **Decision.** latam-trip is offered to other travellers as a connector and a plugin they add to their own Claude. latam-trip hosts the data, the connector and the skills. Each person brings their own Claude subscription and their own browser, signs in as themselves, and sees and changes only their own private data on top of one shared catalogue of places, connections and quotes. latam-trip runs no server side browser workers and no model, with one exception: the `read-booking` function reads a pasted booking confirmation with latam-trip's own Claude API key, capped per owner each month.
 - **Reasoning.** It is the shape closest to what exists, it costs latam-trip no tokens, and browser reads stay on the person's own device, since Booking.com blocks datacenter browsers (TECH-002, TECH-003). A hosted agent was the alternative and was set aside on cost and on the scraping it would need.
 - **Applies to.** FEAT-006 and every later feature that adds a table, a connector tool or a skill.
 - **Date.** 2026-11-06. **Status.** Proposed.
