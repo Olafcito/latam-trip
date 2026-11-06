@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
 import { changes, emptyProfile, formErrors, loadProfile, saveProfile, toForm, type Profile, type ProfileErrors, type ProfileField, type ProfileForm } from '../lib/profile'
-import { Bag, Cash, Check, Home, Hourglass, Note, Person } from './icons'
+import { Bag, Cash, Home, Hourglass, Note, Person } from './icons'
 import { Modal } from './Modal'
 
 // The signed in person's own profile, the row the connector's get_profile and update_profile keep.
@@ -25,9 +25,9 @@ export function ProfileButton({ ownerId }: { ownerId: string }) {
   )
 }
 
-function Row({ icon, label, htmlFor, why, whyId, children, notes }: { icon: ReactNode; label: string; htmlFor: string; why?: string; whyId: string; children: ReactNode; notes?: boolean }) {
+function Row({ icon, label, htmlFor, why, whyId, children, notes, empty }: { icon: ReactNode; label: string; htmlFor: string; why?: string; whyId: string; children: ReactNode; notes?: boolean; empty: boolean }) {
   return (
-    <li className={notes ? 'bf-row bf-notes' : 'bf-row'} data-bad={why ? true : undefined}>
+    <li className={notes ? 'bf-row bf-notes' : 'bf-row'} data-bad={why ? true : undefined} data-empty={empty ? true : undefined}>
       <span className="bf-i" aria-hidden="true">{icon}</span>
       <label className="bf-k" htmlFor={htmlFor}>{label}</label>
       {notes ? children : <span className="bf-v">{children}</span>}
@@ -67,6 +67,7 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
   for (const k of judged) if (all[k]) shown[k] = all[k]
   const patch = ready ? changes(load.saved, form) : {}
   const dirty = Object.keys(patch).length > 0
+  const invalid = Object.values(all).some(Boolean)
 
   const typed = (k: ProfileField) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const v = e.target.value
@@ -105,6 +106,7 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
     onChange: typed(k),
     onBlur: left(k),
     disabled: !ready || busy,
+    placeholder: 'Add',
     'aria-invalid': shown[k] ? true : undefined,
     'aria-describedby': shown[k] ? `${id}-${k}-why` : undefined,
   })
@@ -120,25 +122,25 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
 
       <div className="bf-body">
         <ul className="bf-list">
-          <Row icon={<Home s={16} />} label="Home airport" htmlFor={`${id}-home_airport`} why={shown.home_airport} whyId={`${id}-home_airport-why`}>
-            <input {...field('home_airport')} {...code} placeholder="CPH" />
+          <Row icon={<Home s={16} />} label="Home airport" htmlFor={`${id}-home_airport`} empty={form.home_airport.trim() === ''} why={shown.home_airport} whyId={`${id}-home_airport-why`}>
+            <input {...field('home_airport')} {...code} />
           </Row>
-          <Row icon={<Cash s={16} />} label="Currency" htmlFor={`${id}-currency`} why={shown.currency} whyId={`${id}-currency-why`}>
-            <input {...field('currency')} {...code} placeholder="DKK" />
+          <Row icon={<Cash s={16} />} label="Currency" htmlFor={`${id}-currency`} empty={form.currency.trim() === ''} why={shown.currency} whyId={`${id}-currency-why`}>
+            <input {...field('currency')} {...code} />
           </Row>
-          <Row icon={<Hourglass s={16} />} label="Longest journey" htmlFor={`${id}-max_hours`} why={shown.max_hours} whyId={`${id}-max_hours-why`}>
+          <Row icon={<Hourglass s={16} />} label="Longest journey" htmlFor={`${id}-max_hours`} empty={form.max_hours.trim() === ''} why={shown.max_hours} whyId={`${id}-max_hours-why`}>
             <span className="bf-kr">
-              <input {...field('max_hours')} className="bf-in pf-num" inputMode="decimal" autoComplete="off" enterKeyHint="next" placeholder="30" />
+              <input {...field('max_hours')} className="bf-in pf-num" inputMode="decimal" autoComplete="off" enterKeyHint="next" />
               <span aria-hidden="true">h</span>
             </span>
           </Row>
         </ul>
 
         <ul className="bf-list">
-          <Row icon={<Bag s={16} />} label="Travel style" htmlFor={`${id}-travel_style`} why={shown.travel_style} whyId={`${id}-travel_style-why`}>
-            <input {...field('travel_style')} className="bf-in" autoComplete="off" enterKeyHint="next" placeholder="Slow, social, beaches" />
+          <Row icon={<Bag s={16} />} label="Travel style" htmlFor={`${id}-travel_style`} empty={form.travel_style.trim() === ''} why={shown.travel_style} whyId={`${id}-travel_style-why`}>
+            <input {...field('travel_style')} className="bf-in" autoComplete="off" enterKeyHint="next" />
           </Row>
-          <Row icon={<Note s={16} />} label="Rules" htmlFor={`${id}-rules`} why={shown.rules} whyId={`${id}-rules-why`} notes>
+          <Row icon={<Note s={16} />} label="Rules" htmlFor={`${id}-rules`} empty={form.rules.trim() === ''} why={shown.rules} whyId={`${id}-rules-why`} notes>
             <textarea {...field('rules')} className="bf-in" rows={4} />
           </Row>
         </ul>
@@ -146,8 +148,8 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
 
       <footer className="fl-foot bf-foot">
         <p className="bf-said" role="status" data-bad={said ? true : undefined}>{said}</p>
-        <button type="button" className="btn small" onClick={onDone} disabled={busy}>Cancel</button>
-        <button type="submit" className="btn small bf-go" disabled={!ready || busy || !dirty}><Check s={14} />{busy ? 'Saving' : 'Save'}</button>
+        <button type="button" className="btn small link" onClick={onDone} disabled={busy}>Cancel</button>
+        <button type="submit" className="btn small primary" disabled={!ready || busy || !dirty || invalid}>{busy ? 'Saving' : 'Save'}</button>
       </footer>
     </form>
   )

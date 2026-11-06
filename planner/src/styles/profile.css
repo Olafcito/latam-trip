@@ -25,8 +25,15 @@
   @media (prefers-reduced-motion: reduce) { .me:active { transform: none; } }
 
   .pf-md { --md-w: 440px; }
-  /* nothing changed yet: Save stays quiet, an outline and no fill (DES-019) */
-  .pf .fl-foot .bf-go:disabled { opacity: 1; border-color: var(--line-2); background: transparent; color: var(--faint); }
+  /* Cancel is the quiet link, Save is the app's amber and sits dimmed while there is nothing to save */
+  .pf .fl-foot .btn.primary:disabled { opacity: 0.4; }
+  /* an unset row asks for something: a short Add in the accent, no unit. A set value is the brightest text on its row */
+  .pf .bf-in::placeholder { color: var(--flight); font-family: var(--font-word); font-size: var(--fs-body); font-weight: 600; letter-spacing: normal; text-transform: none; opacity: 1; }
+  .pf .bf-row:not([data-empty]) .bf-k { color: var(--muted); }
+  .pf .bf-row:not([data-empty]) .bf-in { font-weight: 600; }
+  .pf .bf-row[data-empty] .bf-kr > span { display: none; }
+  /* 16px so iOS does not zoom the page when a field takes focus */
+  @media (pointer: coarse), (max-width: 640px) { .pf .bf-in { font-size: 16px; } .pf .bf-in::placeholder { font-size: 16px; } }
   .pf-num { font-variant-numeric: tabular-nums; }
   /* while the row is on its way the fields hold their place and show nothing, so an empty
      profile is never shown before it is known to be empty */
