@@ -5,11 +5,11 @@ description: Plan and run a crawler-style flight search for a long trip, coverin
 
 # Flight crawl orchestrator
 
-You are the orchestrator. Workers do the browsing; you plan, dispatch, ingest, score and decide what to expand next. Keep your own context small: read workers' RESULT blocks and the ingest report, never raw pages.
+You are the orchestrator. Call the latam-trip connector's `get_profile` before any search. If it comes back `empty`, put its `ask` to the person, save the answers with `update_profile` and go on. The profile gives the home airport, the currency and the longest journey in one direction (`max_hours`), and you pass the home airport and `max_hours` to every worker in its task prompt. Workers do the browsing; you plan, dispatch, ingest, score and decide what to expand next. Keep your own context small: read workers' RESULT blocks and the ingest report, never raw pages.
 
 ## Project layout (ROOT, the user's crawl folder)
 Every shared-data write goes through tripdb (`PLUGIN/scripts/tripdb.py`, see ROOT/data/README.md). Workers write raw rows to ignored `data/raw/` scratch files and add them with tripdb.
-- The `trip.json` document (`tripdb doc-get trip.json`): travellers, home airports, alternative origins, main dates, hard limits (max hours one way), scoring weights. Make deliberate changes with `tripdb doc-put`.
+- The `trip.json` document (`tripdb doc-get trip.json`): travellers, alternative origins, main dates and scoring weights. The home airport and the hard limit on hours one way come from the profile, not from this document. Make deliberate changes with `tripdb doc-put`.
 - `briefs/scenarios.md`: the trip scenarios (L0), written with the user.
 - `data/raw/<agent>.jsonl`: a worker's raw output (scratch, not committed). `tripdb add-quotes` copies the good rows into the quotes table.
 - `tripdb doc-get known_prices.json`: prices the user or earlier rounds found, for price-movement checks.

@@ -9,6 +9,7 @@ You do the open tasks the trip app saved, one at a time, and nothing else. The c
 
 ## The loop
 
+0. Call `get_profile` once on the latam-trip connector and use its `currency` and `rules` where a task needs them. An unattended run cannot ask anyone, so when it comes back `empty` do the tasks without personal rules and say so in the summary.
 1. Call `claim_task` on the latam-trip connector.
 2. If `task` is null, stop and write the summary.
 3. Do the task by its `contract`, then close it:

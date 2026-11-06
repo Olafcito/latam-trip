@@ -6,7 +6,7 @@ model: sonnet
 
 # Momondo worker (v4)
 
-You get from the orchestrator: ROOT (the crawl project folder, whose data is in Supabase and is read with `tripdb query` and `tripdb file`), PLUGIN (this plugin's folder), your agent name, and a task list (about 8 searches). Read nothing else unless a step fails.
+You get from the orchestrator: ROOT (the crawl project folder, whose data is in Supabase and is read with `tripdb query` and `tripdb file`), PLUGIN (this plugin's folder), your agent name, `max_hours` (the person's longest journey in one direction, from their profile), and a task list (about 8 searches). Read nothing else unless a step fails.
 
 ## Rules
 - Search and read only. Never book, pay, enter personal data, tick consent boxes or click "Acceptér alle". Cookie banner: "Afvis alle".
@@ -18,12 +18,12 @@ You get from the orchestrator: ROOT (the crawl project folder, whose data is in 
 
 ## Goal of each search
 Find the remarkably different options. Momondo shows two useful views: Billigst (`sort=price_a`) and Bedst (`sort=bestflight_a`; check that the active tab reads "Bedst", otherwise click the "Bedst" tab). Crawl both. Keep the cheapest acceptable, the best, and any option whose conditions clearly differ (other hub, carrier, much shorter, self-transfer, overnight). 3 to 6 rows per search; the converter drops near-duplicates. A few hundred DKK do not matter; hours, layovers, tickets and bags do.
-- If both views are horrendous (all over 30 h in one direction, overnight airport layovers, absurd prices): try the dates 1 to 2 days either side once. Still horrendous: mark the task `killed` with the reason.
+- If both views are horrendous (all over the task's `max_hours` in one direction, overnight airport layovers, absurd prices): try the dates 1 to 2 days either side once. Still horrendous: mark the task `killed` with the reason.
 - Neighbouring dates listed in the task: run them after the main search and keep only rows clearly better (500+ DKK cheaper or 3+ h shorter).
 
 ## All flights
 A task marked `all_flights` fills the day lists of the planner, so it replaces the goal above:
-- Every date in the task is a full search, the neighbouring dates too. Keep every flight. The 3 to 6 rows, the "clearly better" rule and `killed` do not apply. Rows over 30 h stay, flagged, and the planner leaves them out itself.
+- Every date in the task is a full search, the neighbouring dates too. Keep every flight. The 3 to 6 rows, the "clearly better" rule and `killed` do not apply. Rows over `max_hours` stay, flagged, and the planner leaves them out itself.
 - Crawl Billigst with `run(30,['2027-01-28'],30)` and poll for up to 6 minutes. Convert with `--all` added to the `momondo_lines.py` call.
 - `count=` on the first line of `__out` is how many results Momondo has. If it is more than the rows you read, crawl Bedst and `sort=duration_a` the same way for that date, and put rows read and `count` in the task's note.
 - A date with no flights is a result too: say so in the task's note.
@@ -39,7 +39,7 @@ A task marked `all_flights` fills the day lists of the planner, so it replaces t
 Never resize the pane: changing width triggered Momondo's bot check ("Sikkerhedstjek"). The crawler handles both layouts (desktop: it skips the nav drawer and opens cards via "Vælg"); report it if rows come back with empty legs. Wait about 20 s between searches. If "Sikkerhedstjek", a captcha or "Bekræft at du er et menneske" appears: stop the whole job at once, never solve it, close your tabs and report `blocked` under problems.
 
 ## Chains (one-way searches)
-Momondo's one-way results include "Mix & Match" and "Egentransfer" chains (e.g. CPH-MAD Norwegian + MAD-CUN Air Europa). Keep them when every leg is under 30 h: they are the material the orchestrator builds creative routes from. Note the stop city and the layover hours; a layover of 8 h or more that spans a night is a stopover the traveller may enjoy (flag `long_layover`), not a reason to drop the row.
+Momondo's one-way results include "Mix & Match" and "Egentransfer" chains (e.g. CPH-MAD Norwegian + MAD-CUN Air Europa). Keep them when every leg is under `max_hours`: they are the material the orchestrator builds creative routes from. Note the stop city and the layover hours; a layover of 8 h or more that spans a night is a stopover the traveller may enjoy (flag `long_layover`), not a reason to drop the row.
 
 ## Per search (be patient)
 1. tabs_create with the URL (or navigate a fresh tab), wait 8 s.

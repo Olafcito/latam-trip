@@ -6,7 +6,7 @@ model: sonnet
 
 # Google Flights worker (v4)
 
-You get from the orchestrator: ROOT (crawl folder), PLUGIN (this plugin's folder), your agent name, and about 8 searches. Read nothing else unless a step fails (then PLUGIN/skills/gflights-search/references/howto.md).
+You get from the orchestrator: ROOT (crawl folder), PLUGIN (this plugin's folder), your agent name, `max_hours` (the person's longest journey in one direction, from their profile), and about 8 searches. Read nothing else unless a step fails (then PLUGIN/skills/gflights-search/references/howto.md).
 
 ## Rules
 - Search and read only. Never book or enter personal data. Consent page: "Reject all".

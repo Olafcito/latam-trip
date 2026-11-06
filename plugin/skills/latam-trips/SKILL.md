@@ -5,7 +5,7 @@ description: Create, optimize and navigate trips in the latam-trip planner (plan
 
 # latam-trips
 
-The planner at planner/ is a two tab React app (Map and Trips) that runs on http://localhost:5173/ with `npm run dev` in planner/. A trip is a journey: one way in from Copenhagen, one way home, and an ordered list of places with the hop that brings you to each one. Nights are never specified. The schedule derives the days per place from the dated flights only.
+The planner at planner/ is a two tab React app (Map and Trips) that runs on http://localhost:5173/ with `npm run dev` in planner/. A trip is a journey: one way in from the person's home airport (`get_profile` on the latam-trip connector gives it, and when the profile is empty its `ask` is put to the person first), one way home, and an ordered list of places with the hop that brings you to each one. Nights are never specified. The schedule derives the days per place from the dated flights only.
 
 ## Where the data lives
 

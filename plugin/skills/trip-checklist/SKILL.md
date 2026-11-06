@@ -9,12 +9,13 @@ For the always on mode, where a cheap dispatcher waits on the queue and sends on
 
 The app writes tasks and you do them. The contract and task types are in `docs/claude-tasks.md`, read it first. Data lives in Supabase (see `data/README.md`). Read a table with `tripdb query TABLE` (for example `quotes`, `experiences`, `tasks`, `task_log`, `places`, `connections`) and a built file with `tripdb file NAME`. Flights are in `quotes`. Prices of places to stay are written through the latam-trip connector with `add_lodging_price`. The rooms, room photos and place photos of a Booking.com place go through `tripdb lodging-details`. How a place to stay is added and completed is the `add-lodging` skill. Every other write goes through tripdb (`python -I -X utf8 plugin/scripts/tripdb.py --root . <command>`), never by hand.
 
-## Rules (Simon's, always)
+## Profile and rules
+- Call the latam-trip connector's `get_profile` before any search. If it comes back `empty`, put its `ask` to the person, save the answers with `update_profile` and go on. The profile holds the person's own rules: `home_airport`, `currency`, `max_hours` (the longest journey in one direction), `travel_style` and `rules`. Pass the home airport and `max_hours` to every worker in its task prompt, since a worker uses no connector.
 - Never book, reserve, pay, sign in, enter personal data, accept consent or solve a bot check. Search and read only.
 - Browser work goes to Sonnet subagents only (never Haiku), at most 2 browser workers at once. Momondo is the main flight engine.
 - Connectors: the Booking.com connector, for beds (`accommodations_search`) and, in experience research, things to do (`attractions_search`), and the latam-trip connector, to read places to stay with `list_lodging` and `get_lodging`, write their prices with `add_lodging_price` and, in `stay_details`, their rooms and photos with `add_lodging` and `update_lodging` as the `add-lodging` skill says. No other connector, except the browsers for `stay_details`.
-- Long-haul is never searched one-way alone: any leg touching Europe is searched as one combined ticket from and back to Copenhagen (CPH), with the rest of the trip as fixed in the `trip.json` document (`tripdb doc-get trip.json`). More than 30 h in one direction is unacceptable.
-- Results always give local departure and arrival clock times, one fact per cell, kroner (DKK). No em or en dashes. No route suggestions unless the task asks.
+- Long-haul is never searched one-way alone: any leg touching Europe is searched as one combined ticket from and back to the profile's `home_airport`, with the rest of the trip as fixed in the `trip.json` document (`tripdb doc-get trip.json`). More than the profile's `max_hours` in one direction is unacceptable.
+- Results always give local departure and arrival clock times, one fact per cell, in the profile's `currency` (stored prices are DKK, so convert and say the rate). No em or en dashes. No route suggestions unless the task asks.
 
 ## Steps
 1. `python3 -I plugin/skills/trip-checklist/scripts/tasks.py list` (or use the pasted task JSON). Run `show N` for each, and `start N` when you begin it. Group tasks of the same kind so one worker batch covers several (about 8 searches per worker).
