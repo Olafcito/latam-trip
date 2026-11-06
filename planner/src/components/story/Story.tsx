@@ -696,8 +696,8 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   )
   byKey.cph1 = <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />
   if (fold != null && ps[fold]) byKey[`f${fold}`] = foldBody(fold)
-  // the itinerary runs in the order the trip is lived: a stop, its stay, then the leg that leaves it.
-  // The instants come from the bookings, else the picked flights, else the days, as in the day view
+  // the itinerary runs in the order the trip is lived, fixed by its structure: a stop, its stay, then the leg that
+  // leaves it. The instants it is given (bookings, else picked flights, else days) are carried but do not decide the order
   const lined = itinerary({
       wayIn: { depart: tripInput.legs[0].depart, arrive: tripInput.legs[0].arrive ?? null },
       wayHome: { depart: tripInput.legs[tripInput.legs.length - 1].depart, arrive: tripInput.legs[tripInput.legs.length - 1].arrive ?? null },

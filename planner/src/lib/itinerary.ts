@@ -1,12 +1,15 @@
 // The trip as one line in the order it is lived: Copenhagen, the way in, then each stop with what happens there,
 // the leg that leaves it, the next stop, and so on to the way home and Copenhagen again.
 //
-// A stop owns its stay and what there is to do there, so its fold comes straight after it, and the leg that leaves
-// a stop comes after that fold, never between the stop and its stay. Each entry carries the instant it starts, from
-// the booking when there is one, else from the picked flight, else from its day, and the line only runs forward in
-// time: a stop starts when its leg lands, and an entry that would start before the one it follows from takes that
-// one's instant. A leg that leaves before you get there is a clash the schedule warns about, not a reason to draw
-// the leg above the stop. A leg of several flights is one entry, so its flights keep their order.
+// The order is fixed by the structure, never sorted by time: Copenhagen, the way in, then for each stop the leg or gap
+// that reaches it, the stop, its fold when it is open, and so on to the free nights, the way home and Copenhagen. A
+// stop owns its stay and what there is to do there, so its fold comes straight after it, and the leg that leaves a
+// stop comes after that fold, never between the stop and its stay. A leg that leaves before you get there is a clash
+// the schedule warns about, not a reason to draw the leg above the stop. A leg of several flights is one entry.
+//
+// Each entry also carries an instant, from the booking when there is one, else from the picked flight, else from its
+// day, and that instant never runs backwards along the line. The instants are carried for display and tests, nothing
+// in the order depends on them.
 
 /** A leg as the line needs it: when it leaves and when it lands, local time, or a bare day when the time is not known. */
 export interface ItinLeg {
