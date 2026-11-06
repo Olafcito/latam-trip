@@ -299,7 +299,7 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 ### Task 5.3: The profile sheet in the planner
 
 - [x] A sheet by the DES sheet decisions, read and edit. The person mark at the end of the header opens it. `planner/src/lib/profile.ts` reads and saves the row and checks it as `profile_errors` does, `ProfileSheet.tsx` is the sheet.
-- [ ] Shot, roast through `design-roaster`, one fix round, as CLAUDE.md "Running a build".
+- [x] Shot, roast through `design-roaster`, one fix round, as CLAUDE.md "Running a build". The roast scored 6 of 10. The fix round made unset rows look unset, gave Save the amber accent and moved errors into their own row. The concept changes it proposed went to Simon: save per row, rules as a list, travel style as chips, a currency picker.
 
 ---
 
