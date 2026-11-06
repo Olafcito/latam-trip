@@ -153,20 +153,6 @@ def airport_flights(db):
     return rows
 
 
-def public_task_log(rows):
-    """The task log as the public web data holds it. A booking task keeps only its type and leg, never its text, which
-    can carry a reference, a price or names. Its summary is the word Booked and its outputs are empty, since both are
-    free text written at close time. tasks.py and tripdb log-task already do this, this is the second guard."""
-    out = []
-    for r in rows:
-        t = r.get("task")
-        if r.get("type") == "booking" or (isinstance(t, dict) and t.get("type") == "booking"):
-            r = {**r, "task": {k: t[k] for k in ("type", "leg") if k in t} if isinstance(t, dict) else None,
-                 "summary": "Booked", "outputs": []}
-        out.append(r)
-    return out
-
-
 def quote_rows(db):
     """The quotes table without the raw column, every value as text the way the old quotes.csv held it."""
     if not os.path.exists(db):
@@ -200,7 +186,7 @@ def build():
         return img and {"url": img.get("url"), "page": img.get("page"), "credit": img.get("credit"),
                         "licence": img.get("license") or img.get("licence"), "w": img.get("w"), "h": img.get("h")}
 
-    # experiences database, categories, saved lists, stay quotes and the task log
+    # experiences database, categories, saved lists, stay quotes
     exp_images = {r["id"]: r.get("image") for r in load_jsonl("experience_images.jsonl") if r.get("kind") == "experience_image"}
     cat_doc = load_json("experience_categories.json", {"categories": []})
     node_image = {nid: web_image((n.get("profile") or {}).get("image")) for nid, n in nodes.items()}
@@ -231,7 +217,6 @@ def build():
     for r in load_jsonl("stays.jsonl"):
         if r.get("kind") == "stay_quote":
             stays.setdefault(r["place"], []).append({k: v for k, v in r.items() if k not in ("kind", "place")})
-    task_log = public_task_log(load_jsonl("task_log.jsonl"))
 
     places = []
     for n in nodes.values():
@@ -460,11 +445,10 @@ def build():
             "last_checked": {"flights": flights_checked,
                              "stays": latest(q.get("observed_at") for v in stays.values() for q in v),
                              "experiences": latest(e.get("checked_at") for e in experiences if e.get("researched")),
-                             "places": latest((n.get("profile") or {}).get("checked_at") for n in nodes.values()),
-                             "tasks": latest(t.get("done_at") for t in task_log)}}
+                             "places": latest((n.get("profile") or {}).get("checked_at") for n in nodes.values())}}
     for name, data in (("places", places), ("connections", list(conns.values())), ("countries", countries), ("flights", flights),
                        ("experiences", experiences), ("experience_categories", exp_categories), ("lists", lists),
-                       ("task_log", task_log), ("meta", meta)):
+                       ("meta", meta)):
         json.dump(data, open(os.path.join(OUT, f"{name}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"places {len(places)}  connections {len(conns)}  options {sum(len(c['options']) for c in conns.values())}"
           f"  altitude {sum(1 for p in places if p.get('altitude_m') is not None)}  flights {len(flights)}  -> {OUT}")

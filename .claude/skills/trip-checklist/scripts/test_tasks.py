@@ -14,17 +14,20 @@ class FakeRest:
     def get_all(self, table, params=None):
         assert table == "tasks"
         rows = list(self.rows)
+        if "owner_id" in params:
+            rows = [r for r in rows if r.get("owner_id") == params["owner_id"][3:]]
         if "id" in params:
             rows = [r for r in rows if r["id"] == int(params["id"].split(".")[1])]
         if "status" in params:
-            want = params["status"][4:-1].split(",")
+            st = params["status"]
+            want = [st[3:]] if st.startswith("eq.") else st[4:-1].split(",")
             rows = [r for r in rows if r["status"] in want]
         return sorted(rows, key=lambda r: r["id"])
 
     def patch(self, table, params, body, returning=None):
         self.patches.append((table, params, body))
         for r in self.rows:
-            if r["id"] == int(params["id"].split(".")[1]):
+            if r["id"] == int(params["id"].split(".")[1]) and ("owner_id" not in params or r.get("owner_id") == params["owner_id"][3:]):
                 r.update(body)
 
 
@@ -163,6 +166,59 @@ class TasksTest(unittest.TestCase):
         r = rest.rows[0]
         self.assertEqual((r["status"], r["result"]), ("failed", "Blocked by a captcha"))
         self.assertTrue(r["done_at"])
+
+
+class OwnerTest(unittest.TestCase):
+    """Two owners share the table. The loop sees and changes the rows of its own owner only."""
+
+    def rest(self):
+        mine, theirs = row(10000, "open", "mine"), row(10001, "open", "theirs")
+        mine["owner_id"], theirs["owner_id"] = "OWNER-A", "OWNER-B"
+        mine["created_at"] = theirs["created_at"] = "2026-11-06T00:00:00+00:00"
+        base = FakeRest([mine, theirs])
+        return base, tasks.Owned(base, "OWNER-A")
+
+    def test_wait_and_list_see_only_the_owner(self):
+        base, rest = self.rest()
+        self.assertEqual(sorted(r["id"] for r in rest.get_all("tasks", {"status": "in.(open)"})), [10000])
+        text = out(tasks.cmd_list, rest)
+        self.assertIn("#10000", text)
+        self.assertNotIn("10001", text)
+        lines = out(lambda: tasks.cmd_wait(rest, sleep=lambda s: None, now=lambda: NOW)).splitlines()
+        self.assertEqual([json.loads(l)["id"] for l in lines], [10000])
+
+    def test_start_done_and_fail_refuse_a_row_of_another_owner(self):
+        base, rest = self.rest()
+        for fn, args in ((tasks.cmd_start, ("10001",)), (tasks.cmd_show, ("10001",))):
+            with self.assertRaises(SystemExit):
+                out(fn, rest, *args)
+        # even a Rest that returns the row without the filter does not let start touch it
+        with self.assertRaises(SystemExit):
+            tasks.get_row(base_without_filter(base, "OWNER-A"), 10001)
+        self.assertEqual(base.patches, [])
+        self.assertEqual(base.rows[1]["status"], "open")
+        out(tasks.cmd_start, rest, "10000")
+        self.assertEqual([r["status"] for r in base.rows], ["working", "open"])
+
+    def test_the_owner_is_the_admin_and_nobody_else(self):
+        class Admins:
+            def get_all(self, table, params=None):
+                return [{"user_id": "OWNER-A"}]
+        self.assertEqual(tasks.owner_of(Admins(), {}), "OWNER-A")
+        self.assertEqual(tasks.owner_of(Admins(), {"TRIPDB_OWNER_ID": "OWNER-A"}), "OWNER-A")
+        with self.assertRaises(SystemExit):
+            tasks.owner_of(Admins(), {"TRIPDB_OWNER_ID": "OWNER-B"})
+
+
+def base_without_filter(base, owner):
+    """A client with the owner attribute that ignores the filter, as a mistake in Owned would."""
+    class Leaky:
+        def __init__(self):
+            self.owner = owner
+
+        def get_all(self, table, params=None):
+            return base.get_all(table, {k: v for k, v in params.items() if k != "owner_id"})
+    return Leaky()
 
 
 NOW = dt.datetime(2026, 11, 6, 12, 0, tzinfo=dt.timezone.utc)
