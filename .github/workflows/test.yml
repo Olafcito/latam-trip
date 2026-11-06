@@ -129,6 +129,16 @@ jobs:
           uv run --quiet --no-project --python 3.12 --with "fastmcp==3.4.2" --with "uvicorn==0.54.0" --with "pyjwt[crypto]==2.10.1" \
             python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_auth.py" -v 2>&1 | tee "$RUNNER_TEMP/auth.log"
           if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/auth.log"; then echo "a database test skipped" >&2; exit 1; fi
+      - name: connector account tests
+        shell: bash
+        env:
+          TRIPDB_DB_TESTS: "1"
+          TRIPDB_ENV_FILE: ${{ runner.temp }}/latam-trip-local.env
+        run: |
+          uv run --quiet --no-project --python 3.12 --with "fastmcp==3.4.2" --with "uvicorn==0.54.0" --with "pyjwt[crypto]==2.10.1" \
+            --with "psycopg[binary]==3.3.8" \
+            python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_account.py" -v 2>&1 | tee "$RUNNER_TEMP/account.log"
+          if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/account.log"; then echo "a database test skipped" >&2; exit 1; fi
       - name: database function tests
         shell: bash
         env:

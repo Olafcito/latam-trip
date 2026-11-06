@@ -84,7 +84,7 @@ class ToolsTest(Base):
         for t in mcp_core.TYPES:
             for verb in ("list", "get", "add", "update", "delete"):
                 self.assertIn(f"{verb}_{t}", specs)
-        self.assertEqual(len(specs), 5 * len(mcp_core.TYPES) + 12)
+        self.assertEqual(len(specs), 5 * len(mcp_core.TYPES) + 14)
         for name in ("set_leg_date", "shift_leg", "attach_booking_file", "attach_booking_upload", "add_lodging_price",
                      "claim_task", "finish_task", "fail_task", "list_add", "list_remove"):
             self.assertIn(name, specs)

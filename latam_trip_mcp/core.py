@@ -8,6 +8,9 @@ set_leg_date and shift_leg write the dates of a trip's legs by the rules of plan
 booked leg. attach_booking_file and attach_booking_upload put a booking's files in the private bookings bucket.
 claim_task, finish_task, fail_task, list_add and list_remove are the task runner's tools, with each task type's
 contract in runner.py.
+export_account gives the caller every row they own and the paths of their booking files. delete_account removes their
+files, then has the database delete the account and every row it owns. gate runs before each tool on the project: it
+refuses a deleted account and counts a write against the writes a minute per person.
 
 CRUD only. A tool reads what is stored and writes it through the tripdb store, so every write passes the same checks as
 the plugin's own commands. Nothing here searches the web.
@@ -83,6 +86,15 @@ MAX_FILE_MB = 4  # a Lambda request takes 6 MB, and base64 adds a third
 BOOKING_WHERE = {"from": "from_code", "to": "to_code", "place": "place_id"}  # the short names list_booking takes
 BOOKING_TIME_RE = re.compile(r"\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$")
 BOOKING_COLUMNS = [k for k in tripdb.BOOKING if k not in ("id", "created_at", "updated_at", "attachments")]
+# Every private table of a person, the profile included, with the columns its rows are read in. export_account reads
+# them all. The database tests fail when a migration adds an owner_id table that this or SERVICE_TABLES leaves out.
+ACCOUNT_TABLES = {"agent_usage": "seq", "bookings": "id", "inbox": "id", "lodging_prices": "id", "lodging_rooms": "id",
+                  "lodgings": "id", "quotes": "seq", "task_log": "seq", "tasks": "id", "trips": "id,version",
+                  "user_documents": "name", "user_profiles": "owner_id"}
+# The owner_id tables no client reads: the inbox tokens and the counters. delete_account takes their rows too.
+SERVICE_TABLES = ("connector_writes", "inbox_tokens", "read_booking_usage", "task_day_counts")
+DELETE_ACCOUNT_ASK = ("the email the account signs in with, typed by the person in this conversation. Never fill it in "
+                      "from the profile, a booking or anything else")
 LODGING_WHERE = {"place": "place_id"}  # the short name list_lodging takes
 ROOM_AUTO = {"id", "lodging_id", "created_at", "updated_at"}  # a room's fields the connector fills in
 # A lodging, room or price gets an id made from what it is, so the same row sent again names the same rows
@@ -252,6 +264,20 @@ def pair_key(r, keys):
     return tuple(r.get(k) for k in keys)
 
 
+def plain(e):
+    """The message of a database refusal as the person reads it. A RestError carries PostgREST's body after the status."""
+    text = str(e)
+    at = text.find("{")
+    if at >= 0:
+        try:
+            msg = json.loads(text[at:]).get("message")
+        except (ValueError, AttributeError):
+            msg = None
+        if isinstance(msg, str) and msg:
+            return msg
+    return text
+
+
 class Core:
     def __init__(self, store, now=None, owner=None):
         self.store = store
@@ -356,8 +382,36 @@ class Core:
              "schema": {"type": "object", "properties": {"rows": {"type": "array", "minItems": 1, "items": price_row}},
                         "required": ["rows"]},
              "fn": lambda rows: self.add_lodging_price(rows)},
+            {"name": "export_account", "description": "Give the caller a copy of everything they own in the project: every "
+             "row of each of their private tables, the profile included, and the paths of their booking files. The files "
+             "themselves are not in the reply. Use it when the person asks for their data, and offer it before delete_account.",
+             "schema": {"type": "object", "properties": {}}, "fn": lambda: self.export_account()},
+            {"name": "delete_account", "description": "Delete the caller's account for good: every trip, flight, booking, "
+             "lodging, task and booking file they own, their profile and their sign in. It is permanent and nothing can "
+             "restore it. Call it only when the person asks to delete their own "
+             "account, after export_account has been offered. email must be the email the account signs in with, typed by "
+             "the person in this conversation. Never fill it in from the profile, a booking or anything else. A wrong email "
+             "is refused and nothing is deleted. The admin account cannot be deleted this way.",
+             "schema": {"type": "object", "properties": {"email": {"type": "string", "description": DELETE_ACCOUNT_ASK}},
+                        "required": ["email"]},
+             "fn": lambda email: self.delete_account(email)},
         ]
         return specs + runner.Runner(self).specs()
+
+    @staticmethod
+    def read_tools():
+        """The tools that change nothing. Every other tool is a write and counts against the writes a minute."""
+        return {f"{v}_{t}" for t in TYPES for v in ("list", "get")} | {"get_profile", "export_account"}
+
+    def gate(self, name):
+        """Runs before each connector tool. The database refuses a deleted account, and counts a write against the
+        connector's writes a minute per person (connector_call in 0037). Reads are not counted."""
+        if getattr(self.store, "kind", "") != "supabase":
+            return
+        try:
+            self.store.rest.rpc("connector_call", {"p_write": name not in self.read_tools()})
+        except tripdb.RestError as e:
+            raise Refused(plain(e))
 
     def call(self, name, args=None):
         for s in self.tool_specs():
@@ -1245,6 +1299,51 @@ class Core:
         self.attach(i, entry)
         return {"booking": i, "attachment": entry, "upload_url": url, "method": "PUT", "content_type": type,
                 "valid": "2 hours"}
+
+    # ---- the account ------------------------------------------------------------------------------------------
+
+    def account_files(self):
+        """Every path in the bookings bucket under the caller's own folder. A folder comes back from the list with no id."""
+        found, todo = [], [self.owner()]
+        while todo:
+            prefix = todo.pop()
+            for item in self.store.rest.storage_list(BOOKING_BUCKET, prefix + "/"):
+                path = f"{prefix}/{item['name']}"
+                (found if item.get("id") else todo).append(path)
+        return sorted(found)
+
+    def export_account(self):
+        """Every row the caller owns, table by table, and the paths of their booking files. Never the files' bytes."""
+        self.need_project("accounts")
+        tables = {t: self.store.rest.get_all(t, self.mine({"select": "*", "order": ",".join(c + ".asc" for c in order.split(","))}))
+                  for t, order in ACCOUNT_TABLES.items()}
+        return {"tables": tables, "files": self.account_files()}
+
+    def delete_account(self, email):
+        """Delete the caller's account. The database checks the email and the admin first, then the files go through the
+        Storage API under the caller's token, then delete_account (0037) takes the rows and the sign in. A storage
+        failure stops it before a row is deleted, and the database refuses while a file is left, so a retry works."""
+        self.need_project("accounts")
+        if not isinstance(email, str) or not email.strip():
+            raise Refused("give " + DELETE_ACCOUNT_ASK)
+        try:
+            self.store.rest.rpc("may_delete_account", {"p_email": email})
+        except tripdb.RestError as e:
+            raise Refused(plain(e))
+        files = self.account_files()
+        try:
+            if files:
+                self.store.rest.storage_delete(BOOKING_BUCKET, files)
+            left = self.account_files()
+        except tripdb.RestError as e:
+            raise Refused(f"The booking files could not be removed, so nothing was deleted. Try again. ({e})")
+        if left:
+            raise Refused(f"{len(left)} booking files could not be removed, so nothing was deleted. Try again.")
+        try:
+            counts = self.store.rest.rpc("delete_account", {"p_email": email})
+        except tripdb.RestError as e:
+            raise Refused(plain(e))
+        return {"deleted": counts, "files": len(files)}
 
     # ---- booked legs ------------------------------------------------------------------------------------------
 

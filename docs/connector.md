@@ -85,6 +85,13 @@ Five tools are for the task runner (`docs/task-runner.md`), the cloud run that d
 - `fail_task` closes a claimed task as failed with the reason.
 - `list_add` and `list_remove` put a place or an experience on one of the saved lists or take it off.
 
+Two tools are for the account itself:
+
+- `export_account` gives every row the account holds, table by table with the profile included, and the paths of its booking files. It gives no file contents.
+- `delete_account` deletes the account and everything in it, and cannot be undone. It needs the account's own email, typed by the person, never filled in by the assistant. The email is compared without regard to case. The admin's account cannot be deleted this way. The booking files go first, and if one cannot be removed nothing else is deleted and the same call can run again. Then the working tasks are failed and the account is removed with every row it owns, and the tool answers with the number of rows that went from each table. The connection stops working at once, and the next call answers that the account was deleted. The daily backups keep some of the rows up to 90 days before they expire (TECH-013).
+
+A person may make 60 changes a minute through the connector. The 61st is refused with a plain message to wait a minute. Reading is not counted.
+
 Bookings, their references, prices and files live only in the owner only table and the private bucket, never in a built file. Places to stay, their rooms and prices live only in their owner only tables too.
 
 Each tool describes its fields to the assistant, so asking in plain words works, for example "add the 450 DKK flight from San Jose to Liberia on 12 December".
@@ -111,5 +118,6 @@ Each tool describes its fields to the assistant, so asking in plain words works,
   6. A day later, delete the SSM parameters `supabase-secret-key` and `signin-passphrase` under `/latam-trip-mcp/`.
 
   Steps 2 to 5 run back to back, from the commit that merges. Between them the old connections stop working and a flight cannot be saved until 0033 is applied. A release before step 2 stops at the configuration check and ships nothing. Until step 6 a rollback is a full `deploy.sh` of the commit before the switch, with the live Auth settings put back.
-- Tests: `python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"`. A test checks that every tool is named on this page.
+- Tests: `python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"`. A test checks that every tool is named on this page. `test_auth.py` and `test_account.py` also run on the local stack with `TRIPDB_DB_TESTS=1`, as the database job of `.github/workflows/test.yml` does. A test there fails when a migration adds an `owner_id` table that `ACCOUNT_TABLES` or `SERVICE_TABLES` in `core.py` does not name.
+- The write limit is `connector_writes_per_minute` in `owner_limits` (60), counted per owner and minute in `connector_writes` by `connector_call` (migration 0037). Every tool calls it before it runs, so a refused change writes nothing. A read is not counted, but it is refused too when the account was deleted.
 - The planner's consent step is `planner/src/components/Consent.tsx` with `planner/src/lib/consent.ts`. Supabase sends the person to the planner's root with `?authorization_id=`. The page reads the request with the person's session, refuses a redirect host other than `claude.ai`, `localhost` and `127.0.0.1`, follows an already approved request at once, and answers allow or deny. The request survives the magic link sign in.

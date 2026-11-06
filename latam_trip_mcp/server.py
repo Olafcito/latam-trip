@@ -52,8 +52,10 @@ def build_mcp(core_fn=current_core):
     def make(spec):
         class CoreTool(Tool):
             async def run(self, arguments):
-                fn = {s["name"]: s["fn"] for s in core_fn().tool_specs()}[spec["name"]]
+                core = core_fn()
+                fn = {s["name"]: s["fn"] for s in core.tool_specs()}[spec["name"]]
                 try:
+                    core.gate(spec["name"])  # a deleted account and the writes a minute are refused here
                     out = fn(**(arguments or {}))
                 except tripdb_store.Refused as e:
                     raise ToolError(str(e))
