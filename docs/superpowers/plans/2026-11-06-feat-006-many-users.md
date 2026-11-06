@@ -254,8 +254,9 @@ Worktree `oauth-spike`. Time box one working session.
 **Interfaces:** `server.core_for(token: str) -> Core`, `oauth.verify_bearer(token: str) -> str | None` (the user id).
 
 - [x] Tests: `test_client_built_from_user_token`, `test_expired_bearer_asks_to_sign_in_again` (never a secret key fallback), `test_old_bearer_refused`, `test_two_users_sign_in` (criterion 2 on the local stack), `test_approve_needs_the_authorize_code` for ways 2 and 3 only.
-- [x] `test.yml` gains the grep that fails when `SUPABASE_SECRET_KEY` appears under `latam_trip_mcp/` or `infra/mcp/`.
-- [ ] Template change, so Simon's PC deploys it with `infra/mcp/deploy.sh`, commands shown first. The SSM secret key parameter of the connector is deleted after a day of clean runs. Simon signs in once again.
+- [x] `test.yml` gains the grep that fails when `SUPABASE_SECRET_KEY`, `supabase-secret-key` or a `sb_secret_` key appears under `latam_trip_mcp/` or `infra/mcp/`. It checks names only.
+- [x] Fix round. Migration 0033 grants `add_quotes` to authenticated with `owner_id` from `auth.uid()`, adds the narrow security definer `add_airport_stubs` and makes `stays` a catalogue table. A flight change that keeps its quote id puts the old quote back when the new one is refused. The key set is kept 10 minutes and refetched for an unknown `kid` at most once a minute. The role reads the two exact SSM parameters with no `kms:Decrypt`. `deploy.sh --code-only` stops when the function lacks a variable the code reads. The consent page leads with Latam trip and says what a connection can read and change. Tests: `test_a_person_who_is_not_the_admin_saves_and_changes_a_flight`, `test_a_signed_in_person_reads_the_stays` and `JwksTest` in `test_auth.py`.
+- [ ] Go live in the order in `docs/connector.md`, commands shown first: `put-secrets.sh`, the full `infra/mcp/deploy.sh`, the merge to `main` (the release applies 0033 and builds the planner), the live Auth settings, Simon signs in once again, and a day later the SSM secret key and passphrase parameters are deleted.
 
 ---
 
