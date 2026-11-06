@@ -8,12 +8,14 @@ connector. Nothing here reads a secret key, logs a token or returns one.
 """
 from __future__ import annotations
 
-import json, os, threading
+import json, os, threading, time
 
 ALGORITHMS = ["ES256", "RS256"]
 AUDIENCE = "authenticated"
 SCOPES = ["email"]
 PRM_PATH = "/.well-known/oauth-protected-resource"
+JWKS_LIFESPAN = 600  # seconds the key set is kept before it is fetched again
+REFETCH_GAP = 60  # at most one fetch a minute for a kid the set does not hold
 
 _jwks = {}
 _jwks_lock = threading.Lock()
@@ -43,14 +45,42 @@ def issuer():
     return supabase_url() + "/auth/v1"
 
 
-def _client(iss):
-    """One PyJWKClient per issuer. It caches the keys and fetches the set again when a token names a kid it has not
-    seen, so a key rotation needs no restart."""
+def _keys_class():
     import jwt
+
+    class Keys(jwt.PyJWKClient):
+        """The key set, kept for JWKS_LIFESPAN seconds, so a key Supabase withdraws stops working within ten minutes.
+        A kid the set does not hold fetches the set again at most once every REFETCH_GAP seconds, so tokens with made
+        up kids cannot make the connector hammer the JWKS. There is no per kid cache, because PyJWKClient keeps those
+        keys with no expiry."""
+
+        def __init__(self, uri):
+            super().__init__(uri, cache_keys=False, cache_jwk_set=True, lifespan=JWKS_LIFESPAN, timeout=10)
+            self.refetched = float("-inf")
+            self.gate = threading.Lock()
+
+        def get_signing_key(self, kid):
+            key = self.match_kid(self.get_signing_keys(), kid)
+            if key is None:
+                with self.gate:
+                    now = time.monotonic()
+                    may = now - self.refetched >= REFETCH_GAP
+                    if may:
+                        self.refetched = now
+                if may:
+                    key = self.match_kid(self.get_signing_keys(refresh=True), kid)
+            if key is None:
+                raise jwt.PyJWKClientError("no signing key matches the token")
+            return key
+    return Keys
+
+
+def _client(iss):
+    """One key client per issuer. A key rotation needs no restart: the new kid fetches the set again."""
     with _jwks_lock:
         c = _jwks.get(iss)
         if c is None:
-            c = _jwks[iss] = jwt.PyJWKClient(iss + "/.well-known/jwks.json", cache_keys=True, lifespan=3600)
+            c = _jwks[iss] = _keys_class()(iss + "/.well-known/jwks.json")
         return c
 
 

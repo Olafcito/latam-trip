@@ -211,6 +211,57 @@ def mcp_call(base, method, params, bearer):
     return status, hdrs, body
 
 
+class JwksTest(unittest.TestCase):
+    """The real key client, with the fetch counted instead of sent."""
+
+    def setUp(self):
+        self.client = oauth._keys_class()(ISS + "/.well-known/jwks.json")
+        self.keys = [self.jwk(KEY, "TEST01")]
+        self.fetches = 0
+
+        def fetch():
+            self.fetches += 1
+            data = {"keys": list(self.keys)}
+            self.client.jwk_set_cache.put(data)
+            return data
+        self.client.fetch_data = fetch
+
+    @staticmethod
+    def jwk(key, kid):
+        out = jwt.algorithms.ECAlgorithm.to_jwk(key.public_key(), as_dict=True)
+        out.update(kid=kid, use="sig", alg="ES256")
+        return out
+
+    def test_the_key_set_is_kept_ten_minutes_and_no_key_is_kept_longer(self):
+        self.assertEqual(self.client.jwk_set_cache.lifespan, 600)
+        self.client.get_signing_key("TEST01")
+        self.client.get_signing_key("TEST01")
+        self.assertEqual(self.fetches, 1)
+        self.keys = [self.jwk(OTHER, "TEST02")]  # Supabase withdrew TEST01
+        later = time.monotonic() + 601
+        with mock.patch("time.monotonic", lambda: later):
+            with self.assertRaises(jwt.PyJWKClientError):
+                self.client.get_signing_key("TEST01")
+        self.assertEqual(self.fetches, 3)  # the expired set, then one more try for the missing kid
+
+    def test_an_unknown_kid_fetches_the_set_at_most_once_a_minute(self):
+        for _ in range(5):
+            with self.assertRaises(jwt.PyJWKClientError):
+                self.client.get_signing_key("TEST01-made-up")
+        self.assertEqual(self.fetches, 2)
+        later = time.monotonic() + 61
+        with mock.patch.object(oauth.time, "monotonic", lambda: later):
+            with self.assertRaises(jwt.PyJWKClientError):
+                self.client.get_signing_key("TEST01-made-up")
+        self.assertEqual(self.fetches, 3)
+
+    def test_a_rotated_key_is_found_without_a_restart(self):
+        self.client.get_signing_key("TEST01")
+        self.keys.append(self.jwk(OTHER, "TEST02"))
+        self.assertEqual(self.client.get_signing_key("TEST02").key_id, "TEST02")
+        self.assertEqual(self.fetches, 2)
+
+
 @unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 and TRIPDB_ENV_FILE to the local stack")
 class TwoUsersSignInTest(unittest.TestCase):
     """Two people connect the same client through Supabase's OAuth server and the planner's consent step, and the real
