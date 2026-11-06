@@ -14,7 +14,7 @@ latam-trip is built for one person. Simon wants to offer it to other travellers.
 
 ## 2. Journey
 
-The product shape is decided (PROD-007, proposed): people use latam-trip through their own Claude, with the latam-trip connector and the plugin's skills. latam-trip hosts the data, the connector and the skills. The user brings their own Claude subscription and their own browser.
+The product shape is decided (PROD-007, accepted): people use latam-trip through their own Claude, with the latam-trip connector and the plugin's skills. latam-trip hosts the data, the connector and the skills. The user brings their own Claude subscription and their own browser.
 
 A new traveller:
 
@@ -35,7 +35,7 @@ Simon:
 
 - Every person sees and changes only their own private data, enforced by the database, whatever the connector or the planner does.
 - The connector acts as the signed in person and never uses the secret key for their requests.
-- Shared research (places, connections, airports, place profiles and images, experiences) stays one shared catalogue that everyone reads. A person's own flight searches are theirs (PROD-008, proposed).
+- Shared research (places, connections, airports, place profiles and images, experiences) stays one shared catalogue that everyone reads. A person's own flight searches are theirs (PROD-008, accepted).
 - A release is a push to `main`. Nobody runs migrations or deploys by hand.
 - A task closes itself when the data it asked for is complete, whoever completed it.
 - The plugin holds no one's personal rules. Each person's rules come from their profile.
@@ -96,7 +96,7 @@ Simon:
 - **Functions and triggers.** Every security definer function that writes a private row sets `owner_id` itself: `queue_stay_details` copies `new.owner_id`, and `submit_inbox` and `submit_task` take the owner from `inbox_tokens.owner_id`, since an anon call has no `auth.uid()`. `ping_task_runner` and `sweep_task_runner` fire only for tasks of the routine's owner, Simon, so another person's task never starts or spends his routine. The edge functions `stay-rates` and `read-booking` drop `is_owner()`. `stay-rates` matches stored places by Hostelworld id among the caller's own lodgings only and writes with the caller's `owner_id`.
 - **Backfill.** One migration sets `owner_id` to Simon's user id from the `owners` table on every existing private row, before `not null` is added. `owners` becomes `admins`.
 - **`task_log`** becomes private. It reaches the public bucket today through `public_task_log` in `build_web_data.py`, and with more people it would show what each of them searched.
-- **Quotes.** `quotes` is private (PROD-008, proposed). A person's searches name their home airport and their dates. Simon's crawled quotes keep feeding the public Options pane as today, since the pipeline is his.
+- **Quotes.** `quotes` is private (PROD-008, accepted). A person's searches name their home airport and their dates. Simon's crawled quotes keep feeding the public Options pane as today, since the pipeline is his.
 - **Built files.** The build worker pulls catalogue tables and Simon's own quotes, never another owner's rows, and writes only those to the public `web` bucket (PROD-005). It stops pulling `trips` for the build, or pulls Simon's only, and `last_warning` names no trip id. Files for another person's trips are open question 3.
 - **Ids.** Ids derived from names, such as `LODGING_NS` in `latam_trip_mcp/core.py`, include the owner id, so two people adding the same hostel get two rows.
 
@@ -187,7 +187,7 @@ Simon:
 3. **Per person built files.** Private bucket per owner, or computed on read by the planner. The implementer proposes, Simon decides.
 4. **User research into the catalogue.** Whether a user's `place_research` or flight quotes may enter the shared catalogue, and who reviews them. Simon decides.
 5. **Legal.** Terms and privacy note, and whether automated reads of Booking.com and Airbnb pages in a user's own browser are acceptable in a product that is marketed. Simon, with a lawyer.
-6. **Quotes ownership.** Settled by the review as private per owner (PROD-008, proposed), which changes the word quotes in PROD-007. Simon confirms.
+6. **Quotes ownership.** Settled as private per owner (PROD-008, accepted), which changes the word quotes in PROD-007. Simon confirmed it on 2026-11-06.
 7. **`read-booking`.** Settled by Simon on 2026-11-06: it stays, for every user, on latam-trip's own Claude API key, with a monthly cap of reads per owner enforced in the function and a clear refusal when the cap is reached. PROD-007 is amended to allow this one model call.
 8. **Approval before a deploy.** Settled by Simon on 2026-11-06: no approval step on deploys. Every push to `main` tests, migrates and deploys by itself. Instead, a GitHub ruleset requires Simon's review for any change under `.github/`, the deploy role can deploy the connector stack and nothing else, and the connector's `kms:Decrypt` in `infra/mcp/template.yaml` is narrowed from every key to the one it needs.
 9. **Browser tasks for other people.** `claim_task` gives only cloud types, and `trip-checklist` needs the repo and the secret key. Another person's `stay_details` or flight search task can then only close by the data trigger. Whether their Claude can claim browser tasks through the connector is for Simon.

@@ -46,14 +46,14 @@ Ids never change. Status is Proposed, Accepted or Reconsidered. Only Simon accep
 
 ## PROD-007 People use latam-trip through their own Claude
 
-- **Decision.** latam-trip is offered to other travellers as a connector and a plugin they add to their own Claude. latam-trip hosts the data, the connector and the skills. Each person brings their own Claude subscription and their own browser, signs in as themselves, and sees and changes only their own private data on top of one shared catalogue of places, connections and quotes. latam-trip runs no server side browser workers and no model, with one exception: the `read-booking` function reads a pasted booking confirmation with latam-trip's own Claude API key, capped per owner each month.
+- **Decision.** latam-trip is offered to other travellers as a connector and a plugin they add to their own Claude. latam-trip hosts the data, the connector and the skills. Each person brings their own Claude subscription and their own browser, signs in as themselves, and sees and changes only their own private data on top of one shared catalogue of places and connections. PROD-008 moved quotes from the catalogue to each person's private data. latam-trip runs no server side browser workers and no model, with one exception: the `read-booking` function reads a pasted booking confirmation with latam-trip's own Claude API key, capped per owner each month.
 - **Reasoning.** It is the shape closest to what exists, it costs latam-trip no tokens, and browser reads stay on the person's own device, since Booking.com blocks datacenter browsers (TECH-002, TECH-003). A hosted agent was the alternative and was set aside on cost and on the scraping it would need.
 - **Applies to.** FEAT-006 and every later feature that adds a table, a connector tool or a skill.
-- **Date.** 2026-11-06. **Status.** Proposed.
+- **Date.** 2026-11-06. **Status.** Accepted.
 
 ## PROD-008 What a person adds is theirs, the catalogue is shared
 
 - **Decision.** The shared catalogue is places, connections, airports, place profiles and images, experiences and their images, and the shared documents. Every signed in person reads it and only an admin writes it. Everything a person adds, searches or books is private to them: trips, lodgings with their rooms and prices, flight quotes, bookings and their files, tasks and their log, their documents and their profile. A private row never reaches a built file in the public `web` bucket. Simon's own crawled quotes keep feeding the public Options pane, since the pipeline is his.
 - **Reasoning.** A person's flight searches give their home airport and the dates they are away, and a person's places to stay and tasks show where they will be. Writes to the catalogue reach every user and the public bucket, so they stay with the one person who reviews them. This changes the word quotes in PROD-007, which put them in the shared catalogue.
 - **Applies to.** FEAT-006 and every later feature that adds a table, a connector tool or a built file.
-- **Date.** 2026-11-06. **Status.** Proposed.
+- **Date.** 2026-11-06. **Status.** Accepted.
