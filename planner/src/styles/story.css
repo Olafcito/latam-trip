@@ -324,35 +324,7 @@
 }
 }
 
-/* ---- a stop folded open: the stop, the leg out of it and the fold are one card around the rail ---- */
+/* ---- a stop folded open: the fold sits in the column of the stop names ---- */
 @scope (:root) to (.rmap) {
-.st { --fold-bg: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); --fold-pad: 10px; }
-.st-stop[data-open], .st-leg[data-fold], .st-fold {
-  margin-inline: calc(var(--fold-pad) * -1); padding-inline: calc(var(--fold-pad) - 1px);
-  background: var(--fold-bg); border: 1px solid var(--line-2); border-block-width: 0;
-}
-.st-stop[data-open] { margin-top: 8px; padding-top: 6px; border-top-width: 1px; border-radius: 16px 16px 0 0; }
-.st-fold { margin-bottom: 8px; padding-bottom: 14px; border-bottom-width: 1px; border-radius: 0 0 16px 16px; }
-/* the leg's rail runs on through the fold to the next stop */
-.st-leg[data-fold] > .st-rail::before { bottom: 0; }
-.st-fold > .st-rail::before { top: 0; }
 .st-fold > .af { grid-column: 2; }
-/* fold shut: the chevron at the right edge, after the nights */
-.st-shut {
-  position: relative; flex: none; display: grid; place-items: center; width: 32px; height: 32px; margin-left: -4px; padding: 0; border: 0; border-radius: 50%;
-  background: none; color: var(--text); cursor: pointer; transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
-}
-.st-shut::after { content: ''; position: absolute; left: 50%; top: 50%; width: var(--hit); height: var(--hit); transform: translate(-50%, -50%); }
-.st-shut:active { transform: scale(0.92); background: var(--surface-3); }
-.st-shut:focus-visible { outline: 2px solid var(--flight); outline-offset: 2px; }
-.st-stop[data-open] .st-disc { box-shadow: 0 0 0 3px var(--fold-bg), 0 0 0 4px var(--line-2); }
-@media (hover: hover) and (pointer: fine) {
-  .st-shut:hover { background: var(--surface-3); }
-}
-@media (max-width: 560px) {
-  .st { --fold-pad: 8px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .st-shut:active { transform: none; }
-}
 }
