@@ -6,8 +6,10 @@
 -- every row with it. Each of them cascades (0027, 0029, 0035 and connector_writes here), so no key changes here, and
 -- the block at the end fails the migration if one ever does not. The connector asks may_delete_account first, then
 -- removes the person's files from the bookings bucket through the Storage API under their own token, and
--- delete_account refuses while a file is left there, so a failed removal deletes nothing and a retry works. The reply
--- counts the rows each owner_id table held.
+-- delete_account refuses while a file is left there, so a failed removal deletes nothing and a retry works. The
+-- invite of the account's own email (0036) has no owner_id and no key to auth.users, so delete_account deletes it by
+-- the email before the auth user goes, and signing up again needs a fresh invite. The reply counts the rows each
+-- owner_id table held.
 --
 -- connector_call(p_write) runs before every connector tool. A deleted account is refused with a plain message, so an
 -- old token fails cleanly. A write counts against connector_writes_per_minute (0027) per person and UTC minute, and the
@@ -114,6 +116,10 @@ begin
     execute format('select count(*) from public.%I where owner_id = $1', t) into n using me;
     counts := counts || jsonb_build_object(t, n);
   end loop;
+
+  -- the invite names the person by email and carries no owner_id, so no cascade takes it
+  delete from public.invites
+    where email = (select lower(btrim(u.email)) from auth.users u where u.id = me);
 
   delete from auth.users where id = me;
   return counts;

@@ -370,6 +370,10 @@ class AccountDbTest(ConnectorStack):
 
     def test_delete_counts_every_private_table(self):
         user, bearer = self.gone("mcp-account-gone-1")
+        # the person's own invite and another person's, which have no owner_id
+        mine, theirs = user.email.lower(), self.a.email.lower()
+        self.ok(self.svc.insert("invites", [{"email": mine}, {"email": theirs}], on_conflict="email",
+                                resolution="merge-duplicates"))
         before = self.counts(user)
         out = self.tool(bearer, "delete_account", {"email": user.email.upper()})
         self.assertEqual(set(out["deleted"]), EVERY_TABLE)
@@ -382,6 +386,11 @@ class AccountDbTest(ConnectorStack):
         self.assertFalse(self.exists(user))
         self.assertEqual(set(self.counts(user).values()), {0})
         self.assertEqual(self.files(user), [])
+        with self.migrate.connect(self.env) as con:
+            left = {r[0] for r in con.execute("select email from public.invites where email = any(%s)",
+                                              ([mine, theirs],)).fetchall()}
+        self.assertEqual(left, {theirs})
+        self.svc.delete("invites", f"email=eq.{theirs}")
 
     def test_delete_leaves_another_person_untouched(self):
         path = self.seed(self.a)
