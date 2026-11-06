@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 
 type Session = { user: { id: string } } | null
 type Message = { event: string }
-const joined: { topic: string; config: unknown; fire: (m: Message) => void; removed: boolean }[] = []
+type Status = (status: string, err?: Error) => void
+const joined: { topic: string; config: unknown; fire: (m: Message) => void; status: Status; removed: boolean }[] = []
 let authChanged: (event: string, session: Session) => void = () => {}
 vi.mock('./supabase', () => ({
   supabase: {
@@ -14,7 +15,7 @@ vi.mock('./supabase', () => ({
     },
     realtime: { setAuth: async () => {} },
     channel: (topic: string, opts: unknown) => {
-      const entry = { topic, config: opts, fire: (_m: Message) => {}, removed: false }
+      const entry = { topic, config: opts, fire: (_m: Message) => {}, status: ((_s: string) => {}) as Status, removed: false }
       joined.push(entry)
       const channel = {
         entry,
@@ -22,7 +23,10 @@ vi.mock('./supabase', () => ({
           entry.fire = cb
           return channel
         },
-        subscribe: () => channel,
+        subscribe: (cb?: Status) => {
+          if (cb) entry.status = cb
+          return channel
+        },
       }
       return channel
     },
@@ -73,5 +77,34 @@ describe('owner feed', () => {
     last.fire({ event: 'bookings' })
     expect(seen).toEqual(['b'])
     stop()
+  })
+
+  it('logs a failed join without the topic, and every list reads again after a rejoin', async () => {
+    const trips: string[] = []
+    const stays: string[] = []
+    const stopTrips = onOwnerChange(['trips'], () => trips.push('trips'))
+    const stopStays = onOwnerChange(['lodgings'], () => stays.push('stays'))
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const feed = joined[joined.length - 1]
+    feed.status('SUBSCRIBED')
+    expect([trips, stays]).toEqual([[], []])
+    feed.status('CHANNEL_ERROR', new Error('Unauthorized: owner:TEST01-b'))
+    expect(errors).toHaveBeenCalledTimes(1)
+    const logged = JSON.stringify(errors.mock.calls)
+    expect(logged).toContain('CHANNEL_ERROR')
+    expect(logged).not.toContain('owner:')
+    expect(logged).not.toContain('TEST01-b')
+    feed.status('SUBSCRIBED')
+    expect([trips, stays]).toEqual([['trips'], ['stays']])
+    feed.status('SUBSCRIBED')
+    expect([trips, stays]).toEqual([['trips', 'trips'], ['stays', 'stays']])
+    // a channel left behind on a sign out tells no one
+    authChanged('SIGNED_OUT', null)
+    await settle()
+    feed.status('SUBSCRIBED')
+    expect(trips).toHaveLength(2)
+    errors.mockRestore()
+    stopTrips()
+    stopStays()
   })
 })

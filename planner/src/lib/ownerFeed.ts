@@ -22,6 +22,15 @@ function tell(table: string): void {
   for (const l of [...listeners]) if (l.tables.has(table)) l.cb()
 }
 
+function tellAll(): void {
+  for (const l of [...listeners]) l.cb()
+}
+
+// The log names neither the topic nor the person, since the topic carries the user id.
+function fail(what: string, detail: string): void {
+  console.error(`ownerFeed: ${what}`, detail)
+}
+
 async function follow(uid: string | null): Promise<void> {
   const client = supabase
   if (!client || current?.uid === uid) return
@@ -34,8 +43,20 @@ async function follow(uid: string | null): Promise<void> {
   // a private channel joins with the person's token, so it is set before the join
   await client.realtime.setAuth()
   const channel = client.channel(`owner:${uid}`, { config: { private: true } })
-  channel.on('broadcast', { event: '*' }, (msg: { event: string }) => tell(msg.event)).subscribe()
   current = { uid, channel }
+  let joins = 0
+  channel
+    .on('broadcast', { event: '*' }, (msg: { event: string }) => tell(msg.event))
+    .subscribe((status) => {
+      if (current?.channel !== channel) return
+      if (status === 'SUBSCRIBED') {
+        // a message sent while the channel was away is lost, so after a rejoin every list reads its rows again
+        if (joins++ > 0) tellAll()
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        // the error's own text names the topic, so only the status is logged
+        fail('the private channel did not join', status)
+      }
+    })
 }
 
 function watch(): void {
@@ -45,7 +66,9 @@ function watch(): void {
   supabase.auth.onAuthStateChange((_event, session) => {
     const uid = session?.user.id ?? null
     setTimeout(() => {
-      queue = queue.then(() => follow(uid)).catch(() => {})
+      queue = queue
+        .then(() => follow(uid))
+        .catch((e: unknown) => fail('the private channel did not move', e instanceof Error ? e.name : 'error'))
     }, 0)
   })
 }
