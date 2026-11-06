@@ -28,7 +28,7 @@ function Row({ title, Icon, s }: { title: string; Icon: (p: { s?: number }) => R
   return (
     <li className="fr">
       <button type="button" className="fr-head" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
-        <Icon s={20} />
+        <Icon s={24} />
         <span className="fr-what">
           <span className="fr-t">{title}{s.count && <span className="fr-n">{s.count}</span>}</span>
           {s.line && <span className="fr-s">{s.line}</span>}

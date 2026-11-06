@@ -4,7 +4,7 @@ import { FILE_TYPES, attachFile, loadBookings, saveBookings } from '../../lib/bo
 import { fileMessage } from '../../lib/bookedBox'
 import { bookingLink, manualChange, stayPrompt, stayRow, type ManualStay, type StayTarget } from '../../lib/stayBooking'
 import { useStore } from '../../store'
-import { Caret, Check, Copy, Link, Pencil, Sparkles, Upload } from '../icons'
+import { Caret, Check, Copy, Link, Paperclip, Pencil, Sparkles } from '../icons'
 
 // Add booking confirmation, as the reference window draws it: three ways in, each a row, and under them the prompt
 // that lets ChatGPT or Claude find the booking in the mail. A file is sent at once. A link and the details open a
@@ -93,7 +93,7 @@ export function StayConfirm({ city, booking, target, close }: {
   const onLink = (e: FormEvent) => {
     e.preventDefault()
     const url = bookingLink(link)
-    if (!url) return setSaid('Paste a link that starts with https://')
+    if (!url) return setSaid('Paste a link that starts with http')
     void go(async () => !!(await book({ url })))
   }
 
@@ -134,7 +134,7 @@ export function StayConfirm({ city, booking, target, close }: {
           <ul className="scw-ways">
             <li>
               <button type="button" className="scw-way" disabled={busy} onClick={() => file.current?.click()}>
-                <span className="scw-i"><Upload s={20} /></span>
+                <span className="scw-i"><Paperclip s={22} /></span>
                 <span className="scw-w"><b>Upload confirmation</b><small>PDF, screenshot or image</small></span>
                 <Caret dir="r" s={18} />
               </button>
@@ -142,14 +142,14 @@ export function StayConfirm({ city, booking, target, close }: {
             </li>
             <li>
               <button type="button" className="scw-way" disabled={busy} onClick={() => { setSaid(null); setView('link') }}>
-                <span className="scw-i"><Link s={20} /></span>
+                <span className="scw-i"><Link s={22} /></span>
                 <span className="scw-w"><b>Paste booking link</b><small>Add your reservation link (Booking.com, Hostelworld, etc.)</small></span>
                 <Caret dir="r" s={18} />
               </button>
             </li>
             <li>
               <button type="button" className="scw-way" disabled={busy} onClick={() => { setSaid(null); setView('manual') }}>
-                <span className="scw-i"><Pencil s={20} /></span>
+                <span className="scw-i"><Pencil s={22} /></span>
                 <span className="scw-w"><b>Enter manually</b><small>Add booking reference, price and other details</small></span>
                 <Caret dir="r" s={18} />
               </button>
@@ -157,7 +157,7 @@ export function StayConfirm({ city, booking, target, close }: {
           </ul>
 
           <section className="scw-ai" aria-label="Use with AI">
-            <span className="scw-ai-i"><Sparkles s={20} /></span>
+            <span className="scw-ai-i"><Sparkles s={22} /></span>
             <div>
               <h3>Use with AI</h3>
               <p>Let ChatGPT or Claude find your accommodation bookings in your email and add them to your trip.</p>

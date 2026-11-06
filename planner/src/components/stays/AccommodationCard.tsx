@@ -72,7 +72,7 @@ export function AccommodationCard({ c }: { c: StayCardData }) {
         <Photo src={main} className="ac-main" />
         <Mark booked={c.booked} className="ac-flag" />
         {thumbs.length > 0 && (
-          <span className="ac-thumbs">
+          <span className="ac-thumbs" data-n={thumbs.length}>
             {thumbs.map((t) => <Photo key={t} src={t} className="ac-th" />)}
           </span>
         )}

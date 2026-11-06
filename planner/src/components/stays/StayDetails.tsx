@@ -46,8 +46,8 @@ export function StayDetails({ c, booking, cancel, close, onConfirm, onPlace, onR
   }
 
   const price = total == null ? null : c.booked
-    ? `${thousands(total)} DKK${perNight != null && c.nights > 1 ? `, ${thousands(perNight)} a night` : ''}`
-    : `${exact ? '' : 'About '}${thousands(total)} DKK${perNight != null && c.nights > 1 ? `, ${thousands(perNight)} a night` : ''}`
+    ? `${thousands(total)} DKK${perNight != null && c.nights > 1 ? `, ${thousands(perNight)} / night` : ''}`
+    : `${exact ? '' : 'About '}${thousands(total)} DKK${perNight != null && c.nights > 1 ? `, ${thousands(perNight)} / night` : ''}`
 
   const facts: { k: string; Icon: (p: { s?: number }) => ReactNode; label: string; value: string; href?: string; tone?: 'warn' }[] = [
     ...(c.room ? [{ k: 'room', Icon: Bed, label: 'Room', value: c.room }] : []),
@@ -90,25 +90,23 @@ export function StayDetails({ c, booking, cancel, close, onConfirm, onPlace, onR
           ))}
         </ul>
 
-        {c.booked && (
+        {c.booked && files.length > 0 && (
           <section className="sd-files" aria-label="Confirmation">
-            <h3><Paperclip s={15} />{files.length ? (files.length === 1 ? 'Confirmation' : `${files.length} confirmations`) : 'No confirmation file'}</h3>
-            {files.length > 0 && (
-              <ul className="bk-files">
-                {files.map((f) => {
-                  const { kind, size } = fileTile(f)
-                  return (
-                    <li key={f.path}>
-                      <button type="button" className="bk-tile" onClick={() => open(f)} aria-label={`Open ${f.name}, ${kind}${size ? `, ${size}` : ''}, in a new tab`}>
-                        <span className="bk-tile-i" aria-hidden="true"><Doc /></span>
-                        <b title={f.name}>{f.name}</b>
-                        <small>{kind}{size && `, ${size}`}</small>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            )}
+            <h3><Paperclip s={15} />{files.length === 1 ? 'Confirmation' : `${files.length} confirmations`}</h3>
+            <ul className="bk-files">
+              {files.map((f) => {
+                const { kind, size } = fileTile(f)
+                return (
+                  <li key={f.path}>
+                    <button type="button" className="bk-tile" onClick={() => open(f)} aria-label={`Open ${f.name}, ${kind}${size ? `, ${size}` : ''}, in a new tab`}>
+                      <span className="bk-tile-i" aria-hidden="true"><Doc /></span>
+                      <b title={f.name}>{f.name}</b>
+                      <small>{kind}{size && `, ${size}`}</small>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
           </section>
         )}
 
@@ -118,7 +116,7 @@ export function StayDetails({ c, booking, cancel, close, onConfirm, onPlace, onR
           {onConfirm && (
             <button type="button" className="ac-att sd-confirm" onClick={() => { close(); onConfirm() }}>
               <Paperclip s={18} />
-              <span><b>{c.booked ? 'Add a confirmation' : 'Add booking confirmation'}</b><small>Attach PDF, screenshot or booking link</small></span>
+              <span><b>Add booking confirmation</b><small>Attach PDF, screenshot or booking link</small></span>
             </button>
           )}
           <div className="sd-row">
