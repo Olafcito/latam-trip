@@ -197,6 +197,15 @@ class WaitTest(unittest.TestCase):
         self.assertEqual([l["id"] for l in lines], [11])
         self.assertEqual(len(slept), 1)
 
+    def test_gives_up_with_one_error_line_after_ten_failed_rounds(self):
+        rest, slept = WaitRest([OSError("down")] * tasks.GIVE_UP), []
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf), self.assertRaises(SystemExit) as e:
+            tasks.cmd_wait(rest, sleep=slept.append, now=lambda: NOW)
+        self.assertEqual(e.exception.code, 1)
+        self.assertIn("error", json.loads(buf.getvalue()))
+        self.assertEqual(len(slept), tasks.GIVE_UP - 1)
+
 
 if __name__ == "__main__":
     unittest.main()

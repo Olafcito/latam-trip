@@ -132,12 +132,22 @@ def for_the_pc(row, grace_minutes, now):
     return made is not None and (now - made).total_seconds() > grace_minutes * 60
 
 
+GIVE_UP = 10  # failed rounds in a row before wait stops, so a wrong key or a long outage is seen, not looped on
+
+
 def cmd_wait(rest, every=60, grace=15, sleep=time.sleep, now=lambda: dt.datetime.now(dt.timezone.utc)):
-    """Print nothing while no open task is for the PC. Then print one JSON line per task and return. A failed round is tried again."""
+    """Print nothing while no open task is for the PC. Then print one JSON line per task and return.
+    A failed round is tried again. After GIVE_UP failed rounds in a row it prints one error line and exits 1."""
+    failed = 0
     while True:
         try:
             rows = rest.get_all("tasks", {"status": "eq.open", "select": "id,type,title,data,created_at", "order": "id"})
-        except Exception:
+            failed = 0
+        except Exception as e:
+            failed += 1
+            if failed >= GIVE_UP:
+                print(json.dumps({"error": f"the tasks table did not answer {failed} times in a row: {type(e).__name__}"}))
+                sys.exit(1)
             rows = []
         mine = [r for r in rows if for_the_pc(r, grace, now())]
         if mine:
