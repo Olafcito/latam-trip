@@ -1,15 +1,14 @@
-# Deploys the planner when its code changes. Data does not need this: the app reads it when it opens.
+# Deploys the planner once a release of main has passed every test and applied its migrations (TECH-008), so the
+# planner never goes live against a schema it does not match. Data does not need this: the app reads it when it opens.
+# A red release never reaches the site. The tests ran in the release, so this job only builds and uploads.
 # The three VITE_ repo variables are the project URL, the publishable key and the data base. Without them the build has no Supabase.
 name: Deploy site
 
 on:
-  push:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
     branches: [main]
-    paths:
-      - planner/**
-      - web/**
-      - infra/site_upload.sh
-      - .github/workflows/site.yml
   workflow_dispatch:
 
 permissions:
@@ -22,23 +21,22 @@ concurrency:
 
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
       - run: npm ci
         working-directory: web
       - run: npm ci
-        working-directory: planner
-      - run: npm run typecheck
-        working-directory: web
-      - run: npm test
-        working-directory: web
-      - run: npm run typecheck
-        working-directory: planner
-      - run: npm test
         working-directory: planner
       - run: npm run build
         working-directory: planner

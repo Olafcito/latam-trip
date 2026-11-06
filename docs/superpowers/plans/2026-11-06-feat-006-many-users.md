@@ -299,6 +299,8 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 
 Ask first: sign up rule, passphrase fallback.
 
+Gate before the first outside account: Supabase Postgres Changes does not apply row level security to DELETE events, so every subscriber gets the deleted row's primary key. The `trips` key carries `owner_id` and the trip name. Phase 2 measured what B sees in `test_realtime_is_owner_scoped`. Before sign up opens, the planner moves to private broadcast channels with row level security on `realtime.messages`, or the private tables leave the realtime publication, and the test asserts B sees no DELETE of A's rows.
+
 ### Task 6.1: Sign up by the rule
 
 - [ ] Invite only means an `invites` table checked by a Supabase `before_user_created` auth hook, open means no check. Custom SMTP set by Simon before the first outside user. Planner sign in screen for any email, no owner wording, roasted.

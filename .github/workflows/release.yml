@@ -3,7 +3,7 @@
 # Both jobs run in the GitHub environment release, which only main may use. It holds the secrets
 # SUPABASE_PASSWORD and AWS_RELEASE_ROLE_ARN and the variable SUPABASE_URL. AWS is reached through GitHub's OIDC
 # with the role latam-trip-release, which may only upload the connector zip and update that one function.
-# The site has its own workflow, site.yml. The worker, the edge functions and template changes still deploy from the PC.
+# The site deploys in site.yml once this workflow has succeeded on main. The worker, the edge functions and template changes still deploy from the PC.
 # The database password and the AWS token never share a job, so a step that holds one never sees the other.
 # Every third party action is pinned to a full commit SHA, with its tag in the comment, and every package to a version.
 name: Release
