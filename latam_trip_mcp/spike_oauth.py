@@ -516,7 +516,11 @@ def expiry_leg(env, meta, base, resource, a, b):
     time.sleep(wait)
     seed(env, users.make_user(env, "oauth-a"), users.make_user(env, "oauth-b"))
     s1, _, _ = list_trip_ids(base, tok["access_token"])
-    s2, _ = users.Rest(env["SUPABASE_URL"], env["SUPABASE_PUBLISHABLE_KEY"], tok["access_token"]).select("trips", "select=id&limit=1")
+    old_rest = users.Rest(env["SUPABASE_URL"], env["SUPABASE_PUBLISHABLE_KEY"], tok["access_token"])
+    s_early, _ = old_rest.select("trips", "select=id&limit=1")
+    note("7a PostgREST 5 s after exp, inside its 30 s clock skew allowance", status=s_early)
+    time.sleep(max(0, exp + 40 - time.time()))
+    s2, _ = old_rest.select("trips", "select=id&limit=1")
     s, _, t2 = token(meta, {"grant_type": "refresh_token", "refresh_token": tok["refresh_token"], "client_id": cid,
                             "resource": resource})
     new = t2.get("access_token") if isinstance(t2, dict) else None
@@ -525,7 +529,7 @@ def expiry_leg(env, meta, base, resource, a, b):
     s3, ids, _ = list_trip_ids(base, new) if new else (None, None, None)
     record("7 refresh after expiry", s1 == 401 and s2 == 401 and s == 200 and s3 == 200 and ids is not None
            and "TEST01-oauth-a" in ids and "TEST01-oauth-b" not in ids,
-           connector_on_expired=s1, postgrest_on_expired=s2, refresh_status=s, connector_after_refresh=s3, trip_ids=ids)
+           connector_at_exp_plus_5s=s1, postgrest_at_exp_plus_40s=s2, refresh_status=s, connector_after_refresh=s3, trip_ids=ids)
 
 
 def probes(env, meta, client_id, resource, a, b):
