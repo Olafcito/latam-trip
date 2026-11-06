@@ -314,23 +314,32 @@ class RlsTest(unittest.TestCase):
         # A's quotes count apart
         self.assertEqual(ok(self, add(self.a, [1, 2, 3])), {"added": 3, "seen_again": 0})
 
-    def test_row_caps_per_person(self):
+    def test_growing_tables_have_limits_of_their_own(self):
+        # the tables that only grow hold more than the default, so the worker and save_trip run through the trip
         limits = self.limits()
-        cap, per_day = limits["rows_per_private_table"], limits["tasks_per_day"]
-        usage = lambda n: [{"round": "TEST01"} for _ in range(n)]
-        ok(self, self.b.rest.insert("agent_usage", usage(cap)))
-        self.refused(self.b.rest.insert("agent_usage", usage(1)), f"{cap} rows in agent_usage per person")
+        for table in ("trips", "lodgings", "lodging_rooms", "lodging_prices", "quotes", "tasks", "task_log",
+                      "agent_usage"):
+            with self.subTest(table=table):
+                self.assertGreater(limits[f"rows_in_{table}"], limits["rows_per_private_table"])
+
+    def test_row_caps_per_person(self):
+        self.limit("rows_per_private_table", 5)
+        bookings = lambda n: [{"kind": "other"} for _ in range(n)]
+        ok(self, self.b.rest.insert("bookings", bookings(5)))
+        self.refused(self.b.rest.insert("bookings", bookings(1)), "5 rows in bookings per person")
         # the admin has the same cap, and B's rows count against B alone
-        self.refused(self.a.rest.insert("agent_usage", usage(cap + 1)), f"{cap} rows in agent_usage per person")
-        ok(self, self.a.rest.insert("agent_usage", usage(1)))
-        # a table with a limit of its own takes more
-        self.assertGreater(limits["rows_in_quotes"], cap)
-        quotes = [{"quote_id": f"TEST01-{i}"} for i in range(cap + 1)]
-        ok(self, self.b.rest.insert("quotes", quotes))
+        self.refused(self.a.rest.insert("bookings", bookings(6)), "5 rows in bookings per person")
+        ok(self, self.a.rest.insert("bookings", bookings(1)))
+        # a table with a limit of its own takes more, and stops at it
+        self.limit("rows_in_agent_usage", 8)
+        usage = lambda n: [{"round": "TEST01"} for _ in range(n)]
+        ok(self, self.b.rest.insert("agent_usage", usage(8)))
+        self.refused(self.b.rest.insert("agent_usage", usage(1)), "8 rows in agent_usage per person")
         # tasks stop at the tasks a day before the rows
+        self.limit("tasks_per_day", 3)
         tasks = lambda n: [{"type": "place_research", "title": "TEST01"} for _ in range(n)]
-        ok(self, self.b.rest.insert("tasks", tasks(per_day)))
-        self.refused(self.b.rest.insert("tasks", tasks(1)), f"{per_day} tasks a day per person")
+        ok(self, self.b.rest.insert("tasks", tasks(3)))
+        self.refused(self.b.rest.insert("tasks", tasks(1)), "3 tasks a day per person")
         ok(self, self.a.rest.insert("tasks", tasks(1)))
 
     def test_bookings_folder_cap(self):

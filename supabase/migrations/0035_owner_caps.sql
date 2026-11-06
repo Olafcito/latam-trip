@@ -3,17 +3,25 @@
 -- rows in that table, and on tasks also past the tasks they made today (UTC). A restrictive policy on the bookings
 -- bucket refuses a file that would take the person's folder past its bytes. The admin has the same caps, as in 0027.
 --
--- A table may have a limit of its own, rows_in_<table>, which wins over rows_per_private_table. Quotes come in bursts
--- of thousands from a flight crawl, and the morning rates add a few hundred prices a day as history, so those two
--- tables get higher limits. Every count of the admin's is below the cap it meets here.
+-- A table may have a limit of its own, rows_in_<table>, which wins over rows_per_private_table. The tables that only
+-- grow get one: every trip save is a new version, task_log, agent_usage and the tasks keep what was done, quotes come
+-- in bursts from a crawl and the morning rates add prices as history. Each limit holds the admin's rows on 2026-11-06
+-- plus at least 26 weeks at 3 times the rows of that last week (TECH-009 has the numbers), so the worker and save_trip
+-- run through the trip. bookings, inbox and user_documents stay on rows_per_private_table.
 --
 -- The cap is counted after the insert, under a lock per table and owner held to the end of the transaction, so two
 -- writes at the same time cannot both slip under it. user_profiles holds one row per person by its key, so it has no
 -- row cap. A missing limit row means no cap, so a limit is lifted by deleting its row.
 
 insert into public.owner_limits (name, value, unit) values
-  ('rows_in_quotes', 50000, 'rows'),
-  ('rows_in_lodging_prices', 100000, 'rows')
+  ('rows_in_trips', 5000, 'rows'),
+  ('rows_in_lodgings', 5000, 'rows'),
+  ('rows_in_lodging_rooms', 25000, 'rows'),
+  ('rows_in_lodging_prices', 100000, 'rows'),
+  ('rows_in_quotes', 100000, 'rows'),
+  ('rows_in_tasks', 5000, 'rows'),
+  ('rows_in_task_log', 5000, 'rows'),
+  ('rows_in_agent_usage', 10000, 'rows')
 on conflict (name) do nothing;
 
 create function public.hold_owner_caps() returns trigger
