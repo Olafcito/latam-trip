@@ -48,7 +48,7 @@ describe('providers', () => {
     expect(rows.map((r) => [r.name, r.price?.dkk ?? null, r.cheapest])).toEqual([
       ['Booking.com', 210, true], ['Hostelworld', 215, false], ['Agoda', 218, false], ['Airbnb', null, false],
     ])
-    expect(rows[0].url).toBe('https://booking.com/x')
+    expect(rows[0].url).toBe('https://booking.com/x?checkin=2026-12-08&checkout=2026-12-09&group_adults=1&no_rooms=1&group_children=0')
   })
   it('books at Hostelworld, and at Booking.com only with its own link, the cheapest marked among them', () => {
     expect(bookAt(l, dorm, '2026-12-08', '2026-12-09').map((r) => [r.name, r.price?.dkk ?? null, r.cheapest])).toEqual([

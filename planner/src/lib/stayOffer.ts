@@ -1,6 +1,7 @@
 import type { Lodging, LodgingKind, LodgingPrice, LodgingRoom, LodgingTag } from '../data/types'
 import { dayDiff, day } from './format'
 import { SITE } from './lodgingWords'
+import { datedLink } from './lodgingLinks'
 import { sellerLogo } from './purchase'
 
 // What the accommodation panes show of a place to stay for the dates searched: a price per night for each room,
@@ -112,7 +113,7 @@ export function providers(l: Lodging, room: LodgingRoom | null, checkIn: string,
   }
   for (const link of l.links) take(link.site, link.url)
   for (const p of room?.prices ?? []) if (p.site) take(p.site, p.url).prices.push(p)
-  return ranked([...rows.values()].map(({ prices, ...r }) => ({ ...r, price: nightly(prices, checkIn, checkOut), cheapest: false })))
+  return ranked([...rows.values()].map(({ prices, ...r }) => ({ ...r, url: datedLink(r.url, checkIn, checkOut), price: nightly(prices, checkIn, checkOut), cheapest: false })))
 }
 
 /** The rows marked and ordered: the cheapest exact one of two or more marked, priced first, cheapest first. */

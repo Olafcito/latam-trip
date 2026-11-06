@@ -18,6 +18,7 @@ import { amenityRow } from '../../lib/stayOffer'
 import { loadLodgings } from '../../lib/lodgings'
 import { addFromLink, remember } from '../../lib/stayRates'
 import { shareLink, sharePlace } from '../../lib/sharePlace'
+import { datedLink } from '../../lib/lodgingLinks'
 import { addDays } from '../../lib/time'
 import { Modal } from '../Modal'
 import { AddPlace } from '../stays/AddPlace'
@@ -173,7 +174,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
           checkOut: part.fits ? addDays(part.first, part.nights) : null,
           nights: part.nights,
           room: b?.room_name?.trim() || room?.name || null,
-          provider: cardProvider(l, b, terms, room),
+          provider: cardProvider(l, b, terms, room, part.fits ? { checkIn: part.first, checkOut: addDays(part.first, part.nights) } : undefined),
           money: paid ? paid.money : stayMoney(room, part, null),
           currency: paid ? paid.currency : 'DKK',
           booked: !!b,
@@ -211,7 +212,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
           checkOut: b.check_out,
           nights,
           room: b.room_name?.trim() || room?.name || null,
-          provider: cardProvider(l, b, null, room),
+          provider: cardProvider(l, b, null, room, { checkIn: b.check_in, checkOut: b.check_out }),
           money: paid.money,
           currency: paid.currency,
           booked: true,
@@ -327,7 +328,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
                 const first = pick?.checkIn ?? (sp.days > 0 ? at.first : searchIn)
                 const nights = pick ? nightsFrom(pick.checkIn, pick.checkOut) : sp.days > 0 ? Math.max(1, at.nights) : 1
                 const shown = { checkIn: first, checkOut: addDays(first, nights) }
-                const link = shareLink(l)
+                const link = datedLink(shareLink(l), shown.checkIn, shown.checkOut)
                 return (
                   <PropertyView key={l.id}
                     lodging={l}

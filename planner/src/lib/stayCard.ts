@@ -1,4 +1,5 @@
 import type { Booking, Lodging, LodgingPrice, LodgingRoom, LodgingSite } from '../data/types'
+import { datedLink } from './lodgingLinks'
 import { SITE } from './lodgingWords'
 import { safeLink, sellerLogo } from './purchase'
 import { cancelWords, type StayMoney } from './stayBooking'
@@ -16,13 +17,13 @@ const LOGO: Partial<Record<LodgingSite, string>> = { booking: 'booking', hostelw
 
 /**
  * Where the room was booked, else where its price was seen, else the room's site, else the place's first link.
- * The room name opens the place's link on that site, else the booking's page, else nothing. Null when no provider
- * and no page is known.
+ * The room name opens the place's link on that site on the stay's nights, else the booking's page, else nothing.
+ * Null when no provider and no page is known.
  */
-export function cardProvider(l: Pick<Lodging, 'name' | 'links'> | undefined, b: Pick<Booking, 'provider' | 'seller' | 'seller_url' | 'url'> | null, terms: Pick<LodgingPrice, 'site'> | null, room?: Pick<LodgingRoom, 'site'>): CardProvider | null {
+export function cardProvider(l: Pick<Lodging, 'name' | 'links'> | undefined, b: Pick<Booking, 'provider' | 'seller' | 'seller_url' | 'url'> | null, terms: Pick<LodgingPrice, 'site'> | null, room?: Pick<LodgingRoom, 'site'>, nights?: { checkIn: string | null; checkOut: string | null }): CardProvider | null {
   const site: LodgingSite | null = b?.provider ?? terms?.site ?? room?.site ?? l?.links[0]?.site ?? null
   const link = site ? l?.links.find((k) => k.site === site)?.url : undefined
-  const url = safeLink(link) ?? (site === 'other' ? safeLink(b?.seller_url) : null) ?? safeLink(b?.url)
+  const url = datedLink(link, nights?.checkIn, nights?.checkOut) ?? safeLink(link) ?? (site === 'other' ? safeLink(b?.seller_url) : null) ?? safeLink(b?.url)
   if (!site) return url ? { name: b?.seller?.trim() || 'Booking page', logo: sellerLogo(b?.seller), url } : null
   const other = site === 'other' ? b?.seller?.trim() || null : null
   const name = other ?? (site === 'own' ? l?.name ?? SITE.own : SITE[site])

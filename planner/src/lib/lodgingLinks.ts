@@ -38,3 +38,28 @@ export function safeUrl(u: string | null | undefined): string | null {
     return null
   }
 }
+
+const DAY = /^\d{4}-\d{2}-\d{2}$/
+
+/**
+ * A link to a place to stay opened on the nights and guests: Hostelworld's from, to and guests on its pwa page,
+ * Booking.com's checkin, checkout and adults, Airbnb's check_in, check_out and adults. The place's own site, a link
+ * that is not https, and dates that are not two days in order give the link as it was.
+ */
+export function datedLink(url: string | null | undefined, checkIn: string | null | undefined, checkOut: string | null | undefined, guests = 1): string | null {
+  const safe = safeUrl(url)
+  if (!safe || !checkIn || !checkOut || !DAY.test(checkIn) || !DAY.test(checkOut) || checkOut <= checkIn) return safe
+  const n = String(Math.max(1, Math.round(guests) || 1))
+  const u = new URL(safe)
+  const set = (pairs: Record<string, string>) => Object.entries(pairs).forEach(([k, v]) => u.searchParams.set(k, v))
+  const site = siteOf(safe)
+  if (site === 'hostelworld') {
+    if (u.pathname.startsWith('/hosteldetails.php/')) u.pathname = `/pwa${u.pathname}`
+    set({ from: checkIn, to: checkOut, guests: n, origin: 'microsite' })
+  } else if (site === 'booking') {
+    set({ checkin: checkIn, checkout: checkOut, group_adults: n, no_rooms: '1', group_children: '0' })
+  } else if (site === 'airbnb') {
+    set({ check_in: checkIn, check_out: checkOut, adults: n })
+  } else return safe
+  return u.toString()
+}
