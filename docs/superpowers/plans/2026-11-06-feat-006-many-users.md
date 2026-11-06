@@ -301,6 +301,8 @@ Ask first: sign up rule, passphrase fallback.
 
 Gate before the first outside account: Supabase Postgres Changes does not apply row level security to DELETE events, so every subscriber gets the deleted row's primary key. The `trips` key carries `owner_id` and the trip name. Phase 2 measured what B sees in `test_realtime_is_owner_scoped`. Before sign up opens, the planner moves to private broadcast channels with row level security on `realtime.messages`, or the private tables leave the realtime publication, and the test asserts B sees no DELETE of A's rows.
 
+Second gate before the first outside account: `tasks`, `inbox` and `task_log` keep identity ids that accept an explicit id, so B inserting an id A holds gets a 409 that says the id exists. Nothing else is learnt, the row stays hidden. They are not keyed `(owner_id, id)` in phase 2 because the connector's undo of a task delete inserts the old row with its id, and claim, finish and the stay_details functions follow a task by its id alone. Phase 3 rewrites the task tools per owner, so it keys these three tables `(owner_id, id)` the way phase 2 keyed lodgings and bookings, and test_rls asserts that a taken id behaves like a fresh one.
+
 ### Task 6.1: Sign up by the rule
 
 - [ ] Invite only means an `invites` table checked by a Supabase `before_user_created` auth hook, open means no check. Custom SMTP set by Simon before the first outside user. Planner sign in screen for any email, no owner wording, roasted.
