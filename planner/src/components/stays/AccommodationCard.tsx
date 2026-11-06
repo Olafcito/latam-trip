@@ -1,0 +1,145 @@
+import { useState } from 'react'
+import { thousands, weekdayDay } from '../../lib/format'
+import { nightsWord, type Amenity } from '../../lib/stayOffer'
+import type { StayMoney } from '../../lib/stayBooking'
+import { Bed, Calendar, Check, Paperclip, Ring, Warn } from '../icons'
+import { AmenityIcon } from './offerMarks'
+
+// Where Simon sleeps at a stop, as the reference card draws it: the photos on the left, the place on the right with
+// its kind, town, a line about it and what it offers, then under a rule three columns, check-in with the nights,
+// the room with its terms, and the price a night with the booking mark and the act that books it. Planned is amber
+// and booked is green. The photos and the name open the stay on its own. On a narrow fold the photos go on top.
+
+export interface StayCardData {
+  key: string
+  name: string
+  /** "Hostel", empty for a place of no kind */
+  kind: string
+  /** "San Andrés, Colombia" */
+  where: string
+  summary: string | null
+  /** https photos, the first is the large one */
+  photos: string[]
+  amenities: Amenity[]
+  /** the stay's own dates, null when the stop has no nights left for it */
+  checkIn: string | null
+  checkOut: string | null
+  nights: number
+  room: string | null
+  /** the room's terms in a few words, "Free cancellation · Private bathroom" */
+  terms: string | null
+  money: StayMoney
+  booked: boolean
+  /** the confirmation files attached */
+  files: number
+  /** why the stay no longer fits the stop, when it does not */
+  warn?: string | null
+  onOpen: () => void
+  /** add a booking confirmation, on a planned stay */
+  onConfirm?: () => void
+  /** open the place to choose a room, when none is chosen */
+  onRoom?: () => void
+}
+
+function Photo({ src, className }: { src: string | undefined; className: string }) {
+  const [broken, setBroken] = useState(false)
+  return (
+    <span className={className}>
+      {src && !broken ? <img src={src} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" draggable={false} onError={() => setBroken(true)} /> : <Bed s={22} />}
+    </span>
+  )
+}
+
+/** The booking mark: an amber ring and Not booked, or a green check and Booked. */
+function Mark({ booked, className }: { booked: boolean; className: string }) {
+  return (
+    <span className={className} data-on={booked || undefined}>
+      {booked ? <Check s={12} /> : <Ring s={11} />}
+      {booked ? 'Booked' : 'Not booked'}
+    </span>
+  )
+}
+
+export function AccommodationCard({ c }: { c: StayCardData }) {
+  const [main, ...rest] = c.photos
+  const thumbs = rest.slice(0, 3)
+  const { perNight, total, exact } = c.money
+  const about = !exact && total != null
+  const when = c.checkIn ? `${weekdayDay(c.checkIn)}${c.checkOut ? ` to ${weekdayDay(c.checkOut)}` : ''}` : 'No nights'
+  return (
+    <article className="sc" data-booked={c.booked || undefined} aria-label={`${c.name}, ${c.booked ? 'booked' : 'not booked'}`}>
+      <button type="button" className="sc-pics" data-one={thumbs.length === 0 || undefined} onClick={c.onOpen} tabIndex={-1} aria-hidden="true">
+        <Photo src={main} className="sc-main" />
+        <Mark booked={c.booked} className="sc-flag" />
+        {thumbs.length > 0 && (
+          <span className="sc-thumbs">
+            {thumbs.map((t) => <Photo key={t} src={t} className="sc-th" />)}
+          </span>
+        )}
+      </button>
+
+      <div className="sc-body">
+        <h4 className="sc-name"><button type="button" onClick={c.onOpen}>{c.name}</button></h4>
+        <p className="sc-kind">{c.kind && <b>{c.kind}</b>}{c.kind && c.where && <i aria-hidden="true">·</i>}<span>{c.where}</span></p>
+        {c.summary && <p className="sc-sum">{c.summary}</p>}
+        {c.amenities.length > 0 && (
+          <ul className="sc-ams" aria-label="What it offers">
+            {c.amenities.map((a) => <li key={a.key}><AmenityIcon k={a.key} s={15} />{a.label}</li>)}
+          </ul>
+        )}
+
+        <div className="sc-facts">
+          <div className="sc-f">
+            <Calendar s={17} />
+            <div>
+              <span className="sc-l">Check-in</span>
+              <b className="sc-v" title={when}>{c.checkIn ? weekdayDay(c.checkIn) : 'No nights'}</b>
+              {c.checkIn && (
+                <span className="sc-chips">
+                  <span className="sc-chip" title={when}>{nightsWord(c.nights)}</span>
+                  {c.warn && <span className="sc-warn" role="img" aria-label={c.warn} title={c.warn}><Warn s={13} /></span>}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="sc-f">
+            <Bed s={17} />
+            <div>
+              <span className="sc-l">Room</span>
+              {c.room ? <b className="sc-v sc-room">{c.room}</b> : c.onRoom ? <button type="button" className="sc-pick" onClick={c.onRoom}>Choose a room</button> : <b className="sc-v">Room not known</b>}
+              {c.terms && <span className="sc-sub">{c.terms}</span>}
+            </div>
+          </div>
+
+          <div className="sc-f sc-money">
+            <div className="sc-price">
+              {c.booked && total != null ? (
+                <><b>{thousands(total)} DKK</b><span>total</span></>
+              ) : perNight != null ? (
+                <><b data-about={about || undefined} title={about ? 'From the price seen for other dates' : undefined}>{thousands(perNight)} DKK</b><span>/ night</span></>
+              ) : <span className="sc-none">No price yet</span>}
+              {total != null && (
+                <span className="sc-cur" data-about={about || undefined}>
+                  {c.booked ? (perNight != null ? `${thousands(perNight)} / night` : 'DKK') : `${about ? 'About ' : ''}${thousands(total)} DKK in all`}
+                </span>
+              )}
+            </div>
+            <Mark booked={c.booked} className="sc-pill" />
+            {c.booked ? (
+              <button type="button" className="sc-att" data-on onClick={c.onOpen}>
+                <Paperclip s={18} />
+                <span><b>{c.files ? (c.files === 1 ? 'Confirmation attached' : `${c.files} confirmations attached`) : 'Booking details'}</b></span>
+              </button>
+            ) : c.onConfirm && (
+              <button type="button" className="sc-att" onClick={c.onConfirm}>
+                <Paperclip s={18} />
+                <span><b>Add booking confirmation</b><small>Attach PDF, screenshot or booking link</small></span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </article>
+  )
+}
