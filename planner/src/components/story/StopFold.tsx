@@ -64,7 +64,7 @@ function searchWindow(stays: Parameters<typeof freeNights>[0], sp: Parameters<ty
   return { free, checkIn, checkOut: addDays(checkIn, Math.max(1, free.nights > 0 ? free.nights : sp.days)) }
 }
 
-export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onStayAt, addNow }: {
+export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onStayAt, addNow, onAddNow }: {
   data: AppData
   journey: Journey
   sched: Schedule
@@ -78,6 +78,8 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
   onStayAt?: (stop: number, tab: StayTab) => void
   /** opens the search at once, each time its count changes */
   addNow?: { n: number; tab: StayTab } | null
+  /** the search opened for addNow, which is spent so a fold opened later does not open it again */
+  onAddNow?: () => void
 }) {
   const { inout, map } = data
   const lodgings = useStore((s) => s.lodgings)
@@ -99,6 +101,8 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
     if (!addNow) return
     setStartTab(addNow.tab)
     setAdding(null)
+    onAddNow?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addNow])
   const [saved, toggleSaved] = useSaved()
   const rev = useDataRev()

@@ -362,6 +362,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
         cities={cities}
         onStayAt={openStay}
         addNow={stayAt?.i === i ? stayAt : null}
+        onAddNow={() => setStayAt(null)}
       />
     </li>
   )

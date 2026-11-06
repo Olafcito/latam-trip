@@ -232,7 +232,7 @@ export function StaySearch(p: StaySearchProps) {
     <section className="as" aria-label="Add accommodation">
       <header className="as-h">
         <h3>Add accommodation</h3>
-        {p.onClose && <button type="button" className="as-x" aria-label="Close" onClick={p.onClose}><Close /></button>}
+        {p.onClose && <button type="button" className="as-x" aria-label="Close" title="Close" onClick={p.onClose}><Close /></button>}
       </header>
       <div className="as-tabs" role="tablist" aria-label="How to add">
         <button type="button" role="tab" aria-selected={tab === 'find'} className="as-tab" onClick={() => setTab('find')}><Search s={16} />Find & add</button>
