@@ -120,6 +120,11 @@ async function main() {
       if (latest?.check_in && latest?.check_out) ({ check_in: checkIn, check_out: checkOut } = latest)
     }
   }
+  if (!checkIn) {
+    // The link the task runner stored carries the stay's dates, and without dates the room table is empty.
+    const q = new URL(link.url).searchParams
+    if (DATE.test(q.get('checkin') ?? '') && DATE.test(q.get('checkout') ?? '')) [checkIn, checkOut] = [q.get('checkin'), q.get('checkout')]
+  }
 
   const url = new URL(link.url.split('?')[0])
   if (checkIn) {
