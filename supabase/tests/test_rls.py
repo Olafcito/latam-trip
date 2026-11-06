@@ -8,8 +8,9 @@ The tests commit rows and empty the tables with test_reset, so they run on the l
 Run: bash supabase/local_up.sh <env file outside the repo>, then
 TRIPDB_DB_TESTS=1 TRIPDB_ENV_FILE=<file> uv run --quiet --no-project --python 3.12 --with "psycopg[binary]==3.3.8"
   --with "websockets==15.0.1" python -I -X utf8 supabase/tests/test_rls.py -v
-InviteTest needs the before_user_created hook that config.toml turns on, so a stack started before 0036 runs it only
-with SUPABASE_AUTH_URL in the env file naming a second auth server that has the hook on.
+InviteTest needs the before_user_created hook and confirm email that config.toml turns on, so a stack started before
+0036 runs it only with SUPABASE_AUTH_URL in the env file naming a second auth server that has both on, and with the
+trigger of 0036 in the database.
 """
 import json, os, sys, threading, time, unittest, uuid
 
@@ -660,6 +661,22 @@ class InviteTest(unittest.TestCase):
         """What the planner sends: a sign in link that may make the user."""
         return self.users.http("POST", f"{self.auth}/otp", self.public, {"email": email, "create_user": True})
 
+    def password_sign_in(self, email):
+        return self.users.http("POST", f"{self.auth}/token?grant_type=password", self.public,
+                               {"email": email, "password": self.users.PASSWORD})
+
+    def confirm(self, email):
+        """The invitee's first email link: the admin API makes the link the mail carries and /verify opens it."""
+        code, body = self.users.http("POST", f"{self.admin_api}/generate_link", self.secret,
+                                     {"type": "magiclink", "email": email})
+        self.assertEqual(code, 200, body)
+        link = body.get("properties") or body
+        code, body = self.users.http("POST", f"{self.auth}/verify", self.public,
+                                     {"type": link["verification_type"], "token_hash": link["hashed_token"]})
+        self.assertEqual(code, 200, body)
+        self.assertIsNotNone(body["user"].get("email_confirmed_at"), body)
+        return body
+
     def assert_refused(self, got):
         code, body = got
         self.assertEqual(code, 403, body)
@@ -708,6 +725,31 @@ class InviteTest(unittest.TestCase):
                                              {"email": who.email, "password": self.users.PASSWORD})
                 self.assertEqual(code, 200, body)
                 self.assertEqual(body["user"]["id"], who.id)
+
+    def test_a_password_from_sign_up_never_signs_in(self):
+        """Someone who knows an invited address signs up first with a password of their own. Confirm email gives that
+        sign up no session, and the trigger of 0036 clears the password, so it signs in neither before nor after the
+        invitee confirms the address with their first email link."""
+        email = self.address()
+        self.invite(email)
+        code, body = self.sign_up(email)
+        self.assertEqual(code, 200, body)
+        self.assertNotIn("access_token", body)
+        code, body = self.password_sign_in(email)
+        self.assertEqual(code, 400, body)
+        session = self.confirm(email)
+        self.assertEqual(session["user"]["id"], self.user_id(email))
+        code, body = self.password_sign_in(email)
+        self.assertEqual(code, 400, body)
+
+    def test_a_confirmed_user_made_by_the_admin_signs_in_with_its_password(self):
+        email = self.address()
+        code, body = self.users.http("POST", f"{self.admin_api}/users", self.secret,
+                                     {"email": email, "password": self.users.PASSWORD, "email_confirm": True})
+        self.assertEqual(code, 200, body)
+        code, body = self.password_sign_in(email)
+        self.assertEqual(code, 200, body)
+        self.assertEqual(body["user"]["id"], self.user_id(email))
 
     def test_no_client_reads_or_writes_invites(self):
         email = self.address()

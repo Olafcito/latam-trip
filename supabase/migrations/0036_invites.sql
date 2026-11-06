@@ -50,3 +50,35 @@ comment on function public.hook_before_user_created(jsonb) is
 grant usage on schema public to supabase_auth_admin;
 revoke execute on function public.hook_before_user_created(jsonb) from public, anon, authenticated;
 grant execute on function public.hook_before_user_created(jsonb) to supabase_auth_admin;
+
+-- No password from a sign up. Sign up is on for the hook above, and that opens email and password sign up at
+-- /auth/v1/signup to anyone with the public publishable key. Someone who knows an invited address could sign up first
+-- with a password of their own. Confirm email stays on in the project, so that sign up gets no session, but once the
+-- invitee confirms the address with their first email link the stranger's password would sign in to their account. The
+-- planner signs in by email link only, so this trigger clears the password of every user a client sign up makes, and
+-- stores the empty string Supabase Auth keeps for a user with no password. A sign in by password then fails for that
+-- user, before and after the address is confirmed.
+--
+-- The row Supabase Auth inserts is the same for a client sign up and for the admin API: both insert the address not yet
+-- confirmed, and the admin API confirms it in a second step. What tells them apart is the hook, which runs before every
+-- client sign up and never for the admin API, and has just marked the address's invite used. So the trigger clears the
+-- password when the address has a used invite. A user made through the admin API, as the database tests and scripts
+-- make them, has no used invite and keeps its password. It reads public.invites, which no client may, so it runs as
+-- its owner like the hook, and no client may call it.
+create function public.clear_signup_password() returns trigger
+language plpgsql security definer set search_path = ''
+as $$
+begin
+  if exists (select 1 from public.invites where email = lower(btrim(new.email)) and used_at is not null) then
+    new.encrypted_password := '';
+  end if;
+  return new;
+end
+$$;
+comment on function public.clear_signup_password() is
+  'Before insert on auth.users: a user made by a client sign up, which used an invite, gets no password, so a password given at sign up never signs in (FEAT-006 task 6.1).';
+revoke execute on function public.clear_signup_password() from public, anon, authenticated;
+
+create trigger clear_signup_password
+  before insert on auth.users
+  for each row execute function public.clear_signup_password();
