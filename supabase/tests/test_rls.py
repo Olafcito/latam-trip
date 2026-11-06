@@ -34,6 +34,8 @@ PUBLISHED = {"bookings": ("owner_id", "id"), "lodgings": ("owner_id", "id"), "lo
 CATALOGUE = {
     "airports": ("code", {"code": "TS1"}, {"name": "TEST01 airport"}),
     "places": ("id", {"id": "TEST01-place"}, {"name": "TEST01 place"}),
+    "stays": ("id", {"place_id": "TEST01-place", "site": "TEST01", "name": "TEST01 hostel", "room": "TEST01 dorm",
+                       "check_in": "2026-12-03", "check_out": "2026-12-06"}, {"notes": "TEST01 stranger"}),
     "connections": ("id", {"from_id": "TEST01-place", "to_id": "TEST01-place", "mode": "bus"}, {"notes": "TEST01"}),
     "profiles": ("place_id", {"place_id": "TEST01-place", "kind": "place"}, {"tagline": "TEST01"}),
     "place_images": ("place_id", {"place_id": "TEST01-place"}, {"origin": "TEST01"}),
@@ -250,7 +252,7 @@ class RlsTest(unittest.TestCase):
         self.assertEqual(ok(self, self.b.rest.update("derive_state", "id=eq.1", {"last_warning": "TEST01"})), [])
 
     def test_service_tables_closed(self):
-        for table in ("admins", "inbox_tokens", "leases", "derived_options", "stays", "site_calls", "hostelworld_cities",
+        for table in ("admins", "inbox_tokens", "leases", "derived_options", "site_calls", "hostelworld_cities",
                       "task_runner", "schema_migrations", "owner_limits", "read_booking_usage"):
             with self.subTest(table=table):
                 for who in (self.a, self.b):

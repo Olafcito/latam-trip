@@ -262,6 +262,10 @@ class JwksTest(unittest.TestCase):
         self.assertEqual(self.fetches, 2)
 
 
+STUB = ("QTA", "QTB")  # made up codes, so the stub function has to write them
+PLACE = "TMCPAUTH"
+
+
 @unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 and TRIPDB_ENV_FILE to the local stack")
 class TwoUsersSignInTest(unittest.TestCase):
     """Two people connect the same client through Supabase's OAuth server and the planner's consent step, and the real
@@ -296,7 +300,17 @@ class TwoUsersSignInTest(unittest.TestCase):
         cls.thread.join(10)
         for u in (cls.a, cls.b):
             u.rest.delete("trips", "id=like.TEST01-mcp-auth-*")
+        cls.clean_catalogue()
         cls.saved.stop()
+
+    @classmethod
+    def clean_catalogue(cls):
+        """Only the rows these tests make: B's flights from the made up airport, the airports, the stay and its place."""
+        svc = cls.users.service(cls.env)
+        svc.delete("quotes", f"owner_id=eq.{cls.b.id}&first_from=eq.{STUB[0]}")
+        svc.delete("airports", f"code=in.({','.join(STUB)})")
+        svc.delete("stays", f"place_id=eq.{PLACE}")
+        svc.delete("places", f"id=eq.{PLACE}")
 
     @staticmethod
     def free_port():
@@ -368,14 +382,64 @@ class TwoUsersSignInTest(unittest.TestCase):
         self.assertFalse(body["result"].get("isError"), body)
         return sorted(r["id"] for r in json.loads(body["result"]["content"][0]["text"])["rows"] if r["id"].startswith("TEST01-mcp-auth-"))
 
-    def test_two_users_sign_in(self):
+    def connect(self):
+        """One client registered the way claude.ai registers, and both people signed in through it. Their tokens."""
         prm, meta = self.discover()
         s, _, client = req("POST", meta["registration_endpoint"], body={
             "client_name": "Claude", "redirect_uris": [CLAUDE_CALLBACK], "grant_types": ["authorization_code", "refresh_token"],
             "response_types": ["code"], "token_endpoint_auth_method": "none"})
         self.assertIn(s, (200, 201), client)
-        a = self.sign_in(meta, client["client_id"], self.a, prm["resource"])
-        b = self.sign_in(meta, client["client_id"], self.b, prm["resource"])
+        return (self.sign_in(meta, client["client_id"], self.a, prm["resource"]),
+                self.sign_in(meta, client["client_id"], self.b, prm["resource"]))
+
+    def tool(self, bearer, name, args, refused=False):
+        s, _, body = mcp_call(self.base, "tools/call", {"name": name, "arguments": args}, bearer)
+        self.assertEqual(s, 200, body)
+        self.assertEqual(bool(body["result"].get("isError")), refused, body)
+        text = body["result"]["content"][0]["text"]
+        return text if refused else json.loads(text)
+
+    def test_a_person_who_is_not_the_admin_saves_and_changes_a_flight(self):
+        a, b = self.connect()
+        self.clean_catalogue()
+        out = self.tool(b, "add_flight", {"rows": [{"from": STUB[0], "to": STUB[1], "date": "2026-12-12", "price": 450,
+                                                     "notes": "TEST01"}]})
+        self.assertEqual(out["refused"], [], out)
+        first = out["added"][0]
+        moved = self.tool(b, "update_flight", {"id": first, "patch": {"price": 400}})["updated"]
+        self.assertNotEqual(moved, first)
+        # a change that keeps the quote id takes the stored quote out and puts the new one in
+        same = self.tool(b, "update_flight", {"id": moved, "patch": {"notes": "TEST01 again"}})["updated"]
+        self.assertEqual(same, moved)
+        got = self.tool(b, "get_flight", {"id": same})
+        self.assertEqual((got["price_dkk"], got["notes"]), (400, "site=chat; TEST01 again"))
+        self.tool(b, "get_flight", {"id": first}, refused=True)
+        # A sees none of it
+        self.tool(a, "get_flight", {"id": same}, refused=True)
+        self.assertEqual(self.tool(a, "list_flight", {"where": {"from": STUB[0]}})["rows"], [])
+        svc = self.users.service(self.env)
+        # the made up airports came in as stubs, though B cannot write the catalogue
+        _, rows = svc.select("airports", f"select=code&code=in.({','.join(STUB)})&order=code")
+        self.assertEqual([r["code"] for r in rows], list(STUB))
+        # owner_id comes from the token, never from the row
+        _, quotes = svc.select("quotes", f"select=owner_id&quote_id=eq.{same}")
+        self.assertEqual(quotes, [{"owner_id": self.b.id}])
+
+    def test_a_signed_in_person_reads_the_stays(self):
+        a, b = self.connect()
+        svc = self.users.service(self.env)
+        got = svc.insert("places", [{"id": PLACE, "name": "TEST01 place"}], on_conflict="id", resolution="merge-duplicates")
+        self.assertIn(got[0], (200, 201), got)
+        stay = {"place_id": PLACE, "site": "TEST01", "name": "TEST01 hostel", "room": "TEST01 dorm",
+                "check_in": "2026-12-03", "check_out": "2026-12-06", "dkk_per_night": 100}
+        got = svc.insert("stays", [stay], on_conflict="place_id,site,name,room,check_in,check_out", resolution="merge-duplicates")
+        self.assertIn(got[0], (200, 201), got)
+        for who in (a, b):
+            rows = self.tool(who, "list_stay", {"where": {"place": PLACE}})["rows"]
+            self.assertEqual(len(rows), 1, rows)
+
+    def test_two_users_sign_in(self):
+        a, b = self.connect()
         self.seed()
         self.assertEqual(self.trips(a), ["TEST01-mcp-auth-a"])
         self.seed()
