@@ -59,6 +59,11 @@ def reset(test):
     if code == 404:
         test.skipTest("the project has no test_reset, so it is the real one. Point .env at a throwaway project to run these")
     test.assertIn(code, (200, 204), body)
+    # a secret key write without owner_id lands on the one admin (0027), so the stack needs one
+    import sys
+    sys.path.insert(0, os.path.join(ROOT, "supabase", "tests"))
+    import users
+    users.admin(test.env)
 
 
 def quote_row(qid, **over):
@@ -140,7 +145,7 @@ class AddQuotesTest(unittest.TestCase):
     def test_no_key_reads_nothing(self):
         self.add([quote_row("Q2:g1")])
         for key in (None, "SUPABASE_PUBLISHABLE_KEY"):
-            for table in ("quotes", "trips", "documents", "inbox_tokens", "owners", "tasks"):
+            for table in ("quotes", "trips", "documents", "inbox_tokens", "admins", "tasks"):
                 code, body = call(self.env, "GET", table + "?select=*", key=key)
                 self.assertTrue(code in (401, 403) or body == [], (key, table, code, body))
         code, _ = call(self.env, "POST", "quotes", [quote_row("Q2:g2")], key="SUPABASE_PUBLISHABLE_KEY")
@@ -319,7 +324,7 @@ class UserscriptTest(unittest.TestCase):
 
     def test_publishable_key_signed_out_reaches_no_table(self):
         self.inbox(self.TOKEN)
-        for table in ("inbox", "tasks", "inbox_tokens", "quotes", "trips", "documents", "owners"):
+        for table in ("inbox", "tasks", "inbox_tokens", "quotes", "trips", "documents", "admins"):
             code, body = call(self.env, "GET", table + "?select=*", key="SUPABASE_PUBLISHABLE_KEY")
             self.assertTrue(code in (401, 403) or body == [], (table, code, body))
         for table, row in (("inbox", {"file": "x"}), ("tasks", {"type": "question"}), ("inbox_tokens", {"name": "z", "token_hash": "z"})):

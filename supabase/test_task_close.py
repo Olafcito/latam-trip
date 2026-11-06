@@ -24,6 +24,11 @@ class TaskCloseTest(unittest.TestCase):
         import migrate
         cls.migrate = migrate
         cls.env = migrate.load_env()
+        # rows inserted without an owner land on the admin, so a fresh local stack needs one. The project has one.
+        if os.environ.get("TRIPDB_ENV_FILE"):
+            sys.path.insert(0, os.path.join(HERE, "tests"))
+            import users
+            users.admin(cls.env)
 
     def setUp(self):
         migrate = self.migrate

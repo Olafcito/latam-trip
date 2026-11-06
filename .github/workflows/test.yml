@@ -91,6 +91,24 @@ jobs:
           uv run --quiet --no-project --python 3.12 --with "psycopg[binary]==3.3.8" \
             python -I -X utf8 supabase/test_task_close.py -v 2>&1 | tee "$RUNNER_TEMP/task_close.log"
           if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/task_close.log"; then echo "a database test skipped" >&2; exit 1; fi
+      - name: row level security tests
+        shell: bash
+        env:
+          TRIPDB_DB_TESTS: "1"
+          TRIPDB_ENV_FILE: ${{ runner.temp }}/latam-trip-local.env
+        run: |
+          uv run --quiet --no-project --python 3.12 --with "psycopg[binary]==3.3.8" --with "websockets==15.0.1" \
+            python -I -X utf8 supabase/tests/test_rls.py -v 2>&1 | tee "$RUNNER_TEMP/rls.log"
+          if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/rls.log"; then echo "a database test skipped" >&2; exit 1; fi
+      - name: owner migration tests
+        shell: bash
+        env:
+          TRIPDB_DB_TESTS: "1"
+          TRIPDB_ENV_FILE: ${{ runner.temp }}/latam-trip-local.env
+        run: |
+          uv run --quiet --no-project --python 3.12 --with "psycopg[binary]==3.3.8" \
+            python -I -X utf8 supabase/tests/test_owner_migration.py -v 2>&1 | tee "$RUNNER_TEMP/owner_migration.log"
+          if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/owner_migration.log"; then echo "a database test skipped" >&2; exit 1; fi
       - name: database function tests
         shell: bash
         env:

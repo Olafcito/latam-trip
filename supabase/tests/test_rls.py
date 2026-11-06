@@ -171,6 +171,15 @@ class RlsTest(unittest.TestCase):
 
     def test_bucket_folders(self):
         mine = f"{self.a.id}/TEST01/a.pdf"
+        theirs = f"{self.b.id}/TEST01/b.pdf"
+        # the users live on between runs, so a run that stopped halfway leaves its files behind
+        self.users.service_storage(self.env).remove("bookings", [mine, theirs, f"{self.a.id}/TEST01/b.pdf",
+                                                                 f"{self.b.id}/TEST01/a.pdf", "TEST01/legacy.pdf"])
+        # a path of before the owner folders is the admin's alone until the move has run
+        self.assertNotIn(self.b.storage.upload("bookings", "TEST01/legacy.pdf", b"%PDF-1.4 x")[0], (200, 201))
+        ok(self, self.a.storage.upload("bookings", "TEST01/legacy.pdf", b"%PDF-1.4 legacy"))
+        self.assertNotEqual(self.b.storage.download("bookings", "TEST01/legacy.pdf")[0], 200)
+        ok(self, self.a.storage.remove("bookings", ["TEST01/legacy.pdf"]))
         ok(self, self.a.storage.upload("bookings", mine, b"%PDF-1.4 TEST01"))
         self.assertEqual(ok(self, self.b.storage.list("bookings", f"{self.a.id}/TEST01")), [])
         self.assertEqual(ok(self, self.b.storage.list("bookings", f"{self.a.id}/")), [])
@@ -183,7 +192,6 @@ class RlsTest(unittest.TestCase):
         code, body = self.a.storage.download("bookings", mine)
         self.assertEqual((code, body), (200, b"%PDF-1.4 TEST01"))
         # B's own folder works, and A cannot reach it either
-        theirs = f"{self.b.id}/TEST01/b.pdf"
         ok(self, self.b.storage.upload("bookings", theirs, b"%PDF-1.4 B"))
         self.assertEqual(ok(self, self.a.storage.list("bookings", f"{self.b.id}/TEST01")), [])
         ok(self, self.b.storage.remove("bookings", [theirs]))
