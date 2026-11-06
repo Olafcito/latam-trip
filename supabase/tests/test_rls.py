@@ -30,7 +30,7 @@ CHANGE = {"trips": {"saved_by": "TEST01 stranger"}, "bookings": {"notes": "TEST0
 REFUSED = (401, 403)
 # the private tables in the supabase_realtime publication, with their primary keys
 PUBLISHED = {"bookings": ("owner_id", "id"), "lodgings": ("owner_id", "id"), "lodging_rooms": ("owner_id", "id"),
-             "lodging_prices": ("owner_id", "id"), "tasks": ("id",), "trips": ("owner_id", "id", "version")}
+             "lodging_prices": ("owner_id", "id"), "tasks": ("owner_id", "id"), "trips": ("owner_id", "id", "version")}
 CATALOGUE = {
     "airports": ("code", {"code": "TS1"}, {"name": "TEST01 airport"}),
     "places": ("id", {"id": "TEST01-place"}, {"name": "TEST01 place"}),
@@ -165,6 +165,32 @@ class RlsTest(unittest.TestCase):
         for who in (self.a, self.b):
             got = ok(self, who.rest.select("lodgings", f"select=name,owner_id&id=eq.{lid}"))
             self.assertEqual([r["owner_id"] for r in got], [who.id])
+
+    def test_taken_task_id_is_as_free_as_a_fresh_one(self):
+        # tasks, inbox and task_log are keyed per owner (0031), so B inserting the id A holds is answered as a fresh id is
+        rows = {"tasks": ("id", {"type": "place_research", "title": "TEST01"}),
+                "inbox": ("id", {"file": "TEST01"}),
+                "task_log": ("seq", {"summary": "TEST01"})}
+        for table, (key, row) in rows.items():
+            with self.subTest(table=table):
+                mine = ok(self, self.a.rest.insert(table, [row]))[0]
+                taken = mine[key]
+                before = ok(self, self.svc.select(table, f"select=*&owner_id=eq.{self.a.id}&order={key}"))
+                fresh = 9_000_000_000 + uuid.uuid4().int % 1_000_000_000
+                got_fresh = self.b.rest.insert(table, [dict(row, **{key: fresh})])
+                got = self.b.rest.insert(table, [dict(row, **{key: taken})])
+                self.assertEqual(got[0], got_fresh[0], (got, got_fresh))
+                self.assertEqual(got[0], 201, got)
+                self.assertEqual((got[1][0][key], got[1][0]["owner_id"]), (taken, self.b.id))
+                # the upsert the clients send, on (owner_id, key), changes B's own row only
+                again = self.b.rest.insert(table, [dict(row, **{key: taken})], on_conflict=f"owner_id,{key}",
+                                           resolution="ignore-duplicates")
+                self.assertIn(again[0], (200, 201), again)
+                after = ok(self, self.svc.select(table, f"select=*&owner_id=eq.{self.a.id}&order={key}"))
+                self.assertEqual(after, before)
+                for who in (self.a, self.b):
+                    seen = ok(self, who.rest.select(table, f"select=owner_id&{key}=eq.{taken}"))
+                    self.assertEqual([r["owner_id"] for r in seen], [who.id])
 
     def test_stay_details_meet_their_own_lodging(self):
         # A's place is complete, B's of the same id is not. Each task is judged by its own owner's place.
