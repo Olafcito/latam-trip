@@ -712,7 +712,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
 
   return (
     <>
-      <ol className="st" data-look="editorial">{lined}</ol>
+      <ol className="st">{lined}</ol>
       {bookForm}
       {city != null && ps[city.i] && (
         <Modal
