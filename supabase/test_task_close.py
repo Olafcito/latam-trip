@@ -1,15 +1,15 @@
-"""Tests of migration 0025 (a stay_details task closes when its lodging is complete) against the live project.
+"""Tests of migrations 0025 and 0026 (a stay_details task closes when its lodging is complete) against the live project.
 
-Every case runs in one transaction that is always rolled back, so nothing is committed. The migration is applied
+Every case runs in one transaction that is always rolled back, so nothing is committed. Each migration is applied
 inside that transaction when schema_migrations does not list it yet, so the tests run before and after it goes live.
-Run: TRIPDB_DB_TESTS=1 uv run --quiet --no-project --with "psycopg[binary]" python -I -X utf8 -m unittest supabase.test_task_close -v
+Run: TRIPDB_DB_TESTS=1 uv run --quiet --no-project --with "psycopg[binary]" python -I -X utf8 supabase/test_task_close.py -v
 Needs SUPABASE_PASSWORD and SUPABASE_URL in the environment or in .env. Skipped without TRIPDB_DB_TESTS=1.
 """
 import json, os, sys, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-MIGRATION = "0025_task_close_by_data.sql"
+MIGRATIONS = ("0025_task_close_by_data.sql", "0026_task_close_full_dates.sql")
 LINKS = json.dumps([{"site": "booking", "url": "https://example.com/TEST01"}])
 PHOTO = json.dumps(["https://example.com/TEST01.jpg"])
 WATCHED = ("tasks", "lodgings", "lodging_rooms", "lodging_prices")
@@ -33,12 +33,13 @@ class TaskCloseTest(unittest.TestCase):
         self.cur = self.con.cursor()
         self.addCleanup(self.finish)
         self.cur.execute("select to_regclass('public.schema_migrations')")
-        applied = False
+        applied = set()
         if self.cur.fetchone()[0] is not None:
-            self.cur.execute("select 1 from public.schema_migrations where name = %s", (MIGRATION,))
-            applied = self.cur.fetchone() is not None
-        if not applied:
-            migrate.apply_file(self.cur, os.path.join(HERE, "migrations", MIGRATION))
+            self.cur.execute("select name from public.schema_migrations where name = any(%s)", (list(MIGRATIONS),))
+            applied = {r[0] for r in self.cur.fetchall()}
+        for name in MIGRATIONS:
+            if name not in applied:
+                migrate.apply_file(self.cur, os.path.join(HERE, "migrations", name))
 
     def finish(self):
         try:
@@ -130,6 +131,26 @@ class TaskCloseTest(unittest.TestCase):
         self.assertEqual(self.task(lid)[1], "open")
         self.price(r2, "2026-12-03", "2026-12-06")
         self.assertEqual(self.task(lid)[1], "done")
+
+    def test_full_dates_win_over_newer_partial(self):
+        lid = self.lodging()
+        r1, r2 = self.room(lid, "TEST01 a"), self.room(lid, "TEST01 b")
+        self.price(r1, "2026-12-03", "2026-12-06", "now() - interval '1 hour'")
+        self.price(r2, "2026-12-03", "2026-12-06", "now() - interval '1 hour'")
+        self.price(r1, "2026-12-03", "2026-12-08")
+        self.photos(lid)
+        _, status, result, _ = self.task(lid)
+        self.assertEqual(status, "done")
+        self.assertEqual(result, "Closed by the data: 1 photos, 2 rooms, each priced for 2026-12-03 to 2026-12-06.")
+
+    def test_newest_full_dates_named(self):
+        lid = self.lodging()
+        r1, r2 = self.room(lid, "TEST01 a"), self.room(lid, "TEST01 b")
+        for r in (r1, r2):
+            self.price(r, "2026-12-03", "2026-12-06", "now() - interval '1 hour'")
+            self.price(r, "2026-12-03", "2026-12-08")
+        self.photos(lid)
+        self.assertTrue(self.task(lid)[2].endswith("each priced for 2026-12-03 to 2026-12-08."))
 
     def test_working_closes_failed_untouched(self):
         lid = self.lodging()

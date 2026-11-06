@@ -41,7 +41,7 @@ Found while reading the code against the spec. Each is decided here unless it sa
 5. **The deploy role cannot use CloudFormation.** `cloudformation deploy` with `CAPABILITY_NAMED_IAM` can create roles. The release updates the Lambda code only (`lambda update-function-code`). A template change stays a deploy Simon runs from the PC, which also brings the stack's `CodeS3Key` parameter back in line.
 6. **The `.github/` ruleset cannot tell Simon from Claude.** Every push from the PC uses Simon's own GitHub credential, which is an admin and can bypass any ruleset. A branch ruleset can only require a pull request for every path, not for `.github/` alone. A push ruleset can restrict `.github/**`, but admins bypass it. The guard only holds if Claude pushes as a non admin identity, such as a fine grained token with Contents write and no Workflows permission set as the repo's credential, while Simon changes `.github/` by a pull request he approves. Asked in task 1b.4 before the ruleset is made.
 7. **A pull request from a fork needs a second GitHub account.** GitHub does not let an account fork its own repo. Criterion 9's fork run waits for a second account, ideally the live run's.
-8. **`stay_details` tasks carry no dates.** 10039 to 10041 have none. By `docs/claude-tasks.md`, the dates are then those of the lodging's latest price. The trigger uses the same rule.
+8. **`stay_details` tasks carry no dates.** 10039 to 10041 have none. By `docs/claude-tasks.md`, the dates are then those of the lodging's latest price, and 0025 used the same rule. Live, it kept 10040 and 10041 open: a newer price for 3 to 8 December sat on some rooms while every room had one for 3 to 6. Migration 0026 judges a task without dates by the dates priced on every room, so the later migrations moved up by one.
 9. **Lodging ids derive from names.** Adding the owner to `stable_id` changes the id Simon's next add of an existing hostel derives. `add_lodging` must find the stored place by place and name among the caller's lodgings before it trusts the id. Checked in task 2.3.
 10. **The profile sheet.** The review suggests cutting it, but the spec's UX section keeps it. The spec wins, so it is task 5.3 with its roast.
 11. **The `read-booking` cap has no number.** Proposed: 30 reads per owner per calendar month, in a function secret `READ_BOOKING_MONTHLY_CAP`, so Simon can change it without a deploy of code.
@@ -188,8 +188,8 @@ Worktree `owners`. Simon is still the only user. Ask the morning rates run befor
 ### Task 2.2: The owner migration
 
 **Files:**
-- Create: `supabase/migrations/0026_owners.sql` (`owners` renamed `admins`, `is_admin()`, `admin_id()`, `owner_id` with backfill and `not null`, composite keys, owner aware keys and indexes, `user_documents`, `user_profiles` table only, `owner_limits`, policies, owner aware definer functions)
-- Create: `supabase/migrations/0027_bookings_bucket_folders.sql` (storage policies on `(storage.foldername(name))[1] = (select auth.uid())::text`)
+- Create: `supabase/migrations/0027_owners.sql` (`owners` renamed `admins`, `is_admin()`, `admin_id()`, `owner_id` with backfill and `not null`, composite keys, owner aware keys and indexes, `user_documents`, `user_profiles` table only, `owner_limits`, policies, owner aware definer functions)
+- Create: `supabase/migrations/0028_bookings_bucket_folders.sql` (storage policies on `(storage.foldername(name))[1] = (select auth.uid())::text`)
 - Create: `supabase/tests/test_owner_migration.py`
 - Modify: `supabase/test_helpers.sql` (`test_reset` truncates the new tables)
 
@@ -203,7 +203,7 @@ Decided values:
 - The migration raises a notice with the rows it set per table.
 
 - [ ] **Step 1:** List the live document names with `tripdb doc-get` and record the split in the migration's header.
-- [ ] **Step 2: Write `test_owner_migration.py`.** On a fresh local stack: apply up to 0025, seed rows in every private table and two booking files, record counts, apply 0026 and 0027, then each private row has A's id, the counts match, the files moved to `<A id>/...` and `bookings` rows point at the new paths.
+- [ ] **Step 2: Write `test_owner_migration.py`.** On a fresh local stack: apply up to 0025, seed rows in every private table and two booking files, record counts, apply 0027 and 0028, then each private row has A's id, the counts match, the files moved to `<A id>/...` and `bookings` rows point at the new paths.
 - [ ] **Step 3: Write the migrations.** Run `test_rls.py` and `test_owner_migration.py`. Expected: PASS.
 - [ ] **Step 4: Commit** each migration with its tests.
 
@@ -215,7 +215,7 @@ Decided values:
 
 ### Task 2.4: Edge functions act as the caller
 
-**Files:** Modify `supabase/functions/stay-rates/index.ts`, `supabase/functions/read-booking/index.ts`. Create `supabase/migrations/0028_read_booking_cap.sql` (`read_booking_usage (owner_id, month, reads)` and `take_read_booking(cap int) returns boolean`).
+**Files:** Modify `supabase/functions/stay-rates/index.ts`, `supabase/functions/read-booking/index.ts`. Create `supabase/migrations/0029_read_booking_cap.sql` (`read_booking_usage (owner_id, month, reads)` and `take_read_booking(cap int) returns boolean`).
 
 - [ ] Both drop `is_owner()` and read the user from the JWT. `stay-rates` finds stored places by Hostelworld id among the caller's lodgings only and writes with the caller's `owner_id`. The worker key path writes with the admin's id. `read-booking` takes a turn from `take_read_booking` and answers 429 `{"error": "monthly_cap"}` past the cap. Deno tests per function. Deploy from the PC with `npx supabase functions deploy` after the merge. Update TECH-001 and TECH-003.
 
@@ -259,13 +259,13 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 
 ### Task 4.1: Scoped claims and the PC loop
 
-**Files:** `latam_trip_mcp/runner.py` (`claim_task` under the user's token, so RLS scopes it), `plugin/skills/trip-checklist/scripts/tasks.py` (every query adds `owner_id=eq.<TRIPDB_OWNER_ID>` from `.env`, and `start` refuses a row of another owner), `supabase/migrations/0029_task_runner_owner.sql` (`ping_task_runner` and `sweep_task_runner` fire only for `owner_id = admin_id()`).
+**Files:** `latam_trip_mcp/runner.py` (`claim_task` under the user's token, so RLS scopes it), `plugin/skills/trip-checklist/scripts/tasks.py` (every query adds `owner_id=eq.<TRIPDB_OWNER_ID>` from `.env`, and `start` refuses a row of another owner), `supabase/migrations/0030_task_runner_owner.sql` (`ping_task_runner` and `sweep_task_runner` fire only for `owner_id = admin_id()`).
 
 - [ ] Tests: `test_tasks.py` `test_wait_and_list_see_only_the_owner` with two owners, `test_ping_ignores_other_owner` and `test_sweep_ignores_other_owner` on the local stack, `test_runner.py` `test_claim_gives_only_callers_tasks`. Running the loop under Simon's own token is weighed in TECH-011 and recommended once the connector can mint a session for him. Until then the filter plus the refusal in `start`.
 
 ### Task 4.2: stay_prices closes by the data
 
-**Files:** `supabase/migrations/0030_stay_prices_close.sql`, tests in `supabase/test_task_close.py`.
+**Files:** `supabase/migrations/0031_stay_prices_close.sql`, tests in `supabase/test_task_close.py`.
 
 - [ ] A `stay_prices` task is done when every room in `room_ids` has a price for its dates. Same shape as 0025. Docs: `docs/claude-tasks.md`, `docs/task-runner.md`.
 
