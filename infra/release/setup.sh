@@ -55,15 +55,18 @@ case "$(cd "$TMP" && pwd)/" in "$ROOT"/*) echo "the temp folder is inside the re
 
 fill() {
   echo "+ fill $(basename "$1") into the temp folder" >&2
-  sed -e "s|\${ACCOUNT}|$ACCOUNT|g" -e "s|\${REGION}|$REGION|g" -e "s|\${REPO}|$REPO|g" "$1" > "$2"
+  sed -e "s|\${ACCOUNT}|$ACCOUNT|g" -e "s|\${REGION}|$REGION|g" -e "s|\${REPO}|$REPO|g" -e "s|\${SUB_PREFIX}|$SUB_PREFIX|g" "$1" > "$2"
   if [ "$DRY" = 0 ] && grep -q '\${' "$2"; then echo "a placeholder is left in $(basename "$1")" >&2; exit 1; fi
 }
 
-echo ">> GitHub's OIDC subject must have the default form repo:<owner>/<repo>:environment:<name>" >&2
-show gh api "repos/$REPO/actions/oidc/customization/sub" --jq .use_default
+echo ">> GitHub's OIDC subject must have the default form <prefix>:environment:<name>, where the prefix may carry the" >&2
+echo "   owner and repo ids (use_immutable_subject). The trust takes the prefix GitHub reports." >&2
+SUB_PREFIX='${SUB_PREFIX}'
+show gh api "repos/$REPO/actions/oidc/customization/sub" --jq '[.use_default, .sub_claim_prefix] | @tsv'
 if [ "$DRY" = 0 ]; then
-  DEFAULT_SUB="$(gh api "repos/$REPO/actions/oidc/customization/sub" --jq .use_default | text)"
+  read -r DEFAULT_SUB SUB_PREFIX < <(gh api "repos/$REPO/actions/oidc/customization/sub" --jq '[.use_default, .sub_claim_prefix] | @tsv' | text)
   [ "$DEFAULT_SUB" = true ] || { echo "the repo customizes its OIDC subject, so the trust would never match" >&2; exit 1; }
+  [[ "$SUB_PREFIX" =~ ^repo:Olafcito(@[0-9]+)?/latam-trip(@[0-9]+)?$ ]] || { echo "unexpected OIDC subject prefix" >&2; exit 1; }
 fi
 
 echo ">> account" >&2

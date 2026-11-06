@@ -89,17 +89,17 @@ smoke() {
   local headers status i
   headers="$(mktemp)"
   for i in 1 2 3 4 5 6; do
-    status="$(curl -sS -o /dev/null -D "$headers" -w '%{http_code}' -X POST -H 'content-type: application/json' \
+    status="$(curl -sS -o "$(winpath "$headers.body")" -D "$(winpath "$headers")" -w '%{http_code}' -X POST -H 'content-type: application/json' \
       --data '{}' --max-time 30 "$MCP_URL" || true)"
     if [ "$status" = 401 ] && grep -qi '^www-authenticate:.*resource_metadata=' "$headers"; then
-      rm -f "$headers"
+      rm -f "$headers" "$headers.body"
       echo "   smoke ok: 401 with resource_metadata"
       return 0
     fi
     echo "   smoke try $i: status $status" >&2
     sleep 5
   done
-  rm -f "$headers"
+  rm -f "$headers" "$headers.body"
   echo "the connector did not answer 401 with resource_metadata" >&2
   return 1
 }
