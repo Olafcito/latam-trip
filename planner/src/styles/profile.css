@@ -39,13 +39,13 @@
      profile is never shown before it is known to be empty */
   .pf[data-loading] .bf-in { opacity: 0; }
   .pf .bf-in:disabled { color: var(--muted); -webkit-text-fill-color: var(--muted); }
-  .pf textarea.bf-in { min-height: 96px; }
+  /* the text areas size themselves to their words, so no grip, and they scroll inside past the cap */
+  .pf textarea.bf-in { min-height: 44px; max-height: 240px; resize: none; overscroll-behavior: contain; }
+  .pf .bf-said { display: grid; gap: 2px; }
+  .pf-reason { font-weight: 500; color: var(--muted); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-  .pf .bf-row[data-bad] { background: color-mix(in srgb, var(--err) 10%, transparent); }
-  .pf .bf-row[data-bad] .bf-k { color: var(--err); }
-  .pf .bf-row[data-bad] .bf-i { background: color-mix(in srgb, var(--err) 16%, transparent); color: var(--err); }
-  .pf .bf-row[data-bad]:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
-  .pf .bf-row[data-bad]:last-child { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
-  .pf-why { grid-column: 2 / -1; justify-self: end; margin: -4px 0 4px; font-size: var(--fs-small); font-weight: 600; color: var(--err); text-align: right; }
-  .bf-notes .pf-why { grid-column: 1 / -1; justify-self: start; margin: 6px 0 0; text-align: left; }
+  /* a bad field marks its own value and gives its reason inside its own row, below the input */
+  .pf .bf-row[data-bad] { padding-bottom: 10px; row-gap: 0; }
+  .pf-why { grid-column: 2 / -1; justify-self: end; margin: 0; font-size: var(--fs-small); font-weight: 600; color: var(--err); text-align: right; }
+  .bf-notes .pf-why { grid-column: 1 / -1; justify-self: start; margin: 8px 0 0; text-align: left; }
 }

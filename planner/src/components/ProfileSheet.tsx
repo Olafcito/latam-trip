@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ChangeEvent, type FocusEvent, type FormEvent, type ReactNode } from 'react'
 import { changes, emptyProfile, formErrors, loadProfile, saveProfile, toForm, type Profile, type ProfileErrors, type ProfileField, type ProfileForm } from '../lib/profile'
 import { Bag, Cash, Home, Hourglass, Note, Person } from './icons'
 import { Modal } from './Modal'
@@ -36,6 +36,8 @@ function Row({ icon, label, htmlFor, why, whyId, children, notes, empty }: { ico
   )
 }
 
+const MAX_AREA = 240
+
 type Load = { state: 'loading' } | { state: 'failed'; why: string } | { state: 'ready'; saved: Profile; exists: boolean }
 
 export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () => void }) {
@@ -69,6 +71,17 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
   const dirty = Object.keys(patch).length > 0
   const invalid = Object.values(all).some(Boolean)
 
+  // the text areas grow with what is written up to a height, then scroll inside
+  useLayoutEffect(() => {
+    for (const k of ['travel_style', 'rules'] as const) {
+      const el = refs.current[k]
+      if (!el) continue
+      el.style.height = 'auto'
+      el.style.height = `${Math.min(el.scrollHeight, MAX_AREA)}px`
+      el.style.overflowY = el.scrollHeight > MAX_AREA ? 'auto' : 'hidden'
+    }
+  }, [form.travel_style, form.rules, load.state])
+
   const typed = (k: ProfileField) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const v = e.target.value
     setForm((f) => ({ ...f, [k]: v }))
@@ -98,6 +111,7 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
   }
 
   const said = load.state === 'failed' ? 'Could not load the profile' : failed ? 'Could not save' : null
+  const reason = (load.state === 'failed' ? load.why : failed)?.replace(/\?/g, '') ?? null
   const field = (k: ProfileField) => ({
     id: `${id}-${k}`,
     name: k,
@@ -105,6 +119,11 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
     value: form[k],
     onChange: typed(k),
     onBlur: left(k),
+    // the phone keyboard rises over the lower half, so the field is brought up above it
+    onFocus: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const el = e.currentTarget
+      window.setTimeout(() => el.scrollIntoView({ block: 'center' }), 300)
+    },
     disabled: !ready || busy,
     placeholder: 'Add',
     'aria-invalid': shown[k] ? true : undefined,
@@ -137,17 +156,20 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
         </ul>
 
         <ul className="bf-list">
-          <Row icon={<Bag s={16} />} label="Travel style" htmlFor={`${id}-travel_style`} empty={form.travel_style.trim() === ''} why={shown.travel_style} whyId={`${id}-travel_style-why`}>
-            <input {...field('travel_style')} className="bf-in" autoComplete="off" enterKeyHint="next" />
+          <Row icon={<Bag s={16} />} label="Travel style" htmlFor={`${id}-travel_style`} empty={form.travel_style.trim() === ''} why={shown.travel_style} whyId={`${id}-travel_style-why`} notes>
+            <textarea {...field('travel_style')} className="bf-in" rows={1} />
           </Row>
           <Row icon={<Note s={16} />} label="Rules" htmlFor={`${id}-rules`} empty={form.rules.trim() === ''} why={shown.rules} whyId={`${id}-rules-why`} notes>
-            <textarea {...field('rules')} className="bf-in" rows={4} />
+            <textarea {...field('rules')} className="bf-in" rows={1} />
           </Row>
         </ul>
       </div>
 
       <footer className="fl-foot bf-foot">
-        <p className="bf-said" role="status" data-bad={said ? true : undefined}>{said}</p>
+        <p className="bf-said" role="status" data-bad={said ? true : undefined} title={reason ?? undefined}>
+          {said}
+          {reason && <span className="pf-reason">{reason}</span>}
+        </p>
         <button type="button" className="btn small link" onClick={onDone} disabled={busy}>Cancel</button>
         <button type="submit" className="btn small primary" disabled={!ready || busy || !dirty || invalid}>{busy ? 'Saving' : 'Save'}</button>
       </footer>
