@@ -45,9 +45,8 @@ export function StayDetails({ c, booking, cancel, close, onConfirm, onPlace, onR
     setSaid(url ? 'The browser kept the file from opening in a new tab.' : `${f.name} could not be opened. Try again.`)
   }
 
-  const price = total == null ? null : c.booked
-    ? `${thousands(total)} DKK${perNight != null && c.nights > 1 ? `, ${thousands(perNight)} / night` : ''}`
-    : `${exact ? '' : 'About '}${thousands(total)} DKK${perNight != null && c.nights > 1 ? `, ${thousands(perNight)} / night` : ''}`
+  const price = total == null ? null
+    : `${c.booked || exact ? '' : 'About '}${thousands(total)} ${c.currency}${perNight != null && c.nights > 1 ? `, ${thousands(perNight)} / night` : ''}`
 
   const facts: { k: string; Icon: (p: { s?: number }) => ReactNode; label: string; value: string; href?: string; tone?: 'warn' }[] = [
     ...(c.room ? [{ k: 'room', Icon: Bed, label: 'Room', value: c.room }] : []),
@@ -76,8 +75,12 @@ export function StayDetails({ c, booking, cancel, close, onConfirm, onPlace, onR
             {c.booked ? <Check s={12} /> : <Ring s={11} />}
             {c.booked ? 'Booked' : 'Not booked'}
           </span>
+          {c.kind && <span className="sd-kind">{c.kind.word}</span>}
           <h2>{c.name}</h2>
-          <p className="ac-kind">{c.kind && <b>{c.kind}</b>}{c.kind && c.where && <i aria-hidden="true">·</i>}<span>{c.where}</span></p>
+          <p className="ac-where">
+            {c.address && <span className="ac-addr">{c.address}</span>}
+            <span className="ac-town">{c.town}</span>
+          </p>
         </header>
 
         <ul className="sd-facts">

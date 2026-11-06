@@ -10,11 +10,11 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 
 ## 2. Journey
 
-1. **Open a stop.** On the trip, Simon opens a stop. Where he sleeps comes first and is the largest thing in the fold: the place's photos, its name, kind and location, a line about it, what it offers, the nights, the room and the price a night. An amber Not booked mark says it is only planned. Things to do and Experiences sit under it as two compact rows, each with a count, that open in place.
+1. **Open a stop.** On the trip, Simon opens a stop. Where he sleeps comes first and is the largest thing in the fold: the place's photo, its name with the address and the town under it, its kind and what it offers, the nights, the room where it was found and the price. An amber Not booked mark says it is only planned. Things to do and Experiences sit under it as two compact rows, each with a count, that open in place.
 2. **Add from the stop (window A).** With no stay yet, Add accommodation opens the search he knows, filled in with the stop and its dates. He finds a place, opens it, picks a room with Select, and the window closes on the stop with the new card.
 3. **Add from the whole trip (window B).** From the trip's header he presses Add accommodation. The same search opens with the destination empty. He picks a city of the trip, its dates follow, he can change dates and guests, and the rest is window A. After Select the window closes and the stop opens on the card.
 4. **Book it and attach the confirmation (window C).** Once he has booked on the site, he presses Add booking confirmation on the card. A small window offers Upload confirmation, Paste booking link, Enter manually, and Use with AI, which copies a prompt for ChatGPT or Claude to find the booking in his mail. Any of the first three makes the stay booked.
-5. **See it booked.** The card turns green: Booked, the total price, and a mark that a confirmation is attached.
+5. **See it booked.** The card turns green: Booked, the provider's logo, the total large with the price a night under it, the attached confirmation and a Gmail button when the mail is known.
 6. **Look at the details (window D).** Pressing the card opens the stay alone: photos, name and location, room, dates and nights, price, status, reference, where it was booked, cancellation and the confirmation file. From there he can add or open the confirmation, change the room or take the stay off the stop.
 
 ## 3. Goals
@@ -45,13 +45,14 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 
 ## 6. Acceptance criteria
 
-- S1: A stop with a planned stay shows one card per stay part: a large photo with up to three thumbnails under it, name, kind and location, summary, amenity icons, check-in with nights, room, price a night in DKK and an amber Not booked mark. Shots at 1440 and 390.
+- S1: A stop with a planned stay shows one card per stay part in two rows. One photo fills the card's height on the left, with no thumbnails. The top row holds the name, the address over the town and country, then the kind, the amenity icons and a Free cancellation chip whose tooltip says until when. The second row holds check-in with nights, the room and the price with an amber Not booked mark. No description line and no dot between words. Shots at 1280 and 390.
+- S1b: The room row shows the provider's logo as a small square, then the room name (the booking's room name, else the chosen room) as an underlined link with an external link icon. It opens the place's link on that provider's site, else the booking's page, else it is plain text. Free cancellation shows only when the booking or the room's price is refundable or has a cancel by date. Non-refundable shows nothing.
 - S2: The fold has no tabs. Things to do and Experiences are rows with a count chip and a chevron, and open in place. A shot.
 - S3: Add accommodation at a stop opens `AddStay` with the stop's name and dates. Select on a room closes the window and the card shows the room. The useStayFind call site in `StopFold` is unchanged.
 - S4: The trip header has Add accommodation. The search opens with an empty destination and no places. Picking a city fills its dates and places. Select closes the window and opens that stop. A shot.
 - S5: Upload, link and manual entry each insert one `bookings` row of kind stay with the place, lodging, room, trip and dates when the stay has none, and update that row when it has one. The upload goes through `attachFile`. Unit tests on the draft row.
 - S6: Copy prompt writes the brief's prompt with the stop's city to the clipboard and says Copied. A unit test on the prompt text.
-- S7: A stay with a booking shows Booked in green, the total paid when it is filled in and a paperclip with the file count when files are attached.
+- S7: A stay with a booking shows Booked in green and prices like a flight: the provider's logo, the total large ("1.220 DKK total") and the price a night under it. With no kroner but a price in another currency, that currency shows, never a conversion. A paperclip button says the confirmation is attached, and a Gmail button opens the mail when `mail_url` is known.
 - S8: Pressing the card's photo or name opens the details window, which shows the selected place only. The confirmation file opens through a signed URL.
 
 ## 7. Functional requirements
@@ -64,7 +65,7 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 
 ## 8. UX requirements
 
-- The card follows the reference image: photo column left about 40 percent, details right, a divider, then three columns (check-in, room, price with the confirmation action). On a phone the photo goes on top, full width, and the three columns stack in two rows.
+- The card follows the reference image: one photo left, about 28 percent and as tall as the card, details right, a divider, then three columns (check-in, room, price with the confirmation action). When the details are narrower than 820 px the price goes under check-in and the room, across the details. On a phone the photo goes on top, full width, and the columns stack.
 - Planned is amber (`--flight`), booked is green (`--booked`). The mark sits on the photo and at the top right, as in the reference.
 - Window C follows the confirmation reference: three rounded rows with icon, title, subtitle and chevron, then the Use with AI box. Each row opens its form in the same window, with a back arrow.
 - Window D follows the flight detail sheet: the modal of the planner, a header with photos, then facts as labelled rows, the confirmation tiles, and the acts at the foot.
@@ -86,6 +87,7 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 - `components/stays/StayConfirm.tsx`: window C.
 - `components/stays/StayDetails.tsx`: window D.
 - `lib/stayBooking.ts`: the booking draft for a part, the AI prompt, and the facts the card and the details share. With `lib/stayBooking.test.ts`.
+- `lib/stayCard.ts`: the card's provider and the page its room opens, whether it cancels for free, and a booked stay's price in the currency known. With `lib/stayCard.test.ts`.
 - Icons `Sparkles`, `Paperclip` and `Chevron`.
 - `styles/acccard.css`.
 
@@ -97,8 +99,10 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 
 - A stop with no nights: no card, and Add accommodation is not offered, as today.
 - A planned part with no room: the room column says Choose a room and opens the place.
-- No photos: the photo column shows a bed on the surface colour. One photo: no thumbnail row.
-- No price known: the price column shows No price yet.
+- No photos: the photo column shows a bed on the surface colour.
+- No address: the town and country show alone.
+- No price known: the price slot is empty. No placeholder text and no extra price chips.
+- No provider known: no logo, and the room name is plain text.
 - A booked stay with no lodging (typed in by hand): the card shows the seller or Booked stay, with no photos.
 - A long name or room: two lines then an ellipsis.
 - A part the stop has no nights left for: the card keeps the amber warning mark on the dates.

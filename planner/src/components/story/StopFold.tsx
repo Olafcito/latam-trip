@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
 import { useDataRev } from '../../data/rev'
-import type { AppData, Booking, Lodging, LodgingRoom } from '../../data/types'
+import type { AppData, Booking, Lodging } from '../../data/types'
 import { useStore } from '../../store'
 import { countryName } from '../../lib/colors'
 import { nodeName, type Journey, type Schedule } from '../../lib/journey'
@@ -12,6 +12,8 @@ import { choiceNights, freeNights, nightsFrom, pickDates, removePart, toggleRoom
 import { partBooking, stayClashes, stayParts, tripStays } from '../../lib/stays'
 import { paidPrice } from '../../lib/booked'
 import { cancelWords, partTerms, stayMoney, type StayTarget } from '../../lib/stayBooking'
+import { bookedMoney, cardProvider, freeCancel } from '../../lib/stayCard'
+import { mailLink } from '../../lib/purchase'
 import { amenityRow } from '../../lib/stayOffer'
 import { loadLodgings } from '../../lib/lodgings'
 import { addFromLink, remember } from '../../lib/stayRates'
@@ -41,9 +43,7 @@ import { Finds } from './TripHead'
 
 const photosOf = (l: Lodging | undefined) => (l?.photos ?? []).map((p) => p.url).filter((u) => /^https:\/\//i.test(u))
 
-/** The room's terms in a few words: how it cancels and its bathroom. */
-const termsOf = (cancel: string | null, room: LodgingRoom | undefined) =>
-  [cancel, room?.bathroom === 'private' ? 'Private bathroom' : room?.bathroom === 'shared' ? 'Shared bathroom' : null].filter(Boolean).join(' · ') || null
+const kindOf = (l: Lodging | undefined) => (l && l.kind !== 'other' ? { key: l.kind, word: kindWord(l.kind) } : null)
 
 const ideas = (n: number) => (n === 1 ? '1 idea' : `${n} ideas`)
 
@@ -144,7 +144,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
   const change = (next: typeof stays) => setStays(i, next)
   const bookedAt = (l: Lodging): Booking | null => [...partBooked, ...loose].find((b) => b && b.lodging_id === l.id) ?? null
 
-  const where = [name, node && countryName(node.country)].filter(Boolean).join(', ')
+  const town = [name, node && countryName(node.country)].filter(Boolean).join(', ')
   const items: StayItem[] = [
     ...parts.map((part, k): StayItem => {
       const l = byId.get(part.stay.lodging_id)
@@ -153,6 +153,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
       const terms = b ? null : partTerms(room, part)
       const cancel = b ? cancelWords(b.refundable, b.cancel_until) : terms ? cancelWords(terms.refundable, terms.cancel_until) : null
       const key = `p${k}-${part.stay.lodging_id}`
+      const paid = b ? bookedMoney(b, paidPrice(bookings, b), part.nights) : null
       return {
         booking: b,
         cancel,
@@ -162,19 +163,22 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
         card: {
           key,
           name: l?.name ?? 'A place to stay',
-          kind: l ? kindWord(l.kind) : '',
-          where,
-          summary: l?.summary ?? null,
+          kind: kindOf(l),
+          address: l?.address?.trim() || null,
+          town,
           photos: photosOf(l),
           amenities: l ? amenityRow(l) : [],
+          freeCancel: b ? freeCancel(b.refundable, b.cancel_until) : terms ? freeCancel(terms.refundable, terms.cancel_until) : null,
           checkIn: part.fits ? part.first : null,
           checkOut: part.fits ? addDays(part.first, part.nights) : null,
           nights: part.nights,
-          room: room?.name ?? null,
-          terms: termsOf(cancel, room),
-          money: stayMoney(room, part, b ? paidPrice(bookings, b) : null),
+          room: b?.room_name?.trim() || room?.name || null,
+          provider: cardProvider(l, b, terms, room),
+          money: paid ? paid.money : stayMoney(room, part, null),
+          currency: paid ? paid.currency : 'DKK',
           booked: !!b,
           files: b?.attachments?.length ?? 0,
+          mailUrl: b ? mailLink(b) : null,
           warn: part.fits ? null : 'The stop has no nights left for this stay',
           onOpen: () => setDetail(key),
           onConfirm: part.fits ? () => setConfirm(key) : undefined,
@@ -187,7 +191,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
       const c = clashes.get(b.id)
       const room = l && b.room_id ? l.rooms.find((r) => r.id === b.room_id) : undefined
       const nights = Math.max(0, Math.round((Date.parse(b.check_out!) - Date.parse(b.check_in!)) / 864e5))
-      const paid = paidPrice(bookings, b)
+      const paid = bookedMoney(b, paidPrice(bookings, b), nights)
       const cancel = cancelWords(b.refundable, b.cancel_until)
       return {
         booking: b,
@@ -197,19 +201,22 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
         card: {
           key: b.id,
           name: l?.name ?? b.seller ?? 'Booked stay',
-          kind: l ? kindWord(l.kind) : '',
-          where,
-          summary: l?.summary ?? null,
+          kind: kindOf(l),
+          address: l?.address?.trim() || null,
+          town,
           photos: photosOf(l),
           amenities: l ? amenityRow(l) : [],
+          freeCancel: freeCancel(b.refundable, b.cancel_until),
           checkIn: b.check_in,
           checkOut: b.check_out,
           nights,
-          room: room?.name ?? null,
-          terms: termsOf(cancel, room),
-          money: { perNight: paid != null ? Math.round(paid / Math.max(1, nights)) : null, total: paid, exact: true },
+          room: b.room_name?.trim() || room?.name || null,
+          provider: cardProvider(l, b, null, room),
+          money: paid.money,
+          currency: paid.currency,
           booked: true,
           files: b.attachments?.length ?? 0,
+          mailUrl: mailLink(b),
           warn: c ? (c.meets ? 'The stop has only some of these nights now' : 'The stop has none of these nights now') : null,
           onOpen: () => setDetail(b.id),
         },
