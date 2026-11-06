@@ -246,11 +246,7 @@ class RlsTest(unittest.TestCase):
         # the users live on between runs, so a run that stopped halfway leaves its files behind
         self.users.service_storage(self.env).remove("bookings", [mine, theirs, f"{self.a.id}/TEST01/b.pdf",
                                                                  f"{self.b.id}/TEST01/a.pdf", "TEST01/legacy.pdf"])
-        # a path of before the owner folders is the admin's alone until the move has run
-        self.assertNotIn(self.b.storage.upload("bookings", "TEST01/legacy.pdf", b"%PDF-1.4 x")[0], (200, 201))
-        ok(self, self.a.storage.upload("bookings", "TEST01/legacy.pdf", b"%PDF-1.4 legacy"))
-        self.assertNotEqual(self.b.storage.download("bookings", "TEST01/legacy.pdf")[0], 200)
-        ok(self, self.a.storage.remove("bookings", ["TEST01/legacy.pdf"]))
+        self.legacy_paths()
         ok(self, self.a.storage.upload("bookings", mine, b"%PDF-1.4 TEST01"))
         self.assertEqual(ok(self, self.b.storage.list("bookings", f"{self.a.id}/TEST01")), [])
         self.assertEqual(ok(self, self.b.storage.list("bookings", f"{self.a.id}/")), [])
@@ -267,6 +263,39 @@ class RlsTest(unittest.TestCase):
         self.assertEqual(ok(self, self.a.storage.list("bookings", f"{self.b.id}/TEST01")), [])
         ok(self, self.b.storage.remove("bookings", [theirs]))
         ok(self, self.a.storage.remove("bookings", [mine]))
+
+    def legacy_paths(self):
+        """A path of before the owner folders, <booking id>/<file>, is the admin's alone until the move has run, and
+        only under a folder named by one of the admin's own bookings."""
+        store = self.users.service_storage(self.env)
+        own, of_b, stray = "TEST01-leg/legacy.pdf", "TEST01-legb/legacy.pdf", "TEST01-none/legacy.pdf"
+        b_root = f"{self.b.id}/b.pdf"
+        store.remove("bookings", [own, of_b, stray, b_root])
+        self.addCleanup(store.remove, "bookings", [own, of_b, stray, b_root])
+        ok(self, self.a.rest.insert("bookings", [{"id": "TEST01-leg", "kind": "other"}]))
+        ok(self, self.b.rest.insert("bookings", [{"id": "TEST01-legb", "kind": "other"}]))
+        # the admin's own booking folder works
+        self.assertNotIn(self.b.storage.upload("bookings", own, b"%PDF-1.4 x")[0], (200, 201))
+        ok(self, self.a.storage.upload("bookings", own, b"%PDF-1.4 legacy"))
+        self.assertEqual(self.a.storage.download("bookings", own), (200, b"%PDF-1.4 legacy"))
+        self.assertNotEqual(self.b.storage.download("bookings", own)[0], 200)
+        ok(self, self.a.storage.remove("bookings", [own]))
+        # a folder named by B's booking, by no booking, or by B's user id is never the admin's
+        self.assertNotIn(self.a.storage.upload("bookings", of_b, b"%PDF-1.4 x")[0], (200, 201))
+        self.assertNotIn(self.a.storage.upload("bookings", stray, b"%PDF-1.4 x")[0], (200, 201))
+        ok(self, self.b.storage.upload("bookings", b_root, b"%PDF-1.4 B root"))
+        ok(self, store.upload("bookings", of_b, b"%PDF-1.4 B legacy"))
+        for path in (b_root, of_b):
+            with self.subTest(path=path.replace(self.b.id, "<B id>")):
+                folder = path.split("/")[0]
+                self.assertNotIn(self.a.storage.upload("bookings", path, b"%PDF-1.4 x", upsert=True)[0], (200, 201))
+                self.assertNotIn(self.a.storage.update("bookings", path, b"%PDF-1.4 x")[0], (200, 201))
+                self.assertNotEqual(self.a.storage.download("bookings", path)[0], 200)
+                self.assertNotEqual(self.a.storage.sign("bookings", path)[0], 200)
+                self.assertEqual(ok(self, self.a.storage.list("bookings", folder + "/")), [])
+                self.a.storage.remove("bookings", [path])
+                self.assertEqual(store.download("bookings", path)[0], 200, "the admin removed it")
+        self.assertEqual(self.b.storage.download("bookings", b_root), (200, b"%PDF-1.4 B root"))
 
     def test_service_insert_lands_on_admin(self):
         got = ok(self, self.svc.insert("lodgings", [{"place_id": "TEST01", "name": "TEST01 service", "kind": "hostel",

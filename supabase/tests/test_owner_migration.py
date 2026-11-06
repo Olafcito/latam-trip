@@ -4,7 +4,7 @@ The first test rebuilds the public schema up to 0026 inside one transaction, see
 the personal documents, applies 0027 and 0028 and checks that every row carries the admin's id, that no row was lost
 and that the personal documents moved to user_documents. The transaction is always rolled back.
 The second test stores booking files at the paths of before, runs move_booking_files.py and checks that the files and
-the bookings rows point at <admin id>/<booking id>/<file>. It writes to the local stack and cleans up after itself.
+the bookings rows point at <admin id>/<booking id>/<file>, and that no other folder moves. It writes to the local stack and cleans up after itself.
 
 Both run on the local stack only: bash supabase/local_up.sh writes an env file outside the repo, and TRIPDB_ENV_FILE
 names it. Skipped without TRIPDB_DB_TESTS=1.
@@ -113,16 +113,20 @@ class OwnerMigrationTest(unittest.TestCase):
         old = ["TEST01-mv/one.pdf", "TEST01-mv/two.pdf"]
         new = [f"{self.a.id}/{p}" for p in old]
         others = f"{b.id}/TEST01-mv/b.pdf"
+        # folders that are not named by one of the admin's bookings stay where they are
+        left = [f"{b.id}/b.pdf", "TEST01-mvb/b.pdf", "TEST01-none/x.pdf"]
 
         def clean():
-            store.remove("bookings", old + new + [others])
-            svc.delete("bookings", "id=eq.TEST01-mv")
+            store.remove("bookings", old + new + [others] + left + [f"{self.a.id}/{p}" for p in left])
+            svc.delete("bookings", "id=in.(TEST01-mv,TEST01-mvb)")
         clean()
         self.addCleanup(clean)
-        for p in old:
+        for p in old + left:
             code, body = store.upload("bookings", p, b"%PDF-1.4 " + p.encode())
             self.assertIn(code, (200, 201), body)
         self.assertIn(store.upload("bookings", others, b"%PDF-1.4 B")[0], (200, 201))
+        code, body = svc.insert("bookings", [{"id": "TEST01-mvb", "kind": "other", "owner_id": b.id}])
+        self.assertIn(code, (200, 201), body)
         attachments = [{"path": p, "name": p.split("/")[1], "type": "application/pdf", "size": 1} for p in old]
         code, body = svc.insert("bookings", [{"id": "TEST01-mv", "kind": "other", "attachments": attachments}])
         self.assertIn(code, (200, 201), body)
@@ -144,6 +148,9 @@ class OwnerMigrationTest(unittest.TestCase):
             self.assertEqual(self.a.storage.download("bookings", q), (200, b"%PDF-1.4 " + p.encode()))
             self.assertNotEqual(store.download("bookings", p)[0], 200)
         self.assertEqual(b.storage.download("bookings", others), (200, b"%PDF-1.4 B"))
+        for p in left:
+            self.assertEqual(store.download("bookings", p), (200, b"%PDF-1.4 " + p.encode()), "moved a stranger's file")
+            self.assertNotEqual(store.download("bookings", f"{self.a.id}/{p}")[0], 200)
         code, rows = svc.select("bookings", "id=eq.TEST01-mv&select=attachments")
         self.assertEqual([a["path"] for a in rows[0]["attachments"]], new)
         self.assertEqual([a["name"] for a in rows[0]["attachments"]], ["one.pdf", "two.pdf"])
