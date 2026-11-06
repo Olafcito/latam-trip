@@ -458,6 +458,16 @@ class SaveTripTest(Base):
                          ("Priced", [], {"type": "stay_prices", "check_in": "2026-12-10", "check_out": "2026-12-14"}))
         self.assertNotIn("TEST01", json.dumps(out))
 
+    def test_stay_search_and_picks_rows_keep_only_the_place_and_dates_in_the_task_log(self):
+        for typ, summary in (("stay_search", "Searched"), ("stay_picks", "Picked")):
+            row = {"issue": 12, "type": typ, "done_at": "2026-11-01T10:00+00:00", "summary": "TEST01 Hotel at 1234 DKK",
+                   "outputs": ["TEST01"], "task": {"type": typ, "place_id": "TAM", "check_in": "2026-12-10",
+                                                   "check_out": "2026-12-14", "note": "Places at TEST01"}}
+            out = tripdb.public_log_row(row)
+            self.assertEqual((out["summary"], out["outputs"], out["task"]),
+                             (summary, [], {"type": typ, "place_id": "TAM", "check_in": "2026-12-10", "check_out": "2026-12-14"}))
+            self.assertNotIn("TEST01", json.dumps(out))
+
     def test_delete_trip_removes_every_version_and_only_that_trip(self):
         self.save(trip(why="First idea"))
         self.save(trip(why="Second idea"))

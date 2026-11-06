@@ -765,6 +765,14 @@ class LodgingTest(Base):
         self.core.update("lodging", lid, restore=True)
         self.assertIsNone(self.core.get("lodging", lid).get("notes"))
 
+    def test_add_lodging_works_out_the_distance_to_the_centre(self):
+        out = self.core.call("add_lodging", {"rows": [lodging(name="Far", to_center_km=None, lat=10.3, lon=-85.82),
+                                                      lodging(name="Given", to_center_km=4.0, lat=10.3, lon=-85.82),
+                                                      lodging(name="Unknown", to_center_km=None)]})
+        km = {r["name"]: r.get("to_center_km") for r in self.rest.tables["lodgings"]}
+        self.assertEqual(len(out["added"]), 3)
+        self.assertEqual((km["Far"], km["Given"], km["Unknown"]), (2.2, 4.0, None))
+
     def test_add_lodging_price_for_a_room_that_exists(self):
         lid = self.add()
         room = self.core.get("lodging", lid)["rooms"][1]["id"]

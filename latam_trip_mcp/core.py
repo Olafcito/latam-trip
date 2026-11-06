@@ -712,6 +712,7 @@ class Core:
                 refused.append({"row": n, "why": "; ".join(errs)})
                 continue
             lodging, given = parts
+            self.fill_center_km(lodging)
             key = (lodging["place_id"], same_name(lodging["name"]))
             lid = stable_id(*key)
             old = (next((s for s in stored if (s["place_id"], same_name(s["name"])) == key), None)
@@ -737,6 +738,17 @@ class Core:
                 added.append(lid)
                 stored.append({"id": lid, "place_id": lodging["place_id"], "name": lodging["name"], "hidden": False})
         return {"added": added, "rooms": rooms, "skipped": skipped, "refused": refused}
+
+    def fill_center_km(self, lodging):
+        """to_center_km from the lodging's and its place's lat and lon, when the caller left it out and both are known."""
+        if lodging.get("to_center_km") is not None or lodging.get("lat") is None or lodging.get("lon") is None:
+            return
+        try:
+            _, place = self.find("place", lodging["place_id"])
+        except Refused:
+            return
+        if place.get("lat") is not None and place.get("lon") is not None:
+            lodging["to_center_km"] = round(haversine_km((place["lat"], place["lon"]), (lodging["lat"], lodging["lon"])), 1)
 
     def undo_lodging(self, n, lid, e, old):
         """The refusal of a row whose write failed. A new lodging is taken away again, which takes its rooms and prices

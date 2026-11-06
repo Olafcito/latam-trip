@@ -7,7 +7,7 @@ result and logs it, fail_task closes it as failed with the reason. Everything el
 checklist run, so a run can never take a flight search, a booking or a parser fix. A claimed task carries claimed_at,
 and one still working after STALE_HOURS, from a run that crashed or timed out, is opened again by the next claim.
 
-CLOUD lists the types. the newest supabase/migrations file that defines task_runs_in_cloud (0021 now) holds the same list for the trigger that
+CLOUD lists the types. the newest supabase/migrations file that defines task_runs_in_cloud (0023 now) holds the same list for the trigger that
 starts a run, and a test keeps the two equal.
 """
 import datetime as dt
@@ -81,6 +81,11 @@ def _list_items(d):
 
 
 BOOKING_COM = "Booking.com accommodations_search"
+# the value picks of FEAT-004: the kinds a pick may be, the review floors tried in turn and the guard finish_task holds
+PICK_KINDS = ("hostel", "hotel", "apartment")
+PICK_REVIEWS = (50, 20, 5)
+PICK_RATING = 8.0
+PICKS = 3
 CONTRACTS = {
     "question": Contract(
         "Answers Simon's question in the result.",
@@ -146,6 +151,40 @@ CONTRACTS = {
          "In the result name the places added and the ones skipped with the reason, stored, hidden or too few reviews."],
         ["latam-trip get_place, list_lodging, add_lodging", BOOKING_COM],
         "Lodgings at place_id with their one room and its price, through add_lodging only.",
+        check=_search_check),
+    "stay_picks": Contract(
+        "Finds three good value places to stay at one stored place on Booking.com for the dates, when the stop is opened "
+        "for the first time, and stores them.",
+        {"place_id": "!str", "check_in": "!date", "check_out": "!date"},
+        ["context holds the place (id, name, country, lat, lon) and the lodgings already stored there (id, name, links, hidden).",
+         f"{BOOKING_COM} with the place's name and country, check_in, check_out, 1 adult, 1 room, currency DKK, "
+         "user_country_code dk and minimum_review_score 8. Search up to three times and pool the results: the place, "
+         "the place's beach when it is a town on the coast, and a lower nightly price band.",
+         "Keep a property only when it shows a rating of 8.0 or more on Booking.com's 10 scale, a number of reviews, a "
+         "price for the dates and its lat and lon. A property with no rating shown is left out.",
+         "Keep only the kinds hostel, hotel and apartment. Hotel, resort, aparthotel and capsule hotel count as hotel or "
+         "hostel as named, apartment, holiday home and villa count as apartment. Leave out guest houses, bed and breakfasts, "
+         "homestays, inns, lodges, campsites and every other kind.",
+         "Leave out a property already stored at the place, matched by its Booking.com link or its name, Hostelworld "
+         "ones included, and any stored with hidden true.",
+         "Keep those within 2 km of the place's lat and lon, or within 5 km when Booking.com lists them with the Beachfront "
+         "or Beach facility. When fewer than three remain, widen the 2 km to 3 km, then 5 km, and say so in the result.",
+         "Leave out every property with few reviews: keep those with 50 reviews or more. When fewer than three remain, "
+         "lower the floor to 20, then 5, and say so in the result.",
+         "Rank by rating for the money, the rating points above 7 per krone of the stay's total: (rating - 7) / total_dkk. "
+         "A 9.2 at 600 kroner (0.0037) ranks above an 8.1 at 500 kroner (0.0022). Take the top three, or fewer when "
+         "fewer remain.",
+         "For each, one add_lodging row: place_id, name, kind hostel, hotel or apartment, rating on the 10 scale, reviews "
+         "as the number of reviews, links with one entry of site booking and the Booking.com url, lat, lon and address "
+         "when shown, tags beach when it was kept for the beach facility, added_by claude, and in rooms one room, the "
+         "cheapest shown, with its name as shown and in prices one row: check_in, check_out, total_dkk as shown for the "
+         "stay, site booking, url the property's Booking.com link, refundable yes, no or partly and cancel_until when shown. "
+         "Leave to_center_km out, add_lodging works it out.",
+         "Send photos only with URLs the connector returned. Without one, leave photos out.",
+         "Close with finish_task with outputs the ids add_lodging gave, best first. In the result name the places added "
+         "and how many were left out for each reason. With none left, finish with no outputs and say why."],
+        ["latam-trip get_place, list_lodging, add_lodging", BOOKING_COM],
+        "At most three lodgings at place_id with their one room and its price, through add_lodging only.",
         check=_search_check),
     "refresh": Contract(
         "Checks researched experiences again when they were last checked more than older_than_days days ago.",
@@ -222,10 +261,11 @@ class Runner:
             return {"lodging": {"id": lodging["id"], "name": lodging.get("name"), "place_id": lodging.get("place_id"),
                                 "links": lodging.get("links"),
                                 "rooms": [{"id": r["id"], "name": r.get("name")} for r in rooms if r["id"] in data["room_ids"]]}}
-        if typ == "stay_search":
+        if typ in ("stay_search", "stay_picks"):
             _, place = self.core.find("place", data["place_id"])
             stored = self.rest.get_all("lodgings", {"select": "*", "place_id": "eq." + data["place_id"], "order": "name,id"})
-            return {"place": {"id": place.get("id", data["place_id"]), "name": place.get("name"), "country": place.get("country")},
+            return {"place": {"id": place.get("id", data["place_id"]), "name": place.get("name"), "country": place.get("country"),
+                              "lat": place.get("lat"), "lon": place.get("lon")},
                     "stored": [{"id": r["id"], "name": r.get("name"), "links": r.get("links"), "hidden": bool(r.get("hidden"))}
                                for r in stored]}
         if typ == "experience_research":
@@ -284,19 +324,48 @@ class Runner:
         errs = result_errors(result)
         if not isinstance(outputs, list) or not all(isinstance(o, str) for o in outputs) or len(outputs) > 50:
             errs.append("outputs is a list of at most 50 ids or names of what was written")
+        typ, data = task_type(row)
+        hid = []
+        if not errs and typ == "stay_picks":
+            bad, hid = self.check_picks(data, outputs)
+            errs += bad
         if errs:
             raise Refused("; ".join(errs))
+        if hid:
+            result = result.rstrip() + "\n\nHidden by the value rule: " + ", ".join(f"{i} ({why})" for i, why in hid) + "."
         done_at = self.core_now()
-        if not self.take(row, "done", {"result": result, "done_at": done_at}):
+        if not self.take(row, "done", {"result": result[:MAX_RESULT], "done_at": done_at}):
             raise Refused(f"task {id} changed while it was being closed")
-        typ, data = task_type(row)
         first = next((l.strip("# ").strip() for l in result.splitlines() if l.strip()), "")
         log = tripdb.public_log_row({"issue": int(row["id"]), "type": typ, "task": data, "done_at": done_at,
                                      "summary": first[:300], "outputs": outputs})
         logged = not tripdb.row_errors("task_log", log)
         if logged:
             self.core.store.append("task_log", log)
-        return {"done": int(row["id"]), "logged": logged}
+        out = {"done": int(row["id"]), "logged": logged}
+        return {**out, "hidden": [i for i, _ in hid]} if hid else out
+
+    def check_picks(self, data, outputs):
+        """A stay_picks finish names the lodgings it added. One that is not a lodging at the task's place refuses the
+        finish. One the value rule would not have picked is hidden rather than refused, since the run has no tool to
+        take back what it wrote: under PICK_RATING, under the lowest review floor, of a kind outside PICK_KINDS, or past
+        the third. Its stay_details task stays. Returns (refusals, [(id, why)] hidden)."""
+        rows = {r["id"]: r for r in self.rest.get_all("lodgings", {"select": "*", "place_id": "eq." + data["place_id"]})}
+        missing = [o for o in outputs if o not in rows]
+        if missing:
+            return ["outputs names " + ", ".join(missing) + ", which are not lodgings at " + data["place_id"]], []
+        hid = []
+        for n, o in enumerate(outputs):
+            r = rows[o]
+            why = ("past the third" if n >= PICKS
+                   else "no rating" if r.get("rating") is None
+                   else f"rated {r['rating']}" if r["rating"] < PICK_RATING
+                   else "too few reviews" if (r.get("reviews") or 0) < PICK_REVIEWS[-1]
+                   else f"kind {r.get('kind')}" if r.get("kind") not in PICK_KINDS else None)
+            if why and not r.get("hidden"):
+                self.rest.patch("lodgings", {"id": "eq." + o}, {"hidden": True})
+                hid.append((o, why))
+        return [], hid
 
     def fail_task(self, id, reason):
         row = self.held(id)

@@ -711,12 +711,14 @@ def cmd_list_remove(paths, list_id, typ, item_id, st=None):
     return _lists_change(paths, change, st)
 
 
-PUBLIC_LOG = {"booking": (("type", "leg"), "Booked"), "stay_prices": (("type", "check_in", "check_out"), "Priced")}
+PUBLIC_LOG = {"booking": (("type", "leg"), "Booked"), "stay_prices": (("type", "check_in", "check_out"), "Priced"),
+              "stay_search": (("type", "place_id", "check_in", "check_out"), "Searched"),
+              "stay_picks": (("type", "place_id", "check_in", "check_out"), "Picked")}
 
 
 def public_log_row(row):
     """A task_log row as the public trip.db may hold it. A booking task's text can carry a reference, a price or names,
-    and a stay price task's note and result name a place to stay and its prices, which live only in owner only tables.
+    and a stay price, search or picks task's note and result name places to stay and their prices, which live only in owner only tables.
     So those keep only the fields in PUBLIC_LOG, a fixed summary and no outputs, since the summary and outputs are free
     text written at close time. Any other row is kept as it is."""
     t = row.get("task")

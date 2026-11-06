@@ -108,6 +108,57 @@ class RunnerTest(Base):
         self.assertEqual(self.core.call("claim_task")["task"]["id"], ok)
         self.assertEqual([self.row(i)["status"] for i in bad], ["failed"] * 5)
 
+    def stay_picks(self, **extra):
+        return self.task({"type": "stay_picks", "place_id": "TAM", "check_in": "2026-12-10", "check_out": "2026-12-14", **extra})
+
+    def test_stay_picks_gets_the_place_with_its_lat_and_lon(self):
+        t = self.stay_picks()
+        out = self.core.call("claim_task")
+        self.assertEqual(out["task"]["id"], t)
+        self.assertEqual((out["contract"]["place"]["lat"], out["contract"]["place"]["lon"]), (10.3, -85.84))
+        self.assertIn("(rating - 7) / total_dkk", " ".join(out["contract"]["steps"]))
+
+    def picks(self, *rows):
+        out = self.core.add("lodging", [lodging(name=f"Pick {n}", links=[{"site": "booking", "url": f"https://example.com/b{n}"}], **r)
+                                        for n, r in enumerate(rows)])
+        return out["added"]
+
+    def test_finish_of_stay_picks_hides_what_the_rule_would_not_pick(self):
+        ids = self.picks(dict(kind="hotel", rating=9.2, reviews=300), dict(kind="guesthouse", rating=9.0, reviews=200),
+                         dict(kind="hotel", rating=7.6, reviews=900), dict(kind="apartment", rating=8.8, reviews=2),
+                         dict(kind="hostel", rating=8.5, reviews=80))
+        t = self.stay_picks()
+        self.core.call("claim_task")
+        out = self.core.call("finish_task", {"id": t, "result": "Three places.", "outputs": ids})
+        hidden = {r["id"]: r.get("hidden") for r in self.rest.tables["lodgings"]}
+        self.assertEqual(out["hidden"], ids[1:])
+        self.assertEqual([bool(hidden[i]) for i in ids], [False, True, True, True, True])
+        self.assertIn("kind guesthouse", self.row(t)["result"])
+        self.assertIn("past the third", self.row(t)["result"])
+
+    def test_finish_of_stay_picks_keeps_three_good_picks(self):
+        ids = self.picks(dict(kind="hotel", rating=9.2, reviews=300), dict(kind="hostel", rating=8.4, reviews=60),
+                         dict(kind="apartment", rating=8.9, reviews=25))
+        t = self.stay_picks()
+        self.core.call("claim_task")
+        self.assertEqual(self.core.call("finish_task", {"id": t, "result": "Three places.", "outputs": ids}), {"done": t, "logged": True})
+
+    def test_finish_of_stay_picks_refuses_outputs_that_are_not_lodgings_at_the_place(self):
+        t = self.stay_picks()
+        self.core.call("claim_task")
+        with self.assertRaisesRegex(Refused, "not lodgings at TAM"):
+            self.core.call("finish_task", {"id": t, "result": "One place.", "outputs": ["nope"]})
+        self.assertEqual(self.row(t)["status"], "working")
+
+    def test_stay_picks_is_logged_without_its_note_or_outputs(self):
+        ids = self.picks(dict(kind="hotel", rating=9.2, reviews=300))
+        t = self.stay_picks(note="Three places in Tamarindo")
+        self.core.call("claim_task")
+        self.core.call("finish_task", {"id": t, "result": "Pick 0 at 1200 kroner.", "outputs": ids})
+        log = self.store.rows("task_log")[-1]
+        self.assertEqual((log["summary"], log["outputs"]), ("Picked", []))
+        self.assertNotIn("note", log["task"])
+
     def test_a_task_taken_by_another_run_is_skipped(self):
         a = self.task({"type": "question", "text": "a"})
         b = self.task({"type": "question", "text": "b"})
