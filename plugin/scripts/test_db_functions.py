@@ -1,6 +1,8 @@
-"""Live tests of the database functions. They need TRIPDB_LIVE_TESTS=1 and the project keys in the environment or in .env.
-They empty the project first, so they skip on a project without test_reset, which the real one dropped at cutover.
-Run: TRIPDB_LIVE_TESTS=1 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_db_functions.py"
+"""Live tests of the database functions. They need TRIPDB_LIVE_TESTS=1 and the keys of a stack to run on.
+They empty the database first, so they skip on a project without test_reset, which the real one dropped at cutover.
+They run on the local stack: bash supabase/local_up.sh writes an env file outside the repo, and TRIPDB_ENV_FILE names it.
+The values of that file win over the environment, and .env is not read then.
+Run: TRIPDB_LIVE_TESTS=1 TRIPDB_ENV_FILE=<file> python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_db_functions.py"
 """
 import hashlib, json, os, re, threading, unittest, urllib.error, urllib.request
 
@@ -8,15 +10,26 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 LIVE = os.environ.get("TRIPDB_LIVE_TESTS") == "1"
 
 
+def read_env_file(path):
+    out = {}
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            m = re.match(r"\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*?)\s*$", line)
+            if m:
+                out[m.group(1)] = m.group(2).strip("'\"")
+    return out
+
+
 def load_env():
     env = dict(os.environ)
+    named = env.get("TRIPDB_ENV_FILE")
+    if named:
+        env.update(read_env_file(named))
+        return env
     path = os.path.join(ROOT, ".env")
     if os.path.exists(path):
-        with open(path, encoding="utf-8") as fh:
-            for line in fh:
-                m = re.match(r"\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*?)\s*$", line)
-                if m and m.group(1) not in env:
-                    env[m.group(1)] = m.group(2).strip("'\"")
+        for k, v in read_env_file(path).items():
+            env.setdefault(k, v)
     return env
 
 

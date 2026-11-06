@@ -31,6 +31,16 @@ cd web && npm run typecheck && npm test
 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_*.py"
 ```
 
+The database tests run on a local Supabase stack in Docker, never on the project. `supabase/local_up.sh` starts it with a pinned Supabase CLI, applies every migration and the test helpers with `migrate.py --db-url`, and writes the local keys to an env file outside the repo, by default `latam-trip-local.env` in the temp folder.
+
+```bash
+bash supabase/local_up.sh "$TEMP/latam-trip-local.env"
+export TRIPDB_ENV_FILE="$TEMP/latam-trip-local.env" TRIPDB_DB_TESTS=1 TRIPDB_LIVE_TESTS=1
+uv run --quiet --no-project --with "psycopg[binary]" python -I -X utf8 supabase/test_task_close.py -v
+python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_db_functions.py"
+npx --yes supabase@2.122.1 stop --workdir supabase/local --no-backup
+```
+
 ## Deploy
 
 Site builds run from `.github/workflows/site.yml` when `main` changes. They use the three `VITE_*` repository variables and publish the planner build to the site bucket. Worker code and schedules are deployed with `bash infra/deploy.sh --enable-schedules`. Changes to `tripdb.py` or the build pipeline reach the worker only through that deployment script.

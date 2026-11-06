@@ -1,9 +1,11 @@
-"""Tests of migrations 0025 and 0026 (a stay_details task closes when its lodging is complete) against the live project.
+"""Tests of migrations 0025 and 0026 (a stay_details task closes when its lodging is complete).
 
 Every case runs in one transaction that is always rolled back, so nothing is committed. Each migration is applied
 inside that transaction when schema_migrations does not list it yet, so the tests run before and after it goes live.
-Run: TRIPDB_DB_TESTS=1 uv run --quiet --no-project --with "psycopg[binary]" python -I -X utf8 supabase/test_task_close.py -v
-Needs SUPABASE_PASSWORD and SUPABASE_URL in the environment or in .env. Skipped without TRIPDB_DB_TESTS=1.
+They run on the local stack: bash supabase/local_up.sh writes an env file outside the repo, and TRIPDB_ENV_FILE names it.
+Run: TRIPDB_DB_TESTS=1 TRIPDB_ENV_FILE=<file> uv run --quiet --no-project --with "psycopg[binary]" python -I -X utf8 supabase/test_task_close.py -v
+Without TRIPDB_ENV_FILE they read SUPABASE_PASSWORD and SUPABASE_URL from the environment or .env and run on the
+project, still rolled back. Skipped without TRIPDB_DB_TESTS=1.
 """
 import json, os, sys, unittest
 
@@ -15,7 +17,7 @@ PHOTO = json.dumps(["https://example.com/TEST01.jpg"])
 WATCHED = ("tasks", "lodgings", "lodging_rooms", "lodging_prices")
 
 
-@unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 to run against the project")
+@unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 to run against a database")
 class TaskCloseTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

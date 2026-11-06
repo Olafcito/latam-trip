@@ -1,0 +1,51 @@
+# The local Supabase stack the database tests run on, here and in CI. Started by supabase/local_up.sh.
+# This workdir holds no migrations. migrate.py applies supabase/migrations/ after the stack is up, because two of
+# them share the number 0024 and the CLI keys on the number. Every value left out takes the CLI default.
+project_id = "latam-trip-local"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+# the same major version as the project
+major_version = 17
+
+[db.migrations]
+enabled = false
+
+[db.seed]
+enabled = false
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = false
+
+[local_smtp]
+enabled = false
+
+[storage]
+enabled = true
+
+[storage.s3_protocol]
+enabled = false
+
+[storage.vector]
+enabled = false
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:5198"
+
+[edge_runtime]
+enabled = false
+
+[analytics]
+enabled = false
