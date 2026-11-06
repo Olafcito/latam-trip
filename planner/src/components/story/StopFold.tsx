@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
 import { useDataRev } from '../../data/rev'
-import type { AppData, Booking, Lodging } from '../../data/types'
+import type { AppData, Booking, Lodging, LodgingRoom } from '../../data/types'
 import { useStore } from '../../store'
 import { countryName } from '../../lib/colors'
 import { nodeName, type Journey, type Schedule } from '../../lib/journey'
@@ -10,6 +10,9 @@ import { placeFinds, type FindRow } from '../../lib/placeFinds'
 import { shortPlace } from '../../lib/format'
 import { choiceNights, freeNights, nightsFrom, pickDates, removePart, toggleRoom } from '../../lib/stayEdit'
 import { partBooking, stayClashes, stayParts, tripStays } from '../../lib/stays'
+import { paidPrice } from '../../lib/booked'
+import { cancelWords, partTerms, stayMoney, type StayTarget } from '../../lib/stayBooking'
+import { amenityRow } from '../../lib/stayOffer'
 import { loadLodgings } from '../../lib/lodgings'
 import { addFromLink, remember } from '../../lib/stayRates'
 import { shareLink, sharePlace } from '../../lib/sharePlace'
@@ -17,9 +20,13 @@ import { addDays } from '../../lib/time'
 import { Modal } from '../Modal'
 import { AddPlace } from '../stays/AddPlace'
 import { AddStay } from '../stays/AddStay'
+import { Plus } from '../icons'
+import { AccommodationCard, type StayCardData } from '../stays/AccommodationCard'
 import { CityFold } from '../stays/CityFold'
 import { PropertyView } from '../stays/PropertyView'
-import { StayList, type StayRowData } from '../stays/StayList'
+import { kindWord } from '../stays/offerMarks'
+import { StayConfirm } from '../stays/StayConfirm'
+import { StayDetails } from '../stays/StayDetails'
 import { useSaved } from '../stays/useSaved'
 import { useStayFind } from '../stays/useStayFind'
 import { FindPopup } from './FindPopup'
@@ -31,7 +38,23 @@ import { Finds } from './TripHead'
 // on a place, price the places for those dates until the window closes. A room selected still takes the stop's nights. The rest of the city card's acts, change
 // the place and delete it, still open the city card from About.
 
-const firstPhoto = (l: Lodging | undefined) => l?.photos.find((p) => /^https:\/\//i.test(p.url))?.url ?? null
+const photosOf = (l: Lodging | undefined) => (l?.photos ?? []).map((p) => p.url).filter((u) => /^https:\/\//i.test(u))
+
+/** The room's terms in a few words: how it cancels and its bathroom. */
+const termsOf = (cancel: string | null, room: LodgingRoom | undefined) =>
+  [cancel, room?.bathroom === 'private' ? 'Private bathroom' : room?.bathroom === 'shared' ? 'Shared bathroom' : null].filter(Boolean).join(' · ') || null
+
+const ideas = (n: number) => (n === 1 ? '1 idea' : `${n} ideas`)
+
+/** A stay card with what its windows need: the booking it has, how it cancels and where a confirmation goes. */
+interface StayItem {
+  card: StayCardData
+  booking: Booking | null
+  cancel: string | null
+  target: StayTarget
+  remove?: () => void
+  lodging?: Lodging
+}
 
 /** The search asks for the nights no stay has yet, else the whole stop, and one night for a stop passed through. */
 function searchWindow(stays: Parameters<typeof freeNights>[0], sp: Parameters<typeof freeNights>[1]) {
@@ -59,6 +82,9 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   const [find, setFind] = useState<FindRow | null>(null)
   // dates picked in the window, which hold until it closes
   const [pick, setPick] = useState<{ checkIn: string; checkOut: string } | null>(null)
+  // the stay whose confirmation window or details are open, by its card's key
+  const [confirm, setConfirm] = useState<string | null>(null)
+  const [detail, setDetail] = useState<string | null>(null)
   const [saved, toggleSaved] = useSaved()
   const rev = useDataRev()
   useEffect(() => {
@@ -99,43 +125,80 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   const change = (next: typeof stays) => setStays(i, next)
   const bookedAt = (l: Lodging): Booking | null => [...partBooked, ...loose].find((b) => b && b.lodging_id === l.id) ?? null
 
-  const rows: StayRowData[] = [
-    ...parts.map((part, k): StayRowData => {
+  const where = [name, node && countryName(node.country)].filter(Boolean).join(', ')
+  const items: StayItem[] = [
+    ...parts.map((part, k): StayItem => {
       const l = byId.get(part.stay.lodging_id)
       const b = partBooked[k]
-      const lname = l?.name ?? 'A place to stay'
+      const room = l?.rooms.find((r) => r.id === part.stay.room_id)
+      const terms = b ? null : partTerms(room, part)
+      const cancel = b ? cancelWords(b.refundable, b.cancel_until) : terms ? cancelWords(terms.refundable, terms.cancel_until) : null
+      const key = `p${k}-${part.stay.lodging_id}`
       return {
-        key: `p${k}-${part.stay.lodging_id}`,
-        name: lname,
-        photo: firstPhoto(l),
-        checkIn: part.fits ? part.first : null,
-        checkOut: part.fits ? addDays(part.first, part.nights) : null,
-        nights: part.nights,
-        room: l?.rooms.find((r) => r.id === part.stay.room_id)?.name ?? null,
-        booked: !!b,
-        warn: part.fits ? null : 'The stop has no nights left for this stay',
-        onOpen: l ? () => setAdding(l.id) : undefined,
-        actions: [...(l ? [{ label: 'Open', run: () => setAdding(l.id) }] : []), { label: `Take off ${name}`, run: () => change(removePart(stays, k)), danger: true }],
+        booking: b,
+        cancel,
+        lodging: l,
+        target: { tripId: journey.id, placeId: sp.node, lodgingId: l?.id ?? null, roomId: part.stay.room_id, first: part.first, nights: part.nights },
+        remove: () => change(removePart(stays, k)),
+        card: {
+          key,
+          name: l?.name ?? 'A place to stay',
+          kind: l ? kindWord(l.kind) : '',
+          where,
+          summary: l?.summary ?? null,
+          photos: photosOf(l),
+          amenities: l ? amenityRow(l) : [],
+          checkIn: part.fits ? part.first : null,
+          checkOut: part.fits ? addDays(part.first, part.nights) : null,
+          nights: part.nights,
+          room: room?.name ?? null,
+          terms: termsOf(cancel, room),
+          money: stayMoney(room, part, b ? paidPrice(bookings, b) : null),
+          booked: !!b,
+          files: b?.attachments?.length ?? 0,
+          warn: part.fits ? null : 'The stop has no nights left for this stay',
+          onOpen: () => setDetail(key),
+          onConfirm: part.fits ? () => setConfirm(key) : undefined,
+          onRoom: l && sp.days > 0 ? () => setAdding(l.id) : undefined,
+        },
       }
     }),
-    ...loose.map((b): StayRowData => {
+    ...loose.map((b): StayItem => {
       const l = b.lodging_id ? byId.get(b.lodging_id) : undefined
       const c = clashes.get(b.id)
+      const room = l && b.room_id ? l.rooms.find((r) => r.id === b.room_id) : undefined
+      const nights = Math.max(0, Math.round((Date.parse(b.check_out!) - Date.parse(b.check_in!)) / 864e5))
+      const paid = paidPrice(bookings, b)
+      const cancel = cancelWords(b.refundable, b.cancel_until)
       return {
-        key: b.id,
-        name: l?.name ?? b.seller ?? 'Booked stay',
-        photo: firstPhoto(l),
-        checkIn: b.check_in,
-        checkOut: b.check_out,
-        nights: Math.max(0, Math.round((Date.parse(b.check_out!) - Date.parse(b.check_in!)) / 864e5)),
-        room: l && b.room_id ? l.rooms.find((r) => r.id === b.room_id)?.name ?? null : null,
-        booked: true,
-        warn: c ? (c.meets ? 'The stop has only some of these nights now' : 'The stop has none of these nights now') : null,
-        onOpen: l ? () => setAdding(l.id) : undefined,
-        actions: l ? [{ label: 'Open', run: () => setAdding(l.id) }] : [],
+        booking: b,
+        cancel,
+        lodging: l,
+        target: { tripId: b.trip_id ?? journey.id, placeId: sp.node, lodgingId: b.lodging_id, roomId: b.room_id, first: b.check_in!, nights },
+        card: {
+          key: b.id,
+          name: l?.name ?? b.seller ?? 'Booked stay',
+          kind: l ? kindWord(l.kind) : '',
+          where,
+          summary: l?.summary ?? null,
+          photos: photosOf(l),
+          amenities: l ? amenityRow(l) : [],
+          checkIn: b.check_in,
+          checkOut: b.check_out,
+          nights,
+          room: room?.name ?? null,
+          terms: termsOf(cancel, room),
+          money: { perNight: paid != null ? Math.round(paid / Math.max(1, nights)) : null, total: paid, exact: true },
+          booked: true,
+          files: b.attachments?.length ?? 0,
+          warn: c ? (c.meets ? 'The stop has only some of these nights now' : 'The stop has none of these nights now') : null,
+          onOpen: () => setDetail(b.id),
+        },
       }
     }),
   ]
+  const confirming = confirm ? items.find((t) => t.card.key === confirm) : undefined
+  const detailed = detail ? items.find((t) => t.card.key === detail) : undefined
 
   const { free } = win
   const { checkIn: searchIn, checkOut: searchOut } = dates
@@ -151,22 +214,27 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
     <>
       <CityFold
         summary={prof?.summary}
-        stays={{ count: rows.length, body: <StayList rows={rows} onAdd={() => setAdding(null)} /> }}
-        todo={prof?.things_to_do?.length ? (
+        stays={
+          <>
+            {items.length > 0 && <div className="sc-list">{items.map((t) => <AccommodationCard key={t.card.key} c={t.card} />)}</div>}
+            <button type="button" className="al-add" onClick={() => setAdding(null)}><Plus />Add accommodation</button>
+          </>
+        }
+        todo={prof?.things_to_do?.length ? { count: ideas(prof.things_to_do.length), line: prof.things_to_do.slice(0, 3).join(', '), body: (
           <div className="af-todo">
             <ul className="tg-todo">{prof.things_to_do.map((t) => <li key={t}>{t}</li>)}</ul>
             {prof.touristy != null && (
               <p className="tg-tour">Touristy <span className="dots" role="img" aria-label={`${prof.touristy} of 5`}>{[1, 2, 3, 4, 5].map((k) => <i key={k} className={k <= prof.touristy! ? 'f' : ''} />)}</span></p>
             )}
           </div>
-        ) : undefined}
-        experiences={exps.length ? (
+        ) } : undefined}
+        experiences={exps.length ? { count: ideas(exps.length), line: exps.slice(0, 3).map((e) => e.name).join(', '), body: (
           <div className="af-exp">
             {!!finds?.experiences.length && <Finds title="Experiences" rows={finds.experiences} onFind={setFind} />}
             {!!finds?.training.length && <Finds title="Training" rows={finds.training} onFind={setFind} />}
           </div>
-        ) : undefined}
-        about={
+        ) } : undefined}
+        about={{ line: prof?.tagline ?? null, body: (
           <div className="af-about">
             {prof?.image?.url && <img className="af-img" src={prof.image.url} alt="" loading="lazy" />}
             {(node || prof?.tagline) && <p className="af-tag">{[node && countryName(node.country), prof?.tagline].filter(Boolean).join('. ')}</p>}
@@ -181,7 +249,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
               ) : <p className="cc-sure">The flight lands here, so this stop stays.</p>}
             </div>
           </div>
-        }
+        ) }}
       />
       {adding !== false && (
         <Modal label={`Add accommodation in ${name}`} className="stad-md" bare onClose={() => { setAdding(false); setPick(null) }}>
@@ -233,10 +301,35 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
                     saved={saved.has(l.id)}
                     onSave={() => toggleSaved(l.id)}
                     onShare={link ? () => sharePlace(l.name, link) : undefined}
-                    onSelect={sp.days > 0 ? (roomId) => change(toggleRoom(stays, sp, l.id, roomId)) : undefined}
+                    onSelect={sp.days > 0 ? (roomId) => {
+                      const next = toggleRoom(stays, sp, l.id, roomId)
+                      change(next)
+                      // a room chosen closes the window on its card, a room let go stays in the place
+                      if (next.some((s) => s.lodging_id === l.id && s.room_id === roomId)) close()
+                    } : undefined}
                   />
                 )
               }}
+            />
+          )}
+        </Modal>
+      )}
+      {confirming && (
+        <Modal label="Add booking confirmation" className="scw-md" onClose={() => setConfirm(null)}>
+          {(shut) => <StayConfirm city={name} booking={confirming.booking} target={confirming.target} close={shut} />}
+        </Modal>
+      )}
+      {detailed && (
+        <Modal label={detailed.card.name} className="sd-md" onClose={() => setDetail(null)}>
+          {(shut) => (
+            <StayDetails
+              c={detailed.card}
+              booking={detailed.booking}
+              cancel={detailed.cancel}
+              close={shut}
+              onConfirm={detailed.card.checkIn ? () => setConfirm(detailed.card.key) : undefined}
+              onPlace={detailed.lodging ? () => setAdding(detailed.lodging!.id) : undefined}
+              onRemove={detailed.remove}
             />
           )}
         </Modal>

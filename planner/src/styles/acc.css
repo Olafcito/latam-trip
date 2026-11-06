@@ -15,31 +15,6 @@
 /* ---------- the fold ---------- */
 .af { container: af / inline-size; min-width: 0; padding: 4px 0 0 var(--inset, 12px); }
 .af-sum { margin: 0 0 14px; font-size: var(--fs-body); line-height: 1.5; color: var(--muted); text-wrap: pretty; }
-/* one row of all four tabs on a hairline, the open one underlined */
-.af-tabs {
-  display: flex; gap: 4px; margin: 0 0 12px; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
-  box-shadow: inset 0 -1px 0 var(--line-2);
-}
-.af-tabs::-webkit-scrollbar { display: none; }
-.af-tab {
-  position: relative; flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: var(--hit); padding: 0 10px;
-  font-size: var(--fs-small); font-weight: 500; color: var(--muted); white-space: nowrap;
-  transition: color var(--t-fast) ease;
-}
-.af-tab::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px 2px 0 0;
-  background: var(--text); transform: scaleX(0); transition: transform var(--t-med) var(--ease-out);
-}
-.af-tab[aria-selected='true'] { color: var(--text); font-weight: 600; }
-.af-tab[aria-selected='true']::after { transform: none; }
-.af-tab:active { transform: scale(0.97); }
-/* narrow, the tabs stand as a bar, each icon over its word, so all four fit at a phone's width.
-   The tabs and the stays reach in under the summary's edge, as the cards of the route do */
-@container af (max-width: 31rem) {
-  .af-tabs, .af-panel { margin-left: calc(-1 * var(--inset, 12px)); }
-  .af-tabs { gap: 0; }
-  .af-tab { flex: 1 1 auto; display: grid; justify-items: center; align-content: center; row-gap: 3px; padding: 6px 2px 8px; font-size: var(--fs-label); }
-}
 .af-none { margin: 4px 0 8px; font-size: var(--fs-body); color: var(--muted); }
 .af-todo, .af-exp { display: grid; gap: 14px; padding: 2px 0 6px; }
 .af-exp h5 { margin: 0 0 4px; font-size: var(--fs-label); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--faint); }
@@ -51,73 +26,12 @@
 
 /* ---------- the stays of a stop ---------- */
 .al { display: grid; gap: 8px; }
-.al-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.al-row {
-  position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 2px 12px;
-  padding: 8px 4px 8px 8px; border-radius: 12px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
-  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
-}
-.al-row:has(.al-open:active) { transform: scale(0.99); background: var(--surface-3); }
-.al-ph { display: grid; place-items: center; width: 72px; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; background: var(--surface-3); color: var(--faint); }
-.al-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.al-what { display: grid; gap: 2px; min-width: 0; }
-.al-name {
-  justify-self: stretch; min-width: 0; padding: 0; font-size: .9375rem; font-weight: 600; line-height: 1.3; color: var(--text); text-align: left;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-/* the whole row opens the place, the menu sits over it */
-.al-open::after { content: ''; position: absolute; inset: 0; border-radius: 12px; }
-.al-when { display: flex; align-items: center; gap: 5px; min-width: 0; font-size: .75rem; line-height: 1.35; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.al-when > svg { flex: none; color: var(--muted); }
-.al-when i { font-style: normal; color: var(--faint); }
-/* the stay no longer fits the stop: an amber mark at the end of its dates */
-.al-warn { display: inline-flex; flex: none; color: var(--flight); }
-.al-room { min-width: 0; font-size: .75rem; line-height: 1.35; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* booked or not as a small pill: green with its check, or amber outlined with a hollow ring */
-.al-pill {
-  display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 999px; white-space: nowrap;
-  font-size: var(--fs-label); font-weight: 600; color: var(--flight);
-  background: color-mix(in srgb, var(--flight) 10%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 55%, transparent);
-}
-.al-pill > svg { flex: none; }
-.al-pill[data-on] { color: var(--booked); background: color-mix(in srgb, var(--booked) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--booked) 30%, transparent); }
-.al-more { position: relative; z-index: 1; }
-.al-dots {
-  position: relative; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--muted);
-  transition: background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
-}
-/* the dots keep a full finger's reach though they draw small */
-.al-dots::after { content: ''; position: absolute; left: 50%; top: 50%; width: var(--hit); height: var(--hit); transform: translate(-50%, -50%); }
-.al-dots:active, .al-dots[aria-expanded='true'] { background: var(--surface-3); color: var(--text); }
-.al-dots:active { transform: scale(0.94); }
-.pop.al-menu { left: auto; right: 0; width: min(232px, calc(100vw - 32px)); padding: 6px; transform-origin: top right; display: grid; }
-.al-item {
-  display: flex; align-items: center; min-height: var(--hit); padding: 0 12px; border-radius: 8px; text-align: left;
-  font-size: var(--fs-body); color: var(--text);
-}
-.al-item[data-danger] { color: var(--err); }
-.al-item:active { background: var(--surface-3); }
 .al-add {
   display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border-radius: 12px;
   border: 1.5px dashed var(--line-2); font-size: var(--fs-body); font-weight: 600; color: var(--text);
   transition: border-color var(--t-fast) ease, background-color var(--t-fast) ease, transform var(--t-fast) var(--ease-out);
 }
 .al-add:active { transform: scale(0.99); background: var(--surface-2); }
-/* narrow: the name and the dates take the full width, the room shares its line with the pill and the dots sit in the corner */
-@container (max-width: 27rem) {
-  .al-row {
-    grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'ph name name' 'ph when when' 'ph room pill';
-    column-gap: 10px; row-gap: 2px;
-  }
-  .al-what { display: contents; }
-  .al-name { grid-area: name; align-self: center; padding-right: 28px; }
-  .al-when { grid-area: when; }
-  .al-room { grid-area: room; align-self: center; }
-  .al-ph { grid-area: ph; align-self: center; }
-  .al-pill { grid-area: pill; justify-self: end; align-self: center; margin-right: 4px; }
-  .al-row > .al-more { position: absolute; top: 2px; right: 2px; }
-}
-.af-panel { container-type: inline-size; }
 
 /* ---------- the search ---------- */
 .stad-md { --md-w: 440px; }
@@ -461,10 +375,7 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
 .pv-skr[data-other] { color: var(--muted); font-weight: 600; }
 
 @media (hover: hover) and (pointer: fine) {
-  .af-tab:hover, .as-tab:hover { color: var(--text); }
-  .al-row:has(.al-open:hover) { background: var(--surface-3); }
-  .al-dots:hover { background: var(--surface-3); color: var(--text); }
-  .al-item:hover { background: var(--surface-2); }
+  .as-tab:hover { color: var(--text); }
   .al-add:hover { border-color: var(--faint); background: var(--surface-2); }
   .as-x:hover { background: var(--surface-2); color: var(--text); }
   .as-chip:not([aria-checked='true']):hover { background: var(--surface-2); }
@@ -500,5 +411,5 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
     .md.phv[open] { transform: none; }
   }
   .md.phv[data-closing='true'] { transform: none; }
-  .af-tab:active, .al-dots:active, .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:not(:disabled):active, .as-fd:not(:disabled):active, .as-fb:active { transform: none; }
+  .al-add:active, .as-chip:active, .as-keep:active, .pv-round:active, .pv-sel:active, .as-go:not(:disabled):active, .as-fd:not(:disabled):active, .as-fb:active { transform: none; }
 }

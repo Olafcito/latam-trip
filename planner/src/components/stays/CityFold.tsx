@@ -1,62 +1,57 @@
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
-import { Bed, Info, List, Star } from '../icons'
+import { useId, useState, type ReactNode } from 'react'
+import { Caret, Info, Star, Umbrella } from '../icons'
 
-// A stop folded open on the route: its summary, then tabs for where to sleep, what to do, the experiences
-// found there and the rest about it. Accommodation comes first and is open when the fold opens. The tabs
-// are one row, the open one underlined in the text colour. The count of stays sits in its label, as "Accommodation (2)".
-// When the fold is narrow each tab stacks its icon over its label.
+// A stop folded open on the route, in stacked sections: its summary, then where Simon sleeps as large cards, then
+// Things to do, Experiences and About as compact rows. A row shows its count and a line of what it holds, and opens
+// in place under itself. A row with nothing gathered is not shown, except About, which holds the stop's own acts.
 
-export type FoldTab = 'stay' | 'todo' | 'exp' | 'about'
+export interface FoldSection {
+  /** "2 ideas" */
+  count?: string | null
+  /** a line of what it holds, "Diving, boat tours, beach clubs" */
+  line?: string | null
+  body: ReactNode
+}
 
 export interface CityFoldProps {
   summary?: string | null
-  stays: { count: number; body: ReactNode }
-  todo?: ReactNode
-  experiences?: ReactNode
-  about?: ReactNode
-  /** the tab open first */
-  start?: FoldTab
+  /** the stay cards and the act that adds one */
+  stays: ReactNode
+  todo?: FoldSection
+  experiences?: FoldSection
+  about?: FoldSection
 }
 
-const TABS: { id: FoldTab; label: string; Icon: (p: { s?: number }) => ReactNode }[] = [
-  { id: 'stay', label: 'Accommodation', Icon: Bed },
-  { id: 'todo', label: 'Things to do', Icon: List },
-  { id: 'exp', label: 'Experiences', Icon: Star },
-  { id: 'about', label: 'About', Icon: Info },
-]
-
-const Empty = () => <p className="af-none">Nothing gathered for this place yet.</p>
-
-export function CityFold({ summary, stays, todo, experiences, about, start = 'stay' }: CityFoldProps) {
-  const [tab, setTab] = useState<FoldTab>(start)
+function Row({ title, Icon, s }: { title: string; Icon: (p: { s?: number }) => ReactNode; s: FoldSection }) {
+  const [open, setOpen] = useState(false)
   const id = useId()
-  const bar = useRef<HTMLDivElement>(null)
-  const body: Record<FoldTab, ReactNode> = { stay: stays.body, todo: todo ?? <Empty />, exp: experiences ?? <Empty />, about: about ?? <Empty /> }
-  // arrows move along the tabs and open the one they land on, as tabs do
-  const onKey = (e: KeyboardEvent) => {
-    const k = TABS.findIndex((t) => t.id === tab)
-    const to = e.key === 'ArrowRight' ? k + 1 : e.key === 'ArrowLeft' ? k - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? TABS.length - 1 : null
-    if (to == null) return
-    e.preventDefault()
-    const next = TABS[(to + TABS.length) % TABS.length].id
-    setTab(next)
-    bar.current?.querySelector<HTMLButtonElement>(`[data-tab='${next}']`)?.focus()
-  }
+  return (
+    <li className="fr">
+      <button type="button" className="fr-head" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
+        <Icon s={20} />
+        <span className="fr-what">
+          <span className="fr-t">{title}{s.count && <span className="fr-n">{s.count}</span>}</span>
+          {s.line && <span className="fr-s">{s.line}</span>}
+        </span>
+        <span className="fr-c"><Caret dir="r" s={18} /></span>
+      </button>
+      <div className="fr-body" id={id} hidden={!open}>{open && s.body}</div>
+    </li>
+  )
+}
+
+export function CityFold({ summary, stays, todo, experiences, about }: CityFoldProps) {
   return (
     <div className="af">
       {summary && <p className="af-sum">{summary}</p>}
-      <div ref={bar} className="af-tabs" role="tablist" aria-label="About this stop" onKeyDown={onKey}>
-        {TABS.map(({ id: t, label, Icon }) => (
-          <button
-            key={t} type="button" role="tab" data-tab={t} id={`${id}-${t}`} aria-selected={tab === t} aria-controls={`${id}-p`} tabIndex={tab === t ? 0 : -1}
-            className="af-tab" onClick={() => setTab(t)}
-          >
-            <Icon s={17} />
-            <span>{t === 'stay' && stays.count > 0 ? `${label} (${stays.count})` : label}</span>
-          </button>
-        ))}
-      </div>
-      <div className="af-panel" role="tabpanel" id={`${id}-p`} aria-labelledby={`${id}-${tab}`}>{body[tab]}</div>
+      <section className="af-stay" aria-label="Accommodation">{stays}</section>
+      {(todo || experiences || about) && (
+        <ul className="fr-list">
+          {todo && <Row title="Things to do" Icon={Umbrella} s={todo} />}
+          {experiences && <Row title="Experiences" Icon={Star} s={experiences} />}
+          {about && <Row title="About" Icon={Info} s={about} />}
+        </ul>
+      )}
     </div>
   )
 }
