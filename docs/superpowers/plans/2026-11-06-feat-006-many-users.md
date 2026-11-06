@@ -257,7 +257,7 @@ Worktree `oauth-spike`. Time box one working session.
 - [x] `test.yml` gains the grep that fails when `SUPABASE_SECRET_KEY`, `supabase-secret-key` or a `sb_secret_` key appears under `latam_trip_mcp/` or `infra/mcp/`. It checks names only.
 - [x] Fix round. Migration 0033 grants `add_quotes` to authenticated with `owner_id` from `auth.uid()`, adds the narrow security definer `add_airport_stubs` and makes `stays` a catalogue table. A flight change that keeps its quote id puts the old quote back when the new one is refused. The key set is kept 10 minutes and refetched for an unknown `kid` at most once a minute. The role reads the two exact SSM parameters with no `kms:Decrypt`. `deploy.sh --code-only` stops when the function lacks a variable the code reads. The consent page leads with Latam trip and says what a connection can read and change. Tests: `test_a_person_who_is_not_the_admin_saves_and_changes_a_flight`, `test_a_signed_in_person_reads_the_stays` and `JwksTest` in `test_auth.py`.
 - [ ] Go live in the order in `docs/connector.md`, commands shown first: `put-secrets.sh`, the full `infra/mcp/deploy.sh`, the merge to `main` (the release applies 0033 and builds the planner), the live Auth settings, Simon signs in once again, and a day later the SSM secret key and passphrase parameters are deleted.
-- [ ] Follow up: the connector refuses past `connector_writes_per_minute` of `owner_limits` (60) per user, moved here from task 6.2.
+- [x] Follow up: the connector refuses past `connector_writes_per_minute` of `owner_limits` (60) per user, moved here from task 6.2. Done in migration 0037 with task 6.3, see task 6.2.
 
 ---
 
@@ -324,7 +324,7 @@ Second gate before the first outside account: `tasks`, `inbox` and `task_log` ke
 ### Task 6.2: Caps
 
 - [x] A trigger per private table refuses an insert past `owner_limits` and a storage policy refuses a file past the folder size. Tests on the local stack.
-- [ ] The connector refuses past 60 writes a minute per user.
+- [x] The connector refuses past 60 writes a minute per user. Done in migration 0037: `connector_call(p_write)` runs before every tool, counts a write per person and UTC minute in `connector_writes`, which no client reads or writes, and refuses the one past `connector_writes_per_minute` with a plain tool error. Reads are not counted. Tests: `test_the_61st_write_is_refused_and_another_person_is_unaffected` and `test_the_count_is_no_clients_to_read_or_write` in `latam_trip_mcp/test_account.py`.
 - Done as migration 0035 for the rows, the tasks a day and the folder bytes. The tables that only grow get limits of their own (`rows_in_<table>`: trips 5000, lodgings 5000, lodging_rooms 25000, lodging_prices 100000, quotes 100000, tasks 5000, task_log 5000, agent_usage 10000), each the admin's live rows plus 26 weeks at 3 times the last week's growth (TECH-009). `user_profiles` has one row per person by its key and no row cap. Tests: `test_row_caps_per_person`, `test_growing_tables_have_limits_of_their_own`, `test_add_quotes_holds_the_quotes_cap`, `test_lodging_at_the_tasks_cap_comes_without_its_task`, `test_tasks_a_day_count_what_was_added_today` and `test_bookings_folder_cap` in test_rls, where the admin is refused like B.
 - The connector's 60 writes a minute per user moves to the follow up of task 3.2, since it belongs to the connector that acts as the user.
 
@@ -332,7 +332,8 @@ Second gate before the first outside account: `tasks`, `inbox` and `task_log` ke
 
 **Interfaces:** `export_account() -> {"tables": {name: rows}, "files": [paths]}`. `delete_account(email: str) -> {"deleted": counts}` via `public.delete_account(p_email text)`, security definer, which fails working tasks first and deletes the auth user so the cascade takes every row.
 
-- [ ] Files first through the Storage API under the user's token. Tests: `test_delete_counts_every_private_table`, `test_delete_needs_the_email`, `test_delete_retries_after_storage_failure`, `test_export_has_every_table`.
+- [x] Files first through the Storage API under the user's token. Tests: `test_delete_counts_every_private_table`, `test_delete_needs_the_email`, `test_delete_retries_after_storage_failure`, `test_export_has_every_table`.
+- Done as migration 0037 and the two connector tools. `may_delete_account` checks the email (any case) and refuses the admin before a file is removed. The connector then removes the caller's booking files under their token and lists the folder again, and `delete_account` refuses while a file is left, so a storage failure deletes nothing and a second call finishes. It fails the caller's working tasks, counts the rows of every `owner_id` table and deletes the auth user, and every key to `auth.users` cascades (the migration fails if one does not). `ACCOUNT_TABLES` and `SERVICE_TABLES` in `core.py` name every private table, and `test_every_owner_id_table_is_named_and_cascades` fails when a migration adds one they leave out. A deleted person's old token gets a plain tool error on every tool. Backups keep a deleted account's dumped rows up to 90 days (TECH-013). Tests in `latam_trip_mcp/test_account.py`, among them `test_delete_leaves_another_person_untouched` and `test_a_deleted_persons_old_token_fails_cleanly`.
 
 ### Task 6.4: README install section and the privacy note draft
 
