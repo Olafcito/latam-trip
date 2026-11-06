@@ -28,7 +28,7 @@
   /* Cancel is the quiet link, Save is the app's amber and sits dimmed while there is nothing to save */
   .pf .fl-foot .btn.primary:disabled { opacity: 0.4; }
   /* an unset row asks for something: a short Add in the accent, no unit. A set value is the brightest text on its row */
-  .pf .bf-in::placeholder { color: var(--flight); font-family: var(--font-word); font-size: var(--fs-body); font-weight: 600; letter-spacing: normal; text-transform: none; opacity: 1; }
+  .pf .bf-in::placeholder { color: var(--flight); font-family: var(--font-word); font-size: var(--fs-body); font-weight: 600; letter-spacing: normal; text-transform: none; opacity: 1; -webkit-text-fill-color: var(--flight); }
   .pf .bf-row:not([data-empty]) .bf-k { color: var(--muted); }
   .pf .bf-row:not([data-empty]) .bf-in { font-weight: 600; }
   .pf .bf-row[data-empty] .bf-kr > span { display: none; }
