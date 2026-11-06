@@ -39,7 +39,7 @@ Take the dates from the link. Otherwise use the nights of that stop in the trip,
    - **Booking.com.** On Simon's PC with the repo, run `node plugin/scripts/booking/read.mjs LODGING_ID [--check-in YYYY-MM-DD --check-out YYYY-MM-DD] --out FILE`, then `python -I -X utf8 plugin/scripts/tripdb.py --root . lodging-details FILE`. Run `npm install` in `plugin/scripts/booking` once first. Use `--dry` to look before writing. If the headless read is blocked, or the session has no repo or no `.env`, a browser worker reads the page and records every room with its cheapest price for the dates, `refundable`, `cancel_until` and the room id, plus up to 8 `cf.bstatic.com/.../max1024x768/` photos. With the repo, the worker writes the same JSON and `lodging-details` stores it. Without the repo, it calls `add_lodging` again with the same name to add the rooms with their prices, and `update_lodging` for the photos.
    - **Airbnb.** A browser worker opens the listing with the dates, `adults=1` and `currency=DKK`. It reads the total for the stay with every fee, discount and tax, whether the dates are available, `refundable`, `cancel_until`, and up to 12 gallery photos at `im_w=1200`. It writes the price with `add_lodging_price` on the stored room, then calls `update_lodging` with the photos and a notes line on the fee breakdown. Airbnb hides the exact location until booking, so lat and lon stay empty.
    - **Hostelworld.** The `stay-rates` edge function prices the rooms when the link is added. Check with `get_lodging` after about a minute.
-6. **Check.** Call `get_lodging` for each place and confirm the photos, the rooms and a price for the dates on each room. If something is missing, send one more worker for it, then name what is still missing in the report.
+6. **Check.** Call `get_lodging` for each place and confirm the photos, the rooms and a price for the dates on each room. If something is missing, send one more worker for it, then name what is still missing in the report. When the place is complete the database closes its `stay_details` task by itself (migration 0025), so do not close it by hand.
 7. **Report.** One table with one row per place: kind, rating, total for the stay and refundable. Then flag only what is missing, and why.
 
 ## Who does which step
@@ -48,7 +48,7 @@ Take the dates from the link. Otherwise use the nights of that stop in the trip,
 |---|---|
 | A chat session where Simon pastes links | All of them, with the details from browser workers in the same turn |
 | The cloud task runner, for `stay_search` and `stay_picks` | 1 to 4, by the contract `claim_task` gives. The cloud has no browser, so step 5 is left to the `stay_details` task the database queues. The result says the details are queued |
-| `trip-checklist` or `task-loop` on the PC, for `stay_details` | 5 and 6 for the one place in the task, then `tasks.py done` with the counts of rooms, prices and photos stored |
+| `trip-checklist` or `task-loop` on the PC, for `stay_details` | 5 and 6 for the one place in the task, then `tasks.py done` with the counts of rooms, prices and photos stored. The task may already be done, closed by the database when the place became complete. Then `tasks.py done` prints `already done by the data`, keeps the stored result and only logs |
 
 ## Browser workers
 

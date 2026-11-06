@@ -77,6 +77,23 @@ class TasksTest(unittest.TestCase):
         self.assertIn("--outputs", args)
         self.assertEqual(args[args.index("--type") + 1], "flight_prices")
 
+    def test_done_on_done_task_keeps_result(self):
+        r = row(10000, "done")
+        r.update(result="Closed by the data: 1 photos", done_at="2026-11-06T10:00:00+00:00")
+        rest = FakeRest([r])
+        calls = []
+        tasks.run_tripdb = lambda root, args: calls.append(args)
+        with tempfile.TemporaryDirectory() as d:
+            f = os.path.join(d, "s.md")
+            with open(f, "w", encoding="utf-8") as fh:
+                fh.write("# Stored 2 rooms\n")
+            text = out(tasks.cmd_done, rest, "10000", f, [], d)
+        self.assertIn("already done by the data", text)
+        self.assertEqual(rest.patches, [])
+        self.assertEqual(rest.rows[0]["result"], "Closed by the data: 1 photos")
+        self.assertEqual(rest.rows[0]["done_at"], "2026-11-06T10:00:00+00:00")
+        self.assertEqual(calls[0][:5], ["log-task", "--issue", "10000", "--summary", "Stored 2 rooms"])
+
     def test_the_userscript_task_types_can_be_shown_and_closed(self):
         for kind in ("fix_parser", "import_quotes"):
             r = {"id": 20000, "type": kind, "status": "open", "title": "u", "data": {"type": kind, "from": "userscript"}}

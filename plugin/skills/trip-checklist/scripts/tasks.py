@@ -6,6 +6,7 @@ Usage:
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py start N                   set task N to working
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py done N SUMMARY_FILE [--outputs a,b] [--root DIR]
                                                     write SUMMARY_FILE as the result of task N, mark it done, log it with tripdb log-task
+                                                    (a task the data already closed keeps its result and is only logged)
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py wait [--every SECONDS] [--grace MINUTES]
                                                     poll until a task is for the PC, then print one JSON line per task and exit 0
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py fail N REASON_FILE    set task N to failed with the file as its result
@@ -95,11 +96,16 @@ def run_tripdb(root, args):
 
 def cmd_done(rest, n, summary_file, outputs, root):
     body = open(summary_file, encoding="utf-8").read()
-    t = task_of(get_row(rest, n))
-    done_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
-    rest.patch("tasks", {"id": f"eq.{int(n)}"}, {"status": "done", "result": body, "done_at": done_at})
+    row = get_row(rest, n)
+    t = task_of(row)
+    if row.get("status") == "done":
+        # the database closed it already (a stay_details task whose lodging is complete), so its result stays
+        print(f"already done by the data #{n}")
+    else:
+        done_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+        rest.patch("tasks", {"id": f"eq.{int(n)}"}, {"status": "done", "result": body, "done_at": done_at})
+        print(f"done #{n}")
     first = next((l.strip("# ").strip() for l in body.splitlines() if l.strip()), "")
-    print(f"done #{n}")
     if t and t.get("type") == "booking":
         # the log is public and Claude writes the summary and the outputs at close time, so a booking logs neither
         first, outputs = "Booked", []

@@ -35,6 +35,12 @@ def connect(env):
                            sslmode="require", autocommit=False, connect_timeout=20)
 
 
+def apply_file(cur, path):
+    """Run one migration file on the cursor. It does not commit and does not record the file in schema_migrations."""
+    with open(path, encoding="utf-8") as fh:
+        cur.execute(fh.read())
+
+
 def cutover_done(cur):
     cur.execute("select to_regclass('public.documents')")
     if cur.fetchone()[0] is None:
@@ -56,8 +62,7 @@ def main(argv):
             name = os.path.basename(f)
             if name in done:
                 continue
-            with open(f, encoding="utf-8") as fh:
-                cur.execute(fh.read())
+            apply_file(cur, f)
             cur.execute("insert into public.schema_migrations (name) values (%s)", (name,))
             print(f"applied {name}")
         if helpers:
