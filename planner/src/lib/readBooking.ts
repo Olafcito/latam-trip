@@ -1,7 +1,7 @@
 import type { Booking } from '../data/types'
 import { bookingOn, codeNode, type BookData } from './booked'
-import { fileType } from './bookings'
 import { blank, readKr, type BookingFields, type DraftLeg, type DraftSegment } from './bookingDraft'
+import { invokeRead, isHeic, PLAIN, toSend } from './readFiles'
 import { supabase } from './supabase'
 
 // Add booking: a ticket file, a saved mail or the pasted text of a confirmation is read by the read-booking
@@ -171,33 +171,7 @@ export function draftOf(leg: DraftLeg, booking: ReadBooking, mailUrl?: string | 
   return { rows, fields, missing }
 }
 
-const HEIC = /\.(heic|heif)$/i
-const isHeic = (f: File) => HEIC.test(f.name) || /^image\/hei[cf]$/.test(f.type)
-const isEml = (f: File) => /\.eml$/i.test(f.name) || f.type === 'message/rfc822'
-
-export const MAX_SENT_FILES = 5
-export const MAX_SENT_BYTES = 10 * 1024 * 1024
-export const MAX_IMAGE_BYTES = 5 * 1024 * 1024
-
-async function base64Of(f: File): Promise<string> {
-  const bytes = new Uint8Array(await f.arrayBuffer())
-  let bin = ''
-  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
-  return btoa(bin)
-}
-
-const PLAIN = 'The booking could not be read. Fill it in yourself.'
-
-const HEIC_SAID = 'HEIC photos cannot be read. Share a screenshot or a PDF instead.'
-
-/** Why the files to send cannot go, in a plain sentence, or null. */
-function sendProblem(sent: File[]): string | null {
-  if (sent.length > MAX_SENT_FILES) return `Add at most ${MAX_SENT_FILES} files to read.`
-  const big = sent.find((f) => fileType(f).startsWith('image/') && f.size > MAX_IMAGE_BYTES)
-  if (big) return `${big.name} is over 5 MB, so it cannot be read. Share a smaller screenshot or a PDF.`
-  if (sent.reduce((n, f) => n + f.size, 0) > MAX_SENT_BYTES) return 'The files are over 10 MB together, so they cannot be read.'
-  return null
-}
+export { MAX_IMAGE_BYTES, MAX_SENT_BYTES, MAX_SENT_FILES } from './readFiles'
 
 /**
  * Reads a booking from files and pasted text for one leg. A HEIC photo is not read, the caller keeps it for the booking.
@@ -210,28 +184,14 @@ export async function readBooking(leg: DraftLeg, files: File[], text: string, kn
     return { ok: true, rows: [{ ...blank(leg), source: 'claude', trip_id: leg.tripId ?? null }], fields: { mail_url: link }, missing: [] }
   }
   if (!supabase) return { ok: false, message: 'Reading is not available without a connection.' }
-  const sentFiles = readable.filter((f) => !isEml(f))
-  const tooMuch = sendProblem(sentFiles)
-  if (tooMuch) return { ok: false, message: tooMuch }
   try {
-    let all = text
-    for (const f of readable) if (isEml(f)) all += `\n\n${await f.text()}`
-    const sent: { name: string; type: string; data: string }[] = []
-    for (const f of sentFiles) sent.push({ name: f.name, type: fileType(f), data: await base64Of(f) })
-    if (!all.trim() && !sent.length) return { ok: false, message: files.some(isHeic) ? HEIC_SAID : 'Add a file or paste the confirmation first.' }
-    const { data, error } = await supabase.functions.invoke('read-booking', { body: { leg: { kind: leg.kind, from: leg.from, to: leg.to, day: leg.day }, text: all, files: sent } })
-    if (error) {
-      let message = PLAIN
-      const ctx = (error as { context?: unknown }).context
-      if (ctx instanceof Response) {
-        const body = (await ctx.json().catch(() => null)) as { error?: string } | null
-        if (body?.error) message = body.error
-      }
-      return { ok: false, message }
-    }
-    const booking = (data as { booking?: ReadBooking } | null)?.booking
+    const sent = await toSend(files, text)
+    if (!sent.ok) return sent
+    const res = await invokeRead({ leg: { kind: leg.kind, from: leg.from, to: leg.to, day: leg.day }, text: sent.text, files: sent.files })
+    if (!res.ok) return res
+    const booking = (res.data as { booking?: ReadBooking } | null)?.booking
     if (!booking) return { ok: false, message: PLAIN }
-    return { ok: true, ...draftOf(leg, booking, link ?? linkIn(all), known) }
+    return { ok: true, ...draftOf(leg, booking, link ?? linkIn(sent.text), known) }
   } catch {
     return { ok: false, message: PLAIN }
   }
