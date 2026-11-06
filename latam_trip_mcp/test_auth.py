@@ -266,19 +266,15 @@ STUB = ("QTA", "QTB")  # made up codes, so the stub function has to write them
 PLACE = "TMCPAUTH"
 
 
-@unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 and TRIPDB_ENV_FILE to the local stack")
-class TwoUsersSignInTest(unittest.TestCase):
-    """Two people connect the same client through Supabase's OAuth server and the planner's consent step, and the real
-    connector answers each with their own trips only. Its own users and TEST01 trips, never another test's."""
+class ConnectorStack(unittest.TestCase):
+    """The real connector in front of the local stack, and the OAuth flow claude.ai runs through Supabase's OAuth
+    server and the planner's consent step. The classes that use it make their own people and rows."""
 
     @classmethod
-    def setUpClass(cls):
-        import migrate, users, uvicorn
-        cls.env = env = migrate.load_env()
-        users.refuse(env)
-        cls.users = users
-        cls.a, cls.b = users.make_user(env, "mcp-auth-a"), users.make_user(env, "mcp-auth-b")
-        port = cls.free_port()
+    def start_connector(cls):
+        """The real connector on a free port in front of the local stack, in a thread of this process."""
+        import uvicorn
+        env, port = cls.env, cls.free_port()
         cls.base = f"http://127.0.0.1:{port}"
         cls.saved = mock.patch.dict(os.environ, {"SUPABASE_URL": env["SUPABASE_URL"].rstrip("/"),
                                                  "SUPABASE_PUBLISHABLE_KEY": env["SUPABASE_PUBLISHABLE_KEY"],
@@ -295,22 +291,10 @@ class TwoUsersSignInTest(unittest.TestCase):
             raise RuntimeError("the connector did not start")
 
     @classmethod
-    def tearDownClass(cls):
+    def stop_connector(cls):
         cls.srv.should_exit = True
         cls.thread.join(10)
-        for u in (cls.a, cls.b):
-            u.rest.delete("trips", "id=like.TEST01-mcp-auth-*")
-        cls.clean_catalogue()
         cls.saved.stop()
-
-    @classmethod
-    def clean_catalogue(cls):
-        """Only the rows these tests make: B's flights from the made up airport, the airports, the stay and its place."""
-        svc = cls.users.service(cls.env)
-        svc.delete("quotes", f"owner_id=eq.{cls.b.id}&first_from=eq.{STUB[0]}")
-        svc.delete("airports", f"code=in.({','.join(STUB)})")
-        svc.delete("stays", f"place_id=eq.{PLACE}")
-        svc.delete("places", f"id=eq.{PLACE}")
 
     @staticmethod
     def free_port():
@@ -319,15 +303,6 @@ class TwoUsersSignInTest(unittest.TestCase):
         port = s.getsockname()[1]
         s.close()
         return port
-
-    def seed(self):
-        """Each person's own TEST01 trip, put again right before a read because other database tests share the stack."""
-        for u, tid in ((self.a, "TEST01-mcp-auth-a"), (self.b, "TEST01-mcp-auth-b")):
-            data = {"id": tid, "version": 1, "name": tid, "saved_at": "2026-11-06T00:00:00Z", "by": "migration",
-                    "why": "TEST01 sign in test", "way_in": {}, "way_home": {}, "places": []}
-            s, body = u.rest.insert("trips", [{"id": tid, "version": 1, "data": data}],
-                                    on_conflict="owner_id,id,version", resolution="merge-duplicates")
-            self.assertIn(s, (200, 201), body)
 
     def discover(self):
         """401, the protected resource metadata, then the authorization server metadata in the MCP spec's order."""
@@ -376,21 +351,15 @@ class TwoUsersSignInTest(unittest.TestCase):
         self.assertEqual(s, 200, tok)
         return tok["access_token"]
 
-    def trips(self, bearer):
-        s, _, body = mcp_call(self.base, "tools/call", {"name": "list_trip", "arguments": {}}, bearer)
-        self.assertEqual(s, 200, body)
-        self.assertFalse(body["result"].get("isError"), body)
-        return sorted(r["id"] for r in json.loads(body["result"]["content"][0]["text"])["rows"] if r["id"].startswith("TEST01-mcp-auth-"))
-
-    def connect(self):
-        """One client registered the way claude.ai registers, and both people signed in through it. Their tokens."""
+    def connect(self, *people):
+        """One client registered the way claude.ai registers, and the people signed in through it, A and B unless named.
+        Their tokens."""
         prm, meta = self.discover()
         s, _, client = req("POST", meta["registration_endpoint"], body={
             "client_name": "Claude", "redirect_uris": [CLAUDE_CALLBACK], "grant_types": ["authorization_code", "refresh_token"],
             "response_types": ["code"], "token_endpoint_auth_method": "none"})
         self.assertIn(s, (200, 201), client)
-        return (self.sign_in(meta, client["client_id"], self.a, prm["resource"]),
-                self.sign_in(meta, client["client_id"], self.b, prm["resource"]))
+        return tuple(self.sign_in(meta, client["client_id"], u, prm["resource"]) for u in (people or (self.a, self.b)))
 
     def tool(self, bearer, name, args, refused=False):
         s, _, body = mcp_call(self.base, "tools/call", {"name": name, "arguments": args}, bearer)
@@ -398,6 +367,52 @@ class TwoUsersSignInTest(unittest.TestCase):
         self.assertEqual(bool(body["result"].get("isError")), refused, body)
         text = body["result"]["content"][0]["text"]
         return text if refused else json.loads(text)
+
+
+@unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 and TRIPDB_ENV_FILE to the local stack")
+class TwoUsersSignInTest(ConnectorStack):
+    """Two people connect the same client through Supabase's OAuth server and the planner's consent step, and the real
+    connector answers each with their own trips only. Its own users and TEST01 trips, never another test's."""
+
+    @classmethod
+    def setUpClass(cls):
+        import migrate, users
+        cls.env = env = migrate.load_env()
+        users.refuse(env)
+        cls.users = users
+        cls.a, cls.b = users.make_user(env, "mcp-auth-a"), users.make_user(env, "mcp-auth-b")
+        cls.start_connector()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.stop_connector()
+        for u in (cls.a, cls.b):
+            u.rest.delete("trips", "id=like.TEST01-mcp-auth-*")
+        cls.clean_catalogue()
+
+    @classmethod
+    def clean_catalogue(cls):
+        """Only the rows these tests make: B's flights from the made up airport, the airports, the stay and its place."""
+        svc = cls.users.service(cls.env)
+        svc.delete("quotes", f"owner_id=eq.{cls.b.id}&first_from=eq.{STUB[0]}")
+        svc.delete("airports", f"code=in.({','.join(STUB)})")
+        svc.delete("stays", f"place_id=eq.{PLACE}")
+        svc.delete("places", f"id=eq.{PLACE}")
+
+    def seed(self):
+        """Each person's own TEST01 trip, put again right before a read because other database tests share the stack."""
+        for u, tid in ((self.a, "TEST01-mcp-auth-a"), (self.b, "TEST01-mcp-auth-b")):
+            data = {"id": tid, "version": 1, "name": tid, "saved_at": "2026-11-06T00:00:00Z", "by": "migration",
+                    "why": "TEST01 sign in test", "way_in": {}, "way_home": {}, "places": []}
+            s, body = u.rest.insert("trips", [{"id": tid, "version": 1, "data": data}],
+                                    on_conflict="owner_id,id,version", resolution="merge-duplicates")
+            self.assertIn(s, (200, 201), body)
+
+    def trips(self, bearer):
+        s, _, body = mcp_call(self.base, "tools/call", {"name": "list_trip", "arguments": {}}, bearer)
+        self.assertEqual(s, 200, body)
+        self.assertFalse(body["result"].get("isError"), body)
+        return sorted(r["id"] for r in json.loads(body["result"]["content"][0]["text"])["rows"] if r["id"].startswith("TEST01-mcp-auth-"))
 
     def test_a_person_who_is_not_the_admin_saves_and_changes_a_flight(self):
         a, b = self.connect()
