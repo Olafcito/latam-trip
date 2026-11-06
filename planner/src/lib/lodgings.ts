@@ -60,15 +60,15 @@ export async function loadLodgings(): Promise<Lodging[]> {
   return ((l.data ?? []) as Omit<Lodging, 'rooms'>[]).map((row) => ({ ...row, rooms: rooms.get(row.id) ?? [] }))
 }
 
-/** Calls cb on every change of a lodging, a room or a price. Returns the way to stop listening. Each call gets a channel of its own. */
 /** True when a Booking.com place is stored at the place, hidden or not. Asked of the table, not the store, so a store not loaded yet never reads as none. */
 export async function hasBookingPlace(placeId: string): Promise<boolean> {
   if (!supabase) return true
-  const { data, error } = await supabase.from('lodgings').select('id').eq('place_id', placeId).contains('links', [{ site: 'booking' }]).limit(1)
+  const { data, error } = await supabase.from('lodgings').select('id').eq('place_id', placeId).contains('links', JSON.stringify([{ site: 'booking' }])).limit(1)
   if (error) throw new Error(error.message)
   return (data ?? []).length > 0
 }
 
+/** Calls cb on every change of a lodging, a room or a price. Returns the way to stop listening. Each call gets a channel of its own. */
 export function subscribeLodgings(cb: () => void): () => void {
   if (!supabase) return () => {}
   const client = supabase
