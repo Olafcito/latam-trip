@@ -252,7 +252,7 @@ class RlsTest(unittest.TestCase):
 
     def test_service_tables_closed(self):
         for table in ("admins", "inbox_tokens", "leases", "derived_options", "site_calls", "hostelworld_cities",
-                      "task_runner", "schema_migrations", "owner_limits", "read_booking_usage"):
+                      "task_runner", "schema_migrations", "owner_limits", "read_booking_usage", "task_day_counts"):
             with self.subTest(table=table):
                 for who in (self.a, self.b):
                     code, body = who.rest.select(table)
@@ -341,6 +341,30 @@ class RlsTest(unittest.TestCase):
         ok(self, self.b.rest.insert("tasks", tasks(3)))
         self.refused(self.b.rest.insert("tasks", tasks(1)), "3 tasks a day per person")
         ok(self, self.a.rest.insert("tasks", tasks(1)))
+
+    def test_tasks_a_day_count_what_was_added_today(self):
+        self.limit("tasks_per_day", 3)
+        task = {"type": "place_research", "title": "TEST01"}
+        day_cap = "3 tasks a day per person"
+        # a task dated in the past still counts on the day it was added
+        old = dict(task, created_at="2026-01-01T00:00:00Z")
+        ok(self, self.b.rest.insert("tasks", [old, old, old]))
+        self.refused(self.b.rest.insert("tasks", [old]), day_cap)
+        # deleting the day's tasks and adding them again counts them again
+        self.assertEqual(len(ok(self, self.b.rest.delete("tasks", "title=eq.TEST01"))), 3)
+        self.refused(self.b.rest.insert("tasks", [task]), day_cap)
+        # the connector's undo adds a deleted task back under its own id and date, which works under the cap
+        mine = ok(self, self.a.rest.insert("tasks", [task]))[0]
+        ok(self, self.a.rest.delete("tasks", f"id=eq.{mine['id']}"))
+        back = {k: mine[k] for k in ("id", "type", "title", "status", "created_at", "data")}
+        self.assertEqual(ok(self, self.a.rest.insert("tasks", [back]))[0]["id"], mine["id"])
+        # and counts, so the admin has one task left today
+        ok(self, self.a.rest.insert("tasks", [task]))
+        self.refused(self.a.rest.insert("tasks", [task]), day_cap)
+        # no client reads or writes the count
+        for who in (self.a, self.b):
+            code, body = who.rest.insert("task_day_counts", [{"owner_id": who.id, "day": "2026-11-06", "tasks": 0}])
+            self.assertIn(code, REFUSED, (code, body))
 
     def test_lodging_at_the_tasks_cap_comes_without_its_task(self):
         # a Booking.com lodging queues a stay_details task, and the cap on tasks never stops the lodging itself

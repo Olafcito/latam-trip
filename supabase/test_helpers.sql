@@ -11,7 +11,8 @@ begin
   truncate public.quotes, public.trips, public.stays, public.connections, public.profiles, public.place_images,
     public.experience_images, public.experiences, public.places, public.airports, public.documents, public.inbox,
     public.tasks, public.task_log, public.agent_usage, public.leases, public.derived_options, public.bookings,
-    public.lodging_prices, public.lodging_rooms, public.lodgings, public.user_documents, public.user_profiles, public.read_booking_usage
+    public.lodging_prices, public.lodging_rooms, public.lodgings, public.user_documents, public.user_profiles, public.read_booking_usage,
+    public.task_day_counts
     restart identity cascade;
   update public.derive_state set dirty_at = null, dirty_since = null, built_dirty_at = null, failed_dirty_at = null,
     last_started = null, last_finished = null, last_error = null, last_warning = null, manifest_hash = null, worker_version = null where id = 1;

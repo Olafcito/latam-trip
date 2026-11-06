@@ -24,6 +24,18 @@ insert into public.owner_limits (name, value, unit) values
   ('rows_in_agent_usage', 10000, 'rows')
 on conflict (name) do nothing;
 
+-- the tasks each person added per UTC day. A client can set created_at and can delete a task and add it again, so the
+-- day is counted here, as take_read_booking counts its reads (0029). Only hold_owner_caps writes it, no client reads it,
+-- and a refused insert takes its count back with it. An undo through the connector adds its task again and counts.
+create table public.task_day_counts (
+  owner_id uuid not null references auth.users (id) on delete cascade,
+  day date not null,
+  tasks integer not null default 0 check (tasks >= 0),
+  primary key (owner_id, day)
+);
+alter table public.task_day_counts enable row level security;
+revoke all on public.task_day_counts from anon, authenticated;
+
 create function public.hold_owner_caps() returns trigger
 language plpgsql security definer set search_path = ''
 as $$
@@ -50,7 +62,10 @@ begin
       end if;
     end if;
     if day_cap is not null then
-      select count(*) into n from public.tasks where owner_id = o and created_at >= date_trunc('day', now(), 'UTC');
+      insert into public.task_day_counts as d (owner_id, day, tasks)
+        values (o, (now() at time zone 'utc')::date, (select count(*) from changed where owner_id = o))
+        on conflict (owner_id, day) do update set tasks = d.tasks + excluded.tasks
+        returning tasks into n;
       if n > day_cap then
         raise exception using errcode = 'P0001',
           message = format('The limit is %s tasks a day per person, and this insert would pass it.', day_cap),
