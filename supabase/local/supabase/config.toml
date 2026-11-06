@@ -44,6 +44,15 @@ enabled = false
 enabled = true
 site_url = "http://127.0.0.1:5198"
 
+# The OAuth 2.1 server the connector uses as its authorization server (TECH-010). Supabase sends the person to
+# site_url + authorization_url_path + ?authorization_id=<id>. The path is "/" because the hosted planner is a bucket
+# behind CloudFront that serves index.html at the root only, and the planner opens its consent page from the query.
+# The live project carries the same three settings. The local stack signs with the CLI's ES256 key already.
+[auth.oauth_server]
+enabled = true
+authorization_url_path = "/"
+allow_dynamic_registration = true
+
 [edge_runtime]
 enabled = false
 

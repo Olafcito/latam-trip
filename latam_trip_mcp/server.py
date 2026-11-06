@@ -1,9 +1,9 @@
-"""The latam-trip connector: FastMCP behind an ASGI guard that wants a bearer from the OAuth server in oauth.py.
+"""The latam-trip connector: FastMCP behind an ASGI guard that wants a bearer Supabase's OAuth server issued (oauth.py).
 
 The tools come from core.Core.tool_specs(). The Supabase secret key is read from SSM on the first call, never kept in the
 template or the repo.
 """
-import json, os, sys
+import contextvars, json, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -16,6 +16,8 @@ import tripdb  # noqa: E402
 import tripdb_store  # noqa: E402
 
 _core = None
+# (bearer, user id) of the request being served, set by guard
+caller = contextvars.ContextVar("caller", default=None)
 
 
 def get_core():
@@ -65,8 +67,9 @@ def base_url(headers):
     return f"{proto}://{headers.get('host', '')}"
 
 
-def guard(inner, resolve, base_url_fn, oauth_on=True):
-    """An ASGI app that serves the OAuth routes itself and lets a request through to inner only with a good bearer."""
+def guard(inner, verify, base_url_fn):
+    """An ASGI app that serves the protected resource metadata and lets a request through to inner only with a bearer
+    verify accepts. verify gives the user id or None. The token and the user id ride in a context variable for the call."""
 
     async def app(scope, receive, send):
         if scope["type"] != "http":
@@ -74,24 +77,25 @@ def guard(inner, resolve, base_url_fn, oauth_on=True):
         headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers", [])}
         base = base_url_fn(headers)
         path = scope.get("path", "")
-        if oauth_on and oauth.is_oauth_path(path):
-            return await oauth.handle(scope, receive, send, base)
+        if oauth.is_metadata_path(path):
+            return await oauth.send_json(send, 200, oauth.protected_resource_metadata(base))
         given = headers.get("authorization", "")
         token = given[7:].strip() if given.lower().startswith("bearer ") else ""
-        if not (token and resolve(token)):
-            meta = oauth.protected_resource_metadata_url(base)
-            body = json.dumps({"error": "unauthorized"}).encode()
-            await send({"type": "http.response.start", "status": 401, "headers": [
-                (b"content-type", b"application/json"), (b"www-authenticate", f'Bearer resource_metadata="{meta}"'.encode())]})
-            await send({"type": "http.response.body", "body": body})
-            return
-        await inner(scope, receive, send)
+        sub = verify(token) if token else None
+        if not sub:
+            return await oauth.send_json(send, 401, {"error": "invalid_token" if token else "unauthorized"},
+                                         [(b"www-authenticate", oauth.challenge(base, bool(token)).encode())])
+        reset = caller.set((token, sub))
+        try:
+            await inner(scope, receive, send)
+        finally:
+            caller.reset(reset)
 
     return app
 
 
 def build_asgi():
-    return guard(build_mcp().http_app(path="/mcp", stateless_http=True), oauth.resolve_access_token, base_url)
+    return guard(build_mcp().http_app(path="/mcp", stateless_http=True), oauth.verify_bearer, base_url)
 
 
 def __getattr__(name):

@@ -1,6 +1,6 @@
 # The latam-trip connector
 
-The connector lets an assistant read and change the trip data in Supabase: trips, flights, connections, stays, experiences, places, tasks, bookings and places to stay. It is an MCP server on AWS Lambda, and it works in Claude (web, desktop and phone), Claude Code and ChatGPT.
+The connector lets an assistant read and change the trip data in Supabase: trips, flights, connections, stays, experiences, places, tasks, bookings and places to stay. It is an MCP server on AWS Lambda, and it works in Claude (web, desktop and phone) and Claude Code.
 
 Server address:
 
@@ -8,18 +8,19 @@ Server address:
 https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp
 ```
 
-Only the owner can sign in. Nothing about the trip is readable without a sign in.
+Every planner account can connect its own assistant, and the assistant sees only that account's rows, as the planner does. Nothing about a trip is readable without a sign in.
 
 ## How the sign in works
 
-When an assistant connects, it opens a page called **Connect Latam trip**. It has two ways in.
+The sign in is the planner's own Supabase sign in. Supabase is the authorization server, and the connector only checks the tokens it issues (TECH-010).
 
-1. **Email me a sign in link** (the usual way). The page sends the same Supabase sign in email the planner sends. Open the link on any device. It opens the planner, signed in, with a screen that says **Connect ChatGPT to Latam trip** (or whichever app asked). Press **Allow**. The first page, the one the assistant opened, notices within two seconds and goes back to the assistant by itself. You can close the planner tab.
-2. **Use the passphrase instead**. A fallback for when the email is slow. The passphrase is a secret kept in AWS SSM at `/latam-trip-mcp/signin-passphrase`, set with `infra/mcp/put-secrets.sh`. It is not your Supabase password.
+1. The assistant registers itself with Supabase and opens the planner's consent page.
+2. If the planner is not signed in on that browser, it asks for the usual email link first. The link keeps the request and comes back to the consent page.
+3. The page names the app, the address it goes back to and what it may read. Press **Allow**, and the assistant goes on by itself. **Deny** sends it back with nothing.
 
-A link lasts ten minutes and works once. Five link requests or wrong passphrases within five minutes lock the page for five minutes.
+Only Claude on claude.ai and Claude Code on the same computer (a `localhost` or `127.0.0.1` address) are let through. Any other return address is refused on the page.
 
-After a sign in, the assistant holds a token for 30 days and renews it by itself, so the sign in is rare. A renewal token that goes unused for 180 days runs out.
+The assistant holds a Supabase token for your account and renews it by itself, so the sign in is rare. When the same app connects again, the page passes it on without asking. A token the planner holds for itself is refused by the connector, so a browser session cannot stand in for a connection.
 
 ## Add it to Claude
 
@@ -28,7 +29,7 @@ On claude.ai or the desktop app:
 1. Open **Settings**, then **Connectors**.
 2. Press **Add custom connector**.
 3. Name it `Latam trip` and paste the server address. Leave the advanced OAuth fields empty.
-4. Press **Connect** and sign in as above.
+4. Press **Connect** and allow it as above.
 
 A connector added on claude.ai also shows up in the Claude phone apps. Turn it on per chat from the tools menu.
 
@@ -38,17 +39,7 @@ A connector added on claude.ai also shows up in the Claude phone apps. Turn it o
 claude mcp add --transport http latam-trip https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp
 ```
 
-Then run `/mcp` in Claude Code, pick `latam-trip` and choose **Authenticate**. A browser opens on the sign in page.
-
-## Add it to ChatGPT
-
-Custom connectors need developer mode, on a plan that has it.
-
-1. Open **Settings**, then **Apps and Connectors**, then **Advanced settings**, and turn on **Developer mode**.
-2. Back in **Apps and Connectors**, press **Create**.
-3. Name it `Latam trip`, paste the server address, and pick **OAuth** as the authentication.
-4. Tick that you trust the connector and press **Create**. ChatGPT opens the sign in page.
-5. In a chat, turn the connector on from the tools menu (developer mode).
+Then run `/mcp` in Claude Code, pick `latam-trip` and choose **Authenticate**. A browser opens on the planner's consent page.
 
 ## The tools
 
@@ -100,16 +91,15 @@ Each tool describes its fields to the assistant, so asking in plain words works,
 
 ## When it does not work
 
-- **The page says "This sign in has run out".** The ten minutes passed, or the code was already used. Start the connection again from the assistant.
-- **No email arrives.** Look in spam for a mail from Supabase. Wait a minute before asking again, the page locks after five tries. Or use the passphrase.
-- **The planner shows the normal sign in screen instead of Allow.** The link was opened in a browser that was not signed in and the sign in did not finish. Send yourself the planner link from that screen. It keeps the connection and lands on Allow.
-- **"Could not connect" after Allow.** The planner was signed in as someone who is not the owner. Sign out and use the owner's address.
-- **ChatGPT has no Create button.** Developer mode is off, or the plan does not include it.
-- **The assistant says it has no access any more.** Remove the connector and add it again. That runs a fresh sign in.
+- **The planner shows its normal sign in screen.** That browser was not signed in. Send yourself the link from that screen. It keeps the request and lands on the consent page.
+- **The page says the request has run out.** It was already answered, or it is old. Start the connection again from the assistant.
+- **The page refuses the return address.** The app is not Claude or Claude Code. Only those two are let through.
+- **The assistant says it has no access any more.** Its renewal ran out or was revoked. Remove the connector and add it again. That runs a fresh sign in.
 
 ## For whoever runs it
 
-- Code: `latam_trip_mcp/` (`server.py` is the app, `core.py` the tools, `oauth.py` the sign in).
+- Code: `latam_trip_mcp/` (`server.py` is the app, `core.py` the tools, `oauth.py` the protected resource metadata and the bearer check against the project's JWKS). The connector serves no sign in route of its own.
+- Supabase Auth settings (live and in `supabase/local/supabase/config.toml`): the OAuth 2.1 server on, dynamic client registration on, the authorization path `/` and `site_url` the planner's address, so Supabase sends the consent request to the planner's root with `?authorization_id=`.
 - Deploy: `AWS_PROFILE=<profile> bash infra/mcp/deploy.sh` deploys the whole stack from the PC. Secrets go in first with `infra/mcp/put-secrets.sh`. Once the release is set up (TECH-008), a push to `main` runs `deploy.sh --code-only` from `.github/workflows/release.yml`, which only updates the function's code. A change to `template.yaml` still needs the full deploy. Both end with a check that `POST /mcp` without a bearer answers 401.
 - Tests: `python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"`. A test checks that every tool is named on this page.
 - The planner's Allow screen is `planner/src/components/Connect.tsx`. Its address comes from `LATAMTRIP_APP_URL` in `infra/mcp/template.yaml`, and the connector's address from `VITE_CONNECTOR_URL` (it has a default).
