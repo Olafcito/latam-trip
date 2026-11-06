@@ -28,6 +28,9 @@ CHANGE = {"trips": {"saved_by": "TEST01 stranger"}, "bookings": {"notes": "TEST0
           "inbox": {"reason": "TEST01 stranger"}, "agent_usage": {"agent": "TEST01 stranger"},
           "user_profiles": {"rules": "TEST01 stranger"}, "user_documents": {"data": {"by": "stranger"}}}
 REFUSED = (401, 403)
+# the private tables in the supabase_realtime publication, with their primary keys
+PUBLISHED = {"bookings": ("owner_id", "id"), "lodgings": ("owner_id", "id"), "lodging_rooms": ("owner_id", "id"),
+             "lodging_prices": ("owner_id", "id"), "tasks": ("id",), "trips": ("owner_id", "id", "version")}
 CATALOGUE = {
     "airports": ("code", {"code": "TS1"}, {"name": "TEST01 airport"}),
     "places": ("id", {"id": "TEST01-place"}, {"name": "TEST01 place"}),
@@ -329,20 +332,35 @@ class RlsTest(unittest.TestCase):
                 self.assertFalse(dirty())
 
     def test_realtime_is_owner_scoped(self):
-        seen = listen(self.env, self.b, "lodgings")
-        try:
-            seen.ready.wait(20)
-            self.assertTrue(seen.ready.is_set(), seen.errors)
-            other = self.lodging(self.a, "TEST01 of A")
-            own = self.lodging(self.b, "TEST01 of B")
-            deadline = time.time() + 20
-            while time.time() < deadline and own not in seen.ids:
-                time.sleep(0.2)
-            time.sleep(1)  # a late event for A's row would land by now
-        finally:
-            seen.stop()
-        self.assertIn(own, seen.ids, seen.errors)
-        self.assertNotIn(other, seen.ids)
+        """B listens to every change of each private published table while A inserts, updates and deletes a row.
+        B hears no insert or update of A's. Realtime does not apply row level security to a delete, so B does hear A's
+        delete, with the old row's primary key only. For a table keyed (owner_id, id) that is A's user id and the row's
+        id, for trips also the version, for tasks the id alone. That is the known gate before sign up opens, and this
+        test pins it so a fix shows up here."""
+        for table, pk in PUBLISHED.items():
+            with self.subTest(table=table):
+                seen = listen(self.env, self.b, table)
+                try:
+                    seen.ready.wait(20)
+                    self.assertTrue(seen.ready.is_set(), seen.errors)
+                    other = ok(self, self.a.rest.insert(table, [self.row(self.a, table)]))[0]
+                    q = self.where(table, other)
+                    ok(self, self.a.rest.update(table, q, CHANGE[table]))
+                    ok(self, self.a.rest.delete(table, q))
+                    own = ok(self, self.b.rest.insert(table, [self.row(self.b, table)]))[0]
+                    deadline = time.time() + 20
+                    while time.time() < deadline and not seen.has("INSERT", own[KEY[table]]):
+                        time.sleep(0.2)
+                    time.sleep(1)  # a late event for A's row would land by now
+                finally:
+                    seen.stop()
+                self.assertTrue(seen.has("INSERT", own[KEY[table]]), seen.errors)
+                key = other[KEY[table]]
+                heard = [(kind, rec, old) for kind, rec, old in seen.events
+                         if key in (rec.get(KEY[table]), old.get(KEY[table]))]
+                self.assertEqual([k for k, _, _ in heard if k != "DELETE"], [], "B heard A's insert or update")
+                self.assertEqual([old for k, _, old in heard if k == "DELETE"], [{c: other[c] for c in pk}],
+                                 "what B hears of A's delete")
 
     def test_derive_state_readable_names_no_trip(self):
         """The worker's run_build writes derive_state on a dropped trip and on a failure, and B reads it. The steps around
@@ -388,10 +406,11 @@ class RlsTest(unittest.TestCase):
 
 
 class listen:
-    """A Realtime subscription to one table's inserts as one user, in a thread. ids holds the ids it was told about."""
+    """A Realtime subscription to every change of one table as one user, in a thread. events holds each change it was
+    told about as (type, record, old_record)."""
 
     def __init__(self, env, user, table):
-        self.ids, self.errors, self.ready, self.done = [], [], threading.Event(), threading.Event()
+        self.events, self.errors, self.ready, self.done = [], [], threading.Event(), threading.Event()
         self.thread = threading.Thread(target=self.run, args=(env, user, table), daemon=True)
         self.thread.start()
 
@@ -406,7 +425,7 @@ class listen:
         try:
             with connect(url, open_timeout=20) as ws:
                 ws.send(json.dumps({"topic": "realtime:test-" + table, "event": "phx_join", "ref": "1", "payload": {
-                    "config": {"postgres_changes": [{"event": "INSERT", "schema": "public", "table": table}]},
+                    "config": {"postgres_changes": [{"event": "*", "schema": "public", "table": table}]},
                     "access_token": user.token}}))
                 last_beat = time.time()
                 while not self.done.is_set():
@@ -426,10 +445,13 @@ class listen:
                     elif ev == "phx_reply" and (pl.get("status") != "ok"):
                         self.errors.append(pl)
                     elif ev == "postgres_changes":
-                        rec = (pl.get("data") or {}).get("record") or {}
-                        self.ids.append(rec.get("id"))
+                        data = pl.get("data") or {}
+                        self.events.append((data.get("type"), data.get("record") or {}, data.get("old_record") or {}))
         except Exception as e:  # the test reads errors and fails with them
             self.errors.append(repr(e))
+
+    def has(self, kind, key):
+        return any(k == kind and key in rec.values() for k, rec, _ in self.events)
 
     def stop(self):
         self.done.set()
