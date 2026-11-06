@@ -275,6 +275,30 @@ class RlsTest(unittest.TestCase):
         task = ok(self, self.svc.insert("tasks", [{"type": "place_research", "title": "TEST01"}]))
         self.assertEqual(task[0]["owner_id"], self.a.id)
 
+    def test_only_admin_rows_mark_dirty(self):
+        def clean():
+            ok(self, self.svc.update("derive_state", "id=eq.1", {"dirty_at": None, "dirty_since": None}))
+
+        def dirty():
+            return ok(self, self.svc.select("derive_state", "select=dirty_at&id=eq.1"))[0]["dirty_at"] is not None
+
+        for table in ("quotes", "task_log", "inbox"):
+            with self.subTest(table=table):
+                for who, feeds in ((self.b, False), (self.a, True)):
+                    clean()
+                    row = ok(self, who.rest.insert(table, [self.row(who, table)]))[0]
+                    self.assertEqual(dirty(), feeds, ("insert", who.id))
+                    clean()
+                    ok(self, who.rest.update(table, self.where(table, row), CHANGE[table]))
+                    self.assertEqual(dirty(), feeds, ("update", who.id))
+                    clean()
+                    ok(self, who.rest.delete(table, self.where(table, row)))
+                    self.assertEqual(dirty(), feeds, ("delete", who.id))
+                # a write that touches no row of the admin's leaves the build alone
+                clean()
+                ok(self, self.svc.update(table, f"{KEY[table]}=eq.0", CHANGE[table]))
+                self.assertFalse(dirty())
+
     def test_realtime_is_owner_scoped(self):
         seen = listen(self.env, self.b, "lodgings")
         try:

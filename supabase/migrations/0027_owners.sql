@@ -166,6 +166,42 @@ create trigger mark_dirty_delete after delete on public.user_documents
   for each row when (old.name not in ('web_trips', 'way_id_map', 'unresolved_journeys'))
   execute function public.mark_dirty_admin_doc();
 
+-- The statement triggers of 0008 on quotes, task_log and inbox marked the build dirty on any write. Only the admin's
+-- rows feed the build, so another person's write must not start a build or learn when one runs. Each trigger reads
+-- the statement's changed rows and marks dirty only when one of them is the admin's.
+create function public.mark_dirty_admin_rows() returns trigger
+language plpgsql security definer set search_path = public
+as $$
+begin
+  if tg_op = 'DELETE' then
+    perform 1 from gone g join public.admins a on a.user_id = g.owner_id limit 1;
+  elsif tg_op = 'UPDATE' then
+    perform 1 from (select owner_id from changed union all select owner_id from before) c
+      join public.admins a on a.user_id = c.owner_id limit 1;
+  else
+    perform 1 from changed c join public.admins a on a.user_id = c.owner_id limit 1;
+  end if;
+  if found then
+    update public.derive_state set dirty_at = now(), dirty_since = coalesce(dirty_since, now()) where id = 1;
+  end if;
+  return null;
+end $$;
+revoke execute on function public.mark_dirty_admin_rows() from public, anon, authenticated;
+do $$
+declare t text;
+begin
+  foreach t in array array['quotes', 'task_log', 'inbox'] loop
+    execute format('drop trigger mark_dirty on public.%I', t);
+    execute format('create trigger mark_dirty_insert after insert on public.%I referencing new table as changed
+                    for each statement execute function public.mark_dirty_admin_rows()', t);
+    execute format('create trigger mark_dirty_update after update on public.%I
+                    referencing old table as before new table as changed
+                    for each statement execute function public.mark_dirty_admin_rows()', t);
+    execute format('create trigger mark_dirty_delete after delete on public.%I referencing old table as gone
+                    for each statement execute function public.mark_dirty_admin_rows()', t);
+  end loop;
+end $$;
+
 -- a person's profile, read by the skills in a later phase
 create table public.user_profiles (
   owner_id uuid primary key default coalesce(auth.uid(), public.admin_id()) references auth.users (id) on delete cascade,
