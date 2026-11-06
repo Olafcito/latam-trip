@@ -5,7 +5,7 @@ import { fileTile } from '../../lib/bookedBox'
 import { thousands, weekdayDay } from '../../lib/format'
 import { nightsWord } from '../../lib/stayOffer'
 import { Bed, Calendar, Check, Doc, External, Hash, Paperclip, Refund, Ring, Shop, Ticket, Trash, Warn } from '../icons'
-import type { StayCardData } from './AccommodationCard'
+import type { StayCardData } from './stayCardData'
 
 // The stay on its own, as the flight's booking opens: the photos, then the place, then its facts one to a line with
 // the mark that says what each is, then the confirmation files. Only this place shows, not the search. The acts sit

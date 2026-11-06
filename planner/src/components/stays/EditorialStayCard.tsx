@@ -3,10 +3,10 @@ import { thousands, weekdayDay } from '../../lib/format'
 import { gmailLogo } from '../../lib/purchase'
 import { Arrow, Bed, Check, External, Paperclip, Refund, Ring, Warn } from '../icons'
 import { Tip } from '../story/Marks'
-import { ProviderMark, type StayCardData } from './AccommodationCard'
+import { ProviderMark, type StayCardData } from './stayCardData'
 import { AmenityIcon, KindIcon } from './offerMarks'
 
-// The editorial look of where Simon sleeps at a stop, from the same card data as AccommodationCard. One wide landscape
+// The editorial look of where Simon sleeps at a stop, from the same card data as StayCardData. One wide landscape
 // photo on the left, on a phone on top. Beside it the kind and the booking mark once, the name large, the address,
 // what it offers as small marks, then one row of the stay: in, out, nights and the room, the room a link to where it
 // was found with that site's logo before it. Last the money and the confirmation as one group: the total large,
