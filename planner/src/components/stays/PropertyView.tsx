@@ -6,6 +6,7 @@ import { addDays } from '../../lib/time'
 import { safeUrl } from '../../lib/lodgingLinks'
 import { clampPhoto } from '../../lib/photoStrip'
 import { roomMarks, type Mark } from '../../lib/roomMarks'
+import { cheapestFirst } from '../../lib/roomOrder'
 import type { Shared } from '../../lib/sharePlace'
 import { Bed, Calendar, Caret, Check, External, Heart, Person, Photos, Share, Warn } from '../icons'
 import { DayInput } from './DayInput'
@@ -227,7 +228,7 @@ export function PropertyView(p: PropertyViewProps) {
               <span><Person s={15} />{p.guests} {p.guests === 1 ? 'guest' : 'guests'}</span>
             </div>
             <ul className="pv-rooms">
-              {l.rooms.map((r) => {
+              {cheapestFirst(l.rooms, (r) => nightly(r.prices, p.checkIn, p.checkOut)?.dkk).map((r) => {
                 const pr = nightly(r.prices, p.checkIn, p.checkOut)
                 const on = chosen.includes(r.id)
                 const booked = p.booked === r.id

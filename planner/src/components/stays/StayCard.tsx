@@ -3,6 +3,7 @@ import type { Booking, Lodging, LodgingRoom } from '../../data/types'
 import { dayRange, dec1, kr, thousands } from '../../lib/format'
 import { safeUrl } from '../../lib/lodgingLinks'
 import { KIND, linkName, TAG } from '../../lib/lodgingWords'
+import { cheapestFirst } from '../../lib/roomOrder'
 import { priceFor, type StayPrice } from '../../lib/stays'
 import { photosShown, quotedLabel } from '../../lib/stayView'
 import { stayPricesTask } from '../../lib/tasks'
@@ -168,7 +169,7 @@ export function StayCard({ lodging, first, nights = 0, booking, onChoose, chosen
 
         {lodging.rooms.length > 0 && (
           <ul className="sc-rooms" aria-label="Rooms">
-            {lodging.rooms.map((r) => {
+            {cheapestFirst(lodging.rooms, (r) => prices.get(r.id)?.total).map((r) => {
               const on = chosen.includes(r.id) || booked === r.id
               const pr = prices.get(r.id) ?? null
               const inner = (
