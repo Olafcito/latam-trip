@@ -11,6 +11,28 @@ Simon's Latin America trip planner and research tools. The planner works on desk
 
 The planner reads its built map and pricing data from the Supabase `web` storage bucket through the worker's hash-aware cache. Trips are read and written in Supabase directly. The worker rebuilds derived files after database changes and runs scheduled builds and backups.
 
+## Install for an invited traveller
+
+Sign up is by invite. Simon sends an invite to your email address with `tripdb invite`, and nobody else can make an account. Without an invite the sign in page refuses the address.
+
+1. **Add the connector to your own Claude.** The server address is in [docs/connector.md](docs/connector.md), with the steps for claude.ai, the desktop app, the phone apps and Claude Code. Leave the advanced OAuth fields empty.
+2. **Sign in.** Press Connect. The planner asks for the email address Simon invited and sends it a sign in link. Open the link, check the app name on the page and press Allow. Your assistant then sees only your own trips, bookings, places to stay and files.
+3. **Install the plugin in Claude Code, if you want the skills.** Run `/plugin marketplace add Olafcito/latam-trip`, then `/plugin install flight-crawler@latam-trip`. The skills read your profile through the connector, so ask Claude to set your profile (home airport, currency, longest journey, travel style and rules) before the first search. The `add-lodging` skill works through the connector alone. The steps that need the repo on disk, such as `tripdb`, are for Simon.
+4. **Check it works.** Ask Claude to list your trips. A new account has none.
+
+### What an assistant may do in your browser
+
+Pages are read in your own browser and your own sign ins, on your device. An assistant working for you may open and read pages, search, and copy prices, photos, ratings and distances into your own rows through the connector. It must never:
+
+- book, reserve or pay,
+- sign in for you or enter a password,
+- fill in or submit a form, or enter personal data,
+- accept a consent banner or tick a box,
+- solve a bot check, since a bot check means the read is blocked and it should say so,
+- change an account, a booking or a setting on a site.
+
+Stop and tell Claude if a site asks for any of these. Your data is described in the [privacy note](docs/product/privacy-note.md), including how to export and delete your account.
+
 ## Local development
 
 Configure `VITE_SUPABASE_URL`, `VITE_SUPABASE_KEY` and `VITE_DATA_BASE` in the local environment before starting an app. These values are also configured as GitHub Actions repository variables for deployment. Never commit secret keys or `.env` files.

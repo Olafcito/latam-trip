@@ -337,7 +337,8 @@ Second gate before the first outside account: `tasks`, `inbox` and `task_log` ke
 
 ### Task 6.4: README install section and the privacy note draft
 
-- [ ] Install, sign in and the read only browser rules. The privacy note says what is stored, why, how long backups keep a deleted account, and how to delete. Marked as waiting for Simon's lawyer.
+- [x] Install, sign in and the read only browser rules. The privacy note says what is stored, why, how long backups keep a deleted account, and how to delete. Marked as waiting for Simon's lawyer.
+- Done as the section "Install for an invited traveller" in `README.md` (connector, invite and email link sign in, plugin from the repo marketplace, the read only browser rules) and the draft `docs/product/privacy-note.md`, headed as waiting for Simon's lawyer. Both take their facts from the spec, `docs/connector.md`, `data/README.md` and TECH-009, TECH-010 and TECH-013. Where the docs were silent the safe default is written and recorded as open questions 11 and 12 of FEAT-006.
 
 ---
 
