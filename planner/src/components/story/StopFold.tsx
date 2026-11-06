@@ -71,6 +71,8 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   const name = p ? shortPlace(nodeName(map, inout, p.node)) : ''
   const win = p && sp ? searchWindow(p.stays ?? [], sp) : null
   const dates = pick ?? win
+  // a booked stay at the stop settles it, so no picks are queued there (FEAT-004)
+  const bookedStop = !!sp && tripStays(journey, sched, bookings).some((b) => b.place_id === sp.node && b.check_in! < addDays(sp.inDay, Math.max(1, sp.days)) && b.check_out! > sp.inDay)
   // Find accommodations, for a stop with nights
   const finder = useStayFind(
     sp && sp.days > 0 ? { id: sp.node, name } : null,
@@ -78,6 +80,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
     dates?.checkOut ?? '',
     { id: journey.id, version: journey.version ?? null },
     adding !== false,
+    bookedStop,
   )
   if (!p || !sp || !win || !dates) return null
   const node = map.nodes.find((n) => n.id === p.node)

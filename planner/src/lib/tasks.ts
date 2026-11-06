@@ -69,6 +69,54 @@ export function stayFindTask(place: { id: string; name: string }, checkIn: strin
   return taskDraft(`${place.name} ${range}`, `The ${top} most reviewed places on Booking.com in ${place.name} for ${range}.`, task)
 }
 
+/**
+ * A stay_picks task for a stop and its dates (FEAT-004): queued by itself the first time Add accommodation opens at a
+ * stop with nights and no Booking.com place. The task runner adds three good value places from Booking.com.
+ */
+export function stayPicksTask(place: { id: string; name: string }, checkIn: string, checkOut: string): TaskDraft {
+  const task: Task = { type: 'stay_picks', place_id: place.id, check_in: checkIn, check_out: checkOut, from: 'app' }
+  const range = dayRange(checkIn, checkOut)
+  return taskDraft(`${place.name} ${range}`, `Three good value places on Booking.com in ${place.name} for ${range}.`, task)
+}
+
+/** A stay_search or stay_picks row of one place, with the dates it was asked for. */
+export interface StayTask {
+  id: number
+  type: 'stay_search' | 'stay_picks'
+  status: TaskRow['status']
+  check_in: string
+  check_out: string
+}
+
+const live = (t: StayTask) => t.status === 'open' || t.status === 'working'
+
+/** Which Booking.com tasks are under way for the dates: the search a press asked for, and the picks. */
+export function stayMarks(tasks: StayTask[], checkIn: string, checkOut: string): { search: boolean; picks: boolean } {
+  const here = tasks.filter((t) => live(t) && t.check_in === checkIn && t.check_out === checkOut)
+  return { search: here.some((t) => t.type === 'stay_search'), picks: here.some((t) => t.type === 'stay_picks') }
+}
+
+/**
+ * True when opening the sheet should queue the picks (FEAT-004 S1): the stop has nights and is not booked, its check
+ * in is today or later, no Booking.com place is stored at the place, hidden or not, no picks task was ever asked for
+ * the place and dates, and none is under way at the place for other dates.
+ */
+export function wantsPicks(o: { nights: number; booked: boolean; checkIn: string; checkOut: string; today: string; hasBooking: boolean; tasks: StayTask[] }): boolean {
+  if (o.nights <= 0 || o.booked || !o.checkIn || !o.checkOut || o.checkIn < o.today || o.hasBooking) return false
+  return !o.tasks.some((t) => t.type === 'stay_picks' && (live(t) || (t.check_in === o.checkIn && t.check_out === o.checkOut)))
+}
+
+/** The local date as YYYY-MM-DD. */
+export function localDay(d = new Date()): string {
+  const two = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`
+}
+
+/** A refused insert of a picks task for a place and dates that has one already, which counts as queued. */
+export function alreadyQueued(message: string): boolean {
+  return /duplicate key|tasks_stay_picks_once/.test(message)
+}
+
 const COLS = 'id,type,status,title,trip_id,trip_version,created_at,done_at,result'
 
 export type InsertResult = { ok: true; id: number } | { ok: false; message: string }
@@ -98,21 +146,18 @@ export async function loadTasks(tripId: string): Promise<TaskRow[]> {
   return (data ?? []) as TaskRow[]
 }
 
-/** The stay_search task still open or under way for a stop and its dates, or null when there is none. */
-export async function openStaySearch(placeId: string, checkIn: string, checkOut: string): Promise<TaskRow | null> {
-  if (!supabase) return null
+/** The stay_search and stay_picks tasks of one place, newest first. A search is under way while open or working. */
+export async function stayTasksAt(placeId: string): Promise<StayTask[]> {
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('tasks')
-    .select(COLS)
-    .eq('type', 'stay_search')
-    .in('status', ['open', 'working'])
+    .select('id,type,status,check_in:data->>check_in,check_out:data->>check_out')
+    .in('type', ['stay_search', 'stay_picks'])
     .eq('data->>place_id', placeId)
-    .eq('data->>check_in', checkIn)
-    .eq('data->>check_out', checkOut)
     .order('id', { ascending: false })
-    .limit(1)
+    .limit(50)
   if (error) throw new Error(error.message)
-  return ((data ?? []) as TaskRow[])[0] ?? null
+  return (data ?? []) as StayTask[]
 }
 
 /** Calls cb on every change of tasks. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
