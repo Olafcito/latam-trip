@@ -7,8 +7,11 @@
 -- writes their own rows, and a secret key write without owner_id (the worker, tripdb on the PC) lands on the admin.
 -- The rows that exist are set to the admin, and a notice says how many per table.
 --
--- Child tables carry the owner in their keys, so a room can only sit under a lodging of the same owner and a price only
--- under a room of the same owner. A key of someone else then fails the same way as a key that does not exist.
+-- A lodging, a room, a price and a booking are keyed (owner_id, id), so an id another person uses is as free as a fresh
+-- one and a write never learns that it exists. Child tables carry the owner in their keys, so a room can only sit
+-- under a lodging of the same owner and a price only under a room of the same owner. A key of someone else then fails
+-- the same way as a key that does not exist. No other key points at these ids. bookings.lodging_id, bookings.room_id
+-- and the lodging_id of a task's data are plain values, and every function that follows them matches on the owner.
 --
 -- The document split, checked against the live names on 2026-11-06. The live documents were bag_rules.json,
 -- cutover_done, elevation.json, experience_categories.json, image_queries.json, known_prices.json, lists.json,
@@ -80,18 +83,24 @@ begin
   end loop;
 end $$;
 
--- composite keys: a room under a lodging of its owner, a price under a room of its owner
-alter table public.lodgings add constraint lodgings_id_owner_key unique (id, owner_id);
+-- composite keys: each id is the owner's, a room under a lodging of its owner, a price under a room of its owner
+alter table public.lodging_rooms drop constraint lodging_rooms_lodging_id_fkey;
+alter table public.lodging_prices drop constraint lodging_prices_room_id_fkey;
+alter table public.lodgings drop constraint lodgings_pkey, add primary key (owner_id, id);
 alter table public.lodging_rooms
-  drop constraint lodging_rooms_lodging_id_fkey,
-  add constraint lodging_rooms_id_owner_key unique (id, owner_id),
-  add constraint lodging_rooms_lodging_owner_fkey foreign key (lodging_id, owner_id)
-    references public.lodgings (id, owner_id) on delete cascade;
+  drop constraint lodging_rooms_pkey,
+  add primary key (owner_id, id),
+  add constraint lodging_rooms_lodging_owner_fkey foreign key (owner_id, lodging_id)
+    references public.lodgings (owner_id, id) on delete cascade;
 alter table public.lodging_prices
-  drop constraint lodging_prices_room_id_fkey,
-  add constraint lodging_prices_id_owner_key unique (id, owner_id),
-  add constraint lodging_prices_room_owner_fkey foreign key (room_id, owner_id)
-    references public.lodging_rooms (id, owner_id) on delete cascade;
+  drop constraint lodging_prices_pkey,
+  add primary key (owner_id, id),
+  add constraint lodging_prices_room_owner_fkey foreign key (owner_id, room_id)
+    references public.lodging_rooms (owner_id, id) on delete cascade;
+alter table public.bookings drop constraint bookings_pkey, add primary key (owner_id, id);
+drop index public.lodging_rooms_lodging_id;
+drop index public.lodging_prices_room_id;
+create index lodging_prices_room_id on public.lodging_prices (owner_id, room_id, check_in);
 
 -- owner aware keys and indexes
 alter table public.trips drop constraint trips_pkey, add primary key (owner_id, id, version);
@@ -101,10 +110,6 @@ create unique index tasks_stay_picks_once on public.tasks
   (owner_id, (data->>'place_id'), (data->>'check_in'), (data->>'check_out')) where type = 'stay_picks';
 drop index public.lodging_rooms_site;
 create unique index lodging_rooms_site on public.lodging_rooms (owner_id, lodging_id, site, site_id);
-create index bookings_owner_id on public.bookings (owner_id);
-create index lodgings_owner_id on public.lodgings (owner_id);
-create index lodging_rooms_owner_id on public.lodging_rooms (owner_id);
-create index lodging_prices_owner_id on public.lodging_prices (owner_id);
 create index tasks_owner_id on public.tasks (owner_id);
 create index task_log_owner_id on public.task_log (owner_id);
 create index inbox_owner_id on public.inbox (owner_id);
@@ -327,8 +332,57 @@ begin
   return new;
 end $$;
 
--- only the lodging owner's own task closes, so a task naming someone else's lodging learns nothing from its result
-create or replace function public.close_stay_details(p_lodging text) returns integer
+-- The functions of 0025 and 0026 that judge a lodging by its id take its owner too, so a task, a room or a price only
+-- ever meets the lodging of its own owner, even when another person uses the same id.
+drop function public.close_stay_details(text);
+drop function public.stay_details_complete(text, date, date);
+drop function public.stay_details_dates(text, date, date);
+
+create function public.stay_details_dates(p_owner uuid, p_lodging text, p_check_in date, p_check_out date,
+                                          out check_in date, out check_out date)
+language plpgsql stable set search_path = public as $$
+begin
+  if p_check_in is not null and p_check_out is not null then
+    check_in := p_check_in;
+    check_out := p_check_out;
+    return;
+  end if;
+  select p.check_in, p.check_out into check_in, check_out
+  from public.lodging_prices p join public.lodging_rooms r on r.owner_id = p.owner_id and r.id = p.room_id
+  where r.owner_id = p_owner and r.lodging_id = p_lodging
+  group by p.check_in, p.check_out
+  having count(distinct p.room_id) = (select count(*) from public.lodging_rooms x
+                                      where x.owner_id = p_owner and x.lodging_id = p_lodging)
+  order by max(p.observed_at) desc, p.check_in, p.check_out
+  limit 1;
+end $$;
+revoke all on function public.stay_details_dates(uuid, text, date, date) from public, anon, authenticated;
+
+create function public.stay_details_complete(p_owner uuid, p_lodging text, p_check_in date, p_check_out date)
+returns boolean
+language plpgsql stable set search_path = public as $$
+declare
+  d record;
+begin
+  select * into d from public.stay_details_dates(p_owner, p_lodging, p_check_in, p_check_out);
+  if d.check_in is null or d.check_out is null then
+    return false;
+  end if;
+  return exists (select 1 from public.lodgings l
+                 where l.owner_id = p_owner and l.id = p_lodging and jsonb_array_length(l.photos) > 0)
+     and exists (select 1 from public.lodging_rooms r where r.owner_id = p_owner and r.lodging_id = p_lodging)
+     and not exists (select 1 from public.lodging_rooms r
+                     where r.owner_id = p_owner and r.lodging_id = p_lodging
+                       and not exists (select 1 from public.lodging_prices p
+                                       where p.owner_id = r.owner_id and p.room_id = r.id
+                                         and p.check_in = d.check_in and p.check_out = d.check_out));
+end $$;
+revoke all on function public.stay_details_complete(uuid, text, date, date) from public, anon, authenticated;
+
+-- Closes the complete open or working stay_details tasks of one owner's lodging, of every lodging of one owner when
+-- p_lodging is null, or of everyone when both are null. A task is judged by the lodging of its own owner only, so a
+-- task naming someone else's lodging learns nothing from its result.
+create function public.close_stay_details(p_lodging text, p_owner uuid default null) returns integer
 language plpgsql security definer set search_path = public
 as $$
 declare
@@ -341,10 +395,11 @@ declare
   closed int := 0;
   hit int;
 begin
-  for t in select k.id, k.data from public.tasks k
+  for t in select k.id, k.owner_id, k.data from public.tasks k
            where coalesce(k.type, k.data->>'type') = 'stay_details' and k.status in ('open', 'working')
              and k.data->>'lodging_id' is not null and (p_lodging is null or k.data->>'lodging_id' = p_lodging)
-             and exists (select 1 from public.lodgings l where l.id = k.data->>'lodging_id' and l.owner_id = k.owner_id)
+             and (p_owner is null or k.owner_id = p_owner)
+             and exists (select 1 from public.lodgings l where l.owner_id = k.owner_id and l.id = k.data->>'lodging_id')
            order by k.id
            for update of k skip locked
   loop
@@ -356,10 +411,12 @@ begin
       ci := null;
       co := null;
     end;
-    continue when not public.stay_details_complete(t.data->>'lodging_id', ci, co);
-    select * into d from public.stay_details_dates(t.data->>'lodging_id', ci, co);
-    select jsonb_array_length(photos) into n_photos from public.lodgings where id = t.data->>'lodging_id';
-    select count(*) into n_rooms from public.lodging_rooms where lodging_id = t.data->>'lodging_id';
+    continue when not public.stay_details_complete(t.owner_id, t.data->>'lodging_id', ci, co);
+    select * into d from public.stay_details_dates(t.owner_id, t.data->>'lodging_id', ci, co);
+    select jsonb_array_length(photos) into n_photos from public.lodgings
+      where owner_id = t.owner_id and id = t.data->>'lodging_id';
+    select count(*) into n_rooms from public.lodging_rooms
+      where owner_id = t.owner_id and lodging_id = t.data->>'lodging_id';
     update public.tasks
        set status = 'done', done_at = now(),
            result = 'Closed by the data: ' || n_photos || ' photos, ' || n_rooms || ' rooms, each priced for '
@@ -370,6 +427,39 @@ begin
   end loop;
   return closed;
 end $$;
+revoke all on function public.close_stay_details(text, uuid) from public, anon, authenticated;
+
+-- the trigger of 0025 finds the changed row's lodging among the rows of the same owner
+create or replace function public.stay_details_follow_data() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare
+  lid text;
+  who uuid;
+begin
+  if tg_table_name = 'lodgings' then
+    lid := new.id;
+    who := new.owner_id;
+  elsif tg_table_name = 'lodging_rooms' then
+    if tg_op = 'DELETE' then
+      lid := old.lodging_id;
+      who := old.owner_id;
+    else
+      lid := new.lodging_id;
+      who := new.owner_id;
+      if tg_op = 'UPDATE' and (old.lodging_id, old.owner_id) is distinct from (new.lodging_id, new.owner_id) then
+        perform public.close_stay_details(old.lodging_id, old.owner_id);
+      end if;
+    end if;
+  else
+    who := new.owner_id;
+    select r.lodging_id into lid from public.lodging_rooms r where r.owner_id = new.owner_id and r.id = new.room_id;
+  end if;
+  if lid is not null then
+    perform public.close_stay_details(lid, who);
+  end if;
+  return null;
+end $$;
+revoke all on function public.stay_details_follow_data() from public, anon, authenticated;
 
 -- the cloud runner acts with the secret key, so it wakes only for the admin's tasks (finding 3)
 create or replace function public.ping_task_runner() returns trigger

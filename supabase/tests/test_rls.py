@@ -127,6 +127,65 @@ class RlsTest(unittest.TestCase):
         self.assertEqual((under_theirs[0], under_theirs[1].get("code")), (under_none[0], under_none[1].get("code")))
         ok(self, self.b.rest.insert("lodging_prices", [dict(price, room_id=self.room(self.b, self.lodging(self.b)))]))
 
+    def test_id_of_another_is_free(self):
+        # B writes rows with the ids A uses, and it goes as it does with a fresh id, A's rows stay as they were
+        lid = self.lodging(self.a)
+        rid = self.room(self.a, lid)
+        price = {"check_in": "2026-12-03", "check_out": "2026-12-06", "total_dkk": 100}
+        pid = ok(self, self.a.rest.insert("lodging_prices", [dict(price, room_id=rid)]))[0]["id"]
+        bid = ok(self, self.a.rest.insert("bookings", [{"kind": "other"}]))[0]["id"]
+        before = {t: ok(self, self.svc.select(t, "select=*&order=id")) for t in ("lodgings", "lodging_rooms",
+                                                                                  "lodging_prices", "bookings")}
+        lodging = {"place_id": "TEST01", "name": "TEST01 of B", "kind": "hostel", "added_by": "claude"}
+        writes = [("lodgings", lid, lodging), ("lodging_rooms", rid, {"lodging_id": lid, "name": "TEST01 of B"}),
+                  ("lodging_prices", pid, dict(price, room_id=rid, total_dkk=1)), ("bookings", bid, {"kind": "stay"})]
+        for table, taken, row in writes:
+            with self.subTest(table=table):
+                fresh = str(uuid.uuid4())
+                if table == "lodging_rooms":  # under B's lodging of the same id, and the fresh one under a fresh lodging
+                    ok(self, self.b.rest.insert("lodgings", [dict(lodging, id=fresh)]))
+                    got_fresh = self.b.rest.insert(table, [dict(row, id=fresh, lodging_id=fresh)])
+                else:
+                    got_fresh = self.b.rest.insert(table, [dict(row, id=fresh)])
+                got = self.b.rest.insert(table, [dict(row, id=taken)])
+                self.assertEqual(got[0], got_fresh[0], (got, got_fresh))
+                self.assertEqual(got[0], 201, got)
+                self.assertEqual((got[1][0]["id"], got[1][0]["owner_id"]), (taken, self.b.id))
+                # the upsert the clients send, on (id, owner_id), changes B's own row only
+                again = self.b.rest.insert(table, [dict(row, id=taken)], on_conflict="id,owner_id",
+                                           resolution="ignore-duplicates")
+                self.assertIn(again[0], (200, 201), again)
+        for table, rows in before.items():
+            mine = [r for r in ok(self, self.svc.select(table, "select=*&order=id")) if r["owner_id"] == self.a.id]
+            self.assertEqual(mine, rows, table)
+        # each person reads their own row under the shared id
+        for who in (self.a, self.b):
+            got = ok(self, who.rest.select("lodgings", f"select=name,owner_id&id=eq.{lid}"))
+            self.assertEqual([r["owner_id"] for r in got], [who.id])
+
+    def test_stay_details_meet_their_own_lodging(self):
+        # A's place is complete, B's of the same id is not. Each task is judged by its own owner's place.
+        lid = self.lodging(self.a)
+        photos = [{"url": "https://example.com/TEST01.jpg"}]
+        ok(self, self.a.rest.update("lodgings", f"id=eq.{lid}", {"photos": photos}))
+        ok(self, self.b.rest.insert("lodgings", [{"id": lid, "place_id": "TEST01", "name": "TEST01 of B",
+                                                  "kind": "hostel", "added_by": "claude", "photos": photos}]))
+        task = {"type": "stay_details", "title": "TEST01", "status": "open",
+                "data": {"type": "stay_details", "lodging_id": lid, "check_in": "2026-12-03",
+                         "check_out": "2026-12-06"}}
+        ta = ok(self, self.a.rest.insert("tasks", [task]))[0]["id"]
+        tb = ok(self, self.b.rest.insert("tasks", [task]))[0]["id"]
+        ok(self, self.b.rest.insert("lodging_rooms", [{"lodging_id": lid, "name": "TEST01 of B"}]))
+        rid = self.room(self.a, lid)
+        ok(self, self.a.rest.insert("lodging_prices", [{"room_id": rid, "check_in": "2026-12-03",
+                                                        "check_out": "2026-12-06", "total_dkk": 100}]))
+        status = lambda who, tid: ok(self, who.rest.select("tasks", f"select=status&id=eq.{tid}"))[0]["status"]
+        self.assertEqual(status(self.a, ta), "done")
+        self.assertEqual(status(self.b, tb), "open")
+        # B's room has no price, and a sweep over everyone still leaves B's task open
+        ok(self, self.svc.rpc("close_stay_details", {"p_lodging": None}))
+        self.assertEqual(status(self.b, tb), "open")
+
     def test_same_trip_name_both_save(self):
         for who in (self.a, self.b):
             got = ok(self, who.rest.rpc("save_trip", {"trip": {"id": "colombia", "name": "Colombia", "by": "TEST01"}}))

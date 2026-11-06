@@ -192,7 +192,7 @@ class TaskCloseTest(unittest.TestCase):
         self.assertGreaterEqual(closed, 1)
         self.assertEqual(self.task(lid)[1], "done")
         left = self.q("select count(*) from public.tasks t where coalesce(t.type, t.data->>'type') = 'stay_details' "
-                      "and t.status in ('open', 'working') and public.stay_details_complete(t.data->>'lodging_id', "
+                      "and t.status in ('open', 'working') and public.stay_details_complete(t.owner_id, t.data->>'lodging_id', "
                       "nullif(t.data->>'check_in', '')::date, nullif(t.data->>'check_out', '')::date)")[0][0]
         self.assertEqual(left, 0)
 
