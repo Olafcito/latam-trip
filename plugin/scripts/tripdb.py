@@ -611,9 +611,11 @@ def cmd_lodging_details(paths, file, dry=False, rest=None):
             print(f"refused: {e}")
         raise Refused(f"lodging-details refused, {len(errs)} problem{'s' if len(errs) != 1 else ''}, nothing written")
     rest = rest or get_store(paths).rest
-    if not rest.get_all("lodgings", {"select": "id", "id": "eq." + lid}):
+    owner = store.admin_id(rest)  # the secret key sees every owner's rows, so the admin's are named
+    mine = {"owner_id": "eq." + owner}
+    if not rest.get_all("lodgings", {"select": "id", "id": "eq." + lid, **mine}):
         raise Refused(f"no lodging {lid!r}")
-    stored = rest.get_all("lodging_rooms", {"select": "id,name,site,site_id", "lodging_id": "eq." + lid})
+    stored = rest.get_all("lodging_rooms", {"select": "id,name,site,site_id", "lodging_id": "eq." + lid, **mine})
     taken, added_r, updated_r, new_prices, todo = set(), 0, 0, 0, []
     by_sid = {r["site_id"]: r for r in stored if r.get("site") == "booking" and r.get("site_id")}
     for row, prices in plan:
@@ -636,7 +638,7 @@ def cmd_lodging_details(paths, file, dry=False, rest=None):
     have = set()
     if taken:
         ids = ",".join(sorted(taken))
-        for p in rest.get_all("lodging_prices", {"select": "room_id,check_in,check_out,total_dkk,per_night_dkk", "room_id": f"in.({ids})"}):
+        for p in rest.get_all("lodging_prices", {"select": "room_id,check_in,check_out,total_dkk,per_night_dkk", "room_id": f"in.({ids})", **mine}):
             have.add((p["room_id"], p["check_in"], p["check_out"], p.get("total_dkk"), p.get("per_night_dkk")))
     for row, prices, hit in todo:
         rid = None
@@ -645,17 +647,17 @@ def cmd_lodging_details(paths, file, dry=False, rest=None):
             rid = hit["id"]
             patch = {k: row[k] for k in ("site", "site_id") + ROOM_PATCH if row.get(k) is not None}
             if not dry:
-                rest.patch("lodging_rooms", {"id": "eq." + rid}, patch)
+                rest.patch("lodging_rooms", {"id": "eq." + rid, **mine}, patch)
         else:
             added_r += 1
             if not dry:
-                rid = rest.insert("lodging_rooms", [{k: v for k, v in row.items() if v is not None}], returning="id")[0]["id"]
+                rid = rest.insert("lodging_rooms", [{**{k: v for k, v in row.items() if v is not None}, "owner_id": owner}], returning="id")[0]["id"]
         fresh = [p for p in prices if (rid, p["check_in"], p["check_out"], p.get("total_dkk"), p.get("per_night_dkk")) not in have]
         new_prices += len(fresh)
         if fresh and not dry:
-            rest.insert("lodging_prices", [dict({k: v for k, v in p.items() if v is not None}, room_id=rid, site="booking") for p in fresh])
+            rest.insert("lodging_prices", [dict({k: v for k, v in p.items() if v is not None}, room_id=rid, site="booking", owner_id=owner) for p in fresh])
     if photos and not dry:
-        rest.patch("lodgings", {"id": "eq." + lid}, {"photos": photos})
+        rest.patch("lodgings", {"id": "eq." + lid, **mine}, {"photos": photos})
     print(f"lodging-details{' (dry, nothing written)' if dry else ''}: rooms added {added_r}, rooms updated {updated_r}, "
           f"prices added {new_prices}, photos {len(photos)}")
     return 0

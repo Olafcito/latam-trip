@@ -8,8 +8,9 @@ import tripdb  # noqa: E402
 
 class FakeRest:
     def __init__(self, lodgings, rooms=(), prices=()):
-        self.t = {"lodgings": [dict(r) for r in lodgings], "lodging_rooms": [dict(r) for r in rooms],
-                  "lodging_prices": [dict(r) for r in prices]}
+        own = lambda rows: [{"owner_id": "ADMIN1", **r} for r in rows]
+        self.t = {"admins": [{"user_id": "ADMIN1"}], "lodgings": own(lodgings), "lodging_rooms": own(rooms),
+                  "lodging_prices": own(prices)}
         self.writes, self.n = [], 0
 
     def _match(self, rows, params):
@@ -70,6 +71,18 @@ class LodgingDetails(unittest.TestCase):
         return FakeRest([{"id": "L1", "photos": []}],
                         [{"id": "R1", "lodging_id": "L1", "name": "Double Room", "site": None, "site_id": None, "photo": None},
                          {"id": "R2", "lodging_id": "L1", "name": "Suite", "site": "booking", "site_id": "TEST02", "photo": None}])
+
+    def test_reads_and_writes_name_the_admin_and_leave_another_owner_alone(self):
+        rest = self.base()
+        rest.t["lodging_rooms"].append({"id": "X1", "lodging_id": "L1", "owner_id": "OTHER", "name": "Double Room",
+                                        "site": None, "site_id": None, "photo": None})
+        self.run_cmd({"lodging_id": "L1", "rooms": [room("Double Room", "TEST01")]}, rest)
+        other = next(r for r in rest.t["lodging_rooms"] if r["id"] == "X1")
+        self.assertIsNone(other["site_id"])
+        self.assertEqual(next(r for r in rest.t["lodging_rooms"] if r["id"] == "R1")["site_id"], "TEST01")
+        self.assertTrue(all(r["owner_id"] == "ADMIN1" for k, t, r in rest.writes if k == "insert"))
+        rest.t["lodgings"][0]["owner_id"] = "OTHER"
+        self.assertIn("REFUSED no lodging", self.run_cmd({"lodging_id": "L1", "rooms": [room("Suite", "TEST02")]}, rest))
 
     def test_adopts_by_name_matches_by_site_id_and_adds(self):
         rest = self.base()
