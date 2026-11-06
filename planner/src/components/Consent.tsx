@@ -4,8 +4,21 @@ import { Link, Lock, Person, Warn } from './icons'
 
 type View = { s: 'loading' } | Step | { s: 'busy'; ask: Ask; action: 'approve' | 'deny' } | { s: 'leaving'; host: string } | { s: 'error' }
 
-/** The scope names Supabase can grant, in the words the page shows. */
-const SCOPE: Record<string, string> = { email: 'Email address', openid: 'Sign in', profile: 'Name', phone: 'Phone number' }
+/** What a connected assistant can do: the connector acts as the person on every table their rows live in, whatever
+ * scope names Supabase lists, so the page names the real access. */
+const ACCESS = 'Read and change your trips, places to stay, bookings and profile'
+
+/** The planner's own mark, the same drawing as its favicon: a route arcing from one stop to the next. */
+function AppMark() {
+  return (
+    <svg className="consent-app-mark" width={28} height={28} viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="8" fill="#0B1720" />
+      <path d="M7 23 Q16 4 25 11" fill="none" stroke="#F2B544" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.1 4.6" />
+      <circle cx="7" cy="23" r="3.4" fill="#F7F3E8" />
+      <circle cx="25" cy="11" r="3.4" fill="#F2B544" />
+    </svg>
+  )
+}
 
 /** An icon that carries a row's meaning, named for screen readers and on hover. */
 function Mark({ name, children }: { name: string; children: ReactNode }) {
@@ -18,9 +31,9 @@ function Mark({ name, children }: { name: string; children: ReactNode }) {
 
 const leave = (url: string) => window.location.replace(url)
 
-/** Supabase's consent step: an assistant asks to use the planner as the signed in person. The client and the host the
- * code goes back to are what the person judges, so they lead. A host outside claude.ai and a local client is refused
- * with no way to allow it. */
+/** Supabase's consent step: an assistant asks to use the planner as the signed in person. The planner is the host, so
+ * its mark leads, and the client comes to it with the host the code goes back to as one fact under its name, since
+ * those two are what the person judges. A host outside claude.ai and a local client is refused with no way to allow it. */
 export function Consent({ id, token, onClose, go = leave }: {
   id: string
   token: string
@@ -68,27 +81,20 @@ export function Consent({ id, token, onClose, go = leave }: {
           {ask && (
             <>
               <header className="consent-head">
-                <span className="consent-avatar" aria-hidden="true">{ask.client.slice(0, 1).toUpperCase()}</span>
+                <p className="consent-app"><AppMark />Latam trip</p>
+                <span className="consent-join" role="img" aria-label="Connects to" title="Connects to"><Link s={14} /></span>
                 <h1 className="consent-client">{ask.client}</h1>
-                <p className="consent-sub">Connect to Latam trip</p>
+                <p className="consent-host" title="Returns to">{ask.host}</p>
               </header>
               <ul className="consent-rows">
-                <li>
-                  <Mark name="Returns to"><Link s={15} /></Mark>
-                  <span className="consent-host">{ask.host}</span>
-                </li>
                 <li>
                   <Mark name="Acts as"><Person s={15} /></Mark>
                   <span className="consent-val">{ask.email ?? 'Your account'}</span>
                 </li>
-                {ask.scopes.length > 0 && (
-                  <li>
-                    <Mark name="Shares"><Lock s={15} /></Mark>
-                    <span className="consent-scopes">
-                      {ask.scopes.map((sc) => <span key={sc} className="consent-scope">{SCOPE[sc] ?? sc}</span>)}
-                    </span>
-                  </li>
-                )}
+                <li>
+                  <Mark name="Access"><Lock s={15} /></Mark>
+                  <span className="consent-val can">{ACCESS}</span>
+                </li>
               </ul>
               <div className="consent-actions">
                 <button type="button" className="btn" onClick={() => void answer(ask, 'deny')} disabled={!!busy}>
