@@ -1,10 +1,11 @@
-# Releases main (TECH-008). Every test runs first through test.yml, and only when all of them pass does the release
-# job apply new migrations to the project and update the connector's code.
-# The release job runs in the GitHub environment release, which only main may use. It holds the secrets
+# Releases main (TECH-008). Every test runs first through test.yml, and only when all of them pass do the jobs migrate
+# and connector apply new migrations to the project and update the connector code.
+# Both jobs run in the GitHub environment release, which only main may use. It holds the secrets
 # SUPABASE_PASSWORD and AWS_RELEASE_ROLE_ARN and the variable SUPABASE_URL. AWS is reached through GitHub's OIDC
 # with the role latam-trip-release, which may only upload the connector zip and update that one function.
 # The site has its own workflow, site.yml. The worker, the edge functions and template changes still deploy from the PC.
-# Every third party action is pinned to a full commit SHA, with its tag in the comment.
+# The database password and the AWS token never share a job, so a step that holds one never sees the other.
+# Every third party action is pinned to a full commit SHA, with its tag in the comment, and every package to a version.
 name: Release
 
 on:
@@ -21,16 +22,15 @@ jobs:
     permissions:
       contents: read
 
-  release:
+  migrate:
     needs: test
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     environment: release
     permissions:
-      id-token: write
       contents: read
     concurrency:
-      group: release
+      group: release-migrate
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -40,14 +40,40 @@ jobs:
         with:
           python-version: "3.12"
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.11.3"
       - name: migrations
         env:
           SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-        run: uv run --quiet --no-project --python 3.12 --with "psycopg[binary]" python -I -X utf8 supabase/migrate.py
+        run: uv run --quiet --no-project --python 3.12 --with "psycopg[binary]==3.3.8" python -I -X utf8 supabase/migrate.py
+
+  connector:
+    needs: migrate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release
+    permissions:
+      id-token: write
+      contents: read
+    concurrency:
+      group: release-connector
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.11.3"
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_RELEASE_ROLE_ARN }}
           aws-region: eu-west-1
+          # the repo is public and so are its logs, so an AWS error must not print the account id
+          mask-aws-account-id: true
       - name: connector code
         run: bash infra/mcp/deploy.sh --code-only

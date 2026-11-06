@@ -8,8 +8,9 @@
 # --dry-run prints the commands and runs none of them, not even the ones that only read.
 # The policy templates next to this file keep their placeholders. They are filled into a temp folder outside the repo,
 # which is removed on exit.
-# Not done here: the ruleset of finding 6, which waits for Simon's answer, and the one full connector deploy that
-# narrows kms:Decrypt, printed as the next step at the end.
+# Not done here: the ruleset of finding 6, which TECH-008 describes, and the one full connector deploy that narrows
+# kms:Decrypt, printed as the next step at the end.
+# Reads .env at the repo root, or ENV_FILE when set, since a worktree has no .env of its own.
 # Usage: bash infra/release/setup.sh [--dry-run]
 set -euo pipefail
 export MSYS_NO_PATHCONV=1
@@ -103,16 +104,17 @@ if [ "$DRY" = 1 ] || ! gh api "repos/$REPO/environments/$ENVIRONMENT/deployment-
 fi
 
 echo ">> secrets and variable of $ENVIRONMENT" >&2
-env_value() { sed -n "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" "$ROOT/.env" | tail -n 1 | text | sed -e "s/^[\"']//" -e "s/[\"']\$//"; }
-echo "+ gh secret set SUPABASE_PASSWORD --env $ENVIRONMENT --repo $REPO < SUPABASE_PASSWORD from .env" >&2
+ENV_FILE="${ENV_FILE:-$ROOT/.env}"
+env_value() { sed -n "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" "$ENV_FILE" | tail -n 1 | text | sed -e "s/^[\"']//" -e "s/[\"']\$//"; }
+echo "+ gh secret set SUPABASE_PASSWORD --env $ENVIRONMENT --repo $REPO < SUPABASE_PASSWORD from $(basename "$ENV_FILE")" >&2
 if [ "$DRY" = 0 ]; then
-  [ -f "$ROOT/.env" ] || { echo "no .env at the repo root" >&2; exit 1; }
+  [ -f "$ENV_FILE" ] || { echo "no $ENV_FILE, set ENV_FILE" >&2; exit 1; }
   PASSWORD="$(env_value SUPABASE_PASSWORD)"
-  [ -n "$PASSWORD" ] || { echo "SUPABASE_PASSWORD is not in .env" >&2; exit 1; }
+  [ -n "$PASSWORD" ] || { echo "SUPABASE_PASSWORD is not in $(basename "$ENV_FILE")" >&2; exit 1; }
   printf '%s' "$PASSWORD" | gh secret set SUPABASE_PASSWORD --env "$ENVIRONMENT" --repo "$REPO"
   unset PASSWORD
   SUPABASE_URL="$(env_value SUPABASE_URL)"
-  [[ "$SUPABASE_URL" =~ ^https://[a-z0-9]+\.supabase\.co$ ]] || { echo "SUPABASE_URL in .env is not a project URL" >&2; exit 1; }
+  [[ "$SUPABASE_URL" =~ ^https://[a-z0-9]+\.supabase\.co$ ]] || { echo "SUPABASE_URL in $(basename "$ENV_FILE") is not a project URL" >&2; exit 1; }
 fi
 run gh secret set AWS_RELEASE_ROLE_ARN --env "$ENVIRONMENT" --repo "$REPO" --body "arn:aws:iam::$ACCOUNT:role/$ROLE"
 run gh variable set SUPABASE_URL --env "$ENVIRONMENT" --repo "$REPO" --body "$SUPABASE_URL"

@@ -78,6 +78,8 @@ jobs:
         with:
           node-version: 24
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.11.3"
       - name: local Supabase stack and every migration
         run: bash supabase/local_up.sh "$RUNNER_TEMP/latam-trip-local.env"
       - name: task close tests
@@ -86,7 +88,7 @@ jobs:
           TRIPDB_DB_TESTS: "1"
           TRIPDB_ENV_FILE: ${{ runner.temp }}/latam-trip-local.env
         run: |
-          uv run --quiet --no-project --python 3.12 --with "psycopg[binary]" \
+          uv run --quiet --no-project --python 3.12 --with "psycopg[binary]==3.3.8" \
             python -I -X utf8 supabase/test_task_close.py -v 2>&1 | tee "$RUNNER_TEMP/task_close.log"
           if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/task_close.log"; then echo "a database test skipped" >&2; exit 1; fi
       - name: database function tests
