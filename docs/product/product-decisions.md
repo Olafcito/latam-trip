@@ -43,3 +43,17 @@ Ids never change. Status is Proposed, Accepted or Reconsidered. Only Simon accep
 - **Reasoning.** Review-010 raised Q-011 because the sidebar architecture and the map composition cannot be fixed without knowing which job the map serves. Simon settled it directly during the FEAT-001 discovery chat on 2026-11-04.
 - **Applies to.** Map tab (`planner/src`), public web map (`web/src/map`), FEAT-001 and any later map work.
 - **Date.** 2026-11-04. **Status.** Accepted.
+
+## PROD-007 People use latam-trip through their own Claude
+
+- **Decision.** latam-trip is offered to other travellers as a connector and a plugin they add to their own Claude. latam-trip hosts the data, the connector and the skills. Each person brings their own Claude subscription and their own browser, signs in as themselves, and sees and changes only their own private data on top of one shared catalogue of places, connections and quotes. latam-trip runs no model and no server side browser workers.
+- **Reasoning.** It is the shape closest to what exists, it costs latam-trip no tokens, and browser reads stay on the person's own device, since Booking.com blocks datacenter browsers (TECH-002, TECH-003). A hosted agent was the alternative and was set aside on cost and on the scraping it would need.
+- **Applies to.** FEAT-006 and every later feature that adds a table, a connector tool or a skill.
+- **Date.** 2026-11-06. **Status.** Proposed.
+
+## PROD-008 What a person adds is theirs, the catalogue is shared
+
+- **Decision.** The shared catalogue is places, connections, airports, place profiles and images, experiences and their images, and the shared documents. Every signed in person reads it and only an admin writes it. Everything a person adds, searches or books is private to them: trips, lodgings with their rooms and prices, flight quotes, bookings and their files, tasks and their log, their documents and their profile. A private row never reaches a built file in the public `web` bucket. Simon's own crawled quotes keep feeding the public Options pane, since the pipeline is his.
+- **Reasoning.** A person's flight searches give their home airport and the dates they are away, and a person's places to stay and tasks show where they will be. Writes to the catalogue reach every user and the public bucket, so they stay with the one person who reviews them. This changes the word quotes in PROD-007, which put them in the shared catalogue.
+- **Applies to.** FEAT-006 and every later feature that adds a table, a connector tool or a built file.
+- **Date.** 2026-11-06. **Status.** Proposed.
