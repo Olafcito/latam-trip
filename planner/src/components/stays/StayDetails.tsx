@@ -72,12 +72,12 @@ export function StayDetails({ c, booking, cancel, close, onConfirm, onPlace, onR
       )}
       <div className="sd-body">
         <header className="sd-head">
-          <span className="sc-pill sd-mark" data-on={c.booked || undefined}>
+          <span className="ac-pill sd-mark" data-on={c.booked || undefined}>
             {c.booked ? <Check s={12} /> : <Ring s={11} />}
             {c.booked ? 'Booked' : 'Not booked'}
           </span>
           <h2>{c.name}</h2>
-          <p className="sc-kind">{c.kind && <b>{c.kind}</b>}{c.kind && c.where && <i aria-hidden="true">·</i>}<span>{c.where}</span></p>
+          <p className="ac-kind">{c.kind && <b>{c.kind}</b>}{c.kind && c.where && <i aria-hidden="true">·</i>}<span>{c.where}</span></p>
         </header>
 
         <ul className="sd-facts">
@@ -116,7 +116,7 @@ export function StayDetails({ c, booking, cancel, close, onConfirm, onPlace, onR
 
         <div className="sd-acts">
           {onConfirm && (
-            <button type="button" className="sc-att sd-confirm" onClick={() => { close(); onConfirm() }}>
+            <button type="button" className="ac-att sd-confirm" onClick={() => { close(); onConfirm() }}>
               <Paperclip s={18} />
               <span><b>{c.booked ? 'Add a confirmation' : 'Add booking confirmation'}</b><small>Attach PDF, screenshot or booking link</small></span>
             </button>

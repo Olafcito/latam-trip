@@ -67,72 +67,72 @@ export function AccommodationCard({ c }: { c: StayCardData }) {
   const about = !exact && total != null
   const when = c.checkIn ? `${weekdayDay(c.checkIn)}${c.checkOut ? ` to ${weekdayDay(c.checkOut)}` : ''}` : 'No nights'
   return (
-    <article className="sc" data-booked={c.booked || undefined} aria-label={`${c.name}, ${c.booked ? 'booked' : 'not booked'}`}>
-      <button type="button" className="sc-pics" data-one={thumbs.length === 0 || undefined} onClick={c.onOpen} tabIndex={-1} aria-hidden="true">
-        <Photo src={main} className="sc-main" />
-        <Mark booked={c.booked} className="sc-flag" />
+    <article className="ac" data-booked={c.booked || undefined} aria-label={`${c.name}, ${c.booked ? 'booked' : 'not booked'}`}>
+      <button type="button" className="ac-pics" data-one={thumbs.length === 0 || undefined} onClick={c.onOpen} tabIndex={-1} aria-hidden="true">
+        <Photo src={main} className="ac-main" />
+        <Mark booked={c.booked} className="ac-flag" />
         {thumbs.length > 0 && (
-          <span className="sc-thumbs">
-            {thumbs.map((t) => <Photo key={t} src={t} className="sc-th" />)}
+          <span className="ac-thumbs">
+            {thumbs.map((t) => <Photo key={t} src={t} className="ac-th" />)}
           </span>
         )}
       </button>
 
-      <div className="sc-body">
-        <h4 className="sc-name"><button type="button" onClick={c.onOpen}>{c.name}</button></h4>
-        <p className="sc-kind">{c.kind && <b>{c.kind}</b>}{c.kind && c.where && <i aria-hidden="true">·</i>}<span>{c.where}</span></p>
-        {c.summary && <p className="sc-sum">{c.summary}</p>}
+      <div className="ac-body">
+        <h4 className="ac-name"><button type="button" onClick={c.onOpen}>{c.name}</button></h4>
+        <p className="ac-kind">{c.kind && <b>{c.kind}</b>}{c.kind && c.where && <i aria-hidden="true">·</i>}<span>{c.where}</span></p>
+        {c.summary && <p className="ac-sum">{c.summary}</p>}
         {c.amenities.length > 0 && (
-          <ul className="sc-ams" aria-label="What it offers">
+          <ul className="ac-ams" aria-label="What it offers">
             {c.amenities.map((a) => <li key={a.key}><AmenityIcon k={a.key} s={15} />{a.label}</li>)}
           </ul>
         )}
 
-        <div className="sc-facts">
-          <div className="sc-f">
+        <div className="ac-facts">
+          <div className="ac-f">
             <Calendar s={17} />
             <div>
-              <span className="sc-l">Check-in</span>
-              <b className="sc-v" title={when}>{c.checkIn ? weekdayDay(c.checkIn) : 'No nights'}</b>
+              <span className="ac-l">Check-in</span>
+              <b className="ac-v" title={when}>{c.checkIn ? weekdayDay(c.checkIn) : 'No nights'}</b>
               {c.checkIn && (
-                <span className="sc-chips">
-                  <span className="sc-chip" title={when}>{nightsWord(c.nights)}</span>
-                  {c.warn && <span className="sc-warn" role="img" aria-label={c.warn} title={c.warn}><Warn s={13} /></span>}
+                <span className="ac-chips">
+                  <span className="ac-chip" title={when}>{nightsWord(c.nights)}</span>
+                  {c.warn && <span className="ac-warn" role="img" aria-label={c.warn} title={c.warn}><Warn s={13} /></span>}
                 </span>
               )}
             </div>
           </div>
 
-          <div className="sc-f">
+          <div className="ac-f">
             <Bed s={17} />
             <div>
-              <span className="sc-l">Room</span>
-              {c.room ? <b className="sc-v sc-room">{c.room}</b> : c.onRoom ? <button type="button" className="sc-pick" onClick={c.onRoom}>Choose a room</button> : <b className="sc-v">Room not known</b>}
-              {c.terms && <span className="sc-sub">{c.terms}</span>}
+              <span className="ac-l">Room</span>
+              {c.room ? <b className="ac-v ac-room">{c.room}</b> : c.onRoom ? <button type="button" className="ac-pick" onClick={c.onRoom}>Choose a room</button> : <b className="ac-v">Room not known</b>}
+              {c.terms && <span className="ac-sub">{c.terms}</span>}
             </div>
           </div>
 
-          <div className="sc-f sc-money">
-            <div className="sc-price">
+          <div className="ac-f ac-money">
+            <div className="ac-price">
               {c.booked && total != null ? (
                 <><b>{thousands(total)} DKK</b><span>total</span></>
               ) : perNight != null ? (
                 <><b data-about={about || undefined} title={about ? 'From the price seen for other dates' : undefined}>{thousands(perNight)} DKK</b><span>/ night</span></>
-              ) : <span className="sc-none">No price yet</span>}
+              ) : <span className="ac-none">No price yet</span>}
               {total != null && (
-                <span className="sc-cur" data-about={about || undefined}>
+                <span className="ac-cur" data-about={about || undefined}>
                   {c.booked ? (perNight != null ? `${thousands(perNight)} / night` : 'DKK') : `${about ? 'About ' : ''}${thousands(total)} DKK in all`}
                 </span>
               )}
             </div>
-            <Mark booked={c.booked} className="sc-pill" />
+            <Mark booked={c.booked} className="ac-pill" />
             {c.booked ? (
-              <button type="button" className="sc-att" data-on onClick={c.onOpen}>
+              <button type="button" className="ac-att" data-on onClick={c.onOpen}>
                 <Paperclip s={18} />
                 <span><b>{c.files ? (c.files === 1 ? 'Confirmation attached' : `${c.files} confirmations attached`) : 'Booking details'}</b></span>
               </button>
             ) : c.onConfirm && (
-              <button type="button" className="sc-att" onClick={c.onConfirm}>
+              <button type="button" className="ac-att" onClick={c.onConfirm}>
                 <Paperclip s={18} />
                 <span><b>Add booking confirmation</b><small>Attach PDF, screenshot or booking link</small></span>
               </button>

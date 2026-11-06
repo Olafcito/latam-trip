@@ -231,7 +231,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
         summary={prof?.summary}
         stays={
           <>
-            {items.length > 0 && <div className="sc-list">{items.map((t) => <AccommodationCard key={t.card.key} c={t.card} />)}</div>}
+            {items.length > 0 && <div className="ac-list">{items.map((t) => <AccommodationCard key={t.card.key} c={t.card} />)}</div>}
             <button type="button" className="al-add" onClick={() => setAdding(null)}><Plus />Add accommodation</button>
           </>
         }
