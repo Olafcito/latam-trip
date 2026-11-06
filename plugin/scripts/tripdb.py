@@ -33,6 +33,8 @@ Usage: python -I -X utf8 plugin/scripts/tripdb.py [--root DIR] COMMAND [ARGS]
   file NAME                            print one built file from the bucket, for example places.json or built/routes.json
   run SCRIPT [ARGS]                    run evaluate, frontier, scenarios, usage_report or report_md on the project's derived data
   inbox-token --name NAME              make a token for the Momondo userscript, print it once and store only its hash
+  invite EMAIL                         let EMAIL make an account (invites), or open a used invite again
+  invites                              list the invites, with the day each was sent and used
   status                               print derive_state, the worker version and the local git sha
   build [--fetch-elevation] [--no-sync]  local FileStore pipeline command for tests and fixtures
                                        production builds run in the scheduled worker
@@ -1584,6 +1586,49 @@ def cmd_inbox_token(name, rest=None, root=None, out=None):
     return 0
 
 
+EMAIL_RE = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
+
+
+def _no_addresses(text):
+    """An error text with every email address in it taken out, so a refusal names no person."""
+    return re.sub(r"[^@\s\"'(),]+@[^@\s\"'(),]+", "<address>", str(text))
+
+
+def cmd_invite(email, rest=None, root=None, out=None):
+    """Let one address make an account. invites is checked by the before_user_created hook of migration 0036, which
+    marks an invite used on the sign up. Inviting the same address again opens its invite again, for a sign up that
+    failed after the hook or a person whose account was deleted."""
+    addr = (email or "").strip().lower()
+    if not EMAIL_RE.fullmatch(addr):
+        raise Refused("invite needs one email address")
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    try:
+        before = rest.get_all("invites", {"select": "used_at", "email": "eq." + addr})
+        rest.insert("invites", [{"email": addr, "invited_at": now_utc(), "used_at": None}], on_conflict="email",
+                    resolution="merge-duplicates")
+    except RestError as e:
+        raise Refused(f"invite stopped: {_no_addresses(e)}")
+    again = " again, its used invite is open" if before and before[0].get("used_at") else ""
+    (out or sys.stdout).write(f"invited {addr}{again}\n")
+    return 0
+
+
+def cmd_invites(rest=None, root=None, out=None):
+    """Every invite, oldest first: the address, the day it was sent, and the day it was used or open."""
+    rest = rest or _rest(root or DEFAULT_ROOT)
+    try:
+        rows = rest.get_all("invites", {"select": "email,invited_at,used_at", "order": "invited_at.asc"})
+    except RestError as e:
+        raise Refused(f"invites stopped: {_no_addresses(e)}")
+    out = out or sys.stdout
+    if not rows:
+        out.write("no invites\n")
+    for r in rows:
+        used = f"used {r['used_at'][:10]}" if r.get("used_at") else "open"
+        out.write(f"{r['email']}  invited {(r.get('invited_at') or '')[:10]}  {used}\n")
+    return 0
+
+
 def _opt(a, name, default=None):
     if name in a:
         i = a.index(name)
@@ -1714,6 +1759,14 @@ def main(argv=None):
             return cmd_run(a[0], a[1:], root=paths.root)
         if cmd == "inbox-token":
             return cmd_inbox_token(_opt(a, "--name"), root=paths.root)
+        if cmd == "invite":
+            if len(a) != 1:
+                raise Refused("invite needs one email address")
+            return cmd_invite(a[0], root=paths.root)
+        if cmd == "invites":
+            if a:
+                raise Refused("invites takes no argument")
+            return cmd_invites(root=paths.root)
         if cmd == "status":
             return cmd_status(root=paths.root)
         if cmd == "build":
