@@ -21,10 +21,11 @@ sys.path.insert(0, os.path.join(HERE, "..", "..", "..", ".."))
 from latam_trip_mcp.runner import runs_in_cloud  # noqa: E402  (the rule for which task types a cloud routine takes)
 
 TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh",
-         "fix_parser", "import_quotes", "booking", "stay_search", "stay_details"}
+         "fix_parser", "import_quotes", "booking", "stay_search", "stay_picks", "stay_details"}
 # The fields a task of a type must carry. A stay_prices task prices rooms of a lodging that exists, so it names them.
 NEEDS = {"stay_prices": ("lodging_id", "room_ids", "check_in", "check_out"), "booking": ("leg",),
-         "stay_search": ("place_id", "check_in", "check_out"), "stay_details": ("lodging_id",)}
+         "stay_search": ("place_id", "check_in", "check_out"),
+         "stay_picks": ("place_id", "check_in", "check_out"), "stay_details": ("lodging_id",)}
 # The task log is public, in trip.db and the web data. A booking task's text says where the confirmation is and can
 # carry a reference, a price or names, so only these fields of it are logged.
 LOGGED = {"booking": ("type", "leg")}
