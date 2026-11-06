@@ -44,6 +44,13 @@ enabled = false
 enabled = true
 site_url = "http://127.0.0.1:5198"
 
+# The OAuth 2.1 server, for the FEAT-006 task 3.1 spike (latam_trip_mcp/spike_oauth.py). The consent path is relative
+# to site_url, where the planner's consent route would live. The local stack signs with the CLI's ES256 key already.
+[auth.oauth_server]
+enabled = true
+authorization_url_path = "/oauth/consent"
+allow_dynamic_registration = true
+
 [edge_runtime]
 enabled = false
 
