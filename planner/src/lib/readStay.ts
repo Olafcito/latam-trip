@@ -129,10 +129,13 @@ export function stayReadOf(stays: ReadStayItem[], target: StayTarget, base: Stay
     if (total) {
       put('total', text(total.amount))
       put('currency', total.currency)
+      // a kroner figure typed for another amount or currency no longer holds
+      if (text(total.amount) !== base.total.trim() || total.currency !== base.currency) form.dkk = ''
     }
-    // paid can be summed only the same way, and it is not a field the read is asked to have
+    // paid can be summed only the same way, and it is kept only in the form's one currency, so a deposit in
+    // kroner is never stored as the same number of pesos
     const paid = summed(joined.map((s) => amountOf(s.paid)))
-    if (paid) form.paid = text(paid.amount)
+    if (paid && paid.currency === form.currency) form.paid = text(paid.amount)
 
     const provider = clean(first.provider) as LodgingSite
     if (PROVIDERS.includes(provider)) {
@@ -154,7 +157,7 @@ export function stayReadOf(stays: ReadStayItem[], target: StayTarget, base: Stay
   const asked: StayFormKey[] = ['reference', 'checkIn', 'checkOut', 'total', 'currency', 'room', 'cancelUntil', 'provider', 'address']
   // a stay that cannot be cancelled has no last day of free cancellation to state
   const missing = asked.filter((k) => !stated.has(k) && !(k === 'cancelUntil' && form.refundable === 'no'))
-  if (form.currency && form.currency !== 'DKK' && !base.dkk.trim()) missing.push('dkk')
+  if (form.currency && form.currency !== 'DKK' && !form.dkk.trim()) missing.push('dkk')
 
   return {
     form,

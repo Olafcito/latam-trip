@@ -149,8 +149,7 @@ function stayText(leg: Leg): string {
     'When only a deposit and a balance are stated, total is their sum only when they are in the same currency. Otherwise leave total out and name it in not_found.',
     'Report money in the currency the confirmation shows.',
     'Read the provider from the confirmation itself, such as its logo, its wording and its reference format, never from the mail domain alone.',
-  ].join('
-')
+  ].join('\n')
 }
 
 function system(leg: Leg): string {

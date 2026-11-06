@@ -100,8 +100,31 @@ describe('stayReadOf', () => {
   it('asks for the kroner total only when the currency is not DKK and the base has none', () => {
     const dkk = stayReadOf([night('2026-12-08', { total: { amount: 400, currency: 'DKK' } })], target, base())
     expect(dkk.missing).not.toContain('dkk')
-    const eur = stayReadOf([night('2026-12-08')], target, { ...base(), dkk: '370' })
+    const eur = stayReadOf([night('2026-12-08')], target, { ...base(), total: '50', currency: 'EUR', dkk: '370' })
     expect(eur.missing).not.toContain('dkk')
+    expect(eur.form.dkk).toBe('370')
+  })
+
+  it('drops a kroner total typed for another amount or currency and asks for it again', () => {
+    const more = stayReadOf([night('2026-12-08', { total: { amount: 120, currency: 'EUR' } })], target, { ...base(), total: '40', currency: 'EUR', dkk: '300' })
+    expect(more.form.dkk).toBe('')
+    expect(more.missing).toContain('dkk')
+    const other = stayReadOf([night('2026-12-08', { total: { amount: 40, currency: 'USD' } })], target, { ...base(), total: '40', currency: 'EUR', dkk: '300' })
+    expect(other.form.dkk).toBe('')
+  })
+
+  it('keeps what was paid only in the currency of the total', () => {
+    const same = stayReadOf([night('2026-12-08', { total: undefined, paid: { amount: 10, currency: 'EUR' }, balance: { amount: 40, currency: 'EUR' } })], target, base())
+    expect(same.form).toMatchObject({ total: '50', currency: 'EUR', paid: '10' })
+    const deposit = stayReadOf(
+      [night('2026-12-08', { total: { amount: 180000, currency: 'COP' }, paid: { amount: 45, currency: 'DKK' } })],
+      target,
+      base(),
+    )
+    expect(deposit.form).toMatchObject({ total: '180000', currency: 'COP', paid: '' })
+    const noTotal = stayReadOf([night('2026-12-08', { total: undefined, paid: { amount: 45, currency: 'DKK' }, balance: { amount: 180000, currency: 'COP' } })], target, base())
+    expect(noTotal.form).toMatchObject({ total: '', currency: 'DKK', paid: '45' })
+    expect(noTotal.missing).toContain('total')
   })
 
   it('puts a mail link in the form', () => {
