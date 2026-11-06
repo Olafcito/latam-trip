@@ -345,10 +345,46 @@ class RlsTest(unittest.TestCase):
         self.assertNotIn(other, seen.ids)
 
     def test_derive_state_readable_names_no_trip(self):
-        ok(self, self.a.rest.rpc("save_trip", {"trip": {"id": "TEST01-secret-trip", "by": "TEST01"}}))
-        rows = ok(self, self.b.rest.select("derive_state", "select=*"))
-        self.assertEqual(len(rows), 1, rows)
-        self.assertNotIn("TEST01-secret-trip", json.dumps(rows))
+        """The worker's run_build writes derive_state on a dropped trip and on a failure, and B reads it. The steps around
+        the state are stubbed, the state is written and read for real."""
+        import shutil, tempfile
+        from unittest import mock
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "infra", "worker"))
+        import steps
+        secret = "TEST01-secret-trip"
+        ok(self, self.a.rest.rpc("save_trip", {"trip": {"id": secret, "by": "TEST01"}}))
+        ok(self, self.svc.update("derive_state", "id=eq.1", {"last_error": None, "last_warning": None}))
+        rest = steps.store.Rest(self.env["SUPABASE_URL"], self.env["SUPABASE_SECRET_KEY"])
+        work = tempfile.mkdtemp(prefix="TEST01-")
+        self.addCleanup(shutil.rmtree, work, ignore_errors=True)
+
+        def dropped(root):
+            os.makedirs(os.path.join(root, "data", "web"), exist_ok=True)
+            with open(os.path.join(root, "data", "web", "inout.json"), "w", encoding="utf-8") as fh:
+                json.dump({}, fh)
+            return [secret]
+
+        def broken(root):
+            raise ValueError(f"trip {secret} refused, booking TEST01 at row TEST01")
+
+        def build(pulled):
+            with mock.patch.object(steps.tripdb, "cmd_ingest_inbox"), mock.patch.object(steps.store, "SupabaseStore"), \
+                 mock.patch.object(steps.tripdb, "cmd_pull"), \
+                 mock.patch.object(steps, "refuse_empty_pull"), mock.patch.object(steps, "build_pulled", pulled), \
+                 mock.patch.object(steps, "upload", return_value={"uploaded": 0, "manifest_hash": "0" * 64}), \
+                 mock.patch.object(steps, "replace_derived", return_value=0):
+                return steps.run_build(rest, os.path.join(work, "build"), version="test")
+
+        cases = ((dropped, "last_warning", "1 trip left out of the build"), (broken, "last_error", "check failed, ValueError"))
+        for pulled, column, value in cases:
+            with self.subTest(column=column):
+                got = build(pulled)
+                self.assertEqual(got["built"], pulled is dropped, got)
+                rows = ok(self, self.b.rest.select("derive_state", "select=*"))
+                self.assertEqual(len(rows), 1, rows)
+                self.assertEqual(rows[0][column], value)
+                self.assertNotIn("TEST01", json.dumps(rows))
+                self.assertNotIn(secret, json.dumps(rows))
 
 
 class listen:
