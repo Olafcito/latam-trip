@@ -289,11 +289,12 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 
 **Files:** `latam_trip_mcp/core.py`, `latam_trip_mcp/test_core.py`.
 
-- [ ] Fields: `home_airport` (IATA), `currency` (ISO), `max_hours_one_way` (number), `travel_style` (text), `rules` (free text). Test `test_profile_round_trip` and `test_no_profile_returns_empty_with_ask`.
+- [x] Fields: `home_airport` (IATA), `currency` (ISO), `max_hours` (number, the column 0027 made), `travel_style` (text), `rules` (free text). Test `test_profile_round_trip` and `test_no_profile_returns_empty_with_ask`.
 
 ### Task 5.2: Rules move to Simon's profile
 
-- [ ] Grep the skills and agents for Copenhagen, CPH, 30 hours and the table formats. Each becomes "from the profile". Simon's values go into his profile through `update_profile`, not into a file. Every skill that searches calls `get_profile` first and asks for one when it is empty. Dry run of `plan-trip` with an empty profile. Run `sync_claude_dir.py`.
+- [x] Grep the skills and agents for Copenhagen, CPH, 30 hours and the table formats. Each becomes "from the profile". Simon's values go into his profile through `update_profile`, not into a file. Every skill that searches calls `get_profile` first and asks for one when it is empty. Dry run of `plan-trip` with an empty profile. Run `sync_claude_dir.py`.
+- Known gap: `momondo_lines.py` still names its long journey flag `over_30h` and sets it at 30 hours. The workers keep rows by the task's `max_hours`, and the flag waits for the planner to read the profile in task 5.3. Stored prices stay in DKK, so the runner's results still speak kroner.
 
 ### Task 5.3: The profile sheet in the planner
 
