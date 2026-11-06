@@ -4,9 +4,11 @@ The first test rebuilds the public schema up to 0026 inside one transaction, see
 the personal documents, applies 0027 and 0028 and checks that every row carries the admin's id, that no row was lost
 and that the personal documents moved to user_documents. The transaction is always rolled back.
 The second test stores booking files at the paths of before, runs move_booking_files.py and checks that the files and
-the bookings rows point at <admin id>/<booking id>/<file>, and that no other folder moves. It writes to the local stack and cleans up after itself.
+the bookings rows point at <admin id>/<booking id>/<file>, and that no other folder moves. The third makes the copy,
+the row update and the removal fail in turn and checks that every booking still names files that exist. These two
+write to the local stack and clean up after themselves.
 
-Both run on the local stack only: bash supabase/local_up.sh writes an env file outside the repo, and TRIPDB_ENV_FILE
+All run on the local stack only: bash supabase/local_up.sh writes an env file outside the repo, and TRIPDB_ENV_FILE
 names it. Skipped without TRIPDB_DB_TESTS=1.
 Run: TRIPDB_DB_TESTS=1 TRIPDB_ENV_FILE=<file> uv run --quiet --no-project --with "psycopg[binary]" python -I -X utf8 supabase/tests/test_owner_migration.py -v
 """
@@ -160,6 +162,74 @@ class OwnerMigrationTest(unittest.TestCase):
         code, out = run("--apply")
         self.assertEqual(code, 0, out)
         self.assertIn("files to move 0, bookings to update 0", out)
+
+    def test_move_stops_at_failure_with_every_booking_whole(self):
+        import move_booking_files
+        from unittest import mock
+        svc, store, admin = self.users.service(self.env), self.users.service_storage(self.env), self.a.id
+        books = {"TEST01-f1": ["one.pdf", "two.pdf"], "TEST01-f2": ["three.pdf", "four.pdf"]}
+        old = [f"{b}/{n}" for b, ns in books.items() for n in ns]
+
+        def clean():
+            store.remove("bookings", old + [f"{admin}/{p}" for p in old])
+            svc.delete("bookings", "id=in.(TEST01-f1,TEST01-f2)")
+        clean()
+        self.addCleanup(clean)
+        for p in old:
+            self.assertIn(store.upload("bookings", p, b"%PDF-1.4 " + p.encode())[0], (200, 201))
+        rows = [{"id": b, "kind": "other", "attachments": [{"path": f"{b}/{n}", "name": n} for n in ns]}
+                for b, ns in books.items()]
+        self.assertIn(svc.insert("bookings", rows)[0], (200, 201))
+        real = move_booking_files.Api.call
+
+        def failing(match):
+            def call(api, method, path, body=None, headers=None):
+                if match(method, path, body or {}):
+                    return 500, "TEST01 failure"
+                return real(api, method, path, body, headers)
+            return call
+
+        def run(call=real):
+            out = io.StringIO()
+            with mock.patch.object(move_booking_files.Api, "call", call), redirect_stdout(out):
+                code = move_booking_files.main(["--apply"])
+            return code, out.getvalue()
+
+        def paths():
+            code, got = svc.select("bookings", "id=in.(TEST01-f1,TEST01-f2)&select=id,attachments&order=id")
+            return {r["id"]: [a["path"] for a in r["attachments"]] for r in got}
+
+        def whole():
+            for bid, ps in paths().items():
+                for p in ps:
+                    self.assertEqual(store.download("bookings", p)[0], 200, f"{bid} names a missing file")
+
+        # the second copy of the second booking fails: the first booking is done, the second untouched
+        code, out = run(failing(lambda m, p, b: p.endswith("/copy") and b.get("sourceKey") == "TEST01-f2/four.pdf"))
+        self.assertEqual((code, out.strip().splitlines()[-1]), (1, "moved 2, bookings updated 1, stopped at a failure"))
+        whole()
+        self.assertEqual(paths(), {"TEST01-f1": [f"{admin}/TEST01-f1/one.pdf", f"{admin}/TEST01-f1/two.pdf"],
+                                   "TEST01-f2": ["TEST01-f2/three.pdf", "TEST01-f2/four.pdf"]})
+        self.assertNotEqual(store.download("bookings", f"{admin}/TEST01-f2/three.pdf")[0], 200, "a copy was left")
+        self.assertNotEqual(store.download("bookings", "TEST01-f1/one.pdf")[0], 200)
+        # the row update fails: the booking keeps the files of before, which are still there
+        code, _ = run(failing(lambda m, p, b: m == "PATCH"))
+        self.assertEqual(code, 1)
+        whole()
+        self.assertEqual(paths()["TEST01-f2"], ["TEST01-f2/three.pdf", "TEST01-f2/four.pdf"])
+        # removing the files of before fails: the booking names the copies
+        code, _ = run(failing(lambda m, p, b: m == "DELETE"))
+        self.assertEqual(code, 1)
+        whole()
+        self.assertEqual(paths()["TEST01-f2"], [f"{admin}/TEST01-f2/three.pdf", f"{admin}/TEST01-f2/four.pdf"])
+        # a run that works carries on from there and leaves nothing behind
+        code, out = run()
+        self.assertEqual((code, out.strip().splitlines()[-1]), (0, "moved 2, bookings updated 0"))
+        whole()
+        for p in old:
+            self.assertNotEqual(store.download("bookings", p)[0], 200)
+            self.assertEqual(store.download("bookings", f"{admin}/{p}"), (200, b"%PDF-1.4 " + p.encode()))
+        self.assertEqual(run()[1].splitlines()[0], "files to move 0, bookings to update 0")
 
 
 if __name__ == "__main__":

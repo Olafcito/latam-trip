@@ -2,8 +2,10 @@
 
 Before migration 0028 a file lived at <booking id>/<file>. Now it lives at <owner id>/<booking id>/<file>, and every
 file of before belongs to the admin. SQL cannot rename a stored file, so this moves each one through the Storage API to
-<admin id>/<booking id>/<file> and then points the bookings rows at the new paths. Only a folder named by one of the
-admin's booking ids is moved.
+<admin id>/<booking id>/<file> and points the bookings rows at the new paths. Only a folder named by one of the
+admin's booking ids is moved. It works one booking at a time: it copies the booking's files, points its row at the
+copies and then removes the files of before, and it stops at the first failure. So every booking names files that
+exist, whether the run finished or not.
 
 Run it once from the PC after the release that applied 0028:
     python -I -X utf8 supabase/move_booking_files.py           shows what would move
@@ -68,19 +70,48 @@ class Api:
             offset += 1000
 
 
-def legacy_files(api, booking_ids):
-    """Every path <booking id>/<file> under a folder named by one of these booking ids. Any other folder, such as one
-    named by a user id or by another person's booking, is left alone."""
-    paths = []
-    for bid in booking_ids:
-        if "/" in bid:
-            continue  # not a folder name
-        paths += [f"{bid}/{e['name']}" for e in api.entries(bid + "/") if e.get("id") is not None]
-    return paths
+def names(api, prefix):
+    """The file names directly under a folder."""
+    return [e["name"] for e in api.entries(prefix) if e.get("id") is not None]
 
 
-def moved(path, admin):
-    return f"{admin}/{path}" if path and path.count("/") == 1 else path
+def plan(api, admin, row):
+    """The files of one booking's folder of before, and its attachments with every path whose file is or will be in
+    the admin's folder rewritten to it. A booking id with a slash names no folder."""
+    bid = row["id"]
+    old = [] if "/" in bid else names(api, bid + "/")
+    there = set() if "/" in bid else set(names(api, f"{admin}/{bid}/"))
+    ready = there | set(old)
+    files = [dict(a, path=f"{admin}/{a['path']}") if (a.get("path") or "").startswith(bid + "/")
+             and a["path"].count("/") == 1 and a["path"].split("/", 1)[1] in ready else a for a in row["attachments"]]
+    return old, there, files
+
+
+def move_one(api, admin, row, old, there, files):
+    """Copies the booking's files, points its row at the copies, then removes the files of before. A failure stops
+    before the row changes, or after it points at copies that exist, so the row never names a missing file."""
+    bid = row["id"]
+    copied = []
+    for name in old:
+        if name in there:
+            continue  # a run that stopped after the copy left it
+        code, _ = api.call("POST", "/storage/v1/object/copy",
+                           {"bucketId": BUCKET, "sourceKey": f"{bid}/{name}", "destinationKey": f"{admin}/{bid}/{name}"})
+        if code >= 300:
+            if copied:
+                api.call("DELETE", f"/storage/v1/object/{BUCKET}", {"prefixes": copied})
+            return False
+        copied.append(f"{admin}/{bid}/{name}")
+    if files != row["attachments"]:
+        code, _ = api.call("PATCH", f"/rest/v1/bookings?owner_id=eq.{admin}&id=eq.{urllib.parse.quote(bid)}",
+                           {"attachments": files}, {"Prefer": "return=minimal"})
+        if code >= 300:
+            return False  # the row still names the files of before, which are still there
+    if old:
+        code, _ = api.call("DELETE", f"/storage/v1/object/{BUCKET}", {"prefixes": [f"{bid}/{n}" for n in old]})
+        if code >= 300:
+            return False  # the row names the copies, and a second run removes what is left
+    return True
 
 
 def main(argv):
@@ -90,29 +121,27 @@ def main(argv):
         raise SystemExit("move_booking_files: SUPABASE_URL and SUPABASE_SECRET_KEY are needed")
     api = Api(env)
     admin = api.admin_id()
-    rows = api.need("GET", "/rest/v1/bookings?select=id,attachments&owner_id=eq." + admin)
-    paths = legacy_files(api, [r["id"] for r in rows])
-    changed = [r for r in rows if any(moved(a.get("path"), admin) != a.get("path") for a in r["attachments"])]
-    print(f"files to move {len(paths)}, bookings to update {len(changed)}")
+    rows = api.need("GET", f"/rest/v1/bookings?select=id,attachments&owner_id=eq.{admin}&order=id")
+    work = []
+    for row in rows:
+        old, there, files = plan(api, admin, row)
+        if old or files != row["attachments"]:
+            work.append((row, old, there, files))
+    n_files = sum(len(w[1]) for w in work)
+    n_rows = sum(1 for w in work if w[3] != w[0]["attachments"])
+    print(f"files to move {n_files}, bookings to update {n_rows}")
     if not apply:
         print("dry run, pass --apply to move")
         return 0
-    failed = 0
-    for path in paths:
-        code, _ = api.call("POST", "/storage/v1/object/move",
-                           {"bucketId": BUCKET, "sourceKey": path, "destinationKey": f"{admin}/{path}"})
-        if code >= 300:
-            failed += 1
-    if failed:
-        # the rows keep the old paths, which the admin can still read, and a second run moves the rest
-        print(f"moved {len(paths) - failed}, failed {failed}, bookings left as they were")
-        return 1
-    for row in changed:
-        files = [dict(a, path=moved(a.get("path"), admin)) for a in row["attachments"]]
-        api.need("PATCH", f"/rest/v1/bookings?owner_id=eq.{admin}&id=eq.{urllib.parse.quote(row['id'])}",
-                 {"attachments": files},
-                 {"Prefer": "return=minimal"})
-    print(f"moved {len(paths)}, bookings updated {len(changed)}")
+    moved_files = updated = 0
+    for row, old, there, files in work:
+        if not move_one(api, admin, row, old, there, files):
+            # every booking still names files that exist, and a second run carries on from here
+            print(f"moved {moved_files}, bookings updated {updated}, stopped at a failure")
+            return 1
+        moved_files += len(old)
+        updated += files != row["attachments"]
+    print(f"moved {moved_files}, bookings updated {updated}")
     return 0
 
 
