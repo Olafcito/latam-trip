@@ -28,9 +28,8 @@ CHANGE = {"trips": {"saved_by": "TEST01 stranger"}, "bookings": {"notes": "TEST0
           "inbox": {"reason": "TEST01 stranger"}, "agent_usage": {"agent": "TEST01 stranger"},
           "user_profiles": {"rules": "TEST01 stranger"}, "user_documents": {"data": {"by": "stranger"}}}
 REFUSED = (401, 403)
-# the private tables in the supabase_realtime publication, with their primary keys
-PUBLISHED = {"bookings": ("owner_id", "id"), "lodgings": ("owner_id", "id"), "lodging_rooms": ("owner_id", "id"),
-             "lodging_prices": ("owner_id", "id"), "tasks": ("owner_id", "id"), "trips": ("owner_id", "id", "version")}
+# the private tables that were in the supabase_realtime publication until 0032 moved them to the owner topics
+WAS_PUBLISHED = ["bookings", "lodgings", "lodging_rooms", "lodging_prices", "tasks", "trips"]
 CATALOGUE = {
     "airports": ("code", {"code": "TS1"}, {"name": "TEST01 airport"}),
     "places": ("id", {"id": "TEST01-place"}, {"name": "TEST01 place"}),
@@ -359,36 +358,61 @@ class RlsTest(unittest.TestCase):
                 ok(self, self.svc.update(table, f"{KEY[table]}=eq.0", CHANGE[table]))
                 self.assertFalse(dirty())
 
+    def test_no_private_table_is_published(self):
+        """Postgres Changes skips row level security on a delete, so no private table may be in the publication."""
+        import migrate
+        with migrate.connect(self.env) as con:
+            rows = con.execute("select tablename from pg_publication_tables where pubname = 'supabase_realtime' "
+                               "and schemaname = 'public'").fetchall()
+        published = {r[0] for r in rows}
+        self.assertEqual(published & set(PRIVATE), set())
+        self.assertIn("derive_state", published)
+
     def test_realtime_is_owner_scoped(self):
-        """B listens to every change of each private published table while A inserts, updates and deletes a row.
-        B hears no insert or update of A's. Realtime does not apply row level security to a delete, so B does hear A's
-        delete, with the old row's primary key only. For a table keyed (owner_id, id) that is A's user id and the row's
-        id, for trips also the version. Tasks are keyed (owner_id, id) since 0031, so the same holds for them. That is the known gate before sign up opens, and this
-        test pins it so a fix shows up here."""
-        for table, pk in PUBLISHED.items():
+        """A inserts, updates and deletes a row of each table that was published before 0032 while B listens every way
+        a client can: Postgres Changes on the table, B's own owner topic, and A's owner topic. B hears nothing of A's,
+        not even a delete, and cannot join A's topic. A hears each of the three on A's topic, with the table as the
+        event and no column of the row in the message. B's own insert reaches B's topic."""
+        topic_a, topic_b = "owner:" + self.a.id, "owner:" + self.b.id
+        for table in WAS_PUBLISHED:
             with self.subTest(table=table):
-                seen = listen(self.env, self.b, table)
+                changes = listen(self.env, self.b, "test-" + table, postgres_changes=table)
+                feed_a = listen(self.env, self.a, topic_a, private=True)
+                feed_b = listen(self.env, self.b, topic_b, private=True)
+                spy = listen(self.env, self.b, topic_a, private=True)
                 try:
-                    seen.ready.wait(20)
-                    self.assertTrue(seen.ready.is_set(), seen.errors)
+                    for feed in (feed_a, feed_b):
+                        feed.ready.wait(20)
+                        self.assertTrue(feed.ready.is_set(), feed.errors)
+                    # the table is out of the publication, so the server may accept the subscription or refuse it
+                    deadline = time.time() + 20
+                    while time.time() < deadline and not (changes.ready.is_set() or changes.errors):
+                        time.sleep(0.2)
+                    while time.time() < deadline and not (spy.ready.is_set() or spy.errors):
+                        time.sleep(0.2)
                     other = ok(self, self.a.rest.insert(table, [self.row(self.a, table)]))[0]
                     q = self.where(table, other)
                     ok(self, self.a.rest.update(table, q, CHANGE[table]))
                     ok(self, self.a.rest.delete(table, q))
-                    own = ok(self, self.b.rest.insert(table, [self.row(self.b, table)]))[0]
+                    ok(self, self.b.rest.insert(table, [self.row(self.b, table)]))
                     deadline = time.time() + 20
-                    while time.time() < deadline and not seen.has("INSERT", own[KEY[table]]):
+                    while time.time() < deadline and not (feed_b.told(table) and len(feed_a.told(table)) >= 3):
                         time.sleep(0.2)
-                    time.sleep(1)  # a late event for A's row would land by now
+                    time.sleep(1)  # a late message would land by now
                 finally:
-                    seen.stop()
-                self.assertTrue(seen.has("INSERT", own[KEY[table]]), seen.errors)
-                key = other[KEY[table]]
-                heard = [(kind, rec, old) for kind, rec, old in seen.events
-                         if key in (rec.get(KEY[table]), old.get(KEY[table]))]
-                self.assertEqual([k for k, _, _ in heard if k != "DELETE"], [], "B heard A's insert or update")
-                self.assertEqual([old for k, _, old in heard if k == "DELETE"], [{c: other[c] for c in pk}],
-                                 "what B hears of A's delete")
+                    for feed in (changes, feed_a, feed_b, spy):
+                        feed.stop()
+                self.assertEqual(changes.events, [], "B heard a change through Postgres Changes")
+                self.assertTrue(changes.ready.is_set() or changes.errors, "the subscription never answered")
+                self.assertFalse(spy.ready.is_set(), "B joined A's topic")
+                self.assertTrue(spy.errors, "B's join of A's topic was never refused")
+                self.assertEqual(spy.events, [], "B heard A's topic")
+                self.assertEqual([p["op"] for p in feed_b.told(table)], ["insert"], "B's topic")
+                told = feed_a.told(table)
+                self.assertEqual([p["op"] for p in told], ["insert", "update", "delete"], "A's topic")
+                for p in told:
+                    self.assertEqual(set(p), {"op", "id"}, p)
+                    self.assertNotIn(str(other[KEY[table]]), json.dumps(p))
 
     def test_derive_state_readable_names_no_trip(self):
         """The worker's run_build writes derive_state on a dropped trip and on a failure, and B reads it. The steps around
@@ -434,15 +458,16 @@ class RlsTest(unittest.TestCase):
 
 
 class listen:
-    """A Realtime subscription to every change of one table as one user, in a thread. events holds each change it was
-    told about as (type, record, old_record)."""
+    """One Realtime channel as one user, in a thread. With postgres_changes it asks for every change of that table,
+    otherwise it joins the topic as a broadcast channel, private when asked. events holds every postgres_changes or
+    broadcast message as (event, payload). ready is set once the server accepts the join, errors holds each refusal."""
 
-    def __init__(self, env, user, table):
+    def __init__(self, env, user, topic, postgres_changes=None, private=False):
         self.events, self.errors, self.ready, self.done = [], [], threading.Event(), threading.Event()
-        self.thread = threading.Thread(target=self.run, args=(env, user, table), daemon=True)
+        self.thread = threading.Thread(target=self.run, args=(env, user, topic, postgres_changes, private), daemon=True)
         self.thread.start()
 
-    def run(self, env, user, table):
+    def run(self, env, user, topic, table, private):
         try:
             from websockets.sync.client import connect
         except ImportError as e:
@@ -450,11 +475,13 @@ class listen:
             return
         url = env["SUPABASE_URL"].replace("http", "ws", 1).rstrip("/")
         url += f"/realtime/v1/websocket?apikey={env['SUPABASE_PUBLISHABLE_KEY']}&vsn=1.0.0"
+        changes = [{"event": "*", "schema": "public", "table": table}] if table else []
+        config = {"broadcast": {"self": False, "ack": False}, "presence": {"key": ""}, "postgres_changes": changes,
+                  "private": private}
         try:
             with connect(url, open_timeout=20) as ws:
-                ws.send(json.dumps({"topic": "realtime:test-" + table, "event": "phx_join", "ref": "1", "payload": {
-                    "config": {"postgres_changes": [{"event": "*", "schema": "public", "table": table}]},
-                    "access_token": user.token}}))
+                ws.send(json.dumps({"topic": "realtime:" + topic, "event": "phx_join", "ref": "1",
+                                    "payload": {"config": config, "access_token": user.token}}))
                 last_beat = time.time()
                 while not self.done.is_set():
                     if time.time() - last_beat > 15:
@@ -470,16 +497,23 @@ class listen:
                             self.ready.set()
                         else:
                             self.errors.append(pl)
-                    elif ev == "phx_reply" and (pl.get("status") != "ok"):
+                    elif ev == "phx_reply" and msg.get("ref") == "1":
+                        if pl.get("status") != "ok":
+                            self.errors.append(pl)
+                        elif not table:
+                            self.ready.set()
+                    elif ev == "phx_reply" and pl.get("status") != "ok":
                         self.errors.append(pl)
                     elif ev == "postgres_changes":
-                        data = pl.get("data") or {}
-                        self.events.append((data.get("type"), data.get("record") or {}, data.get("old_record") or {}))
+                        self.events.append((ev, pl.get("data") or {}))
+                    elif ev == "broadcast":
+                        self.events.append((pl.get("event"), pl.get("payload") or {}))
         except Exception as e:  # the test reads errors and fails with them
             self.errors.append(repr(e))
 
-    def has(self, kind, key):
-        return any(k == kind and key in rec.values() for k, rec, _ in self.events)
+    def told(self, event):
+        """The payloads of the broadcast messages named event, in the order they came."""
+        return [p for e, p in list(self.events) if e == event]
 
     def stop(self):
         self.done.set()

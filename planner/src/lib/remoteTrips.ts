@@ -1,5 +1,6 @@
 import type { PostgrestError } from '@supabase/supabase-js'
 import type { SendOutcome } from './outbox'
+import { onOwnerChange } from './ownerFeed'
 import { parseTripsFile, type TripRow } from './repoTrips'
 import { supabase } from './supabase'
 import { tripRowErrors } from './tripRow'
@@ -110,14 +111,9 @@ export async function deleteTrip(id: string): Promise<{ ok: true } | { ok: false
   return error ? { ok: false, message: error.message } : { ok: true }
 }
 
-/** Calls cb on every change of trips. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
+/** Calls cb on every change of the person's trips. Returns the way to stop listening. */
 export function subscribeTrips(cb: () => void): () => void {
-  if (!supabase) return () => {}
-  const client = supabase
-  const channel = client.channel(`trips-changes-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'trips' }, cb).subscribe()
-  return () => {
-    void client.removeChannel(channel)
-  }
+  return onOwnerChange(['trips'], cb)
 }
 
 /** The project ref of the Supabase URL, which marks a browser as imported for this project only. */

@@ -1,6 +1,7 @@
 import type { Lodging, LodgingRoom } from '../data/types'
 import { day, dayRange } from './format'
 import { addDays } from './time'
+import { onOwnerChange } from './ownerFeed'
 import { supabase } from './supabase'
 
 // Tasks for Claude (spec 8.3). A press inserts one row into the tasks table, with the task JSON of
@@ -160,14 +161,9 @@ export async function stayTasksAt(placeId: string): Promise<StayTask[]> {
   return (data ?? []) as StayTask[]
 }
 
-/** Calls cb on every change of tasks. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
+/** Calls cb on every change of the person's tasks. Returns the way to stop listening. */
 export function subscribeTasks(cb: () => void): () => void {
-  if (!supabase) return () => {}
-  const client = supabase
-  const channel = client.channel(`tasks-changes-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, cb).subscribe()
-  return () => {
-    void client.removeChannel(channel)
-  }
+  return onOwnerChange(['tasks'], cb)
 }
 
 export type AskState = 'idle' | 'sending' | 'sent' | 'failed'

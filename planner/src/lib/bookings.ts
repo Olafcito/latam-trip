@@ -1,4 +1,5 @@
 import type { Booking, BookingFile } from '../data/types'
+import { onOwnerChange } from './ownerFeed'
 import { supabase } from './supabase'
 
 // Bookings through Supabase (spec 4.1). The table and its bucket are owner only, so nothing here is cached or logged.
@@ -25,14 +26,9 @@ export async function loadBookings(): Promise<Booking[]> {
   return (data ?? []) as Booking[]
 }
 
-/** Calls cb on every change of bookings. Returns the way to stop listening. Each call gets a channel of its own, since the client hands back a subscribed one of the same name. */
+/** Calls cb on every change of the person's bookings. Returns the way to stop listening. */
 export function subscribeBookings(cb: () => void): () => void {
-  if (!supabase) return () => {}
-  const client = supabase
-  const channel = client.channel(`bookings-changes-${crypto.randomUUID()}`).on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, cb).subscribe()
-  return () => {
-    void client.removeChannel(channel)
-  }
+  return onOwnerChange(['bookings'], cb)
 }
 
 /**

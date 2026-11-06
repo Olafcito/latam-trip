@@ -1,4 +1,5 @@
 import type { Lodging, LodgingPrice, LodgingRoom } from '../data/types'
+import { onOwnerChange } from './ownerFeed'
 import { supabase } from './supabase'
 
 // Places to stay through Supabase (spec 5.2). The three tables are owner only, so nothing here is cached, logged
@@ -68,16 +69,9 @@ export async function hasBookingPlace(placeId: string): Promise<boolean> {
   return (data ?? []).length > 0
 }
 
-/** Calls cb on every change of a lodging, a room or a price. Returns the way to stop listening. Each call gets a channel of its own. */
+/** Calls cb on every change of the person's lodgings, rooms or prices. Returns the way to stop listening. */
 export function subscribeLodgings(cb: () => void): () => void {
-  if (!supabase) return () => {}
-  const client = supabase
-  let channel = client.channel(`lodgings-changes-${crypto.randomUUID()}`)
-  for (const table of ['lodgings', 'lodging_rooms', 'lodging_prices']) channel = channel.on('postgres_changes', { event: '*', schema: 'public', table }, cb)
-  channel.subscribe()
-  return () => {
-    void client.removeChannel(channel)
-  }
+  return onOwnerChange(['lodgings', 'lodging_rooms', 'lodging_prices'], cb)
 }
 
 /** What the tables would refuse in a draft, said the way the form can show it. */
