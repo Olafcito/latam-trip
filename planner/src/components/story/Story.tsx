@@ -21,7 +21,9 @@ import { Modal } from '../Modal'
 import { hoverProps, usePlaceHover } from '../PlaceCard'
 import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
-import { Boat, Bus, Caret, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
+import { Arrow, Boat, Bus, Caret, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
+import { itinerary } from '../../lib/itinerary'
+import { LookContext, LookPicker, useLookChoice } from '../proto/ItineraryLook'
 import { BookingForm, type BookTarget, type FormLeg } from './BookingForm'
 import { CityCard, type CityView } from './CityCard'
 import { FlightSheet, type LegStay } from './FlightSheet'
@@ -123,7 +125,7 @@ function NightChooser({ name, days, rows }: { name: string; days: number; rows: 
 }
 
 /** A stop: flag on the rail, the city, and at the right edge the nights there, which you can change. Copenhagen has no nights. */
-function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, open, onToggle, cut }: {
+function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, open, onToggle, cut, dates, shutting }: {
   id?: string
   name: string; node: MapNode | undefined; country: string; days: number; exact: boolean
   /** a night less here, or null when it has none */
@@ -140,6 +142,10 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
   onToggle?: () => void
   /** the booked stays here that the nights cut into */
   cut?: Warning[]
+  /** the editorial look: the day you get there and the day you leave, beside a larger name */
+  dates?: { inDay: string; outDay: string }
+  /** the editorial fold is closing, so the chevron turns back at once */
+  shutting?: boolean
 }) {
   const pop = usePop(false)
   const less = through ? `One night less in ${name}, it goes to ${through}` : `One night less in ${name}, it becomes a free night`
@@ -152,6 +158,37 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
     onToggle()
   })
   const foldId = id ? `${id}-fold` : undefined
+  if (dates && !home) {
+    const shown = !!open && !shutting
+    return (
+      <li id={id} className="st-stop ed-stop" data-shown={shown || undefined}>
+        <span className="st-rail">
+          {toggle ? <button type="button" className="st-flag" tabIndex={-1} aria-hidden="true" onClick={toggle}><Disc country={country} /></button> : <Disc country={country} />}
+        </span>
+        <div className="ed-head">
+          {toggle ? (
+            <button type="button" className="st-open ed-open" aria-expanded={shown} aria-controls={open ? foldId : undefined} {...(open ? {} : hoverProps(node))} onClick={toggle}>
+              <span className="ed-city">{name}</span>
+              <span className="ed-dates">
+                <span>{weekdayDay(dates.inDay)}</span>
+                {dates.outDay !== dates.inDay && <><Arrow s={12} /><span>{weekdayDay(dates.outDay)}</span></>}
+              </span>
+            </button>
+          ) : <b className="ed-open"><span className="ed-city">{name}</span></b>}
+          <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
+            <button type="button" className="st-n" aria-label={less} title={less} disabled={!onLess} onClick={onLess ?? undefined}><Minus /></button>
+            <Count n={days} est={!exact} />
+            <span className="pop-wrap" {...pop.wrap}>
+              <button type="button" className="st-n" aria-label={more} title={more} disabled={!direct && !later.some((r) => r.take)} {...(direct ? { onClick: direct } : pop.trigger)}><Plus /></button>
+              {pop.open && <div className="pop nf" role="group" aria-label="Take a night from" {...pop.panel}><Shut on={pop.dismiss} /><NightChooser name={name} days={days} rows={later} /></div>}
+            </span>
+          </span>
+          {toggle && <button type="button" className="ed-chev" tabIndex={-1} aria-hidden="true" onClick={toggle}><Caret dir="d" s={18} /></button>}
+        </div>
+        {!open && cut?.map((w, k) => <p key={k} className="st-clash" role="status"><Warn /><span>{w.text}</span></p>)}
+      </li>
+    )
+  }
   return (
     <li id={id} className="st-stop" data-home={home} data-open={open || undefined}>
       <span className="st-rail">
@@ -341,6 +378,24 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   const [city, setCity] = useState<{ i: number; view: CityView } | null>(null)
   // the stop folded open on the route, one at a time
   const [fold, setFold] = useState<number | null>(null)
+  // prototype: the current look or the editorial one, and the stop whose editorial fold is closing
+  const { look, at: lookAt, run: lookRun, choose: chooseLook, replay: replayLook } = useLookChoice()
+  const ed = look === 'editorial'
+  const [shutting, setShutting] = useState<number | null>(null)
+  const shutTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(shutTimer.current), [])
+  const toggleFold = (i: number) => {
+    window.clearTimeout(shutTimer.current)
+    if (!ed || fold !== i) {
+      setShutting(null)
+      setFold((f) => (f === i ? null : i))
+      return
+    }
+    // the editorial fold shuts by its height first, then leaves the page
+    setShutting(i)
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    shutTimer.current = window.setTimeout(() => { setFold((f) => (f === i ? null : f)); setShutting(null) }, still ? 120 : 220)
+  }
   // the stop whose search opens at once, from the trip's Add accommodation or another city picked in a search
   const [stayAt, setStayAt] = useState<{ i: number; n: number; tab: StayTab } | null>(null)
   const pickStay = useRef<{ stop: number; tab: StayTab } | null>(null)
@@ -353,7 +408,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   const openSaved = useStore((s) => s.openSaved)
   const setCursor = useStore((s) => s.setCursor)
   const foldBody = (i: number, fam: Family, tone?: 'home') => (
-    <li key={`f${i}`} id={`st-${i}-fold`} className="st-leg st-fold" data-f={fam} data-tone={tone}>
+    <li key={`f${i}`} id={`st-${i}-fold`} className={ed ? 'st-fold ed-fold' : 'st-leg st-fold'} data-f={ed ? undefined : fam} data-tone={ed ? undefined : tone} data-shutting={(ed && shutting === i) || undefined}>
       <span className="st-rail" />
       <StopFold
         data={data} journey={journey} sched={sched} i={i}
@@ -507,6 +562,8 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
       booking={wayBooked.in}
     />,
   ]
+  // the pieces by key, for the editorial look to lay out in the order of the itinerary
+  const byKey: Record<string, ReactNode> = { cph0: items[0], in: items[1] }
   ps.forEach((p, i) => {
     if (p.hop && i > 0) {
       const h = p.hop
@@ -540,7 +597,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
           </Modal>
         )
       }
-      items.push(
+      const leg = (
         <Leg
           key={`h${i}`}
           fam={fam}
@@ -603,21 +660,25 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
               close={close}
             />
           ) : undefined}
-          fold={fold === i - 1}
-        />,
+          fold={!ed && fold === i - 1}
+        />
       )
-      if (fold === i - 1) items.push(foldBody(i - 1, fam))
+      items.push(leg)
+      byKey[`h${i}`] = leg
+      if (!ed && fold === i - 1) items.push(foldBody(i - 1, fam))
     }
     const sp = sched.places[i]
     if (!p.hop && i > 0) {
-      items.push(
+      const gap = (
         <li key={`g${i}`} className="st-gap">
           <span className="st-rail" />
           <div className="st-line"><span className="st-when" aria-label={`Reaches ${nm(p.node)} ${weekdayDay(sp.inDay)}`}><When date={sp.inDay} /></span></div>
-        </li>,
+        </li>
       )
+      items.push(gap)
+      byKey[`g${i}`] = gap
     }
-    items.push(
+    const stop = (
       <Stop
         key={`s${i}`}
         id={`st-${i}`}
@@ -630,25 +691,30 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
         rows={nightRows(i)}
         through={(() => { const k = nightStop(locked, i); return k == null ? undefined : nm(sched.places[k].node) })()}
         open={fold === i}
-        onToggle={() => setFold((f) => (f === i ? null : i))}
+        onToggle={() => toggleFold(i)}
         cut={sched.warnings.filter((w) => w.stop === i)}
-      />,
+        dates={ed ? { inDay: sp.inDay, outDay: sp.outDay } : undefined}
+        shutting={shutting === i}
+      />
     )
+    items.push(stop)
+    byKey[`s${i}`] = stop
     // the last stop has no leg of its own, its fold follows it straight away
-    if (fold === i && i === ps.length - 1) items.push(foldBody(i, 'flight', 'home'))
+    if (!ed && fold === i && i === ps.length - 1) items.push(foldBody(i, 'flight', 'home'))
   })
   if (sched.free > 0) {
-    items.push(
+    byKey.free = (
       <li key="free" className="st-free">
         <span className="st-rail" />
         <div className="st-card">
           <span className="st-free-t">Free before the flight home</span>
           <Count n={sched.free} />
         </div>
-      </li>,
+      </li>
     )
+    items.push(byKey.free)
   }
-  items.push(
+  byKey.home = (
     <Leg
       key="home" fam="flight" tone="home" route={`${nm(exitNode)} to ${cph.name}`}
       date={homeDay} times={timesOf(wayHome.depart, wayHome.arrive)} set known picker={wayPicker(wayHome, wayRows.home, unlocked === 'home' ? null : bookedDay(wayBooked.home, dayOf(wayHome)))} fromName={nm(exitNode)}
@@ -657,13 +723,33 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
       card={<WayCard way={wayHome} other={wayIn} data={data} />}
       sheet={waySheet('home', wayHome, wayIn, wayRows.home)}
       booking={wayBooked.home}
-    />,
-    <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />,
+    />
   )
+  byKey.cph1 = <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />
+  items.push(byKey.home, byKey.cph1)
+  if (ed && fold != null && ps[fold]) byKey[`f${fold}`] = foldBody(fold, 'flight')
+  // the editorial look runs in the order the trip is lived: a stop, its stay, then the leg that leaves it.
+  // The instants come from the bookings, else the picked flights, else the days, as in the day view
+  const lined = ed
+    ? itinerary({
+      wayIn: { depart: tripInput.legs[0].depart, arrive: tripInput.legs[0].arrive ?? null },
+      wayHome: { depart: tripInput.legs[tripInput.legs.length - 1].depart, arrive: tripInput.legs[tripInput.legs.length - 1].arrive ?? null },
+      stops: sched.places,
+      hops: ps.map((_, i) => {
+        const l = tripInput.legs.find((x) => x.key === `h${i}`)
+        return l ? { depart: l.depart, arrive: l.arrive ?? null } : null
+      }),
+      open: fold,
+      free: sched.free,
+    }).map((e) => byKey[e.key])
+    : items
 
   return (
     <>
-      <ol className="st">{items}</ol>
+      <LookContext.Provider value={look}>
+        <ol key={`${look}-${lookRun}`} className="st" data-look={ed ? 'editorial' : undefined}>{lined}</ol>
+      </LookContext.Provider>
+      <LookPicker at={lookAt} choose={chooseLook} replay={replayLook} />
       {bookForm}
       {city != null && ps[city.i] && (
         <Modal
