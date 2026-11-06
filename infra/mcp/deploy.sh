@@ -3,9 +3,10 @@
 # The repo is public, so no account id or profile name goes in this file.
 # The SSM parameters under /latam-trip-mcp/ must exist first, see infra/mcp/put-secrets.sh.
 # Usage: bash infra/mcp/deploy.sh [--code-only]
-# --code-only is what the release runs (TECH-008). It builds and checks the zip as a full deploy does, uploads it to
-# the deploy bucket, updates the function's code, waits for the update and checks that the connector answers 401
-# without a bearer. It never touches CloudFormation or IAM, so a template change still needs a full deploy from
+# --code-only is what the release runs (TECH-008). It first stops when the function lacks a variable the code reads,
+# then builds and checks the zip as a full deploy does, uploads it to the deploy bucket, updates the function's code,
+# waits for the update and checks that the connector answers 401 without a bearer. Why no tool is called with a token
+# is in docs/connector.md. It never touches CloudFormation or IAM, so a template change still needs a full deploy from
 # this PC, which also brings the stack's CodeS3Key back in line with the code the release uploaded.
 set -euo pipefail
 export MSYS_NO_PATHCONV=1
@@ -26,6 +27,21 @@ FUNCTION=latam-trip-mcp
 MCP_URL="${MCP_URL:-https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp}"
 UV="${UV:-uv}"
 AWS=(aws --region "$REGION")
+
+# --code-only changes the code and never the configuration, so the function must already carry every variable the
+# code reads. A full deploy from the PC sets them from the template. Only the names are checked, no value is printed.
+NEEDS="LATAMTRIP_URL_PARAM LATAMTRIP_PUBLISHABLE_KEY_PARAM"
+if [ "$CODE_ONLY" = 1 ]; then
+  echo ">> checking the configuration of $FUNCTION"
+  MISSING="$("${AWS[@]}" lambda get-function-configuration --function-name "$FUNCTION" --query 'Environment.Variables' --output json \
+    | python -I -X utf8 -c 'import json, sys; have = json.load(sys.stdin) or {}; print(" ".join(n for n in sys.argv[1:] if not have.get(n)))' $NEEDS \
+    | tr -d '\r')"
+  if [ -n "$MISSING" ]; then
+    echo "the function $FUNCTION has no $MISSING in its configuration, and this code needs it." >&2
+    echo "Run bash infra/mcp/deploy.sh in full from the PC first (see docs/connector.md), then release again." >&2
+    exit 1
+  fi
+fi
 
 BUILD="$(mktemp -d)"
 trap 'rm -rf "$BUILD"' EXIT
