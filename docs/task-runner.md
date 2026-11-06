@@ -19,6 +19,7 @@ The connector, not the prompt, decides what a run may do (`latam_trip_mcp/runner
 | `lists_update` | Adds to or takes off a saved list | The lists, through `list_add` and `list_remove` |
 | `experience_research` | Researches one experience | One experience row |
 | `stay_prices` | Prices the named rooms on Booking.com. Hostelworld is the edge function's job | `lodging_prices` rows for those rooms |
+| `stay_picks` | Finds three good value places at one stored place on Booking.com for the dates when a stop with nights and no Booking.com place is first opened (FEAT-004): rated 8.0 or more, hostel, hotel or apartment, near the centre or on the beach, few reviewed ones left out, ranked by rating per krone. `finish_task` hides a pick that breaks the rule | At most three new lodgings with one room and its price each, through `add_lodging` |
 | `stay_search` | Finds the best rated places at one stored place on Booking.com for the dates and adds them, skipping the ones stored or hidden. Hostelworld is searched by the `stay-rates` edge function in the same press | New lodgings with one room and its price each, through `add_lodging` |
 | `refresh` | Checks old experience rows again, scope `experiences` only | Experience rows |
 

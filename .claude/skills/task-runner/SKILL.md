@@ -32,7 +32,7 @@ Close every task you claim before you claim the next one. A task left in working
 | `result` | How to write the result text. |
 | `lodging`, `place`, `stored`, `categories` | Data the task needs, already looked up. Use it as given. |
 
-The task types are `question`, `lists_update`, `experience_research`, `stay_prices`, `stay_search` and `refresh` (experiences only). Every other task stays open for Simon and `claim_task` never gives it to you, so do not look for others with `list_task`.
+The task types are `question`, `lists_update`, `experience_research`, `stay_prices`, `stay_search`, `stay_picks` and `refresh` (experiences only). Every other task stays open for Simon and `claim_task` never gives it to you, so do not look for others with `list_task`.
 
 When a tool refuses a write, read the reason, fix the row once and send it again. If it is refused a second time, leave that row out and name it in the result. When a site blocks you or a step cannot be done, fail the task with the reason rather than guessing.
 

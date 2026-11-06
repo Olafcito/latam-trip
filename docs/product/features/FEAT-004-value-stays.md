@@ -1,7 +1,7 @@
 # FEAT-004: Three value places when a stop opens
 
 - Date: 2026-11-06
-- Status: Reviewed on 2026-11-06 (section 13). Simon answered Q1 to Q4 the same day. Waiting on his answers to the questions in section 13, then a plan.
+- Status: Built on 2026-11-06. Simon answered the review's questions the same day (section 14), which change the rule in section 7.
 
 ## 1. Problem
 
@@ -11,7 +11,7 @@ Simon wants "the three initial hotels to identify value": near the centre or the
 
 1. **Open a new stop.** Simon opens Add accommodation at a stop with nights where no Booking.com place is stored yet, whether or not Hostelworld places are. Without pressing anything, the sheet shows Claude is on it, the same live mark FEAT-003 shows while Booking.com is asked.
 2. **Close and come back.** He can close the sheet or go to another stop. The task runs in the cloud and the mark follows it when he comes back.
-3. **Three value places come in.** Within a minute or two three cards arrive, each near the centre or on the beach, rated 8 or more, and the best rating for the money for the stop's dates, with the more reviewed place winning a close call. None is a hostel, so none repeats a Hostelworld card and none should be a dorm bed. Each card already shows its distance to the centre, or its beach tag, with its rating, review count and price, so he can compare the three at a glance.
+3. **Three value places come in.** Within a minute or two three cards arrive, each near the centre or on the beach, rated 8 or more, and the best rating for the money for the stop's dates, each with enough reviews to trust. Each is a hostel, a hotel or an apartment, and none repeats a Hostelworld card. Each card already shows its distance to the centre, or its beach tag, with its rating, review count and price, so he can compare the three at a glance.
 4. **Rooms and photos follow.** Each new Booking.com place queues a `stay_details` task by itself (migration 0022), and the PC queue loop reads its rooms and photos.
 5. **Open one and pick.** He opens a card, sees its rooms cheapest first, and picks a room as today.
 6. **Want more.** Find accommodations still adds the popular Hostelworld hostels and more Booking.com places, as in FEAT-003, also while the three are still being found.
@@ -48,7 +48,7 @@ Simon wants "the three initial hotels to identify value": near the centre or the
 - S1: Opening the sheet inserts exactly one `stay_picks` task when all of these hold: the stop has nights, its check in is today or later, no Booking.com lodging is stored at the place (hidden or not), no `stay_picks` task exists for the place and dates in any status, and none is open or working at the place for other dates. A unit test on the decision function covers each condition.
 - S1: A stop that fails any condition inserts nothing.
 - S2: With the task open or working, the sheet shows the live Booking.com mark after a reload. A shot proves it.
-- S3: `finish_task` on a `stay_picks` task looks up the lodgings named in `outputs`, refuses outputs that are not lodgings at `place_id`, and hides every one rated under 8.0, with under 5 reviews or none, or of kind hostel, and every one past the third, naming them in the stored result. A test in `latam_trip_mcp` covers each.
+- S3: `finish_task` on a `stay_picks` task looks up the lodgings named in `outputs`, refuses outputs that are not lodgings at `place_id`, and hides every one rated under 8.0, with under 5 reviews or none, of a kind other than hostel, hotel or apartment, and every one past the third, naming them in the stored result. A test in `latam_trip_mcp` covers each.
 - S3: The contract's worked example ranks a 9.2 at 600 kroner above an 8.1 at 500 kroner with equal reviews.
 - S3: A run on a real stop adds at most three lodgings whose rating is 8.0 or more, whose review count meets the floor and whose `to_center_km` is set or whose tags hold beach. Checked once live on a stop with no Booking.com place, which also proves the auto insert, and once on Cartagena with a `stay_picks` task added by hand, since Cartagena already has Booking.com places from FEAT-003.
 - S3b: In the same two live runs, once their `stay_details` tasks have run, none of the picks has a bed in a shared room as its cheapest room for the dates, judged by the room names stored.
@@ -64,10 +64,11 @@ Simon wants "the three initial hotels to identify value": near the centre or the
 - The method is the contract's `steps`, as `stay_search`'s is, so the routine prompt and its "nothing else" rule stay as they are. The rule, in order:
   1. Search Booking.com for the place, dates, 1 adult, 1 room, DKK, user country dk, `minimum_review_score` 8. Run up to three searches (the centre, the beach in a town on the coast, and a lower nightly price band) and pool them, because one search returns about 10 properties and leaves the rating out of many of them.
   2. Keep properties with a rating of 8.0 or more, 5 reviews or more, a price for the dates and coordinates. A property with no rating shown is left out.
-  3. Leave out every property of type Hostel or Capsule hotel, and any with hostel in its name. The connector gives one price and no room type, so such a price can be a dorm bed, and hostels are the Hostelworld half's job.
+  3. Keep only hostels, hotels and apartments (section 14). Guest houses, bed and breakfasts, homestays and every other kind are left out.
   4. Leave out places already stored at the place, by Booking.com link or by name, Hostelworld ones included, and any stored with hidden true.
   5. Keep those within 2 km of the place's lat and lon, or within 5 km and listed with the Beachfront or Beach facility. Widen the 2 km to 3 km, then 5 km, when fewer than three remain, and say so in the result.
-  6. Rank by value: the rating points above 7, times the log of the review count, per krone of the stay's total. Written out, `(rating - 7) * log10(reviews) / total_dkk`. Take the top three. A worked example in the steps shows a 9.2 at 600 kroner above an 8.1 at 500 kroner with equal reviews.
+  5b. Leave out the ones with few reviews: 50 or more, lowered to 20 then 5 when fewer than three remain (section 14).
+  6. Rank by value: the rating points above 7 per krone of the stay's total, `(rating - 7) / total_dkk`. Take the top three. A worked example in the steps shows a 9.2 at 600 kroner above an 8.1 at 500 kroner with equal reviews.
 - Each pick is written with `add_lodging` as `stay_search` writes it, with tags beach when it was kept for the beach facility, and `outputs` names the lodging ids in rank order. `add_lodging` fills `to_center_km` from the lodging's and the place's lat and lon when the caller leaves it out, using the `haversine_km` that `core.py` already has.
 - `finish_task` checks a `stay_picks` finish as S3 says. A hidden pick keeps the `stay_details` task its insert queued.
 - `tripdb.PUBLIC_LOG` gets `stay_picks`, keeping its type, place and dates with a fixed summary and no outputs, as `stay_prices` is kept, since its result names places and prices from owner only tables and `task_log` is published. `stay_search` gets the same line, as it lacks it today.
@@ -154,3 +155,11 @@ Independent review against `runner.py`, `core.py`, migrations 0017, 0018, 0021 a
 4. **A booked stop.** Should a stop with a booked stay queue nothing, as its stay is settled. Simon decides.
 
 Proposed PROD decision, status Proposed: a stop with nights and no Booking.com place gets one value search when its sheet first opens, once per place and dates, and never again on its own.
+
+## 14. Decisions on the review (Simon, 2026-11-06)
+
+- Review weight: places with relatively few reviews are left out, not weighed. Three decent places are the aim, not every place. The floor is 50 reviews, lowered to 20 and then 5 only when fewer than three remain, and the score is the rating per krone with no review term.
+- Dorms: a dorm slipping in is fine. Guest houses are left out. The picks are hostels, hotels and apartments only, apartment standing for the Airbnb kind of stay. This replaces Q4's no hostels: a hostel already stored from Hostelworld is still skipped by name.
+- Unrated places: only places that show a rating are taken.
+- Booked stops: a stop with a booked stay queues no picks.
+
