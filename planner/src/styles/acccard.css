@@ -220,6 +220,42 @@ a.ac-room svg { flex: none; margin-top: 4px; color: var(--muted); }
 .scw-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 .scw-said { margin: 0; font-size: var(--fs-small); color: var(--err); line-height: 1.4; }
 
+/* reading a file: the file and a bar that runs until the review opens */
+.scw-reading { display: grid; gap: 14px; padding: 4px 0 8px; }
+.scw-bar { position: relative; height: 3px; border-radius: 3px; overflow: hidden; background: var(--surface-3); }
+.scw-bar::after {
+  content: ''; position: absolute; inset: 0; width: 40%; border-radius: inherit; background: var(--boat);
+  animation: scw-read 1.1s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+}
+@keyframes scw-read { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@keyframes scw-pulse { from { opacity: .25; } to { opacity: .8; } }
+
+/* the review: what is kept with the booking, every field, amber where the confirmation said nothing, Save at the foot */
+.scw-review { gap: 14px; }
+.scw-src {
+  display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; padding: 9px 12px;
+  border-radius: 10px; background: var(--surface-2); font-size: var(--fs-small); color: var(--muted);
+}
+.scw-src svg { flex: none; }
+.scw-src span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scw-review .fld b { font-weight: 600; color: var(--text); }
+.scw-review .seg { display: grid; width: 100%; }
+.scw-review .seg > button { display: grid; place-items: center; min-width: 0; min-height: var(--hit); padding: 0 6px; }
+.scw-prov .ac-logo { width: 24px; height: 24px; border-radius: 6px; }
+.scw-prov .ac-logo img { width: 18px; height: 18px; }
+.scw-pname { overflow: hidden; text-overflow: ellipsis; }
+.scw-when { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 132px); gap: 12px; align-items: end; }
+.scw-money { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 76px); gap: 8px; align-items: end; }
+.scw-money .fld:last-child input { text-transform: uppercase; }
+.scw-review :is(.scw-when, .scw-money, .scw-keep) .fld input { min-width: 0; width: 100%; }
+.fld[data-miss] { color: var(--flight); }
+.fld[data-miss] :is(input, .seg) { border-color: color-mix(in oklab, var(--flight) 65%, transparent); }
+.scw-save {
+  position: sticky; bottom: -20px; z-index: 1; display: grid; gap: 10px;
+  margin: 4px -18px -20px; padding: 12px 18px 18px;
+  border-top: 1px solid var(--line); background: var(--surface);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .scw-way:hover:not(:disabled) { background: var(--surface-3); border-color: var(--faint); }
   .scw-back:hover { background: var(--surface-2); color: var(--text); }
@@ -260,11 +296,12 @@ a.sd-v { color: var(--text); text-decoration: underline; text-decoration-color: 
 
 @media (max-width: 560px) {
   .sd-pics { height: 200px; }
-  .scw-two { grid-template-columns: minmax(0, 1fr); }
+  .scw-two:not(.scw-keep) { grid-template-columns: minmax(0, 1fr); }
   .scw-ai { grid-template-columns: auto minmax(0, 1fr); }
   .scw-copy { grid-column: 2; justify-self: start; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ac-att:active, .ac-mail:active, .scw-way:active:not(:disabled), .scw-copy:active { transform: none; }
+  .scw-bar::after { width: 100%; animation: scw-pulse 1.4s ease-in-out infinite alternate; }
   .ac-pics:hover .ac-main img { transform: none; }
 }

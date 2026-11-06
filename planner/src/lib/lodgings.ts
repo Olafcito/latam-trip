@@ -135,6 +135,21 @@ export async function saveLodging(d: LodgingDraft): Promise<{ ok: true; id: stri
   }
 }
 
+/** The full address of a place to stay, from the booking confirmation when the place had none. */
+export async function setLodgingAddress(id: string, address: string): Promise<Result> {
+  const text = address.trim()
+  if (!text) return { ok: false, message: 'The address is empty.' }
+  if (!supabase) return { ok: false, message: 'Not connected.' }
+  try {
+    const { data, error } = await supabase.from('lodgings').update({ address: text }).eq('id', id).select('id')
+    if (error) return { ok: false, message: error.message }
+    if (!data?.length) return { ok: false, message: 'The place is not there any more.' }
+    return { ok: true }
+  } catch (e) {
+    return failed(e)
+  }
+}
+
 /** A hidden place to stay is kept, and no longer shows. */
 export async function hideLodging(id: string): Promise<Result> {
   if (!supabase) return { ok: false, message: 'Not connected.' }

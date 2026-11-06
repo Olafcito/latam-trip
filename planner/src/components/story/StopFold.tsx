@@ -358,7 +358,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
       )}
       {confirming && (
         <Modal label="Add booking confirmation" className="scw-md" onClose={() => setConfirm(null)}>
-          {(shut) => <StayConfirm city={name} booking={confirming.booking} target={confirming.target} close={shut} />}
+          {(shut) => <StayConfirm city={name} booking={confirming.booking} target={confirming.target} lodging={(confirming.target.lodgingId && byId.get(confirming.target.lodgingId)) || null} close={shut} />}
         </Modal>
       )}
       {detailed && (

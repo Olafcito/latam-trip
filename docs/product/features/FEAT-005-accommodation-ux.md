@@ -13,7 +13,7 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 1. **Open a stop.** On the trip, Simon opens a stop. Where he sleeps comes first and is the largest thing in the fold: the place's photo, its name with the address and the town under it, its kind and what it offers, the nights, the room where it was found and the price. An amber Not booked mark says it is only planned. Things to do and Experiences sit under it as two compact rows, each with a count, that open in place.
 2. **Add from the stop (window A).** With no stay yet, Add accommodation opens the search he knows, filled in with the stop and its dates. He finds a place, opens it, picks a room with Select, and the window closes on the stop with the new card.
 3. **Add from the whole trip (window B).** From the trip's header he presses Add accommodation. The same search opens with the destination empty. He picks a city of the trip, its dates follow, he can change dates and guests, and the rest is window A. After Select the window closes and the stop opens on the card.
-4. **Book it and attach the confirmation (window C).** Once he has booked on the site, he presses Add booking confirmation on the card. A small window offers Upload confirmation, Paste booking link, Enter manually, and Use with AI, which copies a prompt for ChatGPT or Claude to find the booking in his mail. Any of the first three makes the stay booked.
+4. **Book it and attach the confirmation (window C).** Once he has booked on the site, he presses Add booking confirmation on the card. A small window offers Upload confirmation, Paste booking link, Enter manually, and Use with AI, which copies a prompt for ChatGPT or Claude to find the booking in his mail. An upload is read while a bar runs, then all three open the same review: the fields the confirmation gave are filled, the ones it did not are amber. Save makes the stay booked.
 5. **See it booked.** The card turns green: Booked, the provider's logo, the total large with the price a night under it, the attached confirmation and a Gmail button when the mail is known.
 6. **Look at the details (window D).** Pressing the card opens the stay alone: photos, name and location, room, dates and nights, price, status, reference, where it was booked, cancellation and the confirmation file. From there he can add or open the confirmation, change the room or take the stay off the stop.
 
@@ -50,7 +50,8 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 - S2: The fold has no tabs. Things to do, Experiences and About are single line rows with an icon, the title, a count chip and a chevron, with no description line, no border and no card around them. Each opens in place. A shot.
 - S3: Add accommodation at a stop opens `AddStay` with the stop's name and dates. Select on a room closes the window and the card shows the room. The useStayFind call site in `StopFold` is unchanged.
 - S4: The trip header has Add accommodation. The search opens with an empty destination and no places. Picking a city fills its dates and places. Select closes the window and opens that stop. A shot.
-- S5: Upload, link and manual entry each insert one `bookings` row of kind stay with the place, lodging, room, trip and dates when the stay has none, and update that row when it has one. The upload goes through `attachFile`. Unit tests on the draft row.
+- S5: Upload, link and manual entry each open one review window. An upload is read by `readStay` first and fills the form, a failed read shows its reason and opens the review with the stay's own facts. A pasted Gmail or Outlook link fills the confirmation mail, any other link is kept as the booking's page. Fields the read did not find are amber until edited. The provider is a segmented choice of logos (Booking.com, Hostelworld, Airbnb, Own site, Other), and Other asks for a name and a link. The kroner field shows only for another currency, the address field only when the place has none or the confirmation names another one, which then shows read only. Nothing is written before Save.
+- S5b: Save inserts one `bookings` row of kind stay with the place, lodging, room, trip and dates when the stay has none, and updates that row when it has one, with `confirmation_source` upload, gmail, url or manual. Then the file goes through `attachFile`, then the address goes to a place that has none. A failed file says so and Save again goes on without a second row or a second file. Unit tests on `saveStay` and static renders of the review.
 - S6: Copy prompt writes the brief's prompt with the stop's city to the clipboard and says Copied. A unit test on the prompt text.
 - S7: A stay with a booking shows Booked in green and prices like a flight: the provider's logo, the total large ("1.220 DKK total") and the price a night under it. With no kroner but a price in another currency, that currency shows, never a conversion. A paperclip button says the confirmation is attached, and a Gmail button opens the mail when `mail_url` is known.
 - S8: Pressing the card's photo or name opens the details window, which shows the selected place only. The confirmation file opens through a signed URL.
@@ -60,14 +61,16 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 - A planned stay is a `PlannedStay` in the trip's JSON (`Journey.places[i].stays`). Its dates come from the schedule through `stayParts`, its price from `lodging_prices` through `partDkk`. Unchanged.
 - A booked stay is a `bookings` row with kind stay, matched to a part by `partBooking` on the place, the lodging and the nights. Unchanged.
 - Booking a planned part inserts that row: kind stay, status booked, `place_id`, `lodging_id`, `room_id`, `trip_id`, `check_in` the part's first night, `check_out` the morning after its last, `source` manual, and the reference, url, price, seller and cancellation as given. A part that already has a row is updated instead.
+- `confirmation_source` says where the confirmation came from: upload when a file was read, gmail when a mail link is known, url when a booking page was pasted, else manual.
 - Files go to the private `bookings` bucket under the row's id, through `attachFile`, with its type and size checks.
+- A confirmation's address is written to the lodging only when the lodging has none, through `setLodgingAddress`. An address the place has is never overwritten.
 - The AI prompt is built by one function from the stop's city, with the exact wording of the brief.
 
 ## 8. UX requirements
 
 - The card follows the reference image: one photo left, about 28 percent and as tall as the card, details right, a divider, then three columns (check-in, room, price with the confirmation action). When the details are narrower than 820 px the price goes under check-in and the room, across the details. On a phone the photo goes on top, full width, and the columns stack.
 - Planned is amber (`--flight`), booked is green (`--booked`). The mark sits on the photo and at the top right, as in the reference.
-- Window C follows the confirmation reference: three rounded rows with icon, title, subtitle and chevron, then the Use with AI box. Each row opens its form in the same window, with a back arrow.
+- Window C follows the confirmation reference: three rounded rows with icon, title, subtitle and chevron, then the Use with AI box. Each row leads to the same review in the same window, with a back arrow. On a phone the window is a bottom sheet and Save stays at its foot while the form scrolls.
 - Window D follows the flight detail sheet: the modal of the planner, a header with photos, then facts as labelled rows, the confirmation tiles, and the acts at the foot.
 - Icons that carry meaning have an accessible name and a tooltip. New icons go in `planner/src/components/icons.tsx`.
 - New pattern flagged: the large stay card and the stacked fold have no DES decision behind them yet. The reference image is the authority for this feature.
@@ -77,6 +80,7 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 **Reused as is.** `StaySearch` and `AddStay` (windows A and B), `PropertyView` (the place and its rooms), `Modal`, `stayParts`, `partBooking`, `partDkk`, `tripStays`, `stayClashes`, `saveBookings`, `attachFile`, `fileUrl`, `fileProblem`, `amenityRow`, `AmenityIcon`, `kindWord`, `bookAt`, the booking file tiles' look.
 
 **Changed.**
+- `lib/lodgings.ts`: `setLodgingAddress` gives a place its address.
 - `CityFold`: tabs become stacked sections. The stays body first, then Things to do and Experiences as compact rows that open in place, then About as a compact row so Change location and Delete stay reachable.
 - `StopFold`: renders the new cards in place of `StayList`, holds windows C and D, and can render its search without its own modal (`embed`) so window B shows the same search in one window. The `useStayFind` call stays where it is with the same arguments. Select on a room closes the window.
 - `StaySearch`: an optional destination picker (`destinations`, `onDestination`). With no destination the fields wait and the list says to pick a city.
@@ -84,7 +88,8 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 
 **Created.**
 - `components/stays/AccommodationCard.tsx`: the reference card, planned and booked.
-- `components/stays/StayConfirm.tsx`: window C.
+- `components/stays/StayConfirm.tsx`: window C, with the review `StayReview`. With `StayConfirm.test.tsx`.
+- `lib/stayConfirm.ts`: what a pasted link is, the confirmation source, when the address field shows, and `saveStay`, the ordered Save. With `lib/stayConfirm.test.ts`.
 - `components/stays/StayDetails.tsx`: window D.
 - `lib/stayBooking.ts`: the booking draft for a part, the AI prompt, and the facts the card and the details share. With `lib/stayBooking.test.ts`.
 - `lib/stayCard.ts`: the card's provider and the page its room opens, whether it cancels for free, and a booked stay's price in the currency known. With `lib/stayCard.test.ts`.
@@ -107,6 +112,8 @@ A stop's fold hides where Simon sleeps behind a tab, as a small row with a thumb
 - A long name or room: two lines then an ellipsis.
 - A part the stop has no nights left for: the card keeps the amber warning mark on the dates.
 - Upload refused (type, size, offline): the reason shows in the window, nothing is created twice.
+- The read fails or finds nothing: its reason shows and the review opens with the stay's own dates and room, every field open to type.
+- The file read is dropped by Back while it reads: its answer is ignored.
 
 ## 11. Dependencies and privacy
 
