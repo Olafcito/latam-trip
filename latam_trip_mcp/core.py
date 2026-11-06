@@ -1055,12 +1055,23 @@ class Core:
         new_id = cols.qr.quote_id(new)
         self.keep("flight", id, [old], "update", replaced_by=new_id)
         if new_id == id:
-            self.store.remove("quotes", {"quote_id": id})  # the same quote again would count as a duplicate
-            self.store.add_quotes([new], "chat.jsonl")
+            self.replace_quote(id, [new])
         else:
             self.store.add_quotes([new], "chat.jsonl")
             self.store.remove("quotes", {"quote_id": id})
         return {"updated": new_id}
+
+    def replace_quote(self, id, rows):
+        """rows take the place of the stored quote id under the same quote id. The stored one goes first, because the
+        same quote again would only count as a repeat, and comes back when the new one is refused, so a failed change
+        never loses the quote."""
+        gone = self.store.remove("quotes", {"quote_id": id})
+        try:
+            self.store.add_quotes(rows, "chat.jsonl")
+        except Exception:
+            if gone:
+                self.store.add_quotes(gone, "chat.jsonl")
+            raise
 
     def delete(self, tname, id):
         t = TYPES[tname]
@@ -1165,8 +1176,9 @@ class Core:
             self.store.rest.patch("lodgings", self.mine({"id": "eq." + str(id)}), back)
         elif tname == "flight":
             if action == "update" and now_id == str(id):
-                self.store.remove("quotes", {"quote_id": now_id})
-            self.store.add_quotes(rows, "chat.jsonl")
+                self.replace_quote(now_id, rows)
+            else:
+                self.store.add_quotes(rows, "chat.jsonl")
             if action == "update" and now_id != str(id):
                 self.store.remove("quotes", {"quote_id": now_id})
         else:

@@ -84,6 +84,23 @@ class UpdateRestoreTest(Base):
         self.assertEqual(self.core.trash(), [])
         self.assertTrue(new)
 
+    def test_a_refused_flight_change_keeps_the_quote(self):
+        fid = self.core.add("flight", [{"from": "SJO", "to": "LIR", "date": "2026-12-12", "price": 450, "notes": "hello"}])["added"][0]
+        real, calls = self.store.add_quotes, []
+
+        def refuse_once(rows, name):
+            calls.append(len(rows))
+            if len(calls) == 1:
+                raise tripdb.RestError("add_quotes refused")
+            return real(rows, name)
+
+        self.store.add_quotes = refuse_once
+        with self.assertRaises(tripdb.RestError):
+            self.core.update("flight", fid, {"notes": "changed"})  # notes are not in the quote id, so the id stays
+        self.assertEqual(calls, [1, 1])
+        rows = self.store.query("quotes")
+        self.assertEqual([(r["quote_id"], r["price_dkk"], r["notes"]) for r in rows], [(fid, 450, "site=chat; hello")])
+
     def test_connection_update_then_restore_with_a_changed_key(self):
         out = self.core.add("connection", [{"from": "SJO", "to": "LIR", "mode": "bus", "hours": 4.0, "price_dkk": 90}])
         self.assertEqual(out["refused"], [], out)
