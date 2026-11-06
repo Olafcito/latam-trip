@@ -53,7 +53,8 @@ export interface StaySearchProps {
   findError?: string | null
 }
 
-const KINDS: LodgingKind[] = ['hostel', 'hotel', 'guesthouse', 'apartment']
+// Simon looks for hostels, hotels and apartments only. A stored guesthouse still shows under All.
+const KINDS: LodgingKind[] = ['hostel', 'hotel', 'apartment']
 const SORTS: [StaySort, string][] = [['recommended', 'Recommended'], ['price', 'Lowest price'], ['rating', 'Best rated']]
 
 /** the short face of a site on its mark */
