@@ -1,4 +1,4 @@
-﻿"""Tests of migrations 0025 and 0026 (a stay_details task closes when its lodging is complete).
+﻿"""Tests of migrations 0025, 0026 and 0030 (a stay_details or stay_prices task closes when the data is complete).
 
 Every case runs in one transaction that is always rolled back, so nothing is committed. Each migration is applied
 inside that transaction when schema_migrations does not list it yet, so the tests run before and after it goes live.
@@ -11,7 +11,7 @@ import json, os, sys, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-MIGRATIONS = ("0025_task_close_by_data.sql", "0026_task_close_full_dates.sql")
+MIGRATIONS = ("0025_task_close_by_data.sql", "0026_task_close_full_dates.sql", "0030_stay_prices_close.sql")
 LINKS = json.dumps([{"site": "booking", "url": "https://example.com/TEST01"}])
 PHOTO = json.dumps(["https://example.com/TEST01.jpg"])
 WATCHED = ("tasks", "lodgings", "lodging_rooms", "lodging_prices")
@@ -208,7 +208,7 @@ class TaskCloseTest(unittest.TestCase):
 
     # the cloud runner acts with the secret key, so only the admin's tasks wake it (finding 3, phase 4 task 4.1)
     def record_fires(self):
-        self.q("create table public.fire_log (note text)")
+        self.q("create table if not exists public.fire_log (note text)")
         self.q("create or replace function public.fire_task_runner(note text) returns void language sql "
                "as $$ insert into public.fire_log values (note) $$")
 
@@ -241,6 +241,95 @@ class TaskCloseTest(unittest.TestCase):
         self.cloud_task(self.a, "1 hour")
         self.q("select public.sweep_task_runner()")
         self.assertEqual(self.fires(), ["sweep"])
+
+    # stay_prices closes when every room of the task has a price for its dates seen after the task was queued (0030)
+    def prices_task(self, lodging, rooms, ci="2026-12-03", co="2026-12-06", status="open", age="0 minutes", owner=None):
+        self.record_fires()
+        data = {"type": "stay_prices", "lodging_id": lodging, "room_ids": rooms, "check_in": ci, "check_out": co}
+        return self.q("insert into public.tasks (owner_id, type, title, status, data, created_at) "
+                      "values (coalesce(%s, public.admin_id()), 'stay_prices', 'TEST01', %s, %s::jsonb, now() - %s::interval) returning id",
+                      (owner, status, json.dumps(data), age))[0][0]
+
+    def state(self, tid):
+        return self.q("select status, result from public.tasks where id = %s", (tid,))[0]
+
+    def test_prices_close_when_every_room_is_priced(self):
+        lid = self.lodging()
+        a, b = self.room(lid, "TEST01 a"), self.room(lid, "TEST01 b")
+        tid = self.prices_task(lid, [a, b])
+        self.price(a, "2026-12-03", "2026-12-06")
+        self.assertEqual(self.state(tid)[0], "open")
+        self.price(b, "2026-12-03", "2026-12-06")
+        self.assertEqual(self.state(tid), ("done", "Closed by the data: 2 rooms priced for 2026-12-03 to 2026-12-06."))
+
+    def test_prices_older_than_the_task_do_not_close_it(self):
+        lid = self.lodging()
+        a, b = self.room(lid, "TEST01 a"), self.room(lid, "TEST01 b")
+        self.price(a, "2026-12-03", "2026-12-06", "now() - interval '2 hours'")
+        tid = self.prices_task(lid, [a, b], age="1 hour")
+        self.price(b, "2026-12-03", "2026-12-06")
+        self.assertEqual(self.state(tid)[0], "open")
+        self.price(a, "2026-12-03", "2026-12-06")
+        self.assertEqual(self.state(tid)[0], "done")
+
+    def test_prices_other_dates_other_rooms_and_missing_rooms_stay_open(self):
+        lid = self.lodging()
+        a, spare = self.room(lid, "TEST01 a"), self.room(lid, "TEST01 b")
+        other = self.lodging()
+        stranger = self.room(other, "TEST01 c")
+        wrong_dates = self.prices_task(lid, [a])
+        missing = self.prices_task(lid, [a, "TEST01-gone"])
+        elsewhere = self.prices_task(lid, [stranger])
+        empty = self.prices_task(lid, [])
+        self.price(a, "2026-12-03", "2026-12-08")
+        self.price(spare, "2026-12-03", "2026-12-06")
+        self.price(stranger, "2026-12-03", "2026-12-06")
+        for tid in (wrong_dates, missing, elsewhere, empty):
+            self.assertEqual(self.state(tid)[0], "open")
+        self.price(a, "2026-12-03", "2026-12-06")
+        self.assertEqual(self.state(wrong_dates)[0], "done")
+        self.assertEqual(self.state(missing)[0], "open")
+
+    def test_prices_working_closes_failed_untouched(self):
+        lid = self.lodging()
+        a = self.room(lid)
+        working = self.prices_task(lid, [a], status="working")
+        failed = self.prices_task(lid, [a], status="failed")
+        self.q("update public.tasks set result = 'blocked' where id = %s", (failed,))
+        self.price(a, "2026-12-03", "2026-12-06")
+        self.assertEqual(self.state(working)[0], "done")
+        self.assertEqual(self.state(failed), ("failed", "blocked"))
+
+    def test_prices_of_another_owner_do_not_close_it(self):
+        if not hasattr(self, "b"):
+            self.skipTest("needs the local stack's two users")
+        lid = self.lodging()
+        a = self.room(lid)
+        tid = self.prices_task(lid, [a])
+        # B uses the same ids, which are free for B, and prices them for the same dates
+        self.q("insert into public.lodgings (id, owner_id, place_id, name, kind, added_by, links) "
+               "values (%s, %s, 'TEST01', 'TEST01 b hostel', 'hostel', 'claude', %s::jsonb)", (lid, self.b, LINKS))
+        self.q("insert into public.lodging_rooms (id, owner_id, lodging_id, name) values (%s, %s, %s, 'TEST01 b')",
+               (a, self.b, lid))
+        self.q("insert into public.lodging_prices (owner_id, room_id, check_in, check_out, total_dkk) "
+               "values (%s, %s, '2026-12-03', '2026-12-06', 100)", (self.b, a))
+        self.assertEqual(self.state(tid)[0], "open")
+        self.price(a, "2026-12-03", "2026-12-06")
+        self.assertEqual(self.state(tid)[0], "done")
+
+    def test_prices_backfill_and_bad_dates(self):
+        lid = self.lodging()
+        a = self.room(lid)
+        tid = self.prices_task(lid, [a], age="1 hour")
+        bad = self.prices_task(lid, [a], ci="not a date")
+        self.q("update public.tasks set data = data || '{\"check_in\": \"not a date\"}' where id = %s", (bad,))
+        self.q("alter table public.lodging_prices disable trigger lodging_prices_stay_prices_follow")
+        self.price(a, "2026-12-03", "2026-12-06")
+        self.q("alter table public.lodging_prices enable trigger lodging_prices_stay_prices_follow")
+        self.assertEqual(self.state(tid)[0], "open")
+        self.assertGreaterEqual(self.q("select public.close_stay_prices(null, null)")[0][0], 1)
+        self.assertEqual(self.state(tid)[0], "done")
+        self.assertEqual(self.state(bad)[0], "open")
 
 
 if __name__ == "__main__":

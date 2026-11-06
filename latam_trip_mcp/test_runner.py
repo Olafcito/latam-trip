@@ -217,6 +217,18 @@ class RunnerTest(Base):
         with self.assertRaises(Refused):
             self.core.call("finish_task", {"id": q, "result": "again"})
 
+    def test_finish_of_a_task_the_data_closed_keeps_its_result_and_logs(self):
+        q = self.task({"type": "question", "text": "a"})
+        self.core.call("claim_task")
+        self.row(q).update(status="done", result="Closed by the data: 2 rooms priced for 2026-12-03 to 2026-12-06.")
+        out = self.core.call("finish_task", {"id": q, "result": "Priced both rooms.", "outputs": []})
+        self.assertEqual(out, {"done": q, "logged": True})
+        self.assertEqual(self.row(q)["result"], "Closed by the data: 2 rooms priced for 2026-12-03 to 2026-12-06.")
+        self.assertEqual(self.store.rows("task_log")[-1]["issue"], q)
+        other = self.task({"type": "question", "text": "b"}, status="done")
+        with self.assertRaises(Refused):
+            self.core.call("finish_task", {"id": other, "result": "again"})
+
     def test_fail_closes_a_claimed_task_with_the_reason(self):
         q = self.task({"type": "question", "text": "a"})
         self.core.call("claim_task")

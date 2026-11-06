@@ -273,7 +273,7 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 
 **Files:** `supabase/migrations/0030_stay_prices_close.sql`, tests in `supabase/test_task_close.py`.
 
-- [ ] A `stay_prices` task is done when every room in `room_ids` has a price for its dates. Same shape as 0025. Docs: `docs/claude-tasks.md`, `docs/task-runner.md`.
+- [x] Done as migration 0030. A `stay_prices` task is done when every room in `room_ids` has a price for its dates. Same shape as 0025. Docs: `docs/claude-tasks.md`, `docs/task-runner.md`.
 
 ### Task 4.3: Task, inbox and task_log ids per owner
 

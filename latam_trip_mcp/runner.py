@@ -320,19 +320,22 @@ class Runner:
                     "contract": CONTRACTS[typ].shown(extra)}
         return {"task": None, "left_for_simon": left}
 
-    def held(self, id):
+    def held(self, id, by_data=False):
+        """The task the caller claimed. With by_data, a task the database closed already (migration 0030: every room
+        priced) counts too, so the finish still logs it and keeps the database's result."""
         rows = self.rest.get_all("tasks", self.core.mine({"id": f"eq.{int(id)}", "select": "*"}))
         if not rows:
             raise Refused(f"no task {id}")
         row = rows[0]
-        if row.get("status") != "working":
+        closed = by_data and row.get("status") == "done" and str(row.get("result") or "").startswith("Closed by the data")
+        if row.get("status") != "working" and not closed:
             raise Refused(f"task {id} is {row.get('status')}, only a task claimed with claim_task can be closed")
         if not runs_in_cloud(row):
             raise Refused(f"task {id} is not a cloud task")
         return row
 
     def finish_task(self, id, result, outputs=None):
-        row = self.held(id)
+        row = self.held(id, by_data=True)
         outputs = outputs or []
         errs = result_errors(result)
         if not isinstance(outputs, list) or not all(isinstance(o, str) for o in outputs) or len(outputs) > 50:
@@ -347,7 +350,9 @@ class Runner:
         if hid:
             result = result.rstrip() + "\n\nHidden by the value rule: " + ", ".join(f"{i} ({why})" for i, why in hid) + "."
         done_at = self.core_now()
-        if not self.take(row, "done", {"result": result[:MAX_RESULT], "done_at": done_at}):
+        if row["status"] == "done":
+            done_at = row.get("done_at") or done_at
+        elif not self.take(row, "done", {"result": result[:MAX_RESULT], "done_at": done_at}):
             raise Refused(f"task {id} changed while it was being closed")
         first = next((l.strip("# ").strip() for l in result.splitlines() if l.strip()), "")
         log = tripdb.public_log_row({"issue": int(row["id"]), "type": typ, "task": data, "done_at": done_at,
