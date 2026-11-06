@@ -47,6 +47,9 @@ export async function toSend(files: File[], text: string): Promise<Sent> {
   return { ok: true, text: all, files: sent }
 }
 
+/** What the planner says when the monthly reads are used up (read-booking answers 429 monthly_cap). */
+export const CAP_SAID = 'The reads for this month are used up. Fill in the booking by hand.'
+
 /** Calls the read-booking function and gives its data, or the plain sentence the function said. */
 export async function invokeRead(body: Record<string, unknown>): Promise<{ ok: true; data: unknown } | { ok: false; message: string }> {
   if (!supabase) return { ok: false, message: 'Reading is not available without a connection.' }
@@ -56,7 +59,7 @@ export async function invokeRead(body: Record<string, unknown>): Promise<{ ok: t
     const ctx = (error as { context?: unknown }).context
     if (ctx instanceof Response) {
       const said = (await ctx.json().catch(() => null)) as { error?: string } | null
-      if (said?.error) message = said.error
+      if (said?.error) message = said.error === 'monthly_cap' ? CAP_SAID : said.error
     }
     return { ok: false, message }
   }
