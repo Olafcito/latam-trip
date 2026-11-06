@@ -181,6 +181,10 @@ BOOKING = {"id": "str", "kind": "!enum:flight,bus,boat,stay,other", "status": "!
            "place_id": "str|null", "check_in": "date|null", "check_out": "date|null", "lodging_id": "str|null",
            "room_id": "str|null", "reference": "str|null", "seller": "str|null", "seller_reference": "str|null",
            "fare": "str|null", "url": "str|null", "mail_url": "str|null",
+           # 0024: where a stay was booked and how its confirmation came in, what was paid and the clock times
+           "provider": "enum:booking,hostelworld,airbnb,own,other|null", "seller_url": "str|null",
+           "confirmation_source": "enum:gmail,upload,url,manual,other|null", "paid": "num|null",
+           "check_in_time": "str|null", "check_out_time": "str|null", "room_name": "str|null", "rooms": "int|null",
            "price_dkk": "num|null", "price": "num|null", "currency": "str|null",
            "refundable": "enum:yes,no,partly|null", "changeable": "enum:yes,no,fee|null",
            "change_until": "date|null", "cancel_until": "date|null", "cabin_bag": "str|null",

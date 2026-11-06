@@ -1,4 +1,4 @@
-import type { Booking, LodgingPrice, LodgingRoom } from '../data/types'
+import type { Booking, LodgingPrice, LodgingRoom, LodgingSite } from '../data/types'
 import { weekdayDay } from './format'
 import { partDkk, priceFor, type StayPart } from './stays'
 import { addDays } from './time'
@@ -128,4 +128,55 @@ export function stayMoney(room: LodgingRoom | undefined, part: StayPart, paid: n
   if (total == null) return { perNight: null, total: null, exact: false }
   const pr = room ? priceFor(room, part.first, part.nights) : null
   return { perNight: Math.round(total / nights), total, exact: !!pr?.exact }
+}
+
+// ---- the review of a stay confirmation (0024). Read from a file or typed in, Simon checks it before it is saved.
+
+/** The review form, every field as typed. Money is in the confirmation's currency, dkk is the kroner total Simon gives. */
+export interface StayForm {
+  provider: LodgingSite | ''
+  /** the name of another provider, "Casa Lola direct" */
+  seller: string
+  /** the link of another provider */
+  sellerUrl: string
+  reference: string
+  checkIn: string
+  checkOut: string
+  /** local clock times, "15:00" */
+  checkInTime: string
+  checkOutTime: string
+  room: string
+  guests: string
+  rooms: string
+  /** the total of the stay, never a deposit */
+  total: string
+  currency: string
+  /** what was paid when booking */
+  paid: string
+  /** the total in kroner, typed by Simon when the currency is not DKK */
+  dkk: string
+  refundable: 'yes' | 'no' | 'partly' | ''
+  cancelUntil: string
+  mailUrl: string
+  /** the place's full address, offered to the lodging when it has none */
+  address: string
+}
+
+/** The keys of the form, for the fields the confirmation did not state, shown amber. */
+export type StayFormKey = keyof StayForm
+
+/** The form for the target, from the booking it has or its dates alone. Stub: the parser batch builds it. */
+export function stayFormOf(t: StayTarget, booking: Booking | null): StayForm {
+  void t
+  void booking
+  throw new Error('stayFormOf is not built yet')
+}
+
+/**
+ * What the reviewed form changes on the booking, and the address to offer the lodging, or why it cannot be saved.
+ * Stub: the parser batch builds it, replacing manualChange.
+ */
+export function formChange(f: StayForm): { ok: true; change: Partial<Booking>; address: string | null } | { ok: false; message: string } {
+  void f
+  throw new Error('formChange is not built yet')
 }

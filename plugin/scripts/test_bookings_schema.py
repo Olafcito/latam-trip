@@ -118,5 +118,20 @@ class MailMigration(unittest.TestCase):
             self.assertNotIn(word, sql)
 
 
+class StayConfirmationMigration(unittest.TestCase):
+    def setUp(self):
+        with open(os.path.join(os.path.dirname(DETAILS), "0024_stay_confirmation.sql"), encoding="utf-8") as f:
+            self.sql = re.sub(r"--[^\n]*", "", f.read()).lower()
+
+    def test_it_adds_the_stay_columns(self):
+        for col in ("provider text", "seller_url text", "confirmation_source text", "paid numeric",
+                    "check_in_time text", "check_out_time text", "room_name text", "rooms int"):
+            self.assertIn(f"add column {col}", self.sql)
+
+    def test_it_grants_and_triggers_nothing(self):
+        for word in ("grant", "policy", "trigger", "anon"):
+            self.assertNotIn(word, self.sql)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -250,6 +250,8 @@ export interface AppData {
 // ---- bookings (the owner only table of 0013_bookings.sql)
 
 export type BookingKind = 'flight' | 'bus' | 'boat' | 'stay' | 'other'
+/** where a booking's confirmation came from (0024) */
+export type ConfirmationSource = 'gmail' | 'upload' | 'url' | 'manual' | 'other'
 
 /**
  * A file of a booking in the private bucket. The connector writes the entry before the upload with a size of null,
@@ -285,6 +287,21 @@ export interface Booking {
   fare?: string | null
   /** the link to the confirmation mail, optional because rows read before 0016 lack it */
   mail_url?: string | null
+  /** where a stay was booked, the values of a lodging's links. other names itself in seller and seller_url (0024) */
+  provider?: LodgingSite | null
+  /** the link of another provider, a direct booking or a friend's place (0024) */
+  seller_url?: string | null
+  /** where the confirmation came from (0024) */
+  confirmation_source?: ConfirmationSource | null
+  /** what was paid when booking, in currency, so price less paid is the balance at the property (0024) */
+  paid?: number | null
+  /** local clock times, "15:00" (0024) */
+  check_in_time?: string | null
+  check_out_time?: string | null
+  /** the room as the confirmation names it, "6 Bed Mixed Dorm" (0024) */
+  room_name?: string | null
+  /** how many rooms were booked (0024) */
+  rooms?: number | null
   url: string | null
   price_dkk: number | null
   price: number | null
