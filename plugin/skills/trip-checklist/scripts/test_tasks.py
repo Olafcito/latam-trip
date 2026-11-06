@@ -132,6 +132,10 @@ class TasksTest(unittest.TestCase):
         self.assertIn("#30000	stay_prices	open	a", text)
         self.assertIn("#30001	BAD TASK (stay_prices needs lodging_id, room_ids)	open	b", text)
 
+    def test_every_cloud_type_is_known_here(self):
+        from latam_trip_mcp.runner import CLOUD
+        self.assertEqual(set(CLOUD) - tasks.TYPES, set())
+
     def test_fail_sets_failed_with_the_reason(self):
         rest = FakeRest([row(10000, "working")])
         with tempfile.TemporaryDirectory() as d:
