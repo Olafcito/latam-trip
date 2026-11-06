@@ -1,0 +1,99 @@
+# Runs every test on a pull request, on a push to any branch but main, and for the release, which calls it.
+# The repo is public and a pull request may come from a fork, so this workflow reads the code and nothing else:
+# no secret, no id-token, no AWS role, and never pull_request_target. The database tests run on a local
+# Supabase stack inside the runner, with the CLI's fixed local keys, never on the project.
+# Every third party action is pinned to a full commit SHA, with its tag in the comment.
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  # a newer push replaces a branch run, but a release run on main is never cancelled half way
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: tripdb
+        run: python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_*.py"
+      - name: tasks.py
+        run: python -I -X utf8 -m unittest discover -s plugin/skills/trip-checklist/scripts -p "test_*.py"
+      - name: connector
+        run: python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"
+      - name: worker
+        run: python -I -X utf8 -m unittest discover -s infra/worker -p "test_*.py"
+      - name: cutover migration
+        run: python -I -X utf8 -m unittest discover -s supabase -p "test_cutover_migration.py"
+
+  node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: npm ci
+        working-directory: web
+      - run: npm ci
+        working-directory: planner
+      - run: npm run typecheck
+        working-directory: web
+      - run: npm test
+        working-directory: web
+      - run: npm run typecheck
+        working-directory: planner
+      - run: npm test
+        working-directory: planner
+
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - name: local Supabase stack and every migration
+        run: bash supabase/local_up.sh "$RUNNER_TEMP/latam-trip-local.env"
+      - name: task close tests
+        shell: bash
+        env:
+          TRIPDB_DB_TESTS: "1"
+          TRIPDB_ENV_FILE: ${{ runner.temp }}/latam-trip-local.env
+        run: |
+          uv run --quiet --no-project --python 3.12 --with "psycopg[binary]" \
+            python -I -X utf8 supabase/test_task_close.py -v 2>&1 | tee "$RUNNER_TEMP/task_close.log"
+          if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/task_close.log"; then echo "a database test skipped" >&2; exit 1; fi
+      - name: database function tests
+        shell: bash
+        env:
+          TRIPDB_LIVE_TESTS: "1"
+          TRIPDB_ENV_FILE: ${{ runner.temp }}/latam-trip-local.env
+        run: |
+          python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_db_functions.py" -v 2>&1 | tee "$RUNNER_TEMP/db_functions.log"
+          if grep -E -q '\.\.\. skipped|skipped=' "$RUNNER_TEMP/db_functions.log"; then echo "a database test skipped" >&2; exit 1; fi
