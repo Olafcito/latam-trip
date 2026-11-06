@@ -36,6 +36,10 @@ All tasks may also carry `"note"` (free text from Simon) and `"from"` (`"app"`).
 
 Claude writes the result with `tasks.py done`, which marks the row `done`, stores the markdown in `result` (a short table with prices, local clock times and sources), and logs it in `task_log` with `tripdb log-task` (`issue` holds the task id, `type`, `done_at`, `summary`, `outputs`). The log is public, so a `booking` keeps only its type and leg and a `stay_prices` only its type and dates, each with a fixed summary and no outputs. The worker publishes the next built data snapshot.
 
+## PC queue loop
+
+The PC can take its tasks by itself instead of waiting for "check the checklist". Open a new terminal in the repo, run `/model haiku`, then say "Use the task-loop skill". The session runs `tasks.py wait` as a background command, which polls the tasks table every 60 seconds and spends no tokens until a task is for the PC. That is any task that does not run in the cloud, plus a cloud task the routine left open for more than 15 minutes (`--every` and `--grace` change the two). When one appears, the session starts it, sends one Sonnet subagent per task (at most 2 at once) and prints the one line of JSON each returns, then waits again. A subagent that is blocked closes its task with `tasks.py fail N REASON_FILE`, which sets it to `failed` with the reason as its result. The rules for bookings, sign ins and browser workers hold as always.
+
 ## Last checked
 
 The `meta.json` document in the Supabase `web` bucket has `built_at` and `last_checked` per data type (`flights`, `stays`, `experiences`, `places`, `tasks`), for the app's update button. Single prices carry their own `observed_at`.
