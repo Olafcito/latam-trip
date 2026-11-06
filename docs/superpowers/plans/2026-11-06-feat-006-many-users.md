@@ -160,7 +160,7 @@ Worktree `release`. Everything after ships through it.
 
 ## Phase 2: Owner columns, composite keys, backfill, per user RLS (Opus)
 
-Worktree `owners`. Simon is still the only user. Ask the morning rates run before task 2.5.
+Worktree `owners`. Simon is still the only user. The morning rates run was decided without Simon, by his wish not to be asked: it prices Simon's places only (`owner_id` of the admin), since every other place belongs to someone who has their own Claude to price it and the shared gate of 30 calls a minute stays his. Simon may widen it later.
 
 ### Task 2.0: Two user fixtures on the local stack
 
@@ -223,7 +223,7 @@ Decided values:
 
 **Files:** Modify `infra/worker/steps.py`, `plugin/scripts/tripdb.py` (`cmd_pull` filters `quotes` and `trips` to `owner_id=eq.<admin id>` read from `admins` at run time, drops `task_log` from the pull), `plugin/scripts/build_web_data.py` (no `public_task_log`), `plugin/scripts/test_public_data.py`, `infra/worker/test_steps.py`.
 
-- [ ] `test_public_data.py` adds a second owner's marked rows in every private table, `quotes` included, and no marker reaches a built file. `test_steps.py` `test_pull_reads_catalogue_and_admin_rows_only`. The rates run follows Simon's answer. Deploy the worker with `bash infra/deploy.sh --enable-schedules` from the PC. Commit.
+- [ ] `test_public_data.py` adds a second owner's marked rows in every private table, `quotes` included, and no marker reaches a built file. `test_steps.py` `test_pull_reads_catalogue_and_admin_rows_only`. The rates run prices the admin's places only, `test_steps.py` `test_rates_run_prices_admin_places_only`. Deploy the worker with `bash infra/deploy.sh --enable-schedules` from the PC. Commit.
 
 ### Task 2.6: Docs
 
