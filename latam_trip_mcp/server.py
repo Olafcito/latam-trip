@@ -1,7 +1,7 @@
 """The latam-trip connector: FastMCP behind an ASGI guard that wants a bearer Supabase's OAuth server issued (oauth.py).
 
-The tools come from core.Core.tool_specs(). The Supabase secret key is read from SSM on the first call, never kept in the
-template or the repo.
+The tools come from core.Core.tool_specs(). Each request gets its own Core that goes as the bearer's user through the
+publishable key, so the connector holds no secret key. The URL and the publishable key come from SSM.
 """
 import contextvars, json, os, sys
 
@@ -15,24 +15,32 @@ from latam_trip_mcp import core as mcp_core, oauth  # noqa: E402
 import tripdb  # noqa: E402
 import tripdb_store  # noqa: E402
 
-_core = None
 # (bearer, user id) of the request being served, set by guard
 caller = contextvars.ContextVar("caller", default=None)
 
 
-def get_core():
-    """The Core on the Supabase store. The URL and secret key come from SSM when the environment does not hold them."""
-    global _core
-    if _core is None:
-        for env, param in (("SUPABASE_URL", "LATAMTRIP_URL_PARAM"), ("SUPABASE_SECRET_KEY", "LATAMTRIP_KEY_PARAM")):
-            if not os.environ.get(env) and os.environ.get(param):
-                import boto3
-                os.environ[env] = boto3.client("ssm").get_parameter(Name=os.environ[param], WithDecryption=True)["Parameter"]["Value"]
-        _core = mcp_core.Core(tripdb_store.get_store(tripdb.Paths(ROOT), "supabase"))
-    return _core
+def core_for(token, sub=None):
+    """A Core that goes as the bearer's user, built for this request and kept for nothing else. It runs on PostgREST
+    with the publishable key as apikey and the token as bearer, so row level security holds every call. sub is the user
+    id guard already verified. Without it the token is verified here. A refused token raises PermissionError and never
+    falls back to another key."""
+    sub = sub or oauth.verify_bearer(token)
+    if not sub:
+        raise PermissionError("the token is not valid, sign in again")
+    store = tripdb_store.SupabaseStore(tripdb.Paths(ROOT), url=oauth.supabase_url(), key=oauth.publishable_key(),
+                                       bearer=token, owner=sub)
+    return mcp_core.Core(store, owner=sub)
 
 
-def build_mcp(core_fn=get_core):
+def current_core():
+    """The Core of the request being served."""
+    got = caller.get()
+    if not got:
+        raise PermissionError("no signed in caller")
+    return core_for(*got)
+
+
+def build_mcp(core_fn=current_core):
     from fastmcp import FastMCP
     from fastmcp.exceptions import ToolError
     from fastmcp.tools import Tool

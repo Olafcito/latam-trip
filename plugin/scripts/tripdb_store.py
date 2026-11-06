@@ -225,15 +225,20 @@ class Rest:
     BATCH_ROWS = 500
     BATCH_BYTES = 3_000_000
 
-    def __init__(self, url, key, timeout=90):
+    def __init__(self, url, key, timeout=90, bearer=None):
+        """key goes as apikey. With bearer, a user's access token, every call goes as that user and row level security
+        holds, and key is then the publishable key. Without it the key is the secret key and bypasses it."""
         if not url or not key:
-            raise RestError("SUPABASE_URL and SUPABASE_SECRET_KEY must be set, in the environment or in .env")
-        self.url, self.key, self.timeout = url.rstrip("/"), key, timeout
+            raise RestError("SUPABASE_URL and SUPABASE_SECRET_KEY must be set, in the environment or in .env" if bearer is None
+                            else "SUPABASE_URL and the publishable key must be set for a call as a user")
+        self.url, self.key, self.timeout, self.bearer = url.rstrip("/"), key, timeout, bearer
 
     # ---- one call ----
     def _call(self, method, path, body=None, headers=None, raw=None, retry=False):
         """(status, headers, bytes). A connection error on a read is tried once more."""
         h = {"apikey": self.key}
+        if self.bearer:
+            h["Authorization"] = "Bearer " + self.bearer
         if body is not None:
             h["Content-Type"] = "application/json"
         h.update(headers or {})
@@ -812,16 +817,24 @@ def has_unstorable(v):
 
 
 class SupabaseStore(Store):
-    """The same rows in the Supabase project, through the secret key. Without SUPABASE_URL and SUPABASE_SECRET_KEY the
-    constructor stops, so nothing is written."""
+    """The same rows in the Supabase project. With paths alone it goes through the secret key from the environment or
+    .env, and without SUPABASE_URL and SUPABASE_SECRET_KEY the constructor stops, so nothing is written. With url, key,
+    bearer and owner it goes as that user: key is the publishable key, bearer the user's access token and owner their
+    user id, so row level security holds every call and nothing reads admins."""
     kind = "supabase"
     IN_CHUNK = 100
 
-    def __init__(self, paths):
+    def __init__(self, paths, url=None, key=None, bearer=None, owner=None):
         self.paths = paths
-        env = load_env(paths.root)
-        self.rest = Rest(env.get("SUPABASE_URL"), env.get("SUPABASE_SECRET_KEY"))
-        self._owner = None
+        if url is None and key is None and bearer is None:
+            env = load_env(paths.root)
+            self.rest = Rest(env.get("SUPABASE_URL"), env.get("SUPABASE_SECRET_KEY"))
+            self._owner = owner
+            return
+        if not bearer or not owner:
+            raise Refused("a store that goes as a user needs both the user's token and their user id")
+        self.rest = Rest(url, key, bearer=bearer)
+        self._owner = owner
 
     def owner(self):
         """The admin's user id, read once."""
