@@ -34,7 +34,7 @@ DIST="$BUILD/pkg"; mkdir -p "$DIST/deps"
 echo ">> installing Linux deps"
 $UV pip install --python-platform x86_64-manylinux2014 --python-version 3.12 \
   --target "$(winpath "$DIST")/deps" --only-binary=:all: \
-  "fastmcp==3.4.2" "uvicorn==0.54.0" "boto3==1.43.125" >/dev/null
+  "fastmcp==3.4.2" "uvicorn==0.54.0" "boto3==1.43.125" "pyjwt[crypto]==2.10.1" >/dev/null
 
 echo ">> assembling package"
 cp -r "$ROOT/latam_trip_mcp" "$DIST/latam_trip_mcp"

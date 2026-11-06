@@ -2,8 +2,10 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: >
   latam-trip-mcp, the connector Claude uses to read and write the trip data. One Lambda behind an API Gateway HTTP API
   (public Function URLs are blocked in this account), run with the Lambda Web Adapter. Every resource is prefixed
-  latam-trip-mcp and tagged project=latam-trip. The Supabase secret key and the sign in passphrase live in SSM under
-  /latam-trip-mcp/ and are never in this template.
+  latam-trip-mcp and tagged project=latam-trip. Supabase's OAuth server signs people in (TECH-010) and the
+  connector calls Supabase as each person with the publishable key. The project URL and the publishable key live in
+  SSM under /latam-trip-mcp/. The secret key and passphrase parameter names stay only until the day after the switch,
+  for the code deployed before it, and go then.
 
 Parameters:
   LwaLayerArn:
@@ -91,6 +93,8 @@ Resources:
           PORT: "8080"
           LATAMTRIP_SESSION_TABLE: !Ref SessionTable
           LATAMTRIP_URL_PARAM: /latam-trip-mcp/supabase-url
+          LATAMTRIP_PUBLISHABLE_KEY_PARAM: /latam-trip-mcp/supabase-publishable-key
+          # the three below are read only by the code deployed before the switch, and go the day after it
           LATAMTRIP_KEY_PARAM: /latam-trip-mcp/supabase-secret-key
           LATAMTRIP_PASSPHRASE_PARAM: /latam-trip-mcp/signin-passphrase
           LATAMTRIP_APP_URL: https://d15amu9hjiumbd.cloudfront.net
