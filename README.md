@@ -44,3 +44,5 @@ npx --yes supabase@2.122.1 stop --workdir supabase/local --no-backup
 ## Deploy
 
 Site builds run from `.github/workflows/site.yml` when `main` changes. They use the three `VITE_*` repository variables and publish the planner build to the site bucket. Worker code and schedules are deployed with `bash infra/deploy.sh --enable-schedules`. Changes to `tripdb.py` or the build pipeline reach the worker only through that deployment script.
+
+Tests run from `.github/workflows/test.yml` on every pull request and every push to a branch other than `main`, with no secret. `.github/workflows/release.yml` is the release of TECH-008: on a push to `main` it runs the same tests, then applies new migrations and updates the connector's code with `infra/mcp/deploy.sh --code-only`. It needs the AWS role and the GitHub environment `release` that `infra/release/setup.sh` makes from the PC, and until they exist its release job fails. A full connector deploy, edge functions and the worker still deploy from the PC.

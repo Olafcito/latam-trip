@@ -13,6 +13,10 @@ Parameters:
     Type: String
   CodeS3Key:
     Type: String
+  SsmKmsKeyArn:
+    Type: String
+    Description: The account's alias/aws/ssm key, which encrypts the SecureString parameters. deploy.sh resolves it.
+    AllowedPattern: "arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[0-9a-f-]+"
 
 Resources:
   SessionTable:
@@ -58,7 +62,7 @@ Resources:
                 Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/latam-trip-mcp/*
               - Effect: Allow
                 Action: kms:Decrypt
-                Resource: "*"
+                Resource: !Ref SsmKmsKeyArn
                 Condition:
                   StringEquals:
                     kms:ViaService: !Sub ssm.${AWS::Region}.amazonaws.com

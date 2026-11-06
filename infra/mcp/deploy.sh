@@ -2,13 +2,28 @@
 # Deploys the latam-trip-mcp stack to eu-west-1 from this PC. Uses AWS_PROFILE from the environment when set.
 # The repo is public, so no account id or profile name goes in this file.
 # The SSM parameters under /latam-trip-mcp/ must exist first, see infra/mcp/put-secrets.sh.
+# Usage: bash infra/mcp/deploy.sh [--code-only]
+# --code-only is what the release runs (TECH-008). It builds and checks the zip as a full deploy does, uploads it to
+# the deploy bucket, updates the function's code, waits for the update and checks that the connector answers 401
+# without a bearer. It never touches CloudFormation or IAM, so a template change still needs a full deploy from
+# this PC, which also brings the stack's CodeS3Key back in line with the code the release uploaded.
 set -euo pipefail
 export MSYS_NO_PATHCONV=1
 winpath() { command -v cygpath >/dev/null 2>&1 && cygpath -m "$1" || printf '%s' "$1"; }
 
+CODE_ONLY=0
+case "${1:-}" in
+  --code-only) CODE_ONLY=1 ;;
+  "") ;;
+  *) echo "usage: deploy.sh [--code-only]" >&2; exit 2 ;;
+esac
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 REGION="${AWS_REGION:-eu-west-1}"
 STACK="${STACK:-latam-trip-mcp}"
+FUNCTION=latam-trip-mcp
+# the connector's public address, as in docs/connector.md
+MCP_URL="${MCP_URL:-https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp}"
 UV="${UV:-uv}"
 AWS=(aws --region "$REGION")
 
@@ -56,7 +71,8 @@ PY
 
 ACCOUNT="$("${AWS[@]}" sts get-caller-identity --query Account --output text | tr -d '\r')"
 BUCKET="latam-trip-mcp-deploy-${ACCOUNT}-${REGION}"
-if ! "${AWS[@]}" s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
+# the release role may not list or create buckets, so --code-only expects the bucket a full deploy made
+if [ "$CODE_ONLY" = 0 ] && ! "${AWS[@]}" s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
   echo ">> creating the deploy bucket"
   "${AWS[@]}" s3api create-bucket --bucket "$BUCKET" --create-bucket-configuration LocationConstraint="$REGION" >/dev/null
   "${AWS[@]}" s3api put-public-access-block --bucket "$BUCKET" \
@@ -67,6 +83,39 @@ KEY="function-$(date +%s).zip"
 "${AWS[@]}" s3 cp "$(winpath "$ZIP")" "s3://$BUCKET/$KEY" >/dev/null
 SIZE="$("${AWS[@]}" s3api head-object --bucket "$BUCKET" --key "$KEY" --query ContentLength --output text | tr -d '\r')"
 [ "$SIZE" -gt 1000000 ] || { echo "uploaded object is only $SIZE bytes" >&2; exit 1; }
+
+# POST /mcp without a bearer must answer 401 and name the resource metadata. A cold start may take a few tries.
+smoke() {
+  local headers status i
+  headers="$(mktemp)"
+  for i in 1 2 3 4 5 6; do
+    status="$(curl -sS -o /dev/null -D "$headers" -w '%{http_code}' -X POST -H 'content-type: application/json' \
+      --data '{}' --max-time 30 "$MCP_URL" || true)"
+    if [ "$status" = 401 ] && grep -qi '^www-authenticate:.*resource_metadata=' "$headers"; then
+      rm -f "$headers"
+      echo "   smoke ok: 401 with resource_metadata"
+      return 0
+    fi
+    echo "   smoke try $i: status $status" >&2
+    sleep 5
+  done
+  rm -f "$headers"
+  echo "the connector did not answer 401 with resource_metadata" >&2
+  return 1
+}
+
+if [ "$CODE_ONLY" = 1 ]; then
+  echo ">> updating the code of $FUNCTION"
+  "${AWS[@]}" lambda update-function-code --function-name "$FUNCTION" --s3-bucket "$BUCKET" --s3-key "$KEY" \
+    --query LastUpdateStatus --output text | tr -d '\r'
+  "${AWS[@]}" lambda wait function-updated-v2 --function-name "$FUNCTION"
+  echo ">> smoke check"
+  smoke
+  exit 0
+fi
+
+# the connector decrypts its SSM parameters with the account's AWS managed SSM key and no other
+SSM_KMS_KEY_ARN="$("${AWS[@]}" kms describe-key --key-id alias/aws/ssm --query KeyMetadata.Arn --output text | tr -d '\r')"
 
 # AWS publishes the Lambda Web Adapter layer per region. Pass LWA_LAYER_ARN to choose one, else find the newest here.
 LWA="${LWA_LAYER_ARN:-}"
@@ -79,7 +128,9 @@ fi
 [ -n "$LWA" ] || { echo "no Lambda Web Adapter layer found, set LWA_LAYER_ARN" >&2; exit 1; }
 echo ">> deploying stack $STACK"
 "${AWS[@]}" cloudformation deploy --stack-name "$STACK" --template-file "$(winpath "$ROOT/infra/mcp/template.yaml")" \
-  --capabilities CAPABILITY_NAMED_IAM --parameter-overrides LwaLayerArn="$LWA" CodeS3Bucket="$BUCKET" CodeS3Key="$KEY" \
+  --capabilities CAPABILITY_NAMED_IAM --parameter-overrides LwaLayerArn="$LWA" CodeS3Bucket="$BUCKET" CodeS3Key="$KEY" SsmKmsKeyArn="$SSM_KMS_KEY_ARN" \
   --tags project=latam-trip
 "${AWS[@]}" cloudformation describe-stacks --stack-name "$STACK" \
   --query "Stacks[0].Outputs[?OutputKey=='McpEndpoint'].OutputValue" --output text | tr -d '\r'
+echo ">> smoke check"
+smoke

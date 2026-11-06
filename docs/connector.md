@@ -103,6 +103,6 @@ Each tool describes its fields to the assistant, so asking in plain words works,
 ## For whoever runs it
 
 - Code: `latam_trip_mcp/` (`server.py` is the app, `core.py` the tools, `oauth.py` the sign in).
-- Deploy: `AWS_PROFILE=<profile> bash infra/mcp/deploy.sh`. Secrets go in first with `infra/mcp/put-secrets.sh`.
+- Deploy: `AWS_PROFILE=<profile> bash infra/mcp/deploy.sh` deploys the whole stack from the PC. Secrets go in first with `infra/mcp/put-secrets.sh`. Once the release is set up (TECH-008), a push to `main` runs `deploy.sh --code-only` from `.github/workflows/release.yml`, which only updates the function's code. A change to `template.yaml` still needs the full deploy. Both end with a check that `POST /mcp` without a bearer answers 401.
 - Tests: `python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"`. A test checks that every tool is named on this page.
 - The planner's Allow screen is `planner/src/components/Connect.tsx`. Its address comes from `LATAMTRIP_APP_URL` in `infra/mcp/template.yaml`, and the connector's address from `VITE_CONNECTOR_URL` (it has a default).
