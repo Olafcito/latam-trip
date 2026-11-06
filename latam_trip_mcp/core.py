@@ -51,7 +51,7 @@ TYPES = {
     "experience": T("experience", "experiences", tripdb.EXPERIENCE, auto=("kind",), keys=("id",)),
     "place": T("place", "places", tripdb.NODE, auto=("kind", "origin"), keys=("id",)),
     "task": T("task", "tasks", None, keys=("id",), note="A task for the agents. Tasks live in the project database only."),
-    "booking": T("booking", "bookings", tripdb.BOOKING, auto=("id", "created_at", "updated_at", "attachments"), keys=("id",),
+    "booking": T("booking", "bookings", tripdb.BOOKING, auto=("id", "created_at", "updated_at", "attachments", "owner_id"), keys=("id",),
                  note="A booking is a ticket or a bed that is paid for, kept in the project database only. Keep one row per leg: "
                       "a ticket covering several legs is one row per leg with the same reference and the same ticket value, its "
                       "price sits on the first row and the others carry 0. Call list_booking with from, to and day before adding, "
@@ -59,7 +59,7 @@ TYPES = {
                       "has status. delete_booking sets the status to cancelled and keeps the row. depart and arrive are local "
                       "clock times. A booked leg holds its day, set_leg_date, shift_leg and update_trip never move it, "
                       "and update_trip never drops it or changes its ends."),
-    "lodging": T("lodging", "lodgings", tripdb.LODGING, auto=("id", "created_at", "updated_at"), keys=("id",),
+    "lodging": T("lodging", "lodgings", tripdb.LODGING, auto=("id", "created_at", "updated_at", "owner_id"), keys=("id",),
                  note="A lodging is a place to stay, kept in the project database only. Add only places Simon asked for, a task that asks to find places to stay counting as him asking, "
                       "with photos, rating, distances and rooms. A place is complete only with its photos, every room and a price "
                       "for the trip's dates on each room, so whatever the add cannot get is read from the site at once with a "
@@ -237,8 +237,9 @@ def same_name(s):
     return " ".join(str(s).split()).casefold()
 
 
-def stable_id(*parts):
-    return str(uuid.uuid5(LODGING_NS, "|".join(parts)))
+def stable_id(owner, *parts):
+    """An id made from the owner and what the row is, so two people who add the same hostel get two ids."""
+    return str(uuid.uuid5(LODGING_NS, "|".join((owner, *parts))))
 
 
 def pair_key(r, keys):
@@ -246,9 +247,20 @@ def pair_key(r, keys):
 
 
 class Core:
-    def __init__(self, store, now=None):
+    def __init__(self, store, now=None, owner=None):
         self.store = store
+        self._owner = owner
         self.now = now or now_hhmm
+
+    def owner(self):
+        """Whose rows these tools read and write: the one the Core was made for, else the store's own (the admin)."""
+        if self._owner is None:
+            self._owner = self.store.owner()
+        return self._owner
+
+    def mine(self, params):
+        """The params of a read with the owner filter added. The secret key sees every owner's rows, so it is named."""
+        return {**params, "owner_id": "eq." + self.owner()}
 
     # ---- the tools --------------------------------------------------------------------------------------------
 
@@ -389,10 +401,10 @@ class Core:
             return [(str(r["id"]), r) for r in self.store.query("tasks")]
         if tname == "booking":
             self.need_project("bookings")
-            return [(r["id"], r) for r in self.store.rest.get_all("bookings", {"select": "*", "order": "created_at,id"})]
+            return [(r["id"], r) for r in self.store.rest.get_all("bookings", self.mine({"select": "*", "order": "created_at,id"}))]
         if tname == "lodging":
             self.need_project("lodgings")
-            return [(r["id"], r) for r in self.store.rest.get_all("lodgings", {"select": "*", "order": "created_at,id"})]
+            return [(r["id"], r) for r in self.store.rest.get_all("lodgings", self.mine({"select": "*", "order": "created_at,id"}))]
         out = {}
         for r in self.store.rows(t.table):
             out[self.ident(tname, r)] = r
@@ -469,10 +481,10 @@ class Core:
     def rooms_of(self, lodging_id):
         """A lodging's rooms by name, each with its prices by dates. Rooms written together share created_at, so
         only the name gives them the same order every time."""
-        rooms = self.store.rest.get_all("lodging_rooms", {"select": "*", "lodging_id": "eq." + lodging_id,
-                                                          "order": "name,id"})
-        prices = self.store.rest.get_all("lodging_prices", {"select": "*", "room_id": in_list([r["id"] for r in rooms]),
-                                                            "order": "check_in,check_out,observed_at,id"}) if rooms else []
+        rooms = self.store.rest.get_all("lodging_rooms", self.mine({"select": "*", "lodging_id": "eq." + lodging_id,
+                                                                    "order": "name,id"}))
+        prices = self.store.rest.get_all("lodging_prices", self.mine({"select": "*", "room_id": in_list([r["id"] for r in rooms]),
+                                                                      "order": "check_in,check_out,observed_at,id"})) if rooms else []
         return [{**r, "prices": [p for p in prices if p["room_id"] == r["id"]]} for r in rooms]
 
     # ---- add --------------------------------------------------------------------------------------------------
@@ -681,22 +693,23 @@ class Core:
         rest = self.store.rest
         have, have_ids, have_prices = {}, set(), set()
         if stored:
-            got = rest.get_all("lodging_rooms", {"select": "id,name", "lodging_id": "eq." + lodging_id})
+            got = rest.get_all("lodging_rooms", self.mine({"select": "id,name", "lodging_id": "eq." + lodging_id}))
             have = {same_name(r["name"]): r["id"] for r in got}
             have_ids = {r["id"] for r in got}
             if got:
                 have_prices = {(p["room_id"], p["check_in"], p["check_out"], p.get("site") or "") for p in rest.get_all(
-                    "lodging_prices", {"select": "room_id,check_in,check_out,site", "room_id": in_list(sorted(have_ids))})}
+                    "lodging_prices", self.mine({"select": "room_id,check_in,check_out,site", "room_id": in_list(sorted(have_ids))}))}
         rooms, prices, order = [], [], []
+        owner = self.owner()
         for room, given_prices in given:
-            rid = have.get(same_name(room["name"])) or stable_id(lodging_id, same_name(room["name"]))
+            rid = have.get(same_name(room["name"])) or stable_id(owner, lodging_id, same_name(room["name"]))
             order.append(rid)
             if rid not in have_ids:
-                rooms.append({**room, "id": rid, "lodging_id": lodging_id})
+                rooms.append({**room, "id": rid, "lodging_id": lodging_id, "owner_id": owner})
             for p in given_prices:
                 key = (rid, p["check_in"], p["check_out"], p.get("site") or "")
                 if key not in have_prices:
-                    prices.append({**p, "id": stable_id(*key), "room_id": rid})
+                    prices.append({**p, "id": stable_id(owner, *key), "room_id": rid, "owner_id": owner})
         return rooms, prices, order
 
     def add_lodging(self, rows):
@@ -706,9 +719,11 @@ class Core:
         refusal finishes what the first try left and never stores the place twice."""
         self.need_project("lodgings")
         rest = self.store.rest
-        stored = rest.get_all("lodgings", {"select": "id,place_id,name,hidden"})
+        owner = self.owner()
+        # the caller's own lodgings only, since a derived id carries the owner and a place of another person is not this one
+        stored = rest.get_all("lodgings", self.mine({"select": "id,place_id,name,hidden"}))
         added, rooms, skipped, refused = [], {}, [], []
-        once = {"on_conflict": "id", "resolution": "ignore-duplicates"}  # a row that is there already stays as it is
+        once = {"on_conflict": "id,owner_id", "resolution": "ignore-duplicates"}  # a row that is there already stays as it is
         for n, row in enumerate(rows, 1):
             parts, errs = self.lodging_parts(row)
             if errs:
@@ -717,14 +732,14 @@ class Core:
             lodging, given = parts
             self.fill_center_km(lodging)
             key = (lodging["place_id"], same_name(lodging["name"]))
-            lid = stable_id(*key)
+            lid = stable_id(owner, *key)
             old = (next((s for s in stored if (s["place_id"], same_name(s["name"])) == key), None)
                    or next((s for s in stored if s["id"] == lid), None))
             lid = old["id"] if old else lid
             try:
                 room_rows, price_rows, order = self.lodging_rows(lid, given, old is not None)
                 if not old:
-                    rest.insert("lodgings", [{**lodging, "id": lid}], **once)
+                    rest.insert("lodgings", [{**lodging, "id": lid, "owner_id": owner}], **once)
                 if room_rows:
                     rest.insert("lodging_rooms", room_rows, **once)
                 if price_rows:
@@ -760,7 +775,7 @@ class Core:
             return {"row": n, "id": lid, "why": f"{e}. {lid} was stored already and is kept, send the same row again "
                                                 "to add the rooms and prices it lacks"}
         try:
-            self.store.rest.delete("lodgings", {"id": "eq." + lid})
+            self.store.rest.delete("lodgings", self.mine({"id": "eq." + lid}))
         except Refused as e2:
             return {"row": n, "id": lid, "why": f"{e}. Taking it away again failed too ({e2}), so it is saved in part as "
                                                 f"{lid}. Send the same row again to finish it, or delete_lodging to hide it"}
@@ -777,11 +792,11 @@ class Core:
                     else self.price_errors(row))
             (refused.append({"row": n, "why": "; ".join(errs)}) if errs else good.append((n, row)))
         asked = sorted({r["room_id"] for _, r in good})
-        known = {r["id"] for r in self.store.rest.get_all("lodging_rooms", {"select": "id", "id": in_list(asked)})} if asked else set()
+        known = {r["id"] for r in self.store.rest.get_all("lodging_rooms", self.mine({"select": "id", "id": in_list(asked)}))} if asked else set()
         for n, r in good:
             if r["room_id"] not in known:
                 refused.append({"row": n, "why": f"no room {r['room_id']!r}, get_lodging gives the room ids"})
-        good = [r for _, r in good if r["room_id"] in known]
+        good = [{**r, "owner_id": self.owner()} for _, r in good if r["room_id"] in known]
         added = [g["id"] for g in self.store.rest.insert("lodging_prices", good, returning="id")] if good else []
         return {"added": added, "skipped": [], "refused": sorted(refused, key=lambda x: x["row"])}
 
@@ -823,12 +838,14 @@ class Core:
             return added, skipped
         if tname == "task":
             self.need_project()
-            got = self.store.rest.insert("tasks", good, returning="id")
+            got = self.store.rest.insert("tasks", [{**r, "owner_id": self.owner()} for r in good], returning="id")
             return [str(g["id"]) for g in got], []
         if tname == "booking":
             self.need_project("bookings")
             # every column is named, so rows with different fields go in together and a field left out takes its default
-            return [g["id"] for g in self.store.rest.insert("bookings", good, returning="id", columns=BOOKING_COLUMNS)], []
+            owner = self.owner()
+            rows = [{**r, "owner_id": owner} for r in good]
+            return [g["id"] for g in self.store.rest.insert("bookings", rows, returning="id", columns=BOOKING_COLUMNS + ["owner_id"])], []
         if tname == "flight":
             res = self.store.add_quotes(good, "chat.jsonl")
             ids = [cols.qr.quote_id(q) for q in good]
@@ -894,7 +911,7 @@ class Core:
             if errs:
                 raise Refused(f"{i}: " + "; ".join(errs))
             self.keep("task", i, [old], "update")
-            self.store.rest.patch("tasks", {"id": "eq." + i}, patch)
+            self.store.rest.patch("tasks", self.mine({"id": "eq." + i}), patch)
             return {"updated": i}
         if tname == "booking":
             set_here = sorted(set(patch) & t.auto)
@@ -904,7 +921,7 @@ class Core:
             if errs:
                 raise Refused(f"{i}: " + "; ".join(errs))
             self.keep("booking", i, [old], "update")
-            self.store.rest.patch("bookings", {"id": "eq." + i}, patch)
+            self.store.rest.patch("bookings", self.mine({"id": "eq." + i}), patch)
             return {"updated": i}
         if tname == "lodging":
             if "rooms" in patch:
@@ -917,7 +934,7 @@ class Core:
             if errs:
                 raise Refused(f"{i}: " + "; ".join(errs))
             self.keep("lodging", i, [old], "update")
-            self.store.rest.patch("lodgings", {"id": "eq." + i}, patch)
+            self.store.rest.patch("lodgings", self.mine({"id": "eq." + i}), patch)
             return {"updated": i}
         if {"id", "kind"} & set(patch):
             raise Refused("id and kind cannot be changed")
@@ -987,7 +1004,7 @@ class Core:
             self.need_project()
             i, old = self.find("task", id)
             self.keep("task", i, [old], "delete")
-            self.store.rest.delete("tasks", {"id": "eq." + i})
+            self.store.rest.delete("tasks", self.mine({"id": "eq." + i}))
             return {"deleted": i}
         if tname == "trip":
             return self.delete_trip(id)
@@ -995,9 +1012,9 @@ class Core:
         self.keep(tname, i, [old], "delete")
         try:
             if tname == "booking":
-                self.store.rest.patch("bookings", {"id": "eq." + i}, {"status": "cancelled"})  # the row stays, cancelled
+                self.store.rest.patch("bookings", self.mine({"id": "eq." + i}), {"status": "cancelled"})  # the row stays, cancelled
             elif tname == "lodging":
-                self.store.rest.patch("lodgings", {"id": "eq." + i}, {"hidden": True})  # set aside, with its rooms and prices
+                self.store.rest.patch("lodgings", self.mine({"id": "eq." + i}), {"hidden": True})  # set aside, with its rooms and prices
             elif tname == "flight":
                 self.store.remove("quotes", {"quote_id": i})
             else:
@@ -1066,20 +1083,20 @@ class Core:
         elif tname == "task":
             self.need_project()
             if action == "update":
-                self.store.rest.patch("tasks", {"id": "eq." + str(id)}, {k: v for k, v in rows[0].items() if k in TASK_FIELDS})
+                self.store.rest.patch("tasks", self.mine({"id": "eq." + str(id)}), {k: v for k, v in rows[0].items() if k in TASK_FIELDS})
             else:
                 self.store.rest.insert("tasks", rows)
         elif tname == "booking":
             self.need_project("bookings")
             # the attachments stay as they are, a file added since is still in the bucket
             back = {"status": rows[0]["status"]} if action == "delete" else {k: v for k, v in rows[0].items() if k not in t.auto}
-            self.store.rest.patch("bookings", {"id": "eq." + str(id)}, back)
+            self.store.rest.patch("bookings", self.mine({"id": "eq." + str(id)}), back)
         elif tname == "lodging":
             self.need_project("lodgings")
             # a field the old row did not have goes back to null, so a field the update added is taken away too
             back = {"hidden": rows[0]["hidden"]} if action == "delete" else {
                 k: rows[0].get(k) for k, spec in t.schema.items() if k not in t.auto and (k in rows[0] or "null" in spec)}
-            self.store.rest.patch("lodgings", {"id": "eq." + str(id)}, back)
+            self.store.rest.patch("lodgings", self.mine({"id": "eq." + str(id)}), back)
         elif tname == "flight":
             if action == "update" and now_id == str(id):
                 self.store.remove("quotes", {"quote_id": now_id})
@@ -1111,13 +1128,13 @@ class Core:
         if ftype not in BOOKING_FILE_TYPES:
             raise Refused(f"{name} is {ftype or 'of an unknown type'}, the bookings bucket takes " + ", ".join(BOOKING_FILE_TYPES))
         i, _ = self.find("booking", id)
-        return i, f"{i}/{name}"
+        return i, f"{self.owner()}/{i}/{name}"
 
     def attach(self, id, entry):
         """Add the entry to the booking's attachments, in place of one with the same path."""
         _, row = self.find("booking", id)
         files = [a for a in row.get("attachments") or [] if a.get("path") != entry["path"]] + [entry]
-        self.store.rest.patch("bookings", {"id": "eq." + id}, {"attachments": files})
+        self.store.rest.patch("bookings", self.mine({"id": "eq." + id}), {"attachments": files})
 
     def attach_booking_file(self, id, name, content_base64):
         self.need_project("bookings")

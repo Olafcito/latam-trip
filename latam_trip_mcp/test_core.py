@@ -68,7 +68,7 @@ class Base(unittest.TestCase):
             with open(self.paths.src(name), "w", encoding="utf-8") as fh:
                 json.dump(doc, fh)
         self.store = tripdb_store.FileStore(self.paths)
-        self.core = mcp_core.Core(self.store, now=lambda: NOW)
+        self.core = mcp_core.Core(self.store, now=lambda: NOW, owner="OWNER1")
 
     def trip(self):
         return self.store.trips()[0]
@@ -334,10 +334,10 @@ class BookingTest(BookingBase):
         self.assertEqual(len(data), 10)
         out = self.core.call("attach_booking_file", {"id": bid, "name": "ticket.pdf",
                                                      "content_base64": base64.b64encode(data).decode()})
-        entry = {"path": f"{bid}/ticket.pdf", "name": "ticket.pdf", "type": "application/pdf", "size": 10, "added_at": NOW}
+        entry = {"path": f"OWNER1/{bid}/ticket.pdf", "name": "ticket.pdf", "type": "application/pdf", "size": 10, "added_at": NOW}
         self.assertEqual(out["attachment"], entry)
         self.assertEqual(self.core.get("booking", bid)["attachments"], [entry])
-        self.assertEqual(self.rest.files[("bookings", f"{bid}/ticket.pdf")], (data, "application/pdf"))
+        self.assertEqual(self.rest.files[("bookings", f"OWNER1/{bid}/ticket.pdf")], (data, "application/pdf"))
 
     def test_a_file_over_4_mb_is_refused(self):
         bid = self.book()
@@ -364,9 +364,9 @@ class BookingTest(BookingBase):
         self.assertIn("token=TESTTOKEN", out["upload_url"])
         self.assertEqual(out["valid"], "2 hours")
         self.assertIsNone(out["attachment"]["size"])
-        self.assertEqual(self.rest.signed, [("bookings", f"{bid}/scan.jpg")])
+        self.assertEqual(self.rest.signed, [("bookings", f"OWNER1/{bid}/scan.jpg")])
         got = self.core.get("booking", bid)["attachments"]
-        self.assertEqual([(a["path"], a["type"]) for a in got], [(f"{bid}/scan.jpg", "image/jpeg")])
+        self.assertEqual([(a["path"], a["type"]) for a in got], [(f"OWNER1/{bid}/scan.jpg", "image/jpeg")])
 
     def test_the_file_types_are_the_bucket_list(self):
         with open(os.path.join(REPO, "supabase", "migrations", "0013_bookings.sql"), encoding="utf-8") as fh:
@@ -463,7 +463,7 @@ class TwinLegTest(BookingBase):
             fh.write(json.dumps(twin_trip()) + "\n")
         self.store = tripdb_store.FileStore(self.paths)
         self.store.kind, self.store.rest = "supabase", self.rest
-        self.core = mcp_core.Core(self.store, now=lambda: NOW)
+        self.core = mcp_core.Core(self.store, now=lambda: NOW, owner="OWNER1")
         self.book(from_code="LIR", to_code="TAM")
 
     def refused(self, patch):
@@ -693,6 +693,25 @@ class LodgingTest(Base):
         out = self.core.add("lodging", [lodging()])
         self.assertIn("hidden", out["skipped"][0]["why"])
         self.assertEqual(self.rest.count()[0], 1)
+
+    def test_re_add_keeps_existing_id(self):
+        # a lodging stored under an id the current derivation would not give is still found by place and name
+        self.rest.tables["lodgings"].append({"id": "old-id", "owner_id": "OWNER1", "place_id": "TAM", "name": "Test Hostel",
+                                             "hidden": False})
+        out = self.core.add("lodging", [lodging()])
+        self.assertEqual((out["added"], out["refused"]), ([], []))
+        self.assertEqual([(s["row"], s["id"]) for s in out["skipped"]], [(1, "old-id")])
+        self.assertEqual(self.rest.count()[0], 1)
+
+    def test_another_owners_lodging_of_the_same_name_is_not_a_match(self):
+        self.rest.tables["lodgings"].append({"id": "theirs", "owner_id": "OWNER2", "place_id": "TAM", "name": "Test Hostel",
+                                             "hidden": False})
+        out = self.core.add("lodging", [lodging()])
+        self.assertEqual(len(out["added"]), 1)
+        self.assertNotEqual(out["added"][0], "theirs")
+        mine = [r for r in self.rest.tables["lodgings"] if r["owner_id"] == "OWNER1"]
+        self.assertEqual(len(mine), 1)
+        self.assertEqual({r["owner_id"] for r in self.rest.tables["lodging_rooms"]}, {"OWNER1"})
 
     def test_one_batch_with_the_same_lodging_twice_stores_it_once(self):
         out = self.core.add("lodging", [lodging(), lodging()])
