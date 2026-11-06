@@ -506,8 +506,8 @@ class RlsTest(unittest.TestCase):
 
     def test_realtime_is_owner_scoped(self):
         """A inserts, updates and deletes a row of each table that was published before 0034 while B listens every way
-        a client can: Postgres Changes on the table, B's own owner topic, and A's owner topic. B hears nothing of A's,
-        not even a delete, and cannot join A's topic. A hears each of the three on A's topic, with the table as the
+        a client can: Postgres Changes on the table, B's own owner topic, A's owner topic, and a public channel of A's
+        topic's name. B hears nothing of A's, not even a delete, and cannot join A's topic as a private channel. A hears each of the three on A's topic, with the table as the
         event and no column of the row in the message. B's own insert reaches B's topic."""
         topic_a, topic_b = "owner:" + self.a.id, "owner:" + self.b.id
         for table in WAS_PUBLISHED:
@@ -516,6 +516,7 @@ class RlsTest(unittest.TestCase):
                 feed_a = listen(self.env, self.a, topic_a, private=True)
                 feed_b = listen(self.env, self.b, topic_b, private=True)
                 spy = listen(self.env, self.b, topic_a, private=True)
+                public = listen(self.env, self.b, topic_a)
                 try:
                     for feed in (feed_a, feed_b):
                         feed.ready.wait(20)
@@ -524,8 +525,9 @@ class RlsTest(unittest.TestCase):
                     deadline = time.time() + 20
                     while time.time() < deadline and not (changes.ready.is_set() or changes.errors):
                         time.sleep(0.2)
-                    while time.time() < deadline and not (spy.ready.is_set() or spy.errors):
-                        time.sleep(0.2)
+                    for feed in (spy, public):
+                        while time.time() < deadline and not (feed.ready.is_set() or feed.errors):
+                            time.sleep(0.2)
                     other = ok(self, self.a.rest.insert(table, [self.row(self.a, table)]))[0]
                     q = self.where(table, other)
                     ok(self, self.a.rest.update(table, q, CHANGE[table]))
@@ -536,13 +538,16 @@ class RlsTest(unittest.TestCase):
                         time.sleep(0.2)
                     time.sleep(1)  # a late message would land by now
                 finally:
-                    for feed in (changes, feed_a, feed_b, spy):
+                    for feed in (changes, feed_a, feed_b, spy, public):
                         feed.stop()
                 self.assertEqual(changes.events, [], "B heard a change through Postgres Changes")
                 self.assertTrue(changes.ready.is_set() or changes.errors, "the subscription never answered")
                 self.assertFalse(spy.ready.is_set(), "B joined A's topic")
                 self.assertTrue(spy.errors, "B's join of A's topic was never refused")
                 self.assertEqual(spy.events, [], "B heard A's topic")
+                # the messages go to the private channel only, so a public one of the same name hears nothing
+                self.assertTrue(public.ready.is_set(), public.errors)  # public channels stay allowed (TECH-012)
+                self.assertEqual(public.events, [], "B heard A's topic on a public channel")
                 self.assertEqual([p["op"] for p in feed_b.told(table)], ["insert"], "B's topic")
                 told = feed_a.told(table)
                 self.assertEqual([p["op"] for p in told], ["insert", "update", "delete"], "A's topic")
