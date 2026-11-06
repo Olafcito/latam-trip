@@ -342,6 +342,26 @@ class RlsTest(unittest.TestCase):
         self.refused(self.b.rest.insert("tasks", tasks(1)), "3 tasks a day per person")
         ok(self, self.a.rest.insert("tasks", tasks(1)))
 
+    def test_lodging_at_the_tasks_cap_comes_without_its_task(self):
+        # a Booking.com lodging queues a stay_details task, and the cap on tasks never stops the lodging itself
+        links = [{"site": "booking", "url": "https://example.com/TEST01"}]
+        lodging = lambda name: {"place_id": "TEST01", "name": name, "kind": "hostel", "added_by": "claude",
+                                "links": links}
+        stay_tasks = lambda: ok(self, self.b.rest.select("tasks", "select=id&type=eq.stay_details"))
+        ok(self, self.b.rest.insert("lodgings", [lodging("TEST01 first")]))
+        self.assertEqual(len(stay_tasks()), 1)
+        self.limit("rows_in_tasks", 2)
+        ok(self, self.b.rest.insert("tasks", [{"type": "place_research", "title": "TEST01"}]))
+        got = ok(self, self.b.rest.insert("lodgings", [lodging("TEST01 at the cap")]))
+        self.assertEqual(got[0]["name"], "TEST01 at the cap")
+        self.assertEqual(len(stay_tasks()), 1)
+        self.assertEqual(len(ok(self, self.b.rest.select("tasks", "select=id"))), 2)
+        # the tasks a day stop it the same way
+        self.limit("rows_in_tasks", 100)
+        self.limit("tasks_per_day", 2)
+        ok(self, self.b.rest.insert("lodgings", [lodging("TEST01 at the day cap")]))
+        self.assertEqual(len(stay_tasks()), 1)
+
     def test_bookings_folder_cap(self):
         limits = self.limits()
         cap, size = limits["bookings_folder_bytes"], limits["file_size_limit"]

@@ -72,6 +72,34 @@ begin
   end loop;
 end $$;
 
+-- A new lodging with a Booking.com or Airbnb link queues its stay_details task (0027). A person at the tasks cap still
+-- adds the lodging, with no task. Only the cap's own refusal, known by its hint, is caught, and every other error stands.
+create or replace function public.queue_stay_details() returns trigger
+language plpgsql security definer set search_path = public
+as $$
+declare
+  why text;
+begin
+  if not new.hidden
+     and exists (select 1 from jsonb_array_elements(new.links) l where l->>'site' in ('booking', 'airbnb'))
+     and not exists (select 1 from public.tasks t
+                     where t.owner_id = new.owner_id
+                       and coalesce(t.type, t.data->>'type') = 'stay_details'
+                       and t.status in ('open', 'working') and t.data->>'lodging_id' = new.id) then
+    begin
+      insert into public.tasks (owner_id, type, title, status, data)
+      values (new.owner_id, 'stay_details', '[stay_details] ' || new.name, 'open',
+              jsonb_build_object('type', 'stay_details', 'lodging_id', new.id, 'from', 'lodging'));
+    exception when raise_exception then
+      get stacked diagnostics why = pg_exception_hint;
+      if why is distinct from 'owner_limits names the limit.' then
+        raise;
+      end if;
+    end;
+  end if;
+  return new;
+end $$;
+
 -- whether a file of this name and metadata keeps the caller's folder of the bookings bucket within its bytes. A file
 -- that replaces one of the same name counts once. It reads storage.objects past row level security, so it is security
 -- definer and tells only yes or no.
