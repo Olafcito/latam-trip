@@ -27,6 +27,15 @@ RESULT = ("Markdown, at most 30 lines, in plain sentences or a short table. Kron
           "No em or en dashes, no booking references, no names of people and no prices paid.")
 
 
+
+def when(stamp):
+    """A timestamp from a row as an aware datetime, or None."""
+    try:
+        return dt.datetime.fromisoformat(str(stamp).replace("Z", "+00:00")) if stamp else None
+    except ValueError:
+        return None
+
+
 class Contract:
     def __init__(self, does, needs, steps, tools, writes, cloud=None, check=None):
         self.does, self.needs, self.steps, self.tools, self.writes = does, needs, steps, tools, writes
@@ -327,7 +336,7 @@ class Runner:
         typ, data = task_type(row)
         hid = []
         if not errs and typ == "stay_picks":
-            bad, hid = self.check_picks(data, outputs)
+            bad, hid = self.check_picks(row, data, outputs)
             errs += bad
         if errs:
             raise Refused("; ".join(errs))
@@ -345,15 +354,19 @@ class Runner:
         out = {"done": int(row["id"]), "logged": logged}
         return {**out, "hidden": [i for i, _ in hid]} if hid else out
 
-    def check_picks(self, data, outputs):
-        """A stay_picks finish names the lodgings it added. One that is not a lodging at the task's place refuses the
-        finish. One the value rule would not have picked is hidden rather than refused, since the run has no tool to
+    def check_picks(self, task, data, outputs):
+        """A stay_picks finish names the lodgings it added. One that is not a Booking.com lodging Claude added at the
+        task's place after the task was queued refuses the finish, so a stored place is never hidden by it. One the value rule would not have picked is hidden rather than refused, since the run has no tool to
         take back what it wrote: under PICK_RATING, under the lowest review floor, of a kind outside PICK_KINDS, or past
         the third. Its stay_details task stays. Returns (refusals, [(id, why)] hidden)."""
         rows = {r["id"]: r for r in self.rest.get_all("lodgings", {"select": "*", "place_id": "eq." + data["place_id"]})}
-        missing = [o for o in outputs if o not in rows]
+        since = when(task.get("created_at"))
+        missing = [o for o in outputs if o not in rows or rows[o].get("added_by") != "claude"
+                   or not any(l.get("site") == "booking" for l in rows[o].get("links") or [])
+                   or (since and when(rows[o].get("created_at")) and when(rows[o]["created_at"]) < since)]
         if missing:
-            return ["outputs names " + ", ".join(missing) + ", which are not lodgings at " + data["place_id"]], []
+            return ["outputs names " + ", ".join(missing) + ", which are not Booking.com places this task added at "
+                    + data["place_id"]], []
         hid = []
         for n, o in enumerate(outputs):
             r = rows[o]

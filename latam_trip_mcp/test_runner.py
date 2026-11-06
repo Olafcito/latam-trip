@@ -32,7 +32,7 @@ class RunnerTest(Base):
 
     def task(self, data, status="open", id=None):
         id = id or 10000 + len(self.rest.tables["tasks"])
-        self.rest.tables["tasks"].append({"id": id, "type": None, "status": status, "title": f"[{data.get('type')}]",
+        self.rest.tables["tasks"].append({"id": id, "type": None, "status": status, "created_at": "2026-11-01T09:00:00Z", "title": f"[{data.get('type')}]",
                                           "data": data, "result": None, "done_at": None})
         return id
 
@@ -123,6 +123,23 @@ class RunnerTest(Base):
                                         for n, r in enumerate(rows)])
         return out["added"]
 
+    def test_finish_of_stay_picks_refuses_a_place_it_did_not_add(self):
+        ours = self.picks(dict(kind="hotel", rating=9.2, reviews=300))
+        simons = self.core.add("lodging", [lodging(name="Simon's", added_by="simon", kind="guesthouse",
+                                                   links=[{"site": "booking", "url": "https://example.com/s"}])])["added"]
+        older = self.core.add("lodging", [lodging(name="Older", kind="guesthouse",
+                                                  links=[{"site": "booking", "url": "https://example.com/o"}])])["added"]
+        for r in self.rest.tables["lodgings"]:
+            if r["id"] in older:
+                r["created_at"] = "2026-10-01T10:00:00Z"
+        t = self.stay_picks()
+        self.core.call("claim_task")
+        for bad in (simons, older):
+            with self.assertRaises(Exception) as e:
+                self.core.call("finish_task", {"id": t, "result": "Picks.", "outputs": ours + bad})
+            self.assertIn("not Booking.com places this task added", str(e.exception))
+        self.assertFalse(any(r.get("hidden") for r in self.rest.tables["lodgings"]))
+
     def test_finish_of_stay_picks_hides_what_the_rule_would_not_pick(self):
         ids = self.picks(dict(kind="hotel", rating=9.2, reviews=300), dict(kind="guesthouse", rating=9.0, reviews=200),
                          dict(kind="hotel", rating=7.6, reviews=900), dict(kind="apartment", rating=8.8, reviews=2),
@@ -146,7 +163,7 @@ class RunnerTest(Base):
     def test_finish_of_stay_picks_refuses_outputs_that_are_not_lodgings_at_the_place(self):
         t = self.stay_picks()
         self.core.call("claim_task")
-        with self.assertRaisesRegex(Refused, "not lodgings at TAM"):
+        with self.assertRaisesRegex(Refused, "not Booking.com places this task added at TAM"):
             self.core.call("finish_task", {"id": t, "result": "One place.", "outputs": ["nope"]})
         self.assertEqual(self.row(t)["status"], "working")
 
