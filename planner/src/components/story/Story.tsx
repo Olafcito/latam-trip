@@ -44,9 +44,9 @@ import { usePop } from './usePop'
 // is another day. A leg that leaves before you get there says so, with the day to move it to.
 // The earliest stop decides its nights: a night more comes from the free nights, and from a later
 // stop you choose once there are none. A night less is a free night, shown as a line of its own before
-// the flight home, and no stop gets it. A stop's name or flag folds it open in place: the stop and the leg out
-// of it become one card with the stop's summary and its tabs, accommodation first. The city card is still there
-// for changing or deleting the stop, from the fold's About.
+// the flight home, and no stop gets it. A stop's name or flag folds it open in place, with its stays
+// first and then things to do, experiences and about. The city card is still there for changing or
+// deleting the stop, from the fold's About.
 
 const MODE: Record<Family, string> = { flight: 'Flight', boat: 'Boat', ground: 'Bus' }
 
@@ -188,29 +188,11 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
       </li>
     )
   }
+  // Copenhagen, where the trip starts and ends: a name on the rail, no nights to change and nothing to fold
   return (
-    <li id={id} className="st-stop" data-home={home} data-open={open || undefined}>
-      <span className="st-rail">
-        {toggle ? <button type="button" className="st-flag" tabIndex={-1} aria-hidden="true" onClick={toggle}><Disc country={country} /></button> : <Disc country={country} />}
-      </span>
-      <div className="st-card">
-        {toggle
-          ? <button type="button" className="st-name st-open" aria-expanded={!!open} aria-controls={open ? foldId : undefined} {...(open ? {} : hoverProps(node))} onClick={toggle}>{name}</button>
-          : <b className="st-name">{name}</b>}
-        {!home && (
-          <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
-            <button type="button" className="st-n" aria-label={less} title={less} disabled={!onLess} onClick={onLess ?? undefined}><Minus /></button>
-            <Count n={days} est={!exact} />
-            <span className="pop-wrap" {...pop.wrap}>
-              <button type="button" className="st-n" aria-label={more} title={more} disabled={!direct && !later.some((r) => r.take)} {...(direct ? { onClick: direct } : pop.trigger)}><Plus /></button>
-              {pop.open && <div className="pop nf" role="group" aria-label="Take a night from" {...pop.panel}><Shut on={pop.dismiss} /><NightChooser name={name} days={days} rows={later} /></div>}
-            </span>
-          </span>
-        )}
-        {open && toggle && <button type="button" className="st-shut" aria-label={`Fold ${name} shut`} aria-controls={foldId} onClick={toggle}><Caret dir="u" s={20} /></button>}
-      </div>
-      {/* folded open, the stays in the fold carry the mark on their own dates */}
-      {!open && cut?.map((w, k) => <p key={k} className="st-clash" role="status"><Warn /><span>{w.text}</span></p>)}
+    <li className="st-stop" data-home={home}>
+      <span className="st-rail"><Disc country={country} /></span>
+      <div className="st-card"><b className="st-name">{name}</b></div>
     </li>
   )
 }
