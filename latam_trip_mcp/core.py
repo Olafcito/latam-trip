@@ -92,6 +92,12 @@ TASK_FIELDS = {"title": "!str", "type": "str", "status": "enum:open,working,done
                "trip_version": "int", "result": "str", "data": "dict"}
 CHAT_FLIGHT = {"from": "!iata", "to": "!iata", "date": "!date", "price": "!num", "dep": "time", "arr": "time", "hours": "num",
                "stops": "int", "via": "list", "carriers": "list", "flights": "list", "link": "str", "notes": "str"}
+# A person's profile, the columns of user_profiles. The skills read it for the rules that are the person's own.
+PROFILE_FIELDS = {"home_airport": "iata|null", "currency": "str|null", "max_hours": "num|null", "travel_style": "str|null",
+                  "rules": "str|null"}
+PROFILE_ASK = ("This person has no profile yet. Before the first search, ask them for their home airport (IATA code), their "
+               "currency (ISO 4217 code, like DKK), the longest journey they accept in one direction in hours, their travel "
+               "style and any rules of their own, then save the answers with update_profile.")
 HINTS = {"iata": "3 capital letters, like SJO", "pid": "capital letters and digits, like SJO or LCORN",
          "slug": "lowercase letters, digits, - and _", "cc": "2 capital letters, like CR", "tid": "letters, digits, - and _",
          "date": "YYYY-MM-DD", "time": "YYYY-MM-DDTHH:MM, a date alone is refused"}
@@ -297,11 +303,24 @@ class Core:
                  "schema": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]},
                  "fn": (lambda t=t: lambda id: self.delete(t.name, id))()},
             ]
+        profile_props, _ = properties_of(PROFILE_FIELDS)
+        profile_props["currency"] = {"type": "string", "description": "ISO 4217 code, 3 capital letters, like DKK"}
+        profile_props["max_hours"] = {"type": "number", "exclusiveMinimum": 0, "description": "the longest journey in one direction, in hours"}
+        profile_props["rules"] = {"type": "string", "description": "free text, the person's own rules for a trip"}
         price_props, price_required = properties_of(tripdb.LODGING_PRICE, skip={"id"})
         price_row = {"type": "object", "properties": price_props, "required": price_required}
         leg = {"description": "The leg to change: the number of the place it arrives at (the first place has no leg), or that place's id.",
                "type": ["integer", "string"]}
         specs += [
+            {"name": "get_profile", "description": "Get the caller's own profile: home_airport, currency, max_hours (the longest journey in "
+             "one direction), travel_style and rules. Call it before planning or looking up anything. A person with no profile gets an empty one and an ask "
+             "to put to them.",
+             "schema": {"type": "object", "properties": {}}, "fn": lambda: self.get_profile()},
+            {"name": "update_profile", "description": "Save the caller's own profile. Give the fields to change in patch, the others stay "
+             "as they are. A field set to null is cleared. An unknown field or a bad value is refused with the reason.",
+             "schema": {"type": "object", "properties": {"patch": {"type": "object", "properties": profile_props,
+                                                                    "additionalProperties": False}}, "required": ["patch"]},
+             "fn": lambda patch: self.update_profile(patch)},
             {"name": "set_leg_date", "description": "Put one leg of a trip on a day. No other leg moves, the leg keeps its picked flight, and the nights "
              "either side follow from the dates. A clash is saved as it is and named in the reply, and so is a flight on another day than the leg. "
              "A booked leg is refused, change its booking first.",
@@ -858,6 +877,53 @@ class Core:
     def need_project(self, what="tasks"):
         if getattr(self.store, "kind", "") != "supabase":
             raise Refused(f"{what} are kept in the project database only")
+
+    # ---- the profile ------------------------------------------------------------------------------------------
+
+    def get_profile(self):
+        """The caller's profile. With no row it is empty and carries an ask for Claude to put to the person."""
+        self.need_project("profiles")
+        got = self.store.rest.get_all("user_profiles", self.mine({"select": ",".join(PROFILE_FIELDS)}))
+        if not got:
+            return {"profile": {k: None for k in PROFILE_FIELDS}, "empty": True, "ask": PROFILE_ASK}
+        return {"profile": {k: got[0].get(k) for k in PROFILE_FIELDS}, "empty": False}
+
+    @staticmethod
+    def profile_errors(patch):
+        if not isinstance(patch, dict) or not patch:
+            return ["give the fields to change in patch, from " + ", ".join(PROFILE_FIELDS)]
+        unknown = [k for k in patch if k not in PROFILE_FIELDS]
+        if unknown:
+            return ["unknown field " + ", ".join(sorted(unknown)) + ", the fields are " + ", ".join(PROFILE_FIELDS)]
+        errs = []
+        for k, v in patch.items():
+            if v is None:
+                continue
+            if k == "currency":
+                if not (isinstance(v, str) and re.fullmatch(r"[A-Z]{3}", v)):
+                    errs.append("currency must be an ISO 4217 code, 3 capital letters, like DKK")
+            elif k == "max_hours":
+                if isinstance(v, bool) or not isinstance(v, (int, float)) or not v > 0 or v != v or v == float("inf"):
+                    errs.append("max_hours must be a number above 0")
+            else:
+                bad = tripdb.check_fields({k: v}, {k: PROFILE_FIELDS[k]})
+                errs += bad
+        if not errs and (tripdb.store.has_nul(patch) or tripdb.store.has_unstorable(patch)):
+            errs.append(tripdb.BAD_WHY)
+        return errs
+
+    def update_profile(self, patch):
+        """Merge the given fields into the caller's profile. The row is made on the first save."""
+        self.need_project("profiles")
+        errs = self.profile_errors(patch)
+        if errs:
+            raise Refused("; ".join(errs))
+        have = self.store.rest.get_all("user_profiles", self.mine({"select": "owner_id"}))
+        if have:
+            self.store.rest.patch("user_profiles", self.mine({}), patch)
+        else:
+            self.store.rest.insert("user_profiles", [{**patch, "owner_id": self.owner()}])
+        return self.get_profile()
 
     # ---- chat flights -----------------------------------------------------------------------------------------
 

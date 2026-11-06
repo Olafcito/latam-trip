@@ -66,6 +66,11 @@ Every type has five tools: `list_`, `get_`, `add_`, `update_` and `delete_`. Add
 | booking | `list_booking` `get_booking` `add_booking` `update_booking` `delete_booking` | A ticket or a bed that is paid for, one row per leg or stay. `list_booking` takes `from`, `to`, `day` and `place`. Delete sets the booking cancelled and keeps the row. |
 | lodging | `list_lodging` `get_lodging` `add_lodging` `update_lodging` `delete_lodging` | A place to stay that Simon asked for, with photos, rating, distances and rooms. `add_lodging` takes rooms under each lodging and prices under each room, and saves a lodging whole or not at all. `place_id` must be in the places and `tags` come from the tag words beach, pool, social, quiet, kitchen, breakfast, aircon and workspace. A lodging with the name of one stored at that place is that one, so a row sent again keeps its fields, adds the rooms and prices it lacked and is named in `skipped`. A place is never stored twice, and a row whose write failed halfway is finished by sending it again. `get_lodging` gives its rooms by name with their prices by dates. `list_lodging` takes `place` and leaves out hidden ones unless `where` has `hidden`. `update_lodging` changes the lodging alone. Delete hides it and keeps the row. |
 
+Two tools keep the caller's own profile, one row per person in `user_profiles`:
+
+- `get_profile` gives `home_airport` (three capital letters), `currency` (ISO 4217, three capital letters), `max_hours` (the longest journey in one direction, above 0), `travel_style` and `rules` (free text). A person with no profile gets every field empty, `empty: true` and an `ask` that tells Claude to ask the person for it before the first search.
+- `update_profile` takes the fields to change in `patch` and keeps the others. A field set to null is cleared. An unknown field or a bad value is refused with the reason.
+
 Two more tools change the dates of a trip:
 
 - `set_leg_date` puts one leg on a day. No other leg moves.

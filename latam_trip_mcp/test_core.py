@@ -84,7 +84,7 @@ class ToolsTest(Base):
         for t in mcp_core.TYPES:
             for verb in ("list", "get", "add", "update", "delete"):
                 self.assertIn(f"{verb}_{t}", specs)
-        self.assertEqual(len(specs), 5 * len(mcp_core.TYPES) + 10)
+        self.assertEqual(len(specs), 5 * len(mcp_core.TYPES) + 12)
         for name in ("set_leg_date", "shift_leg", "attach_booking_file", "attach_booking_upload", "add_lodging_price",
                      "claim_task", "finish_task", "fail_task", "list_add", "list_remove"):
             self.assertIn(name, specs)
@@ -496,6 +496,66 @@ class TwinLegTest(BookingBase):
         P[4] = {"node": "NOSA", "hop": hop("LIR", "NOSA", date="2026-12-20")}
         P[5]["hop"]["from"] = "NOSA"
         self.refused({"places": P})
+
+
+class ProfileRest:
+    """The user_profiles table as the project would hold it, in memory, one row per owner."""
+
+    def __init__(self):
+        self.rows = []
+
+    def get_all(self, table, params=None, page=None, limit=None):
+        assert table == "user_profiles", table
+        mine = [r for r in self.rows if "eq." + r["owner_id"] == params["owner_id"]]
+        return [json.loads(json.dumps(r)) for r in mine]
+
+    def insert(self, table, rows, **kw):
+        assert table == "user_profiles", table
+        self.rows += [json.loads(json.dumps(r)) for r in rows]
+
+    def patch(self, table, params, body, returning=None):
+        assert table == "user_profiles", table
+        for r in self.rows:
+            if "eq." + r["owner_id"] == params["owner_id"]:
+                r.update(json.loads(json.dumps(body)))
+
+
+class ProfileTest(Base):
+    def setUp(self):
+        super().setUp()
+        self.rest = ProfileRest()
+        self.store.kind = "supabase"
+        self.store.rest = self.rest
+
+    def test_profile_round_trip(self):
+        out = self.core.call("update_profile", {"patch": {"home_airport": "TST", "currency": "EUR", "max_hours": 12.5}})
+        self.assertEqual(out["profile"]["home_airport"], "TST")
+        self.core.call("update_profile", {"patch": {"travel_style": "slow", "rules": "no night buses", "max_hours": 20}})
+        got = self.core.call("get_profile")
+        self.assertEqual(got["profile"], {"home_airport": "TST", "currency": "EUR", "max_hours": 20, "travel_style": "slow",
+                                          "rules": "no night buses"})
+        self.assertFalse(got["empty"])
+        self.assertEqual(len(self.rest.rows), 1)
+        self.assertEqual(self.rest.rows[0]["owner_id"], "OWNER1")
+        self.core.call("update_profile", {"patch": {"rules": None}})
+        self.assertIsNone(self.core.call("get_profile")["profile"]["rules"])
+
+    def test_no_profile_returns_empty_with_ask(self):
+        self.rest.rows.append({"owner_id": "OWNER2", "home_airport": "AAA"})
+        got = self.core.call("get_profile")
+        self.assertTrue(got["empty"])
+        self.assertEqual(set(got["profile"].values()), {None})
+        self.assertIn("ask them", got["ask"])
+        self.assertIn("Before the first search", got["ask"])
+
+    def test_bad_values_are_refused_with_the_reason(self):
+        for patch, why in (({"home_airport": "tst"}, "home_airport"), ({"home_airport": "TSTX"}, "home_airport"),
+                           ({"currency": "eur"}, "currency"), ({"max_hours": 0}, "max_hours"), ({"max_hours": "9"}, "max_hours"),
+                           ({"mood": "x"}, "unknown field mood"), ({"rules": 5}, "rules"), ({}, "patch")):
+            with self.assertRaises(tripdb_store.Refused) as cm:
+                self.core.call("update_profile", {"patch": patch})
+            self.assertIn(why, str(cm.exception))
+        self.assertEqual(self.rest.rows, [])
 
 
 class LodgingRest:
