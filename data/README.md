@@ -31,7 +31,7 @@ Migration 0028 limits the `bookings` bucket to the folder named by the caller's 
 
 The scheduled worker stores private backups in `latam-trip-backups`. Use `tripdb dump` and `tripdb restore` only for an explicitly reviewed recovery. A restore can replace project tables, so verify the target and archive before running `--wipe`. Never use test reset helpers against the live project.
 
-The `read-booking` edge function (`supabase/functions/read-booking`) reads a booking confirmation for Add booking. It is owner only and touches no table. Its README has the deploy commands.
+The `read-booking` edge function (`supabase/functions/read-booking`) reads a booking confirmation for Add booking. Any signed in person may call it up to a number of reads a month, counted in `read_booking_usage` (migration 0029), which no client reads. It touches no other table. Its README has the deploy commands.
 
 ## Places to stay and live rates
 

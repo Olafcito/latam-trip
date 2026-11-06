@@ -3,8 +3,10 @@
 // price already. It reads Hostelworld's own JSON, writes the rooms to lodging_rooms and one price per room to
 // lodging_prices, and the planner gets the rows through realtime. A pasted link adds the place first. A search adds
 // and prices the most popular hostels of a map place's Hostelworld city (FEAT-003, TECH-004).
-// Owner only, or the worker with the worker key. Nothing of the content is logged.
+// Any signed in person, for their own places, or the worker with the worker key, for the admin's (FEAT-006).
+// Every read and write names the caller's owner_id. Nothing of the content is logged.
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.118.0'
+import { callerOf } from './caller.ts'
 import { countryName, km, nameStored, pickCity, rankHostels, type Ranked } from './rank.ts'
 
 const CORS: Record<string, string> = {
@@ -142,13 +144,14 @@ const KINDS: Record<string, string> = { HOSTEL: 'hostel', HOTEL: 'hotel', GUESTH
 const TAGS: [RegExp, string][] = [[/kitchen/i, 'kitchen'], [/breakfast/i, 'breakfast'], [/air ?con/i, 'aircon'], [/pool/i, 'pool']]
 
 /** The lodging row of a Hostelworld property, as the planner's Add place would fill it in. */
-function lodgingOf(p: HwProperty, url: string, placeId: string, addedBy: 'simon' | 'claude'): Record<string, unknown> {
+function lodgingOf(p: HwProperty, url: string, placeId: string, addedBy: 'simon' | 'claude', owner: string): Record<string, unknown> {
   const names = (p.facilities ?? []).flatMap((g) => (g.facilities ?? []).map((f) => f.name ?? ''))
   const tags = TAGS.filter(([re]) => names.some((n) => re.test(n))).map(([, t]) => t)
   const address = [p.address1, p.city?.name].filter((s) => s && s.trim()).join(', ')
   const overall = num(p.rating?.overall)
   const summary = (p.description ?? '').replace(/\s+/g, ' ').trim()
   return {
+    owner_id: owner,
     place_id: placeId,
     name: (p.name ?? '').trim() || `Hostelworld ${p.id}`,
     kind: KINDS[(p.type ?? '').toUpperCase()] ?? 'other',
@@ -166,23 +169,6 @@ function lodgingOf(p: HwProperty, url: string, placeId: string, addedBy: 'simon'
   }
 }
 
-async function isOwner(req: Request): Promise<boolean> {
-  const url = Deno.env.get('SUPABASE_URL')
-  const key = Deno.env.get('SUPABASE_ANON_KEY')
-  const auth = req.headers.get('Authorization')
-  if (!url || !key || !auth) return false
-  const client = createClient(url, key, { global: { headers: { Authorization: auth } }, auth: { persistSession: false } })
-  const { data, error } = await client.rpc('is_owner')
-  return !error && data === true
-}
-
-/** The worker calls with the project's secret key as the bearer, the same key the function knows as its worker key. */
-function isWorker(req: Request): boolean {
-  const want = Deno.env.get('STAY_RATES_WORKER_KEY')
-  const got = req.headers.get('Authorization')?.replace(/^Bearer\s+/i, '').trim()
-  return !!want && !!got && got === want
-}
-
 function service(): SupabaseClient {
   const url = Deno.env.get('SUPABASE_URL')
   const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
@@ -190,13 +176,32 @@ function service(): SupabaseClient {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
+/**
+ * The owner whose rows the request reads and writes. The worker calls with the project's secret key as the bearer, the
+ * same key the function knows as its worker key, and writes to the admin. Anyone else is read from the session JWT.
+ */
+async function ownerOf(req: Request, db: SupabaseClient): Promise<string | null> {
+  const caller = await callerOf(req.headers.get('Authorization'), Deno.env.get('STAY_RATES_WORKER_KEY'), {
+    userOf: async (token) => {
+      const { data, error } = await db.auth.getUser(token)
+      return error ? null : data.user?.id ?? null
+    },
+    adminId: async () => {
+      const { data, error } = await db.from('admins').select('user_id')
+      return !error && data?.length === 1 ? String(data[0].user_id) : null
+    },
+  })
+  return caller?.owner ?? null
+}
+
 interface Stored { id: string; place_id: string | null; hidden: boolean; added_by: string; link: string }
 
-/** Every stored lodging with a Hostelworld link, by its Hostelworld property id. The first one stored wins a tie. */
-async function storedByProperty(db: SupabaseClient): Promise<Map<string, Stored>> {
+/** Every lodging of the owner with a Hostelworld link, by its Hostelworld property id. The first one stored wins a tie. */
+async function storedByProperty(db: SupabaseClient, owner: string): Promise<Map<string, Stored>> {
   const { data, error } = await db
     .from('lodgings')
     .select('id, links, place_id, hidden, added_by')
+    .eq('owner_id', owner)
     .filter('links', 'cs', JSON.stringify([{ site: 'hostelworld' }]))
     .order('created_at')
   if (error) throw new Refused(500, 'The places could not be read.')
@@ -213,9 +218,9 @@ async function storedByProperty(db: SupabaseClient): Promise<Map<string, Stored>
   return out
 }
 
-/** The stored lodging with this Hostelworld property id, by its links, else null. */
-async function findByProperty(db: SupabaseClient, propertyId: string): Promise<Stored | null> {
-  return (await storedByProperty(db)).get(propertyId) ?? null
+/** The owner's lodging with this Hostelworld property id, by its links, else null. */
+async function findByProperty(db: SupabaseClient, owner: string, propertyId: string): Promise<Stored | null> {
+  return (await storedByProperty(db, owner)).get(propertyId) ?? null
 }
 
 interface Target { lodgingId: string; propertyId: string; link: string; created: boolean }
@@ -250,16 +255,16 @@ function datedLink(link: string, checkIn: string, checkOut: string): string {
   }
 }
 
-async function target(db: SupabaseClient, body: Body): Promise<Target> {
+async function target(db: SupabaseClient, owner: string, body: Body): Promise<Target> {
   if (typeof body.url === 'string') {
     const propertyId = hostelworldId(body.url)
     if (!propertyId) throw new Refused(400, 'That is not a Hostelworld link to a place.')
-    const had = await findByProperty(db, propertyId)
+    const had = await findByProperty(db, owner, propertyId)
     if (had) {
       const wanted = typeof body.place_id === 'string' ? body.place_id.trim() : ''
       if (wanted && had.place_id !== wanted) throw new Refused(409, 'That place is already at another stop.')
       if (had.hidden) {
-        const { error } = await db.from('lodgings').update({ hidden: false }).eq('id', had.id)
+        const { error } = await db.from('lodgings').update({ hidden: false }).eq('id', had.id).eq('owner_id', owner)
         if (error) throw new Refused(500, 'The place could not be shown again.')
       }
       return { lodgingId: had.id, propertyId, link: body.url.trim(), created: false }
@@ -267,12 +272,12 @@ async function target(db: SupabaseClient, body: Body): Promise<Target> {
     if (typeof body.place_id !== 'string' || !body.place_id.trim()) throw new Refused(400, 'Say which place on the map the link belongs to.')
     const prop = await hostelworld<HwProperty>(db, `${propertyId}/`)
     await nearStop(db, prop, body.place_id.trim())
-    const { data, error } = await db.from('lodgings').insert(lodgingOf(prop, body.url.trim(), body.place_id.trim(), 'simon')).select('id').single()
+    const { data, error } = await db.from('lodgings').insert(lodgingOf(prop, body.url.trim(), body.place_id.trim(), 'simon', owner)).select('id').single()
     if (error || !data) throw new Refused(500, 'The place could not be saved.')
     return { lodgingId: data.id, propertyId, link: body.url.trim(), created: true }
   }
   if (typeof body.lodging_id !== 'string' || !body.lodging_id.trim()) throw new Refused(400, 'Say which place to price.')
-  const { data, error } = await db.from('lodgings').select('id, links').eq('id', body.lodging_id).maybeSingle()
+  const { data, error } = await db.from('lodgings').select('id, links').eq('id', body.lodging_id).eq('owner_id', owner).maybeSingle()
   if (error) throw new Refused(500, 'The place could not be read.')
   if (!data) throw new Refused(404, 'There is no such place.')
   const links = Array.isArray(data.links) ? (data.links as { site?: string; url?: string }[]) : []
@@ -282,12 +287,13 @@ async function target(db: SupabaseClient, body: Body): Promise<Target> {
 }
 
 /** True when a Hostelworld price for these dates was written for the place within the fresh window. */
-async function isFresh(db: SupabaseClient, lodgingId: string, checkIn: string, checkOut: string, minutes: number): Promise<boolean> {
+async function isFresh(db: SupabaseClient, owner: string, lodgingId: string, checkIn: string, checkOut: string, minutes: number): Promise<boolean> {
   if (minutes <= 0) return false
   const since = new Date(Date.now() - minutes * 60_000).toISOString()
   const { data, error } = await db
     .from('lodging_prices')
     .select('id, lodging_rooms!inner(lodging_id)')
+    .eq('owner_id', owner)
     .eq('lodging_rooms.lodging_id', lodgingId)
     .eq('site', 'hostelworld')
     .eq('check_in', checkIn)
@@ -304,14 +310,14 @@ const defaultTotal = (r: HwRoom): number | null => {
   return num(row?.price?.value)
 }
 
-async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: string, nights: number): Promise<{ rooms: number; prices: number }> {
+async function price(db: SupabaseClient, owner: string, t: Target, checkIn: string, checkOut: string, nights: number): Promise<{ rooms: number; prices: number }> {
   const avail = await hostelworld<HwAvailability>(db, `${t.propertyId}/availability/?date-start=${checkIn}&num-nights=${nights}&guests=1&currency=DKK`)
   const seen: (HwRoom & { dorm: boolean })[] = [
     ...(avail.rooms?.dorms ?? []).map((r) => ({ ...r, dorm: true })),
     ...(avail.rooms?.privates ?? []).map((r) => ({ ...r, dorm: false })),
   ].filter((r) => r.id !== undefined && typeof r.name === 'string' && r.name.trim())
 
-  const { data: stored, error } = await db.from('lodging_rooms').select('id, name, site_id').eq('lodging_id', t.lodgingId)
+  const { data: stored, error } = await db.from('lodging_rooms').select('id, name, site_id').eq('owner_id', owner).eq('lodging_id', t.lodgingId)
   if (error) throw new Refused(500, 'The rooms could not be read.')
   const rooms = (stored ?? []) as Room[]
   const byId = new Map(rooms.filter((r) => r.site_id).map((r) => [r.site_id as string, r]))
@@ -327,7 +333,7 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
       if (!had.site_id) {
         byName.delete(nameKey)
         const photo = image(r.images?.[0])
-        const { error: e } = await db.from('lodging_rooms').update({ site: 'hostelworld', site_id: siteId, ...(photo ? { photo } : {}) }).eq('id', had.id)
+        const { error: e } = await db.from('lodging_rooms').update({ site: 'hostelworld', site_id: siteId, ...(photo ? { photo } : {}) }).eq('id', had.id).eq('owner_id', owner)
         if (e) throw new Refused(500, 'A room could not be updated.')
         had.site_id = siteId
       }
@@ -335,6 +341,7 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
       continue
     }
     fresh.push({
+      owner_id: owner,
       lodging_id: t.lodgingId,
       name: (r.name as string).trim(),
       beds: num(r.capacity),
@@ -346,12 +353,13 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
     })
   }
   if (fresh.length) {
-    // A unique index on (lodging_id, site, site_id) lets two overlapping first calls meet here without doubling the rooms.
-    const { error: e } = await db.from('lodging_rooms').upsert(fresh, { onConflict: 'lodging_id,site,site_id', ignoreDuplicates: true })
+    // A unique index on (owner_id, lodging_id, site, site_id) lets two overlapping first calls meet here without doubling the rooms.
+    const { error: e } = await db.from('lodging_rooms').upsert(fresh, { onConflict: 'owner_id,lodging_id,site,site_id', ignoreDuplicates: true })
     if (e) throw new Refused(500, 'The rooms could not be saved.')
     const { data, error: e2 } = await db
       .from('lodging_rooms')
       .select('id, name, site_id')
+      .eq('owner_id', owner)
       .eq('lodging_id', t.lodgingId)
       .eq('site', 'hostelworld')
       .in('site_id', fresh.map((f) => f.site_id as string))
@@ -372,6 +380,7 @@ async function price(db: SupabaseClient, t: Target, checkIn: string, checkOut: s
     if (!room || (perNight === null && total === null)) continue
     const left = r.dorm ? r.totalBedsAvailable : r.totalRoomsAvailable
     prices.push({
+      owner_id: owner,
       room_id: room.id,
       check_in: checkIn,
       check_out: checkOut,
@@ -431,7 +440,7 @@ const skippable = (e: unknown): boolean => e instanceof Refused && (e.status ===
  * Finds the top hostels of a map place on Hostelworld for the dates, adds the new ones and prices those not priced
  * within the fresh window. A hostel stored hidden or at another stop is passed over and the next one takes its turn.
  */
-async function search(db: SupabaseClient, placeId: string, checkIn: string, checkOut: string, nights: number, freshMinutes: number, top: number): Promise<SearchResult> {
+async function search(db: SupabaseClient, owner: string, placeId: string, checkIn: string, checkOut: string, nights: number, freshMinutes: number, top: number): Promise<SearchResult> {
   const key = Deno.env.get('HOSTELWORLD_WEB_KEY')?.trim()
   if (!key) throw new Refused(503, 'The Hostelworld web key is not set.')
   const { data: row, error } = await db.from('places').select('id, name, country, lat, lon').eq('id', placeId).maybeSingle()
@@ -439,18 +448,18 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
   if (!row) throw new Refused(404, 'There is no such map place.')
   const place: Place = { id: row.id, name: row.name ?? null, country: row.country ?? null, lat: num(row.lat), lon: num(row.lon) }
   const result: SearchResult = { place_id: place.id, city_id: null, city: null, lodging_ids: [], priced_ids: [], created: 0, priced: 0, rooms: 0, prices: 0 }
-  const stored = await storedByProperty(db)
-  const { data: atStop, error: eStop } = await db.from('lodgings').select('id, name, hidden, links').eq('place_id', place.id)
+  const stored = await storedByProperty(db, owner)
+  const { data: atStop, error: eStop } = await db.from('lodgings').select('id, name, hidden, links').eq('owner_id', owner).eq('place_id', place.id)
   if (eStop) throw new Refused(500, 'The places could not be read.')
   const named: { name?: string | null }[] = atStop ?? []
 
-  // Enough visible places with a Hostelworld link here, whoever added them, have fresh prices for the dates: Hostelworld is not asked.
+  // Enough of the owner's visible places with a Hostelworld link here, whoever added them, have fresh prices for the dates: Hostelworld is not asked.
   const ours = [...new Set([...stored.values()].filter((l) => l.place_id === place.id && !l.hidden).map((l) => l.id))]
   if (ours.length >= top) {
     const fresh: string[] = []
     for (const id of ours) {
       if (fresh.length >= top) break
-      if (await isFresh(db, id, checkIn, checkOut, freshMinutes)) fresh.push(id)
+      if (await isFresh(db, owner, id, checkIn, checkOut, freshMinutes)) fresh.push(id)
     }
     if (fresh.length >= top) {
       const { data: c } = await db.from('hostelworld_cities').select('city_id, city').eq('place_id', place.id).maybeSingle()
@@ -490,7 +499,7 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
         if (skippable(e)) continue
         throw e
       }
-      const { data, error: e } = await db.from('lodgings').insert(lodgingOf(prop, link, place.id, 'claude')).select('id').single()
+      const { data, error: e } = await db.from('lodgings').insert(lodgingOf(prop, link, place.id, 'claude', owner)).select('id').single()
       if (e || !data) throw new Refused(500, 'The place could not be saved.')
       t = { lodgingId: data.id, propertyId: r.id, link, created: true }
       named.push({ name: r.name })
@@ -498,12 +507,12 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
       result.created++
     }
     result.lodging_ids.push(t.lodgingId)
-    if (!t.created && (await isFresh(db, t.lodgingId, checkIn, checkOut, freshMinutes))) {
+    if (!t.created && (await isFresh(db, owner, t.lodgingId, checkIn, checkOut, freshMinutes))) {
       result.priced_ids.push(t.lodgingId)
       continue
     }
     try {
-      const counts = await price(db, t, checkIn, checkOut, nights)
+      const counts = await price(db, owner, t, checkIn, checkOut, nights)
       result.priced_ids.push(t.lodgingId)
       result.priced++
       result.rooms += counts.rooms
@@ -518,7 +527,15 @@ async function search(db: SupabaseClient, placeId: string, checkIn: string, chec
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST') return fail(405, 'Ask with POST.')
-  if (!isWorker(req) && !(await isOwner(req))) return fail(403, 'Only the owner can ask for live rates.')
+  let db: SupabaseClient
+  let owner: string | null
+  try {
+    db = service()
+    owner = await ownerOf(req, db)
+  } catch {
+    return fail(500, 'The caller could not be checked.')
+  }
+  if (!owner) return fail(401, 'Sign in to ask for live rates.')
 
   let parsed: unknown
   try {
@@ -542,7 +559,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const top = body.top === undefined ? TOP_DEFAULT : body.top
     if (typeof top !== 'number' || !Number.isInteger(top) || top < 1 || top > TOP_MAX) return fail(400, `Ask for 1 to ${TOP_MAX} places.`)
     try {
-      return reply(200, await search(service(), placeId, checkIn, checkOut, nights, freshMinutes, top))
+      return reply(200, await search(db, owner, placeId, checkIn, checkOut, nights, freshMinutes, top))
     } catch (e) {
       if (e instanceof Refused) return reply(e.status, { error: e.message, ...e.extra })
       return fail(500, 'The search failed.')
@@ -550,12 +567,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
   }
 
   try {
-    const db = service()
-    const t = await target(db, body)
-    if (!t.created && (await isFresh(db, t.lodgingId, checkIn, checkOut, freshMinutes))) {
+    const t = await target(db, owner, body)
+    if (!t.created && (await isFresh(db, owner, t.lodgingId, checkIn, checkOut, freshMinutes))) {
       return reply(200, { lodging_id: t.lodgingId, created: false, fetched: false, rooms: 0, prices: 0 })
     }
-    const counts = await price(db, t, checkIn, checkOut, nights)
+    const counts = await price(db, owner, t, checkIn, checkOut, nights)
     return reply(200, { lodging_id: t.lodgingId, created: t.created, fetched: true, ...counts })
   } catch (e) {
     if (e instanceof Refused) return reply(e.status, { error: e.message, ...e.extra })

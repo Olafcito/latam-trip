@@ -1,6 +1,6 @@
 # read-booking
 
-Edge function behind Add booking in the planner. It takes the leg being added, the pasted confirmation text and up to 5 files (PDF, JPEG, PNG, WebP, GIF, 10 MB together, base64 inline), asks the Claude API for the booking through one forced tool, and returns `{ booking }` or `{ error }`. Only the signed in owner may call it (`public.is_owner()`). It stores nothing, reads and writes no table, and logs nothing of the content.
+Edge function behind Add booking in the planner. It takes the leg being added, the pasted confirmation text and up to 5 files (PDF, JPEG, PNG, WebP, GIF, 10 MB together, base64 inline), asks the Claude API for the booking through one forced tool, and returns `{ booking }` or `{ error }`. Any signed in person may call it, read from the session JWT, up to `READ_BOOKING_MONTHLY_CAP` reads a calendar month (UTC), 30 when the secret is unset. Without a session it answers `401`. Past the cap it answers `429 { error: 'monthly_cap' }` and asks Claude nothing. A read is counted once the request is known to be readable, before Claude is asked, and a second read with the fallback model is part of the same one. The count is `public.take_read_booking(cap)` (migration 0029), called as the caller so it counts their reads alone, in `read_booking_usage` by owner and month, which no client reads. When the count cannot be asked it answers `503` and asks Claude nothing. It stores nothing else, reads and writes no other table, and logs nothing of the content.
 
 The planner sends at most 5 files, 10 MB together and 5 MB for an image, and does not send a HEIC photo, which the function refuses. A saved .eml goes as text. A body that is not an object, or a files entry that is not, gets a 400 with the CORS headers.
 
@@ -25,9 +25,13 @@ The first read is complete when every stay has a reference, a total, a check-in 
 
 It reads with `READ_BOOKING_MODEL` first. When that answer has no reference, no price, or a leg without a departure, it reads once more with `READ_BOOKING_FALLBACK` and returns that answer. If the second read fails, the first answer is returned.
 
-Secrets: `ANTHROPIC_API_KEY` (required), `READ_BOOKING_MODEL` (optional, default `claude-haiku-5-5`) and `READ_BOOKING_FALLBACK` (optional, default `claude-sonnet-5-5`). `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set by Supabase.
+Secrets: `ANTHROPIC_API_KEY` (required), `READ_BOOKING_MODEL` (optional, default `claude-haiku-5-5`), `READ_BOOKING_FALLBACK` (optional, default `claude-sonnet-5-5`) and `READ_BOOKING_MONTHLY_CAP` (optional, a whole number of at least 1, default 30). `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set by Supabase.
 
 From the repo root, with the project ref from the Supabase dashboard (the subdomain of `SUPABASE_URL`):
 
     npx supabase secrets set ANTHROPIC_API_KEY=... --project-ref <ref>
     npx supabase functions deploy read-booking --project-ref <ref>
+
+Tests of the cap and the sign in check, without the network, from the repo root:
+
+    npx deno test supabase/functions/read-booking/

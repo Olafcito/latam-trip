@@ -163,11 +163,23 @@ class RlsTest(unittest.TestCase):
 
     def test_service_tables_closed(self):
         for table in ("admins", "inbox_tokens", "leases", "derived_options", "stays", "site_calls", "hostelworld_cities",
-                      "task_runner", "schema_migrations", "owner_limits"):
+                      "task_runner", "schema_migrations", "owner_limits", "read_booking_usage"):
             with self.subTest(table=table):
                 for who in (self.a, self.b):
                     code, body = who.rest.select(table)
                     self.assertTrue(code in REFUSED or body == [], (table, code, body))
+
+    def test_read_booking_cap_per_person(self):
+        take = lambda who, cap: who.rest.rpc("take_read_booking", {"cap": cap})
+        self.assertEqual([take(self.a, 2) for _ in range(3)], [(200, True), (200, True), (200, False)])
+        # B has a count of their own, and a lower cap refuses once it is reached
+        self.assertEqual(take(self.b, 1), (200, True))
+        self.assertEqual(take(self.b, 1), (200, False))
+        self.assertEqual(take(self.b, 0), (200, False))
+        anon = self.users.Rest(self.env["SUPABASE_URL"], self.env["SUPABASE_PUBLISHABLE_KEY"])
+        self.assertIn(anon.rpc("take_read_booking", {"cap": 5})[0], REFUSED)
+        code, rows = self.svc.select("read_booking_usage", "select=owner_id,reads&order=reads")
+        self.assertEqual(rows, [{"owner_id": self.b.id, "reads": 1}, {"owner_id": self.a.id, "reads": 2}])
 
     def test_bucket_folders(self):
         mine = f"{self.a.id}/TEST01/a.pdf"

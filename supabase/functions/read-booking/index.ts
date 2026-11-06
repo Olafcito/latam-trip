@@ -1,6 +1,8 @@
 // read-booking: reads a travel booking confirmation (PDF, screenshot, mail text) with the Claude API and
-// returns the booking's fields. Owner only. Nothing is stored and nothing of the content is logged.
+// returns the booking's fields. Any signed in person, up to a number of reads a month (FEAT-006). Only that count is
+// stored, and nothing of the content is logged.
 import { createClient } from 'npm:@supabase/supabase-js@2.118.0'
+import { capOf, type Session, signedIn, turn } from './gate.ts'
 
 const CORS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -220,20 +222,31 @@ async function read(key: string, model: string, leg: Leg, content: unknown[]): P
   return { ok: true, booking: input }
 }
 
-async function isOwner(req: Request): Promise<boolean> {
+/** The caller's session: the user from the JWT, and the monthly count taken as that user, so it is theirs alone. */
+function sessionOf(req: Request): Session {
   const url = Deno.env.get('SUPABASE_URL')
   const key = Deno.env.get('SUPABASE_ANON_KEY')
-  const auth = req.headers.get('Authorization')
-  if (!url || !key || !auth) return false
-  const client = createClient(url, key, { global: { headers: { Authorization: auth } }, auth: { persistSession: false } })
-  const { data, error } = await client.rpc('is_owner')
-  return !error && data === true
+  const token = req.headers.get('Authorization')?.replace(/^Bearer\s+/i, '').trim() ?? ''
+  if (!url || !key || !token) return { user: () => Promise.resolve(null), take: () => Promise.resolve(null) }
+  const client = createClient(url, key, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false } })
+  return {
+    user: async () => {
+      const { data, error } = await client.auth.getUser(token)
+      return error ? null : data.user?.id ?? null
+    },
+    take: async (cap) => {
+      const { data, error } = await client.rpc('take_read_booking', { cap })
+      return error || typeof data !== 'boolean' ? null : data
+    },
+  }
 }
 
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST') return fail(405, 'Use POST.')
-  if (!(await isOwner(req))) return fail(403, 'Only the owner can read bookings.')
+  const session = sessionOf(req)
+  const refused = await signedIn(session)
+  if (refused) return reply(refused.status, refused.body)
 
   let parsed: unknown
   try {
@@ -260,6 +273,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   const key = Deno.env.get('ANTHROPIC_API_KEY')
   if (!key) return fail(500, 'The read function has no API key.')
+  // one read of the month, the second model included, taken once the request is known to be readable
+  const capped = await turn(session, capOf(Deno.env.get('READ_BOOKING_MONTHLY_CAP')))
+  if (capped) return reply(capped.status, capped.body)
 
   const content: unknown[] = files.map((f) =>
     f.type === 'application/pdf'

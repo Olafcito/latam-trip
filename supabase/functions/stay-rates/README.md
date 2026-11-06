@@ -2,7 +2,7 @@
 
 Edge function behind the live rates of a place to stay (FEAT-002, TECH-003) and the search for accommodations at a stop (FEAT-003, TECH-004). The planner calls it when a place with a Hostelworld link is opened, and the build worker calls it each morning for every place and dates that have a Hostelworld price already. It reads the property and its availability from Hostelworld's own JSON endpoints, writes the rooms to `lodging_rooms` and one price per room to `lodging_prices`, and the planner shows the rows through its realtime subscription. Prices are asked in DKK for one guest. Nothing of the content is logged.
 
-Who may call it: the signed in owner (`public.is_owner()`), or the worker with the bearer token equal to the `STAY_RATES_WORKER_KEY` secret. The function writes with the service role key, so the owner only tables stay owner only.
+Who may call it: any signed in person, read from the session JWT, or the worker with the bearer token equal to the `STAY_RATES_WORKER_KEY` secret. Anyone else gets `401`. The function writes with the service role key and names the owner on every read and write: a person's own `owner_id`, and the admin's (from `admins`) for the worker. A stored place is found by its Hostelworld id among the caller's own lodgings only, so two people can each store the same hostel, and a search or a pasted link never touches another person's rows.
 
 Request, one of:
 
@@ -42,6 +42,6 @@ From the repo root, with the project ref from the Supabase dashboard (the subdom
 
 `--no-verify-jwt` is needed because the worker's key is not a JWT. The function checks the caller itself.
 
-Tests of the ranking, the distance and the city choice, without the network, from the repo root:
+Tests of the ranking, the distance, the city choice and the caller, without the network, from the repo root:
 
     npx deno test supabase/functions/stay-rates/
