@@ -1,4 +1,4 @@
-"""The morning rates refresh (FEAT-002). Every place and dates that have a Hostelworld price already is asked again
+"""The morning rates refresh (FEAT-002). Every place of the admin and dates that have a Hostelworld price already is asked again
 through the stay-rates edge function, so a stored price is never older than a day while the dates are ahead. The
 worker holds no Hostelworld code: the function does the reading and the writing, the worker only says which."""
 import concurrent.futures, datetime, json, threading, urllib.error, urllib.request
@@ -8,9 +8,19 @@ WORKERS = 4
 MIN_LEFT_MS = 30000
 
 
+def admin_id(rest):
+    """The one admin's user id, read from admins when the run starts."""
+    got = rest.get_all("admins", {"select": "user_id"})
+    if len(got) != 1:
+        raise ValueError(f"admins holds {len(got)} rows, it must hold exactly one")
+    return got[0]["user_id"]
+
+
 def wanted(rest, today):
-    """(lodging_id, check_in, check_out) for every Hostelworld price whose check in is today or later, each once."""
-    rows = rest.get_all("lodging_prices", {"select": "check_in,check_out,lodging_rooms(lodging_id)",
+    """(lodging_id, check_in, check_out) for every Hostelworld price of the admin's own places whose check in is today or
+    later, each once. Every other person's places are theirs to price with their own Claude, and the shared gate of 30 calls
+    a minute stays the admin's."""
+    rows = rest.get_all("lodging_prices", {"select": "check_in,check_out,lodging_rooms(lodging_id)", "owner_id": "eq." + admin_id(rest),
                                            "site": "eq.hostelworld", "check_in": f"gte.{today}"})
     out = []
     for r in rows:

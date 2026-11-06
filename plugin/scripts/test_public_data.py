@@ -1,8 +1,9 @@
 """The public paths stay clean of what is owner only. Run from the repo root:
 python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_public_data.py"
 The repo and the web bucket are public. Booking references, prices paid, names and attachments live only in owner only
-tables, so no column of bookings, lodgings, lodging_rooms or lodging_prices, and no booking task text, summary or outputs,
-may reach a file build_web_data writes. The rows here are made up, every value a marker that is looked for in the output."""
+tables, so no column of bookings, lodgings, lodging_rooms or lodging_prices, no row of quotes or task_log, and nothing
+of a second owner may reach a file build_web_data writes. The rows here are made up, every value a marker that is looked
+for in the output. Each private row belongs to a second owner, whose id is a marker too."""
 import json, os, re, sqlite3, subprocess, sys, tempfile, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -27,9 +28,13 @@ def columns(table):
     return [m.group(1) for m in re.finditer(r"^\s{2}([a-z_]+) ", body, re.M) if m.group(1) != "check"]
 
 
+SECOND_OWNER = "LEAKOWNERID"
+PRIVATE_FILES = ("task_log", "quotes", "trips", "tasks", "inbox", "agent_usage", "user_profiles", "user_documents")
+
+
 def marked(table):
-    """One row of the table with a marker of its own in every column."""
-    return {c: f"LEAK{table.upper()}{c.upper()}" for c in columns(table)}
+    """One row of the table with a marker of its own in every column, the owner column among them."""
+    return {c: f"LEAK{table.upper()}{c.upper()}" for c in [*columns(table), "owner_id"]}
 
 
 def keys(x, out):
@@ -60,12 +65,14 @@ class PublicData(unittest.TestCase):
         for t, r in cls.rows.items():
             with open(os.path.join(src, f"{t}.jsonl"), "w", encoding="utf-8") as f:
                 f.write(json.dumps(r) + "\n")
-        cls.leg = {"kind": "flight", "from": "CTG", "to": "SMR", "day": "2026-12-08"}
-        task = {"type": "booking", "leg": cls.leg, "text": "LEAKTASKTEXT ref TEST01 for Simon and Ana", "note": "LEAKTASKNOTE",
-                "reference": "LEAKTASKREF", "price_dkk": 987654, "from": "app"}
-        with open(os.path.join(src, "task_log.jsonl"), "w", encoding="utf-8") as f:
-            f.write(json.dumps({"issue": 7, "type": "booking", "task": task, "done_at": "2026-11-03T10:00+00:00",
-                                "summary": "LEAKSUMMARY ref TEST01, 987654 kr", "outputs": ["LEAKOUTPUT"]}) + "\n")
+        # the other private tables of a second owner, quotes and the task log among them
+        for t in PRIVATE_FILES:
+            row = {"owner_id": SECOND_OWNER, "id": f"LEAK{t.upper()}ID", "note": f"LEAK{t.upper()}NOTE", "link": f"LEAK{t.upper()}LINK",
+                   "summary": f"LEAK{t.upper()}SUMMARY ref TEST01", "outputs": [f"LEAK{t.upper()}OUTPUT"], "price_dkk": 987654}
+            path = os.path.join(src, "quotes", "all.jsonl") if t == "quotes" else os.path.join(src, f"{t}.jsonl")
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(json.dumps(row) + "\n")
         # and as if they had reached trip.db
         db = sqlite3.connect(os.path.join(built, "trip.db"))
         db.execute("CREATE TABLE quotes (quote_id, pattern_id, ok, price_dkk, out_hours, out_via, out_carriers, self_transfer,"
@@ -89,7 +96,7 @@ class PublicData(unittest.TestCase):
 
     def test_the_build_wrote_its_files(self):
         self.assertIn("places.json", self.files)
-        self.assertIn("task_log.json", self.files)
+        self.assertNotIn("task_log.json", self.files)
 
     def test_no_owner_only_value_reaches_a_built_file(self):
         for name, text in self.files.items():
@@ -101,13 +108,12 @@ class PublicData(unittest.TestCase):
         for name, text in self.files.items():
             self.assertEqual(sorted(keys(json.loads(text), set()) & own), [], name)
 
-    def test_a_booking_task_keeps_only_its_type_and_leg(self):
-        log = json.loads(self.files["task_log.json"])
-        self.assertEqual([r["task"] for r in log], [{"type": "booking", "leg": self.leg}])
-        self.assertEqual([(r["summary"], r["outputs"]) for r in log], [("Booked", [])])
+    def test_a_second_owners_rows_in_every_private_table_stay_out(self):
         for name, text in self.files.items():
-            for word in ("TEST01", "987654", "Ana"):
+            for word in ("TEST01", "987654", SECOND_OWNER):
                 self.assertNotIn(word, text, name)
+        for t in PRIVATE_FILES:
+            self.assertNotIn(f"LEAK{t.upper()}", "".join(self.files.values()))
 
     def test_no_owner_only_table_is_built_into_trip_db(self):
         for t in MIGRATIONS:

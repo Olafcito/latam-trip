@@ -8,6 +8,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, HERE)
 import steps  # noqa: E402
+import rates  # noqa: E402
 
 UTC = dt.timezone.utc
 NOW = dt.datetime(2026, 11, 1, 12, 0, 0, tzinfo=UTC)
@@ -38,6 +39,8 @@ class FakeRest:
                 ok = row.get(col) is None
             elif cond.startswith("eq."):
                 ok = str(row.get(col)) == cond[3:]
+            elif cond.startswith("gte."):
+                ok = str(row.get(col)) >= cond[4:]
             elif cond.startswith("in.("):
                 ok = str(row.get(col)) in [x.strip('"') for x in cond[4:-1].split(",")]
             else:
@@ -479,6 +482,59 @@ class DerivedTest(unittest.TestCase):
         self.assertEqual((rows["a"]["rank"], rows["b"]["rank"]), (0, 1))
         self.assertEqual((rows["b"]["total_dkk"], rows["b"]["way_in"]), (20, "I2"))
         self.assertEqual(rows["a"]["data"]["total_dkk"], 10)
+
+
+class OwnersTest(unittest.TestCase):
+    ADMIN, OTHER = "ADMIN1", "OTHER1"
+
+    def project(self):
+        mine, theirs = {"owner_id": self.ADMIN}, {"owner_id": self.OTHER}
+        usage = {"searches": None, "tokens": None, "tool_uses": None, "seconds": None, "rows": None}
+        return FakeRest(
+            admins=[{"user_id": self.ADMIN}],
+            places=[{"seq": 1, "id": "SJO", "name": "San Jose", "country": "CR", "lat": 1.0, "lon": 2.0, "type": "city",
+                     "popularity": 1, "extra": {}}],
+            quotes=[{"seq": 1, "quote_id": "q-mine", "source": "q-mine", "extra": {}, **mine}, {"seq": 2, "quote_id": "q-theirs", "source": "q-theirs", "extra": {}, **theirs}],
+            trips=[{"seq": 1, "id": "t-mine", "version": 1, "data": {"id": "t-mine", "version": 1}, **mine},
+                   {"seq": 2, "id": "t-theirs", "version": 1, "data": {"id": "t-theirs", "version": 1}, **theirs}],
+            agent_usage=[{"seq": 1, "round": "r", "agent": "mine", "model": "m", "tool": "t", **usage, **mine},
+                         {"seq": 2, "round": "r", "agent": "theirs", "model": "m", "tool": "t", **usage, **theirs}],
+            task_log=[{"seq": 1, "issue": 1, "done_at": "2026-11-01T00:00:00Z", "summary": "theirs", **theirs}],
+            documents=[{"name": "bag_rules.json", "data": []}],
+            user_documents=[{"name": "trip.json", "data": {"home": ["CPH"]}, **mine},
+                            {"name": "lists.json", "data": {"lists": ["theirs"]}, **theirs}])
+
+    def test_pull_reads_catalogue_and_admin_rows_only(self):
+        root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, root, True)
+        steps.tripdb.cmd_pull(root, rest=self.project())
+        def read(*p):
+            with open(os.path.join(root, *p), encoding="utf-8") as fh:
+                return fh.read()
+        self.assertIn("SJO", read("places.jsonl"))
+        self.assertIn("q-mine", read("quotes", "all.jsonl"))
+        self.assertNotIn("q-theirs", read("quotes", "all.jsonl"))
+        self.assertIn("t-mine", read("trips.jsonl"))
+        self.assertNotIn("t-theirs", read("trips.jsonl"))
+        self.assertIn("mine", read("agent_usage.csv"))
+        self.assertNotIn("theirs", read("agent_usage.csv"))
+        self.assertFalse(os.path.exists(os.path.join(root, "task_log.jsonl")))
+        self.assertEqual(json.loads(read("trip.json")), {"home": ["CPH"]})
+        self.assertFalse(os.path.exists(os.path.join(root, "lists.json")))
+        self.assertEqual(json.loads(read("bag_rules.json")), [])
+
+    def test_pull_refuses_without_exactly_one_admin(self):
+        rest = self.project()
+        rest.tables["admins"].append({"user_id": "SECOND"})
+        with self.assertRaisesRegex(steps.Refused, "admins"):
+            steps.tripdb.cmd_pull(tempfile.mkdtemp(), rest=rest)
+
+    def test_rates_run_prices_admin_places_only(self):
+        price = lambda owner, lodging: {"owner_id": owner, "site": "hostelworld", "check_in": "2026-12-10", "check_out": "2026-12-13",
+                                        "lodging_rooms": {"lodging_id": lodging}}
+        rest = FakeRest(admins=[{"user_id": self.ADMIN}],
+                        lodging_prices=[price(self.ADMIN, "mine"), price(self.OTHER, "theirs")])
+        self.assertEqual(rates.wanted(rest, "2026-11-05"), [("mine", "2026-12-10", "2026-12-13")])
 
 
 if __name__ == "__main__":

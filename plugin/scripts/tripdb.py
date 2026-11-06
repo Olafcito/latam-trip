@@ -1220,7 +1220,7 @@ SB_TABLES = [("places", "places.jsonl", "seq"), ("connections", "connections.jso
              ("experience_images", "experience_images.jsonl", "seq"), ("stays", "stays.jsonl", "id")]
 WIPE_KEY = {"quotes": "seq", "trips": "seq", "stays": "id", "connections": "id", "profiles": "seq", "place_images": "seq",
             "experience_images": "seq", "experiences": "seq", "task_log": "seq", "agent_usage": "seq", "places": "seq",
-            "airports": "code", "documents": "name", "tasks": "id", "inbox": "id", "derived_options": "id"}
+            "airports": "code", "documents": "name", "user_documents": "name", "tasks": "id", "inbox": "id", "derived_options": "id"}
 WIPE_ORDER = list(WIPE_KEY)
 
 
@@ -1317,14 +1317,18 @@ def cmd_import(paths_or_dir, wipe=False, rest=None):
                 usage = [cols.usage_row(r) for r in csv.DictReader(fh)]
         counts["agent_usage"] = len(usage)
         rest.insert("agent_usage", usage)
-        docs = []
+        docs, own = [], []
         for name in IMPORT_DOCS:
             p = os.path.join(src, name)
             if os.path.exists(p):
+                dn = name[:-5] if name == "way_id_map.json" else name
                 with open(p, encoding="utf-8") as fh:
-                    docs.append({"name": name[:-5] if name == "way_id_map.json" else name, "version": 1, "data": json.load(fh)})
+                    (own if dn in store.PERSONAL_DOCS else docs).append({"name": dn, "version": 1, "data": json.load(fh)})
+        # the secret key writes without an owner, so a person's documents land on the admin
         counts["documents"] = len(docs)
         rest.insert("documents", docs)
+        counts["user_documents"] = len(own)
+        rest.insert("user_documents", own)
     except store.RestError as e:
         raise Refused(f"import stopped: {e}")
     for k, v in counts.items():
@@ -1341,8 +1345,9 @@ def _usage_cell(v):
     return "" if v is None else (str(int(v)) if float(v) == int(v) else str(v))
 
 
-def _pull_usage(rest, to_dir):
-    usage = rest.get_all("agent_usage", {"select": "*", "order": "seq.asc"})
+def _pull_usage(rest, to_dir, owner=None):
+    """The admin's agent_usage rows as the csv. The secret key sees every owner's rows, so the filter is named."""
+    usage = rest.get_all("agent_usage", {"select": "*", "order": "seq.asc", "owner_id": "eq." + (owner or store.admin_id(rest))})
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\n")
     w.writerow(USAGE_COLS)
@@ -1354,28 +1359,34 @@ def _pull_usage(rest, to_dir):
 def _pull_docs(rest, to_dir, only=None):
     """Writes the documents (all, or those named in only) as files of data/sources. Returns the rows written."""
     names = {(n[:-5] if n == "way_id_map.json" else n): n for n in IMPORT_DOCS}
-    docs = [d for d in rest.get_all("documents", {"select": "name,data"}) if d["name"] in names and (only is None or d["name"] in only)]
+    wanted = lambda d: d["name"] in names and (only is None or d["name"] in only)
+    docs = [d for d in rest.get_all("documents", {"select": "name,data"}) if wanted(d) and d["name"] not in store.PERSONAL_DOCS]
+    # a person's own documents are the admin's here, named by id because the secret key sees every owner's
+    if any(n in store.PERSONAL_DOCS for n in names if only is None or n in only or names[n] in only):
+        mine = rest.get_all("user_documents", {"select": "name,data", "owner_id": "eq." + store.admin_id(rest)})
+        docs += [d for d in mine if wanted(d) and d["name"] in store.PERSONAL_DOCS]
     for d in docs:
         write_atomic(os.path.join(to_dir, names[d["name"]]), json.dumps(d["data"], indent=1, ensure_ascii=False) + "\n")
     return docs
 
 
 def cmd_pull(to_dir, rest=None, root=None):
-    """Write the project out as the files of data/sources. Quotes go to one file, in seq order. Nothing is folded."""
+    """Write the project out as the files of data/sources. Quotes go to one file, in seq order. Nothing is folded. The
+    catalogue is read whole. quotes, trips, agent_usage and the personal documents are the admin's rows only, with the id read
+    from admins now. The task log is not pulled, since it never goes into a public file."""
     to_dir = os.path.abspath(to_dir)
     rest = rest or _rest(root or DEFAULT_ROOT)
     try:
+        owner = store.admin_id(rest)
+        mine = "eq." + owner
         for table, fname, order in SB_TABLES:
             rows = rest.get_all(table, {"select": "*", "order": order + ".asc"})
             _jsonl(os.path.join(to_dir, fname), [cols.from_row(table, r) for r in rows])
-        quotes = rest.get_all("quotes", {"select": "*", "order": "seq.asc"})
+        quotes = rest.get_all("quotes", {"select": "*", "order": "seq.asc", "owner_id": mine})
         _jsonl(os.path.join(to_dir, "quotes", "all.jsonl"), [cols.from_row("quotes", r) for r in quotes])
-        trips = [r for r in rest.get_all("trips", {"select": "*", "order": "seq.asc"}) if not r.get("deleted_at")]
+        trips = [r for r in rest.get_all("trips", {"select": "*", "order": "seq.asc", "owner_id": mine}) if not r.get("deleted_at")]
         _jsonl(os.path.join(to_dir, "trips.jsonl"), [cols.trip_rec(r) for r in trips])
-        log = rest.get_all("task_log", {"select": "*", "order": "seq.asc"})
-        if log:
-            _jsonl(os.path.join(to_dir, "task_log.jsonl"), [cols.from_row("task_log", r) for r in log])
-        _pull_usage(rest, to_dir)
+        _pull_usage(rest, to_dir, owner)
         docs = _pull_docs(rest, to_dir)
     except store.RestError as e:
         raise Refused(f"pull stopped: {e}")
@@ -1388,8 +1399,8 @@ def cmd_pull(to_dir, rest=None, root=None):
 DUMP_TABLES = [("airports", "code", None), ("places", "seq", "seq"), ("connections", "id", "id"), ("profiles", "seq", "seq"),
                ("place_images", "seq", "seq"), ("experiences", "seq", "seq"), ("experience_images", "seq", "seq"),
                ("stays", "id", "id"), ("quotes", "seq", "seq"), ("trips", "seq", "seq"), ("documents", "name", None),
-               ("inbox", "id", "id"), ("tasks", "id", "id"), ("task_log", "seq", "seq"), ("agent_usage", "seq", "seq"),
-               ("owners", "user_id", None), ("inbox_tokens", "name", None)]
+               ("user_documents", "name", None), ("inbox", "id", "id"), ("tasks", "id", "id"), ("task_log", "seq", "seq"), ("agent_usage", "seq", "seq"),
+               ("admins", "user_id", None), ("inbox_tokens", "name", None)]
 
 
 def cmd_cutover_done(rest=None, root=None):

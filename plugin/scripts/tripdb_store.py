@@ -433,7 +433,7 @@ def classify(keys, items, stored, same, replace):
 
 
 QUERY_TABLES = ("airports", "places", "connections", "profiles", "place_images", "experiences", "experience_images", "stays",
-                "quotes", "trips", "trips_latest", "documents", "inbox", "tasks", "task_log", "agent_usage", "leases",
+                "quotes", "trips", "trips_latest", "documents", "user_documents", "inbox", "tasks", "task_log", "agent_usage", "leases",
                 "derive_state", "derived_options")
 COL_RE = re.compile("[a-z_][a-z0-9_]*")
 
@@ -764,6 +764,21 @@ def get_store(paths, kind=None):
 
 BS = chr(92)
 ORDER = {"stays": "id", "connections": "id", "task_log": "seq"}
+# Tables whose rows belong to one person. The secret key bypasses row level security, so every read, change and delete of
+# these names the admin's owner id itself, and a write names it too.
+PRIVATE_TABLES = frozenset({"trips", "trips_latest", "quotes", "tasks", "inbox", "task_log", "agent_usage", "bookings", "lodgings",
+                            "lodging_rooms", "lodging_prices", "user_documents"})
+# The documents a person owns, which live in user_documents under their id. Every other document is shared and stays in documents.
+PERSONAL_DOCS = frozenset({"lists.json", "trip.json", "mcp_trash.json", "web_trips", "way_id_map", "unresolved_journeys",
+                           "current_plan"})
+
+
+def admin_id(rest):
+    """The one admin's user id, read from admins at run time. Refuses when there is not exactly one."""
+    got = rest.get_all("admins", {"select": "user_id"})
+    if len(got) != 1:
+        raise Refused(f"admins holds {len(got)} rows, it must hold exactly one for the secret key to know whose rows it reads")
+    return got[0]["user_id"]
 
 
 def quoted(v):
@@ -806,6 +821,27 @@ class SupabaseStore(Store):
         self.paths = paths
         env = load_env(paths.root)
         self.rest = Rest(env.get("SUPABASE_URL"), env.get("SUPABASE_SECRET_KEY"))
+        self._owner = None
+
+    def owner(self):
+        """The admin's user id, read once."""
+        if self._owner is None:
+            self._owner = admin_id(self.rest)
+        return self._owner
+
+    def _mine(self, table, params=None):
+        """The params with the owner filter added when the table is private."""
+        out = dict(params or {})
+        if table in PRIVATE_TABLES:
+            out["owner_id"] = "eq." + self.owner()
+        return out
+
+    def _docs(self, name):
+        """The table and the filter a document has: a person's own in user_documents, the shared in documents."""
+        dn = self._dn(name)
+        if dn in PERSONAL_DOCS:
+            return "user_documents", {"owner_id": "eq." + self.owner(), "name": "eq." + dn}
+        return "documents", {"name": "eq." + dn}
 
     # ---- names ----
     @staticmethod
@@ -828,20 +864,21 @@ class SupabaseStore(Store):
     def _raw(self, table, extra=None):
         params = {"select": "*", "order": ORDER.get(table, "seq")}
         params.update(extra or {})
-        return self.rest.get_all(table, params)
+        return self.rest.get_all(table, self._mine(table, params))
 
     def rows(self, table):
         return [cols.from_row(table, r) for r in self._raw(table)]
 
     def ids(self, table):
-        return {r["id"] for r in self.rest.get_all(table, {"select": "id", "order": "id"})}
+        return {r["id"] for r in self.rest.get_all(table, self._mine(table, {"select": "id", "order": "id"}))}
 
     def doc(self, name):
-        got = self.rest.get_all("documents", {"select": "version,data", "name": "eq." + self._dn(name)})
+        table, where = self._docs(name)
+        got = self.rest.get_all(table, {"select": "version,data", **where})
         return (got[0]["data"], got[0]["version"]) if got else (None, None)
 
     def _trip_rows(self):
-        return self.rest.get_all("trips", {"select": "id,version,data", "deleted_at": "is.null", "order": "id,version"})
+        return self.rest.get_all("trips", self._mine("trips", {"select": "id,version,data", "deleted_at": "is.null", "order": "id,version"}))
 
     def trips(self):
         latest = {}
@@ -850,7 +887,7 @@ class SupabaseStore(Store):
         return list(latest.values())
 
     def trip_ids(self):
-        return {r["id"] for r in self.rest.get_all("trips", {"select": "id", "order": "id"})}
+        return {r["id"] for r in self.rest.get_all("trips", self._mine("trips", {"select": "id", "order": "id"}))}
 
     def trip_versions(self):
         out = {}
@@ -881,8 +918,8 @@ class SupabaseStore(Store):
         out = {}
         for i in range(0, len(first), self.IN_CHUNK):
             part = first[i:i + self.IN_CHUNK]
-            for raw in self.rest.get_all(table, {"select": "*", "order": ORDER.get(table, "seq"),
-                                                 kc[0]: "in.(" + ",".join(quoted(v) for v in part) + ")"}):
+            for raw in self.rest.get_all(table, self._mine(table, {"select": "*", "order": ORDER.get(table, "seq"),
+                                                                   kc[0]: "in.(" + ",".join(quoted(v) for v in part) + ")"})):
                 k = tuple(raw.get(c) for c in kc)
                 if k in want:
                     out[k] = cols.to_row(table, cols.from_row(table, raw))
@@ -895,8 +932,10 @@ class SupabaseStore(Store):
             return AddResult()
         kc = self._keycols(table)
         new = [cols.to_row(table, r) for r in rows]
+        if table in PRIVATE_TABLES:
+            new = [{**r, "owner_id": self.owner()} for r in new]
         keyf = lambda row: tuple(row[c] for c in kc)
-        strip = lambda row: {k: v for k, v in row.items() if k != "origin"}
+        strip = lambda row: {k: v for k, v in row.items() if k not in ("origin", "owner_id")}
         stored = self._stored(table, new)
         res, pending = classify([keyf(r) for r in new], new, stored, lambda a, b: strip(a) == strip(b), replace)
         if replace and table in ("places", "profiles"):
@@ -906,7 +945,7 @@ class SupabaseStore(Store):
                 pre = [cols.from_row(table, stored[k])] if k in stored else []
                 new[i] = cols.to_row(table, fold(pre + copies)[0])
         write = [new[i] for i in pending.values()]
-        conflict = ",".join(kc)
+        conflict = ",".join((["owner_id"] if table in PRIVATE_TABLES else []) + kc)
         if table == "places":
             self._stubs(write)
         if replace:
@@ -950,10 +989,12 @@ class SupabaseStore(Store):
     # ---- single rows ----
     def append(self, table, rec):
         row = cols.usage_row(rec) if table == "agent_usage" else cols.to_row(table, rec)
+        if table in PRIVATE_TABLES:
+            row = {**row, "owner_id": self.owner()}
         self.rest.insert(table, [row])
 
     def update(self, table, key, patch, check=None):
-        raw = self.rest.get_all(table, {"select": "*", "id": "eq." + str(key)})
+        raw = self.rest.get_all(table, self._mine(table, {"select": "*", "id": "eq." + str(key)}))
         if not raw:
             return None
         old = cols.from_row(table, raw[0])
@@ -961,27 +1002,32 @@ class SupabaseStore(Store):
         errs = check(new) if check else []
         if errs:
             raise Refused(f"{key}: " + "; ".join(errs))
-        self.rest.patch(table, {"id": "eq." + str(key)}, cols.to_row(table, new))
+        self.rest.patch(table, self._mine(table, {"id": "eq." + str(key)}), cols.to_row(table, new))
         return old, new
 
     def put_doc(self, name, data, version):
-        dn = self._dn(name)
+        table, where = self._docs(name)
         if version is None:
-            got = self.rest.insert("documents", [{"name": dn, "version": 1, "data": data}], on_conflict="name",
+            row = {"name": self._dn(name), "version": 1, "data": data}
+            if table == "user_documents":
+                row["owner_id"] = self.owner()
+            got = self.rest.insert(table, [row], on_conflict="owner_id,name" if table == "user_documents" else "name",
                                    returning="name", resolution="ignore-duplicates")
             return len(got) == 1
-        got = self.rest.patch("documents", {"name": "eq." + dn, "version": "eq." + str(version)},
+        got = self.rest.patch(table, {**where, "version": "eq." + str(version)},
                               {"version": version + 1, "updated_at": now_utc(), "data": data}, returning="name")
         return len(got) == 1
 
     def query(self, table, eq=(), in_=(), gte=(), select=None, limit=None):
         eq, in_, gte, select, limit = query_args(table, eq, in_, gte, select, limit)
-        order = {"airports": "code", "trips": "id,version", "trips_latest": "id", "derived_options": "rank", "documents": "name",
+        order = {"airports": "code", "trips": "id,version", "trips_latest": "id", "derived_options": "rank", "documents": "name", "user_documents": "name",
                  "inbox": "id", "tasks": "id", "leases": "name", "derive_state": "dirty_at"}.get(table, ORDER.get(table, "seq"))
-        params = {"select": ",".join(select) if select else "*", "order": order}
+        params = self._mine(table, {"select": ",".join(select) if select else "*", "order": order})
         tests = [(c, "eq." + v) for c, v in eq] + [(c, "in.(" + ",".join(quoted(x) for x in vs) + ")") for c, vs in in_]             + [(c, "gte." + v) for c, v in gte]
         for c, t in tests:
             if c in params:
+                if c == "owner_id":
+                    raise Refused("owner_id is set from admins, a query cannot name another owner")
                 raise Refused(f"{c} has two tests, a query takes one test per column")
             params[c] = t
         return self.rest.get_all(table, params, limit=limit)
@@ -993,7 +1039,7 @@ class SupabaseStore(Store):
             now = cols.quote_row(cols.from_row("quotes", raw), cfg)
             patch = {c: now[c] for c in ("build_qid", "usable") if now[c] != raw.get(c)}
             if patch:
-                self.rest.patch("quotes", {"quote_id": "eq." + raw["quote_id"]}, patch)
+                self.rest.patch("quotes", self._mine("quotes", {"quote_id": "eq." + raw["quote_id"]}), patch)
                 n += 1
         return n
 
@@ -1004,7 +1050,7 @@ class SupabaseStore(Store):
     def delete_trip(self, ids):
         found = {}
         for tid in sorted(ids):
-            got = self.rest.patch("trips", {"id": "eq." + tid, "deleted_at": "is.null"}, {"deleted_at": now_utc()}, returning="version")
+            got = self.rest.patch("trips", self._mine("trips", {"id": "eq." + tid, "deleted_at": "is.null"}), {"deleted_at": now_utc()}, returning="version")
             if got:
                 found[tid] = len(got)
         return found
@@ -1012,11 +1058,11 @@ class SupabaseStore(Store):
     def remove(self, table, match):
         """Delete the rows whose fields equal match. Returns the rows that were there."""
         if table == "quotes":
-            raw = self.rest.get_all("quotes", {"select": "*", "quote_id": "eq." + match["quote_id"]})
-            params = {"quote_id": "eq." + match["quote_id"]}
+            params = self._mine("quotes", {"quote_id": "eq." + match["quote_id"]})
+            raw = self.rest.get_all("quotes", {"select": "*", **params})
         else:
             m = cols.COLS[table]
-            params = {m.field_to_col[k]: ("is.null" if v is None else "eq." + str(v)) for k, v in match.items()}
+            params = self._mine(table, {m.field_to_col[k]: ("is.null" if v is None else "eq." + str(v)) for k, v in match.items()})
             raw = self.rest.get_all(table, {"select": "*", **params})
         if raw:
             self.rest.delete(table, params)
@@ -1024,13 +1070,13 @@ class SupabaseStore(Store):
 
     def restore_trip(self, tid, versions):
         """Undo delete_trip: the versions come back with deleted_at null. Returns how many came back."""
-        got = self.rest.patch("trips", {"id": "eq." + tid, "deleted_at": "not.is.null"}, {"deleted_at": None}, returning="version")
+        got = self.rest.patch("trips", self._mine("trips", {"id": "eq." + tid, "deleted_at": "not.is.null"}), {"deleted_at": None}, returning="version")
         return len(got)
 
     # ---- the inbox ----
     def inbox_new(self):
         out = []
-        for e in self.rest.get_all("inbox", {"select": "id,file,rows", "status": "eq.new", "order": "id"}):
+        for e in self.rest.get_all("inbox", self._mine("inbox", {"select": "id,file,rows", "status": "eq.new", "order": "id"})):
             lines = []
             for n, r in enumerate(e["rows"] or [], 1):
                 if isinstance(r, str):
@@ -1044,5 +1090,5 @@ class SupabaseStore(Store):
         return out
 
     def inbox_mark(self, entry_id, status, reason, rejected):
-        self.rest.patch("inbox", {"id": "eq." + str(entry_id)}, {"status": status, "reason": reason, "rejected": rejected or None})
+        self.rest.patch("inbox", self._mine("inbox", {"id": "eq." + str(entry_id)}), {"status": status, "reason": reason, "rejected": rejected or None})
         return f"inbox row {entry_id}"

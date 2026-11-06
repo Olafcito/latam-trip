@@ -19,6 +19,10 @@ Planned trips live in the `trips` table. `tripdb save-trip FILE` saves a new ver
 
 The app's built map and research files live in the public Supabase `web` bucket. A scheduled worker rebuilds and publishes them after data changes. Worker health is shown by `tripdb status`; worker deployment is `bash infra/deploy.sh --enable-schedules`.
 
+## Owners
+
+Every private table (trips, quotes, tasks, inbox, task_log, agent_usage, bookings, lodgings and their rooms and prices) has an `owner_id`, and `admins` holds the one admin's user id. The secret key bypasses row level security, so `tripdb`, the connector and the worker name `owner_id=eq.<admin id>` on every read, change and delete, with the id read from `admins` at run time and never from a file. A write names the owner too, and one that does not lands on the admin. `tripdb query` refuses a test on `owner_id`. A person's own documents (lists.json, trip.json, mcp_trash.json, web_trips, way_id_map, unresolved_journeys, current_plan) live in `user_documents` by `(owner_id, name)`. The shared ones, such as `cutover_done`, stay in `documents`. The worker pull reads the catalogue whole and the admin's quotes, trips and usage only, and does not pull `task_log`, so no `task_log.json` is built into the public bucket. The morning rates run prices the admin's places only. Lodging ids are derived from the owner as well as the place and name, and the connector finds a stored lodging among the caller's own by place and name before it trusts a derived id. Booking files are stored under `<owner id>/<booking id>/` in the private `bookings` bucket.
+
 ## Backups and safety
 
 The scheduled worker stores private backups in `latam-trip-backups`. Use `tripdb dump` and `tripdb restore` only for an explicitly reviewed recovery. A restore can replace project tables, so verify the target and archive before running `--wipe`. Never use test reset helpers against the live project.

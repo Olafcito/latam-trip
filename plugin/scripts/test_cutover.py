@@ -105,15 +105,15 @@ class CutoverDoneTest(unittest.TestCase):
 
 
 class DumpTest(unittest.TestCase):
-    def test_dump_includes_owners_and_inbox_tokens(self):
+    def test_dump_includes_admins_and_inbox_tokens(self):
         names = [t for t, _, _ in tripdb.DUMP_TABLES]
-        self.assertIn("owners", names)
+        self.assertIn("admins", names)
         self.assertIn("inbox_tokens", names)
-        rest = FakeRest(held={"owners": 1, "inbox_tokens": 1})
+        rest = FakeRest(held={"admins": 1, "inbox_tokens": 1})
         with tempfile.TemporaryDirectory() as out:
             counts = run(tripdb.cmd_dump, out, rest)
-            self.assertEqual((counts["owners"], counts["inbox_tokens"]), (1, 1))
-            self.assertTrue(os.path.exists(os.path.join(out, "owners.jsonl")))
+            self.assertEqual((counts["admins"], counts["inbox_tokens"]), (1, 1))
+            self.assertTrue(os.path.exists(os.path.join(out, "admins.jsonl")))
             self.assertTrue(os.path.exists(os.path.join(out, "inbox_tokens.jsonl")))
 
 

@@ -13,6 +13,8 @@ class FakeRest:
         self.prices, self.params = prices, None
 
     def get_all(self, table, params=None):
+        if table == "admins":
+            return [{"user_id": "ADMIN1"}]
         assert table == "lodging_prices"
         self.params = params
         return [dict(r) for r in self.prices]
@@ -33,6 +35,7 @@ class Wanted(unittest.TestCase):
         self.assertEqual(rates.wanted(rest, "2026-11-05"), [
             ("l1", "2026-12-10", "2026-12-13"), ("l1", "2026-12-20", "2026-12-22"), ("l2", "2026-12-10", "2026-12-13")])
         self.assertEqual(rest.params["site"], "eq.hostelworld")
+        self.assertEqual(rest.params["owner_id"], "eq.ADMIN1")
         self.assertEqual(rest.params["check_in"], "gte.2026-11-05")
 
 

@@ -325,7 +325,7 @@ class ReadBuiltTest(unittest.TestCase):
         cls.log = io.StringIO()
         with contextlib.redirect_stdout(cls.log):
             tripdb.cmd_build(tripdb.Paths(cls.tmp), sync=False)
-        cls.files, cls.tables = {}, {"documents": [], "agent_usage": []}
+        cls.files, cls.tables = {}, {"documents": [], "user_documents": [], "agent_usage": [], "admins": [{"user_id": "admin-test"}]}
         for name in os.listdir(os.path.join(cls.tmp, "data", "built")):
             with open(os.path.join(cls.tmp, "data", "built", name), "rb") as fh:
                 cls.files[("web", "built/" + name)] = fh.read()
@@ -336,7 +336,8 @@ class ReadBuiltTest(unittest.TestCase):
             p = os.path.join(cls.tmp, "data", "sources", name)
             if os.path.exists(p):
                 with open(p, encoding="utf-8") as fh:
-                    cls.tables["documents"].append({"name": name[:-5] if name == "way_id_map.json" else name, "data": json.load(fh)})
+                    dn = name[:-5] if name == "way_id_map.json" else name
+                    cls.tables["user_documents" if dn in tripdb_store.PERSONAL_DOCS else "documents"].append({"name": dn, "data": json.load(fh)})
         with open(os.path.join(cls.tmp, "data", "sources", "agent_usage.csv"), encoding="utf-8", newline="") as fh:
             for i, r in enumerate(csv.DictReader(fh)):
                 r["seq"] = i
@@ -425,9 +426,9 @@ class ReadBuiltTest(unittest.TestCase):
         self.assertIn("run knows evaluate", str(cm.exception))
 
     def test_run_names_a_missing_document(self):
-        docs = [d for d in self.tables["documents"] if d["name"] != "trip.json"]
+        docs = [d for d in self.tables["user_documents"] if d["name"] != "trip.json"]
         with self.assertRaises(tripdb.Refused) as cm:
-            self.printed(tripdb.cmd_run, "frontier", [], rest=self.rest(documents=docs))
+            self.printed(tripdb.cmd_run, "frontier", [], rest=self.rest(user_documents=docs))
         self.assertIn("trip.json", str(cm.exception))
 
     def test_status_prints_worker_version_and_local_sha(self):
@@ -472,3 +473,66 @@ class BatchStopTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OwnerColumnsTest(unittest.TestCase):
+    """What the Supabase store names now that every private row has an owner. A recording Rest stands in for the project."""
+
+    class Rec:
+        def __init__(self):
+            self.calls = []
+
+        def get_all(self, table, params=None, **kw):
+            self.calls.append(("get", table, dict(params or {})))
+            return [{"user_id": "ADMIN1"}] if table == "admins" else []
+
+        def insert(self, table, rows, on_conflict=None, returning=None, resolution=None, **kw):
+            self.calls.append(("insert", table, on_conflict, rows))
+            return [{"name": r["name"]} for r in rows]
+
+        def patch(self, table, params, body, returning=None):
+            self.calls.append(("patch", table, dict(params)))
+            return [{"name": "x"}]
+
+    def store(self):
+        st = tripdb_store.SupabaseStore.__new__(tripdb_store.SupabaseStore)
+        st.rest, st._owner = self.Rec(), None
+        return st
+
+    def test_a_personal_document_goes_to_user_documents_under_the_admin(self):
+        st = self.store()
+        st.doc("lists.json")
+        self.assertEqual(st.rest.calls[-1], ("get", "user_documents", {"select": "version,data", "owner_id": "eq.ADMIN1", "name": "eq.lists.json"}))
+        self.assertTrue(st.put_doc("way_id_map.json", {}, None))
+        kind, table, conflict, rows = st.rest.calls[-1]
+        self.assertEqual((table, conflict, rows[0]["owner_id"], rows[0]["name"]), ("user_documents", "owner_id,name", "ADMIN1", "way_id_map"))
+
+    def test_a_shared_document_stays_in_documents(self):
+        st = self.store()
+        st.doc("bag_rules.json")
+        self.assertEqual(st.rest.calls[-1], ("get", "documents", {"select": "version,data", "name": "eq.bag_rules.json"}))
+        st.put_doc("bag_rules.json", [], None)
+        self.assertEqual(st.rest.calls[-1][1:3], ("documents", "name"))
+
+    def test_private_reads_and_changes_name_the_admin(self):
+        st = self.store()
+        st.trip_ids()
+        self.assertEqual(st.rest.calls[-1][2]["owner_id"], "eq.ADMIN1")
+        st.delete_trip({"t1"})
+        self.assertEqual(st.rest.calls[-1][2], {"id": "eq.t1", "deleted_at": "is.null", "owner_id": "eq.ADMIN1"})
+        st.query("tasks", eq=["status=new"])
+        self.assertEqual(st.rest.calls[-1][2]["owner_id"], "eq.ADMIN1")
+        with self.assertRaises(tripdb.Refused):
+            st.query("tasks", eq=["owner_id=other"])
+
+    def test_the_catalogue_is_read_without_an_owner(self):
+        st = self.store()
+        st.ids("places")
+        self.assertNotIn("owner_id", st.rest.calls[-1][2])
+
+    def test_admin_id_refuses_none_or_two(self):
+        class Two(self.Rec):
+            def get_all(self, table, params=None, **kw):
+                return [{"user_id": "a"}, {"user_id": "b"}]
+        with self.assertRaises(tripdb_store.Refused):
+            tripdb_store.admin_id(Two())
