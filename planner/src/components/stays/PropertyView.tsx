@@ -5,6 +5,7 @@ import { amenityRow, bookAt, cheapestRoom, nightly, nightsWord, stayDates, type 
 import { addDays } from '../../lib/time'
 import { safeUrl } from '../../lib/lodgingLinks'
 import { clampPhoto } from '../../lib/photoStrip'
+import { isTileLogo } from '../../lib/purchase'
 import { roomMarks, type Mark } from '../../lib/roomMarks'
 import { cheapestFirst } from '../../lib/roomOrder'
 import type { Shared } from '../../lib/sharePlace'
@@ -154,10 +155,9 @@ function LiveMark({ live }: { live: LiveRates }) {
   )
 }
 
-/** A site's mark: its logo file, Hostelworld's orange square, or its first letter. */
+/** A site's mark: its logo file, or its first letter. */
 function SiteLogo({ p, logo }: { p: Provider; logo: string | null }) {
-  if (p.key === 'hostelworld') return <span className="pv-logo" data-site="hostelworld" aria-hidden="true">H</span>
-  return <span className="pv-logo" data-none={!logo || undefined} aria-hidden="true">{logo ? <img src={logo} alt="" /> : p.name.slice(0, 1).toUpperCase()}</span>
+  return <span className="pv-logo" data-none={!logo || undefined} data-tile={isTileLogo(logo) || undefined} aria-hidden="true">{logo ? <img src={logo} alt="" /> : p.name.slice(0, 1).toUpperCase()}</span>
 }
 
 function Seller({ p, logo }: { p: Provider; logo: string | null }) {

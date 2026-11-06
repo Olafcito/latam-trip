@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Booking, Lodging, LodgingRoom } from '../../data/types'
 import { dayRange, dec1, kr, thousands } from '../../lib/format'
-import { safeUrl } from '../../lib/lodgingLinks'
+import { datedLink, safeUrl } from '../../lib/lodgingLinks'
 import { KIND, linkName, TAG } from '../../lib/lodgingWords'
 import { cheapestFirst } from '../../lib/roomOrder'
 import { priceFor, type StayPrice } from '../../lib/stays'
 import { photosShown, quotedLabel } from '../../lib/stayView'
 import { stayPricesTask } from '../../lib/tasks'
+import { addDays } from '../../lib/time'
 import { useStore } from '../../store'
 import { AskClaude } from '../AskClaude'
 import { Bath, Bed, Calendar, Caret, Check, Door, External, Note, Person, Pin, Star, Wave } from '../icons'
@@ -196,7 +197,7 @@ export function StayCard({ lodging, first, nights = 0, booking, onChoose, chosen
           <ul className="sc-links">
             {links.map((l) => (
               <li key={l.url}>
-                <a href={safeUrl(l.url)!} target="_blank" rel="noopener noreferrer">{linkName(l.site, l.url)}<External s={11} /></a>
+                <a href={(priced ? datedLink(l.url, first, addDays(first!, nights)) : safeUrl(l.url))!} target="_blank" rel="noopener noreferrer">{linkName(l.site, l.url)}<External s={11} /></a>
               </li>
             ))}
           </ul>

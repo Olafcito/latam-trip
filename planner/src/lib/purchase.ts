@@ -45,7 +45,7 @@ const AIRLINE_LOGO: Record<string, string> = Object.fromEntries([
 const SELLER_LOGO: Record<string, string> = { bookingcom: 'booking.svg', booking: 'booking.svg', expedia: 'expedia.svg', travellink: 'travellink.png', travellinkdk: 'travellink.png',
   airbnb: 'provider-airbnb.svg', hotelscom: 'provider-hotels-com.svg', tripadvisor: 'provider-tripadvisor.svg', tripcom: 'provider-trip-com.svg',
   trivago: 'provider-trivago.svg', googlehotels: 'provider-google.svg', google: 'provider-google.svg', hilton: 'provider-hilton.svg', marriott: 'provider-marriott.svg',
-  hostelworld: 'provider-hostelworld.svg', agoda: 'provider-agoda.svg', vrbo: 'provider-vrbo.svg', kayak: 'provider-kayak.svg',
+  hostelworld: 'provider-hostelworld.png', agoda: 'provider-agoda.svg', vrbo: 'provider-vrbo.svg', kayak: 'provider-kayak.svg',
   despegar: 'provider-despegar.svg', despegarcom: 'provider-despegar.svg', priceline: 'provider-priceline.png', pricelinecom: 'provider-priceline.png',
   hostelz: 'provider-hostelz.png', hostelzcom: 'provider-hostelz.png', selina: 'provider-selina.svg',
 }
@@ -99,6 +99,10 @@ export function sellerLogo(seller: string | null | undefined): string | null {
 }
 
 export const gmailLogo = () => logoUrl('gmail.svg') ?? ''
+
+/** Logos that are already a filled rounded square, an app icon, and fill their tile edge to edge. */
+const TILE_FILES = ['provider-hostelworld.png']
+export const isTileLogo = (url: string | null | undefined) => !!url && TILE_FILES.some((f) => logoUrl(f) === url)
 
 /** The flights of a row: its segments, or the row as one flight when it lists none. */
 export function flightsOf(b: Pick<Booking, 'from_code' | 'to_code' | 'depart' | 'arrive' | 'segments'>): JourneyFlight[] {

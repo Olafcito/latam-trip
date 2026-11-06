@@ -3,7 +3,7 @@ import type { Booking, Lodging, LodgingSite } from '../../data/types'
 import { FILE_TYPES, loadBookings } from '../../lib/bookings'
 import { fileMessage } from '../../lib/bookedBox'
 import { loadLodgings } from '../../lib/lodgings'
-import { sellerLogo } from '../../lib/purchase'
+import { isTileLogo, sellerLogo } from '../../lib/purchase'
 import { readStay } from '../../lib/readStay'
 import { stayFormOf, stayPrompt, type StayForm, type StayFormKey, type StayTarget } from '../../lib/stayBooking'
 import { addressField, newProgress, pastedLink, saveStay } from '../../lib/stayConfirm'
@@ -233,7 +233,7 @@ const PROVIDERS: { site: LodgingSite; name: string }[] = [
 function ProviderFace({ site, name }: { site: LodgingSite; name: string }) {
   const [broken, setBroken] = useState(false)
   const logo = site === 'own' || site === 'other' ? null : sellerLogo(name)
-  if (logo && !broken) return <span className="ac-logo"><img src={logo} alt="" onError={() => setBroken(true)} /></span>
+  if (logo && !broken) return <span className="ac-logo" data-tile={isTileLogo(logo) || undefined}><img src={logo} alt="" onError={() => setBroken(true)} /></span>
   return site === 'other' ? <More s={18} /> : site === 'own' ? <House s={18} /> : <span className="scw-pname">{name}</span>
 }
 

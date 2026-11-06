@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { LodgingKind } from '../../data/types'
 import { thousands, weekdayDay } from '../../lib/format'
-import { gmailLogo } from '../../lib/purchase'
+import { gmailLogo, isTileLogo } from '../../lib/purchase'
 import { nightsWord, type Amenity } from '../../lib/stayOffer'
 import type { StayMoney } from '../../lib/stayBooking'
 import { Bed, Calendar, Check, External, House, Paperclip, Refund, Ring, Warn } from '../icons'
@@ -83,7 +83,7 @@ function Mark({ booked, className }: { booked: boolean; className: string }) {
 export function ProviderMark({ p, size }: { p: StayProvider; size?: 'large' }) {
   const [broken, setBroken] = useState(false)
   return (
-    <span className="ac-logo" data-size={size} data-plain={!p.logo || broken || undefined} role="img" aria-label={p.name} title={p.name}>
+    <span className="ac-logo" data-size={size} data-plain={!p.logo || broken || undefined} data-tile={(!broken && isTileLogo(p.logo)) || undefined} role="img" aria-label={p.name} title={p.name}>
       {p.logo && !broken ? <img src={p.logo} alt="" onError={() => setBroken(true)} /> : <House s={size ? 18 : 12} />}
     </span>
   )

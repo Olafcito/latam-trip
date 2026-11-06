@@ -368,8 +368,7 @@ a.pv-seller:active { transform: scale(0.99); background: var(--surface-3); }
 }
 .pv-logo img { width: 100%; height: 100%; object-fit: contain; }
 .pv-logo[data-none] { background: var(--surface-3); color: var(--muted); }
-/* Hostelworld's own orange square with its H, its wordmark reads as nothing this small */
-.pv-logo[data-site='hostelworld'] { background: #F25B2A; color: #fff; font-size: 1rem; }
+.pv-logo[data-tile] { background: transparent; }
 .pv-sn { font-size: var(--fs-small); font-weight: 600; overflow-wrap: anywhere; }
 .pv-sp { justify-self: end; }
 .pv-skr { font-size: var(--fs-body); font-weight: 700; font-variant-numeric: tabular-nums; }
