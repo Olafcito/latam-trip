@@ -7,6 +7,22 @@ The planner sends at most 5 files, 10 MB together and 5 MB for an image, and doe
 Request: `{ leg: { kind, from, to, day }, text, files: [{ name, type, data }] }`.
 Response: `200 { booking: { legs, reference, seller, price, ..., not_found } }` or `4xx/5xx { error }`.
 
+## Stay mode
+
+When `leg.kind` is `stay`, the function uses a second tool and a stay prompt instead of the flight ones. The leg is `{ kind: 'stay', place, day, nights }`, the town, the first night and the number of nights. Files, limits and errors are the same.
+
+Response: `200 { booking: { stays: [...] } }`. It is a list because one confirmation can hold several bookings, such as two one-night bookings at the same hostel. The stay that matches the leg comes first. Each stay can hold:
+
+- `property { name, address, city, country }`, with the address as written
+- `check_in`, `check_out` (YYYY-MM-DD), `check_in_time`, `check_out_time` (HH:MM local), `nights`, `guests`, `rooms`, `room_name`
+- `provider` (booking, hostelworld, airbnb, own, other), read from the confirmation's logo, wording and reference format and never from the mail domain alone, `seller` (the provider's name as written), `seller_url` (only for other or own)
+- `reference`, `total`, `paid` (at booking, a deposit), `balance` (due at the property), `per_night`, each money as `{ amount, currency }` in the currency the confirmation shows
+- `refundable`, `cancel_until`, `cancel_policy` (under 120 characters), `not_found`
+
+The total is the full price of the stay, the deposit plus the balance. A deposit is never the total. With only a deposit and a balance the total is their sum when both are in one currency, else it is left out and named in `not_found`.
+
+The first read is complete when every stay has a reference, a total, a check-in and a check-out. Anything less is read once more with `READ_BOOKING_FALLBACK`, as for flights. The flight path is unchanged.
+
 It reads with `READ_BOOKING_MODEL` first. When that answer has no reference, no price, or a leg without a departure, it reads once more with `READ_BOOKING_FALLBACK` and returns that answer. If the second read fails, the first answer is returned.
 
 Secrets: `ANTHROPIC_API_KEY` (required), `READ_BOOKING_MODEL` (optional, default `claude-haiku-5-5`) and `READ_BOOKING_FALLBACK` (optional, default `claude-sonnet-5-5`). `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set by Supabase.
