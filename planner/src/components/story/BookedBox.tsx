@@ -204,7 +204,19 @@ function bagHas(text: string | null | undefined): Has {
 const weightOf = (text: string | null | undefined) => text?.match(/(\d+(?:[.,]\d+)?)\s*kg/i)?.[1].replace('.', ',') ?? null
 
 const CHANGE_TEXT: Record<string, string> = { yes: 'Changes allowed', fee: 'Changes for a fee', no: 'No changes' }
-const REFUND_TEXT: Record<string, string> = { yes: 'Refundable', partly: 'Partly refundable', no: 'Not refundable' }
+
+/**
+ * The ticket's one cancellation mark: Free cancellation when it cancels for free until a date, Refundable when it
+ * refunds with no date. The date and what changes cost go in its tooltip. Partly, not refundable or not saved give none.
+ */
+export function cancelChip(b: Pick<Booking, 'refundable' | 'cancel_until' | 'changeable' | 'change_until'>): { word: string; fact: string } | null {
+  if (b.refundable === 'no' || b.refundable === 'partly') return null
+  if (b.refundable !== 'yes' && !b.cancel_until) return null
+  const word = b.cancel_until ? 'Free cancellation' : 'Refundable'
+  const change = b.changeable ? `${CHANGE_TEXT[b.changeable]}${b.changeable !== 'no' && b.change_until ? ` until ${weekdayDay(b.change_until)}` : ''}` : null
+  const fact = [`${word}${b.cancel_until ? ` until ${weekdayDay(b.cancel_until)}` : ''}`, change].filter(Boolean).join('. ')
+  return { word, fact }
+}
 
 /** One mark of what the ticket includes: filled when it is there, a ring when it is not, its whole fact in its tooltip. */
 function Include({ has, icon, label, fact }: { has: Has; icon: ReactNode; label: string; fact: string }) {
@@ -319,12 +331,7 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
 
   const cabin = bagHas(b.cabin_bag)
   const checked = bagHas(b.checked_bag)
-  const flex: Has = b.changeable === 'yes' || b.changeable === 'fee' ? 'yes' : b.changeable === 'no' ? 'no' : 'unknown'
-  const until = (t: string | null) => (t ? `, until ${weekdayDay(t)}` : '')
-  const flexFact = [
-    b.changeable ? `${CHANGE_TEXT[b.changeable]}${b.changeable !== 'no' ? until(b.change_until) : ''}` : 'Changes not saved',
-    b.refundable ? `${REFUND_TEXT[b.refundable]}${b.refundable !== 'no' ? until(b.cancel_until) : ''}` : null,
-  ].filter(Boolean).join('. ')
+  const cancels = cancelChip(b)
   const cabinKg = weightOf(b.cabin_bag)
   const checkedKg = weightOf(b.checked_bag)
 
@@ -462,7 +469,11 @@ export function BookedBox({ booking: b, data, changing, onChange, onEdit, onRemo
         <ul className="jb-incs" aria-label="What the ticket includes">
           <Include has={cabin} icon={<Bag s={20} />} label={cabinKg ? `Cabin ${cabinKg} kg` : 'Cabin'} fact={b.cabin_bag?.trim() ? `Cabin bag, ${b.cabin_bag.trim()}` : 'Cabin bag not saved'} />
           <Include has={checked} icon={<Suitcase s={20} />} label={checkedKg ? `Checked ${checkedKg} kg` : 'Checked'} fact={b.checked_bag?.trim() ? `Checked bag, ${b.checked_bag.trim()}` : 'Checked bag not saved'} />
-          <Include has={flex} icon={<Rebook s={20} />} label="Flexible" fact={flexFact} />
+          {cancels && (
+            <li className="jb-cancel">
+              <Tip label={cancels.fact} className="jb-cancel-tip"><Refund s={15} /><span aria-hidden="true">{cancels.word}</span></Tip>
+            </li>
+          )}
         </ul>
       </div>
 

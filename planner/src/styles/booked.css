@@ -1,6 +1,6 @@
 /* The booked pane: the journey read at a glance. A short photo of where it lands, then the day, a card per flight
-   with the times and codes large, the wait between flights on a gold line, and three marks for what the ticket
-   includes. The purchase comes last on a raised surface. In a sheet the pane runs to the window's edges through
+   with the times and codes large, the wait between flights on a gold line, a mark for each bag and a chip when
+   the ticket cancels for free. The purchase comes last on a raised surface. In a sheet the pane runs to the window's edges through
    --jb-bleed, and it is one column at every width, since it always opens as a window. */
 @scope (:root) to (.rmap) {
   .jb {
@@ -67,7 +67,7 @@
   .jb-brand-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-ticket); font-size: var(--fs-body); font-weight: 800; }
 
   /* what the ticket includes: a filled mark when it does, a ring when it does not, a dashed ring when nobody saved it */
-  .jb-incs { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 22px 0 0; padding: 0; }
+  .jb-incs { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, max-content); gap: 8px; margin: 22px 0 0; padding: 0; }
   .jb-inc { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
   .jb-inc .jb-inc-tip { padding: 0; border: 0; background: none; color: inherit; cursor: help; border-radius: 12px; }
   .jb-inc-i { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; }
@@ -76,6 +76,15 @@
   .jb-inc[data-has='unknown'] .jb-inc-i { color: #4D6676; outline: 1.5px dashed var(--line-2); outline-offset: -1.5px; }
   .jb-inc-l { font-size: var(--fs-small); font-weight: 600; line-height: 1.2; }
   .jb-inc:not([data-has='yes']) .jb-inc-l { color: var(--faint); }
+  /* free cancellation or refundable, one small chip in the third place as wide as its word, its date in the tooltip */
+  .jb-cancel { align-self: center; justify-self: end; min-width: 0; max-width: 100%; }
+  .jb-cancel .jb-cancel-tip {
+    display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-height: 28px; padding: 0 10px; border-radius: 999px; cursor: help;
+    border: 1px solid color-mix(in srgb, var(--booked) 40%, transparent); background: color-mix(in srgb, var(--booked) 10%, transparent);
+    color: var(--booked); font-size: var(--fs-small); font-weight: 600; white-space: nowrap;
+  }
+  .jb-cancel-tip svg { flex: none; }
+  .jb-cancel-tip span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 
   /* the purchase, once: who sold it and what it cost, the mail first, the numbers, the other journeys */
   .jb-buy { display: flex; flex-direction: column; gap: 14px; margin-top: 26px; padding: 20px var(--jb-pad) calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--surface); }
