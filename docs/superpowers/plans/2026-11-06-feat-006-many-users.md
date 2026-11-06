@@ -257,6 +257,7 @@ Worktree `oauth-spike`. Time box one working session.
 - [x] `test.yml` gains the grep that fails when `SUPABASE_SECRET_KEY`, `supabase-secret-key` or a `sb_secret_` key appears under `latam_trip_mcp/` or `infra/mcp/`. It checks names only.
 - [x] Fix round. Migration 0033 grants `add_quotes` to authenticated with `owner_id` from `auth.uid()`, adds the narrow security definer `add_airport_stubs` and makes `stays` a catalogue table. A flight change that keeps its quote id puts the old quote back when the new one is refused. The key set is kept 10 minutes and refetched for an unknown `kid` at most once a minute. The role reads the two exact SSM parameters with no `kms:Decrypt`. `deploy.sh --code-only` stops when the function lacks a variable the code reads. The consent page leads with Latam trip and says what a connection can read and change. Tests: `test_a_person_who_is_not_the_admin_saves_and_changes_a_flight`, `test_a_signed_in_person_reads_the_stays` and `JwksTest` in `test_auth.py`.
 - [ ] Go live in the order in `docs/connector.md`, commands shown first: `put-secrets.sh`, the full `infra/mcp/deploy.sh`, the merge to `main` (the release applies 0033 and builds the planner), the live Auth settings, Simon signs in once again, and a day later the SSM secret key and passphrase parameters are deleted.
+- [ ] Follow up: the connector refuses past `connector_writes_per_minute` of `owner_limits` (60) per user, moved here from task 6.2.
 
 ---
 
@@ -320,7 +321,10 @@ Second gate before the first outside account: `tasks`, `inbox` and `task_log` ke
 
 ### Task 6.2: Caps
 
-- [ ] A trigger per private table refuses an insert past `owner_limits`, a storage policy refuses a file past the folder size, and the connector refuses past 60 writes a minute per user. Tests on the local stack.
+- [x] A trigger per private table refuses an insert past `owner_limits` and a storage policy refuses a file past the folder size. Tests on the local stack.
+- [ ] The connector refuses past 60 writes a minute per user.
+- Done as migration 0033 for the rows, the tasks a day and the folder bytes. `quotes` and `lodging_prices` get limits of their own (`rows_in_quotes` 50000, `rows_in_lodging_prices` 100000), since a crawl and the morning rates add rows by the thousand, and every count of the admin's is below the cap it meets. `user_profiles` has one row per person by its key and no row cap. Tests: `test_row_caps_per_person` and `test_bookings_folder_cap` in test_rls, where the admin is refused like B.
+- The connector's 60 writes a minute per user moves to the follow up of task 3.2, since it belongs to the connector that acts as the user.
 
 ### Task 6.3: export_account and delete_account
 

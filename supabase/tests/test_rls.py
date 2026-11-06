@@ -270,6 +270,59 @@ class RlsTest(unittest.TestCase):
         code, rows = self.svc.select("read_booking_usage", "select=owner_id,reads&order=reads")
         self.assertEqual(rows, [{"owner_id": self.b.id, "reads": 1}, {"owner_id": self.a.id, "reads": 2}])
 
+    def limits(self):
+        import migrate
+        with migrate.connect(self.env) as con:
+            limits = dict(con.execute("select name, value from public.owner_limits").fetchall())
+            limits["file_size_limit"] = con.execute("select file_size_limit from storage.buckets "
+                                                    "where id = 'bookings'").fetchone()[0]
+        return limits
+
+    def refused(self, got, says):
+        code, body = got
+        self.assertEqual(code, 400, body)
+        self.assertIn(says, body["message"])
+        self.assertNotIn("?", body["message"])
+
+    def test_row_caps_per_person(self):
+        limits = self.limits()
+        cap, per_day = limits["rows_per_private_table"], limits["tasks_per_day"]
+        usage = lambda n: [{"round": "TEST01"} for _ in range(n)]
+        ok(self, self.b.rest.insert("agent_usage", usage(cap)))
+        self.refused(self.b.rest.insert("agent_usage", usage(1)), f"{cap} rows in agent_usage per person")
+        # the admin has the same cap, and B's rows count against B alone
+        self.refused(self.a.rest.insert("agent_usage", usage(cap + 1)), f"{cap} rows in agent_usage per person")
+        ok(self, self.a.rest.insert("agent_usage", usage(1)))
+        # a table with a limit of its own takes more
+        self.assertGreater(limits["rows_in_quotes"], cap)
+        quotes = [{"quote_id": f"TEST01-{i}"} for i in range(cap + 1)]
+        ok(self, self.b.rest.insert("quotes", quotes))
+        # tasks stop at the tasks a day before the rows
+        tasks = lambda n: [{"type": "place_research", "title": "TEST01"} for _ in range(n)]
+        ok(self, self.b.rest.insert("tasks", tasks(per_day)))
+        self.refused(self.b.rest.insert("tasks", tasks(1)), f"{per_day} tasks a day per person")
+        ok(self, self.a.rest.insert("tasks", tasks(1)))
+
+    def test_bookings_folder_cap(self):
+        limits = self.limits()
+        cap, size = limits["bookings_folder_bytes"], limits["file_size_limit"]
+        whole, rest = divmod(cap, size)
+        names = [f"{self.b.id}/TEST01-cap/{i}.pdf" for i in range(whole + 1)]
+        extra, mine = f"{self.b.id}/TEST01-cap/extra.pdf", f"{self.a.id}/TEST01-cap/a.pdf"
+        store = self.users.service_storage(self.env)
+        store.remove("bookings", names + [extra, mine])
+        self.addCleanup(store.remove, "bookings", names + [extra, mine])
+        for name in names[:whole]:
+            ok(self, self.b.storage.upload("bookings", name, b"%" * size))
+        if rest:
+            ok(self, self.b.storage.upload("bookings", names[whole], b"%" * rest))
+        # the folder is full, so one byte more is refused
+        self.assertNotIn(self.b.storage.upload("bookings", extra, b"%")[0], (200, 201))
+        # a file that replaces one of the same name counts once
+        ok(self, self.b.storage.update("bookings", names[0], b"%" * size))
+        # the admin's folder counts apart
+        ok(self, self.a.storage.upload("bookings", mine, b"%PDF-1.4 TEST01"))
+
     def test_bucket_folders(self):
         mine = f"{self.a.id}/TEST01/a.pdf"
         theirs = f"{self.b.id}/TEST01/b.pdf"
