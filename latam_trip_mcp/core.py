@@ -1085,7 +1085,7 @@ class Core:
             if action == "update":
                 self.store.rest.patch("tasks", self.mine({"id": "eq." + str(id)}), {k: v for k, v in rows[0].items() if k in TASK_FIELDS})
             else:
-                self.store.rest.insert("tasks", rows)
+                self.store.rest.insert("tasks", [{**r, "owner_id": self.owner()} for r in rows])  # back under its own id, as the caller's
         elif tname == "booking":
             self.need_project("bookings")
             # the attachments stay as they are, a file added since is still in the bucket

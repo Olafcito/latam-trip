@@ -1,4 +1,4 @@
-"""Tests of migrations 0025 and 0026 (a stay_details task closes when its lodging is complete).
+﻿"""Tests of migrations 0025 and 0026 (a stay_details task closes when its lodging is complete).
 
 Every case runs in one transaction that is always rolled back, so nothing is committed. Each migration is applied
 inside that transaction when schema_migrations does not list it yet, so the tests run before and after it goes live.
@@ -28,7 +28,8 @@ class TaskCloseTest(unittest.TestCase):
         if os.environ.get("TRIPDB_ENV_FILE"):
             sys.path.insert(0, os.path.join(HERE, "tests"))
             import users
-            users.admin(cls.env)
+            cls.a = users.admin(cls.env).id
+            cls.b = users.make_user(cls.env, "b").id
 
     def setUp(self):
         migrate = self.migrate
@@ -204,6 +205,42 @@ class TaskCloseTest(unittest.TestCase):
         # the patch tasks.py done sends when it does not know the data closed the task
         self.q("update public.tasks set status = 'done', result = 'PC summary', done_at = now() where id = %s", (tid,))
         self.assertEqual(self.task(lid)[1], "done")
+
+    # the cloud runner acts with the secret key, so only the admin's tasks wake it (finding 3, phase 4 task 4.1)
+    def record_fires(self):
+        self.q("create table public.fire_log (note text)")
+        self.q("create or replace function public.fire_task_runner(note text) returns void language sql "
+               "as $$ insert into public.fire_log values (note) $$")
+
+    def fires(self):
+        return [r[0] for r in self.q("select note from public.fire_log order by note")]
+
+    def cloud_task(self, owner, age="0 minutes"):
+        return self.q("insert into public.tasks (owner_id, type, title, data, created_at) "
+                      "values (%s, 'question', 'TEST01', '{\"type\":\"question\"}'::jsonb, now() - %s::interval) returning id",
+                      (owner, age))[0][0]
+
+    def test_ping_ignores_other_owner(self):
+        if not hasattr(self, "b"):
+            self.skipTest("needs the local stack's two users")
+        self.record_fires()
+        self.cloud_task(self.b)
+        self.assertEqual(self.fires(), [])
+        tid = self.cloud_task(self.a)
+        self.assertEqual(self.fires(), [f"task {tid} question"])
+
+    def test_sweep_ignores_other_owner(self):
+        if not hasattr(self, "b"):
+            self.skipTest("needs the local stack's two users")
+        self.record_fires()
+        self.q("delete from public.tasks where status in ('open', 'working')")
+        self.q("alter table public.tasks disable trigger tasks_ping_runner")
+        self.cloud_task(self.b, "1 hour")
+        self.q("select public.sweep_task_runner()")
+        self.assertEqual(self.fires(), [])
+        self.cloud_task(self.a, "1 hour")
+        self.q("select public.sweep_task_runner()")
+        self.assertEqual(self.fires(), ["sweep"])
 
 
 if __name__ == "__main__":

@@ -11,6 +11,9 @@ Usage:
                                                     poll until a task is for the PC, then print one JSON line per task and exit 0
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py fail N REASON_FILE    set task N to failed with the file as its result
 Needs SUPABASE_URL and SUPABASE_SECRET_KEY in the environment or in .env at the root. Standard library only.
+The secret key sees every owner's rows, so every query names the owner. That is TRIPDB_OWNER_ID from the environment or .env,
+or the admin's id from the admins table when it is unset. The PC loop takes the admin's tasks only, so another id is refused.
+A task of another owner is "no task", and start, done and fail never touch it.
 """
 import datetime as dt, json, os, subprocess, sys, tempfile, time
 
@@ -32,9 +35,32 @@ NEEDS = {"stay_prices": ("lodging_id", "room_ids", "check_in", "check_out"), "bo
 LOGGED = {"booking": ("type", "leg")}
 
 
+class Owned:
+    """A Rest that adds owner_id=eq.<owner> to every read and change of the tasks table."""
+
+    def __init__(self, rest, owner):
+        self.rest, self.owner = rest, owner
+
+    def get_all(self, table, params=None):
+        return self.rest.get_all(table, {**(params or {}), "owner_id": "eq." + self.owner})
+
+    def patch(self, table, params, body, returning=None):
+        return self.rest.patch(table, {**params, "owner_id": "eq." + self.owner}, body, returning=returning)
+
+
+def owner_of(rest, env):
+    """TRIPDB_OWNER_ID, or the admin's id when it is unset. The loop works the admin's tasks only."""
+    admin = tripdb_store.admin_id(rest)
+    owner = (env.get("TRIPDB_OWNER_ID") or "").strip() or admin
+    if owner != admin:
+        sys.exit("TRIPDB_OWNER_ID is not the admin. The PC loop takes the admin's tasks only, other owners' tasks are not run here.")
+    return owner
+
+
 def rest_of(root):
     env = tripdb_store.load_env(root)
-    return tripdb_store.Rest(env.get("SUPABASE_URL"), env.get("SUPABASE_SECRET_KEY"))
+    rest = tripdb_store.Rest(env.get("SUPABASE_URL"), env.get("SUPABASE_SECRET_KEY"))
+    return Owned(rest, owner_of(rest, env))
 
 
 def task_of(row):
@@ -62,6 +88,9 @@ def get_row(rest, n):
     rows = rest.get_all("tasks", {"id": f"eq.{int(n)}", "select": "*"})
     if not rows:
         sys.exit(f"no task {n}")
+    owner = getattr(rest, "owner", None)
+    if owner and rows[0].get("owner_id") not in (None, owner):
+        sys.exit(f"task {n} is not this owner's, the loop leaves it alone")
     return rows[0]
 
 

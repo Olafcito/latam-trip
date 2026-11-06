@@ -265,19 +265,19 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 
 ### Task 4.1: Scoped claims and the PC loop
 
-**Files:** `latam_trip_mcp/runner.py` (`claim_task` under the user's token, so RLS scopes it), `plugin/skills/trip-checklist/scripts/tasks.py` (every query adds `owner_id=eq.<TRIPDB_OWNER_ID>` from `.env`, and `start` refuses a row of another owner), `supabase/migrations/0030_task_runner_owner.sql` (`ping_task_runner` and `sweep_task_runner` fire only for `owner_id = admin_id()`).
+**Files:** `latam_trip_mcp/runner.py` (`claim_task` under the user's token, so RLS scopes it), `plugin/skills/trip-checklist/scripts/tasks.py` (every query adds `owner_id=eq.<TRIPDB_OWNER_ID>` from `.env`, and `start` refuses a row of another owner), no migration, since 0027 already limits `ping_task_runner` and `sweep_task_runner` to the admin's tasks.
 
-- [ ] Tests: `test_tasks.py` `test_wait_and_list_see_only_the_owner` with two owners, `test_ping_ignores_other_owner` and `test_sweep_ignores_other_owner` on the local stack, `test_runner.py` `test_claim_gives_only_callers_tasks`. Running the loop under Simon's own token is weighed in TECH-011 and recommended once the connector can mint a session for him. Until then the filter plus the refusal in `start`.
+- [x] Done: `tasks.py` refuses a `TRIPDB_OWNER_ID` that is not the admin, and the connector's claim, held-task and lodging reads use `Core.mine`. Tests: `test_tasks.py` `test_wait_and_list_see_only_the_owner` with two owners, `test_ping_ignores_other_owner` and `test_sweep_ignores_other_owner` on the local stack, `test_runner.py` `test_claim_gives_only_callers_tasks`. Running the loop under Simon's own token is weighed in TECH-011 and recommended once the connector can mint a session for him. Until then the filter plus the refusal in `start`.
 
 ### Task 4.2: stay_prices closes by the data
 
-**Files:** `supabase/migrations/0031_stay_prices_close.sql`, tests in `supabase/test_task_close.py`.
+**Files:** `supabase/migrations/0030_stay_prices_close.sql`, tests in `supabase/test_task_close.py`.
 
 - [ ] A `stay_prices` task is done when every room in `room_ids` has a price for its dates. Same shape as 0025. Docs: `docs/claude-tasks.md`, `docs/task-runner.md`.
 
 ### Task 4.3: Task, inbox and task_log ids per owner
 
-**Files:** `supabase/migrations/0032_task_ids_per_owner.sql`, the connector's task tools and undo in `latam_trip_mcp/core.py`, `supabase/tests/test_rls.py`.
+**Files:** `supabase/migrations/0031_task_ids_per_owner.sql`, the connector's task tools and undo in `latam_trip_mcp/core.py`, `supabase/tests/test_rls.py`.
 
 - [ ] `tasks`, `inbox` and `task_log` are keyed `(owner_id, id)`. Claim, finish, fail, undo and the stay_details functions follow a task by owner and id. Test: `test_taken_task_id_is_as_free_as_a_fresh_one`, B inserting an id A holds gets the same answer as a fresh id. Clears the second gate of phase 6.
 

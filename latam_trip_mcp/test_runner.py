@@ -30,9 +30,9 @@ class RunnerTest(Base):
         self.rest = TaskRest()
         self.store.kind, self.store.rest = "supabase", self.rest
 
-    def task(self, data, status="open", id=None):
+    def task(self, data, status="open", id=None, owner="OWNER1"):
         id = id or 10000 + len(self.rest.tables["tasks"])
-        self.rest.tables["tasks"].append({"id": id, "type": None, "status": status, "created_at": "2026-11-01T09:00:00Z", "title": f"[{data.get('type')}]",
+        self.rest.tables["tasks"].append({"id": id, "owner_id": owner, "type": None, "status": status, "created_at": "2026-11-01T09:00:00Z", "title": f"[{data.get('type')}]",
                                           "data": data, "result": None, "done_at": None})
         return id
 
@@ -51,6 +51,20 @@ class RunnerTest(Base):
         self.assertIn("never", out["contract"])
         self.core.call("claim_task")
         self.assertEqual(self.core.call("claim_task"), {"task": None, "left_for_simon": 2})
+
+    def test_claim_gives_only_callers_tasks(self):
+        theirs = self.task({"type": "question", "text": "B asks"}, owner="OWNER2")
+        stale = self.task({"type": "question", "text": "B stale"}, status="working", owner="OWNER2")
+        self.row(stale)["claimed_at"] = "2026-01-01T10:00:00+00:00"
+        self.assertEqual(self.core.call("claim_task"), {"task": None, "left_for_simon": 0})
+        mine = self.task({"type": "question", "text": "A asks"})
+        self.assertEqual(self.core.call("claim_task")["task"]["id"], mine)
+        self.assertEqual((self.row(theirs)["status"], self.row(stale)["status"]), ("open", "working"))
+        self.assertEqual(self.row(stale)["claimed_at"], "2026-01-01T10:00:00+00:00")
+        for tool, args in (("finish_task", {"id": theirs, "result": "x"}), ("fail_task", {"id": theirs, "reason": "x"})):
+            with self.assertRaises(Refused):
+                self.core.call(tool, args)
+        self.assertEqual(self.row(theirs)["status"], "open")
 
     def test_a_task_with_wrong_fields_is_failed_with_the_reason(self):
         bad = self.task({"type": "stay_prices", "lodging_id": "x"})

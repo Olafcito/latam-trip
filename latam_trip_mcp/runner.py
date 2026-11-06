@@ -255,11 +255,11 @@ class Runner:
         return self.core.store.rest
 
     def tasks(self, status):
-        return self.rest.get_all("tasks", {"status": "eq." + status, "select": "*", "order": "id"})
+        return self.rest.get_all("tasks", self.core.mine({"status": "eq." + status, "select": "*", "order": "id"}))
 
     def take(self, row, to, body=None):
         """Move a task from row's status to `to`, only if nobody moved it first. True when this call moved it."""
-        got = self.rest.patch("tasks", {"id": f"eq.{row['id']}", "status": "eq." + row["status"]},
+        got = self.rest.patch("tasks", self.core.mine({"id": f"eq.{row['id']}", "status": "eq." + row["status"]}),
                               {"status": to, **(body or {})}, returning="id")
         return bool(got)
 
@@ -276,7 +276,7 @@ class Runner:
                                 "rooms": [{"id": r["id"], "name": r.get("name")} for r in rooms if r["id"] in data["room_ids"]]}}
         if typ in ("stay_search", "stay_picks"):
             _, place = self.core.find("place", data["place_id"])
-            stored = self.rest.get_all("lodgings", {"select": "*", "place_id": "eq." + data["place_id"], "order": "name,id"})
+            stored = self.rest.get_all("lodgings", self.core.mine({"select": "*", "place_id": "eq." + data["place_id"], "order": "name,id"}))
             return {"place": {"id": place.get("id", data["place_id"]), "name": place.get("name"), "country": place.get("country"),
                               "lat": place.get("lat"), "lon": place.get("lon")},
                     "stored": [{"id": r["id"], "name": r.get("name"), "links": r.get("links"), "hidden": bool(r.get("hidden"))}
@@ -321,7 +321,7 @@ class Runner:
         return {"task": None, "left_for_simon": left}
 
     def held(self, id):
-        rows = self.rest.get_all("tasks", {"id": f"eq.{int(id)}", "select": "*"})
+        rows = self.rest.get_all("tasks", self.core.mine({"id": f"eq.{int(id)}", "select": "*"}))
         if not rows:
             raise Refused(f"no task {id}")
         row = rows[0]
@@ -363,7 +363,7 @@ class Runner:
         task's place after the task was queued refuses the finish, so a stored place is never hidden by it. One the value rule would not have picked is hidden rather than refused, since the run has no tool to
         take back what it wrote: under PICK_RATING, under the lowest review floor, of a kind outside PICK_KINDS, or past
         the third. Its stay_details task stays. Returns (refusals, [(id, why)] hidden)."""
-        rows = {r["id"]: r for r in self.rest.get_all("lodgings", {"select": "*", "place_id": "eq." + data["place_id"]})}
+        rows = {r["id"]: r for r in self.rest.get_all("lodgings", self.core.mine({"select": "*", "place_id": "eq." + data["place_id"]}))}
         since = when(task.get("created_at"))
         missing = [o for o in outputs if o not in rows or rows[o].get("added_by") != "claude"
                    or not any(l.get("site") == "booking" for l in rows[o].get("links") or [])
@@ -380,7 +380,7 @@ class Runner:
                    else "too few reviews" if (r.get("reviews") or 0) < PICK_REVIEWS[-1]
                    else f"kind {r.get('kind')}" if r.get("kind") not in PICK_KINDS else None)
             if why and not r.get("hidden"):
-                self.rest.patch("lodgings", {"id": "eq." + o}, {"hidden": True})
+                self.rest.patch("lodgings", self.core.mine({"id": "eq." + o}), {"hidden": True})
                 hid.append((o, why))
         return [], hid
 
