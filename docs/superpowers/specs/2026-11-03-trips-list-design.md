@@ -1,5 +1,7 @@
 # The trips list
 
+Status: rejected on 2026-11-06. Simon saw the build of this spec (the nights bars in each row and the docked compare panel) and turned it down. The branch was deleted unmerged. Do not build it again. The Trips list on `main` stays as it is.
+
 Which pane this is: the home of the Trips tab, the list of whole trip options (`Timetable` in `planner/src/screens/TripsScreen.tsx`), the compare view (`planner/src/components/CompareTray.tsx`) and the sign in screen (`planner/src/components/SignIn.tsx`). The roast is `.superpowers/sdd/2026-11-03-ui-roast/roast-trips-1.md`.
 
 ## Journey
