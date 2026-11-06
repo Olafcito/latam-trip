@@ -34,6 +34,14 @@ jobs:
         run: python -I -X utf8 -m unittest discover -s plugin/scripts -p "test_*.py"
       - name: tasks.py
         run: python -I -X utf8 -m unittest discover -s plugin/skills/trip-checklist/scripts -p "test_*.py"
+      # The connector calls Supabase as each person and holds no secret key (TECH-010). This catches the key being
+      # named again in its code or its stack. It checks naming only: the scope comes from SupabaseStore refusing a
+      # call without the bearer and its owner, and from the function having no secret key to read.
+      - name: connector names no secret key
+        run: |
+          if git grep -n "SUPABASE_SECRET_KEY" -- latam_trip_mcp infra/mcp; then
+            echo "SUPABASE_SECRET_KEY is named under latam_trip_mcp/ or infra/mcp/"; exit 1
+          fi
       - name: connector
         run: python -I -X utf8 -m unittest discover -s latam_trip_mcp -p "test_*.py"
       - name: worker

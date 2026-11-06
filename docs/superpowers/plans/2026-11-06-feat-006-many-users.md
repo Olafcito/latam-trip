@@ -254,7 +254,7 @@ Worktree `oauth-spike`. Time box one working session.
 **Interfaces:** `server.core_for(token: str) -> Core`, `oauth.verify_bearer(token: str) -> str | None` (the user id).
 
 - [ ] Tests: `test_client_built_from_user_token`, `test_expired_bearer_asks_to_sign_in_again` (never a secret key fallback), `test_old_bearer_refused`, `test_two_users_sign_in` (criterion 2 on the local stack), `test_approve_needs_the_authorize_code` for ways 2 and 3 only.
-- [ ] `test.yml` gains the grep that fails when `SUPABASE_SECRET_KEY` appears under `latam_trip_mcp/` or `infra/mcp/`.
+- [x] `test.yml` gains the grep that fails when `SUPABASE_SECRET_KEY` appears under `latam_trip_mcp/` or `infra/mcp/`.
 - [ ] Template change, so Simon's PC deploys it with `infra/mcp/deploy.sh`, commands shown first. The SSM secret key parameter of the connector is deleted after a day of clean runs. Simon signs in once again.
 
 ---
