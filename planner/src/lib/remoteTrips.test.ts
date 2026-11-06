@@ -3,13 +3,20 @@ import type { TripRow } from './repoTrips'
 
 type Reply = { data: unknown; error: { message: string; code: string } | null; status: number }
 const calls: [string, { trip: TripRow }][] = []
+const docOps: { table: string; op: string; arg?: unknown; opts?: unknown }[] = []
 let reply: (args: { trip: TripRow }) => Promise<Reply> = async () => ({ data: null, error: null, status: 200 })
 vi.mock('./supabase', () => ({
-  supabase: { rpc: (name: string, args: { trip: TripRow }) => { calls.push([name, args]); return reply(args) } },
+  supabase: {
+    rpc: (name: string, args: { trip: TripRow }) => { calls.push([name, args]); return reply(args) },
+    from: (table: string) => ({
+      select: () => ({ eq: () => ({ maybeSingle: async () => { docOps.push({ table, op: 'select' }); return { data: null, error: null } } }) }),
+      upsert: async (arg: unknown, opts: unknown) => { docOps.push({ table, op: 'upsert', arg, opts }); return { error: null } },
+    }),
+  },
   remoteEnabled: () => true,
 }))
 
-import { classify, saveTrip } from './remoteTrips'
+import { classify, readDoc, saveTrip, writeDoc } from './remoteTrips'
 
 const flight = { kind: 'flight', from: 'CPH', to: 'GUA', depart: '2026-12-02T09:55', arrive: '2026-12-02T22:10' }
 const way = (from: string, to: string) => ({ from, to, depart: '2026-12-02T09:55', arrive: '2026-12-02T22:10', price_dkk: 3900, tickets: [], timeline: [flight] })
@@ -22,6 +29,21 @@ const row = {
 
 beforeEach(() => {
   calls.length = 0
+  docOps.length = 0
+})
+
+describe('documents', () => {
+  it('keeps a person own document under the owner and name, and the shared one under its name', async () => {
+    await writeDoc('current_plan', { a: 1 })
+    await writeDoc('cutover_done', { at: 'x' })
+    expect(docOps.map((o) => [o.table, o.opts])).toEqual([
+      ['user_documents', { onConflict: 'owner_id,name' }],
+      ['documents', { onConflict: 'name' }],
+    ])
+    await readDoc('web_trips')
+    await readDoc('cutover_done')
+    expect(docOps.slice(2).map((o) => o.table)).toEqual(['user_documents', 'documents'])
+  })
 })
 
 describe('classify', () => {
@@ -47,6 +69,8 @@ describe('saveTrip', () => {
     ])
     expect(calls.length).toBe(2)
     expect(calls[0][0]).toBe('save_trip')
+    // the owner and the next version are the function's business, so no upsert names a key here
+    expect(docOps).toEqual([])
   })
 
   it('answers queued when the connection is gone', async () => {

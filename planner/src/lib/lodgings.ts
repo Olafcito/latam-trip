@@ -111,7 +111,8 @@ export async function saveLodging(d: LodgingDraft): Promise<{ ok: true; id: stri
   const fresh = !d.id
   const id = d.id ?? crypto.randomUUID()
   const { rooms, ...fields } = d
-  const once = { onConflict: 'id', ignoreDuplicates: true }
+  // the keys are (id, owner_id), and the owner column fills itself from the signed in person
+  const once = { onConflict: 'id,owner_id', ignoreDuplicates: true }
   const roomRows = rooms.map(({ prices: _p, ...room }) => ({ ...room, id: room.id ?? crypto.randomUUID(), lodging_id: id }))
   const priceRows = rooms.flatMap((room, k) => room.prices.map((pr) => ({ ...pr, id: pr.id ?? crypto.randomUUID(), room_id: roomRows[k].id })))
   const undo = async (message: string) => {

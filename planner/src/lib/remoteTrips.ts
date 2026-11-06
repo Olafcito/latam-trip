@@ -129,16 +129,27 @@ export function projectRef(): string {
   }
 }
 
+/** The documents every person reads and only the admin writes. The others are a person's own, in user_documents. */
+const SHARED_DOCS = ['cutover_done']
+
+/** The table a document lives in. */
+export function docTable(name: string): 'documents' | 'user_documents' {
+  return SHARED_DOCS.includes(name) ? 'documents' : 'user_documents'
+}
+
 export async function readDoc(name: string): Promise<unknown> {
   if (!supabase) return null
-  const { data, error } = await supabase.from('documents').select('data').eq('name', name).maybeSingle()
+  const { data, error } = await supabase.from(docTable(name)).select('data').eq('name', name).maybeSingle()
   if (error) throw new Error(error.message)
   return data ? (data as { data: unknown }).data : null
 }
 
 export async function writeDoc(name: string, data: unknown): Promise<void> {
   if (!supabase) return
-  const { error } = await supabase.from('documents').upsert({ name, data, updated_at: new Date().toISOString() })
+  const table = docTable(name)
+  const { error } = await supabase
+    .from(table)
+    .upsert({ name, data, updated_at: new Date().toISOString() }, { onConflict: table === 'documents' ? 'name' : 'owner_id,name' })
   if (error) throw new Error(error.message)
 }
 

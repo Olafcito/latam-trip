@@ -34,6 +34,7 @@ function query(table: string) {
 
 vi.mock('./supabase', () => ({
   supabase: {
+    auth: { getSession: async () => ({ data: { session: { user: { id: 'u-test' } } } }) },
     from: (t: string) => query(t),
     storage: {
       from: (bucket: string) => ({
@@ -121,26 +122,26 @@ describe('attachFile', () => {
     expect(log).toEqual([])
   })
 
-  it('uploads to bookings/<id>/<name> and adds the entry beside the files already there', async () => {
+  it('uploads to bookings/<owner id>/<id>/<name> and adds the entry beside the files already there', async () => {
     const r = await attachFile('b1', file('ticket.pdf', 'application/pdf', 1234))
     expect(r.ok).toBe(true)
-    expect(log[0]).toEqual({ op: 'bookings.upload', args: ['b1/ticket.pdf', { contentType: 'application/pdf', upsert: true }] })
+    expect(log[0]).toEqual({ op: 'bookings.upload', args: ['u-test/b1/ticket.pdf', { contentType: 'application/pdf', upsert: true }] })
     const [{ attachments: files }, id] = log[1].args as [{ attachments: { path: string; size: number }[] }, string]
     expect(id).toBe('b1')
-    expect(files.map((f) => [f.path, f.size])).toEqual([['b1/old.pdf', 3], ['b1/ticket.pdf', 1234]])
+    expect(files.map((f) => [f.path, f.size])).toEqual([['b1/old.pdf', 3], ['u-test/b1/ticket.pdf', 1234]])
   })
 
   it('keys a Danish name safely and keeps the name for display', async () => {
     const r = await attachFile('b1', file('Bådbillet ø.heic', 'application/octet-stream', 50))
-    expect(r).toMatchObject({ ok: true, attachment: { path: 'b1/Badbillet_o.heic', name: 'Bådbillet ø.heic', type: 'image/heic', size: 50 } })
-    expect(log[0].args[0]).toBe('b1/Badbillet_o.heic')
+    expect(r).toMatchObject({ ok: true, attachment: { path: 'u-test/b1/Badbillet_o.heic', name: 'Bådbillet ø.heic', type: 'image/heic', size: 50 } })
+    expect(log[0].args[0]).toBe('u-test/b1/Badbillet_o.heic')
   })
 
   it('keeps an entry another writer added while the file was uploading', async () => {
     const theirs = { path: 'b1/theirs.pdf', name: 'theirs.pdf', type: 'application/pdf', size: null, added_at: 'y' }
     duringUpload = () => rows.b1.attachments.push(theirs)
     await attachFile('b1', file('ticket.pdf', 'application/pdf', 10))
-    expect((rows.b1.attachments as { path: string }[]).map((a) => a.path)).toEqual(['b1/old.pdf', 'b1/theirs.pdf', 'b1/ticket.pdf'])
+    expect((rows.b1.attachments as { path: string }[]).map((a) => a.path)).toEqual(['b1/old.pdf', 'b1/theirs.pdf', 'u-test/b1/ticket.pdf'])
   })
 
   it('answers plainly when the booking is gone', async () => {

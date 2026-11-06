@@ -108,8 +108,15 @@ export function fileProblem(file: Pick<File, 'name' | 'type' | 'size'>): string 
   return null
 }
 
+/** The signed in person's id, the first folder of everything they store in the bucket. Null without a session. */
+async function ownerFolder(): Promise<string | null> {
+  if (!supabase) return null
+  const { data } = await supabase.auth.getSession()
+  return data.session?.user.id ?? null
+}
+
 /**
- * Uploads the file to bookings/<id>/<key> after the checks, the key a safe form of the name, and adds it to the booking
+ * Uploads the file to bookings/<owner id>/<id>/<key> after the checks, the key a safe form of the name, and adds it to the booking
  * in place of an entry with that path. The entry is written after the upload, with the size.
  */
 export async function attachFile(id: string, file: File): Promise<{ ok: true; attachment: BookingFile } | { ok: false; message: string }> {
@@ -117,7 +124,9 @@ export async function attachFile(id: string, file: File): Promise<{ ok: true; at
   if (problem) return { ok: false, message: problem }
   if (!supabase) return { ok: false, message: 'Not connected.' }
   const client = supabase
-  const path = `${id}/${storageName(file.name)}`
+  const owner = await ownerFolder()
+  if (!owner) return { ok: false, message: 'Sign in again to add files.' }
+  const path = `${owner}/${id}/${storageName(file.name)}`
   const type = fileType(file)
   const read = () => client.from('bookings').select('attachments').eq('id', id).maybeSingle()
   try {
