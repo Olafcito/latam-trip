@@ -317,7 +317,9 @@ Second gate before the first outside account: `tasks`, `inbox` and `task_log` ke
 
 ### Task 6.1: Sign up by the rule
 
-- [ ] Invite only means an `invites` table checked by a Supabase `before_user_created` auth hook, open means no check. Custom SMTP set by Simon before the first outside user. Planner sign in screen for any email, no owner wording, roasted.
+- [x] Invite only means an `invites` table checked by a Supabase `before_user_created` auth hook, open means no check. Custom SMTP set by Simon before the first outside user. Planner sign in screen for any email, no owner wording, roasted.
+- Done as migration 0036 and the local config's hook (TECH-010). `tripdb invite EMAIL` and `tripdb invites` add and list invites. The planner sends the email link to any address with `shouldCreateUser` on and shows a refusal as the invite state. Tests: `InviteTest` in test_rls (an invited address signs up and its invite is used, the case of the address does not matter, an uninvited address is refused, a used invite cannot sign up twice, people with an account sign in as before, no client reads or writes invites), `InviteTest` in test_tripdb and `linkOutcome` in the planner. A stack started before 0036 runs `InviteTest` only against a second auth server with the hook on, named by `SUPABASE_AUTH_URL`. The roast waits for the coordinator.
+- Live steps at merge, after the release applies 0036: register the Postgres hook `before_user_created` as `pg-functions://postgres/public/hook_before_user_created` in Auth, Hooks. Then turn on "Allow new users to sign up" in Auth, Sign In. The hook goes first, so sign up is never open without it. Simon sets custom SMTP before the first invite, and invites with `tripdb invite EMAIL`.
 
 ### Task 6.2: Caps
 

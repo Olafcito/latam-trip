@@ -9,9 +9,9 @@ type View = { s: 'loading' } | Step | { s: 'busy'; ask: Ask; action: 'approve' |
 const ACCESS = 'Read and change your trips, places to stay, bookings and profile'
 
 /** The planner's own mark, the same drawing as its favicon: a route arcing from one stop to the next. */
-function AppMark() {
+export function AppMark({ s = 28, className = 'consent-app-mark' }: { s?: number; className?: string }) {
   return (
-    <svg className="consent-app-mark" width={28} height={28} viewBox="0 0 32 32" aria-hidden="true">
+    <svg className={className} width={s} height={s} viewBox="0 0 32 32" aria-hidden="true">
       <rect width="32" height="32" rx="8" fill="#0B1720" />
       <path d="M7 23 Q16 4 25 11" fill="none" stroke="#F2B544" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.1 4.6" />
       <circle cx="7" cy="23" r="3.4" fill="#F7F3E8" />

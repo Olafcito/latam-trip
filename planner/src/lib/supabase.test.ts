@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 afterEach(() => {
   vi.unstubAllEnvs()
+  vi.unstubAllGlobals()
   vi.resetModules()
 })
 
@@ -31,6 +32,59 @@ describe('remoteEnabled', () => {
     const m = await load()
     expect(m.remoteEnabled()).toBe(true)
     expect(m.supabase).not.toBeNull()
+  })
+})
+
+describe('linkOutcome', () => {
+  it('is sent when Supabase answers with no error', async () => {
+    expect((await load()).linkOutcome(null)).toEqual({ s: 'sent' })
+  })
+
+  it('reads the hook refusal and a closed sign up as the invite state', async () => {
+    const { linkOutcome } = await load()
+    expect(linkOutcome({ status: 403, code: 'unknown', message: 'Sign up is by invite only' })).toEqual({ s: 'invite' })
+    expect(linkOutcome({ status: 422, code: 'otp_disabled', message: 'Signups not allowed for otp' })).toEqual({ s: 'invite' })
+    expect(linkOutcome({ status: 422, code: 'signup_disabled', message: 'Signups not allowed for this instance' })).toEqual({ s: 'invite' })
+  })
+
+  it('keeps another 403 an error, so a refused key never reads as a missing invite', async () => {
+    expect((await load()).linkOutcome({ status: 403, message: 'Invalid API key' })).toEqual({ s: 'error', message: 'Could not send the link' })
+  })
+
+  it('names a rate limit and a lost connection, and shows no raw message', async () => {
+    const { linkOutcome } = await load()
+    expect(linkOutcome({ status: 429, code: 'over_email_send_rate_limit', message: 'email rate limit exceeded' }))
+      .toEqual({ s: 'error', message: 'Too many links asked for, wait a minute' })
+    expect(linkOutcome({ status: 0, message: 'Failed to fetch' })).toEqual({ s: 'error', message: 'Could not reach the sign in' })
+    expect(linkOutcome({ status: 500, message: 'Error sending magic link email' })).toEqual({ s: 'error', message: 'Could not send the link' })
+  })
+
+  it('writes no question mark', async () => {
+    const { linkOutcome } = await load()
+    for (const e of [{ status: 429 }, { status: 0 }, { status: 500 }]) {
+      const r = linkOutcome(e)
+      expect(r.s === 'error' && r.message.includes('?')).toBe(false)
+    }
+  })
+})
+
+describe('sendMagicLink', () => {
+  it('lets a new address through to the invite hook', async () => {
+    vi.stubGlobal('window', { location: { origin: 'https://x.test', pathname: '/', search: '' } })
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co')
+    vi.stubEnv('VITE_SUPABASE_KEY', 'sb_publishable_test')
+    const m = await load()
+    const spy = vi.spyOn(m.supabase!.auth, 'signInWithOtp').mockResolvedValue({ data: { user: null, session: null }, error: null })
+    expect(await m.sendMagicLink('  test01@example.test ')).toEqual({ s: 'sent' })
+    expect(spy).toHaveBeenCalledWith({ email: 'test01@example.test', options: { emailRedirectTo: 'https://x.test', shouldCreateUser: true } })
+  })
+
+  it('is an error, not a throw, when the call fails', async () => {
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co')
+    vi.stubEnv('VITE_SUPABASE_KEY', 'sb_publishable_test')
+    const m = await load()
+    vi.spyOn(m.supabase!.auth, 'signInWithOtp').mockRejectedValue(new Error('offline'))
+    expect(await m.sendMagicLink('test01@example.test')).toEqual({ s: 'error', message: 'Could not reach the sign in' })
   })
 })
 

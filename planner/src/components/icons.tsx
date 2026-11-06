@@ -485,6 +485,14 @@ export const Paperclip = ({ s = 13 }: { s?: number }) => (
   </svg>
 )
 
+/** A sign in link on its way: an envelope. */
+export const Mail = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="3" y="5.5" width="18" height="13" rx="2.5" />
+    <path d="m3.5 7.5 8.5 6 8.5-6" />
+  </svg>
+)
+
 /** The money a person counts in: a banknote. */
 export const Cash = ({ s = 13 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>

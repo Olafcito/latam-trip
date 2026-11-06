@@ -49,12 +49,33 @@ export function signInRedirect(loc: { origin: string; pathname: string; search?:
   return id ? `${base}${loc.pathname === '/' ? '/' : ''}?authorization_id=${encodeURIComponent(id)}` : base
 }
 
-/** Sends the magic link. Public sign ups are off, so only the owner's address gets one. */
-export async function sendMagicLink(email: string): Promise<string | null> {
-  if (!supabase) return 'Sign in is not set up.'
-  const { error } = await supabase.auth.signInWithOtp({
-    email: email.trim(),
-    options: { emailRedirectTo: signInRedirect(), shouldCreateUser: false },
-  })
-  return error ? error.message : null
+/** What came of asking for a link: sent, refused for want of an invite, or another failure with a line to show. */
+export type LinkOutcome = { s: 'sent' } | { s: 'invite' } | { s: 'error'; message: string }
+
+/** Reads Supabase's answer to a link request. The sign up hook of migration 0036 refuses an address with no open
+ *  invite with a 403 that names the invite, and a project with sign up off refuses a new address with
+ *  signup_disabled or otp_disabled. Both mean the same to the person, so both are the invite state. A person who has
+ *  an account always gets the link, so the refusal says only that this address has neither an account nor an invite. */
+export function linkOutcome(error: { status?: number; code?: string; message?: string } | null): LinkOutcome {
+  if (!error) return { s: 'sent' }
+  if (error.code === 'signup_disabled' || error.code === 'otp_disabled') return { s: 'invite' }
+  if (error.status === 403 && /invite/i.test(error.message ?? '')) return { s: 'invite' }
+  if (error.status === 429 || error.code === 'over_email_send_rate_limit') return { s: 'error', message: 'Too many links asked for, wait a minute' }
+  if (!error.status) return { s: 'error', message: 'Could not reach the sign in' }
+  return { s: 'error', message: 'Could not send the link' }
+}
+
+/** Sends the sign in link to any address. A new address becomes an account only through the invite hook, and a
+ *  person who has one signs in the same way, so there is one way in for everyone. */
+export async function sendMagicLink(email: string): Promise<LinkOutcome> {
+  if (!supabase) return { s: 'error', message: 'Sign in is not set up' }
+  try {
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { emailRedirectTo: signInRedirect(), shouldCreateUser: true },
+    })
+    return linkOutcome(error)
+  } catch {
+    return { s: 'error', message: 'Could not reach the sign in' }
+  }
 }

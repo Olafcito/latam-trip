@@ -94,6 +94,28 @@
 @keyframes consent-pulse { from { opacity: 0.5; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .consent-wait { animation: none; } }
 
+/* sign in: the consent card's frame. The planner's mark leads the ask, and the answer puts the address itself in the
+   title with its outcome as a badge above it, amber for a link on its way, the quiet surface for the invite gate */
+.signin { gap: 0; }
+.signin-step { display: flex; flex-direction: column; gap: 24px; animation: fade var(--t-med) var(--ease-out); }
+.signin-mark { margin-bottom: 12px; border-radius: 14px; box-shadow: 0 0 0 1px var(--line-2); }
+.signin-fields { display: flex; flex-direction: column; gap: 10px; }
+.signin-field { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2); color: var(--faint); transition: box-shadow var(--t-fast) ease, color var(--t-fast) ease; }
+.signin-field:focus-within { box-shadow: inset 0 0 0 1.5px var(--flight); color: var(--text); }
+.signin-field.bad { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--err) 70%, transparent); }
+.signin-field > svg { flex: none; }
+.signin-field input { flex: 1; min-width: 0; height: 46px; padding: 0; border: 0; outline: 0; background: none; color: var(--text); font-size: var(--fs-title); }
+.signin-field input::placeholder { color: var(--faint); }
+.signin-error { margin: 0; font-size: var(--fs-small); color: var(--err); }
+.signin-go { min-height: 48px; border-radius: 10px; font-size: var(--fs-body); }
+.signin-badge.sent { color: var(--flight); background: color-mix(in srgb, var(--flight) 12%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 35%, transparent); }
+.signin-badge.invite { color: var(--muted); }
+.signin-addr { font-size: var(--fs-lead); word-break: break-all; overflow-wrap: anywhere; }
+@media (hover: hover) and (pointer: fine) {
+  .signin-field:hover:not(:focus-within) { box-shadow: inset 0 0 0 1px var(--faint); }
+}
+@media (prefers-reduced-motion: reduce) { .signin-step { animation: none; } }
+
 /* Map tab: the route map fills the window under the header */
 .app.wide { height: 100dvh; }
 .app.wide .main { max-width: none; min-height: 0; padding-bottom: 18px; }
