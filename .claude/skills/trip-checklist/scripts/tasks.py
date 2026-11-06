@@ -6,13 +6,19 @@ Usage:
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py start N                   set task N to working
   python3 -I plugin/skills/trip-checklist/scripts/tasks.py done N SUMMARY_FILE [--outputs a,b] [--root DIR]
                                                     write SUMMARY_FILE as the result of task N, mark it done, log it with tripdb log-task
+  python3 -I plugin/skills/trip-checklist/scripts/tasks.py wait [--every SECONDS] [--grace MINUTES]
+                                                    poll until a task is for the PC, then print one JSON line per task and exit 0
+  python3 -I plugin/skills/trip-checklist/scripts/tasks.py fail N REASON_FILE    set task N to failed with the file as its result
 Needs SUPABASE_URL and SUPABASE_SECRET_KEY in the environment or in .env at the root. Standard library only.
 """
-import datetime as dt, json, os, subprocess, sys, tempfile
+import datetime as dt, json, os, subprocess, sys, tempfile, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "scripts"))
 import tripdb_store  # noqa: E402
+
+sys.path.insert(0, os.path.join(HERE, "..", "..", "..", ".."))
+from latam_trip_mcp.runner import runs_in_cloud  # noqa: E402  (the rule for which task types a cloud routine takes)
 
 TYPES = {"flight_prices", "stay_prices", "experience_research", "place_research", "lists_update", "question", "refresh",
          "fix_parser", "import_quotes", "booking", "stay_search", "stay_details"}
@@ -110,11 +116,43 @@ def cmd_done(rest, n, summary_file, outputs, root):
             os.remove(tmp)
 
 
+def cmd_fail(rest, n, reason_file):
+    body = open(reason_file, encoding="utf-8").read()
+    get_row(rest, n)
+    done_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    rest.patch("tasks", {"id": f"eq.{int(n)}"}, {"status": "failed", "result": body, "done_at": done_at})
+    print(f"failed #{n}")
+
+
+def for_the_pc(row, grace_minutes, now):
+    """A task the PC does: not a cloud type, or a cloud type the routine left open longer than the grace."""
+    if not runs_in_cloud(row):
+        return True
+    made = tripdb_store.parse_time(row.get("created_at"))
+    return made is not None and (now - made).total_seconds() > grace_minutes * 60
+
+
+def cmd_wait(rest, every=60, grace=15, sleep=time.sleep, now=lambda: dt.datetime.now(dt.timezone.utc)):
+    """Print nothing while no open task is for the PC. Then print one JSON line per task and return. A failed round is tried again."""
+    while True:
+        try:
+            rows = rest.get_all("tasks", {"status": "eq.open", "select": "id,type,title,data,created_at", "order": "id"})
+        except Exception:
+            rows = []
+        mine = [r for r in rows if for_the_pc(r, grace, now())]
+        if mine:
+            for r in mine:
+                t = r.get("data") if isinstance(r.get("data"), dict) else {}
+                print(json.dumps({"id": r["id"], "type": r.get("type") or t.get("type"), "title": r.get("title")}, ensure_ascii=False))
+            return
+        sleep(every)
+
+
 def main(a, rest=None):
     root = os.path.abspath(a[a.index("--root") + 1]) if "--root" in a else os.getcwd()
     outs = a[a.index("--outputs") + 1].split(",") if "--outputs" in a else []
     a = a or ["list"]
-    if a[0] not in ("list", "show", "start", "done"):
+    if a[0] not in ("list", "show", "start", "done", "wait", "fail"):
         sys.exit(__doc__)
     rest = rest or rest_of(root)
     if a[0] == "list":
@@ -123,6 +161,11 @@ def main(a, rest=None):
         cmd_show(rest, a[1])
     elif a[0] == "start":
         cmd_start(rest, a[1])
+    elif a[0] == "wait":
+        flag = lambda k, d: float(a[a.index(k) + 1]) if k in a else d
+        cmd_wait(rest, flag("--every", 60), flag("--grace", 15))
+    elif a[0] == "fail":
+        cmd_fail(rest, a[1], a[2])
     else:
         cmd_done(rest, a[1], a[2], outs, root)
 

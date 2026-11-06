@@ -5,6 +5,8 @@ description: Work through the trip app's checklist, the open rows of the tasks t
 
 # Trip checklist
 
+For the always on mode, where a cheap dispatcher waits on the queue and sends one subagent per task, use the `task-loop` skill.
+
 The app writes tasks and you do them. The contract and task types are in `docs/claude-tasks.md`, read it first. Data lives in Supabase (see `data/README.md`). Read a table with `tripdb query TABLE` (for example `quotes`, `experiences`, `tasks`, `task_log`, `places`, `connections`) and a built file with `tripdb file NAME`. Flights are in `quotes`. Prices of places to stay are written through the latam-trip connector with `add_lodging_price`. The rooms, room photos and place photos of a Booking.com place go through `tripdb lodging-details`. Every other write goes through tripdb (`python -I -X utf8 plugin/scripts/tripdb.py --root . <command>`), never by hand.
 
 ## Rules (Simon's, always)

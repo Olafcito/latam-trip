@@ -1,5 +1,5 @@
 """Tests of tasks.py against a fake table. No network. Run: python -I -X utf8 -m unittest discover -s plugin/skills/trip-checklist/scripts -p "test_tasks.py" """
-import contextlib, io, json, os, sys, tempfile, unittest
+import contextlib, datetime as dt, io, json, os, sys, tempfile, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -131,6 +131,71 @@ class TasksTest(unittest.TestCase):
         text = out(tasks.cmd_list, rest)
         self.assertIn("#30000	stay_prices	open	a", text)
         self.assertIn("#30001	BAD TASK (stay_prices needs lodging_id, room_ids)	open	b", text)
+
+    def test_fail_sets_failed_with_the_reason(self):
+        rest = FakeRest([row(10000, "working")])
+        with tempfile.TemporaryDirectory() as d:
+            f = os.path.join(d, "r.md")
+            with open(f, "w", encoding="utf-8") as fh:
+                fh.write("Blocked by a captcha")
+            out(tasks.cmd_fail, rest, "10000", f)
+        r = rest.rows[0]
+        self.assertEqual((r["status"], r["result"]), ("failed", "Blocked by a captcha"))
+        self.assertTrue(r["done_at"])
+
+
+NOW = dt.datetime(2026, 11, 6, 12, 0, tzinfo=dt.timezone.utc)
+
+
+def queued(i, kind, minutes_old, **data):
+    made = (NOW - dt.timedelta(minutes=minutes_old)).isoformat()
+    return {"id": i, "type": kind, "status": "open", "title": f"t{i}", "created_at": made, "data": {"type": kind, **data}}
+
+
+class WaitRest(FakeRest):
+    """Each get_all call pops the next round: a list of rows, or an exception to raise. Rows are added by the sleep."""
+    def __init__(self, rounds):
+        super().__init__([])
+        self.rounds = list(rounds)
+
+    def get_all(self, table, params=None):
+        r = self.rounds.pop(0)
+        if isinstance(r, Exception):
+            raise r
+        return r
+
+
+class WaitTest(unittest.TestCase):
+    def run_wait(self, rounds, **kw):
+        rest, slept = WaitRest(rounds), []
+        text = out(lambda: tasks.cmd_wait(rest, sleep=slept.append, now=lambda: NOW, **kw))
+        return [json.loads(l) for l in text.splitlines()], slept, rest
+
+    def test_waits_through_empty_rounds_and_prints_nothing_meanwhile(self):
+        lines, slept, _ = self.run_wait([[], [], [queued(5, "flight_prices", 0)]], every=30)
+        self.assertEqual(lines, [{"id": 5, "type": "flight_prices", "title": "t5"}])
+        self.assertEqual(slept, [30, 30])
+
+    def test_skips_cloud_tasks_inside_the_grace(self):
+        cloud = queued(6, "question", 5)
+        lines, slept, _ = self.run_wait([[cloud], [cloud, queued(7, "stay_details", 1, lodging_id="L1")]])
+        self.assertEqual([l["id"] for l in lines], [7])
+        self.assertEqual(len(slept), 1)
+
+    def test_a_cloud_task_past_the_grace_is_returned(self):
+        lines, _, _ = self.run_wait([[queued(8, "question", 20)]], grace=15)
+        self.assertEqual([l["id"] for l in lines], [8])
+
+    def test_a_refresh_of_flights_is_for_the_pc_but_experiences_run_in_the_cloud(self):
+        pc = queued(9, "refresh", 0, scope="flights")
+        cloud = queued(10, "refresh", 0, scope="experiences")
+        lines, _, _ = self.run_wait([[cloud, pc]])
+        self.assertEqual([l["id"] for l in lines], [9])
+
+    def test_survives_a_network_error(self):
+        lines, slept, _ = self.run_wait([OSError("down"), [queued(11, "booking", 0, leg={})]])
+        self.assertEqual([l["id"] for l in lines], [11])
+        self.assertEqual(len(slept), 1)
 
 
 if __name__ == "__main__":
