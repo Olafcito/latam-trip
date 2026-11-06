@@ -23,7 +23,6 @@ import { WayTrack } from '../WayCard'
 import { FlightLinks } from '../FlightLinks'
 import { Arrow, Boat, Bus, Caret, Check, Close, Minus, Moon, Pin, Plane, Plus, Warn } from '../icons'
 import { itinerary } from '../../lib/itinerary'
-import { LookContext, LookPicker, useLookChoice } from '../proto/ItineraryLook'
 import { BookingForm, type BookTarget, type FormLeg } from './BookingForm'
 import { CityCard, type CityView } from './CityCard'
 import { FlightSheet, type LegStay } from './FlightSheet'
@@ -142,9 +141,9 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
   onToggle?: () => void
   /** the booked stays here that the nights cut into */
   cut?: Warning[]
-  /** the editorial look: the day you get there and the day you leave, beside a larger name */
+  /** the day you get there and the day you leave, beside a larger name. Home has none */
   dates?: { inDay: string; outDay: string }
-  /** the editorial fold is closing, so the chevron turns back at once */
+  /** the fold is closing, so the chevron turns back at once */
   shutting?: boolean
 }) {
   const pop = usePop(false)
@@ -221,7 +220,7 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
  * move, then its mode and length with its ticket behind them. The rail is the leg drawn. A booked leg's
  * mode button keeps a green ring and a check, the shape it has when pressed, so bought reads at a glance.
  */
-function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, booked, booking, fromName, onSet, fold }: {
+function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, sheet, aria, clash, booked, booking, fromName, onSet }: {
   fam: Family
   tone?: 'in' | 'home'
   route: string
@@ -246,8 +245,6 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   booking?: Booking | null
   fromName: string
   onSet?: (date: string) => void
-  /** the leg out of a stop that is folded open, drawn inside its card */
-  fold?: boolean
 }) {
   const when = usePop(false)
   const pop = usePop(false)
@@ -279,7 +276,7 @@ function Leg({ fam, tone, route, date, times, set, known, picker, travel, card, 
   const label = `${aria}${booking ? ', booked' : ''}. Details`
   const mode = <>{travel}{booking && <span className="st-booked" aria-hidden="true"><Check s={12} /></span>}</>
   return (
-    <li ref={row} className="st-leg" data-f={fam} data-tone={tone} data-fold={fold || undefined}>
+    <li ref={row} className="st-leg" data-f={fam} data-tone={tone}>
       <span className="st-rail" />
       <div className="st-line">
         {picker ? (
@@ -378,20 +375,18 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   const [city, setCity] = useState<{ i: number; view: CityView } | null>(null)
   // the stop folded open on the route, one at a time
   const [fold, setFold] = useState<number | null>(null)
-  // prototype: the current look or the editorial one, and the stop whose editorial fold is closing
-  const { look, at: lookAt, run: lookRun, choose: chooseLook, replay: replayLook } = useLookChoice()
-  const ed = look === 'editorial'
+  // the stop whose fold is closing
   const [shutting, setShutting] = useState<number | null>(null)
   const shutTimer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(shutTimer.current), [])
   const toggleFold = (i: number) => {
     window.clearTimeout(shutTimer.current)
-    if (!ed || fold !== i) {
+    if (fold !== i) {
       setShutting(null)
       setFold((f) => (f === i ? null : i))
       return
     }
-    // the editorial fold shuts by its height first, then leaves the page
+    // the fold shuts by its height first, then leaves the page
     setShutting(i)
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     shutTimer.current = window.setTimeout(() => { setFold((f) => (f === i ? null : f)); setShutting(null) }, still ? 120 : 220)
@@ -407,8 +402,8 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   const cities: StayCity[] = sched.places.flatMap((sp, k) => (sp.days > 0 ? [{ id: String(k), name: shortPlace(nodeName(map, inout, sp.node)) }] : []))
   const openSaved = useStore((s) => s.openSaved)
   const setCursor = useStore((s) => s.setCursor)
-  const foldBody = (i: number, fam: Family, tone?: 'home') => (
-    <li key={`f${i}`} id={`st-${i}-fold`} className={ed ? 'st-fold ed-fold' : 'st-leg st-fold'} data-f={ed ? undefined : fam} data-tone={ed ? undefined : tone} data-shutting={(ed && shutting === i) || undefined}>
+  const foldBody = (i: number) => (
+    <li key={`f${i}`} id={`st-${i}-fold`} className="st-fold ed-fold" data-shutting={(shutting === i) || undefined}>
       <span className="st-rail" />
       <StopFold
         data={data} journey={journey} sched={sched} i={i}
@@ -550,7 +545,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
       close={close} />
   )
 
-  const items: ReactNode[] = [
+  const start: ReactNode[] = [
     <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="start" />,
     <Leg
       key="in" fam="flight" tone="in" route={`${cph.name} to ${nm(firstNode)}`}
@@ -562,8 +557,8 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
       booking={wayBooked.in}
     />,
   ]
-  // the pieces by key, for the editorial look to lay out in the order of the itinerary
-  const byKey: Record<string, ReactNode> = { cph0: items[0], in: items[1] }
+  // the pieces by key, to lay out in the order of the itinerary
+  const byKey: Record<string, ReactNode> = { cph0: start[0], in: start[1] }
   ps.forEach((p, i) => {
     if (p.hop && i > 0) {
       const h = p.hop
@@ -660,12 +655,9 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
               close={close}
             />
           ) : undefined}
-          fold={!ed && fold === i - 1}
         />
       )
-      items.push(leg)
       byKey[`h${i}`] = leg
-      if (!ed && fold === i - 1) items.push(foldBody(i - 1, fam))
     }
     const sp = sched.places[i]
     if (!p.hop && i > 0) {
@@ -675,7 +667,6 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
           <div className="st-line"><span className="st-when" aria-label={`Reaches ${nm(p.node)} ${weekdayDay(sp.inDay)}`}><When date={sp.inDay} /></span></div>
         </li>
       )
-      items.push(gap)
       byKey[`g${i}`] = gap
     }
     const stop = (
@@ -693,14 +684,11 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
         open={fold === i}
         onToggle={() => toggleFold(i)}
         cut={sched.warnings.filter((w) => w.stop === i)}
-        dates={ed ? { inDay: sp.inDay, outDay: sp.outDay } : undefined}
+        dates={{ inDay: sp.inDay, outDay: sp.outDay }}
         shutting={shutting === i}
       />
     )
-    items.push(stop)
     byKey[`s${i}`] = stop
-    // the last stop has no leg of its own, its fold follows it straight away
-    if (!ed && fold === i && i === ps.length - 1) items.push(foldBody(i, 'flight', 'home'))
   })
   if (sched.free > 0) {
     byKey.free = (
@@ -712,7 +700,6 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
         </div>
       </li>
     )
-    items.push(byKey.free)
   }
   byKey.home = (
     <Leg
@@ -726,12 +713,10 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
     />
   )
   byKey.cph1 = <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />
-  items.push(byKey.home, byKey.cph1)
-  if (ed && fold != null && ps[fold]) byKey[`f${fold}`] = foldBody(fold, 'flight')
-  // the editorial look runs in the order the trip is lived: a stop, its stay, then the leg that leaves it.
+  if (fold != null && ps[fold]) byKey[`f${fold}`] = foldBody(fold)
+  // the itinerary runs in the order the trip is lived: a stop, its stay, then the leg that leaves it.
   // The instants come from the bookings, else the picked flights, else the days, as in the day view
-  const lined = ed
-    ? itinerary({
+  const lined = itinerary({
       wayIn: { depart: tripInput.legs[0].depart, arrive: tripInput.legs[0].arrive ?? null },
       wayHome: { depart: tripInput.legs[tripInput.legs.length - 1].depart, arrive: tripInput.legs[tripInput.legs.length - 1].arrive ?? null },
       stops: sched.places,
@@ -741,15 +726,11 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
       }),
       open: fold,
       free: sched.free,
-    }).map((e) => byKey[e.key])
-    : items
+  }).map((e) => byKey[e.key])
 
   return (
     <>
-      <LookContext.Provider value={look}>
-        <ol key={`${look}-${lookRun}`} className="st" data-look={ed ? 'editorial' : undefined}>{lined}</ol>
-      </LookContext.Provider>
-      <LookPicker at={lookAt} choose={chooseLook} replay={replayLook} />
+      <ol className="st" data-look="editorial">{lined}</ol>
       {bookForm}
       {city != null && ps[city.i] && (
         <Modal

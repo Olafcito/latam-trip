@@ -25,10 +25,9 @@ import { AddPlace } from '../stays/AddPlace'
 import { AddStay } from '../stays/AddStay'
 import type { StayCity, StayTab } from '../stays/StaySearch'
 import { Plus } from '../icons'
-import { AccommodationCard, type StayCardData } from '../stays/AccommodationCard'
+import { type StayCardData } from '../stays/AccommodationCard'
 import { CityFold } from '../stays/CityFold'
 import { EditorialStayCard } from '../stays/EditorialStayCard'
-import { useLook } from '../proto/ItineraryLook'
 import { PropertyView } from '../stays/PropertyView'
 import { kindWord } from '../stays/offerMarks'
 import { StayConfirm } from '../stays/StayConfirm'
@@ -90,7 +89,6 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
   const setStays = useStore((s) => s.setStays)
   const setLodgings = useStore((s) => s.setLodgings)
   const [adding, setAdding] = useState<string | null | false>(false)
-  const editorial = useLook() === 'editorial'
   const [route, setRoute] = useState<RouteData | null>(null)
   const [find, setFind] = useState<FindRow | null>(null)
   // dates picked in the window, which hold until it closes
@@ -246,7 +244,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
         summary={prof?.summary}
         stays={
           <>
-            {items.length > 0 && <div className="ac-list">{items.map((t) => (editorial ? <EditorialStayCard key={t.card.key} c={t.card} /> : <AccommodationCard key={t.card.key} c={t.card} />))}</div>}
+            {items.length > 0 && <div className="ac-list">{items.map((t) => <EditorialStayCard key={t.card.key} c={t.card} />)}</div>}
             <button type="button" className="al-add" onClick={() => setAdding(null)}><Plus />Add accommodation</button>
           </>
         }
