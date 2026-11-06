@@ -304,7 +304,7 @@ Ask first: browser tasks for other users, and user research into the catalogue.
 
 ## Phase 6: Sign up, export, delete (Opus for auth and delete, Sonnet for the rest)
 
-Ask first: sign up rule, passphrase fallback.
+Decided by default on 2026-11-06, since Simon asked not to be asked: sign up is invite only, through the `invites` table of task 6.1, and an outside user gets no passphrase fallback, only the email sign in. Simon can open sign up or add a fallback later without a migration of the rows.
 
 Gate before the first outside account: Supabase Postgres Changes does not apply row level security to DELETE events, so every subscriber gets the deleted row's primary key. Every published private table is keyed by `owner_id` first (bookings, lodgings, lodging_rooms, lodging_prices, trips and, since 0031, tasks), so the key carries the other person's user id, and the `trips` key also the trip name. Phase 2 measured what B sees in `test_realtime_is_owner_scoped`. Before sign up opens, the planner moves to private broadcast channels with row level security on `realtime.messages`, or the private tables leave the realtime publication, and the test asserts B sees no DELETE of A's rows.
 
