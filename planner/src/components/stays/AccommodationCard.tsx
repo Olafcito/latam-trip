@@ -115,9 +115,9 @@ export function AccommodationCard({ c }: { c: StayCardData }) {
           <div className="ac-f ac-money">
             <div className="ac-price">
               {c.booked && total != null ? (
-                <><b>{thousands(total)} DKK</b><span>total</span></>
+                <span className="ac-amt"><b>{thousands(total)} DKK</b><span>total</span></span>
               ) : perNight != null ? (
-                <><b data-about={about || undefined} title={about ? 'From the price seen for other dates' : undefined}>{thousands(perNight)} DKK</b><span>/ night</span></>
+                <span className="ac-amt"><b title={about ? 'From the price seen for other dates' : undefined}>{thousands(perNight)} DKK</b><span>/ night</span></span>
               ) : <span className="ac-none">No price yet</span>}
               {total != null && (
                 <span className="ac-cur" data-about={about || undefined}>
