@@ -22,8 +22,25 @@ export interface StayBadge {
   tone: 'booked' | 'plan' | 'saved'
 }
 
+/** A stop the search can be for, from the trip. */
+export interface StayCity {
+  id: string
+  name: string
+}
+
+export type StayTab = 'find' | 'manual'
+
 export interface StaySearchProps {
+  /** the stop the search is for. Empty until a city is picked, and then only the destination shows */
   destination: string
+  /** the trip's stops with nights, which make the destination a picker */
+  cities?: StayCity[]
+  /** the id of the city the search is for, among cities */
+  cityId?: string | null
+  /** another city picked, with the tab the window was at */
+  onCity?: (id: string, tab: StayTab) => void
+  /** the tab the window opens at */
+  startTab?: StayTab
   checkIn: string
   checkOut: string
   guests: number
@@ -187,7 +204,7 @@ function FindFail({ error }: { error: string }) {
 }
 
 export function StaySearch(p: StaySearchProps) {
-  const [tab, setTab] = useState<'find' | 'manual'>('find')
+  const [tab, setTab] = useState<StayTab>(p.startTab ?? 'find')
   const [kind, setKind] = useState<LodgingKind | 'all'>('all')
   const [sort, setSort] = useState<StaySort>('recommended')
   const list = sortPlaces(p.places, kind, sort, p.checkIn, p.checkOut)
@@ -195,6 +212,21 @@ export function StaySearch(p: StaySearchProps) {
   const sites = p.searching?.sites ?? []
   // with nothing stored the find is the list's one control, with places it sits small by the count
   const findFirst = !!p.onFind && p.places.length === 0
+  // without a city only the destination shows, a picker of the trip's stops
+  const open = !!p.destination
+  const where = (
+    <Field label="Destination" icon={<Pin s={16} />} face={p.destination || <span className="as-hint">Pick a city</span>} wide>
+      {p.cities && p.onCity && (
+        <>
+          <Caret dir="d" s={16} />
+          <select aria-label="Destination" value={p.cityId ?? ''} onChange={(e) => e.target.value && p.onCity!(e.target.value, tab)}>
+            {!p.cityId && <option value="">Pick a city</option>}
+            {p.cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+        </>
+      )}
+    </Field>
+  )
   const count = busy ? `${list.length} ${list.length === 1 ? 'place' : 'places'} so far` : `${list.length} ${list.length === 1 ? 'place' : 'places'} found`
   return (
     <section className="as" aria-label="Add accommodation">
@@ -207,10 +239,14 @@ export function StaySearch(p: StaySearchProps) {
         <button type="button" role="tab" aria-selected={tab === 'manual'} className="as-tab" onClick={() => setTab('manual')}><Pencil s={16} />Add manually</button>
       </div>
 
-      {tab === 'manual' ? <div className="as-manual">{p.manual}</div> : (
+      {!open ? (
+        <div className="as-find">
+          <div className="as-fields">{where}</div>
+        </div>
+      ) : tab === 'manual' ? <div className="as-manual">{p.manual}</div> : (
         <div className="as-find">
           <div className="as-fields">
-            <Field label="Destination" icon={<Pin s={16} />} face={p.destination} wide />
+            {where}
             <Field label="Check-in" icon={<Calendar s={16} />} face={day(p.checkIn)}>
               <DayInput label="Check-in" value={p.checkIn} onPick={p.onDates && ((d) => p.onDates!(d, p.checkOut))} />
             </Field>

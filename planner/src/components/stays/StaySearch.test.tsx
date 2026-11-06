@@ -25,3 +25,26 @@ describe('StaySearch progress marks', () => {
     expect(html({})).not.toContain('as-site')
   })
 })
+
+describe('StaySearch destination', () => {
+  const cities = [{ id: '0', name: 'San Andres' }, { id: '2', name: 'Cartagena' }]
+  it('without a city shows only the destination, a picker of the stops', () => {
+    const out = html({ destination: '', checkIn: '', checkOut: '', cities, cityId: null, onCity: () => {} })
+    expect(out).toContain('aria-label="Destination"')
+    expect(out).toContain('Pick a city')
+    expect(out).toContain('>Cartagena</option>')
+    expect(out).not.toContain('Check-in')
+    expect(out).not.toContain('as-chips')
+    expect(out).not.toContain('as-list')
+  })
+  it('with a city shows the dates and the places, the city picked', () => {
+    const out = html({ cities, cityId: '0', onCity: () => {} })
+    expect(out).toContain('Check-in')
+    expect(out).toContain('as-list')
+    expect(out).toMatch(/<option value="0" selected="">San Andres<\/option>/)
+    expect(out).not.toContain('<option value="">')
+  })
+  it('without cities the destination is only its name', () => {
+    expect(html({})).not.toContain('aria-label="Destination"')
+  })
+})
