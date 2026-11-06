@@ -43,6 +43,19 @@ enabled = false
 [auth]
 enabled = true
 site_url = "http://127.0.0.1:5198"
+# Sign up is open to the hook below and to nothing else (task 6.1 of FEAT-006). The live project carries the same.
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+
+# Sign up by invite: Supabase Auth asks public.hook_before_user_created of migration 0036 before it makes any user, and
+# the hook refuses an address with no unused row in public.invites. A sign in of a person who has an account makes no
+# user, so the hook never runs for it. migrate.py applies 0036 after the stack is up, and the hook is only called on a
+# sign up, which no step of local_up makes.
+[auth.hook.before_user_created]
+enabled = true
+uri = "pg-functions://postgres/public/hook_before_user_created"
 
 # The OAuth 2.1 server the connector uses as its authorization server (TECH-010). Supabase sends the person to
 # site_url + authorization_url_path + ?authorization_id=<id>. The path is "/" because the hosted planner is a bucket
