@@ -7,7 +7,7 @@ import { dayRange } from '../lib/format'
 import { totals, type Journey } from '../lib/journey'
 import { useSchedule } from '../lib/useSchedule'
 import { CostStrip } from '../components/CostStrip'
-import { Caret, Download, Pin, Warn } from '../components/icons'
+import { Bed, Caret, Download, Pin, Warn } from '../components/icons'
 import { Modal } from '../components/Modal'
 import { Notice } from '../components/Notice'
 import { Story } from '../components/story/Story'
@@ -30,6 +30,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const bookings = useStore((s) => s.bookings)
   const lodgings = useStore((s) => s.lodgings)
   const [onMap, setOnMap] = useState(false)
+  const [addStay, setAddStay] = useState(false)
 
   const wi = inout.ways[journey.wayIn]
   const wh = inout.ways[journey.wayHome]
@@ -72,6 +73,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
         {journey.rank != null && <span className="rank" title="Rank among the planned trips">#{journey.rank}</span>}
         {journey.version != null && <VersionMenu id={journey.id} version={journey.version} />}
         <span className="spacer" />
+        {sched.places.some((sp) => sp.days > 0) && <button className="btn small" onClick={() => setAddStay(true)}><Bed />Add accommodation</button>}
         {stops.length > 0 && <button className="btn small" onClick={() => setOnMap(true)}>View on map</button>}
         <button className="btn small" onClick={() => openSaved(journey)}><Pin />Build on the map</button>
         <button className={`btn small${dirty ? ' primary' : ''}`} onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
@@ -100,7 +102,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
             </button>
           )}
         />
-        <Story data={data} journey={journey} sched={sched} wayIn={wi} wayHome={wh} />
+        <Story data={data} journey={journey} sched={sched} wayIn={wi} wayHome={wh} addStay={addStay} onAddStay={setAddStay} />
       </section>
 
       {onMap && (

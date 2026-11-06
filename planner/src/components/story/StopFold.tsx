@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
 import { useDataRev } from '../../data/rev'
@@ -20,6 +20,7 @@ import { addDays } from '../../lib/time'
 import { Modal } from '../Modal'
 import { AddPlace } from '../stays/AddPlace'
 import { AddStay } from '../stays/AddStay'
+import type { StayCity, StayTab } from '../stays/StaySearch'
 import { Plus } from '../icons'
 import { AccommodationCard, type StayCardData } from '../stays/AccommodationCard'
 import { CityFold } from '../stays/CityFold'
@@ -63,7 +64,7 @@ function searchWindow(stays: Parameters<typeof freeNights>[0], sp: Parameters<ty
   return { free, checkIn, checkOut: addDays(checkIn, Math.max(1, free.nights > 0 ? free.nights : sp.days)) }
 }
 
-export function StopFold({ data, journey, sched, i, onCity, onMap }: {
+export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onStayAt, addNow }: {
   data: AppData
   journey: Journey
   sched: Schedule
@@ -71,6 +72,12 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   /** opens the city card at changing or deleting the stop */
   onCity: (view: 'change' | 'delete') => void
   onMap: () => void
+  /** the trip's stops with nights, which the search's destination picks among */
+  cities?: StayCity[]
+  /** another city picked in the search: its stop opens with the search, at the tab the window was at */
+  onStayAt?: (stop: number, tab: StayTab) => void
+  /** opens the search at once, each time its count changes */
+  addNow?: { n: number; tab: StayTab } | null
 }) {
   const { inout, map } = data
   const lodgings = useStore((s) => s.lodgings)
@@ -85,6 +92,14 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
   // the stay whose confirmation window or details are open, by its card's key
   const [confirm, setConfirm] = useState<string | null>(null)
   const [detail, setDetail] = useState<string | null>(null)
+  // the tab the search opens at, and the city picked in it that the window closes for
+  const [startTab, setStartTab] = useState<StayTab>('find')
+  const next = useRef<{ stop: number; tab: StayTab } | null>(null)
+  useEffect(() => {
+    if (!addNow) return
+    setStartTab(addNow.tab)
+    setAdding(null)
+  }, [addNow])
   const [saved, toggleSaved] = useSaved()
   const rev = useDataRev()
   useEffect(() => {
@@ -252,11 +267,27 @@ export function StopFold({ data, journey, sched, i, onCity, onMap }: {
         ) }}
       />
       {adding !== false && (
-        <Modal label={`Add accommodation in ${name}`} className="stad-md" bare onClose={() => { setAdding(false); setPick(null) }}>
+        <Modal label={`Add accommodation in ${name}`} className="stad-md" bare onClose={() => {
+          setAdding(false)
+          setPick(null)
+          setStartTab('find')
+          // a city picked in the destination opens its own stop with the search, once this window has gone
+          const to = next.current
+          next.current = null
+          if (to) onStayAt?.(to.stop, to.tab)
+        }}>
           {(close) => (
             <AddStay
               key={adding ?? 'list'}
               destination={name}
+              cities={cities}
+              cityId={String(i)}
+              onCity={onStayAt && ((id, tab) => {
+                if (Number(id) === i) return
+                next.current = { stop: Number(id), tab }
+                close()
+              })}
+              startTab={startTab}
               checkIn={searchIn}
               checkOut={searchOut}
               onDates={repick(dates)}

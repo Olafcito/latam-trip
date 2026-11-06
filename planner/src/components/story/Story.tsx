@@ -27,6 +27,8 @@ import { CityCard, type CityView } from './CityCard'
 import { FlightSheet, type LegStay } from './FlightSheet'
 import { LegCard, type LegEnds } from './LegCard'
 import { StopFold } from './StopFold'
+import { AddStay } from '../stays/AddStay'
+import type { StayCity, StayTab } from '../stays/StaySearch'
 import type { LegPoint } from './LegMap'
 import { WaySheet } from './WaySheet'
 import { WhenPicker } from './WhenPicker'
@@ -305,7 +307,14 @@ function Travel({ fam, time, overnight, off }: { fam: Family; time: string | nul
   )
 }
 
-export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData; journey: Journey; sched: Schedule; wayIn: Way; wayHome: Way }) {
+const NO_SAVED: ReadonlySet<string> = new Set()
+
+export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay }: {
+  data: AppData; journey: Journey; sched: Schedule; wayIn: Way; wayHome: Way
+  /** the trip's Add accommodation window is open, the search with no city yet */
+  addStay?: boolean
+  onAddStay?: (open: boolean) => void
+}) {
   const { inout, map } = data
   const pd = usePairDates()
   const setHopDate = useStore((s) => s.setHopDate)
@@ -332,6 +341,15 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
   const [city, setCity] = useState<{ i: number; view: CityView } | null>(null)
   // the stop folded open on the route, one at a time
   const [fold, setFold] = useState<number | null>(null)
+  // the stop whose search opens at once, from the trip's Add accommodation or another city picked in a search
+  const [stayAt, setStayAt] = useState<{ i: number; n: number; tab: StayTab } | null>(null)
+  const pickStay = useRef<{ stop: number; tab: StayTab } | null>(null)
+  const openStay = (stop: number, tab: StayTab) => {
+    setFold(stop)
+    setStayAt((s) => ({ i: stop, n: (s?.n ?? 0) + 1, tab }))
+  }
+  // the stops a stay can be added to, the ones with nights
+  const cities: StayCity[] = sched.places.flatMap((sp, k) => (sp.days > 0 ? [{ id: String(k), name: shortPlace(nodeName(map, inout, sp.node)) }] : []))
   const openSaved = useStore((s) => s.openSaved)
   const setCursor = useStore((s) => s.setCursor)
   const foldBody = (i: number, fam: Family, tone?: 'home') => (
@@ -341,6 +359,9 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
         data={data} journey={journey} sched={sched} i={i}
         onCity={(view) => setCity({ i, view })}
         onMap={() => { openSaved(journey); setCursor(i) }}
+        cities={cities}
+        onStayAt={openStay}
+        addNow={stayAt?.i === i ? stayAt : null}
       />
     </li>
   )
@@ -658,6 +679,32 @@ export function Story({ data, journey, sched, wayIn, wayHome }: { data: AppData;
           }}
         >
           {(shut) => <CityCard data={data} journey={journey} sched={sched} i={city.i} start={city.view} close={shut} onDelete={() => { goes.current = true; shut() }} />}
+        </Modal>
+      )}
+      {addStay && (
+        <Modal
+          label="Add accommodation"
+          className="stad-md"
+          bare
+          onClose={() => {
+            onAddStay?.(false)
+            const to = pickStay.current
+            pickStay.current = null
+            if (to) openStay(to.stop, to.tab)
+          }}
+        >
+          {(shut) => (
+            <AddStay
+              destination=""
+              cities={cities}
+              cityId={null}
+              onCity={(id, tab) => { pickStay.current = { stop: Number(id), tab }; shut() }}
+              checkIn="" checkOut="" guests={1} rooms={1}
+              places={[]} saved={NO_SAVED}
+              onClose={shut}
+              property={() => null}
+            />
+          )}
         </Modal>
       )}
     </>
