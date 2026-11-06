@@ -27,6 +27,7 @@ One user, Simon, in two moments:
 | Flight sheets, booked flight sheet, way picker | planner, a leg of a trip |
 | City sheets | planner, a stop of a trip |
 | Map tab | planner, Map tab |
+| Profile sheet | planner, the person mark at the end of the header |
 | Web map | web |
 
 Feature specs live in `features/`. The older specs in `docs/superpowers/specs/` cover the screens above.

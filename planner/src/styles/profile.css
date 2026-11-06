@@ -1,0 +1,44 @@
+/* The profile: the round person mark at the end of the header, and the sheet it opens. The sheet
+   borrows the booking form's grouped list from flights.css. A bad field tints its own row red and
+   gives its reason in that row. */
+@scope (:root) to (.rmap) {
+  .me {
+    position: relative; flex: none;
+    min-width: var(--hit); min-height: var(--hit); margin-right: -4px; padding: 0;
+    display: grid; place-items: center;
+    border: 0; border-radius: 50%; background: none; color: var(--muted);
+    cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+    transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease;
+  }
+  .me-face {
+    width: 30px; height: 30px; display: grid; place-items: center;
+    border-radius: 50%; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-2);
+    transition: background-color var(--t-fast) ease;
+  }
+  .me:active { transform: scale(0.97); }
+  .me:focus-visible { outline: 2px solid var(--flight); outline-offset: -2px; }
+  .fresh-slot > * + .me { margin-left: 4px; }
+  @media (hover: hover) and (pointer: fine) {
+    .me:hover { color: var(--text); }
+    .me:hover .me-face { background: var(--surface-3); }
+  }
+  @media (prefers-reduced-motion: reduce) { .me:active { transform: none; } }
+
+  .pf-md { --md-w: 440px; }
+  /* nothing changed yet: Save stays quiet, an outline and no fill (DES-019) */
+  .pf .fl-foot .bf-go:disabled { opacity: 1; border-color: var(--line-2); background: transparent; color: var(--faint); }
+  .pf-num { font-variant-numeric: tabular-nums; }
+  /* while the row is on its way the fields hold their place and show nothing, so an empty
+     profile is never shown before it is known to be empty */
+  .pf[data-loading] .bf-in { opacity: 0; }
+  .pf .bf-in:disabled { color: var(--muted); -webkit-text-fill-color: var(--muted); }
+  .pf textarea.bf-in { min-height: 96px; }
+
+  .pf .bf-row[data-bad] { background: color-mix(in srgb, var(--err) 10%, transparent); }
+  .pf .bf-row[data-bad] .bf-k { color: var(--err); }
+  .pf .bf-row[data-bad] .bf-i { background: color-mix(in srgb, var(--err) 16%, transparent); color: var(--err); }
+  .pf .bf-row[data-bad]:first-child { border-top-left-radius: 12px; border-top-right-radius: 12px; }
+  .pf .bf-row[data-bad]:last-child { border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; }
+  .pf-why { grid-column: 2 / -1; justify-self: end; margin: -4px 0 4px; font-size: var(--fs-small); font-weight: 600; color: var(--err); text-align: right; }
+  .bf-notes .pf-why { grid-column: 1 / -1; justify-self: start; margin: 6px 0 0; text-align: left; }
+}

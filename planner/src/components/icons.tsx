@@ -484,3 +484,12 @@ export const Paperclip = ({ s = 13 }: { s?: number }) => (
     <path d="M20 11.5l-7.8 7.8a5 5 0 0 1-7.1-7.1l8.1-8.1a3.3 3.3 0 0 1 4.7 4.7l-8.1 8.1a1.7 1.7 0 0 1-2.4-2.4l7.4-7.4" />
   </svg>
 )
+
+/** The money a person counts in: a banknote. */
+export const Cash = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <rect x="2.5" y="6" width="19" height="12" rx="2.5" />
+    <circle cx="12" cy="12" r="2.5" />
+    <path d="M6 12h.01M18 12h.01" />
+  </svg>
+)

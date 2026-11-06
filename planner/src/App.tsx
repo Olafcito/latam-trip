@@ -12,6 +12,7 @@ import { Warn } from './components/icons'
 import { DataStrip } from './components/DataStrip'
 import { Freshness } from './components/Freshness'
 import { QuoteSheet } from './components/QuoteSheet'
+import { ProfileButton } from './components/ProfileSheet'
 import { SignIn } from './components/SignIn'
 import { Connect } from './components/Connect'
 import { connectFlow, withoutConnect } from './lib/connect'
@@ -358,7 +359,10 @@ export function App() {
             <span className="brand-dates">Dec 2026 to Feb 2027</span>
           </div>
           <Tabs screen={screen} go={go} />
-          <div className="fresh-slot"><Freshness meta={data.meta} /></div>
+          <div className="fresh-slot">
+            <Freshness meta={data.meta} />
+            {remoteEnabled() && userId && <ProfileButton ownerId={userId} />}
+          </div>
         </div>
       </header>
       <main className="main" id="main" tabIndex={-1}>

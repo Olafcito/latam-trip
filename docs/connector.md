@@ -71,6 +71,8 @@ Two tools keep the caller's own profile, one row per person in `user_profiles`:
 - `get_profile` gives `home_airport` (three capital letters), `currency` (ISO 4217, three capital letters), `max_hours` (the longest journey in one direction, above 0), `travel_style` and `rules` (free text). A person with no profile gets every field empty, `empty: true` and an `ask` that tells Claude to ask the person for it before the first search.
 - `update_profile` takes the fields to change in `patch` and keeps the others. A field set to null is cleared. An unknown field or a bad value is refused with the reason.
 
+The planner's profile sheet, opened from the person mark at the end of its header, reads and writes the same row. It checks the fields by the same rules and marks a bad one on its own row.
+
 Two more tools change the dates of a trip:
 
 - `set_leg_date` puts one leg on a day. No other leg moves.
