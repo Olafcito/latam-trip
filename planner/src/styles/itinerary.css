@@ -38,6 +38,8 @@
   background: color-mix(in srgb, var(--flight) 60%, transparent); transform-origin: top;
   animation: ed-draw 360ms var(--ease-out);
 }
+/* no disc sits above the row after a fold, so its rail starts at the row's top and leaves the fold's line alone */
+.ed-fold + :is(.st-leg, .st-free) > .st-rail::before { top: 0; }
 /* the fold closes by its height, then leaves the page */
 .st[data-look='editorial'] .ed-fold[data-shutting] { grid-template-rows: 0fr; }
 .ed-fold[data-shutting] > .af { overflow: hidden; opacity: 0; transition: opacity 160ms ease; }
