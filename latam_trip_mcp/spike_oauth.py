@@ -348,7 +348,7 @@ def full_flow(env, meta, client_id, redirect_uri, scope, resource, user):
     return tok, ev
 
 
-def err(body):
+def auth_error(body):
     """The error name of an auth answer, whichever field it is in."""
     if not isinstance(body, dict):
         return body
@@ -442,7 +442,9 @@ def main():
            scope=c.get("scope"), claim_names=sorted(c), expires_in=tok.get("expires_in"),
            resource_in_aud=resource in (c.get("aud") if isinstance(c.get("aud"), list) else [c.get("aud")]))
 
-    # 4 the connector verifies the bearer against the JWKS and answers list_trip as A
+    # 4 the connector verifies the bearer against the JWKS and answers list_trip as A. Another session's database tests
+    # may clear the tables on the shared local stack, so the trips are seeded again right before each read.
+    seed(env, a, b)
     s, ids, err = list_trip_ids(base, access)
     record("4a connector verifies against the JWKS and list_trip runs as A", s == 200 and ids is not None
            and "TEST01-oauth-a" in ids and "TEST01-oauth-b" not in ids,
@@ -456,6 +458,7 @@ def main():
 
     # 5 PostgREST with that bearer sees only A's rows
     rest_a = users.Rest(env["SUPABASE_URL"], env["SUPABASE_PUBLISHABLE_KEY"], access)
+    seed(env, a, b)
     s, rows = rest_a.select("trips", "select=id&id=like.TEST01-oauth-*")
     svc_s, svc_rows = users.service(env).select("trips", "select=id&id=like.TEST01-oauth-*")
     got = sorted({r["id"] for r in rows}) if s == 200 else rows
@@ -483,24 +486,24 @@ def main():
             time.sleep(12)  # past the default refresh_token_reuse_interval of 10 s
             s5, _, t5 = token(meta, {"grant_type": "refresh_token", "refresh_token": refresh, "client_id": client_id})
             record("6d a refresh token two rotations old is refused after the reuse window", s == 200 and s5 >= 400,
-                   rotate_status=s, replay_status=s5, error=err(t5))
+                   rotate_status=s, replay_status=s5, error=auth_error(t5))
             s6, _, t6 = token(meta, {"grant_type": "refresh_token", "refresh_token": (t4 or {}).get("refresh_token", ""),
                                      "client_id": client_id})
             note("6e the newest refresh token after that replay, so the family was revoked or not", status=s6,
-                 error=err(t6))
+                 error=auth_error(t6))
     else:
         record("6a refresh token issued", False, scope_asked=scope)
 
     probes(env, meta, client_id, resource, a, b)
 
     if args.wait_expiry:
-        expiry_leg(env, meta, base, resource, a)
+        expiry_leg(env, meta, base, resource, a, b)
     else:
         note("7 refresh after expiry", skipped="run with --wait-expiry", expires_in=tok.get("expires_in"))
     return finish(args, srv)
 
 
-def expiry_leg(env, meta, base, resource, a):
+def expiry_leg(env, meta, base, resource, a, b):
     """A fresh grant, wait past exp, then the old token is refused everywhere and the refresh works."""
     s, _, client = register(meta, (CLAUDE_CALLBACK,))
     cid = client["client_id"]
@@ -511,11 +514,14 @@ def expiry_leg(env, meta, base, resource, a):
     wait = max(0, exp - time.time()) + 5
     print(f"waiting {int(wait)} s for the access token to expire")
     time.sleep(wait)
+    seed(env, users.make_user(env, "oauth-a"), users.make_user(env, "oauth-b"))
     s1, _, _ = list_trip_ids(base, tok["access_token"])
     s2, _ = users.Rest(env["SUPABASE_URL"], env["SUPABASE_PUBLISHABLE_KEY"], tok["access_token"]).select("trips", "select=id&limit=1")
     s, _, t2 = token(meta, {"grant_type": "refresh_token", "refresh_token": tok["refresh_token"], "client_id": cid,
                             "resource": resource})
     new = t2.get("access_token") if isinstance(t2, dict) else None
+    if new:
+        seed(env, users.make_user(env, "oauth-a"), users.make_user(env, "oauth-b"))
     s3, ids, _ = list_trip_ids(base, new) if new else (None, None, None)
     record("7 refresh after expiry", s1 == 401 and s2 == 401 and s == 200 and s3 == 200 and ids is not None
            and "TEST01-oauth-a" in ids and "TEST01-oauth-b" not in ids,
@@ -562,6 +568,20 @@ def probes(env, meta, client_id, resource, a, b):
     _, ev = full_flow(env, meta, client_id, CLAUDE_CALLBACK, "email", resource, b)
     note("P8 B approves a request someone else started, never opened", ok="token_status" in ev and ev["token_status"] == 200,
          **clean(ev))
+    # what else the OAuth bearer opens: the Auth user endpoint, which also takes password and email changes
+    tok, _ = full_flow(env, meta, client_id, CLAUDE_CALLBACK, "email", resource, a)
+    if tok:
+        s, _, me = req("GET", env["SUPABASE_URL"].rstrip("/") + "/auth/v1/user",
+                       {"apikey": env["SUPABASE_PUBLISHABLE_KEY"], "Authorization": "Bearer " + tok["access_token"]})
+        note("P10 the OAuth bearer on /auth/v1/user", status=s, is_user_a=isinstance(me, dict) and me.get("id") == a.id)
+    # the person says no
+    _, _, fresh2 = register(meta, (CLAUDE_CALLBACK,))
+    verifier, challenge = pkce()
+    s, h, _ = authorize(meta, fresh2["client_id"], CLAUDE_CALLBACK, "email", resource, challenge, "deny-state")
+    s1, _, s2, answer = consent(env, a.token, authorization_id_of(h.get("location", "")), action="deny")
+    target = (answer or {}).get("redirect_url", "") if isinstance(answer, dict) else ""
+    q = urllib.parse.parse_qs(urllib.parse.urlsplit(target).query)
+    note("P11 deny", deny_status=s2, error=q.get("error", [None])[0], state_kept=q.get("state", [None])[0] == "deny-state")
     # a client name that pretends to be Claude, with a redirect elsewhere
     s, _, evil = register(meta, ("https://attacker.example/cb",), name="Claude")
     note("P9 DCR accepts any redirect host and any client name", register_status=s)
