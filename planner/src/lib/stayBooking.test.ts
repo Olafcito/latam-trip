@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { LodgingPrice, LodgingRoom } from '../data/types'
-import { bookingLink, cancelWords, manualChange, partTerms, stayDraft, stayMoney, stayPrompt, stayRow, type StayTarget } from './stayBooking'
+import { bookingLink, cancelWords, partTerms, stayDraft, stayMoney, stayPrompt, stayRow, type StayTarget } from './stayBooking'
 import type { StayPart } from './stays'
 
 // Made up places, rooms and references only.
@@ -41,29 +41,6 @@ describe('the booking of a planned part', () => {
 
   it('a part with a row changes only that row', () => {
     expect(stayRow({ id: 'row1' }, target, { url: 'https://example.com/b' })).toEqual({ id: 'row1', url: 'https://example.com/b' })
-  })
-})
-
-describe('typed details', () => {
-  const empty = { reference: '', price: '', seller: '', checkIn: '', checkOut: '', cancelUntil: '' }
-
-  it('empty fields change nothing', () => {
-    expect(manualChange(empty)).toEqual({ ok: true, change: {} })
-  })
-
-  it('reads a price in kroner with dots, commas and a currency', () => {
-    const r = manualChange({ ...empty, price: '1.220 kr', reference: ' TEST01 ' })
-    expect(r).toEqual({ ok: true, change: { reference: 'TEST01', price_dkk: 1220, price: 1220, currency: 'DKK' } })
-    expect(manualChange({ ...empty, price: '244,50' })).toMatchObject({ ok: true, change: { price_dkk: 245 } })
-  })
-
-  it('refuses a price that is not a number, or dates the wrong way round', () => {
-    expect(manualChange({ ...empty, price: 'cheap' }).ok).toBe(false)
-    expect(manualChange({ ...empty, checkIn: '2026-12-13', checkOut: '2026-12-08' }).ok).toBe(false)
-  })
-
-  it('a free cancellation day makes it refundable', () => {
-    expect(manualChange({ ...empty, cancelUntil: '2026-12-01' })).toEqual({ ok: true, change: { cancel_until: '2026-12-01', refundable: 'yes' } })
   })
 })
 

@@ -46,42 +46,6 @@ export function stayRow(had: Pick<Booking, 'id'> | null, t: StayTarget, change: 
   return had ? { ...change, id: had.id } : { ...stayDraft(t), ...change }
 }
 
-export interface ManualStay {
-  reference: string
-  /** the total paid, in kroner, as typed */
-  price: string
-  seller: string
-  checkIn: string
-  checkOut: string
-  /** the last day it can be cancelled for free, or empty */
-  cancelUntil: string
-}
-
-/** What the typed details change, or the reason they cannot be saved. Empty fields change nothing. */
-export function manualChange(m: ManualStay): { ok: true; change: Partial<Booking> } | { ok: false; message: string } {
-  const change: Partial<Booking> = {}
-  if (m.reference.trim()) change.reference = m.reference.trim()
-  if (m.seller.trim()) change.seller = m.seller.trim()
-  const price = m.price.trim().replace(/\s|kr|dkk/gi, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.')
-  if (price) {
-    const n = Number(price)
-    if (!Number.isFinite(n) || n < 0) return { ok: false, message: 'The price needs to be a number of kroner.' }
-    change.price_dkk = Math.round(n)
-    change.price = Math.round(n)
-    change.currency = 'DKK'
-  }
-  if (m.checkIn && m.checkOut) {
-    if (m.checkOut <= m.checkIn) return { ok: false, message: 'Check-out needs to be after check-in.' }
-    change.check_in = m.checkIn
-    change.check_out = m.checkOut
-  }
-  if (m.cancelUntil) {
-    change.cancel_until = m.cancelUntil
-    change.refundable = 'yes'
-  }
-  return { ok: true, change }
-}
-
 /** A link worth keeping: http or https only. */
 export function bookingLink(text: string): string | null {
   const t = text.trim()
