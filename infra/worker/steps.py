@@ -303,14 +303,15 @@ def run_build(rest, work_dir, version=None, now=None):
         done = dt.datetime.now(dt.timezone.utc)
         moved = _t(read_state(rest).get("dirty_at")) != _t(dirty_at)
         set_state(rest, built_dirty_at=dirty_at, last_finished=iso(done), manifest_hash=result["manifest_hash"], last_error=None,
-                  last_warning=("trips left out of the build: " + ", ".join(dropped)) if dropped else None,
+                  last_warning=(f"{len(dropped)} trip{'s' if len(dropped) != 1 else ''} left out of the build") if dropped else None,
                   dirty_since=read_at if moved else None)
         return {"built": True, "uploaded": result["uploaded"], "options": n, "dropped": dropped}
     except Exception as e:  # a step failed, the old files stay live
         message = f"{stage}: {e}"[:1500]
         failed = dirty_at if stage not in ("start", "ingest") else first_dirty
         try:
-            set_state(rest, last_error=message, failed_dirty_at=failed, last_finished=iso(dt.datetime.now(dt.timezone.utc)))
+            # derive_state is readable by signed in users, so it gets the stage and the kind of failure, never row values
+            set_state(rest, last_error=f"{stage} failed, {type(e).__name__}", failed_dirty_at=failed, last_finished=iso(dt.datetime.now(dt.timezone.utc)))
         except Exception as w:
             message += f" (and the state could not be written: {w})"
         return {"built": False, "error": message}

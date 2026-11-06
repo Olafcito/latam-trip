@@ -195,7 +195,8 @@ class RunTest(unittest.TestCase):
         out = self.run_with(rest, build=lambda root: ["t-bad"])
         self.assertTrue(out["built"])
         st = rest.tables["derive_state"][0]
-        self.assertIn("t-bad", st["last_warning"])
+        self.assertEqual(st["last_warning"], "1 trip left out of the build")
+        self.assertNotIn("t-bad", st["last_warning"])
         self.assertIsNone(st["last_error"])
         self.assertEqual(st["built_dirty_at"], st["dirty_at"])
 
@@ -203,11 +204,14 @@ class RunTest(unittest.TestCase):
         rest = FakeRest(derive_state=[{"id": 1, **state()}])
 
         def refuse(root):
-            raise steps.Refused("check found 3 errors")
+            raise steps.Refused("check found 3 errors, first: trip t-secret TEST01")
         out = self.run_with(rest, build=refuse)
         self.assertFalse(out["built"])
         st = rest.tables["derive_state"][0]
-        self.assertIn("check found 3 errors", st["last_error"])
+        self.assertIn("failed, Refused", st["last_error"])
+        self.assertNotIn("t-secret", st["last_error"])
+        self.assertNotIn("TEST01", st["last_error"])
+        self.assertIn("t-secret", out["error"])
         self.assertEqual(st["failed_dirty_at"], st["dirty_at"])
         self.assertIsNone(st["built_dirty_at"])
         self.assertFalse(steps.should_build(st, NOW + dt.timedelta(hours=1)))
