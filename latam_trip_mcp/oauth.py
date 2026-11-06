@@ -2,7 +2,7 @@
 
 There is one owner. A client registers and sends Simon to /authorize, which starts a flow and offers to email him the
 app's own Supabase sign in link. The link opens the planner with ?connect=<flow>, on any device, where he allows the client.
-The planner posts his Supabase session to /signin/approve, which checks it with Supabase auth and the owners table. The
+The planner posts his Supabase session to /signin/approve, which checks it with Supabase auth and the admins table. The
 authorize page polls /signin/status and goes on to the client with a code once the flow is approved. A passphrase, compared
 in constant time with the SecureString parameter named by LATAMTRIP_PASSPHRASE_PARAM, stays as a fallback for when email
 is slow. The client trades the code at /token for a bearer, with PKCE. Flows, codes, tokens and refresh tokens live hashed in
@@ -100,12 +100,12 @@ def _supa(method, path, body=None, bearer=None):
 
 
 def owner_email():
-    """The address of the one owner, from the owners table and Supabase auth. It is never typed and never shown in full."""
+    """The address of the one owner, from the admins table and Supabase auth. It is never typed and never shown in full."""
     global _owner_email
     if _owner_email is None:
-        code, rows = _supa("GET", "/rest/v1/owners?select=user_id&limit=1")
+        code, rows = _supa("GET", "/rest/v1/admins?select=user_id&limit=1")
         if code != 200 or not rows:
-            raise RuntimeError("no owner in the owners table")
+            raise RuntimeError("no owner in the admins table")
         code, user = _supa("GET", f"/auth/v1/admin/users/{rows[0]['user_id']}")
         if code != 200 or not (user or {}).get("email"):
             raise RuntimeError("the owner has no email in Supabase auth")
@@ -135,7 +135,7 @@ def _user_of(token):
 
 
 def _is_owner(uid):
-    code, rows = _supa("GET", f"/rest/v1/owners?select=user_id&user_id=eq.{urllib.parse.quote(uid)}")
+    code, rows = _supa("GET", f"/rest/v1/admins?select=user_id&user_id=eq.{urllib.parse.quote(uid)}")
     return code == 200 and bool(rows)
 
 

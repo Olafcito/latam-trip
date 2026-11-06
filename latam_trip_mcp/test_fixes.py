@@ -137,6 +137,22 @@ class OauthTest(unittest.TestCase):
         oauth._delete = lambda pk: self.db.pop(pk, None)
         self.addCleanup(lambda: [setattr(oauth, n, f) for n, f in zip(("_get", "_put", "_delete"), self.saved)])
 
+    def test_the_owner_is_read_from_admins(self):
+        calls = []
+        saved = oauth._supa, oauth._owner_email
+        self.addCleanup(lambda: setattr(oauth, "_supa", saved[0]))
+        self.addCleanup(lambda: setattr(oauth, "_owner_email", saved[1]))
+
+        def fake(method, path, body=None, bearer=None):
+            calls.append(path)
+            return (200, [{"user_id": "U1"}]) if path.startswith("/rest/v1/") else (200, {"email": "test@example.com"})
+        oauth._supa, oauth._owner_email = fake, None
+        self.assertEqual(oauth.owner_email(), "test@example.com")
+        self.assertTrue(oauth._is_owner("U1"))
+        rest_calls = [c for c in calls if c.startswith("/rest/v1/")]
+        self.assertEqual(len(rest_calls), 2)
+        self.assertTrue(all(c.startswith("/rest/v1/admins?") for c in rest_calls), rest_calls)
+
     def test_a_code_is_stored_hashed_and_works_once(self):
         code = oauth.create_code("c1", "https://x.test/cb", "ch")
         self.assertFalse(any(code in pk for pk in self.db))
