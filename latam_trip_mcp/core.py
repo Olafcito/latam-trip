@@ -398,7 +398,7 @@ class Core:
                 eq.append("quote_id=" + str(w["id"]))
             return [(r["quote_id"], cols.from_row("quotes", r)) for r in self.store.query("quotes", eq=eq)]
         if tname == "task":
-            return [(str(r["id"]), r) for r in self.store.query("tasks")]
+            return [(str(r["id"]), r) for r in self.store.rest.get_all("tasks", self.mine({"select": "*", "order": "id"}))]
         if tname == "booking":
             self.need_project("bookings")
             return [(r["id"], r) for r in self.store.rest.get_all("bookings", self.mine({"select": "*", "order": "created_at,id"}))]

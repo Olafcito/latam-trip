@@ -361,7 +361,7 @@ class RlsTest(unittest.TestCase):
         """B listens to every change of each private published table while A inserts, updates and deletes a row.
         B hears no insert or update of A's. Realtime does not apply row level security to a delete, so B does hear A's
         delete, with the old row's primary key only. For a table keyed (owner_id, id) that is A's user id and the row's
-        id, for trips also the version, for tasks the id alone. That is the known gate before sign up opens, and this
+        id, for trips also the version. Tasks are keyed (owner_id, id) since 0031, so the same holds for them. That is the known gate before sign up opens, and this
         test pins it so a fix shows up here."""
         for table, pk in PUBLISHED.items():
             with self.subTest(table=table):

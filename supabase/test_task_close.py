@@ -1,4 +1,4 @@
-﻿"""Tests of migrations 0025, 0026 and 0030 (a stay_details or stay_prices task closes when the data is complete).
+"""Tests of migrations 0025, 0026, 0030 and 0031 (a stay_details or stay_prices task closes when the data is complete).
 
 Every case runs in one transaction that is always rolled back, so nothing is committed. Each migration is applied
 inside that transaction when schema_migrations does not list it yet, so the tests run before and after it goes live.
@@ -11,7 +11,8 @@ import json, os, sys, unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-MIGRATIONS = ("0025_task_close_by_data.sql", "0026_task_close_full_dates.sql", "0030_stay_prices_close.sql")
+MIGRATIONS = ("0025_task_close_by_data.sql", "0026_task_close_full_dates.sql", "0030_stay_prices_close.sql",
+              "0031_task_ids_per_owner.sql")
 LINKS = json.dumps([{"site": "booking", "url": "https://example.com/TEST01"}])
 PHOTO = json.dumps(["https://example.com/TEST01.jpg"])
 WATCHED = ("tasks", "lodgings", "lodging_rooms", "lodging_prices")

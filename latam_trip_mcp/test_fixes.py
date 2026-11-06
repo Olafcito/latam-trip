@@ -12,6 +12,11 @@ class TaskRest:
         self.rows = [{"id": 1, "title": "t", "type": "flight_prices", "status": "open", "data": {}}]
         self.patches = []
         self.inserted = []
+        self.reads = []
+
+    def get_all(self, table, params):
+        self.reads.append((table, params))
+        return [dict(r) for r in self.rows]
 
     def patch(self, table, params, body, returning=None):
         self.patches.append(body)
@@ -30,6 +35,10 @@ class TaskTest(Base):
         self.store.rest = self.rest
         real = self.store.query
         self.store.query = lambda table, *a, **k: [dict(r) for r in self.rest.rows] if table == "tasks" else real(table, *a, **k)
+
+    def test_task_list_reads_only_the_owners_tasks(self):
+        self.core.list("task")
+        self.assertEqual([(t, p.get("owner_id")) for t, p in self.rest.reads], [("tasks", "eq.OWNER1")])
 
     def test_add_task_refuses_an_unknown_field_and_a_nul(self):
         out = self.core.add("task", [{"title": "x", "bogus": 1}, {"title": "a" + chr(0) + "b"}])
