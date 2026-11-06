@@ -51,3 +51,11 @@ Format of an entry:
 - **Applies to.** `supabase/migrations/0022_stay_details_task.sql`, `plugin/scripts/tripdb.py` (`lodging-details`), `plugin/scripts/booking/`, `plugin/skills/trip-checklist/`, `docs/claude-tasks.md`.
 - **Source.** Simon's request on 2026-11-05 that a place added from Booking.com gets its rooms found after it is added.
 - **Date.** 2026-11-05. **Status.** Accepted.
+
+## TECH-006 One add-lodging flow, and stay_details for Airbnb places
+
+- **Decision.** `plugin/skills/add-lodging/SKILL.md` is the only description of how a place to stay is added and completed. A chat session, the task runner's `stay_search` and `stay_picks`, and the PC's `stay_details` each do their named steps of it. A place counts as added only with photos, every room and a price for the dates on each room. The trigger of 0022 now also queues `stay_details` for an Airbnb place (migration 0024), and a Sonnet browser worker reads the listing, since Airbnb loads its price only in a browser and has no headless reader here. In a chat the details are read in the same turn as the add, without waiting for the PC.
+- **Reasoning.** On 2026-11-06 five San Andrés places were added from Simon's links with no photos on three and no price on two, and reported as added. The Booking.com half was already queued for the PC, but nothing completed the Airbnb half, and the chat session did not know the queue existed. One skill read by every path keeps the rule in one place.
+- **Applies to.** `plugin/skills/add-lodging/`, `supabase/migrations/0024_stay_details_airbnb.sql`, `plugin/skills/trip-checklist/`, `plugin/skills/task-loop/`, `latam_trip_mcp/core.py` (the lodging note), `latam_trip_mcp/runner.py` (the stay contracts), `docs/claude-tasks.md`, `data/README.md`.
+- **Source.** Simon's request on 2026-11-06 that adding a place always includes its photos and prices, and that the flow lives in this repo and drives the tasks.
+- **Date.** 2026-11-06. **Status.** Accepted.

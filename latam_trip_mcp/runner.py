@@ -156,7 +156,9 @@ CONTRACTS = {
          "booking and the Booking.com url, lat, lon and address when shown, added_by claude, and in rooms one room, the "
          "cheapest shown, with its name as shown and in prices one row: check_in, check_out, total_dkk as shown for the "
          "stay, site booking, url the property's Booking.com link, refundable yes, no or partly and cancel_until when shown.",
-         "Send photos only with URLs the connector returned. Without one, leave photos out.",
+         "Send photos only with URLs the connector returned. Without one, leave photos out. Each place added queues a "
+         "stay_details task on Simon's PC that reads its photos, every room and their prices (the add-lodging skill), "
+         "so the result says the details are queued.",
          "In the result name the places added and the ones skipped with the reason, stored, hidden or too few reviews."],
         ["latam-trip get_place, list_lodging, add_lodging", BOOKING_COM],
         "Lodgings at place_id with their one room and its price, through add_lodging only.",
@@ -189,7 +191,9 @@ CONTRACTS = {
          "cheapest shown, with its name as shown and in prices one row: check_in, check_out, total_dkk as shown for the "
          "stay, site booking, url the property's Booking.com link, refundable yes, no or partly and cancel_until when shown. "
          "Leave to_center_km out, add_lodging works it out.",
-         "Send photos only with URLs the connector returned. Without one, leave photos out.",
+         "Send photos only with URLs the connector returned. Without one, leave photos out. Each place added queues a "
+         "stay_details task on Simon's PC that reads its photos, every room and their prices (the add-lodging skill), "
+         "so the result says the details are queued.",
          "Close with finish_task with outputs the ids add_lodging gave, best first. In the result name the places added "
          "and how many were left out for each reason. With none left, finish with no outputs and say why."],
         ["latam-trip get_place, list_lodging, add_lodging", BOOKING_COM],

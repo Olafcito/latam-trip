@@ -61,7 +61,10 @@ TYPES = {
                       "and update_trip never drops it or changes its ends."),
     "lodging": T("lodging", "lodgings", tripdb.LODGING, auto=("id", "created_at", "updated_at"), keys=("id",),
                  note="A lodging is a place to stay, kept in the project database only. Add only places Simon asked for, a task that asks to find places to stay counting as him asking, "
-                      "with photos, rating, distances and rooms, and fill in prices for the trip's dates when you know them. "
+                      "with photos, rating, distances and rooms. A place is complete only with its photos, every room and a price "
+                      "for the trip's dates on each room, so whatever the add cannot get is read from the site at once with a "
+                      "browser, by the add-lodging skill in the plugin, and a Booking.com or Airbnb place also queues a "
+                      "stay_details task for it. "
                       "Call list_lodging with place first, so a place is not added twice. place_id is a place in the places, "
                       "and tags come from " + ", ".join(tripdb.LODGING_TAGS.split(",")) + ". "
                       "Rooms go in rooms under the lodging and each room's prices in its prices, and a lodging is saved whole "
@@ -91,7 +94,7 @@ CHAT_FLIGHT = {"from": "!iata", "to": "!iata", "date": "!date", "price": "!num",
                "stops": "int", "via": "list", "carriers": "list", "flights": "list", "link": "str", "notes": "str"}
 HINTS = {"iata": "3 capital letters, like SJO", "pid": "capital letters and digits, like SJO or LCORN",
          "slug": "lowercase letters, digits, - and _", "cc": "2 capital letters, like CR", "tid": "letters, digits, - and _",
-         "date": "YYYY-MM-DD", "time": "YYYY-MM-DD or YYYY-MM-DDTHH:MM"}
+         "date": "YYYY-MM-DD", "time": "YYYY-MM-DDTHH:MM, a date alone is refused"}
 JSON_OF = {"str": "string", "iata": "string", "pid": "string", "slug": "string", "cc": "string", "tid": "string",
            "date": "string", "time": "string", "int": "integer", "num": "number", "bool": "boolean", "list": "array",
            "dict": "object"}

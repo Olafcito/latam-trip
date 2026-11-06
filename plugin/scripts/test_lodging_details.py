@@ -136,6 +136,13 @@ class Migration(unittest.TestCase):
             sql = fh.read()
         self.assertNotIn("function public.task_runs_in_cloud", sql)
 
+    def test_airbnb_places_queue_stay_details_too(self):
+        repo = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+        with open(os.path.join(repo, "supabase", "migrations", "0024_stay_details_airbnb.sql"), encoding="utf-8") as fh:
+            sql = fh.read()
+        self.assertIn("in ('booking', 'airbnb')", sql)
+        self.assertNotIn("function public.task_runs_in_cloud", sql)
+
 
 if __name__ == "__main__":
     unittest.main()

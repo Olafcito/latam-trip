@@ -1,7 +1,7 @@
 {
   "name": "flight-crawler",
   "version": "0.5.0",
-  "description": "Crawler-style flight search: an orchestrator expands a route tree (returns, open jaws, multi-city, hubs, stopovers, alternative origins), cheap Sonnet browser workers search Momondo and Google Flights, and every quote lands in one long table scored on price, hours and conditions. Also: trip-checklist skill (claude-task issues from the trip app) a task-runner skill for the unattended cloud tasks, and a stay-price worker for Booking.com (Hostelworld rates come from the stay-rates edge function).",
+  "description": "Crawler-style flight search: an orchestrator expands a route tree (returns, open jaws, multi-city, hubs, stopovers, alternative origins), cheap Sonnet browser workers search Momondo and Google Flights, and every quote lands in one long table scored on price, hours and conditions. Also: trip-checklist skill (claude-task issues from the trip app) a task-runner skill for the unattended cloud tasks, an add-lodging skill that is the one flow for adding and completing a place to stay, and a stay-price worker for Booking.com (Hostelworld rates come from the stay-rates edge function).",
   "author": {
     "name": "Simon"
   },
