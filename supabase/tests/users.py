@@ -149,25 +149,21 @@ def make_user(env, label):
     return User(env, body["user"]["id"], email, body["access_token"])
 
 
-def admin_table(cur):
-    """admins after 0027, owners before it."""
-    cur.execute("select to_regclass('public.admins') is not null and "
-                "(select relkind from pg_class where oid = to_regclass('public.admins')) = 'r'")
-    return "public.admins" if cur.fetchone()[0] else "public.owners"
-
-
 def make_admin(env, user):
-    """Make user the only admin, committed, so the REST calls of the tests see it."""
-    import migrate
-    con = migrate.connect(env)
-    try:
-        with con, con.cursor() as cur:
-            table = admin_table(cur)
-            cur.execute(f"delete from {table} where user_id <> %s", (user.id,))
-            cur.execute(f"insert into {table} (user_id) values (%s) on conflict do nothing", (user.id,))
-    finally:
-        con.close()
-    return user
+    """Make user the only admin, through PostgREST on the secret key, so it needs no database driver. admins after
+    0027, owners before it."""
+    svc = service(env)
+    for table in ("admins", "owners"):
+        code, body = svc.call("DELETE", f"{table}?user_id=neq.{user.id}")
+        if code == 404 or (isinstance(body, dict) and body.get("code") in ("42P01", "PGRST205")):
+            continue
+        if code not in (200, 204):
+            raise RuntimeError(f"clearing {table} gave {code}: {body}")
+        code, body = svc.insert(table, [{"user_id": user.id}], on_conflict="user_id", resolution="ignore-duplicates")
+        if code not in (200, 201):
+            raise RuntimeError(f"making the admin in {table} gave {code}: {body}")
+        return user
+    raise RuntimeError("neither admins nor owners exists")
 
 
 def admin(env):
