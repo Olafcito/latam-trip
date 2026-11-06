@@ -28,7 +28,7 @@ CHANGE = {"trips": {"saved_by": "TEST01 stranger"}, "bookings": {"notes": "TEST0
           "inbox": {"reason": "TEST01 stranger"}, "agent_usage": {"agent": "TEST01 stranger"},
           "user_profiles": {"rules": "TEST01 stranger"}, "user_documents": {"data": {"by": "stranger"}}}
 REFUSED = (401, 403)
-# the private tables that were in the supabase_realtime publication until 0032 moved them to the owner topics
+# the private tables that were in the supabase_realtime publication until 0034 moved them to the owner topics
 WAS_PUBLISHED = ["bookings", "lodgings", "lodging_rooms", "lodging_prices", "tasks", "trips"]
 CATALOGUE = {
     "airports": ("code", {"code": "TS1"}, {"name": "TEST01 airport"}),
@@ -422,7 +422,7 @@ class RlsTest(unittest.TestCase):
         self.assertIn("derive_state", published)
 
     def test_realtime_is_owner_scoped(self):
-        """A inserts, updates and deletes a row of each table that was published before 0032 while B listens every way
+        """A inserts, updates and deletes a row of each table that was published before 0034 while B listens every way
         a client can: Postgres Changes on the table, B's own owner topic, and A's owner topic. B hears nothing of A's,
         not even a delete, and cannot join A's topic. A hears each of the three on A's topic, with the table as the
         event and no column of the row in the message. B's own insert reaches B's topic."""
