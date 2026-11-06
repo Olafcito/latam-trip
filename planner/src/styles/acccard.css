@@ -158,25 +158,23 @@ a.ac-room svg { flex: none; margin-top: 4px; color: var(--muted); }
 }
 
 /* ---------- the compact rows under the stay: things to do, experiences, about ---------- */
-.fr-list { display: grid; margin: 0; padding: 0; list-style: none; border: 1px solid var(--line-2); border-radius: 14px; background: var(--surface); overflow: hidden; }
-.fr + .fr { border-top: 1px solid var(--line-2); }
-.fr-head { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 56px; padding: 12px 14px; transition: background-color var(--t-fast) ease; }
-.fr-head > svg:first-child { flex: none; color: var(--text); }
-.fr-what { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; }
-.fr-t { display: flex; align-items: center; gap: 10px; font-size: var(--fs-title); font-weight: 600; }
+.fr-list { display: grid; margin: 4px 0 0; padding: 0; list-style: none; }
+.fr-head { display: flex; align-items: center; gap: 12px; width: 100%; min-height: var(--hit); padding: 8px 6px; border-radius: 10px; text-align: left; transition: background-color var(--t-fast) ease; }
+.fr-head > svg:first-child { flex: none; color: var(--muted); }
+.fr-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-title); font-weight: 600; }
 .fr-n {
+  flex: none;
   padding: 1px 9px; border-radius: 999px; font-size: var(--fs-label); font-weight: 600; font-variant-numeric: tabular-nums;
   color: var(--boat); border: 1px solid color-mix(in oklab, var(--boat) 40%, transparent); background: color-mix(in oklab, var(--boat) 8%, transparent);
 }
-.fr-s { font-size: var(--fs-small); color: var(--ac-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fr-c { flex: none; color: var(--muted); transition: transform var(--t-med) var(--ease-out); }
+.fr-c { flex: none; margin-left: auto; color: var(--muted); transition: transform var(--t-med) var(--ease-out); }
 .fr-head[aria-expanded='true'] .fr-c { transform: rotate(90deg); }
-.fr-body { padding: 0 14px 14px 52px; }
+.fr-body { padding: 4px 6px 14px 38px; }
 @media (hover: hover) and (pointer: fine) {
   .fr-head:hover { background: var(--surface-2); }
 }
 @container af (max-width: 560px) {
-  .fr-body { padding-left: 14px; }
+  .fr-body { padding-left: 6px; }
 }
 
 /* ---------- the windows of a stay: add booking confirmation (scw) and the stay on its own (sd) ---------- */

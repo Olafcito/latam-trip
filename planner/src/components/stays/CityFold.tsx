@@ -2,14 +2,12 @@ import { useId, useState, type ReactNode } from 'react'
 import { Caret, Info, Star, Umbrella } from '../icons'
 
 // A stop folded open on the route, in stacked sections: its summary, then where Simon sleeps as large cards, then
-// Things to do, Experiences and About as compact rows. A row shows its count and a line of what it holds, and opens
-// in place under itself. A row with nothing gathered is not shown, except About, which holds the stop's own acts.
+// Things to do, Experiences and About as compact rows. A row is one line, its icon, title and count, and opens in
+// place under itself. A row with nothing gathered is not shown, except About, which holds the stop's own acts.
 
 export interface FoldSection {
   /** "2 ideas" */
   count?: string | null
-  /** a line of what it holds, "Diving, boat tours, beach clubs" */
-  line?: string | null
   body: ReactNode
 }
 
@@ -28,12 +26,10 @@ function Row({ title, Icon, s }: { title: string; Icon: (p: { s?: number }) => R
   return (
     <li className="fr">
       <button type="button" className="fr-head" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
-        <Icon s={24} />
-        <span className="fr-what">
-          <span className="fr-t">{title}{s.count && <span className="fr-n">{s.count}</span>}</span>
-          {s.line && <span className="fr-s">{s.line}</span>}
-        </span>
-        <span className="fr-c"><Caret dir="r" s={18} /></span>
+        <Icon s={20} />
+        <span className="fr-t">{title}</span>
+        {s.count && <span className="fr-n">{s.count}</span>}
+        <span className="fr-c"><Caret dir="r" s={16} /></span>
       </button>
       <div className="fr-body" id={id} hidden={!open}>{open && s.body}</div>
     </li>

@@ -246,7 +246,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
             <button type="button" className="al-add" onClick={() => setAdding(null)}><Plus />Add accommodation</button>
           </>
         }
-        todo={prof?.things_to_do?.length ? { count: ideas(prof.things_to_do.length), line: prof.things_to_do.slice(0, 3).join(', '), body: (
+        todo={prof?.things_to_do?.length ? { count: ideas(prof.things_to_do.length), body: (
           <div className="af-todo">
             <ul className="tg-todo">{prof.things_to_do.map((t) => <li key={t}>{t}</li>)}</ul>
             {prof.touristy != null && (
@@ -254,13 +254,13 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
             )}
           </div>
         ) } : undefined}
-        experiences={exps.length ? { count: ideas(exps.length), line: exps.slice(0, 3).map((e) => e.name).join(', '), body: (
+        experiences={exps.length ? { count: ideas(exps.length), body: (
           <div className="af-exp">
             {!!finds?.experiences.length && <Finds title="Experiences" rows={finds.experiences} onFind={setFind} />}
             {!!finds?.training.length && <Finds title="Training" rows={finds.training} onFind={setFind} />}
           </div>
         ) } : undefined}
-        about={{ line: prof?.tagline ?? null, body: (
+        about={{ body: (
           <div className="af-about">
             {prof?.image?.url && <img className="af-img" src={prof.image.url} alt="" loading="lazy" />}
             {(node || prof?.tagline) && <p className="af-tag">{[node && countryName(node.country), prof?.tagline].filter(Boolean).join('. ')}</p>}
