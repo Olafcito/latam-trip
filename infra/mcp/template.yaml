@@ -3,9 +3,10 @@ Description: >
   latam-trip-mcp, the connector Claude uses to read and write the trip data. One Lambda behind an API Gateway HTTP API
   (public Function URLs are blocked in this account), run with the Lambda Web Adapter. Every resource is prefixed
   latam-trip-mcp and tagged project=latam-trip. Supabase's OAuth server signs people in (TECH-010) and the
-  connector calls Supabase as each person with the publishable key. The project URL and the publishable key live in
-  SSM under /latam-trip-mcp/. The secret key and passphrase parameter names stay only until the day after the switch,
-  for the code deployed before it, and go then.
+  connector calls Supabase as each person with the publishable key. The project URL and the publishable key are plain
+  String parameters in SSM, and the function may read those two and no other, so it needs no kms:Decrypt. The old
+  secret key and passphrase parameters stay in SSM until the day after the switch, so the commit before it can be
+  deployed in full again, but this stack can no longer read them.
 
 Parameters:
   LwaLayerArn:
@@ -15,10 +16,6 @@ Parameters:
     Type: String
   CodeS3Key:
     Type: String
-  SsmKmsKeyArn:
-    Type: String
-    Description: The account's alias/aws/ssm key, which encrypts the SecureString parameters. deploy.sh resolves it.
-    AllowedPattern: "arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key/[0-9a-f-]+"
 
 Resources:
   SessionTable:
@@ -61,13 +58,9 @@ Resources:
                 Resource: !GetAtt SessionTable.Arn
               - Effect: Allow
                 Action: ssm:GetParameter
-                Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/latam-trip-mcp/*
-              - Effect: Allow
-                Action: kms:Decrypt
-                Resource: !Ref SsmKmsKeyArn
-                Condition:
-                  StringEquals:
-                    kms:ViaService: !Sub ssm.${AWS::Region}.amazonaws.com
+                Resource:
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/latam-trip-mcp/supabase-url
+                  - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/latam-trip-mcp/supabase-publishable-key
       Tags:
         - Key: project
           Value: latam-trip
@@ -94,9 +87,7 @@ Resources:
           LATAMTRIP_SESSION_TABLE: !Ref SessionTable
           LATAMTRIP_URL_PARAM: /latam-trip-mcp/supabase-url
           LATAMTRIP_PUBLISHABLE_KEY_PARAM: /latam-trip-mcp/supabase-publishable-key
-          # the three below are read only by the code deployed before the switch, and go the day after it
-          LATAMTRIP_KEY_PARAM: /latam-trip-mcp/supabase-secret-key
-          LATAMTRIP_PASSPHRASE_PARAM: /latam-trip-mcp/signin-passphrase
+          # read only by the code before the switch, and harmless to this code
           LATAMTRIP_APP_URL: https://d15amu9hjiumbd.cloudfront.net
       Tags:
         - Key: project

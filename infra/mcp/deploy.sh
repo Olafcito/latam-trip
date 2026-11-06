@@ -130,9 +130,6 @@ if [ "$CODE_ONLY" = 1 ]; then
   exit 0
 fi
 
-# the connector decrypts its SSM parameters with the account's AWS managed SSM key and no other
-SSM_KMS_KEY_ARN="$("${AWS[@]}" kms describe-key --key-id alias/aws/ssm --query KeyMetadata.Arn --output text | tr -d '\r')"
-
 # AWS publishes the Lambda Web Adapter layer per region. Pass LWA_LAYER_ARN to choose one, else find the newest here.
 LWA="${LWA_LAYER_ARN:-}"
 if [ -z "$LWA" ]; then
@@ -144,7 +141,7 @@ fi
 [ -n "$LWA" ] || { echo "no Lambda Web Adapter layer found, set LWA_LAYER_ARN" >&2; exit 1; }
 echo ">> deploying stack $STACK"
 "${AWS[@]}" cloudformation deploy --stack-name "$STACK" --template-file "$(winpath "$ROOT/infra/mcp/template.yaml")" \
-  --capabilities CAPABILITY_NAMED_IAM --parameter-overrides LwaLayerArn="$LWA" CodeS3Bucket="$BUCKET" CodeS3Key="$KEY" SsmKmsKeyArn="$SSM_KMS_KEY_ARN" \
+  --capabilities CAPABILITY_NAMED_IAM --parameter-overrides LwaLayerArn="$LWA" CodeS3Bucket="$BUCKET" CodeS3Key="$KEY" \
   --tags project=latam-trip
 "${AWS[@]}" cloudformation describe-stacks --stack-name "$STACK" \
   --query "Stacks[0].Outputs[?OutputKey=='McpEndpoint'].OutputValue" --output text | tr -d '\r'
