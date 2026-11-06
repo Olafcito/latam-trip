@@ -284,6 +284,36 @@ class RlsTest(unittest.TestCase):
         self.assertIn(says, body["message"])
         self.assertNotIn("?", body["message"])
 
+    def limit(self, name, value):
+        """Sets one row of owner_limits for this test and puts the old value back after it."""
+        import migrate
+        with migrate.connect(self.env) as con:
+            old = con.execute("select value from public.owner_limits where name = %s", (name,)).fetchone()
+            con.execute("insert into public.owner_limits (name, value, unit) values (%s, %s, 'rows') "
+                        "on conflict (name) do update set value = excluded.value", (name, value))
+
+        def back():
+            with migrate.connect(self.env) as con:
+                if old:
+                    con.execute("update public.owner_limits set value = %s where name = %s", (old[0], name))
+                else:
+                    con.execute("delete from public.owner_limits where name = %s", (name,))
+        self.addCleanup(back)
+
+    def test_add_quotes_holds_the_quotes_cap(self):
+        # add_quotes inserts as the caller since 0033, so the quotes cap counts what a person adds through it
+        self.limit("rows_in_quotes", 3)
+        add = lambda who, ids: who.rest.rpc("add_quotes", {"rows": [
+            {"quote_id": f"TEST01-{i}", "last_seen": "2026-11-06T12:00:00Z"} for i in ids]})
+        self.assertEqual(ok(self, add(self.b, [1, 2])), {"added": 2, "seen_again": 0})
+        # a quote seen again adds no row, so it passes at the cap too
+        self.assertEqual(ok(self, add(self.b, [1, 2, 3])), {"added": 1, "seen_again": 2})
+        self.assertEqual(ok(self, add(self.b, [1, 2, 3])), {"added": 0, "seen_again": 3})
+        self.refused(add(self.b, [4]), "3 rows in quotes per person")
+        self.assertEqual(len(ok(self, self.b.rest.select("quotes", "select=quote_id"))), 3)
+        # A's quotes count apart
+        self.assertEqual(ok(self, add(self.a, [1, 2, 3])), {"added": 3, "seen_again": 0})
+
     def test_row_caps_per_person(self):
         limits = self.limits()
         cap, per_day = limits["rows_per_private_table"], limits["tasks_per_day"]
