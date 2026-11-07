@@ -15,6 +15,7 @@ Each item is stored against your own account and no one else's.
 | Your sign in, which is your email address | To let you in and to keep your data apart from everyone else's |
 | Your profile: home airport, currency, longest journey, travel style and rules | So the skills search for flights and places the way you want |
 | Your trips, saved as versions | To plan and keep your route |
+| The links you made to share a trip, and when you stopped each | So a friend can open the trip you shared, and a stopped link stays dead |
 | Your flight and fare quotes | To compare prices for your trips |
 | Your bookings: the legs, dates and booking details you add | To show your plan and keep booked legs from moving |
 | Your booking files, such as PDFs and photos, in a private folder | So tickets and confirmations are with the booking |
@@ -31,10 +32,14 @@ Your assistant reads pages in your own browser. latam-trip runs no browser of it
 ## Who can see it
 
 - **You.** Row level security in the database keeps every private table and the booking folder to the rows with your own account id. Your assistant uses your own sign in, so it sees what you see.
-- **No other traveller.** Another person's account cannot read or change your rows, and the public files of the map are built from the shared catalogue and Simon's own rows only, never yours.
+- **No other traveller.** Another person's account cannot read or change your rows. The one exception is a trip you share by a link, which they can read but not change (below). The public files of the map are built from the shared catalogue and Simon's own rows only, never yours.
 - **Simon, as the administrator.** He holds the project's secret key. He uses it for the shared catalogue, for the service tables and for backups, and the backups hold some of your rows (see below).
 - **Claude API.** When you add a booking by pasting a confirmation or a file, the planner's `read-booking` function sends that text or file to the Claude API on latam-trip's own key to read it. It keeps nothing else, logs nothing of the content, and is capped at a number of reads a month for each person.
 - **Your own Claude.** What your assistant reads through the connector is handled under your own Claude subscription and its terms.
+
+## A trip you share by a link
+
+You can share one of your trips by a link, from the planner or through your Claude (FEAT-007). Anyone who has the link and signs in sees the trip read only: its name and why, its places with their nights and dates, and the ways in and home with their market fares. They never see your bookings, your places to stay, what you paid, the trip's totals, your name, your email or your account id. A link shows the latest saved version of the trip, so later changes you save are shown too. You can stop sharing at any time, and the link is dead at once. Sharing again makes a new link. A person who keeps a copy has their own trip from then on, and stopping the link does not take their copy away. Your links are deleted with your account and are part of your export.
 
 ## The shared catalogue
 
