@@ -4,6 +4,7 @@ import { Flag, hasFlag } from '@map/map/Flag'
 import type { AppData, Booking, CrawledFlight, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
 import { useOwnBookings, useOwnLodgings, useStore } from '../../store'
+import { stopsWithStays } from '../../lib/stays'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
 import { flightOffDay, giveNight, legDay, legTime, nightStop, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
@@ -367,17 +368,16 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   }, [inout, wayIn, wayHome, journey.id])
   // the stop whose City card is open, and at which view. A stop deleted from the card goes once the card has closed
   const [city, setCity] = useState<{ i: number; view: CityView } | null>(null)
-  // the stops folded open on the route. Each stop with a place to stay opens with the trip
-  const withStays = () => new Set(journey.places.flatMap((p, k) => (p.stays?.length ? [k] : [])))
-  const [folds, setFolds] = useState<{ trip: string; open: ReadonlySet<number> }>(() => ({ trip: journey.id, open: withStays() }))
-  if (folds.trip !== journey.id) setFolds({ trip: journey.id, open: withStays() })
-  const open = folds.trip === journey.id ? folds.open : withStays()
-  const setOpen = (i: number, on: boolean) => setFolds((f) => {
-    const next = new Set(f.open)
-    if (on) next.add(i)
-    else next.delete(i)
-    return { ...f, open: next }
-  })
+  // the stops folded open on the route. Each stop with a place to stay, planned or booked, opens with the trip, also
+  // when the bookings land after it, and stays open when its stay is let go so the fold never leaves under the hand.
+  // A stop folded open or shut by hand keeps that until another trip opens
+  const withStays = useMemo(() => stopsWithStays(journey, sched, bookings), [journey, sched, bookings])
+  const [folds, setFolds] = useState<{ trip: string; set: ReadonlyMap<number, boolean>; auto: ReadonlySet<number> }>(() => ({ trip: journey.id, set: new Map(), auto: withStays }))
+  if (folds.trip !== journey.id) setFolds({ trip: journey.id, set: new Map(), auto: withStays })
+  else if ([...withStays].some((k) => !folds.auto.has(k))) setFolds((f) => ({ ...f, auto: new Set([...f.auto, ...withStays]) }))
+  const cur = folds.trip === journey.id ? folds : { set: new Map<number, boolean>(), auto: withStays }
+  const open: ReadonlySet<number> = new Set(journey.places.flatMap((_, k) => ((cur.set.get(k) ?? cur.auto.has(k)) ? [k] : [])))
+  const setOpen = (i: number, on: boolean) => setFolds((f) => ({ ...f, set: new Map(f.set).set(i, on) }))
   // the stops whose fold is closing
   const [shutting, setShutting] = useState<ReadonlySet<number>>(() => new Set())
   const unshut = (i: number) => setShutting((s) => { if (!s.has(i)) return s; const next = new Set(s); next.delete(i); return next })
@@ -750,7 +750,12 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
               removeStop(city.i)
               // the stops after it move up one
               const gone = city.i
-              setFolds((f) => ({ ...f, open: new Set([...f.open].flatMap((k) => (k < gone ? [k] : k > gone ? [k - 1] : []))) }))
+              const up = (k: number) => (k < gone ? [k] : k > gone ? [k - 1] : [])
+              setFolds((f) => ({
+                ...f,
+                set: new Map([...f.set].flatMap(([k, on]) => up(k).map((n): [number, boolean] => [n, on]))),
+                auto: new Set([...f.auto].flatMap(up)),
+              }))
             }
             goes.current = false
           }}

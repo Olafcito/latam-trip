@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { Lodging, LodgingPrice, LodgingRoom, Way } from '../data/types'
 import { schedule, type Hop, type Journey } from './journey'
-import { plannedStays, plannedStaysDkk, priceFor, stayParts, type PlannedStay } from './stays'
+import { plannedStays, plannedStaysDkk, priceFor, stayParts, stopsWithStays, type PlannedStay } from './stays'
+import { savedRow } from './bookingDraft'
 
 // Made up places, rooms and prices only. A real name or price never goes in this file.
 
@@ -134,5 +135,18 @@ describe('plannedStays', () => {
     const j = trip(undefined, [{ ...whole, nights: 6 }, { lodging_id: 'L2', room_id: 'R2' }])
     expect(plannedStays(j, sched(j), exact)).toEqual({ dkk: 310 * 4, unknown: 0 })
     expect(plannedStays(trip(), sched(trip()), exact)).toEqual({ dkk: 0, unknown: 0 })
+  })
+})
+
+describe('the stops that open with the trip', () => {
+  const stay = (over: Parameters<typeof savedRow>[0], id = 'b1') => savedRow({ kind: 'stay', trip_id: 'j', ...over }, id)
+  it('opens a stop with a planned stay and a stop with a booked one, never a cancelled booking', () => {
+    const j = trip('2026-12-05', [whole])
+    const s = sched(j)
+    const c = s.places[2]
+    const booked = stay({ place_id: 'C', check_in: c.inDay, check_out: '2026-12-30' })
+    const gone = stay({ place_id: 'A', check_in: s.places[0].inDay, check_out: s.places[1].inDay, status: 'cancelled' }, 'b2')
+    expect([...stopsWithStays(j, s, [booked, gone])].sort()).toEqual([1, 2])
+    expect([...stopsWithStays(trip(), sched(trip()), [])]).toEqual([])
   })
 })

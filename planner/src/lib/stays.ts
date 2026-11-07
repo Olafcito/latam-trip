@@ -214,3 +214,21 @@ export function stayTotals(j: Journey, sched: Schedule, bookings: Booking[], lod
   for (const id of p.standsIn) noPrice.delete(id)
   return { booked, planned: p.dkk, unknown: p.unknown + noPrice.size }
 }
+
+/**
+ * The stops that have a place to stay, planned on the stop or booked for its nights, so their folds open with the trip.
+ * A booked stay no stop covers counts at the stop it is pinned to.
+ */
+export function stopsWithStays(j: Journey, sched: Schedule, bookings: Booking[]): Set<number> {
+  const out = new Set<number>()
+  j.places.forEach((p, k) => {
+    if (p.stays?.length) out.add(k)
+  })
+  for (const b of tripStays(j, sched, bookings)) {
+    sched.places.forEach((sp, k) => {
+      if (sp.node === b.place_id && b.check_in! < addDays(sp.inDay, Math.max(1, sp.days)) && b.check_out! > sp.inDay) out.add(k)
+    })
+  }
+  for (const c of stayClashes(j, sched, bookings)) if (c.stop != null) out.add(c.stop)
+  return out
+}
