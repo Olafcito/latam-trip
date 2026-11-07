@@ -1,4 +1,4 @@
-/* The public guide at /?guide: two cards to add the connector, prompts in chat bubbles, the tools in groups that open. */
+/* The public guide at ?guide: one setup at a time under a switch, prompts in chat bubbles, the tools in groups that open. */
 @scope (:root) to (.rmap) {
 .gd { max-width: 960px; gap: 36px; padding-top: 28px; padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
 .gd-head { display: flex; align-items: center; gap: 14px; }
@@ -9,7 +9,19 @@
 .gd-after { margin: 14px 0 0; color: var(--muted); }
 .gd-after b { color: var(--text); font-weight: 600; }
 
-.gd-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.gd-switch { display: inline-flex; padding: 3px; margin-bottom: 14px; border-radius: 12px; background: var(--surface-3); gap: 2px; }
+.gd-switch button { min-height: 40px; min-width: 112px; padding: 0 18px; border: 0; border-radius: 9px; background: none; color: var(--muted); font: inherit; font-weight: 600; cursor: pointer; transition: background-color var(--t-fast) ease, color var(--t-fast) ease; }
+.gd-switch button[aria-pressed="true"] { background: var(--surface-2); color: var(--text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.3), inset 0 0 0 1px var(--line-2); }
+.gd-h-quiet { font-size: var(--fs-lead); color: var(--muted); }
+.gd-dev { display: grid; gap: 10px; }
+.gd-dev .gd-h { margin-bottom: 0; }
+.gd-slot { background: none; color: inherit; font-weight: 600; text-decoration: underline; text-decoration-color: var(--flight); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.gd-steps li > span { min-width: 0; }
+.gd-steps .gd-snip { margin-top: 8px; }
+.gd-names { margin: 0 16px 14px; }
+.gd-names summary { cursor: pointer; color: var(--faint); font-size: var(--fs-small); min-height: 32px; display: flex; align-items: center; }
+.gd-names p { margin: 4px 0 0; color: var(--faint); font-family: ui-monospace, monospace; font-size: var(--fs-label); line-height: 1.7; overflow-wrap: anywhere; }
 .gd-card { padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .gd-sub { margin: 0; color: var(--faint); font-size: var(--fs-small); font-weight: 500; }
 .gd-card .gd-sub + .gd-steps { margin-top: -2px; }
@@ -20,8 +32,6 @@
 
 .gd-snip { display: flex; align-items: center; gap: 4px; padding: 2px 2px 2px 12px; border-radius: 10px; background: var(--ground); box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
 .gd-snip code { flex: 1; min-width: 0; padding: 6px 0; overflow-wrap: anywhere; font-size: var(--fs-num); color: var(--text); }
-.gd-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.gd-chips li { padding: 3px 10px; border-radius: 999px; background: var(--surface-3); color: var(--muted); font-size: var(--fs-small); font-weight: 500; }
 
 /* the copy button: a copy mark that turns into a check */
 .gd-copy { position: relative; flex: none; width: var(--hit); height: var(--hit); border: 0; border-radius: 8px; background: none; color: var(--muted); display: grid; place-items: center; cursor: pointer; transition: transform var(--t-fast) var(--ease-out), color var(--t-fast) ease, background-color var(--t-fast) ease; }
@@ -31,6 +41,10 @@
 .gd-copy[data-done] { color: var(--booked); }
 .gd-copy[data-done] .gd-copy-a { opacity: 0; transform: scale(0.8); filter: blur(2px); }
 .gd-copy[data-done] .gd-copy-b { opacity: 1; transform: none; filter: none; }
+.gd-copy-t { display: none; font-size: var(--fs-small); font-weight: 600; white-space: nowrap; }
+.gd-copy[data-select] { width: auto; padding: 0 10px; color: var(--text); }
+.gd-copy[data-select] .gd-copy-i { display: none; }
+.gd-copy[data-select] .gd-copy-t { display: block; }
 @media (hover: hover) and (pointer: fine) {
   .gd-copy:hover { background: var(--surface-3); color: var(--text); }
 }
@@ -51,11 +65,8 @@
 .gd-group summary::-webkit-details-marker { display: none; }
 .gd-group summary svg { color: var(--faint); transition: transform var(--t-med) var(--ease-out); }
 .gd-group[open] summary svg { transform: rotate(180deg); }
-.gd-group ul { list-style: none; margin: 0; padding: 0 16px 14px; display: grid; gap: 12px; }
-.gd-group li { display: grid; gap: 2px; }
-.gd-group li code { font-size: var(--fs-small); overflow-wrap: anywhere; line-height: 1.6; }
-.gd-group li span { color: var(--muted); font-size: var(--fs-small); }
-.gd-groups + .gd-after { margin-bottom: 8px; }
+.gd-group ul { list-style: none; margin: 0; padding: 0 16px 8px; display: grid; gap: 8px; }
+.gd-group li { color: var(--muted); font-size: var(--fs-small); }
 
 .gd-link { color: var(--muted); font-size: var(--fs-small); font-weight: 500; text-decoration-color: var(--line-2); }
 @media (hover: hover) and (pointer: fine) { .gd-link:hover { color: var(--text); } }
@@ -63,7 +74,7 @@
 @media (max-width: 720px) {
   .gd { gap: 30px; padding-top: 20px; }
   .gd-head h1 { font-size: var(--fs-head); }
-  .gd-pair, .gd-scen, .gd-groups { grid-template-columns: 1fr; }
+  .gd-scen, .gd-groups { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   .gd-copy-i, .gd-group summary svg { transition: opacity var(--t-fast) ease; }

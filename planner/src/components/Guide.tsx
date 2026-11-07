@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { AppMark } from './Consent'
 import { Caret, Check, Copy } from './icons'
 
-// The public guide to the connector and the plugin, at /?guide. It needs no session, so it can be linked to anyone.
-// Meaning sits in form: numbered steps, a prompt in a chat bubble with its copy button, a tool group that opens.
+// The public guide to the connector and the plugin, at ?guide. It needs no session, so it can be linked to anyone.
+// Meaning sits in form: one setup at a time under a switch, a prompt in a chat bubble with its copy button, a tool group that opens.
 
 /** The connector's address, the same as docs/connector.md. */
 export const SERVER_URL = 'https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp'
@@ -13,9 +13,11 @@ export const guideRequested = (search: string) => new URLSearchParams(search).ha
 const PLUGIN_STEPS = ['/plugin marketplace add Olafcito/latam-trip', '/plugin install flight-crawler@latam-trip']
 const CODE_ADD = `claude mcp add --transport http latam-trip ${SERVER_URL}`
 
-const SCENARIOS: { title: string; prompt: string }[] = [
+/** slot is the part of a prompt a reader is expected to change, shown marked. */
+const SCENARIOS: { title: string; prompt: string; slot?: string }[] = [
   {
     title: 'Find a first route',
+    slot: 'Copenhagen',
     prompt: 'I want to travel to South America flying from Copenhagen. I am thinking of starting in Colombia, then backpacking north through Central America and flying home from there. I am travelling for 2 months, so please help me find an initial route.',
   },
   {
@@ -39,16 +41,16 @@ const SCENARIOS: { title: string; prompt: string }[] = [
 type Group = { name: string; tools: { names: string; what: string }[] }
 const crud = (t: string) => ['list', 'get', 'add', 'update', 'delete'].map((v) => `${v}_${t}`).join(' ')
 
-// Taken from docs/connector.md and latam_trip_mcp/core.py
+// Taken from docs/connector.md and latam_trip_mcp/core.py. The stay tools that write are closed for everyone, so only the reads show.
 const GROUPS: Group[] = [
   { name: 'Trips', tools: [
-    { names: crud('trip'), what: 'Saved as versions, a change keeps the old ones' },
+    { names: crud('trip'), what: 'Save, read, change and delete trips. A change keeps the old versions' },
     { names: 'set_leg_date', what: 'Put one leg on a day' },
     { names: 'shift_leg', what: 'Move a leg and every later leg' },
   ] },
   { name: 'Flights and ways', tools: [
-    { names: crud('flight'), what: 'Needs only from, to, date and price in DKK' },
-    { names: crud('connection'), what: 'A bus, boat, train or other way between two places' },
+    { names: crud('flight'), what: 'Keep a flight with its day and price in DKK' },
+    { names: crud('connection'), what: 'Keep a bus, boat, train or other way between two places' },
   ] },
   { name: 'Places and things to do', tools: [
     { names: crud('place'), what: 'A town, beach or airport on the map' },
@@ -58,16 +60,15 @@ const GROUPS: Group[] = [
   { name: 'Stays', tools: [
     { names: crud('lodging'), what: 'A place to stay, with photos, rating, distances and rooms' },
     { names: 'add_lodging_price', what: 'Prices for rooms that exist, in DKK' },
-    { names: crud('stay'), what: 'The older crawled stay prices, read by everyone and changed only by the admin' },
+    { names: 'list_stay get_stay', what: 'The older crawled stay prices, read only' },
   ] },
   { name: 'Bookings', tools: [
     { names: crud('booking'), what: 'A ticket or a bed that is paid for, one row per leg or stay' },
-    { names: 'attach_booking_file', what: 'Attach a PDF or photo of up to 4 MB' },
-    { names: 'attach_booking_upload', what: 'A signed upload link for a larger file' },
+    { names: 'attach_booking_file attach_booking_upload', what: 'Attach a PDF or photo to a booking' },
   ] },
   { name: 'Tasks', tools: [
     { names: crud('task'), what: 'Work for the research agents' },
-    { names: 'claim_task finish_task fail_task', what: 'For the cloud task runner: take a task, store its result or close it as failed' },
+    { names: 'claim_task finish_task fail_task', what: 'Take a task, store its result or close it as failed' },
   ] },
   { name: 'Account', tools: [
     { names: 'get_profile update_profile', what: 'Home airport, currency, longest journey, travel style and rules' },
@@ -76,35 +77,54 @@ const GROUPS: Group[] = [
   ] },
 ]
 
-/** Puts text on the clipboard and shows a check for a moment. */
-function CopyButton({ text, label }: { text: string; label: string }) {
-  const [done, setDone] = useState(false)
+type Assistant = 'claude' | 'chatgpt'
+
+/** Puts text on the clipboard and shows a check for a moment. When the clipboard is closed it selects the text, so a long press or Ctrl+C finishes it. */
+function CopyButton({ text, label, source }: { text: string; label: string; source: RefObject<HTMLElement | null> }) {
+  const [state, setState] = useState<'idle' | 'done' | 'select'>('idle')
   const timer = useRef<number>(0)
   useEffect(() => () => window.clearTimeout(timer.current), [])
   const copy = async () => {
+    window.clearTimeout(timer.current)
     try {
       await navigator.clipboard.writeText(text)
-      setDone(true)
-      window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => setDone(false), 1600)
+      setState('done')
+      timer.current = window.setTimeout(() => setState('idle'), 1600)
     } catch {
-      setDone(false)
+      if (source.current) window.getSelection()?.selectAllChildren(source.current)
+      setState('select')
+      timer.current = window.setTimeout(() => setState('idle'), 4000)
     }
   }
   return (
-    <button type="button" className="gd-copy" data-done={done || undefined} onClick={copy} aria-label={`Copy ${label}`} title={`Copy ${label}`}>
+    <button type="button" className="gd-copy" data-done={state === 'done' || undefined} data-select={state === 'select' || undefined} onClick={copy} aria-label={`Copy ${label}`} title={`Copy ${label}`}>
       <span className="gd-copy-i gd-copy-a" aria-hidden="true"><Copy s={15} /></span>
       <span className="gd-copy-i gd-copy-b" aria-hidden="true"><Check s={15} /></span>
-      <span className="vh" role="status">{done ? 'Copied' : ''}</span>
+      <span className="gd-copy-t" aria-hidden="true">Select and copy</span>
+      <span className="vh" role="status">{state === 'done' ? 'Copied' : state === 'select' ? 'Select and copy' : ''}</span>
     </button>
   )
 }
 
 function Snippet({ text, label }: { text: string; label: string }) {
+  const ref = useRef<HTMLElement>(null)
   return (
     <div className="gd-snip">
-      <code>{text}</code>
-      <CopyButton text={text} label={label} />
+      <code ref={ref}>{text}</code>
+      <CopyButton text={text} label={label} source={ref} />
+    </div>
+  )
+}
+
+function Prompt({ s }: { s: (typeof SCENARIOS)[number] }) {
+  const ref = useRef<HTMLParagraphElement>(null)
+  const at = s.slot ? s.prompt.indexOf(s.slot) : -1
+  return (
+    <div className="gd-bubble">
+      <p ref={ref}>
+        {at < 0 ? s.prompt : <>{s.prompt.slice(0, at)}<mark className="gd-slot">{s.slot}</mark>{s.prompt.slice(at + s.slot!.length)}</>}
+      </p>
+      <CopyButton text={s.prompt} label={`the prompt ${s.title}`} source={ref} />
     </div>
   )
 }
@@ -117,48 +137,53 @@ function Steps({ items }: { items: ReactNode[] }) {
   )
 }
 
-export function Guide() {
+const SETUP: Record<Assistant, { note?: string; steps: ReactNode[] }> = {
+  claude: {
+    steps: [
+      <>Open <b>Settings</b>, in the menu on a phone or under your name on a computer, then <b>Connectors</b></>,
+      <>Press <b>Add custom connector</b></>,
+      <>Name it <b>Latam trip</b> and paste the server address. Leave the advanced fields empty<Snippet text={SERVER_URL} label="the server address" /></>,
+      <>Press <b>Connect</b> and enter your email address</>,
+      <>Open the sign in link that arrives in your mail</>,
+      <>Come back to Claude and press <b>Allow</b></>,
+    ],
+  },
+  chatgpt: {
+    note: 'Needs ChatGPT Plus, Pro, Business, Enterprise or Edu, in a browser at chatgpt.com',
+    steps: [
+      <>Open <b>Settings</b>, in the menu on a phone or under your name on a computer, then <b>Apps</b>, then <b>Advanced settings</b> and turn on <b>Developer mode</b></>,
+      <>Press <b>Create app</b> and name it <b>Latam trip</b></>,
+      <>Paste the server address and choose <b>OAuth</b> as the authentication<Snippet text={SERVER_URL} label="the server address" /></>,
+      <>Tick the box that trusts the app and press <b>Create</b></>,
+      <>Press <b>Connect</b> and enter your email address</>,
+      <>Open the sign in link that arrives in your mail</>,
+      <>Come back to ChatGPT and press <b>Allow</b></>,
+    ],
+  },
+}
+
+export function Guide({ initial = 'claude' }: { initial?: Assistant }) {
+  const [who, setWho] = useState<Assistant>(initial)
+  const setup = SETUP[who]
   return (
     <div className="app">
       <main className="main gd">
         <header className="gd-head">
           <AppMark s={44} className="gd-mark" />
-          <h1>Plan a trip with Latam trip</h1>
+          <h1>Plan your journey with Latam trip</h1>
         </header>
 
         <section aria-labelledby="gd-add">
-          <h2 id="gd-add" className="gd-h"><span className="gd-n">1</span>Add it</h2>
-          <div className="gd-pair">
-            <article className="card gd-card">
-              <h3>Claude</h3>
-              <p className="gd-sub">The connector</p>
-              <Steps items={[
-                <>Open <b>Settings</b>, then <b>Connectors</b></>,
-                <>Press <b>Add custom connector</b></>,
-                <>Name it <b>Latam trip</b> and paste the server address. Leave the advanced fields empty</>,
-              ]} />
-              <Snippet text={SERVER_URL} label="the server address" />
-              <p className="gd-sub">The plugin with its skills, in Claude Code</p>
-              <Snippet text={PLUGIN_STEPS[0]} label="the marketplace command" />
-              <Snippet text={PLUGIN_STEPS[1]} label="the install command" />
-            </article>
-
-            <article className="card gd-card">
-              <h3>ChatGPT</h3>
-              <p className="gd-sub">The connector only, without the plugin skills</p>
-              <Steps items={[
-                <>Open <b>Settings</b>, then <b>Apps</b>, then <b>Advanced settings</b> and turn on <b>Developer mode</b></>,
-                <>Press <b>Create app</b> and name it <b>Latam trip</b></>,
-                <>Paste the server address and choose <b>OAuth</b> as the authentication</>,
-                <>Tick the box that trusts the app and press <b>Create</b></>,
-              ]} />
-              <Snippet text={SERVER_URL} label="the server address" />
-              <ul className="gd-chips" aria-label="Plans with developer mode">
-                {['Plus', 'Pro', 'Business', 'Enterprise', 'Edu'].map((p) => <li key={p}>{p}</li>)}
-              </ul>
-            </article>
+          <h2 id="gd-add" className="gd-h"><span className="gd-n">1</span>Add the connector</h2>
+          <div className="gd-switch" role="group" aria-label="Your assistant">
+            {(['claude', 'chatgpt'] as const).map((a) => (
+              <button key={a} type="button" aria-pressed={who === a} onClick={() => setWho(a)}>{a === 'claude' ? 'Claude' : 'ChatGPT'}</button>
+            ))}
           </div>
-          <p className="gd-after">The first time, press Connect. Latam trip asks for your email address, sends it a sign in link and shows what the assistant may do. Press Allow.</p>
+          <article className="card gd-card">
+            {setup.note && <p className="gd-sub">{setup.note}</p>}
+            <Steps items={setup.steps} />
+          </article>
         </section>
 
         <section aria-labelledby="gd-start">
@@ -167,10 +192,7 @@ export function Guide() {
             {SCENARIOS.map((s, i) => (
               <li key={s.title} className={i === 0 ? 'gd-first' : undefined}>
                 <h3>{s.title}</h3>
-                <div className="gd-bubble">
-                  <p>{s.prompt}</p>
-                  <CopyButton text={s.prompt} label={`the prompt ${s.title}`} />
-                </div>
+                <Prompt s={s} />
               </li>
             ))}
           </ul>
@@ -178,23 +200,29 @@ export function Guide() {
         </section>
 
         <section aria-labelledby="gd-tools">
-          <h2 id="gd-tools" className="gd-h"><span className="gd-n">3</span>What the connector can do</h2>
+          <h2 id="gd-tools" className="gd-h gd-h-quiet">What the connector can do</h2>
           <div className="gd-groups">
             {GROUPS.map((g) => (
               <details key={g.name} className="card gd-group">
                 <summary><span>{g.name}</span><Caret s={14} dir="d" /></summary>
                 <ul>
-                  {g.tools.map((t) => (
-                    <li key={t.names}>
-                      <code>{t.names}</code>
-                      <span>{t.what}</span>
-                    </li>
-                  ))}
+                  {g.tools.map((t) => <li key={t.names}>{t.what}</li>)}
                 </ul>
+                <details className="gd-names">
+                  <summary>Tool names</summary>
+                  <p>{g.tools.map((t) => t.names).join(' ')}</p>
+                </details>
               </details>
             ))}
           </div>
-          <p className="gd-after">The same server works in Claude Code.</p>
+        </section>
+
+        <section aria-labelledby="gd-dev" className="gd-dev">
+          <h2 id="gd-dev" className="gd-h gd-h-quiet">For developers in Claude Code</h2>
+          <p className="gd-sub">The plugin with its skills</p>
+          <Snippet text={PLUGIN_STEPS[0]} label="the marketplace command" />
+          <Snippet text={PLUGIN_STEPS[1]} label="the install command" />
+          <p className="gd-sub">The connector alone</p>
           <Snippet text={CODE_ADD} label="the Claude Code command" />
         </section>
       </main>
@@ -202,7 +230,7 @@ export function Guide() {
   )
 }
 
-/** The small way in from the sign in screen and the profile sheet. */
+/** The small way in from the sign in screen and the profile sheet. Relative, so it works under /preview/. */
 export function GuideLink({ className = 'gd-link' }: { className?: string }) {
-  return <a className={className} href="/?guide" target="_blank" rel="noopener">How to use it</a>
+  return <a className={className} href="?guide" target="_blank" rel="noopener">How to use it</a>
 }

@@ -33,7 +33,7 @@ const leave = (url: string) => window.location.replace(url)
 
 /** Supabase's consent step: an assistant asks to use the planner as the signed in person. The planner is the host, so
  * its mark leads, and the client comes to it with the host the code goes back to as one fact under its name, since
- * those two are what the person judges. A host outside claude.ai and a local client is refused with no way to allow it. */
+ * those two are what the person judges. A host outside Claude, ChatGPT's connector address and a local client is refused with no way to allow it. */
 export function Consent({ id, token, onClose, go = leave }: {
   id: string
   token: string
@@ -128,7 +128,7 @@ export function Consent({ id, token, onClose, go = leave }: {
             <>
               <header className="consent-head">
                 <h1 className="consent-client">This request has run out</h1>
-                <p className="consent-sub">Start the connection again from Claude</p>
+                <p className="consent-sub">Start the connection again from your assistant</p>
               </header>
               <div className="consent-actions">
                 <button type="button" className="btn" onClick={onClose}>Open the planner</button>
