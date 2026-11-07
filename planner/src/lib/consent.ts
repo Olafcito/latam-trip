@@ -3,13 +3,14 @@
  * Supabase sends a person who connects an assistant to the planner with `?authorization_id=` on the address. The
  * planner signs them in if needed, reads who asks with the session's token and answers allow or deny. Supabase takes
  * any client name and any redirect address when a client registers itself, so the redirect host is what the page
- * checks and shows: only Claude and a local client may receive a code. */
+ * checks and shows: only Claude, ChatGPT and a local client may receive a code. */
 
 const ID = /^[A-Za-z0-9_-]{8,128}$/
 
-/** The hosts an authorization may send a code back to. claude.ai only over https, a local client over either. */
+/** The hosts an authorization may send a code back to. claude.ai and chatgpt.com only over https, a local client over either. */
 const HOSTS: Record<string, readonly string[]> = {
   'claude.ai': ['https:'],
+  'chatgpt.com': ['https:'],
   localhost: ['http:', 'https:'],
   '127.0.0.1': ['http:', 'https:'],
 }

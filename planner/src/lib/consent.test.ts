@@ -41,8 +41,9 @@ describe('withoutConsent', () => {
 })
 
 describe('hostAllowed', () => {
-  it('lets a code go to Claude and a local client', () => {
+  it('lets a code go to Claude, ChatGPT and a local client', () => {
     expect(hostAllowed('https://claude.ai/api/mcp/auth_callback')).toBe(true)
+    expect(hostAllowed('https://chatgpt.com/connector_platform_oauth_redirect')).toBe(true)
     expect(hostAllowed('http://localhost:33418/callback')).toBe(true)
     expect(hostAllowed('http://127.0.0.1:5000/cb')).toBe(true)
   })
@@ -53,7 +54,9 @@ describe('hostAllowed', () => {
     expect(hostAllowed('https://claude.ai.attacker.example/cb')).toBe(false)
     expect(hostAllowed('https://evil.claude.ai/cb')).toBe(false)
     expect(hostAllowed('https://user:pw@claude.ai/cb')).toBe(false)
-    expect(hostAllowed('https://chatgpt.com/connector_platform_oauth_redirect')).toBe(false)
+    expect(hostAllowed('http://chatgpt.com/connector_platform_oauth_redirect')).toBe(false)
+    expect(hostAllowed('https://chatgpt.com.attacker.example/cb')).toBe(false)
+    expect(hostAllowed('https://chat.openai.com/cb')).toBe(false)
     expect(hostAllowed('not an address')).toBe(false)
   })
 })
