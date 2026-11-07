@@ -710,10 +710,12 @@ class ShareTest(unittest.TestCase):
         self.assertIn("deleted", body["message"])
         self.assertIsNone(self.shown("TEST01unknownunknownxx"))
 
-    def test_without_a_sign_in_nothing(self):
+    def test_without_a_sign_in_the_link_shows_the_plan_and_nothing_else(self):
         token = self.share()
-        for fn, body in (("shared_trip", {"token": token}), ("share_trip", {"trip_id": "TEST01-share"}),
-                         ("stop_sharing", {"trip_id": "TEST01-share"})):
+        # 0040: anyone who holds a live link reads the plan, the same answer a signed in person gets
+        self.assertEqual(ok(self, self.anon.rpc("shared_trip", {"token": token})), self.shown(token))
+        self.assertIsNone(ok(self, self.anon.rpc("shared_trip", {"token": "TEST01unknownunknownxx"})))
+        for fn, body in (("share_trip", {"trip_id": "TEST01-share"}), ("stop_sharing", {"trip_id": "TEST01-share"})):
             with self.subTest(fn=fn):
                 code, got = self.anon.rpc(fn, body)
                 self.assertIn(code, REFUSED, (code, got))
