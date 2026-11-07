@@ -125,7 +125,8 @@ let pendingShare: string | null = null
 async function openShareLink(token: string) {
   pendingShare = token
   try {
-    const own = await ownShare(token)
+    // a guest has no links of their own to match
+    const own = useStore.getState().guest ? null : await ownShare(token)
     const mine = own ? useStore.getState().saved.find((t) => t.id === own) : undefined
     if (mine) return useStore.getState().openTrip(mine)
     const row = await loadShared(token)
