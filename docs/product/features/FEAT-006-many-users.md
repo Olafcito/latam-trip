@@ -182,7 +182,7 @@ Simon:
 
 ## 12. Open questions
 
-1. **Sign up.** Open to anyone, or invite only for a first group. Recommended: invite only, with an allowlist table checked at approve. Simon decides.
+1. **Sign up.** Settled by Simon on 2026-11-07: open to anyone (PROD-009), because he wants people to just type their email and get in. Task 6.1 first shipped invite only on 2026-11-06, and migration 0038 opens it with the caps, the connector's write limit, confirm email and the stripped sign up password kept as guards. Blocker: Until Simon sets custom SMTP in Supabase, the built in mailer sends only to the addresses of the project's team, so a person outside it gets no link and cannot sign in yet. Setting it is Simon's step.
 2. **Passphrase fallback.** Keep it for Simon or remove it. Simon decides.
 3. **Per person built files.** Private bucket per owner, or computed on read by the planner. The implementer proposes, Simon decides.
 4. **User research into the catalogue.** Whether a user's `place_research` or flight quotes may enter the shared catalogue, and who reviews them. Simon decides.
@@ -204,7 +204,7 @@ Each phase is shippable on its own and keeps Simon's flow working.
 3. A spike of Supabase's OAuth 2.1 server with Claude, then the connector acts as the user by the way the spike picks. The secret key leaves the connector.
 4. Tasks per owner and status that follows the data.
 5. Profiles, and Simon's rules moved out of the plugin.
-6. Open OAuth to new emails by the sign up rule, plus export and delete.
+6. Open OAuth to new emails by the sign up rule, open since 2026-11-07 (PROD-009), plus export and delete.
 7. Live run with a second test account.
 
 Completeness: the outcome of the OAuth spike, the per owner caps and the confirmed list of personal `documents` names are thin and are settled in the plan.

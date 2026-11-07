@@ -11,14 +11,14 @@ Simon's Latin America trip planner and research tools. The planner works on desk
 
 The planner reads its built map and pricing data from the Supabase `web` storage bucket through the worker's hash-aware cache. Trips are read and written in Supabase directly. The worker rebuilds derived files after database changes and runs scheduled builds and backups.
 
-## Install for an invited traveller
+## Install as a traveller
 
 A short visual guide to adding the connector and starting a trip is at <https://d15amu9hjiumbd.cloudfront.net/?guide>. It needs no sign in.
 
-Sign up is by invite. Simon sends an invite to your email address with `tripdb invite`, and nobody else can make an account. Without an invite the sign in page refuses the address.
+Sign up is open. Type your email in the planner, open the link it sends, and your account is made on first use (PROD-009). Until Simon sets custom SMTP in Supabase, the built in mailer sends only to the addresses of the project's team, so a person outside it gets no link and cannot sign in yet.
 
 1. **Add the connector to your own Claude.** The server address is in [docs/connector.md](docs/connector.md), with the steps for claude.ai, the desktop app, the phone apps and Claude Code. Leave the advanced OAuth fields empty.
-2. **Sign in.** Press Connect. The planner asks for the email address Simon invited and sends it a sign in link. Open the link, check the app name on the page and press Allow. Your assistant then sees only your own trips, bookings, places to stay and files.
+2. **Sign in.** Press Connect. The planner asks for your email address and sends it a sign in link. A new address gets its account from that link. Open the link, check the app name on the page and press Allow. Your assistant then sees only your own trips, bookings, places to stay and files.
 3. **Install the plugin in Claude Code, if you want the skills.** Run `/plugin marketplace add Olafcito/latam-trip`, then `/plugin install flight-crawler@latam-trip`. The skills read your profile through the connector, so ask Claude to set your profile (home airport, currency, longest journey, travel style and rules) before the first search. The `add-lodging` skill works through the connector alone. The steps that need the repo on disk, such as `tripdb`, are for Simon.
 4. **Check it works.** Ask Claude to list your trips. A new account has none.
 
