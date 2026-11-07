@@ -95,7 +95,7 @@
 @media (prefers-reduced-motion: reduce) { .consent-wait { animation: none; } }
 
 /* sign in: the consent card's frame. The planner's mark leads the ask, and the answer puts the address itself in the
-   title with its outcome as a badge above it, amber for a link on its way, the quiet surface for the invite gate */
+   title with its outcome as an amber badge above it, a link on its way */
 .signin { gap: 0; }
 .signin-step { display: flex; flex-direction: column; gap: 24px; animation: fade var(--t-med) var(--ease-out); }
 .signin-mark { margin-bottom: 12px; border-radius: 14px; box-shadow: 0 0 0 1px var(--line-2); }
@@ -108,8 +108,7 @@
 .signin-field input::placeholder { color: var(--faint); }
 .signin-error { margin: 0; font-size: var(--fs-small); color: var(--err); }
 .signin-go { min-height: 48px; border-radius: 10px; font-size: var(--fs-body); }
-.signin-badge.sent { color: var(--flight); background: color-mix(in srgb, var(--flight) 12%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 35%, transparent); }
-.signin-badge.invite { color: var(--muted); }
+.signin-badge { color: var(--flight); background: color-mix(in srgb, var(--flight) 12%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--flight) 35%, transparent); }
 .signin-open { margin: 0; font-size: var(--fs-title); font-weight: 600; color: var(--text); text-wrap: balance; }
 .signin-addr { font-size: var(--fs-small); word-break: break-all; overflow-wrap: anywhere; }
 /* a phone: no card, the mark, field and button ride the upper third so the keyboard never covers the button */

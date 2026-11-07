@@ -1,17 +1,16 @@
 import { useState, type FormEvent } from 'react'
 import { sendMagicLink } from '../lib/supabase'
 import { AppMark } from './Consent'
-import { Mail, Ticket } from './icons'
+import { Mail } from './icons'
 import { GuideLink } from './Guide'
 
-type View = { s: 'ask'; error?: string } | { s: 'busy' } | { s: 'sent' } | { s: 'invite' }
+type View = { s: 'ask'; error?: string } | { s: 'busy' } | { s: 'sent' }
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 /** The one screen of a planner that saves to Supabase and has no session. Anyone gives an address and gets a sign in
- * link. A person with an account signs in with it, a new address with an open invite makes its account with it, and
- * any other address lands on the invite state. The answer sits on the address itself, so the screen says what came of
- * it as its title, with the address as the line under it. */
+ * link. A person with an account signs in with it, and a new address makes its account with it on first use (PROD-009).
+ * The answer sits on the address itself, so the sent state says Link sent as its title, with the address under it. */
 export function SignIn() {
   const [email, setEmail] = useState('')
   const [view, setView] = useState<View>({ s: 'ask' })
@@ -60,13 +59,11 @@ export function SignIn() {
               </div>
             </form>
           ) : (
-            <div key={view.s} className="signin-step">
+            <div key="sent" className="signin-step">
               <header className="consent-head">
-                <span className={`consent-avatar signin-badge ${view.s}`} aria-hidden="true">
-                  {view.s === 'sent' ? <Mail s={22} /> : <Ticket s={22} />}
-                </span>
-                <h1 className="consent-client">{view.s === 'sent' ? 'Link sent' : 'Sign up is by invite'}</h1>
-                {view.s === 'sent' && <p className="signin-open">Open it in this browser</p>}
+                <span className="consent-avatar signin-badge" aria-hidden="true"><Mail s={22} /></span>
+                <h1 className="consent-client">Link sent</h1>
+                <p className="signin-open">Open it in this browser</p>
                 <p className="consent-sub signin-addr">{email.trim()}</p>
               </header>
               <div className="consent-actions">

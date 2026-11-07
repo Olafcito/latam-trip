@@ -46,7 +46,7 @@ export function useSession(): SessionState {
   return state
 }
 
-/** Sends the magic link. Public sign ups are off, so only the owner's address gets one. */
+/** Sends the magic link. It makes no account, so only an address that has one gets it. */
 export async function sendMagicLink(email: string): Promise<string | null> {
   if (!supabase) return 'Sign in is not set up.'
   const { error } = await supabase.auth.signInWithOtp({

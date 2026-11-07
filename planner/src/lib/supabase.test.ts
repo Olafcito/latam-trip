@@ -40,15 +40,16 @@ describe('linkOutcome', () => {
     expect((await load()).linkOutcome(null)).toEqual({ s: 'sent' })
   })
 
-  it('reads the hook refusal and a closed sign up as the invite state', async () => {
+  it('reads a closed sign up as an error line, not a state of its own', async () => {
     const { linkOutcome } = await load()
-    expect(linkOutcome({ status: 403, code: 'unknown', message: 'Sign up is by invite only' })).toEqual({ s: 'invite' })
-    expect(linkOutcome({ status: 422, code: 'otp_disabled', message: 'Signups not allowed for otp' })).toEqual({ s: 'invite' })
-    expect(linkOutcome({ status: 422, code: 'signup_disabled', message: 'Signups not allowed for this instance' })).toEqual({ s: 'invite' })
+    expect(linkOutcome({ status: 422, code: 'otp_disabled', message: 'Signups not allowed for otp' })).toEqual({ s: 'error', message: 'New accounts are closed for now' })
+    expect(linkOutcome({ status: 422, code: 'signup_disabled', message: 'Signups not allowed for this instance' })).toEqual({ s: 'error', message: 'New accounts are closed for now' })
   })
 
-  it('keeps another 403 an error, so a refused key never reads as a missing invite', async () => {
-    expect((await load()).linkOutcome({ status: 403, message: 'Invalid API key' })).toEqual({ s: 'error', message: 'Could not send the link' })
+  it('keeps a 403 a plain failure', async () => {
+    const { linkOutcome } = await load()
+    expect(linkOutcome({ status: 403, message: 'Invalid API key' })).toEqual({ s: 'error', message: 'Could not send the link' })
+    expect(linkOutcome({ status: 403, code: 'unknown', message: 'Sign up is by invite only' })).toEqual({ s: 'error', message: 'Could not send the link' })
   })
 
   it('names a rate limit and a lost connection, and shows no raw message', async () => {
@@ -61,7 +62,7 @@ describe('linkOutcome', () => {
 
   it('writes no question mark', async () => {
     const { linkOutcome } = await load()
-    for (const e of [{ status: 429 }, { status: 0 }, { status: 500 }]) {
+    for (const e of [{ status: 429 }, { status: 0 }, { status: 500 }, { status: 422, code: 'signup_disabled' }]) {
       const r = linkOutcome(e)
       expect(r.s === 'error' && r.message.includes('?')).toBe(false)
     }
@@ -69,7 +70,7 @@ describe('linkOutcome', () => {
 })
 
 describe('sendMagicLink', () => {
-  it('lets a new address through to the invite hook', async () => {
+  it('asks for a link that makes the account of a new address', async () => {
     vi.stubGlobal('window', { location: { origin: 'https://x.test', pathname: '/', search: '' } })
     vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co')
     vi.stubEnv('VITE_SUPABASE_KEY', 'sb_publishable_test')
