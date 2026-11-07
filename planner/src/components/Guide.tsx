@@ -47,6 +47,7 @@ const GROUPS: Group[] = [
     { names: crud('trip'), what: 'Save, read, change and delete trips. A change keeps the old versions' },
     { names: 'set_leg_date', what: 'Put one leg on a day' },
     { names: 'shift_leg', what: 'Move a leg and every later leg' },
+    { names: 'share_trip stop_sharing', what: 'Give a friend a read only link to a trip, or end it' },
   ] },
   { name: 'Flights and ways', tools: [
     { names: crud('flight'), what: 'Keep a flight with its day and price in DKK' },
