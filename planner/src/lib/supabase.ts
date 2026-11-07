@@ -42,11 +42,17 @@ export function useSession(): SessionState {
 }
 
 /** The page's own address without query or hash, and no trailing slash when it is the root. A consent request
- *  (?authorization_id=) is kept, so the link lands on the consent step. */
+ *  (?authorization_id=) and a shared trip (?share=, FEAT-007) are kept, so the link lands where the person was going. */
 export function signInRedirect(loc: { origin: string; pathname: string; search?: string } = window.location): string {
-  const id = new URLSearchParams(loc.search ?? '').get('authorization_id')
+  const from = new URLSearchParams(loc.search ?? '')
+  const keep = new URLSearchParams()
+  const id = from.get('authorization_id')
+  if (id) keep.set('authorization_id', id)
+  const share = from.get('share')
+  if (share && /^[A-Za-z0-9_-]{22,64}$/.test(share)) keep.set('share', share)
   const base = loc.origin + (loc.pathname === '/' ? '' : loc.pathname)
-  return id ? `${base}${loc.pathname === '/' ? '/' : ''}?authorization_id=${encodeURIComponent(id)}` : base
+  const query = keep.toString()
+  return query ? `${base}${loc.pathname === '/' ? '/' : ''}?${query}` : base
 }
 
 /** What came of asking for a link: sent, or a failure with a line to show. */

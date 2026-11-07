@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { AppData } from '../data/types'
-import { useStore } from '../store'
+import { useOwnBookings, useOwnLodgings } from '../store'
 import { nodeForAirport, nodeName, schedule, type Journey, type Schedule } from './journey'
 
 // The open trip's days, worked out the one way the trip panel, the trip page and the map's city panel all need:
@@ -8,8 +8,9 @@ import { nodeForAirport, nodeName, schedule, type Journey, type Schedule } from 
 // one of them changes. null when the trip's ways are no longer in the data, or there is no trip.
 
 export function useSchedule(data: AppData | null | undefined, journey: Journey | null | undefined): { sched: Schedule; exitNode: string } | null {
-  const bookings = useStore((s) => s.bookings)
-  const lodgings = useStore((s) => s.lodgings)
+  // a trip someone shared is read with none of the viewer's own bookings or stays
+  const bookings = useOwnBookings(journey)
+  const lodgings = useOwnLodgings(journey)
   return useMemo(() => {
     if (!data || !journey) return null
     const wi = data.inout.ways[journey.wayIn]

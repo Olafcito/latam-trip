@@ -241,9 +241,60 @@ interface State {
   setLodgings: (lodgings: Lodging[]) => void
   /** where you plan to sleep at place i, in order from its first night, kept as the trip's draft. An empty list takes them away */
   setStays: (i: number, stays: PlannedStay[]) => void
+
+  /**
+   * a trip someone shared by a link, open read only (FEAT-007). Its journey has an id of its own, it is never written
+   * as this browser's draft, and nothing changes it. mapOpen is what the map showed before, for when it is left
+   */
+  shared: { id: string; token: string; row: TripRow; mapOpen: boolean } | null
+  /** open a shared trip on the Trips tab, read only */
+  openShared: (token: string, row: TripRow) => void
+  /** leave the shared trip for the trip this browser had open */
+  leaveShared: () => void
+  /** save the shared trip as a new trip of your own, with a new id, and open it */
+  keepShared: () => Promise<void>
 }
 
+const NONE: never[] = []
+/** The viewer's bookings, or none on a trip shared with them: their own bookings say nothing about someone else's trip. */
+export const useOwnBookings = (j: Journey | null | undefined): Booking[] => useStore((s) => (j && s.shared?.id === j.id ? NONE : s.bookings))
+/** The viewer's places to stay, or none on a trip shared with them. */
+export const useOwnLodgings = (j: Journey | null | undefined): Lodging[] => useStore((s) => (j && s.shared?.id === j.id ? NONE : s.lodgings))
+
 export const useStore = create<State>((set, get) => ({
+  shared: null,
+  openShared: (token, raw) => {
+    const row = { ...raw }
+    const journey = rowToJourney(row)
+    const d = get().data
+    const was = get().shared
+    set({
+      journey, unlocked: null, viewing: null, pickFor: null, cursor: null, idle: false, notice: null,
+      shared: { id: journey.id, token, row, mapOpen: was ? was.mapOpen : get().mapOpen },
+      mapOpen: false, screen: 'trips', view: 'trip',
+      ...(d ? { data: { ...d, inout: withTripWays(d.inout, [row]) } } : {}),
+    })
+  },
+  leaveShared: () => {
+    const was = get().shared
+    if (!was) return
+    // the draft this browser had open before is still stored, since a shared trip is never written over it
+    const j = read<unknown>(CURRENT_KEY, null)
+    const journey = journeyIsValid(j) ? j : null
+    set({ shared: null, journey, mapOpen: !!journey && was.mapOpen, unlocked: null, cursor: null, idle: false })
+  },
+  keepShared: async () => {
+    const { shared, journey, data } = get()
+    if (!shared || !data || journey?.id !== shared.id) return
+    const id = `j${Date.now().toString(36)}`
+    const row: TripRow = { ...shared.row, id }
+    // the copy carries the shared trip's ways under its own ids, and none of the owner's rank or versions
+    const { rank: _rank, version: _version, ...base } = rowToJourney(row)
+    const copy: Journey = { ...base, places: base.places.map(({ stays: _stays, ...p }) => p), savedAt: new Date().toISOString() }
+    set({ shared: null, data: { ...data, inout: withTripWays(data.inout, [row]) } })
+    get().openTrip(copy)
+    await get().saveJourney(copy.name)
+  },
   lodgings: [],
   setLodgings: (lodgings) => set({ lodgings }),
   setStays: (i, stays) => {
@@ -265,6 +316,7 @@ export const useStore = create<State>((set, get) => ({
     const s = get()
     const { journey: j, data } = s
     if (!j || !data || !rows.length) return { ok: false, message: 'Open a trip first.' }
+    if (s.shared?.id === j.id) return { ok: false, message: 'A shared trip is only looked at. Keep a copy to book on it.' }
     let ways: { wayIn: Way; wayHome: Way } | null = null
     if ('way' in leg && leg.choice) {
       // the rows being saved are the booking being changed, so they do not hold the ways they replace
@@ -307,7 +359,12 @@ export const useStore = create<State>((set, get) => ({
   },
   data: null,
   setData: (data) => {
-    const { viewing } = get()
+    const { viewing, shared } = get()
+    // a shared trip keeps its own ways too, and is not written as this browser's draft either
+    if (shared) {
+      set({ data: { ...data, inout: withTripWays(data.inout, [shared.row]) } })
+      return
+    }
     // an older version keeps the ways it was saved with, and is never written as this browser's draft
     if (viewing) {
       set({ data: { ...data, inout: withTripWays(data.inout, [viewing.row]) } })
@@ -324,7 +381,11 @@ export const useStore = create<State>((set, get) => ({
   view: 'home',
   // a view of its own leaves the picker or opens it for a new trip, so it forgets the trip being changed.
   // A tab press keeps it, so a look at the map and back is still the change of that trip
-  go: (screen, view) => set({ mapCardFrom: null, ...(view ? { screen, view, pickFor: null, ...(view === 'pick' ? PICK_FRESH : {}) } : { screen }) }),
+  go: (screen, view) => {
+    // a shared trip lives on its own page of Trips. Any other place leaves it for the trip this browser had open
+    if (get().shared && !(screen === 'trips' && (view ?? get().view) === 'trip')) get().leaveShared()
+    set({ mapCardFrom: null, ...(view ? { screen, view, pickFor: null, ...(view === 'pick' ? PICK_FRESH : {}) } : { screen }) })
+  },
 
   ...readFilters(),
   setFilters: (f) => {
@@ -363,10 +424,12 @@ export const useStore = create<State>((set, get) => ({
     if (!data) return
     const journey = newJourney(data.inout, wayIn, wayHome, optionId)
     write(CURRENT_KEY, journey)
-    set({ journey, unlocked: null, pickFor: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false })
+    set({ journey, shared: null, unlocked: null, pickFor: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false })
   },
   startOnMap: (wayIn, wayHome, optionId) => get().startJourney(wayIn, wayHome, optionId),
   setJourney: (next) => {
+    // a shared trip is only looked at
+    if (get().shared?.id === next.id) return
     const journey = settled(next, get())
     write(CURRENT_KEY, journey)
     set({ journey, ...another(get(), journey) })
@@ -382,16 +445,21 @@ export const useStore = create<State>((set, get) => ({
     }
   },
   openSaved: (next) => {
+    if (get().shared?.id === next.id) return
     const journey = settled(next, get())
     write(CURRENT_KEY, journey)
-    set({ journey, ...another(get(), journey), viewing: null, pickFor: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
+    set({ journey, ...another(get(), journey), shared: null, viewing: null, pickFor: null, mapOpen: true, screen: 'map', view: 'trip', cursor: null, idle: false, paneMini: false, notice: null })
   },
   openTrip: (next) => {
+    if (get().shared?.id === next.id) return
     const journey = settled(next, get())
     write(CURRENT_KEY, journey)
-    set({ journey, ...another(get(), journey), viewing: null, pickFor: null, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
+    set({ journey, ...another(get(), journey), shared: null, viewing: null, pickFor: null, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null })
   },
-  closeTrip: () => set({ viewing: null, pickFor: null, mapOpen: false, screen: 'trips', view: 'home', cursor: null, idle: false }),
+  closeTrip: () => {
+    get().leaveShared()
+    set({ viewing: null, pickFor: null, mapOpen: false, screen: 'trips', view: 'home', cursor: null, idle: false })
+  },
 
   cursor: null,
   idle: false,
@@ -498,7 +566,7 @@ export const useStore = create<State>((set, get) => ({
   pickFor: null,
   changeEndsOf: (tripId) => {
     // an older version on screen is only looked at, its ends are not changed
-    if (get().viewing?.id === tripId) return
+    if (get().viewing?.id === tripId || get().shared?.id === tripId) return
     get().go('trips', 'pick')
     set({ pickFor: tripId, ...PICK_FRESH })
   },
@@ -524,7 +592,8 @@ export const useStore = create<State>((set, get) => ({
   saved: read<unknown[]>(SAVED_KEY, []).filter(journeyIsValid),
   saveJourney: async (name) => {
     const j = get().journey
-    if (!j) return
+    // a shared trip is saved only as a copy of your own, through keepShared
+    if (!j || get().shared?.id === j.id) return
     const copy: Journey = { ...j, id: j.id, name: name || j.name, savedAt: new Date().toISOString() }
     if (remoteEnabled()) return saveRemote(copy, get, set)
     const saved = [...get().saved.filter((s) => s.id !== copy.id), copy]
@@ -589,7 +658,7 @@ export const useStore = create<State>((set, get) => ({
     const journey = rowToJourney(row)
     set({
       journey, ...another(get(), journey),
-      viewing: { id: row.id, version: row.version, latest, row },
+      viewing: { id: row.id, version: row.version, latest, row }, shared: null,
       ...(d ? { data: { ...d, inout: withTripWays(d.inout, [row]) } } : {}),
       pickFor: null, mapOpen: true, screen: 'trips', view: 'trip', cursor: null, idle: false, notice: null,
     })
@@ -689,8 +758,9 @@ export const useStore = create<State>((set, get) => ({
   openMapCard: (mapCard) => set({ mapCard, mapCardFrom: mapCard, mapOpen: true, screen: 'map' }),
   clearMapCard: () => set({ mapCard: null }),
   applyMapTrips: (after, facts) => {
-    const { data, journey, saved, mapOpen, compare } = get()
-    if (!data) return
+    const { data, journey, saved, mapOpen, compare, shared } = get()
+    // a shared trip is never on the map's builder, and nothing on the map writes to it
+    if (!data || shared) return
     const r = applyTrips(data.inout, data.map, journey, saved, mapOpen, after, facts)
     // a new trip needs a way in and a way home to start from
     if (!r) return set({ screen: 'trips', view: 'pick', pickFor: null, ...PICK_FRESH })

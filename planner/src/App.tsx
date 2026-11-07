@@ -5,6 +5,7 @@ import { loadRepoTrips } from './data/routeMap'
 import { pickedLeg, readPick, withoutPick, type Pick } from './lib/pickLink'
 import { resolveDeepLink, rowToJourney, withTripWays } from './lib/repoTrips'
 import { urlWithVersion, versionParam } from './lib/versions'
+import { loadShared, ownShare, shareParam, urlWithShare } from './lib/shareTrip'
 import { CURRENT_KEY, useStore, type Screen } from './store'
 import { clock, weekdayDay } from './lib/format'
 import { nodeName } from './lib/journey'
@@ -103,6 +104,8 @@ export function openDeepLink() {
   const pick = readPick(window.location.search)
   const linkedVersion = versionParam(window.location.search)
   if (pick) window.history.replaceState(window.history.state, '', withoutPick(window.location.href))
+  const share = shareParam(window.location.search)
+  if (share) return void openShareLink(share)
   const link = resolveDeepLink(window.location.search, s.saved, s.journey)
   if (link?.kind === 'unknown') {
     s.go('trips', 'home')
@@ -112,6 +115,28 @@ export function openDeepLink() {
   if (link) void openLinkedVersion(link.journey.id, linkedVersion)
   if (pick) return landPick(pick)
   if (!link) syncAddress()
+}
+
+// ?share=<token> while the shared trip is being read, so the address keeps it
+let pendingShare: string | null = null
+
+/** /?share=<token> opens a trip someone shared, read only (FEAT-007). The owner's own link opens their own trip. A
+ *  link that is dead shows the Trips list with a note. */
+async function openShareLink(token: string) {
+  pendingShare = token
+  try {
+    const own = await ownShare(token)
+    const mine = own ? useStore.getState().saved.find((t) => t.id === own) : undefined
+    if (mine) return useStore.getState().openTrip(mine)
+    const row = await loadShared(token)
+    const s = useStore.getState()
+    if (row && row !== 'failed') return s.openShared(token, row)
+    s.go('trips', 'home')
+    s.setNotice(row === 'failed' ? 'The shared trip could not be read.' : 'That shared trip is no longer shared.')
+  } finally {
+    pendingShare = null
+    syncAddress()
+  }
 }
 
 // &v=<n> while that version is being read, so the address keeps it
@@ -157,13 +182,19 @@ function landPick(pick: Pick | 'bad') {
   if (hop) s.setNotice(`Picked ${carriers.join(', ')} from ${name(hop.from)} to ${name(hop.to)}, ${weekdayDay(depart)} at ${clock(depart)}.`)
 }
 
-/** ?trip=<id> while a trip is open, nothing when none is. */
+/** ?trip=<id> while a trip is open, ?share=<token> while a shared trip is, nothing when none is. */
 export function syncAddress() {
   if (!linkRead) return
   const s = useStore.getState()
+  const token = pendingShare ?? (s.shared && s.view === 'trip' && s.journey?.id === s.shared.id ? s.shared.token : null)
+  if (token) return replaceAddress(urlWithShare(window.location.href, token))
   const id = s.view === 'trip' && s.journey ? s.journey.id : null
   const v = s.viewing && s.viewing.id === id ? s.viewing.version : pendingVersion
-  const next = urlWithVersion(window.location.href, id, v)
+  const href = new URL(urlWithShare(window.location.href, null), window.location.href).href
+  replaceAddress(urlWithVersion(href, id, v))
+}
+
+function replaceAddress(next: string) {
   if (next !== window.location.pathname + window.location.search + window.location.hash) {
     window.history.replaceState(window.history.state, '', next)
   }

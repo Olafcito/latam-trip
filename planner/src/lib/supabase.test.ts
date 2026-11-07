@@ -105,4 +105,11 @@ describe('signInRedirect', () => {
     expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?trip=a&authorization_id=abc123def' })).toBe('https://x.test/?authorization_id=abc123def')
     expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?trip=a' })).toBe('https://x.test')
   })
+
+  it('keeps a shared trip link across the sign in, and drops a share that is not a token', async () => {
+    const m = await load()
+    const tok = 'AbCdEfGhIjKlMnOpQrStUv'
+    expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: `?share=${tok}&trip=a` })).toBe(`https://x.test/?share=${tok}`)
+    expect(m.signInRedirect({ origin: 'https://x.test', pathname: '/', search: '?share=x%3Cy' })).toBe('https://x.test')
+  })
 })
