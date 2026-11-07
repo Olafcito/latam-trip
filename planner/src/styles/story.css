@@ -38,6 +38,8 @@
 /* the nights and their stepper are one control: minus, the count, plus, always there, so a stop that can
    grow says so, and one width on every stop, so the counts stand in a column down the route */
 .st-step { flex: none; display: inline-flex; align-items: center; padding: 2px; border-radius: 999px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+/* a shared trip is only looked at: the nights stand alone, with no pill of steppers around them */
+.st-step.st-fixed { padding: 2px 0; background: none; box-shadow: none; }
 .st-val { flex: none; display: grid; justify-items: center; width: 3.25rem; line-height: 1.1; text-align: center; font-variant-numeric: tabular-nums; }
 .st-val b { font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
 .st-val small { font-size: var(--fs-label); font-weight: 500; color: var(--muted); }

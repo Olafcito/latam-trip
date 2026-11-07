@@ -1,15 +1,17 @@
 import { lazy, Suspense, useState } from 'react'
 import type { AppData } from '../data/types'
-import { useStore } from '../store'
+import { useOwnBookings, useOwnLodgings, useStore } from '../store'
 import { lockedLegs, wayBooking } from '../lib/booked'
 import { routeStops } from '../lib/bundle'
 import { dayRange } from '../lib/format'
 import { totals, type Journey } from '../lib/journey'
 import { useSchedule } from '../lib/useSchedule'
 import { CostStrip } from '../components/CostStrip'
-import { Bed, Caret, Download, Pin, Warn } from '../components/icons'
+import { Bed, Caret, Download, Link, Pin, Warn } from '../components/icons'
 import { Modal } from '../components/Modal'
 import { Notice } from '../components/Notice'
+import { ShareControl } from '../components/ShareControl'
+import { remoteEnabled } from '../lib/supabase'
 import { Story } from '../components/story/Story'
 import { TripHead } from '../components/story/TripHead'
 import { VersionMenu } from '../components/VersionMenu'
@@ -27,8 +29,13 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   const saveJourney = useStore((s) => s.saveJourney)
   const go = useStore((s) => s.go)
   const changeEndsOf = useStore((s) => s.changeEndsOf)
-  const bookings = useStore((s) => s.bookings)
-  const lodgings = useStore((s) => s.lodgings)
+  const bookings = useOwnBookings(journey)
+  const lodgings = useOwnLodgings(journey)
+  // a trip someone shared by a link is only looked at, and kept as a copy of your own (FEAT-007)
+  const shared = useStore((s) => s.shared?.id === journey.id)
+  const keepShared = useStore((s) => s.keepShared)
+  const sharable = useStore((s) => remoteEnabled() && !!s.rows[journey.id])
+  const [keeping, setKeeping] = useState(false)
   const [onMap, setOnMap] = useState(false)
   const [addStay, setAddStay] = useState(false)
 
@@ -53,7 +60,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
           <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
           <h2 className="h2">{journey.name}</h2>
         </div>
-        <div className="card pad empty">Its flights are no longer in the data. <button className="btn small" onClick={() => changeEndsOf(journey.id)}>Pick in and out</button></div>
+        <div className="card pad empty">Its flights are no longer in the data. {!shared && <button className="btn small" onClick={() => changeEndsOf(journey.id)}>Pick in and out</button>}</div>
       </div>
     )
   }
@@ -65,8 +72,27 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   // the map tells a booked leg from a planned one
   const stops = routeStops(map, journey, sched, lockedLegs(bookings, data, journey, sched))
 
+  const keep = async () => {
+    setKeeping(true)
+    try {
+      await keepShared()
+    } finally {
+      setKeeping(false)
+    }
+  }
+
   return (
     <div className="dash">
+      {shared ? (
+        <div className="row dash-head">
+          <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
+          <h2 className="h2">{journey.name}</h2>
+          <span className="dash-shared" role="img" aria-label="Shared with you, read only" title="Shared with you, read only"><Link /></span>
+          <span className="spacer" />
+          {stops.length > 0 && <button className="btn small" onClick={() => setOnMap(true)}>View on map</button>}
+          <button className="btn small primary" onClick={keep} disabled={keeping}>Keep a copy</button>
+        </div>
+      ) : (
       <div className="row dash-head">
         <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
         <h2 className="h2">{journey.name}</h2>
@@ -77,8 +103,10 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
         {stops.length > 0 && <button className="btn small" onClick={() => setOnMap(true)}>View on map</button>}
         <button className="btn small" onClick={() => openSaved(journey)}><Pin />Build on the map</button>
         <button className={`btn small${dirty ? ' primary' : ''}`} onClick={() => saveJourney(journey.name)} disabled={!dirty}>{dirty ? 'Save trip' : 'Saved'}</button>
+        {sharable && <ShareControl id={journey.id} name={journey.name} />}
         <button className="btn link small" onClick={exportJson}><Download />Export JSON</button>
       </div>
+      )}
 
       <Notice />
 

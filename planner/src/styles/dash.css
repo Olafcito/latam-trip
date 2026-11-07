@@ -175,4 +175,21 @@
 @media (hover: hover) and (pointer: fine) {
   .minimap:hover .minimap-cta { opacity: 1; }
 }
+
+/* ---- sharing (FEAT-007). The owner's control reads Share, or Shared with a cross beside it that ends the link, and
+   turns to Copied for a moment when the link goes to the clipboard. A shared trip carries a link mark by its name. */
+.share { display: inline-flex; flex: none; }
+.share[data-live] .share-send { border-top-right-radius: 0; border-bottom-right-radius: 0; color: var(--flight); border-color: color-mix(in srgb, var(--flight) 45%, transparent); }
+.share-stop { margin-left: -1px; padding: 0 8px; border-top-left-radius: 0; border-bottom-left-radius: 0; color: var(--muted); border-color: color-mix(in srgb, var(--flight) 45%, transparent); }
+.share-stop svg { width: 12px; height: 12px; }
+.share-send[data-copied] { color: var(--booked); }
+.share-send[data-copied] svg { animation: share-pop var(--t-med) var(--ease-out); }
+@keyframes share-pop { from { opacity: 0; transform: scale(0.6); } }
+.dash-shared { flex: none; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--surface-2); color: var(--muted); }
+@media (hover: hover) and (pointer: fine) {
+  .share-stop:hover:not(:disabled) { color: var(--err); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .share-send[data-copied] svg { animation: none; }
+}
 }

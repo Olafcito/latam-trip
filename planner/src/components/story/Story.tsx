@@ -3,7 +3,7 @@ import type { Family } from '@map/data/types'
 import { Flag, hasFlag } from '@map/map/Flag'
 import type { AppData, Booking, CrawledFlight, MapNode, Way } from '../../data/types'
 import { usePairDates } from '../../data/pairDates'
-import { useStore } from '../../store'
+import { useOwnBookings, useOwnLodgings, useStore } from '../../store'
 import { clock, day, hours, legHours, shortPlace, weekdayDay } from '../../lib/format'
 import { flightOffDay, giveNight, legDay, legTime, nightStop, nodeForAirport, nodeName, takeNight, type Journey, type NightMove, type Schedule, type Warning } from '../../lib/journey'
 import { timed } from '../../lib/fares'
@@ -124,7 +124,7 @@ function NightChooser({ name, days, rows }: { name: string; days: number; rows: 
 }
 
 /** A stop: flag on the rail, the city, and at the right edge the nights there, which you can change. Copenhagen has no nights. */
-function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, open, onToggle, cut, dates, shutting }: {
+function Stop({ id, name, node, country, days, exact, onLess, rows, through, home, open, onToggle, cut, dates, shutting, fixed }: {
   id?: string
   name: string; node: MapNode | undefined; country: string; days: number; exact: boolean
   /** a night less here, or null when it has none */
@@ -145,6 +145,8 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
   dates?: { inDay: string; outDay: string }
   /** the fold is closing, so the chevron turns back at once */
   shutting?: boolean
+  /** a trip only looked at, a shared one: the nights show without the steppers that change them */
+  fixed?: boolean
 }) {
   const pop = usePop(false)
   const less = through ? `One night less in ${name}, it goes to ${through}` : `One night less in ${name}, it becomes a free night`
@@ -173,15 +175,23 @@ function Stop({ id, name, node, country, days, exact, onLess, rows, through, hom
                 {dates.outDay !== dates.inDay && <><Arrow s={12} /><span>{weekdayDay(dates.outDay)}</span></>}
               </span>
             </button>
-          ) : <b className="ed-open"><span className="ed-city">{name}</span></b>}
-          <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
+          ) : (
+            <b className="ed-open">
+              <span className="ed-city">{name}</span>
+              <span className="ed-dates">
+                <span>{weekdayDay(dates.inDay)}</span>
+                {dates.outDay !== dates.inDay && <><Arrow s={12} /><span>{weekdayDay(dates.outDay)}</span></>}
+              </span>
+            </b>
+          )}
+          {fixed ? <span className="st-step st-fixed" aria-label={`Nights in ${name}`}><Count n={days} est={!exact} /></span> : <span className="st-step" role="group" aria-label={`Nights in ${name}`}>
             <button type="button" className="st-n" aria-label={less} title={less} disabled={!onLess} onClick={onLess ?? undefined}><Minus /></button>
             <Count n={days} est={!exact} />
             <span className="pop-wrap" {...pop.wrap}>
               <button type="button" className="st-n" aria-label={more} title={more} disabled={!direct && !later.some((r) => r.take)} {...(direct ? { onClick: direct } : pop.trigger)}><Plus /></button>
               {pop.open && <div className="pop nf" role="group" aria-label="Take a night from" {...pop.panel}><Shut on={pop.dismiss} /><NightChooser name={name} days={days} rows={later} /></div>}
             </span>
-          </span>
+          </span>}
           {toggle && <button type="button" className="ed-chev" tabIndex={-1} aria-hidden="true" onClick={toggle}><Caret dir="d" s={18} /></button>}
         </div>
         {!open && cut?.map((w, k) => <p key={k} className="st-clash" role="status"><Warn /><span>{w.text}</span></p>)}
@@ -341,9 +351,11 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   const changeEndsOf = useStore((s) => s.changeEndsOf)
   // an older version of the trip is open to look at, its ends are not changed from here
   const viewingOld = useStore((s) => s.viewing?.id === journey.id)
+  // a trip shared with you is only looked at: nothing on it moves, and your own bookings are not read onto it
+  const readOnly = useStore((s) => s.shared?.id === journey.id)
   const setNotice = useStore((s) => s.setNotice)
-  const bookings = useStore((s) => s.bookings)
-  const lodgings = useStore((s) => s.lodgings)
+  const bookings = useOwnBookings(journey)
+  const lodgings = useOwnLodgings(journey)
   const unlocked = useStore((s) => s.unlocked)
   const setUnlocked = useStore((s) => s.setUnlocked)
   // a booked leg keeps its day, so the night steppers move only the legs up to it
@@ -402,7 +414,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   // the leg whose booking form is open, and whether it edits the booking the leg has
   const [bookFor, setBookFor] = useState<{ i: number; edit: boolean } | null>(null)
   let bookForm: ReactNode = null
-  const remote = remoteEnabled()
+  const remote = remoteEnabled() && !readOnly
   // what a booking form saves to: the rows, then the leg pinned on them
   const target = <P,>(leg: FormLeg, save: BookTarget<P>['save']): BookTarget<P> => ({
     leg, inout, data, tripId: journey.id, tripVersion: journey.version ?? null, save,
@@ -531,11 +543,11 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
     <Stop key="cph0" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="start" />,
     <Leg
       key="in" fam="flight" tone="in" route={`${cph.name} to ${nm(firstNode)}`}
-      date={wayIn.depart.slice(0, 10)} times={timesOf(wayIn.depart, wayIn.arrive)} set known picker={wayPicker(wayIn, wayRows.in, unlocked === 'in' ? null : bookedDay(wayBooked.in, dayOf(wayIn)))} fromName={cph.name}
+      date={wayIn.depart.slice(0, 10)} times={timesOf(wayIn.depart, wayIn.arrive)} set known picker={readOnly ? null : wayPicker(wayIn, wayRows.in, unlocked === 'in' ? null : bookedDay(wayBooked.in, dayOf(wayIn)))} fromName={cph.name}
       aria={wayAria(wayIn, cph.name, nm(firstNode))}
       travel={<Travel fam="flight" time={hours(wayIn.total_hours)} overnight={false} />}
       card={<WayCard way={wayIn} other={wayHome} data={data} />}
-      sheet={waySheet('in', wayIn, wayHome, wayRows.in)}
+      sheet={readOnly ? undefined : waySheet('in', wayIn, wayHome, wayRows.in)}
       booking={wayBooked.in}
     />,
   ]
@@ -557,7 +569,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
       const fixed = fixedAt > 0 ? ps[fixedAt].hop! : null
       const booking = bookingOn(bookings, data, { from: ps[i - 1].node, to: p.node, day: date })
       // a locked leg keeps its day, so a parked flight is shown there without the button that would move it
-      const movable = !locked.has(i) || unlocked === i
+      const movable = !readOnly && (!locked.has(i) || unlocked === i)
       // a bus or a boat has no sheet, so its card marks it, in a form of its own
       const ground = fam !== 'flight' && remote
       const kind = fam === 'boat' ? 'boat' : 'bus'
@@ -590,7 +602,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
           onSet={movable ? (d) => setHopDate(i, d) : undefined}
           aria={`${MODE[fam]} ${route}, leaves ${weekdayDay(date)}${took ? `, ${took}` : ''}${h.overnight ? ', overnight' : ''}`}
           travel={<Travel fam={fam} time={took} overnight={!!h.overnight} off={flightOffDay(h)} />}
-          picker={<WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} held={movable ? null : bookedDay(booking, date)} onSet={(d) => setHopDate(i, d)} />}
+          picker={readOnly ? null : <WhenPicker date={date} set={!!h.date} min={min} max={max} firstDay={sched.firstDay} fares={fares} stay={{ name: nm(ps[i - 1].node), inDay: prev.inDay }} codes={codes} trip={journey.id} held={movable ? null : bookedDay(booking, date)} onSet={(d) => setHopDate(i, d)} />}
           card={(dismiss) => (
             <LegCard
               h={h} ends={ends} family={fam} date={date} time={time} points={fam === 'flight' ? null : pointsOf([h.from, ...time.via, h.to])} link={hopLink(h, inout)}
@@ -599,7 +611,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
               onEdit={ground && booking ? () => { dismiss(); setBookFor({ i, edit: true }) } : undefined}
             />
           )}
-          sheet={codes ? (close) => (
+          sheet={codes && !readOnly ? (close) => (
             <FlightSheet
               from={{ code: codes.from, name: ends.fromName }}
               to={{ code: codes.to, name: ends.toName }}
@@ -660,11 +672,12 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
         country={countryOf(p.node)}
         days={sp.days}
         exact={sp.exact}
-        onLess={press(giveNight(journey, sched, i, locked))}
-        rows={nightRows(i)}
+        onLess={readOnly ? null : press(giveNight(journey, sched, i, locked))}
+        rows={readOnly ? [] : nightRows(i)}
+        fixed={readOnly}
         through={(() => { const k = nightStop(locked, i); return k == null ? undefined : nm(sched.places[k].node) })()}
         open={fold === i}
-        onToggle={() => toggleFold(i)}
+        onToggle={readOnly ? undefined : () => toggleFold(i)}
         cut={sched.warnings.filter((w) => w.stop === i)}
         dates={{ inDay: sp.inDay, outDay: sp.outDay }}
         shutting={shutting === i}
@@ -686,11 +699,11 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   byKey.home = (
     <Leg
       key="home" fam="flight" tone="home" route={`${nm(exitNode)} to ${cph.name}`}
-      date={homeDay} times={timesOf(wayHome.depart, wayHome.arrive)} set known picker={wayPicker(wayHome, wayRows.home, unlocked === 'home' ? null : bookedDay(wayBooked.home, dayOf(wayHome)))} fromName={nm(exitNode)}
+      date={homeDay} times={timesOf(wayHome.depart, wayHome.arrive)} set known picker={readOnly ? null : wayPicker(wayHome, wayRows.home, unlocked === 'home' ? null : bookedDay(wayBooked.home, dayOf(wayHome)))} fromName={nm(exitNode)}
       aria={wayAria(wayHome, nm(exitNode), cph.name)}
       travel={<Travel fam="flight" time={hours(wayHome.total_hours)} overnight={false} />}
       card={<WayCard way={wayHome} other={wayIn} data={data} />}
-      sheet={waySheet('home', wayHome, wayIn, wayRows.home)}
+      sheet={readOnly ? undefined : waySheet('home', wayHome, wayIn, wayRows.home)}
       booking={wayBooked.home}
     />
   )
