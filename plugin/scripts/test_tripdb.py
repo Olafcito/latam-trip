@@ -504,72 +504,14 @@ class InboxTokenTest(unittest.TestCase):
             tripdb.cmd_inbox_token("a b", rest=self.Rest(), out=io.StringIO())
 
 
-class InviteTest(unittest.TestCase):
-    ADDR = "test01@example.test"
+class NoInviteTest(unittest.TestCase):
+    """Sign up is open (PROD-009), so tripdb has no invite command left."""
 
-    class Rest:
-        def __init__(self, rows=(), fail=None):
-            self.rows, self.fail, self.calls = list(rows), fail, []
-
-        def get_all(self, table, params):
-            self.calls.append(("get", table, params))
-            if self.fail:
-                raise tripdb.RestError(self.fail)
-            return self.rows
-
-        def insert(self, table, rows, **kw):
-            self.calls.append(("insert", table, rows, kw))
-
-    def test_stores_the_address_lower_case_as_an_open_invite(self):
-        rest, out = self.Rest(), io.StringIO()
-        tripdb.cmd_invite("  TEST01@Example.Test ", rest=rest, out=out)
-        (_, table, rows, kw), = [c for c in rest.calls if c[0] == "insert"]
-        self.assertEqual(table, "invites")
-        self.assertEqual(rows[0]["email"], self.ADDR)
-        self.assertIsNone(rows[0]["used_at"])
-        self.assertEqual(kw, {"on_conflict": "email", "resolution": "merge-duplicates"})
-        self.assertEqual(out.getvalue(), f"invited {self.ADDR}\n")
-
-    def test_inviting_a_used_address_again_opens_its_invite(self):
-        rest, out = self.Rest([{"used_at": "2026-11-01T10:00:00Z"}]), io.StringIO()
-        tripdb.cmd_invite(self.ADDR, rest=rest, out=out)
-        self.assertEqual(out.getvalue(), f"invited {self.ADDR} again, its used invite is open\n")
-
-    def test_refuses_what_is_not_one_address(self):
-        for bad in ("", "test01", "a b@example.test", "test01@example", "a@b@example.test"):
-            with self.subTest(bad=bad), self.assertRaises(tripdb.Refused):
-                tripdb.cmd_invite(bad, rest=self.Rest(), out=io.StringIO())
-
-    def test_a_refusal_names_no_address(self):
-        rest = self.Rest(fail='409 {"message":"duplicate key (email)=(test01@example.test)"}')
-        with self.assertRaises(tripdb.Refused) as e:
-            tripdb.cmd_invite(self.ADDR, rest=rest, out=io.StringIO())
-        self.assertNotIn("@", str(e.exception))
-        with self.assertRaises(tripdb.Refused) as e:
-            tripdb.cmd_invites(rest=rest, out=io.StringIO())
-        self.assertNotIn("@", str(e.exception))
-
-    def test_lists_each_invite_with_its_days(self):
-        rest, out = self.Rest([
-            {"email": self.ADDR, "invited_at": "2026-11-01T10:00:00Z", "used_at": "2026-11-02T08:00:00Z"},
-            {"email": "test02@example.test", "invited_at": "2026-11-03T10:00:00Z", "used_at": None},
-        ]), io.StringIO()
-        tripdb.cmd_invites(rest=rest, out=out)
-        self.assertEqual(out.getvalue().splitlines(), [
-            f"{self.ADDR}  invited 2026-11-01  used 2026-11-02",
-            "test02@example.test  invited 2026-11-03  open",
-        ])
-        self.assertEqual(rest.calls[0][2]["order"], "invited_at.asc")
-
-    def test_says_when_there_are_none(self):
-        out = io.StringIO()
-        tripdb.cmd_invites(rest=self.Rest(), out=out)
-        self.assertEqual(out.getvalue(), "no invites\n")
-
-    def test_the_command_line_takes_exactly_one_address(self):
-        for argv in (["invite"], ["invite", "a@example.test", "b@example.test"], ["invites", "x"]):
+    def test_invite_and_invites_are_gone(self):
+        for argv in (["invite", "test01@example.test"], ["invites"]):
             with self.subTest(argv=argv), contextlib.redirect_stderr(io.StringIO()):
                 self.assertNotEqual(tripdb.main(["--root", ".", *argv]), 0)
+        self.assertFalse(hasattr(tripdb, "cmd_invite") or hasattr(tripdb, "cmd_invites"))
 
 
 if __name__ == "__main__":
