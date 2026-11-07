@@ -89,8 +89,8 @@ BOOKING_COLUMNS = [k for k in tripdb.BOOKING if k not in ("id", "created_at", "u
 # Every private table of a person, the profile included, with the columns its rows are read in. export_account reads
 # them all. The database tests fail when a migration adds an owner_id table that this or SERVICE_TABLES leaves out.
 ACCOUNT_TABLES = {"agent_usage": "seq", "bookings": "id", "inbox": "id", "lodging_prices": "id", "lodging_rooms": "id",
-                  "lodgings": "id", "quotes": "seq", "task_log": "seq", "tasks": "id", "trips": "id,version",
-                  "user_documents": "name", "user_profiles": "owner_id"}
+                  "lodgings": "id", "quotes": "seq", "task_log": "seq", "tasks": "id", "trip_shares": "token",
+                  "trips": "id,version", "user_documents": "name", "user_profiles": "owner_id"}
 # The owner_id tables no client reads: the inbox tokens and the counters. delete_account takes their rows too.
 SERVICE_TABLES = ("connector_writes", "inbox_tokens", "read_booking_usage", "task_day_counts")
 DELETE_ACCOUNT_ASK = ("the email the account signs in with, typed by the person in this conversation. Never fill it in "
@@ -382,6 +382,18 @@ class Core:
              "schema": {"type": "object", "properties": {"rows": {"type": "array", "minItems": 1, "items": price_row}},
                         "required": ["rows"]},
              "fn": lambda rows: self.add_lodging_price(rows)},
+            {"name": "share_trip", "description": "Share one of the caller's trips by a link and give the link. Anyone "
+             "signed in to the planner who has the link sees the plan read only: the ways, the tickets, the places, hops and "
+             "nights. Never the bookings, the lodgings picked or what was paid. Sharing a trip that is shared already gives the "
+             "same link. Call it only when the person asks to share the trip.",
+             "schema": {"type": "object", "properties": {"trip_id": {"type": "string", "description": "the trip's id"}},
+                        "required": ["trip_id"]},
+             "fn": lambda trip_id: self.share_trip(trip_id)},
+            {"name": "stop_sharing", "description": "Stop sharing one of the caller's trips. Its link stops working for "
+             "everyone, and sharing it again makes a new link.",
+             "schema": {"type": "object", "properties": {"trip_id": {"type": "string", "description": "the trip's id"}},
+                        "required": ["trip_id"]},
+             "fn": lambda trip_id: self.stop_sharing(trip_id)},
             {"name": "export_account", "description": "Give the caller a copy of everything they own in the project: every "
              "row of each of their private tables, the profile included, and the paths of their booking files. The files "
              "themselves are not in the reply. Use it when the person asks for their data, and offer it before delete_account.",
@@ -1311,6 +1323,28 @@ class Core:
                 path = f"{prefix}/{item['name']}"
                 (found if item.get("id") else todo).append(path)
         return sorted(found)
+
+    def share_trip(self, trip_id):
+        """The caller's link to one of their trips, made when there is none. The planner's address comes from
+        LATAMTRIP_APP_URL, so the link opens the planner the connector belongs to."""
+        self.need_project("shared trips")
+        app = (os.environ.get("LATAMTRIP_APP_URL") or "").strip().rstrip("/")
+        if not app.startswith(("https://", "http://")):
+            raise Refused("the connector has no planner address to make a link with, LATAMTRIP_APP_URL is not set")
+        try:
+            token = self.store.rest.rpc("share_trip", {"trip_id": trip_id})
+        except tripdb.RestError as e:
+            raise Refused(plain(e))
+        return {"trip_id": trip_id, "link": f"{app}/?share={token}"}
+
+    def stop_sharing(self, trip_id):
+        """Revokes the caller's link to the trip. stopped says whether there was a link."""
+        self.need_project("shared trips")
+        try:
+            stopped = self.store.rest.rpc("stop_sharing", {"trip_id": trip_id})
+        except tripdb.RestError as e:
+            raise Refused(plain(e))
+        return {"trip_id": trip_id, "stopped": bool(stopped)}
 
     def export_account(self):
         """Every row the caller owns, table by table, and the paths of their booking files. Never the files' bytes."""

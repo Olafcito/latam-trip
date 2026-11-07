@@ -602,6 +602,126 @@ class RlsTest(unittest.TestCase):
                 self.assertNotIn(secret, json.dumps(rows))
 
 
+# a trip with every private part a saved trip can hold: who saved it, the totals with the booked stays and the stays
+SHARED = {"id": "TEST01-share", "name": "TEST01 Colombia", "by": "planner", "why": "TEST01 why", "rank": 1,
+          "way_in": {"from": "CPH", "to": "BOG", "timeline": [], "price_dkk": 4000, "tickets": ["TTEST01"]},
+          "way_home": {"from": "LIM", "to": "CPH", "timeline": [], "price_dkk": 4000, "tickets": []},
+          "tickets": {"TTEST01": {"id": "TTEST01", "price_dkk": 4000}},
+          "totals": {"stays_booked_dkk": 999, "total_dkk": 9999},
+          "places": [{"node": "bogota", "hop": None, "nights": 3, "why": "TEST01 place",
+                      "stays": [{"lodging_id": "TEST01-lodging", "room_id": "TEST01-room", "nights": 3}]},
+                     {"node": "medellin", "hop": {"from": "bogota", "to": "medellin", "mode": "bus"}, "nights": 2,
+                      "stay": {"lodging_id": "TEST01-lodging"}}],
+          "lastNights": 2}
+
+
+@unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 to run against the local stack")
+class ShareTest(unittest.TestCase):
+    """FEAT-007. B shares a trip by a link, A opens it, and the link shows the plan alone."""
+
+    @classmethod
+    def setUpClass(cls):
+        import migrate, users
+        cls.users = users
+        cls.env = migrate.load_env()
+        users.refuse(cls.env)
+        cls.svc = users.service(cls.env)
+        cls.a = users.admin(cls.env)
+        cls.b = users.make_user(cls.env, "b")
+        cls.anon = users.Rest(cls.env["SUPABASE_URL"], cls.env["SUPABASE_PUBLISHABLE_KEY"])
+
+    def setUp(self):
+        ok(self, self.svc.rpc("test_reset"))
+        ok(self, self.b.rest.rpc("save_trip", {"trip": SHARED}))
+
+    def share(self, who=None, trip="TEST01-share"):
+        return ok(self, (who or self.b).rest.rpc("share_trip", {"trip_id": trip}))
+
+    def shown(self, token, who=None):
+        return ok(self, (who or self.a).rest.rpc("shared_trip", {"token": token}))
+
+    def test_one_live_link_per_trip(self):
+        token = self.share()
+        self.assertRegex(token, r"^[A-Za-z0-9_-]{22}$")
+        self.assertEqual(self.share(), token)
+        rows = ok(self, self.b.rest.select("trip_shares", "select=*"))
+        self.assertEqual([(r["token"], r["owner_id"], r["trip_id"], r["revoked_at"]) for r in rows],
+                         [(token, self.b.id, "TEST01-share", None)])
+
+    def test_the_link_shows_the_plan_alone(self):
+        token = self.share()
+        got = self.shown(token)
+        self.assertEqual(set(got), {"id", "version", "name", "saved_at", "why", "rank", "way_in", "way_home", "tickets",
+                                    "places", "lastNights"})
+        self.assertEqual((got["id"], got["name"], got["version"]), ("TEST01-share", "TEST01 Colombia", 1))
+        self.assertEqual([set(p) for p in got["places"]], [{"node", "hop", "nights", "why"}, {"node", "hop", "nights"}])
+        self.assertEqual(got["way_in"], SHARED["way_in"])
+        text = json.dumps(got)
+        for private in ("TEST01-lodging", "TEST01-room", "stays_booked_dkk", "planner", self.b.id, self.b.email):
+            self.assertNotIn(private, text)
+        # the owner's later save is what the link shows, and the owner reads it too
+        ok(self, self.b.rest.rpc("save_trip", {"trip": {**SHARED, "name": "TEST01 Colombia again"}}))
+        self.assertEqual((self.shown(token)["version"], self.shown(token, self.b)["name"]), (2, "TEST01 Colombia again"))
+
+    def test_another_person_cannot_read_or_revoke_a_link(self):
+        token = self.share()
+        self.assertEqual(ok(self, self.a.rest.select("trip_shares", "select=*")), [])
+        self.assertEqual(ok(self, self.a.rest.update("trip_shares", f"token=eq.{token}", {"revoked_at": "2026-11-07T00:00:00Z"})), [])
+        self.assertIs(ok(self, self.a.rest.rpc("stop_sharing", {"trip_id": "TEST01-share"})), False)
+        code, body = self.a.rest.rpc("share_trip", {"trip_id": "TEST01-share"})
+        self.assertNotEqual(code, 200, body)
+        self.assertIn("no trip", body["message"])
+        code, body = self.a.rest.delete("trip_shares", f"token=eq.{token}")
+        self.assertTrue(code in REFUSED or body == [], (code, body))
+        self.assertEqual(self.shown(token)["id"], "TEST01-share")
+
+    def test_no_client_makes_its_own_token(self):
+        for who in (self.a, self.b):
+            code, body = who.rest.insert("trip_shares", [{"token": "TEST01aaaaaaaaaaaaaaaaaa", "trip_id": "TEST01-share"}])
+            self.assertIn(code, REFUSED, (code, body))
+        token = self.share()
+        code, body = self.b.rest.update("trip_shares", f"token=eq.{token}", {"trip_id": "TEST01-other"})
+        self.assertIn(code, REFUSED, (code, body))
+        code, body = self.b.rest.delete("trip_shares", f"token=eq.{token}")
+        self.assertTrue(code in REFUSED or body == [], (code, body))
+
+    def test_a_stopped_link_stays_dead(self):
+        token = self.share()
+        self.assertIs(ok(self, self.b.rest.rpc("stop_sharing", {"trip_id": "TEST01-share"})), True)
+        self.assertIsNone(self.shown(token))
+        self.assertIs(ok(self, self.b.rest.rpc("stop_sharing", {"trip_id": "TEST01-share"})), False)
+        # the owner cannot bring the old link back, and sharing again makes a new one
+        code, body = self.b.rest.update("trip_shares", f"token=eq.{token}", {"revoked_at": None})
+        self.assertIn(code, REFUSED, (code, body))
+        again = self.share()
+        self.assertNotEqual(again, token)
+        self.assertIsNone(self.shown(token))
+        self.assertEqual(self.shown(again)["id"], "TEST01-share")
+        # the owner revokes a row directly too
+        ok(self, self.b.rest.update("trip_shares", f"token=eq.{again}", {"revoked_at": "2026-11-07T00:00:00Z"}))
+        self.assertIsNone(self.shown(again))
+
+    def test_a_deleted_trip_shows_nothing_and_shares_nothing(self):
+        token = self.share()
+        ok(self, self.b.rest.update("trips", "id=eq.TEST01-share", {"deleted_at": "2026-11-07T00:00:00Z"}))
+        self.assertIsNone(self.shown(token))
+        code, body = self.b.rest.rpc("share_trip", {"trip_id": "TEST01-share"})
+        self.assertNotEqual(code, 200, body)
+        self.assertIn("deleted", body["message"])
+        self.assertIsNone(self.shown("TEST01unknownunknownxx"))
+
+    def test_without_a_sign_in_nothing(self):
+        token = self.share()
+        for fn, body in (("shared_trip", {"token": token}), ("share_trip", {"trip_id": "TEST01-share"}),
+                         ("stop_sharing", {"trip_id": "TEST01-share"})):
+            with self.subTest(fn=fn):
+                code, got = self.anon.rpc(fn, body)
+                self.assertIn(code, REFUSED, (code, got))
+        code, got = self.anon.select("trip_shares")
+        self.assertTrue(code in REFUSED or got == [], (code, got))
+        self.assertEqual(self.shown(token)["id"], "TEST01-share")
+
+
 @unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 to run against the local stack")
 class OpenSignupTest(unittest.TestCase):
     """Open sign up (task 6.1, PROD-009): the before_user_created hook of 0038 lets every new user be made and records

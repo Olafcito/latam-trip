@@ -172,6 +172,50 @@ class AccountTest(unittest.TestCase):
         self.assertIn("delete_account", specs["export_account"]["description"])
 
 
+class ShareTest(unittest.TestCase):
+    """share_trip and stop_sharing call the database as the caller and build the link from LATAMTRIP_APP_URL."""
+
+    def setUp(self):
+        self.rest = FakeRest()
+        self.core = mcp_core.Core(FakeStore(self.rest), owner=ME)
+
+    def test_the_link_opens_the_planner_of_the_config(self):
+        self.rest.rpc = lambda name, body=None: self.rest.calls.append(("rpc", name, body)) or "TEST01abcdefghijklmnopq"
+        for app in ("https://planner.example.test", "https://planner.example.test/"):
+            with mock.patch.dict(os.environ, {"LATAMTRIP_APP_URL": app}):
+                out = self.core.call("share_trip", {"trip_id": "TEST01"})
+            self.assertEqual(out, {"trip_id": "TEST01", "link": "https://planner.example.test/?share=TEST01abcdefghijklmnopq"})
+        self.assertEqual(self.rest.calls[-1], ("rpc", "share_trip", {"trip_id": "TEST01"}))
+
+    def test_no_planner_address_shares_nothing(self):
+        with mock.patch.dict(os.environ, {"LATAMTRIP_APP_URL": ""}):
+            with self.assertRaises(tripdb_store.Refused) as got:
+                self.core.call("share_trip", {"trip_id": "TEST01"})
+        self.assertIn("LATAMTRIP_APP_URL", str(got.exception))
+        self.assertEqual(self.rest.calls, [])
+
+    def test_a_refusal_reads_as_a_sentence(self):
+        self.rest.refuse["share_trip"] = refusal("share_trip", "There is no trip TEST01 to share.")
+        with mock.patch.dict(os.environ, {"LATAMTRIP_APP_URL": "https://planner.example.test"}):
+            with self.assertRaises(tripdb_store.Refused) as got:
+                self.core.call("share_trip", {"trip_id": "TEST01"})
+        self.assertEqual(str(got.exception), "There is no trip TEST01 to share.")
+
+    def test_stop_sharing_says_whether_there_was_a_link(self):
+        self.assertEqual(self.core.call("stop_sharing", {"trip_id": "TEST01"}), {"trip_id": "TEST01", "stopped": True})
+        self.rest.rpc = lambda name, body=None: False
+        self.assertEqual(self.core.call("stop_sharing", {"trip_id": "TEST01"}), {"trip_id": "TEST01", "stopped": False})
+
+    def test_both_are_writes_kept_in_the_project(self):
+        reads = mcp_core.Core.read_tools()
+        self.assertNotIn("share_trip", reads)
+        self.assertNotIn("stop_sharing", reads)
+        core = mcp_core.Core(type("Files", (), {"kind": "files"})(), owner=ME)
+        for name in ("share_trip", "stop_sharing"):
+            with self.assertRaises(tripdb_store.Refused):
+                core.call(name, {"trip_id": "TEST01"})
+
+
 class GateTest(unittest.TestCase):
     def setUp(self):
         self.rest = FakeRest()
@@ -267,7 +311,7 @@ class AccountDbTest(ConnectorStack):
     @classmethod
     def wipe(cls, user):
         """Every row of user that these tests make, and their files."""
-        for t in ("lodgings", "bookings", "trips", "user_documents", "quotes", "tasks", "task_log", "agent_usage",
+        for t in ("lodgings", "bookings", "trip_shares", "trips", "user_documents", "quotes", "tasks", "task_log", "agent_usage",
                   "inbox", "inbox_tokens", "user_profiles"):
             cls.svc.delete(t, f"owner_id=eq.{user.id}")
         _, listed = user.storage.list("bookings", user.id + "/")
@@ -286,6 +330,7 @@ class AccountDbTest(ConnectorStack):
         trip = {"id": tag, "version": 1, "name": tag, "saved_at": "2026-11-06T00:00:00Z", "by": "migration",
                 "why": "TEST01 account test", "way_in": {}, "way_home": {}, "places": []}
         self.ok(user.rest.insert("trips", [{"id": tag, "version": 1, "data": trip}]))
+        self.ok(user.rest.rpc("share_trip", {"trip_id": tag}))
         self.ok(user.rest.insert("user_documents", [{"name": tag, "data": {"note": "TEST01"}}]))
         self.ok(user.rest.insert("quotes", [{"quote_id": tag, "notes": "TEST01"}]))
         self.ok(user.rest.insert("user_profiles", [{"owner_id": uid, "home_airport": "CPH"}]))
@@ -366,6 +411,26 @@ class AccountDbTest(ConnectorStack):
             self.assertEqual({r["owner_id"] for r in rows}, {b.id}, t)
         self.assertEqual(out["tables"]["user_profiles"][0]["home_airport"], "MAD")
         self.assertEqual(out["files"], [path])
+        self.wipe(b)
+
+    def test_share_and_stop_through_the_connector(self):
+        b = self.users.make_user(self.env, "mcp-account-share")
+        self.seed(b)
+        tag = "TEST01-" + b.email.split("@")[0]
+        (bearer,) = self.connect(b)
+        with mock.patch.dict(os.environ, {"LATAMTRIP_APP_URL": "https://planner.example.test/"}):
+            out = self.tool(bearer, "share_trip", {"trip_id": tag})
+            again = self.tool(bearer, "share_trip", {"trip_id": tag})
+            text = self.tool(bearer, "share_trip", {"trip_id": "TEST01-nothing"}, refused=True)
+        self.assertEqual(out, again)
+        self.assertRegex(out["link"], r"^https://planner\.example\.test/\?share=[A-Za-z0-9_-]{22}$")
+        self.assertIn("no trip", text)
+        token = out["link"].rsplit("=", 1)[1]
+        code, trip = self.a.rest.rpc("shared_trip", {"token": token})
+        self.assertEqual((code, trip["id"]), (200, tag))
+        self.assertEqual(self.tool(bearer, "stop_sharing", {"trip_id": tag}), {"trip_id": tag, "stopped": True})
+        self.assertEqual(self.tool(bearer, "stop_sharing", {"trip_id": tag}), {"trip_id": tag, "stopped": False})
+        self.assertEqual(self.a.rest.rpc("shared_trip", {"token": token}), (200, None))
         self.wipe(b)
 
     def test_delete_counts_every_private_table(self):

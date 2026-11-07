@@ -87,7 +87,7 @@ Resources:
           LATAMTRIP_SESSION_TABLE: !Ref SessionTable
           LATAMTRIP_URL_PARAM: /latam-trip-mcp/supabase-url
           LATAMTRIP_PUBLISHABLE_KEY_PARAM: /latam-trip-mcp/supabase-publishable-key
-          # read only by the code before the switch, and harmless to this code
+          # the planner's address, which share_trip puts in front of a shared trip's link (FEAT-007)
           LATAMTRIP_APP_URL: https://d15amu9hjiumbd.cloudfront.net
       Tags:
         - Key: project
