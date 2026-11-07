@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { shareParam, sharedJourneyId, sharedLodgings, sharedRow, shareUrl, urlWithShare } from './shareTrip'
+import { shareParam, sharedBookings, sharedJourneyId, sharedLodgings, sharedRow, shareUrl, urlWithShare } from './shareTrip'
 
 const tok = 'AbCdEfGhIjKlMnOpQrStUv'
 const way = (from: string, to: string) => ({ from, to, timeline: [] })
@@ -49,5 +49,19 @@ describe('share links', () => {
     expect(l.rooms.map((r) => [r.id, r.notes, r.prices.map((p) => [p.total_dkk, p.url])])).toEqual([['TEST01-r', null, [[600, null]]]])
     expect(sharedLodgings({})).toEqual([])
     expect(sharedLodgings(null)).toEqual([])
+  })
+
+  it('reads the booked stays a shared trip carries onto its own id, with nothing paid or sold', () => {
+    const got = sharedBookings({
+      bookings: [
+        { id: 'booked-1', place_id: 'GUA', check_in: '2026-12-03', check_out: '2026-12-06', lodging_id: 'TEST01-l', room_id: 'TEST01-r', reference: 'TEST01', price_dkk: 900 },
+        { id: 'booked-2', place_id: 'GUA', check_in: '2026-12-06', check_out: '2026-12-06' },
+        { id: 'booked-3', check_in: '2026-12-03', check_out: '2026-12-06' },
+      ],
+    }, sharedJourneyId(tok))
+    expect(got.map((b) => [b.id, b.kind, b.status, b.place_id, b.check_in, b.check_out, b.lodging_id, b.room_id, b.trip_id, b.reference, b.price_dkk])).toEqual([
+      ['booked-1', 'stay', 'booked', 'GUA', '2026-12-03', '2026-12-06', 'TEST01-l', 'TEST01-r', sharedJourneyId(tok), null, null],
+    ])
+    expect(sharedBookings(null, 'x')).toEqual([])
   })
 })

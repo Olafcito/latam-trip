@@ -131,7 +131,7 @@ async function openShareLink(token: string) {
     if (mine) return useStore.getState().openTrip(mine)
     const got = await loadShared(token)
     const s = useStore.getState()
-    if (got && got !== 'failed') return s.openShared(token, got.row, got.lodgings)
+    if (got && got !== 'failed') return s.openShared(token, got.row, got.lodgings, got.bookings)
     s.go('trips', 'home')
     s.setNotice(got === 'failed' ? 'The shared trip could not be read.' : 'That shared trip is no longer shared.')
   } finally {

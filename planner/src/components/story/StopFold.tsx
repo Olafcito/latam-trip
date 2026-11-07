@@ -42,7 +42,7 @@ import { Finds } from './TripHead'
 // over the places stored for the stop, and Select on a room plans it. Dates picked in the window, in the search or
 // on a place, price the places for those dates until the window closes. A room selected still takes the stop's nights. The rest of the city card's acts, change
 // the place and delete it, still open the city card from About. A trip shared with you shows its stays and its city
-// read only: nothing to add, change or delete, and the owner's bookings are never part of it.
+// read only: nothing to add, change or delete, with the owner's booked stays alone and nothing of what they cost.
 
 const photosOf = (l: Lodging | undefined) => (l?.photos ?? []).map((p) => p.url).filter((u) => /^https:\/\//i.test(u))
 

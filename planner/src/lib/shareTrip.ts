@@ -1,4 +1,5 @@
-import type { Lodging, LodgingPrice, LodgingRoom } from '../data/types'
+import type { Booking, Lodging, LodgingPrice, LodgingRoom } from '../data/types'
+import { savedRow } from './bookingDraft'
 import { parseTripsFile, type TripRow } from './repoTrips'
 import { supabase } from './supabase'
 
@@ -98,10 +99,27 @@ export function sharedLodgings(raw: unknown): Lodging[] {
   })
 }
 
-/** A shared trip as the planner opens it: the trip row under the shared id and the places to stay it names. */
+/**
+ * The owner's booked stays on a shared trip (0042), on the shared trip's id: the place, the nights, the place to stay and
+ * the room alone. Nothing of what was paid, the reference or who sold it ever comes with them.
+ */
+export function sharedBookings(raw: unknown, journeyId: string): Booking[] {
+  return list(obj(raw)?.bookings).flatMap((v): Booking[] => {
+    const x = obj(v)
+    const id = str(x?.id)
+    const place = str(x?.place_id)
+    const checkIn = str(x?.check_in)
+    const checkOut = str(x?.check_out)
+    if (!x || !id || !place || !checkIn || !checkOut || checkOut <= checkIn) return []
+    return [savedRow({ kind: 'stay', place_id: place, check_in: checkIn, check_out: checkOut, lodging_id: str(x.lodging_id), room_id: str(x.room_id), trip_id: journeyId }, id)]
+  })
+}
+
+/** A shared trip as the planner opens it: the trip row under the shared id, its booked stays and the places to stay it names. */
 export interface SharedTrip {
   row: TripRow
   lodgings: Lodging[]
+  bookings: Booking[]
 }
 
 export type ShareResult = { ok: true; token: string } | { ok: false; message: string }
@@ -143,7 +161,7 @@ export async function loadShared(token: string): Promise<SharedTrip | null | 'fa
   const { data, error } = await supabase.rpc('shared_trip', { token })
   if (error) return 'failed'
   const row = data == null ? null : sharedRow(data, token)
-  return row && { row, lodgings: sharedLodgings(data) }
+  return row && { row, lodgings: sharedLodgings(data), bookings: sharedBookings(data, row.id) }
 }
 
 export type Sent = 'shared' | 'copied' | 'cancelled' | 'failed'

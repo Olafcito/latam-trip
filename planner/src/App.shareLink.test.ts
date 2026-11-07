@@ -49,7 +49,7 @@ describe('shared trip links', () => {
   it('opens the shared trip read only and keeps the link in the address', async () => {
     const browser = browserAt(`https://example.test/?share=${tok}`)
     ownShare.mockResolvedValue(null)
-    loadShared.mockResolvedValue({ row, lodgings: [] })
+    loadShared.mockResolvedValue({ row, lodgings: [], bookings: [] })
     const { openDeepLink, useStore, off } = await app()
     openDeepLink()
     await vi.waitFor(() => expect(useStore.getState().shared?.token).toBe(tok))
