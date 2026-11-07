@@ -39,8 +39,8 @@ export interface ItinInput {
   stops: ItinStop[]
   /** the leg into each stop, by the stop's index. The first stop is reached by the way in, so hops[0] is null */
   hops: (ItinLeg | null)[]
-  /** the stop folded open, if any */
-  open: number | null
+  /** the stops folded open */
+  open: ReadonlySet<number>
   /** free nights before the way home */
   free: number
 }
@@ -78,7 +78,7 @@ export function itinerary({ wayIn, wayHome, stops, hops, open, free }: ItinInput
     }
     // the stop starts when its leg lands, or on its day when the landing is not known
     add({ kind: 'stop', key: `s${i}`, i, at: later(landed, instant(s.inDay)) })
-    if (open === i) add({ kind: 'fold', key: `f${i}`, i, at: now })
+    if (open.has(i)) add({ kind: 'fold', key: `f${i}`, i, at: now })
   })
   if (free > 0) add({ kind: 'free', key: 'free', at: now })
   add({ kind: 'leg', key: 'home', at: instant(wayHome.depart) })

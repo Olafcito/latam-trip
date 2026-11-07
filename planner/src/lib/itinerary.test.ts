@@ -10,7 +10,7 @@ const base: ItinInput = {
     { inDay: '2026-12-03', outDay: '2026-12-20' },
   ],
   hops: [null, { depart: '2026-12-03T10:00', arrive: '2026-12-03T12:30' }],
-  open: null,
+  open: new Set<number>(),
   free: 0,
 }
 const keys = (inp: ItinInput) => itinerary(inp).map((e) => e.key)
@@ -21,15 +21,19 @@ describe('itinerary', () => {
   })
 
   it('puts an open stop\'s stay right after the stop and before the leg that leaves it', () => {
-    expect(keys({ ...base, open: 0 })).toEqual(['cph0', 'in', 's0', 'f0', 'h1', 's1', 'home', 'cph1'])
+    expect(keys({ ...base, open: new Set([0]) })).toEqual(['cph0', 'in', 's0', 'f0', 'h1', 's1', 'home', 'cph1'])
   })
 
   it('puts the last stop\'s fold before the free nights and the way home', () => {
-    expect(keys({ ...base, open: 1, free: 2 })).toEqual(['cph0', 'in', 's0', 'h1', 's1', 'f1', 'free', 'home', 'cph1'])
+    expect(keys({ ...base, open: new Set([1]), free: 2 })).toEqual(['cph0', 'in', 's0', 'h1', 's1', 'f1', 'free', 'home', 'cph1'])
+  })
+
+  it('folds several stops open at once, each under its own stop', () => {
+    expect(keys({ ...base, open: new Set([0, 1]) })).toEqual(['cph0', 'in', 's0', 'f0', 'h1', 's1', 'f1', 'home', 'cph1'])
   })
 
   it('runs forward in time', () => {
-    const ats = itinerary({ ...base, open: 0, free: 1 }).map((e) => e.at)
+    const ats = itinerary({ ...base, open: new Set([0]), free: 1 }).map((e) => e.at)
     expect([...ats].sort()).toEqual(ats)
   })
 
@@ -40,7 +44,7 @@ describe('itinerary', () => {
 
   it('keeps a leg after its stop when it leaves before you get there, the clash is a warning and not a new order', () => {
     // the leg out of the first stop leaves before the way in lands
-    const clash = { ...base, open: 0, hops: [null, { depart: '2026-12-02T06:00', arrive: '2026-12-02T07:00' }] }
+    const clash = { ...base, open: new Set([0]), hops: [null, { depart: '2026-12-02T06:00', arrive: '2026-12-02T07:00' }] }
     expect(keys(clash)).toEqual(['cph0', 'in', 's0', 'f0', 'h1', 's1', 'home', 'cph1'])
     const ats = itinerary(clash).map((e) => e.at)
     expect([...ats].sort()).toEqual(ats)

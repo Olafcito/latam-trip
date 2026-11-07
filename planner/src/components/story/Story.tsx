@@ -367,29 +367,41 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   }, [inout, wayIn, wayHome, journey.id])
   // the stop whose City card is open, and at which view. A stop deleted from the card goes once the card has closed
   const [city, setCity] = useState<{ i: number; view: CityView } | null>(null)
-  // the stop folded open on the route, one at a time
-  const [fold, setFold] = useState<number | null>(null)
-  // the stop whose fold is closing
-  const [shutting, setShutting] = useState<number | null>(null)
-  const shutTimer = useRef<number | undefined>(undefined)
-  useEffect(() => () => window.clearTimeout(shutTimer.current), [])
+  // the stops folded open on the route. Each stop with a place to stay opens with the trip
+  const withStays = () => new Set(journey.places.flatMap((p, k) => (p.stays?.length ? [k] : [])))
+  const [folds, setFolds] = useState<{ trip: string; open: ReadonlySet<number> }>(() => ({ trip: journey.id, open: withStays() }))
+  if (folds.trip !== journey.id) setFolds({ trip: journey.id, open: withStays() })
+  const open = folds.trip === journey.id ? folds.open : withStays()
+  const setOpen = (i: number, on: boolean) => setFolds((f) => {
+    const next = new Set(f.open)
+    if (on) next.add(i)
+    else next.delete(i)
+    return { ...f, open: next }
+  })
+  // the stops whose fold is closing
+  const [shutting, setShutting] = useState<ReadonlySet<number>>(() => new Set())
+  const unshut = (i: number) => setShutting((s) => { if (!s.has(i)) return s; const next = new Set(s); next.delete(i); return next })
+  const shutTimers = useRef(new Map<number, number>())
+  useEffect(() => () => shutTimers.current.forEach((t) => window.clearTimeout(t)), [])
   const toggleFold = (i: number) => {
-    window.clearTimeout(shutTimer.current)
-    if (fold !== i) {
-      setShutting(null)
-      setFold((f) => (f === i ? null : i))
+    window.clearTimeout(shutTimers.current.get(i))
+    if (!open.has(i) || shutting.has(i)) {
+      unshut(i)
+      setOpen(i, true)
       return
     }
     // the fold shuts by its height first, then leaves the page
-    setShutting(i)
+    setShutting((s) => new Set(s).add(i))
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    shutTimer.current = window.setTimeout(() => { setFold((f) => (f === i ? null : f)); setShutting(null) }, still ? 120 : 220)
+    shutTimers.current.set(i, window.setTimeout(() => { setOpen(i, false); unshut(i) }, still ? 120 : 220))
   }
   // the stop whose search opens at once, from the trip's Add accommodation or another city picked in a search
   const [stayAt, setStayAt] = useState<{ i: number; n: number; tab: StayTab } | null>(null)
   const pickStay = useRef<{ stop: number; tab: StayTab } | null>(null)
   const openStay = (stop: number, tab: StayTab) => {
-    setFold(stop)
+    window.clearTimeout(shutTimers.current.get(stop))
+    unshut(stop)
+    setOpen(stop, true)
     setStayAt((s) => ({ i: stop, n: (s?.n ?? 0) + 1, tab }))
   }
   // the stops a stay can be added to, the ones with nights
@@ -397,7 +409,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
   const openSaved = useStore((s) => s.openSaved)
   const setCursor = useStore((s) => s.setCursor)
   const foldBody = (i: number) => (
-    <li key={`f${i}`} id={`st-${i}-fold`} className="st-fold ed-fold" data-shutting={(shutting === i) || undefined}>
+    <li key={`f${i}`} id={`st-${i}-fold`} className="st-fold ed-fold" data-shutting={shutting.has(i) || undefined}>
       <span className="st-rail" />
       <StopFold
         data={data} journey={journey} sched={sched} i={i}
@@ -676,11 +688,11 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
         rows={readOnly ? [] : nightRows(i)}
         fixed={readOnly}
         through={(() => { const k = nightStop(locked, i); return k == null ? undefined : nm(sched.places[k].node) })()}
-        open={fold === i}
-        onToggle={readOnly ? undefined : () => toggleFold(i)}
+        open={open.has(i)}
+        onToggle={() => toggleFold(i)}
         cut={sched.warnings.filter((w) => w.stop === i)}
         dates={{ inDay: sp.inDay, outDay: sp.outDay }}
-        shutting={shutting === i}
+        shutting={shutting.has(i)}
       />
     )
     byKey[`s${i}`] = stop
@@ -708,7 +720,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
     />
   )
   byKey.cph1 = <Stop key="cph1" name={cph.name} node={undefined} country={cph.country} days={0} exact onLess={null} rows={[]} home="end" />
-  if (fold != null && ps[fold]) byKey[`f${fold}`] = foldBody(fold)
+  for (const k of open) if (ps[k]) byKey[`f${k}`] = foldBody(k)
   // the itinerary runs in the order the trip is lived, fixed by its structure: a stop, its stay, then the leg that
   // leaves it. The instants it is given (bookings, else picked flights, else days) are carried but do not decide the order
   const lined = itinerary({
@@ -719,7 +731,7 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
         const l = tripInput.legs.find((x) => x.key === `h${i}`)
         return l ? { depart: l.depart, arrive: l.arrive ?? null } : null
       }),
-      open: fold,
+      open,
       free: sched.free,
   }).map((e) => byKey[e.key])
 
@@ -736,7 +748,9 @@ export function Story({ data, journey, sched, wayIn, wayHome, addStay, onAddStay
             setCity(null)
             if (goes.current) {
               removeStop(city.i)
-              setFold(null)
+              // the stops after it move up one
+              const gone = city.i
+              setFolds((f) => ({ ...f, open: new Set([...f.open].flatMap((k) => (k < gone ? [k] : k > gone ? [k - 1] : []))) }))
             }
             goes.current = false
           }}
