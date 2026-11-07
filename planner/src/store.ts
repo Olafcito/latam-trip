@@ -680,7 +680,7 @@ export const useStore = create<State>((set, get) => ({
     set({ compare: c.includes(id) ? c.filter((x) => x !== id) : c.length >= 3 ? [...c.slice(1), id] : [...c, id] })
   },
 
-  mapOpen: true,
+  mapOpen: false,
   paneMini: false,
   setPaneMini: (paneMini) => set({ paneMini }),
   showOnMap: () => set({ mapOpen: true, screen: 'map' }),

@@ -25,6 +25,23 @@ const trip: Journey = {
   places: [{ node: 'GDL', hop: null }, { node: 'GUA', hop: null }, { node: 'SAL', hop: null }],
 }
 
+describe('the Map tab start state', () => {
+  it('a fresh store has no trip open on the map', () => {
+    expect(useStore.getInitialState().mapOpen).toBe(false)
+  })
+
+  it('opening a trip, or showing it on the map, opens it there', () => {
+    const j = { id: 'TEST01', name: 'Test', places: [], wayIn: null, wayHome: null } as unknown as Journey
+    useStore.getState().closeTrip()
+    expect(useStore.getState().mapOpen).toBe(false)
+    useStore.getState().openTrip(j)
+    expect(useStore.getState().mapOpen).toBe(true)
+    useStore.getState().closeTrip()
+    useStore.getState().showOnMap()
+    expect(useStore.getState().mapOpen).toBe(true)
+  })
+})
+
 describe('another tab changes the trip', () => {
   it('follows when this tab shows the same trip and stays when it does not', () => {
     useStore.getState().setJourney(trip)
