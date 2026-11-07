@@ -370,7 +370,7 @@ class AccountDbTest(ConnectorStack):
 
     def test_delete_counts_every_private_table(self):
         user, bearer = self.gone("mcp-account-gone-1")
-        # the person's own invite and another person's, which have no owner_id
+        # the person's own sign up row and another person's, which have no owner_id
         mine, theirs = user.email.lower(), self.a.email.lower()
         self.ok(self.svc.insert("invites", [{"email": mine}, {"email": theirs}], on_conflict="email",
                                 resolution="merge-duplicates"))

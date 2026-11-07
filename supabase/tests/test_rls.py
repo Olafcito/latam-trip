@@ -8,9 +8,9 @@ The tests commit rows and empty the tables with test_reset, so they run on the l
 Run: bash supabase/local_up.sh <env file outside the repo>, then
 TRIPDB_DB_TESTS=1 TRIPDB_ENV_FILE=<file> uv run --quiet --no-project --python 3.12 --with "psycopg[binary]==3.3.8"
   --with "websockets==15.0.1" python -I -X utf8 supabase/tests/test_rls.py -v
-InviteTest needs the before_user_created hook and confirm email that config.toml turns on, so a stack started before
-0036 runs it only with SUPABASE_AUTH_URL in the env file naming a second auth server that has both on, and with the
-trigger of 0036 in the database.
+OpenSignupTest needs the before_user_created hook and confirm email that config.toml turns on, so a stack started
+before 0036 runs it only with SUPABASE_AUTH_URL in the env file naming a second auth server that has both on, and with
+the trigger of 0036 and the hook of 0038 in the database.
 """
 import json, os, sys, threading, time, unittest, uuid
 
@@ -603,12 +603,13 @@ class RlsTest(unittest.TestCase):
 
 
 @unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 to run against the local stack")
-class InviteTest(unittest.TestCase):
-    """Sign up by invite (task 6.1): the before_user_created hook of 0036, which config.toml turns on locally.
+class OpenSignupTest(unittest.TestCase):
+    """Open sign up (task 6.1, PROD-009): the before_user_created hook of 0038 lets every new user be made and records
+    the address in public.invites, and the trigger of 0036 clears the password of every client sign up.
 
     The sign ups and sign ins go to SUPABASE_AUTH_URL when the env names one, else to SUPABASE_URL/auth/v1, and the admin
     API always to SUPABASE_URL, where the secret key is taken. Each test uses addresses of its own and removes its users
-    and invites, so it never calls test_reset."""
+    and rows, so it never calls test_reset."""
 
     @classmethod
     def setUpClass(cls):
@@ -636,14 +637,11 @@ class InviteTest(unittest.TestCase):
                 self.users.http("DELETE", f"{self.admin_api}/users/{uid}", self.secret)
 
     def address(self):
-        email = f"test01-invite-{uuid.uuid4().hex[:8]}@example.test"
+        email = f"test01-signup-{uuid.uuid4().hex[:8]}@example.test"
         self.made.append(email)
         return email
 
-    def invite(self, email):
-        ok(self, self.svc.insert("invites", [{"email": email.lower()}]))
-
-    def invite_row(self, email):
+    def signup_row(self, email):
         rows = ok(self, self.svc.select("invites", f"select=*&email=eq.{email.lower()}"))
         return rows[0] if rows else None
 
@@ -653,12 +651,12 @@ class InviteTest(unittest.TestCase):
         return next((u["id"] for u in body["users"] if u.get("email") == email.lower()), None)
 
     def sign_up(self, email):
-        """A sign up by password, which sends no mail on the local stack, so the email rate limit never trips."""
+        """A sign up by password at /auth/v1/signup, which anyone with the publishable key can call."""
         return self.users.http("POST", f"{self.auth}/signup", self.public,
                                {"email": email, "password": self.users.PASSWORD})
 
     def link(self, email):
-        """What the planner sends: a sign in link that may make the user."""
+        """What the planner sends: a sign in link that makes the user when the address is new."""
         return self.users.http("POST", f"{self.auth}/otp", self.public, {"email": email, "create_user": True})
 
     def password_sign_in(self, email):
@@ -666,7 +664,7 @@ class InviteTest(unittest.TestCase):
                                {"email": email, "password": self.users.PASSWORD})
 
     def confirm(self, email):
-        """The invitee's first email link: the admin API makes the link the mail carries and /verify opens it."""
+        """The person opens their email link: the admin API makes the link the mail carries and /verify opens it."""
         code, body = self.users.http("POST", f"{self.admin_api}/generate_link", self.secret,
                                      {"type": "magiclink", "email": email})
         self.assertEqual(code, 200, body)
@@ -677,61 +675,40 @@ class InviteTest(unittest.TestCase):
         self.assertIsNotNone(body["user"].get("email_confirmed_at"), body)
         return body
 
-    def assert_refused(self, got):
-        code, body = got
-        self.assertEqual(code, 403, body)
-        self.assertEqual(body.get("msg") or body.get("message"), "Sign up is by invite only")
-
-    def test_invited_email_signs_up_and_its_invite_is_used(self):
+    def test_an_unknown_address_signs_up_by_email_link(self):
         email = self.address()
-        self.invite(email)
-        self.assertIsNone(self.invite_row(email)["used_at"])
-        code, body = self.sign_up(email)
+        self.assertIsNone(self.user_id(email))
+        code, body = self.link(email)
         self.assertEqual(code, 200, body)
-        self.assertIsNotNone(self.user_id(email))
-        self.assertIsNotNone(self.invite_row(email)["used_at"])
+        uid = self.user_id(email)
+        self.assertIsNotNone(uid)
+        self.assertIsNotNone(self.signup_row(email)["used_at"])
+        session = self.confirm(email)
+        self.assertEqual(session["user"]["id"], uid)
+        self.assertIn("access_token", session)
 
-    def test_invite_matches_whatever_case_the_address_is_typed_in(self):
+    def test_the_address_is_recorded_in_lower_case(self):
         email = self.address()
-        self.invite(email)
         code, body = self.sign_up(email.upper())
         self.assertEqual(code, 200, body)
-        self.assertIsNotNone(self.invite_row(email)["used_at"])
-
-    def test_uninvited_email_is_refused(self):
-        email = self.address()
-        self.assert_refused(self.link(email))
-        self.assert_refused(self.sign_up(email))
-        self.assertIsNone(self.user_id(email))
-        self.assertIsNone(self.invite_row(email))
-
-    def test_used_invite_cannot_sign_up_twice(self):
-        email = self.address()
-        self.invite(email)
-        self.assertEqual(self.sign_up(email)[0], 200)
-        used = self.invite_row(email)["used_at"]
-        code, body = self.users.http("DELETE", f"{self.admin_api}/users/{self.user_id(email)}", self.secret)
-        self.assertEqual(code, 200, body)
-        self.assert_refused(self.sign_up(email))
-        self.assert_refused(self.link(email))
-        self.assertIsNone(self.user_id(email))
-        self.assertEqual(self.invite_row(email)["used_at"], used)
+        self.assertIsNotNone(self.user_id(email))
+        self.assertIsNotNone(self.signup_row(email))
 
     def test_people_with_an_account_sign_in_as_before(self):
         for who in (self.a, self.b):
             with self.subTest(who=who.email):
-                self.assertIsNone(self.invite_row(who.email))
-                code, body = self.users.http("POST", f"{self.auth}/token?grant_type=password", self.public,
-                                             {"email": who.email, "password": self.users.PASSWORD})
+                code, body = self.link(who.email)
+                self.assertEqual(code, 200, body)
+                self.assertIsNone(self.signup_row(who.email))
+                code, body = self.password_sign_in(who.email)
                 self.assertEqual(code, 200, body)
                 self.assertEqual(body["user"]["id"], who.id)
 
     def test_a_password_from_sign_up_never_signs_in(self):
-        """Someone who knows an invited address signs up first with a password of their own. Confirm email gives that
+        """Anyone may sign up at /auth/v1/signup with any address and a password of their own. Confirm email gives that
         sign up no session, and the trigger of 0036 clears the password, so it signs in neither before nor after the
-        invitee confirms the address with their first email link."""
+        owner of the address confirms it with their first email link."""
         email = self.address()
-        self.invite(email)
         code, body = self.sign_up(email)
         self.assertEqual(code, 200, body)
         self.assertNotIn("access_token", body)
@@ -747,13 +724,28 @@ class InviteTest(unittest.TestCase):
         code, body = self.users.http("POST", f"{self.admin_api}/users", self.secret,
                                      {"email": email, "password": self.users.PASSWORD, "email_confirm": True})
         self.assertEqual(code, 200, body)
+        self.assertIsNone(self.signup_row(email))
         code, body = self.password_sign_in(email)
         self.assertEqual(code, 200, body)
         self.assertEqual(body["user"]["id"], self.user_id(email))
 
+    def test_delete_account_removes_the_row_and_the_address_signs_up_again(self):
+        email = self.address()
+        self.assertEqual(self.link(email)[0], 200)
+        session = self.confirm(email)
+        me = self.users.Rest(self.env["SUPABASE_URL"], self.env["SUPABASE_PUBLISHABLE_KEY"], session["access_token"])
+        code, body = me.rpc("delete_account", {"p_email": email.upper()})
+        self.assertEqual(code, 200, body)
+        self.assertIsNone(self.user_id(email))
+        self.assertIsNone(self.signup_row(email))
+        code, body = self.link(email)
+        self.assertEqual(code, 200, body)
+        self.assertNotIn(self.user_id(email), (None, session["user"]["id"]))
+        self.assertIsNotNone(self.signup_row(email))
+
     def test_no_client_reads_or_writes_invites(self):
         email = self.address()
-        self.invite(email)
+        ok(self, self.svc.insert("invites", [{"email": email}]))
         anon = self.users.Rest(self.env["SUPABASE_URL"], self.env["SUPABASE_PUBLISHABLE_KEY"])
         for name, rest in (("admin", self.a.rest), ("b", self.b.rest), ("anon", anon)):
             with self.subTest(who=name):
@@ -761,13 +753,13 @@ class InviteTest(unittest.TestCase):
                 self.assertIn(code, REFUSED, (code, body))
                 code, body = rest.insert("invites", [{"email": f"test01-{name}@example.test"}])
                 self.assertIn(code, REFUSED, (code, body))
-                code, body = rest.update("invites", f"email=eq.{email}", {"used_at": None})
+                code, body = rest.update("invites", f"email=eq.{email}", {"used_at": "2026-11-07T00:00:00Z"})
                 self.assertIn(code, REFUSED, (code, body))
                 code, body = rest.delete("invites", f"email=eq.{email}")
                 self.assertIn(code, REFUSED, (code, body))
                 code, body = rest.rpc("hook_before_user_created", {"event": {"user": {"email": email}}})
                 self.assertIn(code, REFUSED + (404,), (code, body))
-        row = self.invite_row(email)
+        row = self.signup_row(email)
         self.assertIsNotNone(row)
         self.assertIsNone(row["used_at"])
 

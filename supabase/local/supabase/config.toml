@@ -43,21 +43,22 @@ enabled = false
 [auth]
 enabled = true
 site_url = "http://127.0.0.1:5198"
-# Sign up is open to the hook below and to nothing else (task 6.1 of FEAT-006). The live project carries the same.
+# Sign up is open to anyone (task 6.1 of FEAT-006, PROD-009). The live project carries the same.
 enable_signup = true
 
 [auth.email]
 enable_signup = true
 # Confirm email is on, as in the project: a sign up gets no session until the address is confirmed by its email link.
 # It must stay on there, because sign up is open at /auth/v1/signup to the public key: with it off a stranger who signs
-# up with an invited address gets a session at once. The trigger of 0036 clears the password a sign up gives, so that
-# password never signs in after the invitee confirms the address. The local stack sends no mail.
+# up with someone else's address gets a session at once. The trigger of 0036 clears the password a sign up gives, so
+# that password never signs in after the owner of the address confirms it. The local stack sends no mail.
 enable_confirmations = true
 
-# Sign up by invite: Supabase Auth asks public.hook_before_user_created of migration 0036 before it makes any user, and
-# the hook refuses an address with no unused row in public.invites. A sign in of a person who has an account makes no
-# user, so the hook never runs for it. migrate.py applies 0036 after the stack is up, and the hook is only called on a
-# sign up, which no step of local_up makes.
+# Supabase Auth asks public.hook_before_user_created before it makes any user from a client sign up. Since migration
+# 0038 the hook lets every user be made and records the address in public.invites, so the trigger of 0036 clears the
+# password of that sign up. A sign in of a person who has an account makes no user, so the hook never runs for it.
+# migrate.py applies the migrations after the stack is up, and the hook is only called on a sign up, which no step of
+# local_up makes.
 [auth.hook.before_user_created]
 enabled = true
 uri = "pg-functions://postgres/public/hook_before_user_created"

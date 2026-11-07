@@ -57,3 +57,11 @@ Ids never change. Status is Proposed, Accepted or Reconsidered. Only Simon accep
 - **Reasoning.** A person's flight searches give their home airport and the dates they are away, and a person's places to stay and tasks show where they will be. Writes to the catalogue reach every user and the public bucket, so they stay with the one person who reviews them. This changes the word quotes in PROD-007, which put them in the shared catalogue.
 - **Applies to.** FEAT-006 and every later feature that adds a table, a connector tool or a built file.
 - **Date.** 2026-11-06. **Status.** Accepted.
+
+## PROD-009 Anyone can sign up with their email
+
+- **Decision.** Sign up is open. Anyone types their email in the planner, gets the sign in link, and the account is made the first time the link is used. The connector's consent page signs in through the planner, so a new person connects their assistant the same way. This replaces the invite only sign up of task 6.1 (TECH-010), and `tripdb invite` is gone. The guards that stay are the per owner caps, among them the monthly cap on `read-booking` (TECH-009), the connector's 60 writes a minute per person, confirm email on in the project, and the trigger that strips the password from every client sign up, so a password given at `/auth/v1/signup` never signs in.
+- **Reasoning.** Simon wants people to just type their email and get in. An invite step needs Simon for every new person and a second round of mail before the first sign in. The caps bound what one account can cost or fill, so an open door adds load and not risk to anyone else's rows, which row level security keeps private either way.
+- **Applies to.** FEAT-006 task 6.1, migration 0038, the planner's sign in screen, the README install section and the privacy note.
+- **Blocker.** Until Simon sets custom SMTP in Supabase, the built in mailer sends only to the addresses of the project's team, so a person outside it gets no link and cannot sign in yet. Setting it is Simon's step.
+- **Date.** 2026-11-07. **Status.** Accepted.

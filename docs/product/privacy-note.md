@@ -4,7 +4,7 @@
 
 ## What latam-trip is
 
-latam-trip is a trip planner that you use through your own Claude and the planner website. You sign in as yourself, by invite. Simon runs the service and hosts the data.
+latam-trip is a trip planner that you use through your own Claude and the planner website. You sign in as yourself with your email address. Simon runs the service and hosts the data.
 
 ## What is stored about you
 
@@ -55,7 +55,7 @@ Ask your Claude to call the connector's `export_account` tool. It gives every ro
 
 ## How to delete your account
 
-Ask your Claude to call the connector's `delete_account` tool. You type your own account email, and Claude cannot fill it in for you. It removes your booking files first, then your tasks and rows and your account, and tells you how many rows went from each table. It cannot be undone. Your sign in stops working at once. The invite for your address goes too, so signing up again needs a new invite from Simon.
+Ask your Claude to call the connector's `delete_account` tool. You type your own account email, and Claude cannot fill it in for you. It removes your booking files first, then your tasks and rows and your account, and tells you how many rows went from each table. It cannot be undone. Your sign in stops working at once. The record that your address signed up goes too, and you can sign up again later as a new account.
 
 ## A limit that may matter to you
 
