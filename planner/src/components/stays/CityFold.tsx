@@ -13,7 +13,7 @@ export interface FoldSection {
 
 export interface CityFoldProps {
   summary?: string | null
-  /** the stay cards and the act that adds one */
+  /** the stay cards and the act that adds one, none on a shared trip with nowhere to sleep yet */
   stays: ReactNode
   todo?: FoldSection
   experiences?: FoldSection
@@ -45,7 +45,7 @@ export function CityFold({ summary, stays, todo, experiences, about }: CityFoldP
   const place = about && { ...about, body: <>{summary && <p className="af-sum">{summary}</p>}{about.body}</> }
   return (
     <div className="af ed">
-      <section className="af-stay" aria-label="Accommodation">{stays}</section>
+      {stays && <section className="af-stay" aria-label="Accommodation">{stays}</section>}
       {(todo || experiences || place) && (
         <ul className="er-list">
           {todo && <EdRow title="Things to do" Icon={Umbrella} s={todo} />}

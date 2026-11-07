@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { AppData } from './data/types'
+import type { AppData, Lodging } from './data/types'
 import type { Journey } from './lib/journey'
 import type { TripRow } from './lib/repoTrips'
 
@@ -55,6 +55,18 @@ describe('a shared trip', () => {
     expect([s.screen, s.view, s.mapOpen]).toEqual(['trips', 'trip', false])
     expect(s.data?.inout.ways[`${sharedJourneyId(tok)}:in`]).toBeTruthy()
     expect(JSON.parse(localStorage.getItem(ownKey(CURRENT_KEY))!).id).toBe('trip-a')
+  })
+
+  it('carries the places to stay its stays name, and hands them only to the shared trip', () => {
+    const owner = [{ id: 'TEST01-l', place_id: 'GUA', rooms: [] }] as unknown as Lodging[]
+    const mineToo = [{ id: 'TEST01-mine', place_id: 'GUA', rooms: [] }] as unknown as Lodging[]
+    useStore.setState({ lodgings: mineToo })
+    useStore.getState().openShared(tok, sharedRow, owner)
+    const s = useStore.getState()
+    expect(s.shared?.lodgings).toBe(owner)
+    const own = (j: Journey) => (s.shared?.id === j.id ? s.shared.lodgings : s.lodgings)
+    expect(own(s.journey!)).toBe(owner)
+    expect(own(mine)).toBe(mineToo)
   })
 
   it('takes no edits and no save', async () => {

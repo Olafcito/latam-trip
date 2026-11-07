@@ -246,9 +246,9 @@ interface State {
    * a trip someone shared by a link, open read only (FEAT-007). Its journey has an id of its own, it is never written
    * as this browser's draft, and nothing changes it. mapOpen is what the map showed before, for when it is left
    */
-  shared: { id: string; token: string; row: TripRow; mapOpen: boolean } | null
-  /** open a shared trip on the Trips tab, read only */
-  openShared: (token: string, row: TripRow) => void
+  shared: { id: string; token: string; row: TripRow; lodgings: Lodging[]; mapOpen: boolean } | null
+  /** open a shared trip on the Trips tab, read only, with the places to stay its stays name */
+  openShared: (token: string, row: TripRow, lodgings?: Lodging[]) => void
   /** leave the shared trip for the trip this browser had open */
   leaveShared: () => void
   /** save the shared trip as a new trip of your own, with a new id, and open it */
@@ -264,21 +264,21 @@ interface State {
 const NONE: never[] = []
 /** The viewer's bookings, or none on a trip shared with them: their own bookings say nothing about someone else's trip. */
 export const useOwnBookings = (j: Journey | null | undefined): Booking[] => useStore((s) => (j && s.shared?.id === j.id ? NONE : s.bookings))
-/** The viewer's places to stay, or none on a trip shared with them. */
-export const useOwnLodgings = (j: Journey | null | undefined): Lodging[] => useStore((s) => (j && s.shared?.id === j.id ? NONE : s.lodgings))
+/** The viewer's places to stay, or on a trip shared with them the owner's places its stays name (0041). */
+export const useOwnLodgings = (j: Journey | null | undefined): Lodging[] => useStore((s) => (j && s.shared?.id === j.id ? s.shared.lodgings : s.lodgings))
 
 export const useStore = create<State>((set, get) => ({
   guest: null,
   setGuest: (guest) => set({ guest }),
   shared: null,
-  openShared: (token, raw) => {
+  openShared: (token, raw, lodgings = []) => {
     const row = { ...raw }
     const journey = rowToJourney(row)
     const d = get().data
     const was = get().shared
     set({
       journey, unlocked: null, viewing: null, pickFor: null, cursor: null, idle: false, notice: null,
-      shared: { id: journey.id, token, row, mapOpen: was ? was.mapOpen : get().mapOpen },
+      shared: { id: journey.id, token, row, lodgings, mapOpen: was ? was.mapOpen : get().mapOpen },
       mapOpen: false, screen: 'trips', view: 'trip',
       ...(d ? { data: { ...d, inout: withTripWays(d.inout, [row]) } } : {}),
     })

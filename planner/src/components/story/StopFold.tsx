@@ -3,7 +3,7 @@ import type { MapData as RouteData } from '@map/data/types'
 import { loadRouteData } from '../../data/routeMap'
 import { useDataRev } from '../../data/rev'
 import type { AppData, Booking, Lodging } from '../../data/types'
-import { useStore } from '../../store'
+import { useOwnBookings, useOwnLodgings, useStore } from '../../store'
 import { countryName } from '../../lib/colors'
 import { nodeName, type Journey, type Schedule } from '../../lib/journey'
 import { placeFinds, type FindRow } from '../../lib/placeFinds'
@@ -41,7 +41,8 @@ import { Finds } from './TripHead'
 // parts with their dates and the booked stays at it that no part stands for. Add accommodation opens the search
 // over the places stored for the stop, and Select on a room plans it. Dates picked in the window, in the search or
 // on a place, price the places for those dates until the window closes. A room selected still takes the stop's nights. The rest of the city card's acts, change
-// the place and delete it, still open the city card from About.
+// the place and delete it, still open the city card from About. A trip shared with you shows its stays and its city
+// read only: nothing to add, change or delete, and the owner's bookings are never part of it.
 
 const photosOf = (l: Lodging | undefined) => (l?.photos ?? []).map((p) => p.url).filter((u) => /^https:\/\//i.test(u))
 
@@ -84,8 +85,9 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
   onAddNow?: () => void
 }) {
   const { inout, map } = data
-  const lodgings = useStore((s) => s.lodgings)
-  const bookings = useStore((s) => s.bookings)
+  const lodgings = useOwnLodgings(journey)
+  const bookings = useOwnBookings(journey)
+  const readOnly = useStore((s) => s.shared?.id === journey.id)
   const setStays = useStore((s) => s.setStays)
   const setLodgings = useStore((s) => s.setLodgings)
   const [adding, setAdding] = useState<string | null | false>(false)
@@ -161,7 +163,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
         cancel,
         lodging: l,
         target: { tripId: journey.id, placeId: sp.node, lodgingId: l?.id ?? null, roomId: part.stay.room_id, first: part.first, nights: part.nights },
-        remove: () => change(removePart(stays, k)),
+        remove: readOnly ? undefined : () => change(removePart(stays, k)),
         card: {
           key,
           name: l?.name ?? 'A place to stay',
@@ -183,8 +185,8 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
           mailUrl: b ? mailLink(b) : null,
           warn: part.fits ? null : 'The stop has no nights left for this stay',
           onOpen: () => setDetail(key),
-          onConfirm: part.fits ? () => setConfirm(key) : undefined,
-          onRoom: l && sp.days > 0 ? () => setAdding(l.id) : undefined,
+          onConfirm: part.fits && !readOnly ? () => setConfirm(key) : undefined,
+          onRoom: l && sp.days > 0 && !readOnly ? () => setAdding(l.id) : undefined,
         },
       }
     }),
@@ -242,12 +244,12 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
     <>
       <CityFold
         summary={prof?.summary}
-        stays={
+        stays={readOnly && !items.length ? null : (
           <>
             {items.length > 0 && <div className="ac-list">{items.map((t) => <EditorialStayCard key={t.card.key} c={t.card} />)}</div>}
-            <button type="button" className="al-add" onClick={() => setAdding(null)}><Plus />Add accommodation</button>
+            {!readOnly && <button type="button" className="al-add" onClick={() => setAdding(null)}><Plus />Add accommodation</button>}
           </>
-        }
+        )}
         todo={prof?.things_to_do?.length ? { count: ideas(prof.things_to_do.length), body: (
           <div className="af-todo">
             <ul className="tg-todo">{prof.things_to_do.map((t) => <li key={t}>{t}</li>)}</ul>
@@ -267,7 +269,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
             {prof?.image?.url && <img className="af-img" src={prof.image.url} alt="" loading="lazy" />}
             {(node || prof?.tagline) && <p className="af-tag">{[node && countryName(node.country), prof?.tagline].filter(Boolean).join('. ')}</p>}
             {credit && <p className="tg-cr">Photo: {credit}, Wikimedia Commons</p>}
-            <div className="af-acts">
+            {!readOnly && <div className="af-acts">
               <button type="button" className="btn small" onClick={onMap}>Open in map</button>
               {i > 0 ? (
                 <>
@@ -275,11 +277,11 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
                   <button type="button" className="btn small danger" onClick={() => onCity('delete')}>Delete</button>
                 </>
               ) : <p className="cc-sure">The flight lands here, so this stop stays.</p>}
-            </div>
+            </div>}
           </div>
         ) }}
       />
-      {adding !== false && (
+      {adding !== false && !readOnly && (
         <Modal label={`Add accommodation in ${name}`} className="stad-md" bare onClose={() => {
           setAdding(false)
           setPick(null)
@@ -358,7 +360,7 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
           )}
         </Modal>
       )}
-      {confirming && (
+      {confirming && !readOnly && (
         <Modal label="Add booking confirmation" className="scw-md" onClose={() => setConfirm(null)}>
           {(shut) => <StayConfirm city={name} booking={confirming.booking} target={confirming.target} lodging={(confirming.target.lodgingId && byId.get(confirming.target.lodgingId)) || null} close={shut} />}
         </Modal>
@@ -371,8 +373,8 @@ export function StopFold({ data, journey, sched, i, onCity, onMap, cities, onSta
               booking={detailed.booking}
               cancel={detailed.cancel}
               close={shut}
-              onConfirm={detailed.card.checkIn ? () => setConfirm(detailed.card.key) : undefined}
-              onPlace={detailed.lodging ? () => setAdding(detailed.lodging!.id) : undefined}
+              onConfirm={detailed.card.checkIn && !readOnly ? () => setConfirm(detailed.card.key) : undefined}
+              onPlace={detailed.lodging && !readOnly ? () => setAdding(detailed.lodging!.id) : undefined}
               onRemove={detailed.remove}
             />
           )}

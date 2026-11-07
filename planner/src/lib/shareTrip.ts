@@ -1,8 +1,10 @@
+import type { Lodging, LodgingPrice, LodgingRoom } from '../data/types'
 import { parseTripsFile, type TripRow } from './repoTrips'
 import { supabase } from './supabase'
 
 // FEAT-007, a trip shared by a link. share_trip makes the link of a stored trip, stop_sharing ends it, and
-// shared_trip(token) answers anyone holding a live link with the plan alone, with no sign in since 0040. The planner
+// shared_trip(token) answers anyone holding a live link with the plan, with no sign in since 0040, and since 0041 with
+// the places to stay its stays name, without the owner's notes. The planner
 // opens /?share=<token> read only, under an id of its own, so nothing the viewer does writes to the owner's trip or to
 // the viewer's own.
 
@@ -39,6 +41,69 @@ export function sharedRow(raw: unknown, token: string): TripRow | null {
   return { ...row, id: sharedJourneyId(token), by: '', version: typeof row.version === 'number' ? row.version : 1, why: row.why ?? '' }
 }
 
+const str = (v: unknown): string | null => (typeof v === 'string' ? v : null)
+const num = (v: unknown): number | null => (typeof v === 'number' && Number.isFinite(v) ? v : null)
+const obj = (v: unknown): Record<string, unknown> | null => (v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : null)
+const list = (v: unknown): unknown[] => (Array.isArray(v) ? v : [])
+
+function sharedPrice(raw: unknown): LodgingPrice | null {
+  const x = obj(raw)
+  const id = str(x?.id)
+  const room = str(x?.room_id)
+  const checkIn = str(x?.check_in)
+  const checkOut = str(x?.check_out)
+  if (!x || !id || !room || !checkIn || !checkOut) return null
+  return {
+    id, room_id: room, check_in: checkIn, check_out: checkOut,
+    total_dkk: num(x.total_dkk), per_night_dkk: num(x.per_night_dkk),
+    site: str(x.site) as LodgingPrice['site'], url: null,
+    refundable: str(x.refundable) as LodgingPrice['refundable'], cancel_until: str(x.cancel_until),
+    available: num(x.available), observed_at: str(x.observed_at) ?? '',
+  }
+}
+
+function sharedRoom(raw: unknown): LodgingRoom | null {
+  const x = obj(raw)
+  const id = str(x?.id)
+  const lodging = str(x?.lodging_id)
+  if (!x || !id || !lodging) return null
+  return {
+    id, lodging_id: lodging, name: str(x.name) ?? '', beds: num(x.beds),
+    private: typeof x.private === 'boolean' ? x.private : null,
+    bathroom: str(x.bathroom) as LodgingRoom['bathroom'], notes: null,
+    site: str(x.site) as LodgingRoom['site'], site_id: null, photo: str(x.photo),
+    created_at: '', updated_at: '',
+    prices: list(x.prices).map(sharedPrice).filter((p): p is LodgingPrice => !!p),
+  }
+}
+
+/** The places to stay a shared trip's stays name, as shared_trip answers them. Never notes, never hidden. */
+export function sharedLodgings(raw: unknown): Lodging[] {
+  return list(obj(raw)?.lodgings).flatMap((v): Lodging[] => {
+    const x = obj(v)
+    const id = str(x?.id)
+    const place = str(x?.place_id)
+    if (!x || !id || !place) return []
+    return [{
+      id, place_id: place, name: str(x.name) ?? '', kind: (str(x.kind) ?? 'other') as Lodging['kind'],
+      photos: list(x.photos).flatMap((p) => { const o = obj(p); const url = str(o?.url); return url ? [{ url, caption: str(o?.caption) }] : [] }),
+      rating: num(x.rating), reviews: num(x.reviews), rating_source: str(x.rating_source), address: str(x.address),
+      lat: num(x.lat), lon: num(x.lon), to_center_km: num(x.to_center_km), to_beach_km: num(x.to_beach_km),
+      tags: list(x.tags).filter((t): t is Lodging['tags'][number] => typeof t === 'string'),
+      summary: str(x.summary), notes: null,
+      links: list(x.links).flatMap((l) => { const o = obj(l); const url = str(o?.url); const site = str(o?.site); return url && site ? [{ site: site as Lodging['links'][number]['site'], url }] : [] }),
+      added_by: 'claude', hidden: false, created_at: '', updated_at: '',
+      rooms: list(x.rooms).map(sharedRoom).filter((r): r is LodgingRoom => !!r && r.lodging_id === id),
+    }]
+  })
+}
+
+/** A shared trip as the planner opens it: the trip row under the shared id and the places to stay it names. */
+export interface SharedTrip {
+  row: TripRow
+  lodgings: Lodging[]
+}
+
 export type ShareResult = { ok: true; token: string } | { ok: false; message: string }
 
 /** The live link of one of the viewer's stored trips, made when there is none. */
@@ -73,11 +138,12 @@ export async function ownShare(token: string): Promise<string | null> {
 }
 
 /** The shared trip, null when the link is dead, 'failed' when the database could not be asked. */
-export async function loadShared(token: string): Promise<TripRow | null | 'failed'> {
+export async function loadShared(token: string): Promise<SharedTrip | null | 'failed'> {
   if (!supabase) return 'failed'
   const { data, error } = await supabase.rpc('shared_trip', { token })
   if (error) return 'failed'
-  return data == null ? null : sharedRow(data, token)
+  const row = data == null ? null : sharedRow(data, token)
+  return row && { row, lodgings: sharedLodgings(data) }
 }
 
 export type Sent = 'shared' | 'copied' | 'cancelled' | 'failed'

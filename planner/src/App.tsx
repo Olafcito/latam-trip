@@ -129,11 +129,11 @@ async function openShareLink(token: string) {
     const own = useStore.getState().guest ? null : await ownShare(token)
     const mine = own ? useStore.getState().saved.find((t) => t.id === own) : undefined
     if (mine) return useStore.getState().openTrip(mine)
-    const row = await loadShared(token)
+    const got = await loadShared(token)
     const s = useStore.getState()
-    if (row && row !== 'failed') return s.openShared(token, row)
+    if (got && got !== 'failed') return s.openShared(token, got.row, got.lodgings)
     s.go('trips', 'home')
-    s.setNotice(row === 'failed' ? 'The shared trip could not be read.' : 'That shared trip is no longer shared.')
+    s.setNotice(got === 'failed' ? 'The shared trip could not be read.' : 'That shared trip is no longer shared.')
   } finally {
     pendingShare = null
     syncAddress()
