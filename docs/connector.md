@@ -89,7 +89,7 @@ Five tools are for the task runner (`docs/task-runner.md`), the cloud run that d
 
 Two tools share a trip by a link (FEAT-007):
 
-- `share_trip` gives the link of a trip of the caller's, `<planner>/?share=<token>`, made the first time and the same one after. The planner's address comes from the connector's `LATAMTRIP_APP_URL`, and a connector without it shares nothing. Anyone who opens the link and signs in sees the trip read only: its name, its places, nights and dates and the ways in and home. Never the bookings, the places to stay, what was paid or who made it. A deleted trip is refused.
+- `share_trip` gives the link of a trip of the caller's, `<planner>/?share=<token>`, made the first time and the same one after. The planner's address comes from the connector's `LATAMTRIP_APP_URL`, and a connector without it shares nothing. Anyone who opens the link sees the trip read only, with no sign in: its name, its places, nights and dates and the ways in and home. Never the bookings, the places to stay, what was paid or who made it. A deleted trip is refused.
 - `stop_sharing` ends the link at once and says whether there was one. Sharing the trip again makes a new link, so the old one stays dead.
 
 Two tools are for the account itself:

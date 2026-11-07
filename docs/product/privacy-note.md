@@ -39,7 +39,7 @@ Your assistant reads pages in your own browser. latam-trip runs no browser of it
 
 ## A trip you share by a link
 
-You can share one of your trips by a link, from the planner or through your Claude (FEAT-007). Anyone who has the link and signs in sees the trip read only: its name and why, its places with their nights and dates, and the ways in and home with their market fares. They never see your bookings, your places to stay, what you paid, the trip's totals, your name, your email or your account id. A link shows the latest saved version of the trip, so later changes you save are shown too. You can stop sharing at any time, and the link is dead at once. Sharing again makes a new link. A person who keeps a copy has their own trip from then on, and stopping the link does not take their copy away. Your links are deleted with your account and are part of your export.
+You can share one of your trips by a link, from the planner or through your Claude (FEAT-007). Anyone who has the link sees the trip read only, without signing in: its name and why, its places with their nights and dates, and the ways in and home with their market fares. They never see your bookings, your places to stay, what you paid, the trip's totals, your name, your email or your account id. A link shows the latest saved version of the trip, so later changes you save are shown too. You can stop sharing at any time, and the link is dead at once. Sharing again makes a new link. A person who keeps a copy has their own trip from then on, and stopping the link does not take their copy away. Your links are deleted with your account and are part of your export.
 
 ## The shared catalogue
 

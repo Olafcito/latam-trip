@@ -2,8 +2,9 @@ import { parseTripsFile, type TripRow } from './repoTrips'
 import { supabase } from './supabase'
 
 // FEAT-007, a trip shared by a link. share_trip makes the link of a stored trip, stop_sharing ends it, and
-// shared_trip(token) answers a signed in person with the plan alone (0039). The planner opens /?share=<token>
-// read only, under an id of its own, so nothing the viewer does writes to the owner's trip or to the viewer's own.
+// shared_trip(token) answers anyone holding a live link with the plan alone, with no sign in since 0040. The planner
+// opens /?share=<token> read only, under an id of its own, so nothing the viewer does writes to the owner's trip or to
+// the viewer's own.
 
 /** The shape of a token share_trip makes: url safe base64 of 16 bytes, so 22 characters. */
 export const SHARE_TOKEN = /^[A-Za-z0-9_-]{22,64}$/

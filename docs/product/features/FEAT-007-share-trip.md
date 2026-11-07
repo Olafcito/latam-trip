@@ -7,7 +7,7 @@
 Simon has planned a trip in the planner and wants a friend to see it.
 
 1. **Shares.** On the trip's dashboard he taps Share. On his phone the phone's own share sheet opens with the link, and he sends it in a chat. On a computer the link is copied, and the control itself turns to Copied for a moment. From then on the control reads Shared, with a small cross beside it.
-2. **The friend opens it.** The link is the planner's address with `?share=<token>`. A friend who is not signed in gets the sign in screen, asks for a link by email, and the email brings them back to the same shared trip.
+2. **The friend opens it.** The link is the planner's address with `?share=<token>`. A friend who is not signed in sees the trip and the map straight away, read only, with no sign in (migration 0040, 2026-11-07). Keep a copy and Sign in take them to the sign in screen, and the email brings them back to the same shared trip.
 3. **The friend looks.** The trip opens read only: the route, the places, nights and dates, the ways in and home, the costs of the market fares and View on map. A small link mark beside the name says it is shared with them. Nothing on the screen edits the trip.
 4. **The friend keeps a copy.** One primary action, Keep a copy, saves the trip as a new trip of the friend's own, which they can change like any other.
 5. **Simon stops sharing.** He taps the cross beside Shared. The link is dead at once. Anyone who opens it lands on their Trips list with one line saying the trip is no longer shared. Sharing again makes a new link, so the old one stays dead.
@@ -23,7 +23,7 @@ Not in scope: sharing with named people, editing together, a public link that wo
 ## 3. Acceptance criteria
 
 1. A signed in owner can share a stored trip and gets one live link per trip. Asking again gives the same link. Proved by `supabase/tests/test_rls.py` `ShareTest`.
-2. Another signed in person who opens the link reads the plan alone: the name, the why, the ways and tickets, and each place with its hop, nights and dates. Never the owner's id, who saved it, the totals, the stays, bookings, lodgings or quotes. Proved by `ShareTest`.
+2. Anyone who opens the link, signed in or not, reads the plan alone: the name, the why, the ways and tickets, and each place with its hop, nights and dates. Never the owner's id, who saved it, the totals, the stays, bookings, lodgings or quotes. Proved by `ShareTest`.
 3. A stopped link, an unknown token and a deleted trip all answer nothing. A person cannot read or change another person's links. Proved by `ShareTest`.
 4. The planner opens `/?share=<token>` read only under the id `shared-<token>`, with no steppers, no Pick in and out and no save. Proved by `planner/src/store.share.test.ts` and the shots.
 5. Keep a copy saves a new trip of the viewer's own. Proved by `store.share.test.ts`.
@@ -48,5 +48,5 @@ Each was an ambiguity decided with a safe default, so Simon can reverse any of t
 
 ## 5. Left for Simon
 
-- **Sign in for a friend without an account.** Sign up is open (FEAT-006), but Supabase's built in email only reaches the project's team, two messages an hour. Until the custom SMTP sender of FEAT-006 is set up, a friend outside the team gets no sign in email and cannot open the link.
+- **Sign in for a friend without an account.** Looking needs no sign in since 0040. Keeping a copy does, and Supabase's built in email only reaches the project's team, two messages an hour. Until the custom SMTP sender of FEAT-006 is set up, a friend outside the team can look but cannot keep a copy.
 - **The redirect allowlist.** Supabase's Auth redirect URLs must accept the planner's address with a query, such as `https://<planner host>/**`, or the sign in email of a friend lands on the planner without `?share=` and they see their own Trips list.

@@ -35,6 +35,8 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
   // a trip someone shared by a link is only looked at, and kept as a copy of your own (FEAT-007)
   const shared = useStore((s) => s.shared?.id === journey.id)
   const keepShared = useStore((s) => s.keepShared)
+  const guest = useStore((s) => s.guest === 'looking')
+  const setGuest = useStore((s) => s.setGuest)
   const sharable = useStore((s) => remoteEnabled() && !!s.rows[journey.id])
   const [keeping, setKeeping] = useState(false)
   const [onMap, setOnMap] = useState(false)
@@ -86,12 +88,13 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
     <div className="dash">
       {shared ? (
         <div className="row dash-head">
-          <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
+          {!guest && <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>}
           <h2 className="h2">{journey.name}</h2>
           <SharedChip show />
           <span className="spacer" />
           {stops.length > 0 && <button className="btn small" onClick={() => setOnMap(true)}>View on map</button>}
-          <button className="btn small primary" onClick={keep} disabled={keeping}>Keep a copy</button>
+          {/* a visitor with no account signs in first, and the link comes back with them */}
+          <button className="btn small primary" onClick={guest ? () => setGuest('signing-in') : keep} disabled={keeping}>Keep a copy</button>
         </div>
       ) : (
       <div className="row dash-head">

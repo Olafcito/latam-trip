@@ -11,7 +11,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 /** The one screen of a planner that saves to Supabase and has no session. Anyone gives an address and gets a sign in
  * link. A person with an account signs in with it, and a new address makes its account with it on first use (PROD-009).
  * The answer sits on the address itself, so the sent state says Link sent as its title, with the address under it. */
-export function SignIn() {
+export function SignIn({ onBack }: { onBack?: () => void } = {}) {
   const [email, setEmail] = useState('')
   const [view, setView] = useState<View>({ s: 'ask' })
 
@@ -72,7 +72,7 @@ export function SignIn() {
             </div>
           )}
         </section>
-        <GuideLink />
+        {onBack ? <button type="button" className="btn link small" onClick={onBack}>Back to the trip</button> : <GuideLink />}
       </main>
     </div>
   )

@@ -253,6 +253,12 @@ interface State {
   leaveShared: () => void
   /** save the shared trip as a new trip of your own, with a new id, and open it */
   keepShared: () => Promise<void>
+  /**
+   * a visitor with no session who opened a shared link (0040). 'looking' shows the shared trip and the map without a
+   * sign in, 'signing-in' shows the sign in screen, which keeps the link through the email
+   */
+  guest: 'looking' | 'signing-in' | null
+  setGuest: (guest: 'looking' | 'signing-in' | null) => void
 }
 
 const NONE: never[] = []
@@ -262,6 +268,8 @@ export const useOwnBookings = (j: Journey | null | undefined): Booking[] => useS
 export const useOwnLodgings = (j: Journey | null | undefined): Lodging[] => useStore((s) => (j && s.shared?.id === j.id ? NONE : s.lodgings))
 
 export const useStore = create<State>((set, get) => ({
+  guest: null,
+  setGuest: (guest) => set({ guest }),
   shared: null,
   openShared: (token, raw) => {
     const row = { ...raw }

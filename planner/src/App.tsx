@@ -223,13 +223,32 @@ function Planner() {
   useInputMode()
 
   const userId = auth.session?.user.id ?? null
+  // a shared link opened with no session is looked at as a guest, with no sign in (0040)
+  const guest = useStore((s) => s.guest)
+  const setGuest = useStore((s) => s.setGuest)
+  useEffect(() => {
+    if (!remoteEnabled() || !auth.ready) return
+    if (auth.session) {
+      if (guest) setGuest(null)
+    } else if (!guest && shareParam(window.location.search)) setGuest('looking')
+  }, [auth.ready, auth.session, guest, setGuest])
   const applyRemote = useStore((s) => s.applyRemote)
   const flushOutbox = useStore((s) => s.flushOutbox)
   const runImport = useStore((s) => s.runImport)
 
   useEffect(() => {
-    // with Supabase the trips need the signed in session, and wait for it
-    if (remoteEnabled() && !userId) return
+    // with Supabase the trips need the signed in session, and wait for it. A guest reads the public data and the shared trip alone
+    if (remoteEnabled() && !userId) {
+      if (guest !== 'looking') return
+      loadData().then(
+        (d) => {
+          setData(d)
+          openDeepLink()
+        },
+        (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
+      )
+      return
+    }
     // the table trips bring their own ways in and home, so they load with the data
     const rowsFrom = remoteEnabled() ? loadTrips() : loadRepoTrips()
     const deletedFrom = remoteEnabled() ? loadDeletedIds().catch(() => []) : Promise.resolve([])
@@ -248,7 +267,7 @@ function Planner() {
       },
       (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
     )
-  }, [setData, setRepoTrips, applyRemote, flushOutbox, runImport, userId])
+  }, [setData, setRepoTrips, applyRemote, flushOutbox, runImport, userId, guest])
 
   // Realtime on trips: a change reloads trips_latest. Saves that waited are sent when the connection is back
   useEffect(() => {
@@ -363,7 +382,11 @@ function Planner() {
   }, [])
 
   if (remoteEnabled() && !auth.ready) return <div className="app"><main className="main" /></div>
-  if (remoteEnabled() && !auth.session) return <SignIn />
+  if (remoteEnabled() && !auth.session && guest !== 'looking') {
+    // a shared link waits a moment for the guest view rather than showing the sign in screen
+    if (!guest && shareParam(window.location.search)) return <div className="app"><main className="main" /></div>
+    return <SignIn onBack={guest === 'signing-in' ? () => setGuest('looking') : undefined} />
+  }
   if (consent && auth.session) return <Consent id={consent} token={auth.session.access_token} onClose={closeConsent} />
   if (error) {
     return (
@@ -399,6 +422,7 @@ function Planner() {
           <div className="fresh-slot">
             <Freshness meta={data.meta} />
             {remoteEnabled() && userId && <ProfileButton ownerId={userId} />}
+            {remoteEnabled() && !userId && <button type="button" className="btn small" onClick={() => setGuest('signing-in')}>Sign in</button>}
           </div>
         </div>
       </header>
