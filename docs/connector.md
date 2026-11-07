@@ -10,6 +10,8 @@ https://n1e8j7vob1.execute-api.eu-west-1.amazonaws.com/mcp
 
 Every planner account can connect its own assistant, and the assistant sees only that account's rows, as the planner does. Nothing about a trip is readable without a sign in.
 
+The planner shows a short guide at `/?guide` with the steps below, the prompts to start with and these tools in groups. It needs no sign in, and its tool list is in `planner/src/components/Guide.tsx`, so it changes with the tools on this page.
+
 ## How the sign in works
 
 The sign in is the planner's own Supabase sign in. Supabase is the authorization server, and the connector only checks the tokens it issues (TECH-010).

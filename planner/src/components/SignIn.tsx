@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { sendMagicLink } from '../lib/supabase'
 import { AppMark } from './Consent'
 import { Mail, Ticket } from './icons'
+import { GuideLink } from './Guide'
 
 type View = { s: 'ask'; error?: string } | { s: 'busy' } | { s: 'sent' } | { s: 'invite' }
 
@@ -74,6 +75,7 @@ export function SignIn() {
             </div>
           )}
         </section>
+        <GuideLink />
       </main>
     </div>
   )

@@ -13,6 +13,8 @@ The planner reads its built map and pricing data from the Supabase `web` storage
 
 ## Install for an invited traveller
 
+A short visual guide to adding the connector and starting a trip is at <https://d15amu9hjiumbd.cloudfront.net/?guide>. It needs no sign in.
+
 Sign up is by invite. Simon sends an invite to your email address with `tripdb invite`, and nobody else can make an account. Without an invite the sign in page refuses the address.
 
 1. **Add the connector to your own Claude.** The server address is in [docs/connector.md](docs/connector.md), with the steps for claude.ai, the desktop app, the phone apps and Claude Code. Leave the advanced OAuth fields empty.

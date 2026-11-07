@@ -15,6 +15,7 @@ import { QuoteSheet } from './components/QuoteSheet'
 import { ProfileButton } from './components/ProfileSheet'
 import { SignIn } from './components/SignIn'
 import { Consent } from './components/Consent'
+import { Guide, guideRequested } from './components/Guide'
 import { consentId, withoutConsent } from './lib/consent'
 import { remoteEnabled, useSession } from './lib/supabase'
 import { dataChanged } from './data/rev'
@@ -168,7 +169,12 @@ export function syncAddress() {
   }
 }
 
+/** The guide is public, so it renders before anything asks for a session. */
 export function App() {
+  return guideRequested(window.location.search) ? <Guide /> : <Planner />
+}
+
+function Planner() {
   const data = useStore((s) => s.data)
   const setData = useStore((s) => s.setData)
   const screen = useStore((s) => s.screen)

@@ -2,6 +2,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ChangeEvent, 
 import { changes, emptyProfile, formErrors, loadProfile, saveProfile, toForm, type Profile, type ProfileErrors, type ProfileField, type ProfileForm } from '../lib/profile'
 import { Bag, Cash, Home, Hourglass, Note, Person } from './icons'
 import { Modal } from './Modal'
+import { GuideLink } from './Guide'
 
 // The signed in person's own profile, the row the connector's get_profile and update_profile keep.
 // The way in is the round person mark at the end of the header, where people look for their own
@@ -170,6 +171,7 @@ export function ProfileSheet({ ownerId, onDone }: { ownerId: string; onDone: () 
           {said}
           {reason && <span className="pf-reason">{reason}</span>}
         </p>
+        <GuideLink />
         <button type="button" className="btn small link" onClick={onDone} disabled={busy}>Cancel</button>
         <button type="submit" className="btn small primary" disabled={!ready || busy || !dirty || invalid}>{busy ? 'Saving' : 'Save'}</button>
       </footer>

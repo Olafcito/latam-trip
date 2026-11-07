@@ -24,7 +24,7 @@ Documentation is part of the work, not a step after it. Every doc in this repo d
 | Design decisions | `docs/design/design-decisions.md` | `senior-designer` proposes, Simon rules, `ui-roast` records. A `design-roaster` roast proposes nothing, Simon accepts from it | A DES decision is proposed, ruled on, built or reconsidered |
 | Reviews, retros | `docs/design/reviews/` | `senior-designer` writes, `ui-roast` records | Each audit, a roast Simon asks to keep, a retro when the evidence warrants one |
 | Decision and harness log | `docs/harness-log.md` | Main session | A meaningful decision outside the PROD, DES and TECH logs, or a meaningful harness failure |
-| Connector | `docs/connector.md` | The agent changing `infra/mcp` | A tool is added, renamed or removed, or sign in changes |
+| Connector | `docs/connector.md` | The agent changing `infra/mcp` | A tool is added, renamed or removed, or sign in changes. The guide at `/?guide` lists the tools in `planner/src/components/Guide.tsx`, so it changes too |
 | Privacy note | `docs/product/privacy-note.md` | The agent changing what is stored, backups or account deletion | A private table, a backup table, the retention, the caps or the export and delete tools change, and when the lawyer has reviewed it |
 | Claude tasks | `docs/claude-tasks.md` | The agent changing task kinds or `tasks.py` | A task kind or its fields change |
 | Task runner | `docs/task-runner.md` | The agent changing the task runner migrations, `latam_trip_mcp/runner.py`, the `task-runner` skill or the routine's prompt | The cloud task types, a contract, the trigger or the routine change |
