@@ -171,11 +171,17 @@ export function Guide({ initial = 'claude' }: { initial?: Assistant }) {
       <main className="main gd">
         <header className="gd-head">
           <AppMark s={44} className="gd-mark" />
-          <h1>Plan your journey with Latam trip</h1>
+          <div className="gd-intro">
+            <p className="gd-kicker">YOUR TRIP, ONE GOOD FIRST STEP</p>
+            <h1>Plan your journey with Latam trip</h1>
+            <p className="gd-deck">Connect your assistant, describe the trip you have in mind, and shape the route together.</p>
+          </div>
+          <div className="gd-route-mark" aria-hidden="true"><span /><i /><i /><i /><span /></div>
         </header>
 
         <section aria-labelledby="gd-add">
           <h2 id="gd-add" className="gd-h"><span className="gd-n">1</span>Add the connector</h2>
+          <p className="gd-section-note">Choose your assistant to see the right setup steps.</p>
           <div className="gd-switch" role="group" aria-label="Your assistant">
             {(['claude', 'chatgpt'] as const).map((a) => (
               <button key={a} type="button" aria-pressed={who === a} onClick={() => setWho(a)}>{a === 'claude' ? 'Claude' : 'ChatGPT'}</button>
@@ -189,6 +195,7 @@ export function Guide({ initial = 'claude' }: { initial?: Assistant }) {
 
         <section aria-labelledby="gd-start">
           <h2 id="gd-start" className="gd-h"><span className="gd-n">2</span>Start a trip</h2>
+          <p className="gd-section-note">Try a prompt as written, or copy it and make it your own.</p>
           <ul className="gd-scen">
             {SCENARIOS.map((s, i) => (
               <li key={s.title} className={i === 0 ? 'gd-first' : undefined}>
