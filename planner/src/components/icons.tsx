@@ -289,6 +289,14 @@ export const Lock = ({ s = 13 }: { s?: number }) => (
   </svg>
 )
 
+/** Looking without touching: an eye, for a trip that is only viewed. */
+export const Eye = ({ s = 13 }: { s?: number }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>
+    <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
+    <circle cx="12" cy="12" r="2.8" />
+  </svg>
+)
+
 /** Somewhere else: an arrow up and to the right, for a mail, a page or another journey. */
 export const ArrowUpRight = ({ s = 14 }: { s?: number }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" strokeWidth={2.2} {...base}>

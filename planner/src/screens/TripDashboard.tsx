@@ -7,7 +7,8 @@ import { dayRange } from '../lib/format'
 import { totals, type Journey } from '../lib/journey'
 import { useSchedule } from '../lib/useSchedule'
 import { CostStrip } from '../components/CostStrip'
-import { Bed, Caret, Download, Link, Pin, Warn } from '../components/icons'
+import { Bed, Caret, Download, Pin, Warn } from '../components/icons'
+import { SharedChip } from '../components/SharedChip'
 import { Modal } from '../components/Modal'
 import { Notice } from '../components/Notice'
 import { ShareControl } from '../components/ShareControl'
@@ -87,7 +88,7 @@ export function TripDashboard({ data, journey }: { data: AppData; journey: Journ
         <div className="row dash-head">
           <button className="btn link small" onClick={() => go('trips', 'home')}><Caret dir="l" />Trips</button>
           <h2 className="h2">{journey.name}</h2>
-          <span className="dash-shared" role="img" aria-label="Shared with you, read only" title="Shared with you, read only"><Link /></span>
+          <SharedChip show />
           <span className="spacer" />
           {stops.length > 0 && <button className="btn small" onClick={() => setOnMap(true)}>View on map</button>}
           <button className="btn small primary" onClick={keep} disabled={keeping}>Keep a copy</button>
