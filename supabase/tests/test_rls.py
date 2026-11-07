@@ -652,13 +652,13 @@ class ShareTest(unittest.TestCase):
         token = self.share()
         got = self.shown(token)
         self.assertEqual(set(got), {"id", "version", "name", "saved_at", "why", "rank", "way_in", "way_home", "tickets",
-                                    "places", "lastNights", "lodgings"})
+                                    "places", "lastNights", "lodgings", "bookings"})
         self.assertEqual((got["id"], got["name"], got["version"]), ("TEST01-share", "TEST01 Colombia", 1))
         self.assertEqual([set(p) for p in got["places"]], [{"node", "hop", "nights", "why", "stays"}, {"node", "hop", "nights"}])
         self.assertEqual(got["places"][0]["stays"], [{"lodging_id": "TEST01-lodging", "room_id": "TEST01-room", "nights": 3}])
         self.assertEqual(got["way_in"], SHARED["way_in"])
         # the stay names a place B does not have, so no place comes with it
-        self.assertEqual(got["lodgings"], [])
+        self.assertEqual((got["lodgings"], got["bookings"]), ([], []))
         text = json.dumps(got)
         for private in ("stays_booked_dkk", "planner", self.b.id, self.b.email):
             self.assertNotIn(private, text)
@@ -696,6 +696,36 @@ class ShareTest(unittest.TestCase):
                 text = json.dumps(got)
                 for private in ("TEST01 secret", "TEST01-other", "TEST01-room2", "TEST01 of A", "TEST01-price-url", "added_by",
                                 "hidden", self.b.id):
+                    self.assertNotIn(private, text)
+
+    def test_the_link_shows_the_booked_stays_and_nothing_paid(self):
+        ok(self, self.b.rest.insert("lodgings", [{"id": "TEST01-booked", "place_id": "bogota", "name": "TEST01 booked hostel",
+                                                  "kind": "hostel", "added_by": "claude", "notes": "TEST01 secret note"}]))
+        ok(self, self.b.rest.insert("lodging_rooms", [{"id": "TEST01-broom", "lodging_id": "TEST01-booked", "name": "TEST01 dorm"}]))
+        ok(self, self.b.rest.insert("lodging_prices", [{"room_id": "TEST01-broom", "check_in": "2026-12-03", "check_out": "2026-12-06",
+                                                        "total_dkk": 777}]))
+        stay = {"kind": "stay", "place_id": "bogota", "lodging_id": "TEST01-booked", "room_id": "TEST01-broom",
+                "reference": "TEST01-REF", "seller": "TEST01 seller", "url": "https://example.com/TEST01-booking",
+                "price_dkk": 999, "price": 55, "currency": "USD", "notes": "TEST01 secret booking", "travellers": 2}
+        for row in [
+            dict(stay, trip_id="TEST01-share", check_in="2026-12-04", check_out="2026-12-06"),
+            dict(stay, trip_id="TEST01-share", check_in="2026-12-01", check_out="2026-12-03", status="cancelled"),
+            dict(stay, trip_id="TEST01-elsewhere", check_in="2026-12-10", check_out="2026-12-12"),
+            dict(stay, trip_id="TEST01-share", kind="bus", place_id=None, check_in=None, check_out=None,
+                 depart="2026-12-03T08:00", from_code="XQT", to_code="XQU")]:
+            ok(self, self.b.rest.insert("bookings", [row]))
+        token = self.share()
+        for who in (self.a, self.anon):
+            got = ok(self, who.rpc("shared_trip", {"token": token})) if who is self.anon else self.shown(token)
+            with self.subTest(anon=who is self.anon):
+                self.assertEqual(got["bookings"], [{"id": "booked-1", "place_id": "bogota", "check_in": "2026-12-04",
+                                                    "check_out": "2026-12-06", "lodging_id": "TEST01-booked",
+                                                    "room_id": "TEST01-broom"}])
+                [l] = got["lodgings"]
+                self.assertEqual((l["id"], [(r["id"], r["prices"]) for r in l["rooms"]]), ("TEST01-booked", [("TEST01-broom", [])]))
+                text = json.dumps(got)
+                for private in ("TEST01-REF", "TEST01 seller", "TEST01-booking", "999", "777", "USD", "TEST01 secret",
+                                "travellers", "XQT", self.b.id):
                     self.assertNotIn(private, text)
 
     def test_another_person_cannot_read_or_revoke_a_link(self):
