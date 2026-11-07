@@ -617,7 +617,7 @@ SHARED = {"id": "TEST01-share", "name": "TEST01 Colombia", "by": "planner", "why
 
 @unittest.skipUnless(os.environ.get("TRIPDB_DB_TESTS") == "1", "set TRIPDB_DB_TESTS=1 to run against the local stack")
 class ShareTest(unittest.TestCase):
-    """FEAT-007. B shares a trip by a link, A opens it, and the link shows the plan alone."""
+    """FEAT-007. B shares a trip by a link, A opens it, and the link shows the plan and the places it plans to sleep."""
 
     @classmethod
     def setUpClass(cls):
@@ -652,16 +652,51 @@ class ShareTest(unittest.TestCase):
         token = self.share()
         got = self.shown(token)
         self.assertEqual(set(got), {"id", "version", "name", "saved_at", "why", "rank", "way_in", "way_home", "tickets",
-                                    "places", "lastNights"})
+                                    "places", "lastNights", "lodgings"})
         self.assertEqual((got["id"], got["name"], got["version"]), ("TEST01-share", "TEST01 Colombia", 1))
-        self.assertEqual([set(p) for p in got["places"]], [{"node", "hop", "nights", "why"}, {"node", "hop", "nights"}])
+        self.assertEqual([set(p) for p in got["places"]], [{"node", "hop", "nights", "why", "stays"}, {"node", "hop", "nights"}])
+        self.assertEqual(got["places"][0]["stays"], [{"lodging_id": "TEST01-lodging", "room_id": "TEST01-room", "nights": 3}])
         self.assertEqual(got["way_in"], SHARED["way_in"])
+        # the stay names a place B does not have, so no place comes with it
+        self.assertEqual(got["lodgings"], [])
         text = json.dumps(got)
-        for private in ("TEST01-lodging", "TEST01-room", "stays_booked_dkk", "planner", self.b.id, self.b.email):
+        for private in ("stays_booked_dkk", "planner", self.b.id, self.b.email):
             self.assertNotIn(private, text)
         # the owner's later save is what the link shows, and the owner reads it too
         ok(self, self.b.rest.rpc("save_trip", {"trip": {**SHARED, "name": "TEST01 Colombia again"}}))
         self.assertEqual((self.shown(token)["version"], self.shown(token, self.b)["name"]), (2, "TEST01 Colombia again"))
+
+    def test_the_link_shows_the_planned_stays_and_not_the_notes(self):
+        place = {"place_id": "bogota", "name": "TEST01 hostel", "kind": "hostel", "added_by": "claude",
+                 "summary": "TEST01 summary", "notes": "TEST01 secret note", "tags": ["social"],
+                 "links": [{"site": "booking", "url": "https://example.com/TEST01"}]}
+        ok(self, self.b.rest.insert("lodgings", [dict(place, id="TEST01-lodging", hidden=False), dict(place, id="TEST01-other", hidden=True)]))
+        ok(self, self.b.rest.insert("lodging_rooms", [
+            {"id": "TEST01-room", "lodging_id": "TEST01-lodging", "name": "TEST01 dorm", "beds": 6, "notes": "TEST01 secret room"},
+            {"id": "TEST01-room2", "lodging_id": "TEST01-lodging", "name": "TEST01 private", "beds": 1, "notes": "TEST01 secret room"}]))
+        ok(self, self.b.rest.insert("lodging_prices", [{"room_id": "TEST01-room", "check_in": "2026-12-03", "check_out": "2026-12-06",
+                                                        "total_dkk": 600, "url": "https://example.com/TEST01-price-url"}]))
+        # a stay another person has under the same ids is never B's
+        ok(self, self.a.rest.insert("lodgings", [dict(place, id="TEST01-lodging", name="TEST01 of A")]))
+        token = self.share()
+        for who in (self.a, self.anon):
+            got = ok(self, who.rpc("shared_trip", {"token": token})) if who is self.anon else self.shown(token)
+            with self.subTest(anon=who is self.anon):
+                [l] = got["lodgings"]
+                self.assertEqual(set(l), {"id", "place_id", "name", "kind", "photos", "rating", "reviews", "rating_source",
+                                          "address", "lat", "lon", "to_center_km", "to_beach_km", "tags", "summary", "links",
+                                          "rooms"})
+                self.assertEqual((l["id"], l["name"], l["summary"], l["tags"]), ("TEST01-lodging", "TEST01 hostel", "TEST01 summary", ["social"]))
+                [r] = l["rooms"]
+                self.assertEqual(set(r), {"id", "lodging_id", "name", "beds", "private", "bathroom", "site", "photo", "prices"})
+                self.assertEqual((r["id"], r["beds"]), ("TEST01-room", 6))
+                [p] = r["prices"]
+                self.assertEqual((p["check_in"], p["check_out"], p["total_dkk"]), ("2026-12-03", "2026-12-06", 600))
+                self.assertNotIn("url", p)
+                text = json.dumps(got)
+                for private in ("TEST01 secret", "TEST01-other", "TEST01-room2", "TEST01 of A", "TEST01-price-url", "added_by",
+                                "hidden", self.b.id):
+                    self.assertNotIn(private, text)
 
     def test_another_person_cannot_read_or_revoke_a_link(self):
         token = self.share()
