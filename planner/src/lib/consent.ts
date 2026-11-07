@@ -7,13 +7,16 @@
 
 const ID = /^[A-Za-z0-9_-]{8,128}$/
 
-/** The hosts an authorization may send a code back to. claude.ai and chatgpt.com only over https, a local client over either. */
+/** The hosts an authorization may send a code back to. claude.ai only over https, a local client over either. */
 const HOSTS: Record<string, readonly string[]> = {
   'claude.ai': ['https:'],
-  'chatgpt.com': ['https:'],
   localhost: ['http:', 'https:'],
   '127.0.0.1': ['http:', 'https:'],
 }
+
+/** ChatGPT's connector return address, the one path on chatgpt.com a code may go to. Any other path there, such as a
+ * custom GPT's action callback, ends at a server its author runs, so it is refused. */
+const CHATGPT_PATH = '/connector_platform_oauth_redirect'
 
 /** The authorization id on the address, or null. */
 export function consentId(search: string): string | null {
@@ -41,7 +44,9 @@ export function redirectHost(uri: string): string | null {
 export function hostAllowed(uri: string): boolean {
   try {
     const u = new URL(uri)
-    return (HOSTS[u.hostname] ?? []).includes(u.protocol) && !u.username && !u.password
+    if (u.username || u.password) return false
+    if (u.hostname === 'chatgpt.com') return u.protocol === 'https:' && !u.port && u.pathname === CHATGPT_PATH
+    return (HOSTS[u.hostname] ?? []).includes(u.protocol)
   } catch {
     return false
   }
